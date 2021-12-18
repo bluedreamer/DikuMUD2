@@ -26,6 +26,7 @@
 #define _MUD_INTERPRETER_H
 
 #include "dil.h"
+#include "essential.h"
 
 int char_is_playing(struct unit_data *u);
 int descriptor_is_playing(struct descriptor_data *d);

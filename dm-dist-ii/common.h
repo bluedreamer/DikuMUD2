@@ -24,6 +24,7 @@
 
 #ifndef _MUD_COMMON_H
 #define _MUD_COMMON_H
+#include "essential.h"
 
 extern const char *fillwords[];
 

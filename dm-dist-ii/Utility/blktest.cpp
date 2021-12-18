@@ -22,23 +22,22 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
+#include "blkfile.h"
+#include "bytestring.h"
 #include "structs.h"
 #include "utils.h"
-#include "bytestring.h"
-#include "blkfile.h"
 
 #undef free
 
-int sunlight = 0;
-const sbit8 time_light[24] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+int         sunlight       = 0;
+const sbit8 time_light[24] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 #define TFSIZE 128
-#define MAXH 4000
+#define MAXH   4000
 blk_handle h[MAXH];
 
 #ifdef SUSPEKT
@@ -46,10 +45,10 @@ FILE *fopen_cache(char *name, char *mode)
 {
    static FILE *stream = 0;
 
-   if (stream)
-     fclose(stream);
+   if(stream)
+      fclose(stream);
 
-   stream = fopen(name,mode);
+   stream = fopen(name, mode);
 
    return stream;
 }
@@ -57,73 +56,73 @@ FILE *fopen_cache(char *name, char *mode)
 
 char *gen_data(int len)
 {
-   ubit8 *ptr;
-   static ubit8 data[4*TFSIZE];
-   static int count = 0;
-   int i;
+   ubit8       *ptr;
+   static ubit8 data[4 * TFSIZE];
+   static int   count = 0;
+   int          i;
 
    ptr = data;
 
-   for (i=0; i < 4 * TFSIZE / 4; i++)
+   for(i = 0; i < 4 * TFSIZE / 4; i++)
       bwrite_ubit32(&ptr, len++);
 
    count++;
 
-   return (char *) data;
+   return (char *)data;
 }
 
 void verify_data(ubit8 *data, int len)
 {
    ubit8 *ptr;
-   int i, j;
+   int    i, j;
 
    ptr = data;
-   j = len;
+   j   = len;
 
-   for (i=0; i < len / 4; i++)
+   for(i = 0; i < len / 4; i++)
    {
       i = bread_ubit32(&ptr);
-      if (i != j++)
-	assert(FALSE);
+      if(i != j++)
+         assert(FALSE);
    }
 }
 
 void write_data(BLK_FILE *tf, int no)
 {
-   int i;
+   int   i;
    char *c;
 
-   for (i=0; i < no; i++)
+   for(i = 0; i < no; i++)
    {
-      c = gen_data(1);
-      h[i*10+0] = blk_write(tf, c, 1);        /* One Block */
+      c             = gen_data(1);
+      h[i * 10 + 0] = blk_write(tf, c, 1); /* One Block */
 
-      c = gen_data(TFSIZE-7);
-      h[i*10+1] = blk_write(tf, c, TFSIZE-7); /* One block */
+      c             = gen_data(TFSIZE - 7);
+      h[i * 10 + 1] = blk_write(tf, c, TFSIZE - 7); /* One block */
 
-      c = gen_data(TFSIZE-6);
-      h[i*10+2] = blk_write(tf, c, TFSIZE-6); /* One block */
+      c             = gen_data(TFSIZE - 6);
+      h[i * 10 + 2] = blk_write(tf, c, TFSIZE - 6); /* One block */
 
-      c = gen_data(TFSIZE-5);
-      h[i*10+3] = blk_write(tf, c, TFSIZE-5); /* Two blocks */
+      c             = gen_data(TFSIZE - 5);
+      h[i * 10 + 3] = blk_write(tf, c, TFSIZE - 5); /* Two blocks */
 
-      c = gen_data(TFSIZE-6+TFSIZE-3);
-      h[i*10+4] = blk_write(tf, c, TFSIZE-6 + TFSIZE-3); /* Two blocks */
+      c             = gen_data(TFSIZE - 6 + TFSIZE - 3);
+      h[i * 10 + 4] = blk_write(tf, c, TFSIZE - 6 + TFSIZE - 3); /* Two blocks */
 
-      c = gen_data(TFSIZE-6+TFSIZE-2);
-      h[i*10+5] = blk_write(tf, c, TFSIZE-6 + TFSIZE-2); /* Two blocks */
+      c             = gen_data(TFSIZE - 6 + TFSIZE - 2);
+      h[i * 10 + 5] = blk_write(tf, c, TFSIZE - 6 + TFSIZE - 2); /* Two blocks */
 
-      c = gen_data(TFSIZE-6+TFSIZE-1);
-      h[i*10+6] = blk_write(tf, c, TFSIZE-6 + TFSIZE-1); /* Three blocks */
+      c             = gen_data(TFSIZE - 6 + TFSIZE - 1);
+      h[i * 10 + 6] = blk_write(tf, c, TFSIZE - 6 + TFSIZE - 1); /* Three blocks */
 
-      c = gen_data(TFSIZE-6+2*(TFSIZE-2)-1);
-      h[i*10+7] = blk_write(tf, c, TFSIZE-6+2*(TFSIZE-2)-1); /* Three blocks */
+      c             = gen_data(TFSIZE - 6 + 2 * (TFSIZE - 2) - 1);
+      h[i * 10 + 7] = blk_write(tf, c, TFSIZE - 6 + 2 * (TFSIZE - 2) - 1); /* Three blocks */
 
-      c = gen_data(TFSIZE-6+2*(TFSIZE-2));
-      h[i*10+8] = blk_write(tf, c, TFSIZE-6+2*(TFSIZE-2)); /* Three blocks */
+      c             = gen_data(TFSIZE - 6 + 2 * (TFSIZE - 2));
+      h[i * 10 + 8] = blk_write(tf, c, TFSIZE - 6 + 2 * (TFSIZE - 2)); /* Three blocks */
 
-      c = gen_data(TFSIZE-6+2*(TFSIZE-2)+1);
-      h[i*10+9] = blk_write(tf, c, TFSIZE-6+2*(TFSIZE-2)+1); /* Four blocks */
+      c             = gen_data(TFSIZE - 6 + 2 * (TFSIZE - 2) + 1);
+      h[i * 10 + 9] = blk_write(tf, c, TFSIZE - 6 + 2 * (TFSIZE - 2) + 1); /* Four blocks */
    }
    /* Each "run" is 1+1+1+2+2+2+3+3+3+4 = 22 records */
    /* A total of 440 (+1) records = 56448 bytes */
@@ -131,45 +130,43 @@ void write_data(BLK_FILE *tf, int no)
 
 void new_data(BLK_FILE *tf, int no)
 {
-   int i, j, l;
+   int   i, j, l;
    char *c;
 
-   for (j=0; j < no; j++)
+   for(j = 0; j < no; j++)
    {
-      while (h[i = (rand() % MAXH)] != BLK_NULL)
-	;
-      l = 1 + (rand() % (TFSIZE-6+3-1*(TFSIZE-2)));
-      c = gen_data(l);
-      h[i] = blk_write(tf, c, l);        /* One Block */
+      while(h[i = (rand() % MAXH)] != BLK_NULL)
+         ;
+      l    = 1 + (rand() % (TFSIZE - 6 + 3 - 1 * (TFSIZE - 2)));
+      c    = gen_data(l);
+      h[i] = blk_write(tf, c, l); /* One Block */
    }
 }
 
-
 void verify_read(BLK_FILE *tf)
 {
-   ubit8 *data;
-   int i;
+   ubit8     *data;
+   int        i;
    blk_length len;
 
-   for (i=0; i < MAXH; i++)
-      if (h[i] != BLK_NULL)
+   for(i = 0; i < MAXH; i++)
+      if(h[i] != BLK_NULL)
       {
-	 data = (ubit8 *) blk_read(tf, h[i], &len);
-	 verify_data(data, len);
+         data = (ubit8 *)blk_read(tf, h[i], &len);
+         verify_data(data, len);
       }
-
 }
 
 void fragment_data(BLK_FILE *tf, int no)
 {
    int i, j;
 
-   for (j=0; j < no; j++)
+   for(j = 0; j < no; j++)
    {
       /* In extreme cases this might cause an endless loop */
       /* but that shouldn't be a problem... :)             */
-      while (h[i = (rand() % MAXH)] == BLK_NULL)
-	;
+      while(h[i = (rand() % MAXH)] == BLK_NULL)
+         ;
       blk_delete(tf, h[i]);
       h[i] = BLK_NULL;
    }
@@ -177,9 +174,9 @@ void fragment_data(BLK_FILE *tf, int no)
 
 int main(void)
 {
-   FILE *f;
+   FILE     *f;
    BLK_FILE *tf;
-   int i,j;
+   int       i, j;
 
    srand(time(0));
 
@@ -187,15 +184,15 @@ int main(void)
    fclose(f);
 
    tf = blk_open("tmp.testfile", TFSIZE);
-   for (i=0; i < MAXH; i++)
-     h[i] = BLK_NULL;
+   for(i = 0; i < MAXH; i++)
+      h[i] = BLK_NULL;
 
    printf("Writing data\n");
-   write_data(tf, 50);    /* Write 50 * 10 units */
+   write_data(tf, 50); /* Write 50 * 10 units */
    printf("Verifying data by reading\n");
    verify_read(tf);
 
-   for (i=0; i < 1000; i++)
+   for(i = 0; i < 1000; i++)
    {
       j = 1 + (rand() % 25);
       printf("Fragmenting file by %d records.\n", j);
@@ -209,18 +206,16 @@ int main(void)
       printf("Verifying data by reading\n");
       verify_read(tf);
 
-      if ((rand() % 10) == 1)
+      if((rand() % 10) == 1)
       {
-	 blk_close(tf);
-	 printf("\nRe-indexing blockfile\n");
-	 tf = blk_open("tmp.testfile", TFSIZE);
+         blk_close(tf);
+         printf("\nRe-indexing blockfile\n");
+         tf = blk_open("tmp.testfile", TFSIZE);
       }
    }
 
    return 0;
 }
-
-
 
 void destroy_fptr(unit_data *u, unit_fptr *f)
 {

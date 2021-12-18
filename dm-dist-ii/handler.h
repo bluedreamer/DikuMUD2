@@ -24,7 +24,7 @@
 
 #ifndef _MUD_HANDLER_H
 #define _MUD_HANDLER_H
-
+#include "essential.h"
 #include "unitfind.h"
 
 struct descriptor_data *unit_is_edited(struct unit_data *u);

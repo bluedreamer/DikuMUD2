@@ -26,19 +26,17 @@
 #include <time.h>
 
 #include "essential.h"
-#include "values.h"
 #include "utils.h"
+#include "values.h"
 
+#include "account.h"
+#include "common.h"
+#include "connectionlog.h"
+#include "db.h"
 #include "files.h"
 #include "textutil.h"
-#include "common.h"
-#include "db.h"
-#include "account.h"
-#include "connectionlog.h"
 
-
-static void ConnectionWrite(ubit32 nId, ubit32 nLogon,
-			    ubit32 nLogoff, ubit32 nLanPay)
+static void ConnectionWrite(ubit32 nId, ubit32 nLogon, ubit32 nLogoff, ubit32 nLanPay)
 {
    FILE *f = fopen_cache(str_cc(libdir, STATISTIC_FILE), "ab+");
 
@@ -56,12 +54,10 @@ static void ConnectionWrite(ubit32 nId, ubit32 nLogon,
    fflush(f);
 }
 
-
 void ConnectionBegin(class unit_data *pc)
 {
-   ConnectionWrite( PC_ID(pc), CHAR_DESCRIPTOR(pc)->logon, 0, 0);
+   ConnectionWrite(PC_ID(pc), CHAR_DESCRIPTOR(pc)->logon, 0, 0);
 }
-
 
 void ConnectionLog(class unit_data *pc)
 {
@@ -69,30 +65,29 @@ void ConnectionLog(class unit_data *pc)
 
    ubit32 nLanPay = 0;
 
-   if (g_cServerConfig.FromLAN(CHAR_DESCRIPTOR(pc)->host))
-     nLanPay |= 0x0001;
+   if(g_cServerConfig.FromLAN(CHAR_DESCRIPTOR(pc)->host))
+      nLanPay |= 0x0001;
 
-   if (g_cServerConfig.m_bAccounting)
-     nLanPay |= 0x0002;
+   if(g_cServerConfig.m_bAccounting)
+      nLanPay |= 0x0002;
 
-   if (CHAR_LEVEL(pc) < g_cAccountConfig.m_nFreeFromLevel)
-     nLanPay |= 0x0004;
+   if(CHAR_LEVEL(pc) < g_cAccountConfig.m_nFreeFromLevel)
+      nLanPay |= 0x0004;
 
-   if (PC_ACCOUNT(pc).flatrate > (ubit32) time(0))
-     nLanPay |= 0x0008;
+   if(PC_ACCOUNT(pc).flatrate > (ubit32)time(0))
+      nLanPay |= 0x0008;
 
-   if (PC_ACCOUNT(pc).discount >= 100)
-     nLanPay |= 0x0010;
+   if(PC_ACCOUNT(pc).discount >= 100)
+      nLanPay |= 0x0010;
 
-   if (PC_ACCOUNT(pc).credit > 0.0)
-     nLanPay |= 0x0020;
+   if(PC_ACCOUNT(pc).credit > 0.0)
+      nLanPay |= 0x0020;
 
-   ConnectionWrite( PC_ID(pc), CHAR_DESCRIPTOR(pc)->logon, t0, nLanPay);
+   ConnectionWrite(PC_ID(pc), CHAR_DESCRIPTOR(pc)->logon, t0, nLanPay);
 }
 
 void ConnectionBoot(void)
 {
    touch_file(str_cc(libdir, STATISTIC_FILE));
-   ConnectionWrite( 0xFFFFFFFF, time(0), 0xFFFFFFFF, 0xFFFFFFFF);
+   ConnectionWrite(0xFFFFFFFF, time(0), 0xFFFFFFFF, 0xFFFFFFFF);
 }
-

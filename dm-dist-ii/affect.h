@@ -25,6 +25,8 @@
 #ifndef _MUD_AFFECT_H
 #define _MUD_AFFECT_H
 
+#include "essential.h"
+
 void apply_affect(struct unit_data *unit);
 void start_affect(struct unit_data *unit);
 void stop_affect(struct unit_data *unit);

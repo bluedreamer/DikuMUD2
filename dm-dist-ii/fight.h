@@ -25,6 +25,8 @@
 #ifndef _MUD_FIGHT_H
 #define _MUD_FIGHT_H
 
+#include "essential.h"
+
 struct SFightColorSet
 {
   char *pAttacker;

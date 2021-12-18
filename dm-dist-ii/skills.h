@@ -25,6 +25,8 @@
 #ifndef _MUD_SKILLS_H
 #define _MUD_SKILLS_H
 
+#include "values.h"
+
 struct skill_interval
 {
    const int   skill;

@@ -26,6 +26,7 @@
 #define _MUD_CONSTANTS_H
 
 #include "values.h"
+#include "essential.h"
 #include "skills.h"
 
 extern const struct skill_interval how_good[];

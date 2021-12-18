@@ -27,6 +27,8 @@
 
 #define MAX_FLATRATE 2
 
+#include "essential.h"
+
 struct flatrate_type
 {
    char *pMessage;

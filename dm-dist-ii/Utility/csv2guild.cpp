@@ -21,22 +21,21 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <stdlib.h>
-#include <stdio.h>
 #include <assert.h>
-#include <string.h>
 #include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 char *skip_blanks(const char *string)
 {
    assert(string);
 
    for(; *string && isspace(*string); string++)
-     ;
+      ;
 
-   return (char *) string;
+   return (char *)string;
 }
-
 
 /* Returns true is arg is empty */
 int str_is_empty(const char *arg)
@@ -44,36 +43,35 @@ int str_is_empty(const char *arg)
    return *(skip_blanks(arg)) == '\0';
 }
 
-
 void str_char_subst(char *str, char c)
 {
    char *cp;
 
-   if (c == 0)
-     return;
+   if(c == 0)
+      return;
 
-   while ((cp = strchr(str, c)))
-     *cp++ = 0;
+   while((cp = strchr(str, c)))
+      *cp++ = 0;
 }
 
 char *mystrtok(char *s, char delim)
 {
    static char *cp = NULL;
-   char *cp2;
+   char        *cp2;
 
-   if (delim == 0)
-     return NULL;
+   if(delim == 0)
+      return NULL;
 
-   if (s)
-     cp = s;
+   if(s)
+      cp = s;
 
-   if (cp == NULL || *cp == 0)
-     return NULL;
+   if(cp == NULL || *cp == 0)
+      return NULL;
 
    cp2 = cp;
 
-   cp  = strchr(cp, delim);
-   if (cp == NULL)
+   cp = strchr(cp, delim);
+   if(cp == NULL)
    {
       cp = NULL;
       return cp2;
@@ -86,92 +84,78 @@ char *mystrtok(char *s, char delim)
 
 void convert(int idx)
 {
-   char buf[4096];
+   char  buf[4096];
    char *name;
    char *code = NULL;
-   int i, section = 0;
+   int   i, section = 0;
 
-   int costs[5][3] =
-   {{ 5, 10, 15},
-    { 8, 16, 24},
-    {10, 20, 30},
-    {15, 30, 45},
-    {20, 40, 60}};
+   int costs[5][3] = {{5, 10, 15}, {8, 16, 24}, {10, 20, 30}, {15, 30, 45}, {20, 40, 60}};
 
-   while (!feof(stdin))
+   while(!feof(stdin))
    {
-      if (!fgets(buf, sizeof(buf), stdin))
-	break;
+      if(!fgets(buf, sizeof(buf), stdin))
+         break;
 
       name = mystrtok(buf, ',');
 
-      if (strncmp(name, "SECTION", 7) == 0)
+      if(strncmp(name, "SECTION", 7) == 0)
       {
-	 section++;
-	 continue;
+         section++;
+         continue;
       }
 
-      if (name && !str_is_empty(name))
+      if(name && !str_is_empty(name))
       {
-	 for (i=0; i < idx; i++)
-	 {	   
-	    code = mystrtok(NULL, ',');
-	    if (code == NULL)
-	      break;
-	 }
+         for(i = 0; i < idx; i++)
+         {
+            code = mystrtok(NULL, ',');
+            if(code == NULL)
+               break;
+         }
 
-	 if (code && !str_is_empty(code))
-	 {
-	    int level;
-	    int cost;
-	    int max;
-	    int nums;
-	    char *nc;
+         if(code && !str_is_empty(code))
+         {
+            int   level;
+            int   cost;
+            int   max;
+            int   nums;
+            char *nc;
 
-	    nc = strtok(code, "/");
+            nc = strtok(code, "/");
 
-	    cost  = nc[0] - 'A';
-	    nums  = nc[1] - '0';
+            cost = nc[0] - 'A';
+            nums = nc[1] - '0';
 
-	    nc = strtok(NULL, "/");
-	    level = atoi(nc);
+            nc    = strtok(NULL, "/");
+            level = atoi(nc);
 
-	    nc = strtok(NULL, "/");
-	    max = atoi(nc);
+            nc  = strtok(NULL, "/");
+            max = atoi(nc);
 
-	    fprintf(stdout, "%d %2d; %4d; %-30s; %4d; %4d; ",
-		    section,
-		    level,
-		    max,
-		    name,
-		    (cost + 1) * 50,
-		    (cost + 1) * 500);
+            fprintf(stdout, "%d %2d; %4d; %-30s; %4d; %4d; ", section, level, max, name, (cost + 1) * 50, (cost + 1) * 500);
 
-	    if ((nums >= 0 && nums <= 3) && (cost >= 0 && cost <= 4))
-	    {
-	       for (i = 0; i < nums; i++)
-		 fprintf(stdout, " %2d;", costs[cost][i]);
+            if((nums >= 0 && nums <= 3) && (cost >= 0 && cost <= 4))
+            {
+               for(i = 0; i < nums; i++)
+                  fprintf(stdout, " %2d;", costs[cost][i]);
 
-	       for (; i < 3; i++)
-		 fprintf(stdout, "    ");
+               for(; i < 3; i++)
+                  fprintf(stdout, "    ");
 
-	       fprintf(stdout, "  0;\n");
-	    }
-	    else
-	    {
-	       fprintf(stdout, "Error\n");
-	    }
-	    
-	 }
+               fprintf(stdout, "  0;\n");
+            }
+            else
+            {
+               fprintf(stdout, "Error\n");
+            }
+         }
       }
    }
 }
 
-
-
 int main(int argc, char *argv[])
 {
-   if (argc < 2)
+   if(argc < 2)
    {
       fprintf(stderr, "Usage: %s <1..8>\n", argv[0]);
       return 0;

@@ -23,29 +23,28 @@
  * *********************************************************************** */
 
 /* 27/09/92 gnort: Found something looking like a BAD memory-waster in
-		   free_unit, caused by wrongly nested if-else's           */
+                   free_unit, caused by wrongly nested if-else's           */
 /* Sun Jun 27 1993 HHS applied world status update */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
-#include "structs.h"
-#include "utils.h"
-#include "db.h"
-#include "db_file.h"
-#include "comm.h"
-#include "handler.h"
-#include "limits.h"
-#include "textutil.h"
-#include "skills.h"
 #include "affect.h"
 #include "blkfile.h"
+#include "comm.h"
+#include "db.h"
+#include "db_file.h"
+#include "handler.h"
+#include "limits.h"
+#include "skills.h"
+#include "structs.h"
+#include "textutil.h"
 #include "utility.h"
+#include "utils.h"
 
 /************************************************************************
  *  Memory Handling Procedures Below this line                          *
  ********************************************************************** */
-

@@ -26,7 +26,9 @@
 	
 #ifndef _MUD_DIL_H
 #define _MUD_DIL_H
-	
+
+#include "essential.h"
+
 #ifndef L_tmpnam
 	  #define   L_tmpnam       1024 /* Oh thank you Marcel! */
 #endif
