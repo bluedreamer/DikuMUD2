@@ -25,8 +25,8 @@
 /* 23/07/92 seifert: Corrected grave error with event_enq when destroyed   */
 /* 02/08/92 seifert: Checks for destructed in various places               */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "affect.h"
 #include "main.h"
@@ -37,13 +37,13 @@
 extern struct apply_function_type apf[];
 extern struct tick_function_type  tif[];
 
-struct unit_affected_type *affected_list = 0;  /* Global list pointer       */
-struct unit_affected_type *next_affected_dude; /* dirty - very dirty indeed */
+struct unit_affected_type *affected_list = nullptr; /* Global list pointer       */
+struct unit_affected_type *next_affected_dude;      /* dirty - very dirty indeed */
 
 void register_destruct(int i, void *ptr);
 void clear_destruct(int i);
 
-void affect_beat(void *, void *);
+void affect_beat(void * /*p1*/, void * /*p2*/);
 
 /* Link an affected structure into the units affected structure */
 void link_affect(struct unit_data *unit, struct unit_affected_type *af)
@@ -53,16 +53,16 @@ void link_affect(struct unit_data *unit, struct unit_affected_type *af)
      UNIT_FI_NAME(unit), UNIT_FI_ZONENAME(unit),
      UNIT_NAME(unit), af->id); */
 
-   af->gprevious = 0;
+   af->gprevious = nullptr;
 
-   if(affected_list)
+   if(affected_list != nullptr)
    {
       af->gnext                = affected_list;
       affected_list->gprevious = af;
    }
    else
    {
-      af->gnext = 0;
+      af->gnext = nullptr;
    }
 
    affected_list = af;
@@ -72,7 +72,7 @@ void link_affect(struct unit_data *unit, struct unit_affected_type *af)
    af->owner           = unit;
 }
 
-struct unit_affected_type *link_alloc_affect(struct unit_data *unit, struct unit_affected_type *orgaf)
+auto link_alloc_affect(struct unit_data *unit, struct unit_affected_type *orgaf) -> struct unit_affected_type *
 {
    struct unit_affected_type *af;
 
@@ -92,7 +92,7 @@ struct unit_affected_type *link_alloc_affect(struct unit_data *unit, struct unit
 /* linked.                                                  */
 void create_affect(struct unit_data *unit, struct unit_affected_type *af)
 {
-   if(!is_destructed(DR_UNIT, unit))
+   if(is_destructed(DR_UNIT, unit) == 0)
    {
       af = link_alloc_affect(unit, af);
 
@@ -100,17 +100,27 @@ void create_affect(struct unit_data *unit, struct unit_affected_type *af)
       if(af->id >= 0)
       {
          if(af->applyf_i >= 0)
-            if(!(*apf[af->applyf_i].func)(af, unit, TRUE))
+         {
+            if((*apf[af->applyf_i].func)(af, unit, TRUE) == 0u)
+            {
                return;
+            }
+         }
 
          if(af->firstf_i >= 0)
+         {
             (*tif[af->firstf_i].func)(af, unit);
+         }
 
          if(af->duration > 0)
+         {
             af->duration--; /* When 1 it means stop next tick... */
+         }
 
          if(af->beat > 0)
-            event_enq(af->beat, affect_beat, (void *)af, 0);
+         {
+            event_enq(af->beat, affect_beat, (void *)af, nullptr);
+         }
       }
    }
 }
@@ -129,31 +139,43 @@ void unlink_affect(struct unit_data *u, struct unit_affected_type *af)
    /* Affects may never be removed by lower function than this */
    register_destruct(DR_AFFECT, af);
 
-   event_deenq(affect_beat, (void *)af, 0);
+   event_deenq(affect_beat, (void *)af, nullptr);
 
    if(next_affected_dude == af)
+   {
       next_affected_dude = af->gnext;
+   }
 
    /* Unlink affect structure from global list of affects */
 
    if(affected_list == af)
+   {
       affected_list = af->gnext;
+   }
 
-   if(af->gnext)
+   if(af->gnext != nullptr)
+   {
       af->gnext->gprevious = af->gprevious;
+   }
 
-   if(af->gprevious)
+   if(af->gprevious != nullptr)
+   {
       af->gprevious->gnext = af->gnext;
+   }
 
    /* Unlink affect structure from local list */
 
    i = UNIT_AFFECTED(af->owner);
    if(i == af)
+   {
       UNIT_AFFECTED(af->owner) = i->next;
+   }
    else
    {
       for(; i->next != af; i = i->next)
+      {
          ;
+      }
 
       assert(i);
       i->next = af->next;
@@ -170,16 +192,20 @@ void destroy_affect(struct unit_affected_type *af)
    if(af->id >= 0)
    {
       if(af->applyf_i >= 0)
-         if(!(*apf[af->applyf_i].func)(af, af->owner, FALSE))
+      {
+         if((*apf[af->applyf_i].func)(af, af->owner, FALSE) == 0u)
          {
             af->duration = 0;
             af->beat     = WAIT_SEC * 5;
-            event_enq(number(120, 240), affect_beat, (void *)af, 0);
+            event_enq(number(120, 240), affect_beat, (void *)af, nullptr);
             return;
          }
+      }
 
-      if(af->lastf_i >= 0 && !is_destructed(DR_UNIT, af->owner))
+      if(af->lastf_i >= 0 && (is_destructed(DR_UNIT, af->owner) == 0))
+      {
          (*tif[af->lastf_i].func)(af, af->owner);
+      }
    }
 
    assert(!is_destructed(DR_AFFECT, af));
@@ -190,13 +216,14 @@ void destroy_affect(struct unit_affected_type *af)
 void affect_clear_unit(struct unit_data *unit)
 {
    int                        i;
-   struct unit_affected_type *taf1, *taf2;
+   struct unit_affected_type *taf1;
+   struct unit_affected_type *taf2;
 
    /* Some affects may not be destroyed at first attempt if it would */
    /* cause an overflow, therefore do several attemps to destroy     */
    for(i = 0; UNIT_AFFECTED(unit) && (i < 5); i++)
    {
-      for(taf1 = UNIT_AFFECTED(unit); taf1; taf1 = taf2)
+      for(taf1 = UNIT_AFFECTED(unit); taf1 != nullptr; taf1 = taf2)
       {
          taf2 = taf1->next;
          destroy_affect(taf1);
@@ -204,32 +231,40 @@ void affect_clear_unit(struct unit_data *unit)
    }
 
    if(UNIT_AFFECTED(unit))
+   {
       slog(LOG_ALL, 0, "ERROR: Could not clear unit of affects!");
+   }
 }
 
-struct unit_affected_type *affected_by_spell(const struct unit_data *unit, sbit16 id)
+auto affected_by_spell(const struct unit_data *unit, sbit16 id) -> struct unit_affected_type *
 {
    struct unit_affected_type *af;
 
-   for(af = UNIT_AFFECTED(unit); af; af = af->next)
+   for(af = UNIT_AFFECTED(unit); af != nullptr; af = af->next)
+   {
       if(af->id == id)
+      {
          return af;
+      }
+   }
 
-   return 0;
+   return nullptr;
 }
 
 /* Called by event handler when its ticking time */
 void affect_beat(void *p1, void *p2)
 {
-   struct unit_affected_type *af = (struct unit_affected_type *)p1;
-   int                        destroyed;
+   auto *af = (struct unit_affected_type *)p1;
+   int   destroyed;
 
    assert(af->id >= 0); /* Negative ids (transfer) dont have beats */
 
    /* Used to be assert(af->beat > 0);  */
    /* But crashes game, I've set 0 to 8 */
    if(af->beat <= 0)
+   {
       af->beat = 2 * WAIT_SEC;
+   }
 
    destroyed = FALSE;
 
@@ -242,19 +277,19 @@ void affect_beat(void *p1, void *p2)
          destroy_affect(af);
          return;
       }
-      else
-      {
-         if(af->tickf_i >= 0)
-            (*tif[af->tickf_i].func)(af, af->owner);
 
-         destroyed = is_destructed(DR_AFFECT, af);
+      if(af->tickf_i >= 0)
+         (*tif[af->tickf_i].func)(af, af->owner);
 
-         if(!destroyed && (af->duration > 0))
-            af->duration--;
-      }
+      destroyed = is_destructed(DR_AFFECT, af);
+
+      if(!destroyed && (af->duration > 0))
+         af->duration--;
    }
-   if(!destroyed)
-      event_enq(af->beat, affect_beat, (void *)af, 0);
+   if(destroyed == 0)
+   {
+      event_enq(af->beat, affect_beat, (void *)af, nullptr);
+   }
 }
 
 /* ONLY USED WHEN LOADING UNITS                          */
@@ -264,12 +299,16 @@ void apply_affect(struct unit_data *unit)
    struct unit_affected_type *af;
 
    /* If less than zero it is a transfer, and nothing will be set */
-   for(af = UNIT_AFFECTED(unit); af; af = af->next)
+   for(af = UNIT_AFFECTED(unit); af != nullptr; af = af->next)
+   {
       if((af->id >= 0) && (af->applyf_i >= 0))
       {
-         if(!(*apf[af->applyf_i].func)(af, unit, TRUE))
+         if((*apf[af->applyf_i].func)(af, unit, TRUE) == 0u)
+         {
             continue;
+         }
       }
+   }
 }
 
 void start_affect(struct unit_data *unit)
@@ -277,15 +316,21 @@ void start_affect(struct unit_data *unit)
    struct unit_affected_type *af;
 
    /* If less than zero it is a transfer, and nothing will be set */
-   for(af = UNIT_AFFECTED(unit); af; af = af->next)
+   for(af = UNIT_AFFECTED(unit); af != nullptr; af = af->next)
+   {
       if((af->id >= 0) && (af->beat > 0))
-         event_enq(af->beat, affect_beat, (void *)af, 0);
+      {
+         event_enq(af->beat, affect_beat, (void *)af, nullptr);
+      }
+   }
 }
 
 void stop_affect(struct unit_data *unit)
 {
    struct unit_affected_type *af;
 
-   for(af = UNIT_AFFECTED(unit); af; af = af->next)
-      event_deenq(affect_beat, (void *)af, 0);
+   for(af = UNIT_AFFECTED(unit); af != nullptr; af = af->next)
+   {
+      event_deenq(affect_beat, (void *)af, nullptr);
+   }
 }

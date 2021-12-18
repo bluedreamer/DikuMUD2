@@ -25,8 +25,8 @@
 
 /* 29/08/92 seifert: Added damage_variation routine.                       */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "comm.h"
 #include "common.h"
@@ -41,14 +41,16 @@
 #include "utility.h"
 #include "utils.h"
 
-const char *skill_text(const struct skill_interval *si, int skill)
+auto skill_text(const struct skill_interval *si, int skill) -> const char *
 {
-   if(si)
+   if(si != nullptr)
    {
-      while(si->descr)
+      while(si->descr != nullptr)
       {
-         if((skill <= si->skill) || ((si + 1)->descr == NULL))
+         if((skill <= si->skill) || ((si + 1)->descr == nullptr))
+         {
             return si->descr;
+         }
 
          si++;
       }
@@ -98,31 +100,32 @@ void roll_description(struct unit_data *att, const char *text, int roll)
       switch(roll / 100)
       {
          case 2:
-            act("Great $2t!", A_ALWAYS, att, text, 0, TO_CHAR);
-            act("$1n makes a great $2t!", A_ALWAYS, att, text, 0, TO_ROOM);
+            act("Great $2t!", A_ALWAYS, att, text, nullptr, TO_CHAR);
+            act("$1n makes a great $2t!", A_ALWAYS, att, text, nullptr, TO_ROOM);
             break;
 
          case 3:
-            act("Superb $2t!", A_ALWAYS, att, text, 0, TO_CHAR);
-            act("$1n makes a superb $2t!", A_ALWAYS, att, text, 0, TO_ROOM);
+            act("Superb $2t!", A_ALWAYS, att, text, nullptr, TO_CHAR);
+            act("$1n makes a superb $2t!", A_ALWAYS, att, text, nullptr, TO_ROOM);
             break;
 
          default:
-            act("Divine $2t!", A_ALWAYS, att, text, 0, TO_CHAR);
-            act("$1n makes a divinely inspired $2t!", A_ALWAYS, att, text, 0, TO_ROOM);
+            act("Divine $2t!", A_ALWAYS, att, text, nullptr, TO_CHAR);
+            act("$1n makes a divinely inspired $2t!", A_ALWAYS, att, text, nullptr, TO_ROOM);
             break;
       }
    }
    else if(roll <= -100)
    {
-      act("You fumble!", A_ALWAYS, att, text, 0, TO_CHAR);
-      act("$1n fumbles!", A_ALWAYS, att, text, 0, TO_ROOM);
+      act("You fumble!", A_ALWAYS, att, text, nullptr, TO_CHAR);
+      act("$1n fumbles!", A_ALWAYS, att, text, nullptr, TO_ROOM);
    }
 }
 
-int open_ended_roll(int size, int end)
+auto open_ended_roll(int size, int end) -> int
 {
-   int i, s;
+   int i;
+   int s;
 
    s = i = number(1, size);
 
@@ -147,7 +150,7 @@ int open_ended_roll(int size, int end)
 /* Assuming howmuch is > 0 then return the duration number of ticks */
 /* at 30 seconds beat. "100" is perfect spell & gives 5 minutes.    */
 /* Used on for example, hide, bless, raise str, etc.                */
-int skill_duration(int howmuch)
+auto skill_duration(int howmuch) -> int
 {
    return MAX(2, howmuch / 10);
 }
@@ -157,16 +160,18 @@ int skill_duration(int howmuch)
 /* or first aid, etc.                                      */
 /* A result >= 0 means "resisted successfully by n.        */
 /* A result < 0 means "failed resistance by n".            */
-int resistance_skill_check(int att_skill1, int def_skill1, int att_skill2, int def_skill2)
+auto resistance_skill_check(int att_skill1, int def_skill1, int att_skill2, int def_skill2) -> int
 {
    return open100() + att_skill1 + att_skill2 - def_skill1 - def_skill2 - 50;
 }
 
-int weight_size(int lbs)
+auto weight_size(int lbs) -> int
 {
    if(lbs <= 5)
+   {
       return SIZ_TINY;
-   else if(lbs <= 40)
+   }
+   if(lbs <= 40)
       return SIZ_SMALL;
    else if(lbs <= 160)
       return SIZ_MEDIUM;
@@ -176,26 +181,32 @@ int weight_size(int lbs)
       return SIZ_HUGE;
 }
 
-int weapon_fumble(struct unit_data *weapon, int roll)
+auto weapon_fumble(struct unit_data *weapon, int roll) -> int
 {
    assert(IS_OBJ(weapon) && (OBJ_TYPE(weapon) == ITEM_WEAPON));
 
-   return roll <= weapon_chart[OBJ_VALUE(weapon, 0)].fumble;
+   return static_cast<int>(roll <= weapon_chart[OBJ_VALUE(weapon, 0)].fumble);
 }
 
-int object_two_handed(struct unit_data *obj)
+auto object_two_handed(struct unit_data *obj) -> int
 {
    if(OBJ_TYPE(obj) == ITEM_WEAPON)
+   {
       if(wpn_info[OBJ_VALUE(obj, 0)].hands == 2)
+      {
          return TRUE;
+      }
+   }
 
    if(IS_SET(OBJ_FLAGS(obj), OBJ_TWO_HANDS))
+   {
       return TRUE;
+   }
 
    return FALSE;
 }
 
-int chart_damage(int roll, struct damage_chart_element_type *element)
+auto chart_damage(int roll, struct damage_chart_element_type *element) -> int
 {
    if(element->alpha == 0)
    {
@@ -204,13 +215,14 @@ int chart_damage(int roll, struct damage_chart_element_type *element)
    }
 
    if(roll < element->offset)
+   {
       return 0;
-   else
-      return element->basedam + ((roll - element->offset) / element->alpha);
+   }
+   return element->basedam + ((roll - element->offset) / element->alpha);
 }
 
 /* Size is for natural attacks to limit max damage for such */
-int chart_size_damage(int roll, struct damage_chart_element_type *element, int lbs)
+auto chart_size_damage(int roll, struct damage_chart_element_type *element, int lbs) -> int
 {
    if(element->alpha == 0)
    {
@@ -219,41 +231,40 @@ int chart_size_damage(int roll, struct damage_chart_element_type *element, int l
    }
 
    if(roll < element->offset)
-      return 0;
-   else
    {
-      switch(weight_size(lbs))
-      {
-         case SIZ_TINY:
-            roll = MIN(100, roll);
-            break;
-
-         case SIZ_SMALL:
-            roll = MIN(110, roll);
-            break;
-
-         case SIZ_MEDIUM:
-            roll = MIN(130, roll);
-            break;
-
-         case SIZ_LARGE:
-            roll = MIN(150, roll);
-            break;
-      }
-
-      return element->basedam + ((roll - element->offset) / element->alpha);
+      return 0;
    }
+   switch(weight_size(lbs))
+   {
+      case SIZ_TINY:
+         roll = MIN(100, roll);
+         break;
+
+      case SIZ_SMALL:
+         roll = MIN(110, roll);
+         break;
+
+      case SIZ_MEDIUM:
+         roll = MIN(130, roll);
+         break;
+
+      case SIZ_LARGE:
+         roll = MIN(150, roll);
+         break;
+   }
+
+   return element->basedam + ((roll - element->offset) / element->alpha);
 }
 
-int weapon_damage(int roll, int weapon_type, int armour_type)
+auto weapon_damage(int roll, int weapon_type, int armour_type) -> int
 {
-   if(!is_in(weapon_type, WPN_GROUP_MAX, WPN_TREE_MAX))
+   if(is_in(weapon_type, WPN_GROUP_MAX, WPN_TREE_MAX) == 0)
    {
       slog(LOG_ALL, 0, "Illegal weapon type.");
       return 0;
    }
 
-   if(!is_in(armour_type, ARM_CLOTHES, ARM_PLATE))
+   if(is_in(armour_type, ARM_CLOTHES, ARM_PLATE) == 0)
    {
       slog(LOG_ALL, 0, "Illegal armour type.");
       armour_type = ARM_CLOTHES;
@@ -262,15 +273,15 @@ int weapon_damage(int roll, int weapon_type, int armour_type)
    return chart_damage(roll, &(weapon_chart[weapon_type].element[armour_type]));
 }
 
-int natural_damage(int roll, int weapon_type, int armour_type, int lbs)
+auto natural_damage(int roll, int weapon_type, int armour_type, int lbs) -> int
 {
-   if(!is_in(weapon_type, WPN_GROUP_MAX, WPN_TREE_MAX))
+   if(is_in(weapon_type, WPN_GROUP_MAX, WPN_TREE_MAX) == 0)
    {
       slog(LOG_ALL, 0, "Illegal weapon type.");
       return 0;
    }
 
-   if(!is_in(armour_type, ARM_CLOTHES, ARM_PLATE))
+   if(is_in(armour_type, ARM_CLOTHES, ARM_PLATE) == 0)
    {
       slog(LOG_ALL, 0, "Illegal armour type.");
       armour_type = ARM_CLOTHES;
@@ -280,67 +291,69 @@ int natural_damage(int roll, int weapon_type, int armour_type, int lbs)
 }
 
 /* Return [0..200] for skill when defending with a weapon */
-int weapon_defense_skill(struct unit_data *ch, int skill)
+auto weapon_defense_skill(struct unit_data *ch, int skill) -> int
 {
    int max;
 
    if(IS_PC(ch))
    {
       if(TREE_ISLEAF(wpn_tree, skill))
+      {
          max = PC_WPN_SKILL(ch, skill) / 2;
+      }
       else
+      {
          max = PC_WPN_SKILL(ch, skill);
+      }
 
       while(!TREE_ISROOT(wpn_tree, skill))
       {
          skill = TREE_PARENT(wpn_tree, skill);
 
          if(PC_WPN_SKILL(ch, skill) > max)
+         {
             max = PC_WPN_SKILL(ch, skill);
+         }
       }
 
       return max;
    }
-   else /* a NPC */
+   /* a NPC */
+   if(TREE_ISLEAF(wpn_tree, skill))
+      skill = TREE_PARENT(wpn_tree, skill);
+
+   if(TREE_ISROOT(wpn_tree, skill))
+      max = NPC_WPN_SKILL(ch, skill);
+   else
+      max = NPC_WPN_SKILL(ch, skill) / 2;
+
+   while(!TREE_ISROOT(wpn_tree, skill))
    {
-      if(TREE_ISLEAF(wpn_tree, skill))
-         skill = TREE_PARENT(wpn_tree, skill);
+      skill = TREE_PARENT(wpn_tree, skill);
 
-      if(TREE_ISROOT(wpn_tree, skill))
+      if(NPC_WPN_SKILL(ch, skill) > max)
          max = NPC_WPN_SKILL(ch, skill);
-      else
-         max = NPC_WPN_SKILL(ch, skill) / 2;
-
-      while(!TREE_ISROOT(wpn_tree, skill))
-      {
-         skill = TREE_PARENT(wpn_tree, skill);
-
-         if(NPC_WPN_SKILL(ch, skill) > max)
-            max = NPC_WPN_SKILL(ch, skill);
-      }
-
-      return max;
    }
+
+   return max;
 }
 
 /* Return [0..200] for skill when attacking with a weapon */
-int weapon_attack_skill(struct unit_data *ch, int skill)
+auto weapon_attack_skill(struct unit_data *ch, int skill) -> int
 {
    if(IS_PC(ch))
    {
       return PC_WPN_SKILL(ch, skill) == 0 ? -50 : PC_WPN_SKILL(ch, skill);
    }
-   else
-   {
-      if(TREE_ISLEAF(wpn_tree, skill))
-         skill = TREE_PARENT(wpn_tree, skill);
 
-      return NPC_WPN_SKILL(ch, skill);
-   }
+   if(TREE_ISLEAF(wpn_tree, skill))
+      skill = TREE_PARENT(wpn_tree, skill);
+
+   return NPC_WPN_SKILL(ch, skill);
 }
 
 /* Return the armour position of where one person hits another */
-int hit_location(struct unit_data *att, struct unit_data *def)
+auto hit_location(struct unit_data *att, struct unit_data *def) -> int
 {
    /* Maybe do height reductions later */
 
@@ -350,34 +363,35 @@ int hit_location(struct unit_data *att, struct unit_data *def)
 /* Return the effective dex of a person in armour ...             */
 /* Later we will redo this function - as of now it doesn't matter */
 /* what armour you wear                                           */
-int effective_dex(struct unit_data *ch)
+auto effective_dex(struct unit_data *ch) -> int
 {
    return CHAR_DEX(ch);
 }
 
 /* ========================================================================= */
 
-static void race_read(void)
+static void race_read()
 {
-   int   dummy, idx = -1;
+   int   dummy;
+   int   idx = -1;
    char  pTmp[256];
    char *pCh;
    FILE *fl;
    char  tmp[256];
 
    touch_file(str_cc(libdir, RACE_DEFS));
-   if(!(fl = fopen(str_cc(libdir, RACE_DEFS), "rb")))
+   if((fl = fopen(str_cc(libdir, RACE_DEFS), "rb")) == nullptr)
    {
       slog(LOG_ALL, 0, "unable to create lib/" RACE_DEFS);
       exit(0);
    }
 
-   while(!feof(fl))
+   while(feof(fl) == 0)
    {
       char *ms2020 = fgets(pTmp, sizeof(pTmp) - 1, fl);
       str_remspc(pTmp);
 
-      if((pCh = strchr(pTmp, '=')))
+      if((pCh = strchr(pTmp, '=')) != nullptr)
       {
          *pCh = 0;
          pCh  = skip_blanks(pCh + 1);
@@ -385,13 +399,15 @@ static void race_read(void)
          str_lower(pTmp);
       }
 
-      if(pCh == NULL || str_is_empty(pCh))
+      if(pCh == nullptr || (str_is_empty(pCh) != 0u))
+      {
          continue;
+      }
 
       if(strncmp(pTmp, "index", 5) == 0)
       {
          idx = atoi(pCh);
-         if(!str_is_number(pCh) || !is_in(idx, 0, PC_RACE_MAX - 1))
+         if((str_is_number(pCh) == 0u) || (is_in(idx, 0, PC_RACE_MAX - 1) == 0))
          {
             slog(LOG_ALL, 0, "Race boot error: %s", pCh);
             idx = -1;
@@ -400,18 +416,24 @@ static void race_read(void)
       }
 
       if(idx == -1)
+      {
          continue;
+      }
 
       if(strncmp(pTmp, "name", 4) == 0)
       {
-         if(pc_races[idx])
+         if(pc_races[idx] != nullptr)
+         {
             free(pc_races[idx]);
+         }
          pc_races[idx] = str_dup(pCh);
       }
       else if(strncmp(pTmp, "adverb", 6) == 0)
       {
-         if(pc_race_adverbs[idx])
+         if(pc_race_adverbs[idx] != nullptr)
+         {
             free(pc_race_adverbs[idx]);
+         }
          pc_race_adverbs[idx] = str_dup(pCh);
       }
       else if(strncmp(pTmp, "height male", 11) == 0)
@@ -492,7 +514,9 @@ static void race_read(void)
          race_info[idx].age_dice.size = atoi(tmp);
       }
       else
+      {
          slog(LOG_ALL, 0, "Race boot unknown string: %s", pTmp);
+      }
    }
 
    fclose(fl);
@@ -501,7 +525,7 @@ static void race_read(void)
 struct diltemplate *playerinit_tmpl;
 struct diltemplate *nanny_dil_tmpl;
 
-static void race_init(void)
+static void race_init()
 {
    int i;
 
@@ -509,39 +533,43 @@ static void race_init(void)
    {
       memset(&race_info[i], 0, sizeof(struct race_info_type));
 
-      pc_races[i]        = NULL;
-      pc_race_adverbs[i] = NULL;
+      pc_races[i]        = nullptr;
+      pc_race_adverbs[i] = nullptr;
    }
 
-   pc_races[PC_RACE_MAX]        = NULL;
-   pc_race_adverbs[PC_RACE_MAX] = NULL;
+   pc_races[PC_RACE_MAX]        = nullptr;
+   pc_race_adverbs[PC_RACE_MAX] = nullptr;
 
    playerinit_tmpl = find_dil_template("playerinit@basis");
-   if(playerinit_tmpl == NULL)
+   if(playerinit_tmpl == nullptr)
+   {
       slog(LOG_ALL, 0, "No 'playerinit@basis' DIL template.");
+   }
    else
    {
       if(playerinit_tmpl->argc != 0)
       {
          slog(LOG_ALL, 0, "playerinit@basis(); not defined correctly.");
-         playerinit_tmpl = NULL;
+         playerinit_tmpl = nullptr;
       }
    }
 
    nanny_dil_tmpl = find_dil_template("nanny@basis");
-   if(nanny_dil_tmpl == NULL)
+   if(nanny_dil_tmpl == nullptr)
+   {
       slog(LOG_ALL, 0, "No 'nanny@basis' DIL template.");
+   }
    else
    {
       if((nanny_dil_tmpl->argc != 1) || (nanny_dil_tmpl->argt[0] != DILV_SP))
       {
          slog(LOG_ALL, 0, "nanny@basis(string); not defined correctly.");
-         nanny_dil_tmpl = NULL;
+         nanny_dil_tmpl = nullptr;
       }
    }
 }
 
-void boot_race(void)
+void boot_race()
 {
    race_init();
    race_read();
@@ -549,26 +577,27 @@ void boot_race(void)
 
 /* ========================================================================= */
 
-static void ability_read(void)
+static void ability_read()
 {
-   int   dummy, idx = -1;
+   int   dummy;
+   int   idx = -1;
    char  pTmp[256];
    char *pCh;
    FILE *fl;
 
    touch_file(str_cc(libdir, ABILITY_DEFS));
-   if(!(fl = fopen(str_cc(libdir, ABILITY_DEFS), "rb")))
+   if((fl = fopen(str_cc(libdir, ABILITY_DEFS), "rb")) == nullptr)
    {
       slog(LOG_ALL, 0, "unable to create lib/" ABILITY_DEFS);
       exit(0);
    }
 
-   while(!feof(fl))
+   while(feof(fl) == 0)
    {
       char *ms2020 = fgets(pTmp, sizeof(pTmp) - 1, fl);
       str_remspc(pTmp);
 
-      if((pCh = strchr(pTmp, '=')))
+      if((pCh = strchr(pTmp, '=')) != nullptr)
       {
          *pCh = 0;
          pCh  = skip_blanks(pCh + 1);
@@ -578,13 +607,15 @@ static void ability_read(void)
       str_lower(pTmp);
       strip_trailing_blanks(pTmp);
 
-      if(pCh == NULL || str_is_empty(pCh))
+      if(pCh == nullptr || (str_is_empty(pCh) != 0u))
+      {
          continue;
+      }
 
       if(strncmp(pTmp, "index", 5) == 0)
       {
          idx = atoi(pCh);
-         if(!str_is_number(pCh) || !is_in(idx, 0, ABIL_TREE_MAX - 1))
+         if((str_is_number(pCh) == 0u) || (is_in(idx, 0, ABIL_TREE_MAX - 1) == 0))
          {
             slog(LOG_ALL, 0, "Ability boot error: %s", pCh);
             idx = -1;
@@ -593,35 +624,47 @@ static void ability_read(void)
       }
 
       if(idx == -1)
+      {
          continue;
+      }
 
       if(strncmp(pTmp, "name", 4) == 0)
       {
-         if(abil_text[idx])
+         if(abil_text[idx] != nullptr)
+         {
             free(abil_text[idx]);
+         }
          abil_text[idx] = str_dup(pCh);
       }
       else if(strncmp(pTmp, "race ", 5) == 0)
       {
          dummy = atoi(pCh);
-         if(!is_in(dummy, -3, +3))
+         if(is_in(dummy, -3, +3) == 0)
+         {
             continue;
+         }
 
          int ridx = search_block(pTmp + 5, pc_races, TRUE);
 
          if(ridx == -1)
+         {
             slog(LOG_ALL, 0, "Abilities: Illegal race in: %s", pTmp);
+         }
          else
+         {
             racial_ability[idx][ridx] = dummy;
+         }
       }
       else
+      {
          slog(LOG_ALL, 0, "Ability boot unknown string: %s", pTmp);
+      }
    }
 
    fclose(fl);
 }
 
-static void ability_init(void)
+static void ability_init()
 {
    int i;
 
@@ -629,18 +672,20 @@ static void ability_init(void)
    {
       abil_tree[i].parent = i;
       abil_tree[i].isleaf = TRUE;
-      abil_text[i]        = NULL;
+      abil_text[i]        = nullptr;
 
       for(int j = 0; j < PC_RACE_MAX; j++)
+      {
          racial_ability[i][j] = 0;
+      }
    }
 
    abil_tree[ABIL_TREE_MAX].parent = -1;
    abil_tree[ABIL_TREE_MAX].isleaf = FALSE;
-   abil_text[ABIL_TREE_MAX]        = NULL;
+   abil_text[ABIL_TREE_MAX]        = nullptr;
 }
 
-void boot_ability(void)
+void boot_ability()
 {
    ability_init();
    ability_read();
@@ -648,26 +693,27 @@ void boot_ability(void)
 
 /* ========================================================================= */
 
-static void weapon_read(void)
+static void weapon_read()
 {
-   int   dummy, idx = -1;
+   int   dummy;
+   int   idx = -1;
    char  pTmp[256];
    char *pCh;
    FILE *fl;
 
    touch_file(str_cc(libdir, WEAPON_DEFS));
-   if(!(fl = fopen(str_cc(libdir, WEAPON_DEFS), "rb")))
+   if((fl = fopen(str_cc(libdir, WEAPON_DEFS), "rb")) == nullptr)
    {
       slog(LOG_ALL, 0, "unable to create lib file");
       exit(0);
    }
 
-   while(!feof(fl))
+   while(feof(fl) == 0)
    {
       char *ms2020 = fgets(pTmp, sizeof(pTmp) - 1, fl);
       str_remspc(pTmp);
 
-      if((pCh = strchr(pTmp, '=')))
+      if((pCh = strchr(pTmp, '=')) != nullptr)
       {
          *pCh = 0;
          pCh  = skip_blanks(pCh + 1);
@@ -677,13 +723,15 @@ static void weapon_read(void)
       str_lower(pTmp);
       strip_trailing_blanks(pTmp);
 
-      if(pCh == NULL || str_is_empty(pCh))
+      if(pCh == nullptr || (str_is_empty(pCh) != 0u))
+      {
          continue;
+      }
 
       if(strncmp(pTmp, "index", 5) == 0)
       {
          idx = atoi(pCh);
-         if(!str_is_number(pCh) || !is_in(idx, WPN_ROOT, WPN_TREE_MAX - 1))
+         if((str_is_number(pCh) == 0u) || (is_in(idx, WPN_ROOT, WPN_TREE_MAX - 1) == 0))
          {
             slog(LOG_ALL, 0, "Weapon boot error: %s", pCh);
             idx = -1;
@@ -692,56 +740,76 @@ static void weapon_read(void)
       }
 
       if(idx == -1)
+      {
          continue;
+      }
 
       if(strncmp(pTmp, "name", 4) == 0)
       {
-         if(wpn_text[idx])
+         if(wpn_text[idx] != nullptr)
+         {
             free(wpn_text[idx]);
+         }
          wpn_text[idx] = str_dup(pCh);
       }
       else if(strncmp(pTmp, "shield", 6) == 0)
       {
          dummy = atoi(pCh);
-         if(is_in(dummy, SHIELD_M_BLOCK, SHIELD_M_USELESS))
+         if(is_in(dummy, SHIELD_M_BLOCK, SHIELD_M_USELESS) != 0)
+         {
             wpn_info[idx].shield = dummy;
+         }
       }
       else if(strncmp(pTmp, "sphere", 6) == 0)
       {
          dummy = atoi(pCh);
-         if(is_in(dummy, WPN_ROOT, WPN_GROUP_MAX - 1))
+         if(is_in(dummy, WPN_ROOT, WPN_GROUP_MAX - 1) != 0)
+         {
             wpn_tree[idx].parent = dummy;
+         }
       }
       else if(strncmp(pTmp, "race ", 5) == 0)
       {
          dummy = atoi(pCh);
-         if(!is_in(dummy, -3, +3))
+         if(is_in(dummy, -3, +3) == 0)
+         {
             continue;
+         }
 
          int ridx = search_block(pTmp + 5, pc_races, TRUE);
 
          if(ridx == -1)
+         {
             slog(LOG_ALL, 0, "Weapons: Illegal race in: %s", pTmp);
+         }
          else
+         {
             racial_weapons[idx][ridx] = dummy;
+         }
       }
       else if(strncmp(pTmp, "fumble", 6) == 0)
       {
          dummy = atoi(pCh);
-         if(is_in(dummy, 0, 99))
+         if(is_in(dummy, 0, 99) != 0)
+         {
             weapon_chart[idx].fumble = dummy;
+         }
       }
       else if(strncmp(pTmp, "hands", 5) == 0)
       {
          dummy = atoi(pCh);
-         if(is_in(dummy, 1, 2))
+         if(is_in(dummy, 1, 2) != 0)
+         {
             wpn_info[idx].hands = dummy;
+         }
       }
       else if(strncmp(pTmp, "speed", 5) == 0)
       {
          dummy = atoi(pCh);
-         if(is_in(dummy, 0, 12))
+         if(is_in(dummy, 0, 12) != 0)
+         {
             wpn_info[idx].speed = dummy;
+         }
       }
       else if(strncmp(pTmp, "type", 4) == 0)
       {
@@ -757,7 +825,9 @@ static void weapon_read(void)
       else if(strncmp(pTmp, "attack ", 7) == 0)
       {
          char tmp[256];
-         int  i1, i2, i3;
+         int  i1;
+         int  i2;
+         int  i3;
          int  idx2 = -1;
 
          pCh = str_next_word(pCh, tmp);
@@ -774,15 +844,25 @@ static void weapon_read(void)
          }
 
          if(strncmp(pTmp + 7, "clothes", 7) == 0)
+         {
             idx2 = ARM_CLOTHES;
+         }
          else if(strncmp(pTmp + 7, "sleather", 8) == 0)
+         {
             idx2 = ARM_LEATHER;
+         }
          else if(strncmp(pTmp + 7, "hleather", 8) == 0)
+         {
             idx2 = ARM_HLEATHER;
+         }
          else if(strncmp(pTmp + 7, "chain", 5) == 0)
+         {
             idx2 = ARM_CHAIN;
+         }
          else if(strncmp(pTmp + 7, "plate", 5) == 0)
+         {
             idx2 = ARM_PLATE;
+         }
 
          if(idx2 != -1)
          {
@@ -792,24 +872,26 @@ static void weapon_read(void)
          }
       }
       else
+      {
          slog(LOG_ALL, 0, "Weapon boot unknown string: %s", pTmp);
+      }
    }
 
    fclose(fl);
 }
 
-static void weapon_init(void)
+static void weapon_init()
 {
    int i;
 
    for(i = 0; i < WPN_TREE_MAX; i++)
    {
       weapon_chart[i].fumble = 0;
-      for(int j = 0; j < 5; j++)
+      for(auto &j : weapon_chart[i].element)
       {
-         weapon_chart[i].element[j].offset  = 100;
-         weapon_chart[i].element[j].basedam = 0;
-         weapon_chart[i].element[j].alpha   = 100;
+         j.offset  = 100;
+         j.basedam = 0;
+         j.alpha   = 100;
       }
 
       wpn_info[i].hands  = 1;
@@ -820,23 +902,29 @@ static void weapon_init(void)
       wpn_tree[i].parent = WPN_ROOT;
 
       if(i < WPN_GROUP_MAX)
+      {
          wpn_tree[i].isleaf = FALSE;
+      }
       else
+      {
          wpn_tree[i].isleaf = TRUE;
+      }
 
-      wpn_text[i] = NULL;
+      wpn_text[i] = nullptr;
 
       /* Racial weapons are all zero */
       for(int j = 0; j < PC_RACE_MAX; j++)
+      {
          racial_weapons[i][j] = 0;
+      }
    }
 
    wpn_tree[WPN_TREE_MAX].parent = -1;
    wpn_tree[WPN_TREE_MAX].isleaf = FALSE;
-   wpn_text[WPN_TREE_MAX]        = NULL;
+   wpn_text[WPN_TREE_MAX]        = nullptr;
 }
 
-void boot_weapon(void)
+void boot_weapon()
 {
    weapon_init();
    weapon_read();
@@ -844,27 +932,28 @@ void boot_weapon(void)
 
 /* ========================================================================= */
 
-static void skill_read(void)
+static void skill_read()
 {
-   int                  dummy, idx = -1;
+   int                  dummy;
+   int                  idx = -1;
    char                 pTmp[256];
    char                *pCh;
    FILE                *fl;
-   struct command_info *cmdptr = NULL;
+   struct command_info *cmdptr = nullptr;
 
    touch_file(str_cc(libdir, SKILL_DEFS));
-   if(!(fl = fopen(str_cc(libdir, SKILL_DEFS), "rb")))
+   if((fl = fopen(str_cc(libdir, SKILL_DEFS), "rb")) == nullptr)
    {
       slog(LOG_ALL, 0, "unable to read lib/%s", SKILL_DEFS); // MS2020
       exit(0);
    }
 
-   while(!feof(fl))
+   while(feof(fl) == 0)
    {
       char *ms2020 = fgets(pTmp, sizeof(pTmp) - 1, fl);
       str_remspc(pTmp);
 
-      if((pCh = strchr(pTmp, '=')))
+      if((pCh = strchr(pTmp, '=')) != nullptr)
       {
          *pCh = 0;
          pCh  = skip_blanks(pCh + 1);
@@ -874,21 +963,23 @@ static void skill_read(void)
       str_lower(pTmp);
       strip_trailing_blanks(pTmp);
 
-      if(pCh == NULL || str_is_empty(pCh))
+      if(pCh == nullptr || (str_is_empty(pCh) != 0u))
+      {
          continue;
+      }
 
       if(strncmp(pTmp, "index", 5) == 0)
       {
-         cmdptr = NULL;
+         cmdptr = nullptr;
          idx    = atoi(pCh);
-         if(!str_is_number(pCh) || !is_in(idx, 0, SKI_TREE_MAX - 1))
+         if((str_is_number(pCh) == 0u) || (is_in(idx, 0, SKI_TREE_MAX - 1) == 0))
          {
             slog(LOG_ALL, 0, "Skill boot error, no index: %s", pCh);
             idx = -1;
          }
          continue;
       }
-      else if(strncmp(pTmp, "cmdindex", 8) == 0)
+      if(strncmp(pTmp, "cmdindex", 8) == 0)
       {
          int cmdidx = atoi(pCh);
          cmdptr     = NULL;
@@ -919,12 +1010,14 @@ static void skill_read(void)
       {
          if(strncmp(pTmp, "name", 4) == 0)
          {
-            if(ski_text[idx])
+            if(ski_text[idx] != nullptr)
+            {
                free(ski_text[idx]);
+            }
             ski_text[idx] = str_dup(pCh);
             continue;
          }
-         else if(strncmp(pTmp, "race ", 5) == 0)
+         if(strncmp(pTmp, "race ", 5) == 0)
          {
             dummy = atoi(pCh);
             if(!is_in(dummy, -3, +3))
@@ -940,7 +1033,7 @@ static void skill_read(void)
          }
       }
 
-      if(cmdptr == NULL)
+      if(cmdptr == nullptr)
       {
          slog(LOG_ALL, 0, "cmdptr not found for skill after index %d! %s=%s", idx, pTmp, pCh);
          continue;
@@ -948,11 +1041,13 @@ static void skill_read(void)
 
       if(strncmp(pTmp, "command", 7) == 0)
       {
-         if(!str_is_empty(pCh) && strcmp(pCh, cmdptr->cmd_str) != 0)
+         if((str_is_empty(pCh) == 0u) && strcmp(pCh, cmdptr->cmd_str) != 0)
+         {
             cmdptr->cmd_str = str_dup(pCh);
+         }
          continue;
       }
-      else if(strncmp(pTmp, "turns", 5) == 0)
+      if(strncmp(pTmp, "turns", 5) == 0)
       {
          dummy = atoi(pCh);
          if(is_in(dummy, 1, 4 * PULSE_VIOLENCE))
@@ -982,7 +1077,7 @@ static void skill_read(void)
    fclose(fl);
 }
 
-static void skill_init(void)
+static void skill_init()
 {
    int i;
 
@@ -991,19 +1086,21 @@ static void skill_init(void)
       ski_tree[i].parent = i;
       ski_tree[i].isleaf = TRUE;
 
-      ski_text[i] = NULL;
+      ski_text[i] = nullptr;
 
       /* Racial skills are all zero */
       for(int j = 0; j < PC_RACE_MAX; j++)
+      {
          racial_skills[i][j] = 0;
+      }
    }
 
    ski_tree[SKI_TREE_MAX].parent = -1;
    ski_tree[SKI_TREE_MAX].isleaf = FALSE;
-   ski_text[SKI_TREE_MAX]        = NULL;
+   ski_text[SKI_TREE_MAX]        = nullptr;
 }
 
-void boot_skill(void)
+void boot_skill()
 {
    skill_init();
    skill_read();

@@ -26,10 +26,10 @@
 /* Tue Jul 6 1993 HHS: added exchangable lib dir                           */
 /* 28/03/94 seifert: Modified to make more flexible                        */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "affect.h"
 #include "blkfile.h"
@@ -46,7 +46,7 @@
 #include "utility.h"
 #include "utils.h"
 
-int write_unit_string(ubit8 *b, struct unit_data *u);
+auto write_unit_string(ubit8 *b, struct unit_data *u) -> int;
 
 /* *************************************************************************
  * Routines for calculating rent                                           *
@@ -71,31 +71,39 @@ static void subtract_rent(struct unit_data *ch, struct unit_data *item, ubit32 p
 {
    if(price > 0)
    {
-      if(!char_can_afford(ch, price, DEF_CURRENCY))
+      if(char_can_afford(ch, price, DEF_CURRENCY) == 0u)
       {
-         act(COLOUR_ATTN "You couldn't afford to keep $2n." COLOUR_NORMAL, A_ALWAYS, ch, item, 0, TO_CHAR);
+         act(COLOUR_ATTN "You couldn't afford to keep $2n." COLOUR_NORMAL, A_ALWAYS, ch, item, nullptr, TO_CHAR);
          extract_unit(item);
       }
       else
-         money_transfer(ch, NULL, price, DEF_CURRENCY);
+      {
+         money_transfer(ch, nullptr, price, DEF_CURRENCY);
+      }
    }
 }
 
 /* ----------------------------------------------------------------- */
 
-static ubit32 subtract_recurse(struct unit_data *ch, struct unit_data *item, ubit32 seconds,
-                               void (*fptr)(struct unit_data *ch, struct unit_data *obj, ubit32 price))
+static auto subtract_recurse(struct unit_data *ch, struct unit_data *item, ubit32 seconds,
+                             void (*fptr)(struct unit_data *ch, struct unit_data *obj, ubit32 price)) -> ubit32
 {
    ubit32 sum = 0;
 
    if(IS_IMMORTAL(ch))
+   {
       return 0;
+   }
 
-   if(item == NULL)
+   if(item == nullptr)
+   {
       return 0;
+   }
 
    if(!UNIT_MINV(item))
+   {
       sum += subtract_recurse(ch, UNIT_CONTAINS(item), seconds, fptr);
+   }
 
    sum += subtract_recurse(ch, item->next, seconds, fptr);
 
@@ -112,8 +120,10 @@ static ubit32 subtract_recurse(struct unit_data *ch, struct unit_data *item, ubi
          sum += price;
       }
 
-      if(fptr)
+      if(fptr != nullptr)
+      {
          (*fptr)(ch, item, price);
+      }
    }
 
    return sum;
@@ -121,25 +131,29 @@ static ubit32 subtract_recurse(struct unit_data *ch, struct unit_data *item, ubi
 
 /* ----------------------------------------------------------------- */
 
-ubit32 rent_calc(struct unit_data *ch, time_t savetime)
+auto rent_calc(struct unit_data *ch, time_t savetime) -> ubit32
 {
    ubit32 sum = 0;
 
    assert(IS_PC(ch));
 
-   if(CHAR_DESCRIPTOR(ch) == NULL) /* If loading or similar, dont subtract! */
+   if(CHAR_DESCRIPTOR(ch) == nullptr)
+   { /* If loading or similar, dont subtract! */
       return 0;
+   }
 
    if(IS_MORTAL(ch))
    {
-      time_t t = time(0);
+      time_t t = time(nullptr);
 
       if((t > savetime) && (savetime > 0))
       {
          t -= savetime;
 
          if(t > SECS_PER_REAL_MIN * 10)
+         {
             sum = subtract_recurse(ch, UNIT_CONTAINS(ch), t, subtract_rent);
+         }
       }
    }
 
@@ -154,10 +168,14 @@ void do_rent(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
    sum = subtract_recurse(ch, UNIT_CONTAINS(ch), SECS_PER_REAL_DAY, show_items);
 
-   if(!rent_info)
+   if(rent_info == 0)
+   {
       send_to_char("You are charged no rent.\n\r", ch);
+   }
    else
-      act("Your inventory costs $2t per day to rent.", A_ALWAYS, ch, money_string(sum, local_currency(ch), FALSE), NULL, TO_CHAR);
+   {
+      act("Your inventory costs $2t per day to rent.", A_ALWAYS, ch, money_string(sum, local_currency(ch), FALSE), nullptr, TO_CHAR);
+   }
 }
 
 /* *************************************************************************
@@ -196,24 +214,25 @@ static int membuflen = 0, mempos;
 */
 
 /* Global variables */
-struct file_index_type *slime_fi = NULL;
+struct file_index_type *slime_fi = nullptr;
 
 /* save object */
 void enlist(CByteBuffer *pBuf, struct unit_data *unit, int level, int fast)
 {
-   int              len, diflen;
+   int              len;
+   int              diflen;
    struct objheader h;
    char            *buf;
    CByteBuffer      TmpBuf;
 
-   int diff(char *ref, ubit32 reflen, char *obj, int objlen, char *dif, int diflen, ubit32 crc);
+   auto diff(char *ref, ubit32 reflen, char *obj, int objlen, char *dif, int diflen, ubit32 crc)->int;
 
    assert(IS_SET(UNIT_TYPE(unit), UNIT_ST_NPC | UNIT_ST_OBJ));
    assert(!is_destructed(DR_UNIT, unit));
 
    len = write_unit_string(&TmpBuf, unit);
 
-   if(fast || !UNIT_FILE_INDEX(unit))
+   if((fast != 0) || !UNIT_FILE_INDEX(unit))
    {
       h.compressed = 0;
    }
@@ -246,9 +265,13 @@ void enlist(CByteBuffer *pBuf, struct unit_data *unit, int level, int fast)
    h.level = level;
 
    if(IS_OBJ(unit))
+   {
       h.equip = OBJ_EQP_POS(unit);
+   }
    else
+   {
       h.equip = 0;
+   }
 
    h.length = len;
 
@@ -272,9 +295,9 @@ void add_units(CByteBuffer *pBuf, struct unit_data *parent, struct unit_data *un
       return;
    }
 
-   if((tmp_u = UNIT_CONTAINS(unit)))
+   if((tmp_u = UNIT_CONTAINS(unit)) != nullptr)
    {
-      if(IS_OBJ(tmp_u) && (tmp_i = OBJ_EQP_POS(tmp_u)))
+      if(IS_OBJ(tmp_u) && ((tmp_i = OBJ_EQP_POS(tmp_u)) != 0))
       {
          unequip_object(tmp_u);
          OBJ_EQP_POS(tmp_u) = tmp_i;
@@ -285,11 +308,13 @@ void add_units(CByteBuffer *pBuf, struct unit_data *parent, struct unit_data *un
       add_units(pBuf, parent, unit, level, fast);
 
       if(IS_OBJ(tmp_u) || IS_NPC(tmp_u))
+      {
          add_units(pBuf, parent, tmp_u, level + 1, fast);
+      }
 
       unit_to_unit(tmp_u, unit);
 
-      if(IS_OBJ(tmp_u) && tmp_i)
+      if(IS_OBJ(tmp_u) && (tmp_i != 0))
       {
          OBJ_EQP_POS(tmp_u) = 0;
          equip_char(unit, tmp_u, tmp_i);
@@ -297,28 +322,34 @@ void add_units(CByteBuffer *pBuf, struct unit_data *parent, struct unit_data *un
    }
    else /* UNIT CONTAINS NOTHING */
       if((level != 0) && (IS_OBJ(unit) || IS_NPC(unit)) && !IS_SET(UNIT_FLAGS(unit), UNIT_FL_NOSAVE))
+      {
          enlist(pBuf, unit, level, fast);
+      }
 }
 
 void send_saves(struct unit_data *parent, struct unit_data *unit)
 {
    struct unit_data *tmp_u;
 
-   if(!unit)
+   if(unit == nullptr)
+   {
       return;
+   }
 
    send_saves(parent, UNIT_CONTAINS(unit));
    send_saves(parent, unit->next);
 
    if((IS_OBJ(unit) || IS_NPC(unit)) && !IS_SET(UNIT_FLAGS(unit), UNIT_FL_NOSAVE))
+   {
       send_save_to(parent, unit);
+   }
 }
 
-char *ContentsFileName(const char *pName)
+auto ContentsFileName(const char *pName) -> char *
 {
    static char Buf[MAX_INPUT_LENGTH + 1];
 
-   char *PlayerFileName(const char *);
+   auto PlayerFileName(const char *)->char *;
 
    sprintf(Buf, "%s.inv", PlayerFileName(pName));
 
@@ -331,7 +362,7 @@ char *ContentsFileName(const char *pName)
 /* Container = 1 if container should be saved also                    */
 void basic_save_contents(const char *pFileName, struct unit_data *unit, int fast, int bContainer)
 {
-   struct descriptor_data *tmp_descr = NULL;
+   struct descriptor_data *tmp_descr = nullptr;
    FILE                   *pFile;
    char                    TmpName[MAX_INPUT_LENGTH + 1];
 
@@ -341,21 +372,25 @@ void basic_save_contents(const char *pFileName, struct unit_data *unit, int fast
    if(IS_CHAR(unit))
    {
       tmp_descr             = CHAR_DESCRIPTOR(unit);
-      CHAR_DESCRIPTOR(unit) = NULL;
+      CHAR_DESCRIPTOR(unit) = nullptr;
    }
 
    CByteBuffer *pBuf = &g_FileBuffer;
    pBuf->Clear();
 
-   if(bContainer)
+   if(bContainer != 0)
+   {
       send_save_to(unit, unit);
+   }
 
    send_saves(unit, UNIT_CONTAINS(unit));
 
-   add_units(pBuf, unit, unit, bContainer ? 1 : 0, fast);
+   add_units(pBuf, unit, unit, bContainer != 0 ? 1 : 0, fast);
 
    if(IS_CHAR(unit))
+   {
       CHAR_DESCRIPTOR(unit) = tmp_descr;
+   }
 
    if(pBuf->GetLength() > 0)
    {
@@ -377,7 +412,7 @@ void basic_save_contents(const char *pFileName, struct unit_data *unit, int fast
 /* if fast == 1 or compressed if fast == 0. Only OBJ's and NPC's will */
 /* be saved!                                                          */
 /* Container = 1 if container should be saved also                    */
-int save_contents(const char *pFileName, struct unit_data *unit, int fast, int bContainer)
+auto save_contents(const char *pFileName, struct unit_data *unit, int fast, int bContainer) -> int
 {
    char name[MAX_INPUT_LENGTH + 1];
 
@@ -394,45 +429,51 @@ int save_contents(const char *pFileName, struct unit_data *unit, int fast, int b
 
    basic_save_contents(name, unit, fast, bContainer);
 
-   return subtract_recurse(unit, UNIT_CONTAINS(unit), SECS_PER_REAL_DAY, NULL);
+   return subtract_recurse(unit, UNIT_CONTAINS(unit), SECS_PER_REAL_DAY, nullptr);
 }
 
 /* From the block_file 'bf' at index 'blk_idx' load the objects    */
 /* and place them inside 'unit' by unit_to_unit and possibly equip */
 /* Return the top level unit loaded                                */
 
-struct unit_data *base_load_contents(const char *pFileName, const struct unit_data *unit)
+auto base_load_contents(const char *pFileName, const struct unit_data *unit) -> struct unit_data *
 {
    struct objheader        h;
    struct file_index_type *fi;
-   struct unit_data       *pnew, *pstack[25];
-   int                     len, init;
-   int                     frame, plen, n;
-   struct descriptor_data *tmp_descr = NULL;
+   struct unit_data       *pnew;
+   struct unit_data       *pstack[25];
+   int                     len;
+   int                     init;
+   int                     frame;
+   int                     plen;
+   int                     n;
+   struct descriptor_data *tmp_descr = nullptr;
    int                     equip_ok;
    FILE                   *pFile;
-   struct unit_data       *topu = NULL;
+   struct unit_data       *topu = nullptr;
 
    CByteBuffer InvBuf;
    InvBuf.Clear();
 
    extern struct unit_data *void_room;
 
-   int is_slimed(struct file_index_type * sp);
-   int patch(char *ref, ubit32 reflen, char *dif, int diflen, char *res, int reslen, ubit32 crc);
+   auto is_slimed(struct file_index_type * sp)->int;
+   auto patch(char *ref, ubit32 reflen, char *dif, int diflen, char *res, int reslen, ubit32 crc)->int;
 
-   assert(slime_fi != NULL);
+   assert(slime_fi != nullptr);
 
    pFile = fopen(pFileName, "rb");
 
-   if(pFile == NULL)
-      return NULL;
+   if(pFile == nullptr)
+   {
+      return nullptr;
+   }
 
    len = fsize(pFile);
    if(len == 0)
    {
       fclose(pFile);
-      return NULL;
+      return nullptr;
    }
 
    n = InvBuf.FileRead(pFile, len);
@@ -441,30 +482,32 @@ struct unit_data *base_load_contents(const char *pFileName, const struct unit_da
    if(n != len)
    {
       slog(LOG_ALL, 0, "Corrupted inventory: %s", pFileName);
-      return NULL;
+      return nullptr;
    }
 
    frame         = 0;
    pstack[frame] = (struct unit_data *)unit;
 
-   if(unit && IS_CHAR(unit))
+   if((unit != nullptr) && IS_CHAR(unit))
    {
       tmp_descr             = CHAR_DESCRIPTOR(unit);
-      CHAR_DESCRIPTOR(unit) = NULL;
+      CHAR_DESCRIPTOR(unit) = nullptr;
    }
 
    for(init = TRUE; InvBuf.GetReadPosition() < InvBuf.GetLength();)
    {
-      if(InvBuf.Read((ubit8 *)&h, sizeof(h)))
+      if(InvBuf.Read((ubit8 *)&h, sizeof(h)) != 0)
+      {
          break;
+      }
 
       fi = find_file_index(h.zone, h.unit);
 
-      pnew = NULL;
+      pnew = nullptr;
 
       equip_ok = TRUE;
 
-      if(h.compressed)
+      if(h.compressed != 0u)
       {
          assert(FALSE);
 
@@ -513,7 +556,7 @@ struct unit_data *base_load_contents(const char *pFileName, const struct unit_da
       }
       else /* uncompressed */
       {
-         if((fi == NULL) || is_slimed(fi))
+         if((fi == nullptr) || (is_slimed(fi) != 0))
          {
             pnew = read_unit(slime_fi);
             InvBuf.Skip(h.length);
@@ -521,7 +564,7 @@ struct unit_data *base_load_contents(const char *pFileName, const struct unit_da
          else
          {
             pnew = read_unit_string(&InvBuf, h.type, h.length, TRUE, str_cc(fi->name, fi->zone->name));
-            if(g_nCorrupt)
+            if(g_nCorrupt != 0)
             {
                slog(LOG_ALL, 0, "Inventory UNIT corrupt!");
                break;
@@ -532,18 +575,24 @@ struct unit_data *base_load_contents(const char *pFileName, const struct unit_da
          }
       }
 
-      if(init)
-         topu = pnew;
-
-      if(pstack[frame] == NULL)
+      if(init != 0)
       {
-         if(UNIT_IN(pnew))
-            pstack[frame] = UNIT_IN(pnew);
-         else
-            pstack[frame] = void_room;
+         topu = pnew;
       }
 
-      UNIT_IN(pnew) = NULL;
+      if(pstack[frame] == nullptr)
+      {
+         if(UNIT_IN(pnew))
+         {
+            pstack[frame] = UNIT_IN(pnew);
+         }
+         else
+         {
+            pstack[frame] = void_room;
+         }
+      }
+
+      UNIT_IN(pnew) = nullptr;
 
       if(h.level > frame)
       {
@@ -557,13 +606,15 @@ struct unit_data *base_load_contents(const char *pFileName, const struct unit_da
       }
 
       /* IS_CHAR() needed, since a potential char may have been slimed! */
-      if(h.equip && equip_ok && IS_CHAR(UNIT_IN(pnew)))
+      if((h.equip != 0u) && (equip_ok != 0) && IS_CHAR(UNIT_IN(pnew)))
+      {
          equip_char(UNIT_IN(pnew), pnew, h.equip);
+      }
 
       pstack[frame] = pnew;
    }
 
-   if(unit && IS_CHAR(unit))
+   if((unit != nullptr) && IS_CHAR(unit))
    {
       CHAR_DESCRIPTOR(unit) = tmp_descr;
    }
@@ -579,7 +630,7 @@ void load_contents(const char *pFileName, struct unit_data *unit)
    base_load_contents(ContentsFileName(pFileName), unit);
 }
 
-void reception_boot(void)
+void reception_boot()
 {
    slime_fi = find_file_index("basis", "slime");
    assert(slime_fi);
@@ -590,10 +641,14 @@ void reception_boot(void)
  ************************************************************************* */
 
 /* Create difference-data (patch can reconstruct obj based on ref & dif) */
-int diff(char *ref, ubit32 reflen, char *obj, int objlen, char *dif, int diflen, ubit32 crc)
+auto diff(char *ref, ubit32 reflen, char *obj, int objlen, char *dif, int diflen, ubit32 crc) -> int
 {
-   int             dstart, dend, len, rlen;
-   char           *oend, *rend;
+   int             dstart;
+   int             dend;
+   int             len;
+   int             rlen;
+   char           *oend;
+   char           *rend;
    struct diffhead head;
 
    rend = ref + reflen - 1;
@@ -602,19 +657,28 @@ int diff(char *ref, ubit32 reflen, char *obj, int objlen, char *dif, int diflen,
    rlen = reflen;
 
    /* find start of difference */
-   for(dstart = 0; len && rlen; dstart++, len--, rlen--)
+   for(dstart = 0; (len != 0) && (rlen != 0); dstart++, len--, rlen--)
+   {
       if(*(ref + dstart) != *(obj + dstart))
+      {
          break;
+      }
+   }
 
    /* find end of difference */
-   for(dend = 0; len && rlen; dend++, len--, rlen--)
+   for(dend = 0; (len != 0) && (rlen != 0); dend++, len--, rlen--)
+   {
       if(*(rend - dend) != *(oend - dend))
+      {
          break;
+      }
+   }
 
    if((int)(sizeof(head) + len) > diflen)
+   {
       return -1;
-   else
-      diflen = sizeof(head) + len;
+   }
+   diflen     = sizeof(head) + len;
    head.start = dstart;
 
    head.end    = reflen - dend;
@@ -623,38 +687,54 @@ int diff(char *ref, ubit32 reflen, char *obj, int objlen, char *dif, int diflen,
 
    memcpy(dif, (char *)&head, sizeof(head));
    dif += sizeof(head);
-   if(len)
+   if(len != 0)
+   {
       memcpy(dif, (char *)obj + dstart, len);
+   }
    return (diflen);
 }
 
 /* reconstruct obj based on ref and diff */
-int patch(char *ref, ubit32 reflen, char *dif, int diflen, char *res, int reslen, ubit32 crc)
+auto patch(char *ref, ubit32 reflen, char *dif, int diflen, char *res, int reslen, ubit32 crc) -> int
 {
    struct diffhead head;
 
    if(diflen < (int)sizeof(head))
+   {
       return -1;
+   }
 
    memcpy((char *)&head, dif, sizeof(head));
    dif += sizeof(head);
    diflen -= sizeof(head);
 
    if((int)(head.start + diflen + reflen - head.end) > reslen)
+   {
       return -1;
+   }
 
    if(head.reflen != reflen)
+   {
       return -1;
+   }
 
    if(head.crc != crc)
+   {
       return -1;
+   }
 
-   if(head.start)
+   if(head.start != 0)
+   {
       memcpy(res, ref, head.start);
-   if(diflen)
+   }
+   if(diflen != 0)
+   {
       memcpy(res + head.start, dif, diflen);
+   }
    if(head.end < (int)reflen)
+   {
       memcpy(res + head.start + diflen, ref + head.end, reflen - head.end);
+   }
 
    return (head.start + diflen + reflen - head.end);
 }
@@ -664,7 +744,9 @@ int patch(char *ref, ubit32 reflen, char *dif, int diflen, char *res, int reslen
 void store_unit(struct unit_data *u)
 {
    if(!UNIT_FILE_INDEX(u))
+   {
       return;
+   }
 
    FILE *f;
    char  buf[MAX_INPUT_LENGTH + 1];
@@ -673,7 +755,7 @@ void store_unit(struct unit_data *u)
 
    f = fopen(buf, "wb");
 
-   if(f == NULL)
+   if(f == nullptr)
    {
       slog(LOG_ALL, 0, "Unable to store: %s", buf);
       return;
@@ -693,14 +775,16 @@ void store_unit(struct unit_data *u)
    fclose(f);
 }
 
-struct unit_data *restore_unit(char *zonename, char *unitname)
+auto restore_unit(char *zonename, char *unitname) -> struct unit_data *
 {
    struct file_index_type *fi   = find_file_index(zonename, unitname);
    CByteBuffer            *pBuf = &g_FileBuffer;
    pBuf->Clear();
 
-   if(fi == NULL)
-      return NULL;
+   if(fi == nullptr)
+   {
+      return nullptr;
+   }
 
    FILE *f;
    char  buf[MAX_INPUT_LENGTH + 1];
@@ -709,10 +793,10 @@ struct unit_data *restore_unit(char *zonename, char *unitname)
 
    f = fopen(buf, "rb");
 
-   if(f == NULL)
+   if(f == nullptr)
    {
       slog(LOG_ALL, 0, "Unable to restore: %s", buf);
-      return NULL;
+      return nullptr;
    }
 
    int len = fsize(f);
@@ -724,7 +808,7 @@ struct unit_data *restore_unit(char *zonename, char *unitname)
    if(n == 0)
    {
       slog(LOG_ALL, 0, "Unable to restore, file empty: %s", buf);
-      return NULL;
+      return nullptr;
    }
 
    ubit8 nType;
@@ -735,20 +819,22 @@ struct unit_data *restore_unit(char *zonename, char *unitname)
    strcpy(mbuf, "RESTORE");
    struct unit_data *u = read_unit_string(pBuf, nType, len - 1, TRUE, mbuf);
 
-   if(u == NULL)
+   if(u == nullptr)
    {
       slog(LOG_ALL, 0, "Unable to restore, corrupt: %s", buf);
-      return NULL;
+      return nullptr;
    }
 
-   UNIT_IN(u)         = NULL;
+   UNIT_IN(u)         = nullptr;
    UNIT_FILE_INDEX(u) = fi;
    fi->no_in_mem++;
    insert_in_unit_list(u); /* Put unit into the unit_list      */
    apply_affect(u);        /* Set all affects that modify      */
 
    if(IS_MONEY(u))
+   {
       set_money(u, MONEY_AMOUNT(u));
+   }
 
    return u;
 }

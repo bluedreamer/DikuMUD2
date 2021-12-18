@@ -27,11 +27,11 @@
 /* 29/08/93 jubal  : Uses trade price                                      */
 /* 14-08-94 gnort  : finalized object money (sheesh, two years! ;-) )      */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "act.h"
 #include "comm.h"
@@ -39,7 +39,6 @@
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
 #include "money.h"
 #include "skills.h"
 #include "spec_assign.h"
@@ -48,6 +47,7 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
 struct shop_data
 {
@@ -68,9 +68,10 @@ struct shop_data
    int                      currencycount; /* Number of currencies.                */
 };
 
-amount_t obj_trade_price(struct unit_data *u)
+auto obj_trade_price(struct unit_data *u) -> amount_t
 {
-   double d, f;
+   double d;
+   double f;
 
    d = OBJ_PRICE(u);
 
@@ -87,27 +88,29 @@ amount_t obj_trade_price(struct unit_data *u)
    return (amount_t)d;
 }
 
-static bool is_ok(struct unit_data *keeper, struct unit_data *ch, struct shop_data *sd)
+static auto is_ok(struct unit_data *keeper, struct unit_data *ch, struct shop_data *sd) -> bool
 {
    char                  buf[512];
    struct time_info_data time_info;
 
-   struct time_info_data mud_date(time_t t);
+   auto mud_date(time_t t)->struct time_info_data;
 
-   if(IS_GOD(ch)) /* Gods can always shop :) */
+   if(IS_GOD(ch))
+   { /* Gods can always shop :) */
       return TRUE;
+   }
 
-   time_info = mud_date(time(0));
+   time_info = mud_date(time(nullptr));
 
    if(!CHAR_CAN_SEE(keeper, ch))
    {
-      act("$1n says, 'I don't trade with someone I can't see!'", A_SOMEONE, keeper, 0, 0, TO_ROOM);
+      act("$1n says, 'I don't trade with someone I can't see!'", A_SOMEONE, keeper, nullptr, nullptr, TO_ROOM);
       return FALSE;
    }
 
-   if(!is_in(time_info.hours, sd->time1[0], sd->time1[1]) && !is_in(time_info.hours, sd->time2[0], sd->time2[1]))
+   if((is_in(time_info.hours, sd->time1[0], sd->time1[1]) == 0) && (is_in(time_info.hours, sd->time2[0], sd->time2[1]) == 0))
    {
-      act("$1n says, 'Come back later $3n, we're closed.'", A_SOMEONE, keeper, 0, ch, TO_ROOM);
+      act("$1n says, 'Come back later $3n, we're closed.'", A_SOMEONE, keeper, nullptr, ch, TO_ROOM);
       sprintf(buf,
               "We are open from %d to %d, and %d to %d - "
               "it is now %d o'clock.",
@@ -120,35 +123,49 @@ static bool is_ok(struct unit_data *keeper, struct unit_data *ch, struct shop_da
    return TRUE;
 }
 
-static bool trade_with(struct unit_data *item, struct shop_data *sd)
+static auto trade_with(struct unit_data *item, struct shop_data *sd) -> bool
 {
    int i;
 
    if(!IS_OBJ(item))
+   {
       return FALSE;
+   }
 
    if(obj_trade_price(item) < 1)
+   {
       return FALSE;
+   }
 
    for(i = 0; i < sd->typecount; i++)
+   {
       if(sd->types[i] == OBJ_TYPE(item))
+      {
          return TRUE;
+      }
+   }
 
    return FALSE;
 }
 
-static bool shop_producing(struct unit_data *item, struct shop_data *sd)
+static auto shop_producing(struct unit_data *item, struct shop_data *sd) -> bool
 {
    int counter = 0;
 
    if(!UNIT_FILE_INDEX(item))
-      return FALSE;
-
-   if(sd->prod)
    {
-      while(sd->prod[counter])
+      return FALSE;
+   }
+
+   if(sd->prod != nullptr)
+   {
+      while(sd->prod[counter] != nullptr)
+      {
          if(sd->prod[counter++] == UNIT_FILE_INDEX(item))
+         {
             return TRUE;
+         }
+      }
    }
    return FALSE;
 }
@@ -164,40 +181,44 @@ static void shopping_buy(char *arg, struct unit_data *ch, struct unit_data *keep
    int               refit    = FALSE;
 
    if(!is_ok(keeper, ch, sd))
-      return;
-
-   if(str_is_empty(arg))
    {
-      act("$1n asks you, 'What do you wish to buy?'", A_SOMEONE, keeper, 0, ch, TO_VICT);
       return;
    }
 
-   if((temp1 = find_unit(keeper, &arg, 0, FIND_UNIT_INVEN)) == NULL || IS_MONEY(temp1))
+   if(str_is_empty(arg) != 0u)
    {
-      act(sd->no_such_item1, A_SOMEONE, keeper, 0, ch, TO_ROOM);
+      act("$1n asks you, 'What do you wish to buy?'", A_SOMEONE, keeper, nullptr, ch, TO_VICT);
+      return;
+   }
+
+   if((temp1 = find_unit(keeper, &arg, nullptr, FIND_UNIT_INVEN)) == nullptr || IS_MONEY(temp1))
+   {
+      act(sd->no_such_item1, A_SOMEONE, keeper, nullptr, ch, TO_ROOM);
       return;
    }
 
    if(!IS_OBJ(temp1))
    {
-      act("$1n says, 'I only trade objects!'", A_SOMEONE, keeper, 0, ch, TO_ROOM);
+      act("$1n says, 'I only trade objects!'", A_SOMEONE, keeper, nullptr, ch, TO_ROOM);
       return;
    }
 
    if(obj_trade_price(temp1) <= 0)
    {
-      act(sd->no_such_item1, A_SOMEONE, keeper, 0, ch, TO_ROOM);
+      act(sd->no_such_item1, A_SOMEONE, keeper, nullptr, ch, TO_ROOM);
       extract_unit(temp1);
       return;
    }
 
    for(i = 0; !can_pay && (i < sd->currencycount); i++)
+   {
       if(sd->currencies[i] != -1)
       {
          currency = sd->currencies[i];
          price    = money_round_up((int)(obj_trade_price(temp1) * sd->profit_buy), currency, 2);
-         can_pay  = char_can_afford(ch, price, currency);
+         can_pay  = (char_can_afford(ch, price, currency) != 0u);
       }
+   }
 
    if(!can_pay && CHAR_LEVEL(ch) < GOD_LEVEL)
    {
@@ -205,48 +226,56 @@ static void shopping_buy(char *arg, struct unit_data *ch, struct unit_data *keep
       return;
    }
 
-   if(!char_can_carry_n(ch, 1))
+   if(char_can_carry_n(ch, 1) == 0)
    {
-      act("$2n : You can't carry that many items.", A_SOMEONE, ch, temp1, 0, TO_CHAR);
+      act("$2n : You can't carry that many items.", A_SOMEONE, ch, temp1, nullptr, TO_CHAR);
       return;
    }
 
-   if(!char_can_carry_w(ch, UNIT_WEIGHT(temp1)))
+   if(char_can_carry_w(ch, UNIT_WEIGHT(temp1)) == 0)
    {
-      act("$2n : You can't carry that much weight.", A_SOMEONE, ch, temp1, 0, TO_CHAR);
+      act("$2n : You can't carry that much weight.", A_SOMEONE, ch, temp1, nullptr, TO_CHAR);
       return;
    }
 
-   act("$1n buys $2n.", A_SOMEONE, ch, temp1, 0, TO_ROOM);
+   act("$1n buys $2n.", A_SOMEONE, ch, temp1, nullptr, TO_ROOM);
 
    sprintf(buf, sd->message_buy, money_string(price, currency, TRUE));
 
    if(shop_producing(temp1, sd))
    {
-      if(obj_wear_size(ch, temp1))
+      if(obj_wear_size(ch, temp1) != nullptr)
       {
-         act("$1n says, 'A perfect fit, $3n!'", A_SOMEONE, keeper, 0, ch, TO_ROOM);
+         act("$1n says, 'A perfect fit, $3n!'", A_SOMEONE, keeper, nullptr, ch, TO_ROOM);
          refit = TRUE;
       }
    }
 
    act(buf, A_SOMEONE, keeper, temp1, ch, TO_VICT);
 
-   act("You now have $2n.", A_SOMEONE, ch, temp1, 0, TO_CHAR);
+   act("You now have $2n.", A_SOMEONE, ch, temp1, nullptr, TO_CHAR);
 
    if(!IS_GOD(ch))
+   {
       money_transfer(ch, keeper, price, currency);
+   }
 
    /* Test if producing shop ! */
    if(shop_producing(temp1, sd))
+   {
       temp1 = read_unit(UNIT_FILE_INDEX(temp1));
+   }
    else
+   {
       unit_from_unit(temp1);
+   }
 
    unit_to_unit(temp1, ch);
 
-   if(refit)
+   if(refit != 0)
+   {
       UNIT_SIZE(temp1) = UNIT_SIZE(ch);
+   }
 }
 
 static void shopping_sell(char *arg, struct unit_data *ch, struct unit_data *keeper, struct shop_data *sd)
@@ -255,27 +284,32 @@ static void shopping_sell(char *arg, struct unit_data *ch, struct unit_data *kee
    amount_t          price    = 0;
    bool              can_pay  = FALSE;
    int               i        = 0;
-   char              buf[MAX_STRING_LENGTH], *tmparg;
+   char              buf[MAX_STRING_LENGTH];
+   char             *tmparg;
    struct unit_data *temp1;
 
    if(!is_ok(keeper, ch, sd))
-      return;
-
-   if(str_is_empty(arg))
    {
-      act("$1n says, 'What do you want to sell $3n?'", A_SOMEONE, keeper, 0, ch, TO_ROOM);
+      return;
+   }
+
+   if(str_is_empty(arg) != 0u)
+   {
+      act("$1n says, 'What do you want to sell $3n?'", A_SOMEONE, keeper, nullptr, ch, TO_ROOM);
       return;
    }
 
    tmparg = arg;
-   if((temp1 = find_unit(ch, &tmparg, 0, FIND_UNIT_INVEN)) == NULL)
+   if((temp1 = find_unit(ch, &tmparg, nullptr, FIND_UNIT_INVEN)) == nullptr)
    {
-      act(sd->no_such_item2, A_SOMEONE, keeper, 0, ch, TO_ROOM);
+      act(sd->no_such_item2, A_SOMEONE, keeper, nullptr, ch, TO_ROOM);
       return;
    }
 
    if(!IS_OBJ(temp1))
+   {
       return;
+   }
 
    if(!trade_with(temp1, sd))
    {
@@ -284,12 +318,14 @@ static void shopping_sell(char *arg, struct unit_data *ch, struct unit_data *kee
    }
 
    for(i = 0; !can_pay && (i < sd->currencycount); i++)
+   {
       if(sd->currencies[i] != -1)
       {
          currency = sd->currencies[i];
          price    = money_round_down((int)(obj_trade_price(temp1) * sd->profit_sell), currency, 2);
-         can_pay  = char_can_afford(keeper, price, currency);
+         can_pay  = (char_can_afford(keeper, price, currency) != 0u);
       }
+   }
 
    if(!can_pay)
    {
@@ -306,8 +342,10 @@ static void shopping_sell(char *arg, struct unit_data *ch, struct unit_data *kee
 
    money_transfer(keeper, ch, price, currency);
 
-   if(find_unit(keeper, &arg, 0, FIND_UNIT_INVEN) || OBJ_TYPE(temp1) == ITEM_TRASH)
+   if((find_unit(keeper, &arg, nullptr, FIND_UNIT_INVEN) != nullptr) || OBJ_TYPE(temp1) == ITEM_TRASH)
+   {
       extract_unit(temp1);
+   }
    else
    {
       unit_from_unit(temp1);
@@ -326,15 +364,17 @@ static void shopping_value(char *arg, struct unit_data *ch, struct unit_data *ke
    int               i        = 0;
 
    if(!is_ok(keeper, ch, sd))
-      return;
-
-   if(str_is_empty(arg))
    {
-      act("$1n says, 'What do you want me to value, $3n?'", A_SOMEONE, keeper, 0, ch, TO_ROOM);
       return;
    }
 
-   if((temp1 = find_unit(ch, &arg, 0, FIND_UNIT_IN_ME)) == NULL)
+   if(str_is_empty(arg) != 0u)
+   {
+      act("$1n says, 'What do you want me to value, $3n?'", A_SOMEONE, keeper, nullptr, ch, TO_ROOM);
+      return;
+   }
+
+   if((temp1 = find_unit(ch, &arg, nullptr, FIND_UNIT_IN_ME)) == nullptr)
    {
       act(sd->no_such_item2, A_SOMEONE, keeper, temp1, ch, TO_ROOM);
       return;
@@ -347,12 +387,14 @@ static void shopping_value(char *arg, struct unit_data *ch, struct unit_data *ke
    }
 
    for(i = 0; !can_pay && (i < sd->currencycount); i++)
+   {
       if(sd->currencies[i] != -1)
       {
          currency = sd->currencies[i];
          price    = money_round_down((int)(obj_trade_price(temp1) * sd->profit_sell), currency, 2);
-         can_pay  = char_can_afford(keeper, price, currency);
+         can_pay  = (char_can_afford(keeper, price, currency) != 0u);
       }
+   }
 
    /* MS2020
    if (can_pay)
@@ -364,16 +406,22 @@ static void shopping_value(char *arg, struct unit_data *ch, struct unit_data *ke
    */
 
    if(can_pay)
+   {
       sprintf(buf, "$1n says 'I'll give you %s for $2n, $3n!'", money_string(price, currency, TRUE));
+   }
    else
+   {
       sprintf(buf, "$1n says 'I'd give you %s for $2n, if I could afford it, $3n.'", money_string(price, currency, TRUE));
+   }
 
    act(buf, A_SOMEONE, keeper, temp1, ch, TO_ROOM);
 }
 
 static void shopping_list(char *arg, struct unit_data *ch, struct unit_data *keeper, struct shop_data *sd)
 {
-   char              buf[MAX_STRING_LENGTH], buf2[100], *b = buf;
+   char              buf[MAX_STRING_LENGTH];
+   char              buf2[100];
+   char             *b = buf;
    struct unit_data *temp1;
    bool              found_obj = FALSE;
    amount_t          price;
@@ -381,42 +429,62 @@ static void shopping_list(char *arg, struct unit_data *ch, struct unit_data *kee
    const char       *diff_buf;
 
    if(!is_ok(keeper, ch, sd))
+   {
       return;
+   }
 
    strcpy(buf, "You can buy:\n\r");
    TAIL(b);
 
-   for(temp1 = UNIT_CONTAINS(keeper); temp1; temp1 = temp1->next)
+   for(temp1 = UNIT_CONTAINS(keeper); temp1 != nullptr; temp1 = temp1->next)
+   {
       if(IS_OBJ(temp1) && !OBJ_EQP_POS(temp1) && CHAR_CAN_SEE(ch, temp1) && obj_trade_price(temp1) > 0 && !IS_MONEY(temp1))
       {
          found_obj = TRUE;
-         diff_buf  = NULL;
+         diff_buf  = nullptr;
          if(!shop_producing(temp1, sd))
+         {
             diff_buf = obj_wear_size(ch, temp1);
+         }
 
          if(OBJ_TYPE(temp1) == ITEM_DRINKCON)
+         {
             sprintf(buf2, "%s%s%s", STR(UNIT_TITLE_STRING(temp1)), OBJ_VALUE(temp1, 1) ? " of " : "",
                     OBJ_VALUE(temp1, 1) ? drinks[OBJ_VALUE(temp1, 2)] : "");
+         }
          else if(OBJ_TYPE(temp1) == ITEM_WEAPON)
+         {
             sprintf(buf2, "%s [%s]", STR(UNIT_TITLE_STRING(temp1)), wpn_text[OBJ_VALUE(temp1, 0)]);
+         }
          else if(OBJ_TYPE(temp1) == ITEM_ARMOR || OBJ_TYPE(temp1) == ITEM_SHIELD)
+         {
             sprintf(buf2, "%s", STR(UNIT_TITLE_STRING(temp1)));
+         }
          else
+         {
             sprintf(buf2, "%s", STR(UNIT_TITLE_STRING(temp1)));
+         }
 
          currency = sd->currencies[0];
          price    = money_round_up((int)(obj_trade_price(temp1) * sd->profit_buy), currency, 2);
 
-         if(diff_buf)
+         if(diff_buf != nullptr)
+         {
             sprintf(b, "  %s (" COLOUR_MOB "%s" COLOUR_NORMAL ") for %s\n\r", buf2, diff_buf, money_string(price, currency, FALSE));
+         }
          else
+         {
             sprintf(b, "  %s for %s\n\r", buf2, money_string(price, currency, FALSE));
+         }
 
          TAIL(b);
       }
+   }
 
    if(!found_obj)
+   {
       strcat(buf, "  Nothing!\n\r");
+   }
 
    send_to_char(buf, ch);
 }
@@ -424,40 +492,50 @@ static void shopping_list(char *arg, struct unit_data *ch, struct unit_data *kee
 static void shopping_price(char *arg, struct unit_data *ch, struct unit_data *keeper, struct shop_data *sd)
 {
    struct unit_data *temp1;
-   bool              destruct = FALSE, can_pay = FALSE;
+   bool              destruct = FALSE;
+   bool              can_pay  = FALSE;
    char              buf[256];
    currency_t        currency = 0;
    amount_t          price    = 0;
    int               i        = 0;
 
    if(!is_ok(keeper, ch, sd))
-      return;
-
-   if(str_is_empty(arg))
    {
-      act("$1n says 'What do you want to know the price of, $2n?'", A_SOMEONE, keeper, ch, 0, TO_ROOM);
       return;
    }
 
-   if((temp1 = find_unit(keeper, &arg, 0, FIND_UNIT_INVEN)) == NULL || IS_MONEY(temp1) || (destruct = (obj_trade_price(temp1) <= 0)))
+   if(str_is_empty(arg) != 0u)
    {
-      act(sd->no_such_item1, A_SOMEONE, keeper, ch, 0, TO_ROOM);
+      act("$1n says 'What do you want to know the price of, $2n?'", A_SOMEONE, keeper, ch, nullptr, TO_ROOM);
+      return;
+   }
+
+   if((temp1 = find_unit(keeper, &arg, nullptr, FIND_UNIT_INVEN)) == nullptr || IS_MONEY(temp1) ||
+      (destruct = (obj_trade_price(temp1) <= 0)))
+   {
+      act(sd->no_such_item1, A_SOMEONE, keeper, ch, nullptr, TO_ROOM);
       if(destruct)
+      {
          extract_unit(temp1);
+      }
       return;
    }
 
    for(i = 0; !can_pay && (i < sd->currencycount); i++)
+   {
       if(sd->currencies[i] != -1)
       {
          currency = sd->currencies[i];
          price    = money_round_up((int)(obj_trade_price(temp1) * sd->profit_buy), currency, 2);
-         can_pay  = char_can_afford(ch, price, currency);
+         can_pay  = (char_can_afford(ch, price, currency) != 0u);
       }
+   }
 
    /* If not, go with the standard. */
    if(!can_pay)
+   {
       currency = sd->currencies[0];
+   }
 
    sprintf(buf, "$1n says 'I want %s from you for $3n, $2n!'", money_string(price, currency, TRUE));
 
@@ -466,80 +544,122 @@ static void shopping_price(char *arg, struct unit_data *ch, struct unit_data *ke
 
 static void free_shop(struct shop_data *sd)
 {
-   if(sd->prod)
+   if(sd->prod != nullptr)
+   {
       free(sd->prod);
-   if(sd->types)
+   }
+   if(sd->types != nullptr)
+   {
       free(sd->types);
-   if(sd->no_such_item1)
+   }
+   if(sd->no_such_item1 != nullptr)
+   {
       free(sd->no_such_item1);
-   if(sd->no_such_item2)
+   }
+   if(sd->no_such_item2 != nullptr)
+   {
       free(sd->no_such_item2);
-   if(sd->missing_cash1)
+   }
+   if(sd->missing_cash1 != nullptr)
+   {
       free(sd->missing_cash1);
-   if(sd->missing_cash2)
+   }
+   if(sd->missing_cash2 != nullptr)
+   {
       free(sd->missing_cash2);
-   if(sd->do_not_buy)
+   }
+   if(sd->do_not_buy != nullptr)
+   {
       free(sd->do_not_buy);
-   if(sd->message_buy)
+   }
+   if(sd->message_buy != nullptr)
+   {
       free(sd->message_buy);
-   if(sd->message_sell)
+   }
+   if(sd->message_sell != nullptr)
+   {
       free(sd->message_sell);
-   if(sd->time1)
+   }
+   if(sd->time1 != nullptr)
+   {
       free(sd->time1);
-   if(sd->time2)
+   }
+   if(sd->time2 != nullptr)
+   {
       free(sd->time2);
-   if(sd->currencies)
+   }
+   if(sd->currencies != nullptr)
+   {
       free(sd->currencies);
-   if(sd)
+   }
+   if(sd != nullptr)
+   {
       free(sd);
+   }
 }
 
 /* Special routine for all the shopkeepers */
 /* DON'T USE, use the init function */
-int shop_keeper(struct spec_arg *sarg)
+auto shop_keeper(struct spec_arg *sarg) -> int
 {
-   struct shop_data *sd = (struct shop_data *)sarg->fptr->data;
+   auto *sd = (struct shop_data *)sarg->fptr->data;
 
    if(sarg->cmd->no == CMD_BUY)
+   {
       shopping_buy((char *)sarg->arg, sarg->activator, sarg->owner, sd);
+   }
    else if(sarg->cmd->no == CMD_SELL)
+   {
       shopping_sell((char *)sarg->arg, sarg->activator, sarg->owner, sd);
+   }
    else if(sarg->cmd->no == CMD_VALUE)
+   {
       shopping_value((char *)sarg->arg, sarg->activator, sarg->owner, sd);
+   }
    else if(sarg->cmd->no == CMD_REQUEST)
+   {
       shopping_price((char *)sarg->arg, sarg->activator, sarg->owner, sd);
+   }
    else if(sarg->cmd->no == CMD_LIST)
+   {
       shopping_list((char *)sarg->arg, sarg->activator, sarg->owner, sd);
+   }
    else if(sarg->cmd->no == CMD_AUTO_DEATH && sarg->owner == sarg->activator)
    {
       /* Get rid of contents */
       while(UNIT_CONTAINS(sarg->owner))
+      {
          extract_unit(UNIT_CONTAINS(sarg->owner));
+      }
    }
    else if(sarg->cmd->no == CMD_AUTO_EXTRACT)
    {
       free_shop(sd);
-      sarg->fptr->data = NULL;
+      sarg->fptr->data = nullptr;
    }
    else
+   {
       return SFR_SHARE;
+   }
 
    return SFR_BLOCK;
 }
 
-static struct shop_data *parse_shop(struct unit_data *keeper, char *data)
+static auto parse_shop(struct unit_data *keeper, char *data) -> struct shop_data *
 {
    int               i;
    struct shop_data *sd;
    char            **names;
 
-   if(data == NULL)
-      return NULL;
+   if(data == nullptr)
+   {
+      return nullptr;
+   }
 
    CREATE(sd, struct shop_data, 1);
 
    parse_match_num(&data, "Profit sell", &i);
-   if(!is_in(i, 100, 500))
+   if(is_in(i, 100, 500) == 0)
    {
       szonelog(UNIT_FI_ZONE(keeper), "SHOP-ERROR (%s@%s): Illegal sell profit %d", UNIT_FI_NAME(keeper), UNIT_FI_ZONENAME(keeper), i);
       i = 150;
@@ -547,7 +667,7 @@ static struct shop_data *parse_shop(struct unit_data *keeper, char *data)
    sd->profit_buy = (float)i / 100.0;
 
    parse_match_num(&data, "Profit buy", &i);
-   if(!is_in(i, 1, 99))
+   if(is_in(i, 1, 99) == 0)
    {
       szonelog(UNIT_FI_ZONE(keeper), "SHOP-ERROR (%s@%s): Illegal buy profit %d", UNIT_FI_NAME(keeper), UNIT_FI_ZONENAME(keeper), i);
       i = 10;
@@ -568,34 +688,44 @@ static struct shop_data *parse_shop(struct unit_data *keeper, char *data)
    }
 
    for(i = 0; i < sd->currencycount; i++)
+   {
       if((sd->currencies[i] < 0) || (sd->currencies[i] > MAX_MONEY))
       {
          szonelog(UNIT_FI_ZONE(keeper), "SHOP-ERROR (%s@%s): Illegal currency types", UNIT_FI_NAME(keeper), UNIT_FI_ZONENAME(keeper));
          free_shop(sd);
-         return NULL;
+         return nullptr;
       }
+   }
 
    names = parse_match_namelist(&data, "Production");
-   if(names == NULL)
-      sd->prod = NULL;
+   if(names == nullptr)
+   {
+      sd->prod = nullptr;
+   }
    else
    {
       int j;
 
-      for(i = 0; names[i]; i++)
+      for(i = 0; names[i] != nullptr; i++)
+      {
          ;
+      }
       CREATE(sd->prod, struct file_index_type *, i + 1);
 
-      for(j = i = 0; names[i]; i++)
+      for(j = i = 0; names[i] != nullptr; i++)
       {
          sd->prod[j] = str_to_file_index(names[i]);
-         if(sd->prod[j])
+         if(sd->prod[j] != nullptr)
+         {
             j++;
+         }
          else
+         {
             szonelog(UNIT_FI_ZONE(keeper), "SHOP-ERROR (%s@%s): Illegal file-index: %s", UNIT_FI_NAME(keeper), UNIT_FI_ZONENAME(keeper),
                      names[i]);
+         }
       }
-      sd->prod[j] = NULL;
+      sd->prod[j] = nullptr;
       free_namelist(names);
    }
 
@@ -610,39 +740,53 @@ static struct shop_data *parse_shop(struct unit_data *keeper, char *data)
    }
 
    sd->no_such_item1 = parse_match_name(&data, "Msg1");
-   if(sd->no_such_item1 == NULL)
+   if(sd->no_such_item1 == nullptr)
+   {
       sd->no_such_item1 = str_dup("$1n says, 'I've got no such item!'");
+   }
 
    sd->no_such_item2 = parse_match_name(&data, "Msg2");
-   if(sd->no_such_item2 == NULL)
+   if(sd->no_such_item2 == nullptr)
+   {
       sd->no_such_item2 = str_dup("$1n says, '$3n, you haven't even got it!'");
+   }
 
    sd->do_not_buy = parse_match_name(&data, "Msg3");
-   if(sd->do_not_buy == NULL)
+   if(sd->do_not_buy == nullptr)
+   {
       sd->do_not_buy = str_dup("$1n says, 'I don't trade with things such as $2n'");
+   }
 
    sd->missing_cash1 = parse_match_name(&data, "Msg4");
-   if(sd->missing_cash1 == NULL)
+   if(sd->missing_cash1 == nullptr)
+   {
       sd->missing_cash1 = str_dup("$1n says, 'I can't afford it, sorry!'");
+   }
 
    sd->missing_cash2 = parse_match_name(&data, "Msg5");
-   if(sd->missing_cash2 == NULL)
+   if(sd->missing_cash2 == nullptr)
+   {
       sd->missing_cash2 = str_dup("$1n says, '$3n, you can't afford $2n'");
+   }
 
    sd->message_buy = parse_match_name(&data, "Msg6");
-   if(sd->message_buy == NULL)
+   if(sd->message_buy == nullptr)
+   {
       sd->message_buy = str_dup("$1n says, 'That's %s for $2n'");
+   }
 
    sd->message_sell = parse_match_name(&data, "Msg7");
-   if(sd->message_sell == NULL)
+   if(sd->message_sell == nullptr)
+   {
       sd->message_sell = str_dup("$1n says, 'Thank you $3n, here are %s for $2n.'");
+   }
 
    sd->time1 = parse_match_numlist(&data, "Hours1", &i);
    if((i != 2) || (sd->time1[0] >= sd->time1[1]))
    {
       szonelog(UNIT_FI_ZONE(keeper), "SHOP-ERROR (%s@%s): Illegal shop hours", UNIT_FI_NAME(keeper), UNIT_FI_ZONENAME(keeper));
       free_shop(sd);
-      return NULL;
+      return nullptr;
    }
 
    sd->time2 = parse_match_numlist(&data, "Hours2", &i);
@@ -650,13 +794,13 @@ static struct shop_data *parse_shop(struct unit_data *keeper, char *data)
    {
       szonelog(UNIT_FI_ZONE(keeper), "SHOP-ERROR (%s@%s): Illegal shop hours", UNIT_FI_NAME(keeper), UNIT_FI_ZONENAME(keeper));
       free_shop(sd);
-      return NULL;
+      return nullptr;
    }
 
    return sd;
 }
 
-int shop_init(struct spec_arg *sarg)
+auto shop_init(struct spec_arg *sarg) -> int
 {
    struct shop_data *sd;
 
@@ -664,13 +808,13 @@ int shop_init(struct spec_arg *sarg)
    {
       sd = parse_shop(sarg->owner, (char *)sarg->fptr->data);
 
-      if(sarg->fptr->data)
+      if(sarg->fptr->data != nullptr)
       {
          free(sarg->fptr->data);
-         sarg->fptr->data = NULL;
+         sarg->fptr->data = nullptr;
       }
 
-      if(sd == NULL)
+      if(sd == nullptr)
       {
          szonelog(UNIT_FI_ZONE(sarg->owner), "Shop-keeper destroyed due to error in data: %s@%s", UNIT_FI_NAME(sarg->owner),
                   UNIT_FI_ZONENAME(sarg->owner));

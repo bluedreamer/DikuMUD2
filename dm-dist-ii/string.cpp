@@ -22,10 +22,10 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <assert.h>
-#include <ctype.h>
-#include <stdio.h>
-#include <string.h>
+#include <cassert>
+#include <cctype>
+#include <cstdio>
+#include <cstring>
 
 #include "comm.h"
 #include "hashstring.h"
@@ -50,12 +50,12 @@ unsigned long int referenced_strings = 0;
 class cHashSystem
 {
 public:
-   cHashSystem(void);
-   ubit32                 Hash(const char *str);
-   void                   Insert(class cStringConstant *p, ubit32 nHash);
-   void                   Remove(class cStringConstant *p);
-   class cStringConstant *Lookup(const char *str, ubit32 nLen, ubit32 nHash);
-   ubit32                 MaxDepth(ubit32 *);
+   cHashSystem();
+   static auto Hash(const char *str) -> ubit32;
+   void        Insert(class cStringConstant *p, ubit32 nHash);
+   void        Remove(class cStringConstant *p);
+   auto        Lookup(const char *str, ubit32 nLen, ubit32 nHash) -> class cStringConstant *;
+   auto        MaxDepth(ubit32        */*slots*/) -> ubit32;
 
 private:
    class cStringConstant *str_table[HASH_SIZE];
@@ -65,12 +65,14 @@ class cHashSystem Hash;
 
 /* ===================================================================== */
 
-cHashSystem::cHashSystem(void)
+cHashSystem::cHashSystem()
 {
    int i;
 
    for(i = 0; i < HASH_SIZE; i++)
-      str_table[i] = NULL;
+   {
+      str_table[i] = nullptr;
+   }
 }
 
 /*
@@ -78,49 +80,68 @@ cHashSystem::cHashSystem(void)
  * "Compilers: Principles, Techniques and Tools", page 436
  */
 
-ubit32 cHashSystem::MaxDepth(ubit32 *slots)
+auto cHashSystem::MaxDepth(ubit32 *slots) -> ubit32
 {
    class cStringConstant *tmp;
-   ubit32                 depth, i, tmpd;
+   ubit32                 depth;
+   ubit32                 i;
+   ubit32                 tmpd;
 
-   if(slots)
+   if(slots != nullptr)
+   {
       *slots = 0;
+   }
 
    for(depth = i = 0; i < HASH_SIZE; ++i)
-      if(str_table[i])
+   {
+      if(str_table[i] != nullptr)
       {
-         if(slots)
+         if(slots != nullptr)
+         {
             ++(*slots);
-         for(tmpd = 0, tmp = str_table[i]; tmp; tmp = tmp->Next())
+         }
+         for(tmpd = 0, tmp = str_table[i]; tmp != nullptr; tmp = tmp->Next())
+         {
             ++tmpd;
+         }
          depth = MAX(depth, tmpd);
       }
+   }
 
    return depth;
 }
 
-ubit32 cHashSystem::Hash(const char *str)
+auto cHashSystem::Hash(const char *str) -> ubit32
 {
-   ubit32 h = 0, g;
+   ubit32 h = 0;
+   ubit32 g;
 
-   for(; *str; ++str)
-      if((g = ((h = (h << 4) + *str) & 0xf0000000)))
+   for(; *str != 0; ++str)
+   {
+      if((g = ((h = (h << 4) + *str) & 0xf0000000)) != 0u)
+      {
          h = (h ^ (g >> 24)) ^ g;
+      }
+   }
 
    return h % HASH_SIZE;
 }
 
-class cStringConstant *cHashSystem::Lookup(const char *str, ubit32 nLen, ubit32 nHash)
+auto cHashSystem::Lookup(const char *str, ubit32 nLen, ubit32 nHash) -> class cStringConstant *
 {
    class cStringConstant *lookup;
 
    assert(nHash < HASH_SIZE);
 
-   for(lookup = str_table[nHash]; lookup; lookup = lookup->pNext)
+   for(lookup = str_table[nHash]; lookup != nullptr; lookup = lookup->pNext)
+   {
       if(nLen == lookup->nStrLen && memcmp(str, lookup->String(), nLen) == 0)
+      {
          return lookup;
+      }
+   }
 
-   return NULL;
+   return nullptr;
 }
 
 void cHashSystem::Insert(class cStringConstant *p, ubit32 nHash)
@@ -132,20 +153,25 @@ void cHashSystem::Insert(class cStringConstant *p, ubit32 nHash)
 void cHashSystem::Remove(class cStringConstant *r)
 {
    ubit32                 h;
-   class cStringConstant *o, *p;
+   class cStringConstant *o;
+   class cStringConstant *p;
 
    h = Hash(r->pStr); // Can improve speed by storing in struct.
 
    if(r == str_table[h])
+   {
       str_table[h] = str_table[h]->pNext;
+   }
    else
    {
-      for(p = str_table[h], o = p->pNext; o; p = o, o = o->pNext)
+      for(p = str_table[h], o = p->pNext; o != nullptr; p = o, o = o->pNext)
+      {
          if(r == o)
          {
             p->pNext = o->pNext;
             break;
          }
+      }
 
       assert(r == o);
    }
@@ -159,8 +185,10 @@ cStringConstant::cStringConstant(const char *str, ubit32 len, ubit32 nHash)
 
    assert(str);
 
-   if((tmp = Hash.Lookup(str, len, nHash)))
+   if((tmp = Hash.Lookup(str, len, nHash)) != nullptr)
+   {
       tmp->nReferences++;
+   }
    else
    {
       nReferences = 1;
@@ -176,7 +204,7 @@ cStringConstant::cStringConstant(const char *str, ubit32 len, ubit32 nHash)
    }
 }
 
-cStringConstant::~cStringConstant(void)
+cStringConstant::~cStringConstant()
 {
    Hash.Remove(this);
    free(pStr);
@@ -191,9 +219,9 @@ cStringConstant::~cStringConstant(void)
 
 void cStringInstance::Make(const char *str)
 {
-   if(str_is_empty(str))
+   if(str_is_empty(str) != 0u)
    {
-      pConst = NULL;
+      pConst = nullptr;
       return;
    }
 
@@ -202,10 +230,14 @@ void cStringInstance::Make(const char *str)
 
    pConst = Hash.Lookup(str, len, h);
 
-   if(pConst == NULL)
+   if(pConst == nullptr)
+   {
       pConst = new cStringConstant(str, len, h);
+   }
    else
+   {
       pConst->nReferences++;
+   }
 
 #if STATISTICS
    ++referenced_strings;
@@ -215,7 +247,7 @@ void cStringInstance::Make(const char *str)
 
 void cStringInstance::Reassign(const char *str)
 {
-   if(pConst)
+   if(pConst != nullptr)
    {
 #if STATISTICS
       --referenced_strings;
@@ -223,15 +255,17 @@ void cStringInstance::Reassign(const char *str)
 #endif
 
       if(--pConst->nReferences == 0)
+      {
          delete pConst;
+      }
    }
 
    Make(str);
 }
 
-cStringInstance::cStringInstance(void)
+cStringInstance::cStringInstance()
 {
-   Make(NULL);
+   Make(nullptr);
 }
 
 cStringInstance::cStringInstance(const char *str)
@@ -239,9 +273,9 @@ cStringInstance::cStringInstance(const char *str)
    Make(str);
 }
 
-cStringInstance::~cStringInstance(void)
+cStringInstance::~cStringInstance()
 {
-   if(pConst)
+   if(pConst != nullptr)
    {
 #if STATISTICS
       --referenced_strings;
@@ -249,7 +283,9 @@ cStringInstance::~cStringInstance(void)
 #endif
 
       if(--pConst->nReferences == 0)
+      {
          delete pConst;
+      }
    }
 }
 
@@ -259,7 +295,8 @@ cStringInstance::~cStringInstance(void)
 
 void string_statistics(struct unit_data *ch)
 {
-   ubit32 depth, slots;
+   ubit32 depth;
+   ubit32 slots;
 
    #if STATISTICS
    char              buf[4096];

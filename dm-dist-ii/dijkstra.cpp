@@ -28,10 +28,10 @@
 /*                   Death rooms no longer exist. Instead make deathrooms  */
 /*                   have no exits at all!                                 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "comm.h"
 #include "common.h"
@@ -54,11 +54,8 @@
 #define CF(x, h) ((x) * (h)->d + 1)
 #define CL(x, h) MIN((x) * (h)->d + (h)->d, (h)->no)
 
-extern struct command_info   cmd_auto_unknown;
-extern struct zone_info_type zone_info;
-
 extern ubit32 memory_total_alloc;
-extern int memory_dijkstra_alloc;
+extern int    memory_dijkstra_alloc;
 
 struct dir_array
 {
@@ -73,7 +70,7 @@ struct izone_type
    ubit8             dir;
 };
 
-struct izone_type **iz = NULL; /* Global for ease of use :)
+struct izone_type **iz = nullptr; /* Global for ease of use :)
                                   I know it's nasty */
 
 static struct dir_array d_array[MAX_EXITS];
@@ -100,7 +97,7 @@ struct hob
    struct graph_vertice **array; /* Array of pointers to vertices  */
 };
 
-static struct hob *hob_create(struct graph *g)
+static auto hob_create(struct graph *g) -> struct hob *
 {
    struct hob *h;
    int         i;
@@ -144,25 +141,27 @@ static void hob_shift_up(int x, struct hob *h)
    }
 }
 
-static int hob_min_child(int x, struct hob *h)
+static auto hob_min_child(int x, struct hob *h) -> int
 {
-   int b, minb, b1, b2;
+   int b;
+   int minb;
+   int b1;
+   int b2;
 
    b1 = CF(x, h);
    b2 = CL(x, h);
 
    if(b1 > h->no)
-      return -1;
-   else
    {
-      minb = b1;
-      for(b = b1 + 1; b <= b2; b++)
-      {
-         if(HOB_KEY(h->array[b]) < HOB_KEY(h->array[minb]))
-            minb = b;
-      }
-      return minb;
+      return -1;
    }
+   minb = b1;
+   for(b = b1 + 1; b <= b2; b++)
+   {
+      if(HOB_KEY(h->array[b]) < HOB_KEY(h->array[minb]))
+         minb = b;
+   }
+   return minb;
 }
 
 static void hob_shift_down(int x, struct hob *h)
@@ -187,7 +186,8 @@ static void hob_shift_down(int x, struct hob *h)
 
 static void hob_remove(int x, struct hob *h)
 {
-   struct graph_vertice *s, *s1;
+   struct graph_vertice *s;
+   struct graph_vertice *s1;
 
    s  = h->array[x];
    s1 = h->array[h->no - 1];
@@ -200,51 +200,64 @@ static void hob_remove(int x, struct hob *h)
       h->array[x]->hob_pos = x;
 
       if(HOB_KEY(s) >= HOB_KEY(s1))
+      {
          hob_shift_up(x, h);
+      }
       else
+      {
          hob_shift_down(x, h);
+      }
    }
 
    /* There is no need to make it physically less        */
    /* RECREATE(h->array, struct graph_vertice *, h->no); */
 }
 
-static struct graph_vertice *hob_remove_min(struct hob *h)
+static auto hob_remove_min(struct hob *h) -> struct graph_vertice *
 {
    struct graph_vertice *s;
 
    if(h->no == 0)
-      return 0;
-   else
    {
-      s = h->array[0];
-
-      hob_remove(0, h);
-
-      return s;
+      return nullptr;
    }
+   s = h->array[0];
+
+   hob_remove(0, h);
+
+   return s;
 }
 
-static int flag_weight(int flags)
+static auto flag_weight(int flags) -> int
 {
    int weight;
 
    if(flags == 0)
+   {
       return 1;
+   }
 
    weight = 0;
 
    if(IS_SET(flags, EX_CLOSED))
+   {
       weight += 25;
+   }
 
    if(IS_SET(flags, EX_LOCKED))
+   {
       weight += 200;
+   }
 
    if(IS_SET(flags, EX_OPEN_CLOSE))
+   {
       weight += 10;
+   }
 
    if(!IS_SET(flags, EX_OPEN_CLOSE) && IS_SET(flags, EX_CLOSED))
+   {
       weight = 1000;
+   }
 
    return weight;
 }
@@ -267,7 +280,7 @@ void add_exit(struct graph *g, struct graph_vertice *v, struct unit_data *to, in
    else /* different zones! */
    {
       /* Save this path in inter-zone matrix if not already there */
-      if(!iz[ROOM_ZONE_NO(v->room)][ROOM_ZONE_NO(to)].room && (ROOM_LANDSCAPE(v->room) != SECT_WATER_SAIL) &&
+      if((iz[ROOM_ZONE_NO(v->room)][ROOM_ZONE_NO(to)].room == nullptr) && (ROOM_LANDSCAPE(v->room) != SECT_WATER_SAIL) &&
          (ROOM_LANDSCAPE(to) != SECT_WATER_SAIL))
       {
          iz[ROOM_ZONE_NO(v->room)][ROOM_ZONE_NO(to)].room = v->room;
@@ -280,7 +293,10 @@ void add_exit(struct graph *g, struct graph_vertice *v, struct unit_data *to, in
 static void outedges(struct graph *g, struct graph_vertice *v)
 {
    struct unit_data *u;
-   int               i, idx, weight, flags;
+   int               i;
+   int               idx;
+   int               weight;
+   int               flags;
 
    idx = 0;
 
@@ -293,14 +309,17 @@ static void outedges(struct graph *g, struct graph_vertice *v)
          weight = flag_weight(flags);
 
          if(ROOM_LANDSCAPE(ROOM_EXIT(v->room, i)->to_room) == SECT_WATER_SAIL)
+         {
             weight += 1000;
+         }
 
          add_exit(g, v, ROOM_EXIT(v->room, i)->to_room, &idx, i, weight);
       }
    }
 
    /* Scan room for enter rooms */
-   for(u = UNIT_CONTAINS(v->room); u; u = u->next)
+   for(u = UNIT_CONTAINS(v->room); u != nullptr; u = u->next)
+   {
       if(IS_ROOM(u) && IS_SET(UNIT_MANIPULATE(u), MANIPULATE_ENTER))
       {
          flags  = UNIT_OPEN_FLAGS(u);
@@ -308,9 +327,11 @@ static void outedges(struct graph *g, struct graph_vertice *v)
 
          add_exit(g, v, u, &idx, DIR_ENTER, weight);
       }
+   }
 
    /* Check room for an exit room */
    if(UNIT_IN(v->room) && IS_ROOM(UNIT_IN(v->room)))
+   {
       if(IS_SET(UNIT_MANIPULATE(UNIT_IN(v->room)), MANIPULATE_ENTER))
       {
          flags  = UNIT_OPEN_FLAGS(v->room);
@@ -318,14 +339,16 @@ static void outedges(struct graph *g, struct graph_vertice *v)
 
          add_exit(g, v, UNIT_IN(v->room), &idx, DIR_EXIT, weight);
       }
+   }
 
-   d_array[idx].to_vertice = 0;
+   d_array[idx].to_vertice = nullptr;
 }
 
 void dijkstra(struct graph *g, struct graph_vertice *source)
 {
    struct hob           *h;
-   struct graph_vertice *v, *w;
+   struct graph_vertice *v;
+   struct graph_vertice *w;
    int                   j;
 
    h = hob_create(g);
@@ -341,26 +364,32 @@ void dijkstra(struct graph *g, struct graph_vertice *source)
    do
    {
       outedges(g, v);
-      for(j = 0; (w = d_array[j].to_vertice); j++)
+      for(j = 0; (w = d_array[j].to_vertice) != nullptr; j++)
       {
          if((v->dist + d_array[j].weight) < w->dist)
          {
             w->dist   = v->dist + d_array[j].weight;
             w->parent = v;
             if(v->direction <= 7)
+            {
                w->direction = v->direction;
-            /* I'm not sure this is true, but it will work */
+               /* I'm not sure this is true, but it will work */
+            }
             else
+            {
                w->direction = d_array[j].direction;
+            }
 
             hob_shift_up(w->hob_pos, h);
          }
       }
       v = hob_remove_min(h);
-   } while(v);
+   } while(v != nullptr);
 
-   if(h->array)
+   if(h->array != nullptr)
+   {
       free(h->array);
+   }
    free(h);
 }
 
@@ -370,22 +399,27 @@ void dijkstra(struct graph *g, struct graph_vertice *source)
 
 /* Given a zone, create the nesseceary graph structure, and  */
 /* return a matrix of shortest path for the zone             */
-ubit8 **create_graph(struct zone_type *zone)
+auto create_graph(struct zone_type *zone) -> ubit8 **
 {
    static struct graph     g;
    struct file_index_type *fi;
-   int                     i, j, hidx, vidx;
+   int                     i;
+   int                     j;
+   int                     hidx;
+   int                     vidx;
    ubit8                 **spi;
 
    g.no = zone->no_rooms;
 
    if(g.no == 0)
-      return 0;
+   {
+      return nullptr;
+   }
 
    CREATE(spi, ubit8 *, g.no);
    CREATE(g.array, struct graph_vertice, g.no);
 
-   for(i = 0, fi = zone->fi; fi; fi = fi->next)
+   for(i = 0, fi = zone->fi; fi != nullptr; fi = fi->next)
    {
       if(fi->type == UNIT_ST_ROOM)
       {
@@ -398,7 +432,7 @@ ubit8 **create_graph(struct zone_type *zone)
    {
       for(i = 0; i < g.no; i++)
       {
-         g.array[i].parent    = 0;
+         g.array[i].parent    = nullptr;
          g.array[i].dist      = DIST_INFINITE;
          g.array[i].direction = DIR_IMPOSSIBLE;
          g.array[i].hob_pos   = 0;
@@ -413,10 +447,14 @@ ubit8 **create_graph(struct zone_type *zone)
       for(i = 0; i < g.no; i++)
       {
          hidx = UNIT_FILE_INDEX(g.array[i].room)->room_no;
-         if(hidx & 1)
+         if((hidx & 1) != 0)
+         {
             spi_idx(spi, vidx, hidx) |= g.array[i].direction;
+         }
          else
+         {
             spi_idx(spi, vidx, hidx) |= g.array[i].direction << 4;
+         }
       }
    }
    free(g.array);
@@ -426,7 +464,8 @@ ubit8 **create_graph(struct zone_type *zone)
 
 void stat_dijkstraa(struct unit_data *ch, struct zone_type *z)
 {
-   int               i, j;
+   int               i;
+   int               j;
    char              buf[MAX_STRING_LENGTH];
    struct zone_type *z2;
    char             *b;
@@ -435,51 +474,75 @@ void stat_dijkstraa(struct unit_data *ch, struct zone_type *z)
    send_to_char(buf, ch);
 
    for(i = 0; i < zone_info.no_of_zones; i++)
-      if((i != z->zone_no) && iz[z->zone_no][i].room)
+   {
+      if((i != z->zone_no) && (iz[z->zone_no][i].room != nullptr))
       {
          for(z2 = zone_info.zone_list, j = 0; j < zone_info.no_of_zones; j++, z2 = z2->next)
+         {
             if(z2->zone_no == i)
+            {
                break;
+            }
+         }
 
          b = buf;
 
          /* Not a primary link - indent! */
          if(iz[z->zone_no][i].dir == DIR_ENTER)
+         {
             strcpy(b, "E ");
+         }
          else if(iz[z->zone_no][i].dir == DIR_EXIT)
+         {
             strcpy(b, "L ");
+         }
          else if(iz[z->zone_no][i].dir == DIR_IMPOSSIBLE)
+         {
             strcpy(b, "I ");
+         }
          else if(iz[z->zone_no][i].dir == DIR_HERE)
+         {
             strcpy(b, "H ");
+         }
          else
          {
             assert(is_in(iz[z->zone_no][i].dir, 0, 5));
 
             if(z2 != UNIT_FILE_INDEX(ROOM_EXIT(iz[z->zone_no][i].room, iz[z->zone_no][i].dir)->to_room)->zone)
+            {
                strcpy(b, "  ");
+            }
             else
+            {
                strcpy(b, "+ ");
+            }
          }
 
          TAIL(b);
 
-         if(is_in(iz[z->zone_no][i].dir, 0, 5))
+         if(is_in(iz[z->zone_no][i].dir, 0, 5) != 0)
+         {
             sprintf(b, "To %s via %s@%s to %s@%s\n\r", z2->name, UNIT_FI_NAME(iz[z->zone_no][i].room),
                     UNIT_FI_ZONENAME(iz[z->zone_no][i].room),
                     UNIT_FI_NAME(ROOM_EXIT(iz[z->zone_no][i].room, iz[z->zone_no][i].dir)->to_room),
                     UNIT_FI_ZONENAME(ROOM_EXIT(iz[z->zone_no][i].room, iz[z->zone_no][i].dir)->to_room));
+         }
          else
+         {
             sprintf(b, "To %s via %s@%s (enter / leave / here) \n\r", z2->name, UNIT_FI_NAME(iz[z->zone_no][i].room),
                     UNIT_FI_ZONENAME(iz[z->zone_no][i].room));
+         }
          send_to_char(buf, ch);
       }
+   }
 }
 
-void create_dijkstra(void)
+void create_dijkstra()
 {
    struct zone_type *z;
-   int               i, j, k;
+   int               i;
+   int               j;
+   int               k;
 
 #ifdef MEMORY_DEBUG
    memory_dijkstra_alloc = memory_total_alloc;
@@ -493,13 +556,13 @@ void create_dijkstra(void)
       CREATE(iz[i], struct izone_type, zone_info.no_of_zones);
       for(j = 0; j < zone_info.no_of_zones; j++)
       {
-         iz[i][j].room = 0;
+         iz[i][j].room = nullptr;
          iz[i][j].dir  = DIR_IMPOSSIBLE;
       }
    }
 
    /* Create shortest path matrix for each individual zone */
-   for(z = zone_info.zone_list; z; z = z->next)
+   for(z = zone_info.zone_list; z != nullptr; z = z->next)
    {
       slog(LOG_OFF, 0, "Creating shortest path for %s", z->name);
       z->spmatrix = create_graph(z);
@@ -510,10 +573,18 @@ void create_dijkstra(void)
    slog(LOG_OFF, 0, "Creating inter-zone path information.");
 
    for(k = 0; k < zone_info.no_of_zones; k++)
+   {
       for(i = 0; i < zone_info.no_of_zones; i++)
+      {
          for(j = 0; j < zone_info.no_of_zones; j++)
-            if(!iz[i][j].room && iz[i][k].room && iz[k][j].room)
+         {
+            if((iz[i][j].room == nullptr) && (iz[i][k].room != nullptr) && (iz[k][j].room != nullptr))
+            {
                iz[i][j] = iz[i][k];
+            }
+         }
+      }
+   }
 
 #ifdef MEMORY_DEBUG
    memory_dijkstra_alloc = memory_total_alloc - memory_dijkstra_alloc;
@@ -523,13 +594,16 @@ void create_dijkstra(void)
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* Primitive move generator, returns direction */
-int move_to(const struct unit_data *from, const struct unit_data *to)
+auto move_to(const struct unit_data *from, const struct unit_data *to) -> int
 {
-   int i, j;
+   int i;
+   int j;
 
    /* Assertion is that both from and to are rooms! */
    if(!IS_ROOM(from) || !IS_ROOM(to))
+   {
       return DIR_IMPOSSIBLE;
+   }
 
    if(UNIT_FILE_INDEX(from)->zone == (UNIT_FILE_INDEX(to)->zone))
    {
@@ -543,26 +617,26 @@ int move_to(const struct unit_data *from, const struct unit_data *to)
       }
       return DIR_IMPOSSIBLE;
    }
-   else /* Inter-zone path info needed */
+   /* Inter-zone path info needed */
+   if(iz[UNIT_FILE_INDEX(from)->zone->zone_no][UNIT_FILE_INDEX(to)->zone->zone_no].room)
    {
-      if(iz[UNIT_FILE_INDEX(from)->zone->zone_no][UNIT_FILE_INDEX(to)->zone->zone_no].room)
-      {
-         i = move_to(from, iz[UNIT_FILE_INDEX(from)->zone->zone_no][UNIT_FILE_INDEX(to)->zone->zone_no].room);
-         if(i == DIR_HERE)
-            return iz[UNIT_FILE_INDEX(from)->zone->zone_no][UNIT_FILE_INDEX(to)->zone->zone_no].dir;
-         else
-            return i;
-      }
-      return DIR_IMPOSSIBLE; /* Zone is unreachable */
+      i = move_to(from, iz[UNIT_FILE_INDEX(from)->zone->zone_no][UNIT_FILE_INDEX(to)->zone->zone_no].room);
+      if(i == DIR_HERE)
+         return iz[UNIT_FILE_INDEX(from)->zone->zone_no][UNIT_FILE_INDEX(to)->zone->zone_no].dir;
+      else
+         return i;
    }
+   return DIR_IMPOSSIBLE; /* Zone is unreachable */
 }
 
 /* This function is used with 'npc_move'  */
-int npc_stand(const struct unit_data *npc)
+auto npc_stand(const struct unit_data *npc) -> int
 {
    if((CHAR_POS(npc) < POSITION_SLEEPING) || (CHAR_POS(npc) == POSITION_FIGHTING))
+   {
       return MOVE_BUSY; /* NPC is very busy */
-   else if(CHAR_POS(npc) == POSITION_SLEEPING)
+   }
+   if(CHAR_POS(npc) == POSITION_SLEEPING)
    {
       char mbuf[MAX_INPUT_LENGTH] = {0};
       do_wake((struct unit_data *)npc, mbuf, &cmd_auto_unknown);
@@ -576,7 +650,7 @@ int npc_stand(const struct unit_data *npc)
    }
 }
 
-int open_door(const struct unit_data *npc, int dir)
+auto open_door(const struct unit_data *npc, int dir) -> int
 {
    char buf[80];
 
@@ -592,24 +666,26 @@ int open_door(const struct unit_data *npc, int dir)
       {
          do_unlock((struct unit_data *)npc, buf, &cmd_auto_unknown);
          if(IS_SET(ROOM_EXIT(UNIT_IN(npc), dir)->exit_info, EX_LOCKED))
+         {
             return MOVE_FAILED;
-         else
-            return MOVE_BUSY;
+         }
+         return MOVE_BUSY;
       }
       else
       {
          do_open((struct unit_data *)npc, buf, &cmd_auto_unknown);
          if(IS_SET(ROOM_EXIT(UNIT_IN(npc), dir)->exit_info, EX_CLOSED))
+         {
             return MOVE_FAILED;
-         else
-            return MOVE_BUSY;
+         }
+         return MOVE_BUSY;
       }
    }
 
    return MOVE_FAILED;
 }
 
-int enter_open(const struct unit_data *npc, const struct unit_data *enter)
+auto enter_open(const struct unit_data *npc, const struct unit_data *enter) -> int
 {
    char buf[80];
 
@@ -624,24 +700,26 @@ int enter_open(const struct unit_data *npc, const struct unit_data *enter)
       {
          do_unlock((struct unit_data *)npc, buf, &cmd_auto_unknown);
          if(IS_SET(UNIT_OPEN_FLAGS(enter), EX_LOCKED))
+         {
             return MOVE_FAILED;
-         else
-            return MOVE_BUSY;
+         }
+         return MOVE_BUSY;
       }
       else
       {
          do_open((struct unit_data *)npc, buf, &cmd_auto_unknown);
          if(IS_SET(UNIT_OPEN_FLAGS(enter), EX_CLOSED))
+         {
             return MOVE_FAILED;
-         else
-            return MOVE_BUSY;
+         }
+         return MOVE_BUSY;
       }
    }
 
    return MOVE_FAILED;
 }
 
-int exit_open(const struct unit_data *npc)
+auto exit_open(const struct unit_data *npc) -> int
 {
    char              buf[80];
    struct unit_data *enter;
@@ -658,45 +736,57 @@ int exit_open(const struct unit_data *npc)
       {
          do_unlock((struct unit_data *)npc, buf, &cmd_auto_unknown);
          if(IS_SET(UNIT_OPEN_FLAGS(enter), EX_LOCKED))
+         {
             return MOVE_FAILED;
-         else
-            return MOVE_BUSY;
+         }
+         return MOVE_BUSY;
       }
       else
       {
          do_open((struct unit_data *)npc, buf, &cmd_auto_unknown);
          if(IS_SET(UNIT_OPEN_FLAGS(enter), EX_CLOSED))
+         {
             return MOVE_FAILED;
-         else
-            return MOVE_BUSY;
+         }
+         return MOVE_BUSY;
       }
    }
 
    return MOVE_FAILED;
 }
 
-int npc_move(const struct unit_data *npc, const struct unit_data *to)
+auto npc_move(const struct unit_data *npc, const struct unit_data *to) -> int
 {
-   int               i, dir;
-   struct unit_data *in, *u;
+   int               i;
+   int               dir;
+   struct unit_data *in;
+   struct unit_data *u;
 
    /*    Returns: 1=succes, 0=fail, -1=dead.    */
 
    if(!IS_ROOM(to))
+   {
       return MOVE_FAILED; /* How can we move to anything but rooms? */
+   }
 
    if(!UNIT_FILE_INDEX(to)->zone->spmatrix)
+   {
       return MOVE_FAILED;
+   }
 
    if(CHAR_POS(npc) < POSITION_STANDING)
+   {
       return npc_stand(npc);
+   }
 
    if(!IS_ROOM(in = UNIT_IN(npc)))
    {
       char mbuf[MAX_INPUT_LENGTH] = {0};
       do_exit((struct unit_data *)npc, mbuf, &cmd_auto_unknown);
-      if(in == UNIT_IN(npc)) /* NPC couldn't leave */
+      if(in == UNIT_IN(npc))
+      { /* NPC couldn't leave */
          return exit_open(npc);
+      }
 
       return MOVE_CLOSER; /* We approached a room */
    }
@@ -711,36 +801,33 @@ int npc_move(const struct unit_data *npc, const struct unit_data *to)
       {
          return open_door(npc, dir);
       }
-      else
-      {
-         i = do_advanced_move((struct unit_data *)npc, dir, TRUE);
-         if(i == -1)
-            return MOVE_DEAD; /* NPC died */
-         else if(i == 1)
-            return MOVE_CLOSER; /* The NPC was moved closer */
 
-         /* Something (not closed) prevented the NPC from moving     */
-         return MOVE_FAILED;
-      }
+      i = do_advanced_move((struct unit_data *)npc, dir, TRUE);
+      if(i == -1)
+         return MOVE_DEAD; /* NPC died */
+      else if(i == 1)
+         return MOVE_CLOSER; /* The NPC was moved closer */
+
+      /* Something (not closed) prevented the NPC from moving     */
+      return MOVE_FAILED;
    }
    else if(dir == DIR_ENTER)
    {
-      for(u = UNIT_CONTAINS(UNIT_IN(npc)); u; u = u->next)
+      for(u = UNIT_CONTAINS(UNIT_IN(npc)); u != nullptr; u = u->next)
       {
          if(IS_ROOM(u) && IS_SET(UNIT_MANIPULATE(u), MANIPULATE_ENTER))
          {
             if(move_to((struct unit_data *)u, to) != DIR_EXIT)
             {
                if(IS_SET(UNIT_OPEN_FLAGS(u), EX_CLOSED))
-                  return enter_open(npc, u);
-               else
                {
-                  do_enter((struct unit_data *)npc, (char *)UNIT_NAME(u), &cmd_auto_unknown);
-                  if(in == UNIT_IN(npc))
-                     return MOVE_FAILED;
-                  else
-                     return MOVE_CLOSER;
+                  return enter_open(npc, u);
                }
+               do_enter((struct unit_data *)npc, (char *)UNIT_NAME(u), &cmd_auto_unknown);
+               if(in == UNIT_IN(npc))
+                  return MOVE_FAILED;
+               else
+                  return MOVE_CLOSER;
             }
          }
       }
@@ -749,26 +836,29 @@ int npc_move(const struct unit_data *npc, const struct unit_data *to)
    else if(dir == DIR_EXIT)
    {
       u = UNIT_IN(UNIT_IN(npc));
-      if(u && IS_ROOM(u) && IS_SET(UNIT_MANIPULATE(u), MANIPULATE_ENTER))
+      if((u != nullptr) && IS_ROOM(u) && IS_SET(UNIT_MANIPULATE(u), MANIPULATE_ENTER))
       {
          if(IS_SET(UNIT_OPEN_FLAGS(u), EX_CLOSED))
-            return exit_open(npc);
-         else
          {
-            char mbuf[MAX_INPUT_LENGTH] = {0};
-            do_exit((struct unit_data *)npc, mbuf, &cmd_auto_unknown);
-            if(in == UNIT_IN(npc))
-               return MOVE_FAILED;
-            else
-               return MOVE_CLOSER;
+            return exit_open(npc);
          }
+         char mbuf[MAX_INPUT_LENGTH] = {0};
+         do_exit((struct unit_data *)npc, mbuf, &cmd_auto_unknown);
+         if(in == UNIT_IN(npc))
+            return MOVE_FAILED;
+         else
+            return MOVE_CLOSER;
       }
       return MOVE_FAILED;
    }
    else if(dir == DIR_IMPOSSIBLE)
+   {
       return MOVE_FAILED;
+   }
    else if(dir == DIR_HERE)
+   {
       return MOVE_GOAL;
+   }
 
    slog(LOG_ALL, 0, "Error: In very high IQ monster move!");
    return MOVE_FAILED;

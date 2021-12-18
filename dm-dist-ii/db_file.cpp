@@ -28,10 +28,10 @@
  * 14-Apr-95 HHS:   Added for and foreach, break and continue
  */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "bytestring.h"
 #include "db.h"
@@ -57,33 +57,38 @@ CByteBuffer g_FileBuffer(16384);
 extern struct unit_function_array_type unit_function_array[];
 #endif
 
-int bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra)
+auto bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra) -> int
 {
-   struct extra_descr_data *e, *te;
+   struct extra_descr_data *e;
+   struct extra_descr_data *te;
    ubit8                    i;
    char                    *c;
 
-   *ppExtra = NULL;
-   te       = NULL;
+   *ppExtra = nullptr;
+   te       = nullptr;
 
-   if(pBuf->Read8(&i))
+   if(pBuf->Read8(&i) != 0)
+   {
       return 1; /* No of extra descriptions */
+   }
 
    /* While description is non null, keep reading */
    for(; i > 0; i--)
    {
       e = new(struct extra_descr_data);
 
-      if(pBuf->SkipString(&c))
+      if(pBuf->SkipString(&c) != 0)
+      {
          return 1;
+      }
 
       e->descr.Reassign(c);
       e->names.ReadBuffer(pBuf);
-      e->next = NULL;
+      e->next = nullptr;
 
       /* Insert at END of list to keep the ordering of the names */
       /* as specified in the binary file                         */
-      if(!*ppExtra)
+      if(*ppExtra == nullptr)
       {
          *ppExtra = e;
          te       = e;
@@ -98,34 +103,42 @@ int bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra)
    return 0;
 }
 
-int bread_swap(CByteBuffer *pBuf, struct unit_data *u)
+auto bread_swap(CByteBuffer *pBuf, struct unit_data *u) -> int
 {
    char *c;
 
-   if(pBuf->SkipString(&c))
+   if(pBuf->SkipString(&c) != 0)
+   {
       return 1;
+   }
 
    u->title.Reassign(c);
 
-   if(pBuf->SkipString(&c))
+   if(pBuf->SkipString(&c) != 0)
+   {
       return 1;
+   }
 
    u->out_descr.Reassign(c);
 
-   if(pBuf->SkipString(&c))
+   if(pBuf->SkipString(&c) != 0)
+   {
       return 1;
+   }
 
    u->in_descr.Reassign(c);
 
    u->extra_descr = new extra_descr_data;
 
-   if(bread_extra(pBuf, &u->extra_descr))
+   if(bread_extra(pBuf, &u->extra_descr) != 0)
+   {
       return 1;
+   }
 
    return 0;
 }
 
-int bread_swap_skip(CByteBuffer *pBuf)
+auto bread_swap_skip(CByteBuffer *pBuf) -> int
 {
    int   i;
    ubit8 t8;
@@ -134,16 +147,20 @@ int bread_swap_skip(CByteBuffer *pBuf)
    pBuf->SkipString();
    pBuf->SkipString();
 
-   if(pBuf->Read8(&t8))
+   if(pBuf->Read8(&t8) != 0)
+   {
       return 1;
+   }
 
    i = t8;
 
    for(; i > 0; i--)
    {
       pBuf->SkipString();
-      if(pBuf->SkipNames())
+      if(pBuf->SkipNames() != 0)
+      {
          return 1;
+      }
    }
 
    return 0;
@@ -152,13 +169,14 @@ int bread_swap_skip(CByteBuffer *pBuf)
 /*
  * This function reads a DIL template
  */
-struct diltemplate *bread_diltemplate(CByteBuffer *pBuf)
+auto bread_diltemplate(CByteBuffer *pBuf) -> struct diltemplate *
 {
 #ifdef DMSERVER
    extern int mud_bootzone;
    int        valid;
 #endif
-   int                 i, j;
+   int                 i;
+   int                 j;
    struct diltemplate *tmpl;
 
    /* read a template */
@@ -177,33 +195,41 @@ struct diltemplate *bread_diltemplate(CByteBuffer *pBuf)
    pBuf->Read8(&tmpl->rtnt);
    pBuf->Read8(&tmpl->argc);
 
-   if(tmpl->argc)
+   if(tmpl->argc != 0u)
    {
       CREATE(tmpl->argt, ubit8, tmpl->argc);
 
       for(i = 0; i < tmpl->argc; i++)
+      {
          pBuf->Read8(&tmpl->argt[i]); /* argument types */
+      }
    }
    else
-      tmpl->argt = NULL;
+   {
+      tmpl->argt = nullptr;
+   }
 
    pBuf->ReadBlock(&tmpl->core, &tmpl->coresz);
 
    pBuf->Read16(&tmpl->varc); /* number of variables */
 
-   if(tmpl->varc)
+   if(tmpl->varc != 0u)
    {
       CREATE(tmpl->vart, ubit8, tmpl->varc);
 
       for(i = 0; i < tmpl->varc; i++)
+      {
          pBuf->Read8(&tmpl->vart[i]);
+      }
    }
    else
-      tmpl->vart = NULL;
+   {
+      tmpl->vart = nullptr;
+   }
 
    pBuf->Read16(&tmpl->xrefcount);
 
-   if(tmpl->xrefcount)
+   if(tmpl->xrefcount != 0u)
    {
       CREATE(tmpl->xrefs, struct dilxref, tmpl->xrefcount);
 
@@ -214,28 +240,38 @@ struct diltemplate *bread_diltemplate(CByteBuffer *pBuf)
          pBuf->Read8(&tmpl->xrefs[i].rtnt);
          pBuf->Read8(&tmpl->xrefs[i].argc);
 
-         if(tmpl->xrefs[i].argc)
+         if(tmpl->xrefs[i].argc != 0u)
          {
             CREATE(tmpl->xrefs[i].argt, ubit8, tmpl->xrefs[i].argc);
             for(j = 0; j < tmpl->xrefs[i].argc; j++)
+            {
                pBuf->Read8(&tmpl->xrefs[i].argt[j]);
+            }
          }
          else
-            tmpl->xrefs[i].argt = NULL;
+         {
+            tmpl->xrefs[i].argt = nullptr;
+         }
       }
    }
    else
-      tmpl->xrefs = NULL;
+   {
+      tmpl->xrefs = nullptr;
+   }
 
 #ifdef DMSERVER
    /* Resolve the external references runtime */
 
-   if(tmpl->xrefcount)
+   if(tmpl->xrefcount != 0u)
+   {
       CREATE(tmpl->extprg, struct diltemplate *, tmpl->xrefcount);
+   }
    else
-      tmpl->extprg = NULL;
+   {
+      tmpl->extprg = nullptr;
+   }
 
-   if(!mud_bootzone)
+   if(mud_bootzone == 0)
    {
       /*
        * This template not loaded boottime, so resolve
@@ -246,14 +282,20 @@ struct diltemplate *bread_diltemplate(CByteBuffer *pBuf)
          tmpl->extprg[i] = find_dil_template(tmpl->xrefs[i].name);
          valid           = 1;
 
-         if(tmpl->extprg[i])
+         if(tmpl->extprg[i] != nullptr)
          {
             /* check argument count and types */
             if((tmpl->xrefs[i].rtnt != tmpl->extprg[i]->rtnt) || (tmpl->xrefs[i].argc != tmpl->extprg[i]->argc))
+            {
                valid = 0;
+            }
             for(j = 0; j < tmpl->xrefs[i].argc; j++)
+            {
                if(tmpl->xrefs[i].argt[j] != tmpl->extprg[i]->argt[j])
+               {
                   valid = 0;
+               }
+            }
          }
          else
          {
@@ -262,9 +304,9 @@ struct diltemplate *bread_diltemplate(CByteBuffer *pBuf)
             valid = 0;
          }
          /* Typecheck error ! */
-         if(!valid)
+         if(valid == 0)
          {
-            tmpl->extprg[i] = NULL;
+            tmpl->extprg[i] = nullptr;
             /* ERROR MESSAGE HERE */
             slog(LOG_ALL, 0, "Error typechecking reference to '%s'", tmpl->xrefs[i].name);
          }
@@ -272,9 +314,9 @@ struct diltemplate *bread_diltemplate(CByteBuffer *pBuf)
    }
 #else
    /* This is compiletime, no resolve done */
-   tmpl->extprg = NULL;
+   tmpl->extprg = nullptr;
 #endif
-   tmpl->next = NULL;
+   tmpl->next = nullptr;
    return tmpl;
 }
 
@@ -287,7 +329,7 @@ void bread_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
    /* read interrupts */
    pBuf->Read16(&prg->stack[0].intrcount);
 
-   if(prg->stack[0].intrcount)
+   if(prg->stack[0].intrcount != 0u)
    {
       CREATE(prg->stack[0].intr, struct dilintr, prg->stack[0].intrcount);
 
@@ -299,7 +341,9 @@ void bread_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
       }
    }
    else
-      prg->stack[0].intr = NULL;
+   {
+      prg->stack[0].intr = nullptr;
+   }
 }
 
 void bwrite_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
@@ -319,10 +363,14 @@ void bwrite_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
       }
       else
       {
-         if(prg->stack[0].intr[i].lab)
+         if(prg->stack[0].intr[i].lab != nullptr)
+         {
             lab = prg->stack[0].intr[i].lab - prg->stack[0].tmpl->core;
+         }
          else
+         {
             lab = 0;
+         }
 
          pBuf->Append16(prg->stack[0].intr[i].flags);
          pBuf->Append32(lab);
@@ -361,13 +409,14 @@ void bwrite_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
  *   lookup and typecheck of loaded template.
  *
  */
-void *bread_dil(CByteBuffer *pBuf, struct unit_data *owner, ubit8 version, struct unit_fptr *fptr)
+auto bread_dil(CByteBuffer *pBuf, struct unit_data *owner, ubit8 version, struct unit_fptr *fptr) -> void *
 {
    struct dilprg      *prg;
-   struct diltemplate *tmpl     = NULL;
+   struct diltemplate *tmpl     = nullptr;
    ubit32              recallpc = 0;
    ubit16              t16;
-   int                 i, novar;
+   int                 i;
+   int                 novar;
 #ifdef DMSERVER
    char buf[255];
    char name[255];
@@ -389,8 +438,10 @@ void *bread_dil(CByteBuffer *pBuf, struct unit_data *owner, ubit8 version, struc
 
    REMOVE_BIT(prg->flags, DILFL_EXECUTING | DILFL_CMDBLOCK);
 
-   if(fptr && IS_SET(prg->flags, DILFL_AWARE))
+   if((fptr != nullptr) && IS_SET(prg->flags, DILFL_AWARE))
+   {
       SET_BIT(fptr->flags, SFB_AWARE);
+   }
 
    if(!IS_SET(prg->flags, DILFL_COPY))
    {
@@ -400,7 +451,7 @@ void *bread_dil(CByteBuffer *pBuf, struct unit_data *owner, ubit8 version, struc
    else
    {
 #ifndef DMSERVER
-      tmpl = NULL;
+      tmpl = nullptr;
       error(HERE, "Impossible");
 #else
 
@@ -408,13 +459,13 @@ void *bread_dil(CByteBuffer *pBuf, struct unit_data *owner, ubit8 version, struc
       pBuf->ReadStringCopy(name, sizeof(name)); /* prg/template name */
       tmpl = find_dil_template(name);
 
-      if(!tmpl)
+      if(tmpl == nullptr)
       {
          /* Make static template containing just the name */
          CREATE(tmpl, struct diltemplate, 1);
          tmpl->nActivations = 0;
          tmpl->prgname      = str_dup(name);
-         tmpl->zone         = NULL;
+         tmpl->zone         = nullptr;
          /* Prevent all execution */
          SET_BIT(prg->flags, DILFL_EXECUTING);
          /* slog(LOG_ALL,0,"Error resolving copy template '%s'",
@@ -430,7 +481,9 @@ void *bread_dil(CByteBuffer *pBuf, struct unit_data *owner, ubit8 version, struc
    pBuf->Read32(&recallpc);            /* recalled PC                */
 
    if(!IS_SET(prg->flags, DILFL_RECALL))
+   {
       recallpc = 0;
+   }
 
    /* read stackframe #0 */
 
@@ -440,10 +493,14 @@ void *bread_dil(CByteBuffer *pBuf, struct unit_data *owner, ubit8 version, struc
    pBuf->Read16(&t16); /* the SAVED #vars             */
    novar = t16;
 
-   if(novar)
+   if(novar != 0)
+   {
       CREATE(prg->sp->vars, struct dilvar, novar); /* saved variables */
+   }
    else
-      prg->sp->vars = NULL;
+   {
+      prg->sp->vars = nullptr;
+   }
 
    for(i = 0; i < novar; i++)
    {
@@ -469,8 +526,8 @@ void *bread_dil(CByteBuffer *pBuf, struct unit_data *owner, ubit8 version, struc
    /* read interrupt array */
    bread_dilintr(pBuf, prg);
 
-   prg->stack[0].securecount = 0;    /* number of secures */
-   prg->stack[0].secure      = NULL; /* secured vars */
+   prg->stack[0].securecount = 0;       /* number of secures */
+   prg->stack[0].secure      = nullptr; /* secured vars */
 
    /* The static template ends here.... */
    if(tmpl->flags == DILFL_FREEME)
@@ -494,42 +551,58 @@ void *bread_dil(CByteBuffer *pBuf, struct unit_data *owner, ubit8 version, struc
       {
          dil_free_var(&prg->sp->vars[i]);
 
-         prg->sp->vars[i].val.string  = NULL;
+         prg->sp->vars[i].val.string  = nullptr;
          prg->sp->vars[i].val.integer = 0;
       }
 
-      if(prg->sp->vars)
+      if(prg->sp->vars != nullptr)
+      {
          free(prg->sp->vars);
+      }
 
-      if(tmpl->varc)
+      if(tmpl->varc != 0u)
+      {
          CREATE(prg->sp->vars, struct dilvar, tmpl->varc);
+      }
       else
-         prg->sp->vars = NULL;
+      {
+         prg->sp->vars = nullptr;
+      }
       for(i = 0; i < tmpl->varc; i++)
       {
          prg->sp->vars[i].type = tmpl->vart[i];
          if(tmpl->vart[i] == DILV_SLP)
+         {
             prg->sp->vars[i].val.namelist = new cNamelist;
+         }
          else
-            prg->sp->vars[i].val.string = NULL;
+         {
+            prg->sp->vars[i].val.string = nullptr;
+         }
       }
       prg->varcrc = tmpl->varcrc; /* variables updated! */
 
       /* free interrupts */
-      if(prg->sp->intr)
+      if(prg->sp->intr != nullptr)
+      {
          free(prg->sp->intr);
+      }
 
-      if(tmpl->intrcount)
+      if(tmpl->intrcount != 0u)
+      {
          CREATE(prg->sp->intr, struct dilintr, tmpl->intrcount);
+      }
       else
-         prg->sp->intr = NULL;
+      {
+         prg->sp->intr = nullptr;
+      }
       prg->sp->intrcount = tmpl->intrcount;
 
       /* clear interrupts */
       for(i = 0; i < prg->sp->intrcount; i++)
       {
          prg->sp->intr[i].flags = 0;
-         prg->sp->intr[i].lab   = NULL;
+         prg->sp->intr[i].lab   = nullptr;
       }
 
       recallpc = 0;
@@ -544,20 +617,26 @@ void *bread_dil(CByteBuffer *pBuf, struct unit_data *owner, ubit8 version, struc
       prg->corecrc = tmpl->corecrc;
 
       /* free interrupts */
-      if(prg->sp->intr)
+      if(prg->sp->intr != nullptr)
+      {
          free(prg->sp->intr);
+      }
 
-      if(tmpl->intrcount)
+      if(tmpl->intrcount != 0u)
+      {
          CREATE(prg->sp->intr, struct dilintr, tmpl->intrcount);
+      }
       else
-         prg->sp->intr = NULL;
+      {
+         prg->sp->intr = nullptr;
+      }
       prg->sp->intrcount = tmpl->intrcount;
 
       /* clear interrupts */
       for(i = 0; i < prg->sp->intrcount; i++)
       {
          prg->sp->intr[i].flags = 0;
-         prg->sp->intr[i].lab   = NULL;
+         prg->sp->intr[i].lab   = nullptr;
       }
    }
 
@@ -566,16 +645,18 @@ void *bread_dil(CByteBuffer *pBuf, struct unit_data *owner, ubit8 version, struc
    return prg;
 }
 
-struct unit_fptr *bread_func(CByteBuffer *pBuf, ubit8 version, struct unit_data *owner)
+auto bread_func(CByteBuffer *pBuf, ubit8 version, struct unit_data *owner) -> struct unit_fptr *
 {
-   struct unit_fptr *fptr, *head;
-   int               cnt, i;
+   struct unit_fptr *fptr;
+   struct unit_fptr *head;
+   int               cnt;
+   int               i;
    ubit8             t8;
    ubit16            t16;
    ubit32            t32;
 
-   fptr = 0;
-   head = 0;
+   fptr = nullptr;
+   head = nullptr;
    cnt  = 0;
 
    g_nCorrupt += pBuf->Read8(&t8);
@@ -583,7 +664,7 @@ struct unit_fptr *bread_func(CByteBuffer *pBuf, ubit8 version, struct unit_data 
 
    for(; i > 0; i--)
    {
-      if(fptr)
+      if(fptr != nullptr)
       {
          CREATE(fptr->next, struct unit_fptr, 1);
          fptr = fptr->next;
@@ -599,23 +680,26 @@ struct unit_fptr *bread_func(CByteBuffer *pBuf, ubit8 version, struct unit_data 
       {
          slog(LOG_ALL, 0, "Illegal func index in bread_func index - corrupt.");
          g_nCorrupt = TRUE;
-         return NULL;
+         return nullptr;
       }
 
       g_nCorrupt += pBuf->Read16(&fptr->heart_beat);
-      if((fptr->heart_beat) && (fptr->heart_beat < WAIT_SEC))
+      if(((fptr->heart_beat) != 0u) && (fptr->heart_beat < WAIT_SEC))
       {
          slog(LOG_ALL, 0, "WARNING: HEARTBEAT LOW (%d)\n", fptr->heart_beat);
       }
       g_nCorrupt += pBuf->Read16(&fptr->flags);
 
       if(fptr->index == SFUN_DIL_INTERNAL)
+      {
          fptr->data = bread_dil(pBuf, owner, version, fptr);
+      }
       else if(fptr->index == SFUN_DILCOPY_INTERNAL)
       {
          char *zname;
          char *uname;
-         char  name[256], *c;
+         char  name[256];
+         char *c;
 
          struct dilargstype *dilargs;
 
@@ -666,7 +750,7 @@ struct unit_fptr *bread_func(CByteBuffer *pBuf, ubit8 version, struct unit_data 
          pBuf->ReadStringAlloc((char **)&fptr->data);
       }
 
-      fptr->next = NULL;
+      fptr->next = nullptr;
    }
 
    return head;
@@ -675,11 +759,15 @@ struct unit_fptr *bread_func(CByteBuffer *pBuf, ubit8 version, struct unit_data 
 void bread_block(FILE *datafile, long file_pos, int length, void *buffer)
 {
    /* Search from beginning of file (binary file) */
-   if(fseek(datafile, file_pos, SEEK_SET))
+   if(fseek(datafile, file_pos, SEEK_SET) != 0)
+   {
       assert(FALSE);
+   }
 
    if(!((int)fread(buffer, sizeof(ubit8), length, datafile) == length))
+   {
       assert(FALSE);
+   }
 }
 
 void bwrite_swap(CByteBuffer *pBuf, struct unit_data *u)
@@ -693,14 +781,19 @@ void bwrite_swap(CByteBuffer *pBuf, struct unit_data *u)
 void bwrite_affect(CByteBuffer *pBuf, struct unit_affected_type *af, ubit8 version)
 {
    int    i = 0;
-   ubit32 nPos, nOrgPos = pBuf->GetLength();
+   ubit32 nPos;
+   ubit32 nOrgPos = pBuf->GetLength();
 
    if(version <= 56)
+   {
       pBuf->Append8(0); /* Assume no affects by default */
+   }
    else
+   {
       pBuf->Append16(0); /* Assume no affects by default */
+   }
 
-   for(; af; af = af->next)
+   for(; af != nullptr; af = af->next)
    {
       i++;
       pBuf->Append16(af->duration);
@@ -725,9 +818,13 @@ void bwrite_affect(CByteBuffer *pBuf, struct unit_affected_type *af, ubit8 versi
       pBuf->SetLength(nOrgPos);
 
       if(version <= 56)
+      {
          pBuf->Append8(i);
+      }
       else
+      {
          pBuf->Append16(i);
+      }
 
       pBuf->SetLength(nPos);
    }
@@ -738,14 +835,15 @@ void bwrite_affect(CByteBuffer *pBuf, struct unit_affected_type *af, ubit8 versi
  */
 void bwrite_diltemplate(CByteBuffer *pBuf, struct diltemplate *tmpl)
 {
-   int i, j;
+   int i;
+   int j;
 
    /* write a template */
 
    /* slog(LOG_ALL, 0, "Write Template: Var %d, Core %d.",
       tmpl->varcrc, tmpl->corecrc); */
 
-   if(tmpl->zone)
+   if(tmpl->zone != nullptr)
    {
       char buf[512];
 
@@ -753,7 +851,9 @@ void bwrite_diltemplate(CByteBuffer *pBuf, struct diltemplate *tmpl)
       pBuf->AppendString(buf);
    }
    else
+   {
       pBuf->AppendString(tmpl->prgname); /* program name @ zone */
+   }
 
    pBuf->Append8(tmpl->flags);      /* recall, etc */
    pBuf->Append16(tmpl->intrcount); /* max number of intr */
@@ -763,7 +863,9 @@ void bwrite_diltemplate(CByteBuffer *pBuf, struct diltemplate *tmpl)
    pBuf->Append8(tmpl->argc);       /* number of arguments */
 
    for(i = 0; i < tmpl->argc; i++)
+   {
       pBuf->Append8(tmpl->argt[i]); /* argument types */
+   }
 
    /* fprintf(stderr,"Writing core: %d\n",tmpl->coresz); */
 
@@ -771,7 +873,9 @@ void bwrite_diltemplate(CByteBuffer *pBuf, struct diltemplate *tmpl)
 
    pBuf->Append16(tmpl->varc); /* number of variables */
    for(i = 0; i < tmpl->varc; i++)
+   {
       pBuf->Append8(tmpl->vart[i]); /* variable types */
+   }
 
    pBuf->Append16(tmpl->xrefcount); /* number of external references */
 
@@ -783,7 +887,9 @@ void bwrite_diltemplate(CByteBuffer *pBuf, struct diltemplate *tmpl)
       pBuf->Append8(tmpl->xrefs[i].argc);
 
       for(j = 0; j < tmpl->xrefs[i].argc; j++)
+      {
          pBuf->Append8(tmpl->xrefs[i].argt[j]);
+      }
    }
    /* resolved references are runtime */
 }
@@ -802,11 +908,13 @@ void bwrite_dil(CByteBuffer *pBuf, struct dilprg *prg)
    tmpl = prg->stack[0].tmpl;
 
    if(!IS_SET(prg->flags, DILFL_COPY))
+   {
       /* write local template */
       bwrite_diltemplate(pBuf, tmpl);
+   }
    else
    {
-      if(tmpl->zone)
+      if(tmpl->zone != nullptr)
       {
          char buf[512];
 
@@ -814,7 +922,9 @@ void bwrite_dil(CByteBuffer *pBuf, struct dilprg *prg)
          pBuf->AppendString(buf);
       }
       else
+      {
          pBuf->AppendString(tmpl->prgname);
+      }
    }
 
    /* slog(LOG_ALL, 0, "Write Program: Var %d, Core %d.",
@@ -839,10 +949,14 @@ void bwrite_dil(CByteBuffer *pBuf, struct dilprg *prg)
       switch(prg->stack[0].vars[i].type)
       {
          case DILV_SLP:
-            if(prg->stack[0].vars[i].val.namelist)
+            if(prg->stack[0].vars[i].val.namelist != nullptr)
+            {
                prg->stack[0].vars[i].val.namelist->AppendBuffer(pBuf);
+            }
             else
-               pBuf->AppendNames(NULL);
+            {
+               pBuf->AppendNames(nullptr);
+            }
             break;
 
          case DILV_SP:
@@ -864,12 +978,13 @@ void bwrite_func(CByteBuffer *pBuf, struct unit_fptr *fptr)
    char  *data;
    int    cnt;
    int    i = 0;
-   ubit32 nPos, nOrgPos = pBuf->GetLength();
+   ubit32 nPos;
+   ubit32 nOrgPos = pBuf->GetLength();
    pBuf->Append8(0); /* Assume no affects by default */
 
    cnt = 0;
 
-   for(; fptr; fptr = fptr->next)
+   for(; fptr != nullptr; fptr = fptr->next)
    {
       assert(fptr->index <= SFUN_TOP_IDX);
 
@@ -877,18 +992,24 @@ void bwrite_func(CByteBuffer *pBuf, struct unit_fptr *fptr)
 
 #ifdef DMSERVER
       if(unit_function_array[fptr->index].save_w_d == SD_NEVER)
+      {
          continue; /* DONT SAVE THIS FROM INSIDE THE GAME! */
+      }
 
-      if(fptr->data && unit_function_array[fptr->index].save_w_d == SD_NULL)
-         data = 0;
+      if((fptr->data != nullptr) && unit_function_array[fptr->index].save_w_d == SD_NULL)
+      {
+         data = nullptr;
+      }
 
-         /* Else this is SD_ASCII and we can save anything we like ... :-) */
+      /* Else this is SD_ASCII and we can save anything we like ... :-) */
 #endif
       i++;
       pBuf->Append16(fptr->index);
 
-      if(fptr->heart_beat && fptr->heart_beat < WAIT_SEC)
+      if((fptr->heart_beat != 0u) && fptr->heart_beat < WAIT_SEC)
+      {
          slog(LOG_ALL, 0, "WARNING: HEARTBEAT LOW (%d)\n", fptr->heart_beat);
+      }
 
       pBuf->Append16(fptr->heart_beat);
       pBuf->Append16(fptr->flags);
@@ -902,7 +1023,7 @@ void bwrite_func(CByteBuffer *pBuf, struct unit_fptr *fptr)
       {
 #ifdef DMC_SRC
          assert(fptr->data);
-         struct dilargstype *dilargs = (struct dilargstype *)fptr->data;
+         auto *dilargs = (struct dilargstype *)fptr->data;
 
          pBuf->AppendDoubleString(dilargs->name);
 
@@ -933,10 +1054,14 @@ void bwrite_func(CByteBuffer *pBuf, struct unit_fptr *fptr)
       }
       else
       {
-         if(data)
+         if(data != nullptr)
+         {
             pBuf->AppendString((char *)data);
+         }
          else
+         {
             pBuf->AppendString("");
+         }
       }
    }
 
@@ -954,11 +1079,13 @@ void bwrite_func(CByteBuffer *pBuf, struct unit_fptr *fptr)
 void bwrite_block(FILE *datafile, int length, void *buffer)
 {
    if(fwrite(buffer, sizeof(ubit8), length, datafile) != (size_t)length)
+   {
       assert(FALSE);
+   }
 }
 
 /* Write unit to string. */
-int write_unit_string(CByteBuffer *pBuf, struct unit_data *u)
+auto write_unit_string(CByteBuffer *pBuf, struct unit_data *u) -> int
 {
    int   i;
    ubit8 nVersion;
@@ -1002,18 +1129,22 @@ int write_unit_string(CByteBuffer *pBuf, struct unit_data *u)
    }
    else
    {
-      struct unit_data *inu = NULL;
+      struct unit_data *inu = nullptr;
 
       if(IS_PC(u))
+      {
          inu = CHAR_LAST_ROOM(u);
+      }
       else if(UNIT_IN(u))
+      {
 #ifdef DMSERVER
          inu = unit_room(u);
+      }
 #else
-         assert(inu == NULL);
+         assert(inu == nullptr);
 #endif
 
-      if(inu && UNIT_FILE_INDEX(inu))
+      if((inu != nullptr) && UNIT_FILE_INDEX(inu))
       {
          pBuf->AppendString(UNIT_FI_ZONENAME(inu));
          pBuf->AppendString(UNIT_FI_NAME(inu));
@@ -1086,7 +1217,9 @@ int write_unit_string(CByteBuffer *pBuf, struct unit_data *u)
             pBuf->AppendString(PC_PWD(u));
 
             for(i = 0; i < 5; i++)
+            {
                pBuf->Append32(PC_LASTHOST(u)[i]);
+            }
 
             pBuf->Append32((ubit32)PC_ID(u));
             pBuf->Append16(PC_CRACK_ATTEMPTS(u));
@@ -1135,7 +1268,9 @@ int write_unit_string(CByteBuffer *pBuf, struct unit_data *u)
 
             pBuf->Append8(3);
             for(i = 0; i < 3; i++)
+            {
                pBuf->Append8(PC_COND(u, i));
+            }
 
             pBuf->Append8(PC_ACCESS_LEVEL(u));
 
@@ -1145,10 +1280,14 @@ int write_unit_string(CByteBuffer *pBuf, struct unit_data *u)
          else
          {
             for(i = 0; i < WPN_GROUP_MAX; i++)
+            {
                pBuf->Append8(NPC_WPN_SKILL(u, i));
+            }
 
             for(i = 0; i < SPL_GROUP_MAX; i++)
+            {
                pBuf->Append8(NPC_SPL_SKILL(u, i));
+            }
 
             pBuf->Append8(NPC_DEFAULT(u));
             pBuf->Append8(NPC_FLAGS(u));
@@ -1183,7 +1322,7 @@ int write_unit_string(CByteBuffer *pBuf, struct unit_data *u)
                TAIL(c2);
                c2++;
             }
-            if(ROOM_EXIT(u, i) && *c1 && *c2)
+            if(ROOM_EXIT(u, i) && (*c1 != 0) && (*c2 != 0))
             {
                pBuf->AppendDoubleString((char *)ROOM_EXIT(u, i)->to_room);
                ROOM_EXIT(u, i)->open_name.AppendBuffer(pBuf);
@@ -1225,7 +1364,9 @@ int write_unit_string(CByteBuffer *pBuf, struct unit_data *u)
 void write_unit(FILE *f, struct unit_data *u, char *fname)
 {
    CByteBuffer *pBuf;
-   ubit32       nSizeStart, nStart, nPos;
+   ubit32       nSizeStart;
+   ubit32       nStart;
+   ubit32       nPos;
    ubit32       length;
    ubit32       crc;
 
@@ -1247,7 +1388,9 @@ void write_unit(FILE *f, struct unit_data *u, char *fname)
    crc = length;
 
    for(ubit32 i = 0; i < length; i++)
+   {
       crc += (pBuf->GetData()[nStart + i] << (i % 16));
+   }
 
    nPos = pBuf->GetLength();
    pBuf->SetLength(nSizeStart);
@@ -1269,8 +1412,11 @@ void write_unit(FILE *f, struct unit_data *u, char *fname)
 void write_diltemplate(FILE *f, struct diltemplate *tmpl)
 {
    CByteBuffer *pBuf;
-   ubit8       *b, *bstart;
-   ubit32       length, nStart, nPos;
+   ubit8       *b;
+   ubit8       *bstart;
+   ubit32       length;
+   ubit32       nStart;
+   ubit32       nPos;
 
    pBuf = &g_FileBuffer;
    pBuf->Clear();

@@ -25,16 +25,15 @@
 /* 02/09/92 seifert: You can now specify an amount to practice, for        */
 /*                   example 'practice 20 hand sword'                      */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
 
 #include "comm.h"
 #include "common.h"
 #include "guild.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
 #include "money.h"
 #include "skills.h"
 #include "spells.h"
@@ -42,6 +41,7 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
 #define PRACTICE_COST_LEVEL (START_LEVEL + 5)
 
@@ -82,11 +82,13 @@ struct teach_packet
    const char             **text;
 };
 
-static int gold_cost(struct skill_teach_type *s, int level)
+static auto gold_cost(struct skill_teach_type *s, int level) -> int
 {
    if(level < 1)
+   {
       return s->min_cost_per_point;
-   else if(level >= s->max_skill)
+   }
+   if(level >= s->max_skill)
       return s->max_cost_per_point;
    else
    {
@@ -100,21 +102,27 @@ static int gold_cost(struct skill_teach_type *s, int level)
    }
 }
 
-int actual_training_level(int lvl, int costs[])
+auto actual_training_level(int lvl, const int costs[]) -> int
 {
    int i;
 
    for(i = 0; i < lvl; i++)
+   {
       if(costs[i] == 0)
+      {
          return i;
+      }
+   }
 
    return i;
 }
 
-int actual_cost(int cost, sbit8 modifier)
+auto actual_cost(int cost, sbit8 modifier) -> int
 {
    if(cost <= 0)
+   {
       return 0;
+   }
 
    /*  +5 gives a 1 point reduction */
    /* +10 gives a 2 point reduction */
@@ -151,25 +159,37 @@ void clear_training_level(struct unit_data *ch)
    assert(IS_PC(ch));
 
    for(i = 0; i < SPL_TREE_MAX; i++)
+   {
       PC_SPL_LVL(ch, i) = 0;
+   }
 
    for(i = 0; i < WPN_TREE_MAX; i++)
+   {
       PC_WPN_LVL(ch, i) = 0;
+   }
 
    for(i = 0; i < SKI_TREE_MAX; i++)
+   {
       PC_SKI_LVL(ch, i) = 0;
+   }
 
    for(i = 0; i < ABIL_TREE_MAX; i++)
+   {
       PC_ABI_LVL(ch, i) = 0;
+   }
 }
 
-int teaches_index(struct skill_teach_type *teaches_skills, int node)
+auto teaches_index(struct skill_teach_type *teaches_skills, int node) -> int
 {
    int i;
 
    for(i = 0; teaches_skills[i].node != -1; i++)
+   {
       if(teaches_skills[i].node == node)
+      {
          return i;
+      }
+   }
 
    return -1;
 }
@@ -179,7 +199,7 @@ void info_show_one(struct unit_data *teacher, struct unit_data *pupil, ubit8 cur
 {
    char buf[256];
 
-   if(isleaf)
+   if(isleaf != 0u)
    {
       if(level_type == 0) /* Guild Level */
       {
@@ -209,14 +229,20 @@ void info_show_one(struct unit_data *teacher, struct unit_data *pupil, ubit8 cur
          currency_t currency = local_currency(teacher);
 
          if(IS_SET(PC_FLAGS(pupil), PC_EXPERT))
+         {
             sprintf(buf, "%s%-20s [%3d%% of %3d%%, points %2d, guild level %2d, %s]\n\r", spc(4 * indent), text, current_points, max_level,
                     next_point, min_level, money_string(money_round(TRUE, gold, currency, 1), currency, FALSE));
+         }
          else
+         {
             sprintf(buf, "%s%-20s [Now %3d%%, practice points %3d]\n\r", spc(4 * indent), text, current_points, next_point);
+         }
       }
    }
    else
+   {
       sprintf(buf, "%s%-20s\n\r", spc(4 * indent), text);
+   }
 
    send_to_char(buf, pupil);
 }
@@ -224,9 +250,12 @@ void info_show_one(struct unit_data *teacher, struct unit_data *pupil, ubit8 cur
 void info_show_roots(struct unit_data *teacher, struct unit_data *pupil, struct skill_teach_type *teaches_skills, struct tree_type *tree,
                      const char *text[], ubit8 level_type, ubit8 pc_values[], ubit8 pc_lvl[], sbit8 pc_cost[])
 {
-   int i, cost, lvl;
+   int i;
+   int cost;
+   int lvl;
 
    for(i = 0; teaches_skills[i].node != -1; i++)
+   {
       if((!TREE_ISROOT(tree, teaches_skills[i].node) && !TREE_ISLEAF(tree, teaches_skills[i].node)) ||
          ((TREE_ISROOT(tree, teaches_skills[i].node) && TREE_ISLEAF(tree, teaches_skills[i].node))))
       {
@@ -238,6 +267,7 @@ void info_show_roots(struct unit_data *teacher, struct unit_data *pupil, struct 
                        gold_cost(&teaches_skills[i], pc_values[teaches_skills[i].node]), text[teaches_skills[i].node], 0,
                        TREE_ISLEAF(tree, teaches_skills[i].node), level_type, teaches_skills[i].min_level);
       }
+   }
 }
 
 void info_one_skill(struct unit_data *teacher, struct unit_data *pupil, struct skill_teach_type *teaches_skills, struct tree_type *tree,
@@ -245,7 +275,11 @@ void info_one_skill(struct unit_data *teacher, struct unit_data *pupil, struct s
                     struct teacher_msg *msgs)
 
 {
-   int indent, i, j, lvl, cost;
+   int indent;
+   int i;
+   int j;
+   int lvl;
+   int cost;
    indent = 0;
 
    /* Find category if index is a leaf with a category parent */
@@ -278,6 +312,7 @@ void info_one_skill(struct unit_data *teacher, struct unit_data *pupil, struct s
 
       /* Show children of teach_index category */
       for(j = 0; teaches_skills[j].node != -1; j++)
+      {
          if(TREE_ISLEAF(tree, teaches_skills[j].node) && (TREE_PARENT(tree, teaches_skills[j].node) == teaches_skills[teach_index].node))
          {
             /* It is a child */
@@ -287,11 +322,13 @@ void info_one_skill(struct unit_data *teacher, struct unit_data *pupil, struct s
             info_show_one(teacher, pupil, pc_values[i], teaches_skills[j].max_skill, cost, gold_cost(&teaches_skills[j], pc_values[i]),
                           text[i], indent, TREE_ISLEAF(tree, teaches_skills[j].node), level_type, teaches_skills[j].min_level);
          }
+      }
    }
    else
    {
       /* Show all leaves, no category above */
       for(j = 0; teaches_skills[j].node != -1; j++)
+      {
          if(TREE_ISLEAF(tree, teaches_skills[j].node))
          {
             /* It is a child */
@@ -302,14 +339,16 @@ void info_one_skill(struct unit_data *teacher, struct unit_data *pupil, struct s
             info_show_one(teacher, pupil, pc_values[i], teaches_skills[j].max_skill, cost, gold_cost(&teaches_skills[j], pc_values[i]),
                           text[i], indent, TREE_ISLEAF(tree, teaches_skills[j].node), level_type, teaches_skills[j].min_level);
          }
+      }
    }
 }
 
-int pupil_magic(struct unit_data *pupil)
+auto pupil_magic(struct unit_data *pupil) -> int
 {
    struct unit_affected_type *af;
 
-   for(af = UNIT_AFFECTED(pupil); af; af = af->next)
+   for(af = UNIT_AFFECTED(pupil); af != nullptr; af = af->next)
+   {
       switch(af->id)
       {
          case ID_BLESS:
@@ -353,14 +392,17 @@ int pupil_magic(struct unit_data *pupil)
 
             return TRUE;
       }
+   }
 
    return FALSE;
 }
 
-int practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type *tree, const char *text[], ubit8 pc_values[],
-             ubit8 pc_lvl[], sbit8 pc_cost[], sbit32 *practice_points, int teach_index)
+auto practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type *tree, const char *text[], ubit8 pc_values[],
+              ubit8 pc_lvl[], sbit8 pc_cost[], sbit32 *practice_points, int teach_index) -> int
 {
-   int        current_points, cost, lvl;
+   int        current_points;
+   int        cost;
+   int        lvl;
    char       buf[512];
    currency_t currency = local_currency(sarg->owner);
    amount_t   amt;
@@ -381,7 +423,7 @@ int practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type 
 
    if(pckt->teaches[teach_index].max_skill <= pc_values[pckt->teaches[teach_index].node])
    {
-      act(pckt->msgs.teacher_not_good_enough, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_VICT);
+      act(pckt->msgs.teacher_not_good_enough, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_VICT);
       return TRUE;
    }
 
@@ -427,17 +469,19 @@ int practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type 
    if(*practice_points < cost)
    {
       sprintf(buf, pckt->msgs.not_enough_points, cost);
-      act(buf, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_VICT);
+      act(buf, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_VICT);
       if(CHAR_LEVEL(sarg->activator) == START_LEVEL)
+      {
          send_to_char("Beginners note: Go on adventure and gain a level.\n\r"
                       "Then come back and practice afterwards.\n\r",
                       sarg->activator);
+      }
       return TRUE;
    }
 
-   if(pupil_magic(sarg->activator))
+   if(pupil_magic(sarg->activator) != 0)
    {
-      act(pckt->msgs.not_pure, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_VICT);
+      act(pckt->msgs.not_pure, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_VICT);
       return TRUE;
    }
 
@@ -445,10 +489,10 @@ int practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type 
 
    amt = money_round(TRUE, gold_cost(&pckt->teaches[teach_index], pc_values[pckt->teaches[teach_index].node]), currency, 1);
 
-   if(CHAR_LEVEL(sarg->activator) > PRACTICE_COST_LEVEL && !char_can_afford(sarg->activator, amt, currency))
+   if(CHAR_LEVEL(sarg->activator) > PRACTICE_COST_LEVEL && (char_can_afford(sarg->activator, amt, currency) == 0u))
    {
       sprintf(buf, pckt->msgs.not_enough_gold, money_string(amt, local_currency(sarg->activator), TRUE));
-      act(buf, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_VICT);
+      act(buf, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_VICT);
       return TRUE;
    }
 
@@ -459,12 +503,18 @@ int practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type 
    pc_lvl[pckt->teaches[teach_index].node]++;
 
    if(CHAR_LEVEL(sarg->activator) > PRACTICE_COST_LEVEL)
+   {
       money_from_unit(sarg->activator, amt, currency);
+   }
 
    if(pckt->type == TEACH_ABILITIES)
+   {
       pc_values[pckt->teaches[teach_index].node] += 2;
+   }
    else
+   {
       pc_values[pckt->teaches[teach_index].node] += 5;
+   }
 
    int idx = pckt->teaches[teach_index].node;
 
@@ -476,7 +526,9 @@ int practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type 
       pc_values[pidx] = pc_values[idx] / 2;
 
       if(TREE_ISROOT(tree, pidx))
+      {
          break;
+      }
 
       idx = TREE_PARENT(tree, idx);
    }
@@ -486,18 +538,21 @@ int practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type 
    return FALSE;
 }
 
-int teach_basis(struct spec_arg *sarg, struct teach_packet *pckt)
+auto teach_basis(struct spec_arg *sarg, struct teach_packet *pckt) -> int
 {
-   int     index, stop;
-   ubit8  *pc_values       = NULL;
-   ubit8  *pc_lvl          = NULL;
-   sbit8  *pc_cost         = NULL;
-   sbit32 *practice_points = NULL;
+   int     index;
+   int     stop;
+   ubit8  *pc_values       = nullptr;
+   ubit8  *pc_lvl          = nullptr;
+   sbit8  *pc_cost         = nullptr;
+   sbit32 *practice_points = nullptr;
    char    buf[MAX_INPUT_LENGTH];
    char   *arg;
 
    if(sarg->cmd->no != CMD_INFO && sarg->cmd->no != CMD_PRACTICE)
+   {
       return SFR_SHARE;
+   }
 
    if(!IS_PC(sarg->activator))
    {
@@ -507,7 +562,7 @@ int teach_basis(struct spec_arg *sarg, struct teach_packet *pckt)
 
    if(!CHAR_IS_READY(sarg->owner))
    {
-      act("$1n is not capable of teaching now.", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_VICT);
+      act("$1n is not capable of teaching now.", A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_VICT);
       return SFR_BLOCK;
    }
 
@@ -545,7 +600,7 @@ int teach_basis(struct spec_arg *sarg, struct teach_packet *pckt)
          assert(FALSE);
    }
 
-   if(str_is_empty(sarg->arg))
+   if(str_is_empty(sarg->arg) != 0u)
    {
       if(sarg->cmd->no == CMD_INFO)
       {
@@ -555,9 +610,11 @@ int teach_basis(struct spec_arg *sarg, struct teach_packet *pckt)
       }
       else
       {
-         act("$1n asks, 'What do you wish to practice, $3n?'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_VICT);
+         act("$1n asks, 'What do you wish to practice, $3n?'", A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_VICT);
          if(CHAR_LEVEL(sarg->activator) == START_LEVEL)
+         {
             send_to_char("Beginners note: Try the 'info' command NOW.\n\r", sarg->activator);
+         }
       }
 
       return SFR_BLOCK;
@@ -568,14 +625,14 @@ int teach_basis(struct spec_arg *sarg, struct teach_packet *pckt)
 
    if(index == -1)
    {
-      act(pckt->msgs.unknown_skill, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_VICT);
+      act(pckt->msgs.unknown_skill, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_VICT);
       return SFR_BLOCK;
    }
 
    index = teaches_index(pckt->teaches, index);
    if(index == -1)
    {
-      act(pckt->msgs.no_teaching, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_VICT);
+      act(pckt->msgs.no_teaching, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_VICT);
       return SFR_BLOCK;
    }
 
@@ -602,7 +659,7 @@ int teach_basis(struct spec_arg *sarg, struct teach_packet *pckt)
    return SFR_BLOCK;
 }
 
-int teaching(struct spec_arg *sarg)
+auto teaching(struct spec_arg *sarg) -> int
 {
    struct teach_packet *packet;
    int                  i;
@@ -612,75 +669,105 @@ int teaching(struct spec_arg *sarg)
 
    if(sarg->cmd->no == CMD_AUTO_EXTRACT)
    {
-      if(packet->msgs.unknown_skill)
+      if(packet->msgs.unknown_skill != nullptr)
+      {
          free(packet->msgs.unknown_skill);
+      }
 
-      if(packet->msgs.no_teaching)
+      if(packet->msgs.no_teaching != nullptr)
+      {
          free(packet->msgs.no_teaching);
+      }
 
-      if(packet->msgs.not_enough_gold)
+      if(packet->msgs.not_enough_gold != nullptr)
+      {
          free(packet->msgs.not_enough_gold);
+      }
 
-      if(packet->msgs.not_enough_points)
+      if(packet->msgs.not_enough_points != nullptr)
+      {
          free(packet->msgs.not_enough_points);
+      }
 
-      if(packet->msgs.teacher_not_good_enough)
+      if(packet->msgs.teacher_not_good_enough != nullptr)
+      {
          free(packet->msgs.teacher_not_good_enough);
+      }
 
-      if(packet->msgs.not_pure)
+      if(packet->msgs.not_pure != nullptr)
+      {
          free(packet->msgs.not_pure);
+      }
 
-      if(packet->msgs.remove_inventory)
+      if(packet->msgs.remove_inventory != nullptr)
+      {
          free(packet->msgs.remove_inventory);
+      }
 
       for(i = 0; packet->teaches[i].node != -1; i++)
-         if(packet->teaches[i].costs)
+      {
+         if(packet->teaches[i].costs != nullptr)
+         {
             free(packet->teaches[i].costs);
+         }
+      }
 
-      if(packet->teaches)
+      if(packet->teaches != nullptr)
+      {
          free(packet->teaches);
+      }
 
       free(packet);
 
-      sarg->fptr->data = 0;
+      sarg->fptr->data = nullptr;
       return SFR_BLOCK;
    }
 
    return teach_basis(sarg, packet);
 }
 
-char *get_next_str(char *data, char *dest)
+auto get_next_str(char *data, char *dest) -> char *
 {
-   while(isspace(*data))
+   while(isspace(*data) != 0)
+   {
       data++;
+   }
 
-   while(*data && *data != ';')
+   while((*data != 0) && *data != ';')
+   {
       *dest++ = *data++;
+   }
 
-   if(*data) /* == ';' */
+   if(*data != 0)
+   { /* == ';' */
       data++;
+   }
 
    *dest = 0;
 
    return data;
 }
 
-int teach_init(struct spec_arg *sarg)
+auto teach_init(struct spec_arg *sarg) -> int
 {
    char                   *c;
-   int                     i, count, n;
+   int                     i;
+   int                     count;
+   int                     n;
    int                     realm = -1;
    char                    buf[MAX_STRING_LENGTH];
    int                     points[20];
    struct teach_packet    *packet;
    struct skill_teach_type a_skill;
 
-   static const char *teach_types[] = {"abilities", "spells", "skills", "weapons", NULL};
+   static const char *teach_types[] = {"abilities", "spells", "skills", "weapons", nullptr};
 
    if(sarg->cmd->no < CMD_NORTH)
+   {
       return SFR_SHARE;
+   }
 
-   if(!(c = (char *)sarg->fptr->data))
+   if((c = (char *)sarg->fptr->data) == nullptr)
    {
       szonelog(UNIT_FI_ZONE(sarg->owner), "%s@%s: No text data for teacher-init!", UNIT_FI_NAME(sarg->owner),
                UNIT_FI_ZONENAME(sarg->owner));
@@ -734,8 +821,10 @@ int teach_init(struct spec_arg *sarg)
    }
 
    c = get_next_str(c, buf);
-   if(str_is_number(buf))
+   if(str_is_number(buf) != 0u)
+   {
       packet->level_type = atoi(buf);
+   }
    else
    {
       szonelog(UNIT_FI_ZONE(sarg->owner),
@@ -766,11 +855,13 @@ int teach_init(struct spec_arg *sarg)
    for(;;)
    {
       c = get_next_str(c, buf);
-      if(!*buf)
+      if(*buf == 0)
+      {
          break;
+      }
 
       a_skill.min_level = atoi(buf);
-      if(!is_in(a_skill.min_level, 0, 150))
+      if(is_in(a_skill.min_level, 0, 150) == 0)
       {
          szonelog(UNIT_FI_ZONE(sarg->owner),
                   "%s@%s: Minimum level expected "
@@ -781,12 +872,14 @@ int teach_init(struct spec_arg *sarg)
       }
 
       c = get_next_str(c, buf);
-      if(!*buf)
+      if(*buf == 0)
+      {
          break;
+      }
 
       a_skill.max_skill = atoi(buf);
 
-      if(!is_in(a_skill.max_skill, 1, 100))
+      if(is_in(a_skill.max_skill, 1, 100) == 0)
       {
          szonelog(UNIT_FI_ZONE(sarg->owner),
                   "%s@%s: Maximum skill expected "
@@ -797,8 +890,10 @@ int teach_init(struct spec_arg *sarg)
       }
 
       c = get_next_str(c, buf);
-      if(!*buf)
+      if(*buf == 0)
+      {
          break;
+      }
 
       strip_trailing_spaces(buf);
 
@@ -833,7 +928,7 @@ int teach_init(struct spec_arg *sarg)
       /* Get cost */
 
       c = get_next_str(c, buf);
-      if(!*buf)
+      if(*buf == 0)
       {
          szonelog(UNIT_FI_ZONE(sarg->owner),
                   "%s@%s: Premature ending of "
@@ -856,7 +951,7 @@ int teach_init(struct spec_arg *sarg)
       a_skill.min_cost_per_point = i;
 
       c = get_next_str(c, buf);
-      if(!*buf)
+      if(*buf == 0)
       {
          szonelog(UNIT_FI_ZONE(sarg->owner),
                   "%s@%s: Premature ending of "
@@ -892,7 +987,7 @@ int teach_init(struct spec_arg *sarg)
       do
       {
          c = get_next_str(c, buf);
-         if(!*buf)
+         if(*buf == 0)
          {
             szonelog(UNIT_FI_ZONE(sarg->owner),
                      "%s@%s: Premature ending of "
@@ -906,8 +1001,10 @@ int teach_init(struct spec_arg *sarg)
          points[n++] = i;
       } while((i != 0) && (n < 15));
 
-      if((i != 0) || !*buf)
+      if((i != 0) || (*buf == 0))
+      {
          break;
+      }
 
       if(n < 1)
       {
@@ -921,7 +1018,9 @@ int teach_init(struct spec_arg *sarg)
 
       /* Spheres are inserted automagically */
       if(!TREE_ISLEAF(packet->tree, a_skill.node))
+      {
          continue;
+      }
 
       packet->teaches[count - 1] = a_skill;
       CREATE(packet->teaches[count - 1].costs, int, n);

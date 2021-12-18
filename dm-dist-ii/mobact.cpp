@@ -22,8 +22,8 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "comm.h"
 #include "db.h"
@@ -55,7 +55,9 @@ void SetFptrTimer(struct unit_data *u, struct unit_fptr *fptr)
       }
 
       if(IS_SET(fptr->flags, SFB_RANTIME))
+      {
          ticks = number(ticks - ticks / 2, ticks + ticks / 2);
+      }
 
       event_enq(ticks, special_event, u, fptr);
    }
@@ -69,26 +71,29 @@ void ResetFptrTimer(struct unit_data *u, struct unit_fptr *fptr)
 
 void special_event(void *p1, void *p2)
 {
-   struct unit_data *u    = (struct unit_data *)p1;
-   struct unit_fptr *fptr = (struct unit_fptr *)p2;
+   auto *u    = (struct unit_data *)p1;
+   auto *fptr = (struct unit_fptr *)p2;
 
-   ubit32            ret = SFR_SHARE, ticks;
+   ubit32            ret = SFR_SHARE;
+   ubit32            ticks;
    struct unit_fptr *ftmp;
    struct spec_arg   sarg;
 
    void add_func_history(struct unit_data * u, ubit16, ubit16);
 
-   extern struct command_info cmd_auto_tick;
-
-   if(g_cServerConfig.m_bNoSpecials)
+   if(g_cServerConfig.m_bNoSpecials != 0)
+   {
       return;
+   }
 
-   for(ftmp = UNIT_FUNC(u); ftmp; ftmp = ftmp->next)
+   for(ftmp = UNIT_FUNC(u); ftmp != nullptr; ftmp = ftmp->next)
    {
       if(ftmp != fptr)
       {
          if(IS_SET(ftmp->flags, SFB_PRIORITY))
+         {
             break;
+         }
       }
       else
       {
@@ -96,7 +101,7 @@ void special_event(void *p1, void *p2)
             the mother fucker! */
          if(!IS_CHAR(u) || !CHAR_IS_SWITCHED(u))
          {
-            if(unit_function_array[fptr->index].func)
+            if(unit_function_array[fptr->index].func != nullptr)
             {
                if(IS_SET(fptr->flags, SFB_TICK))
                {
@@ -104,29 +109,33 @@ void special_event(void *p1, void *p2)
                   add_func_history(u, fptr->index, SFB_TICK);
 #endif
                   sarg.owner     = u;
-                  sarg.activator = NULL;
+                  sarg.activator = nullptr;
                   sarg.fptr      = fptr;
                   sarg.cmd       = &cmd_auto_tick;
                   sarg.arg       = "";
                   sarg.mflags    = SFB_TICK;
-                  sarg.medium    = NULL;
-                  sarg.target    = NULL;
-                  sarg.pInt      = NULL;
+                  sarg.medium    = nullptr;
+                  sarg.target    = nullptr;
+                  sarg.pInt      = nullptr;
 
                   ret = (*(unit_function_array[fptr->index].func))(&sarg);
                }
                assert((ret == SFR_SHARE) || (ret == SFR_BLOCK));
             }
             else
+            {
                slog(LOG_ALL, 0, "Null function call!");
+            }
          }
 
          break;
       }
    }
 
-   if(is_destructed(DR_FUNC, fptr))
+   if(is_destructed(DR_FUNC, fptr) != 0)
+   {
       return;
+   }
 
    SetFptrTimer(u, fptr);
 }
@@ -166,14 +175,18 @@ void start_all_special(struct unit_data *u)
 {
    struct unit_fptr *fptr;
 
-   for(fptr = UNIT_FUNC(u); fptr; fptr = fptr->next)
+   for(fptr = UNIT_FUNC(u); fptr != nullptr; fptr = fptr->next)
+   {
       start_special(u, fptr);
+   }
 }
 
 void stop_all_special(struct unit_data *u)
 {
    struct unit_fptr *fptr;
 
-   for(fptr = UNIT_FUNC(u); fptr; fptr = fptr->next)
+   for(fptr = UNIT_FUNC(u); fptr != nullptr; fptr = fptr->next)
+   {
       stop_special(u, fptr);
+   }
 }

@@ -39,11 +39,11 @@
 /* Jan 9, 1995 gnort: Changed the way filenames are used...                 */
 /* Mar 2, 1995 seif : Fixed nasty free bug in write / remove                */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "blkfile.h"
 #include "comm.h"
@@ -90,39 +90,45 @@ struct board_info
 /* globals */
 extern struct descriptor_data *descriptor_list;
 
-struct board_info *board_list = NULL; /* Linked list of boards           */
+struct board_info *board_list = nullptr; /* Linked list of boards           */
 
 #ifndef DOS
 /* extern fncts */
-size_t strftime(char *s, size_t smax, const char *fmt, const struct tm *tp);
+
 #endif
 
 /* local fncts */
 
-int                show_board(const struct unit_data *, struct unit_data *, struct board_info *, char *);
-void               write_board(struct unit_data *, struct board_info *, char *, struct unit_data *);
-int                read_board(struct unit_data *, struct board_info *, char *);
-int                reply_board(struct unit_data *, struct board_info *, char *, struct unit_data *board);
-int                remove_msg(struct unit_data *, struct board_info *, char *);
-void               save_board_msg(struct board_info *, int, char *);
-void               load_board_msg(struct board_info *, int, bool);
-struct board_info *init_board(char *);
-struct board_info *get_board(struct unit_fptr *);
+auto show_board(const struct unit_data * /*ch*/, struct unit_data * /*board*/, struct board_info * /*tb*/, char * /*arg*/) -> int;
+void write_board(struct unit_data * /*ch*/, struct board_info * /*tb*/, char * /*arg*/, struct unit_data * /*board*/);
+auto read_board(struct unit_data * /*ch*/, struct board_info * /*tb*/, char * /*arg*/) -> int;
+auto reply_board(struct unit_data * /*ch*/, struct board_info * /*tb*/, char * /*arg*/, struct unit_data *board) -> int;
+auto remove_msg(struct unit_data * /*ch*/, struct board_info * /*tb*/, char * /*arg*/) -> int;
+void save_board_msg(struct board_info * /*tb*/, int /*index*/, char * /*text*/);
+void load_board_msg(struct board_info * /*tb*/, int /*index*/, bool /*text*/);
+auto init_board(char * /*file_name*/) -> struct board_info *;
+auto get_board(struct unit_fptr * /*fptr*/) -> struct board_info *;
 
-int board(struct spec_arg *sarg)
+auto board(struct spec_arg *sarg) -> int
 {
    struct unit_data  *u;
    struct board_info *tb;
    char              *arg = (char *)sarg->arg;
 
-   if(sarg->activator == NULL || !IS_CHAR(sarg->activator) || !CHAR_DESCRIPTOR(sarg->activator))
+   if(sarg->activator == nullptr || !IS_CHAR(sarg->activator) || !CHAR_DESCRIPTOR(sarg->activator))
+   {
       return SFR_SHARE;
+   }
 
-   if((tb = get_board(sarg->fptr)) == NULL)
+   if((tb = get_board(sarg->fptr)) == nullptr)
+   {
       return SFR_SHARE;
+   }
 
    if(tb->min_level > CHAR_LEVEL(sarg->activator))
+   {
       return SFR_SHARE;
+   }
 
    switch(sarg->cmd->no)
    {
@@ -131,15 +137,19 @@ int board(struct spec_arg *sarg)
          return show_board(sarg->activator, sarg->owner, tb, (char *)sarg->arg);
 
       case CMD_WRITE:
-         u = find_unit(sarg->activator, &arg, NULL, FIND_UNIT_INVEN | FIND_UNIT_EQUIP);
+         u = find_unit(sarg->activator, &arg, nullptr, FIND_UNIT_INVEN | FIND_UNIT_EQUIP);
 
-         if(u)
+         if(u != nullptr)
+         {
             return SFR_SHARE;
+         }
 
-         u = find_unit(sarg->activator, &arg, NULL, FIND_UNIT_SURRO);
+         u = find_unit(sarg->activator, &arg, nullptr, FIND_UNIT_SURRO);
 
          if(u != sarg->owner)
+         {
             arg = (char *)sarg->arg;
+         }
 
          write_board(sarg->activator, tb, arg, sarg->owner);
          return SFR_BLOCK;
@@ -158,17 +168,20 @@ int board(struct spec_arg *sarg)
    }
 }
 
-int show_board(const struct unit_data *ch, struct unit_data *board, struct board_info *tb, char *arg)
+auto show_board(const struct unit_data *ch, struct unit_data *board, struct board_info *tb, char *arg) -> int
 {
-   char  tmp[MAX_INPUT_LENGTH], buf[10000]; /* Enough with 50 messages */
+   char  tmp[MAX_INPUT_LENGTH];
+   char  buf[10000]; /* Enough with 50 messages */
    int   i;
    bool  shown = FALSE;
    char *c     = arg;
 
-   if(find_unit(ch, &c, NULL, FIND_UNIT_SURRO) != board)
+   if(find_unit(ch, &c, nullptr, FIND_UNIT_SURRO) != board)
+   {
       return SFR_SHARE;
+   }
 
-   act("$1n studies $2n.", A_HIDEINV, ch, board, 0, TO_ROOM);
+   act("$1n studies $2n.", A_HIDEINV, ch, board, nullptr, TO_ROOM);
 
    strcpy(buf, "This is a bulletin board.\n\r"
                "Usage: READ/REPLY/REMOVE <msg #>, WRITE <header>\n\r");
@@ -176,7 +189,9 @@ int show_board(const struct unit_data *ch, struct unit_data *board, struct board
    for(i = 0; i < MAX_MSGS; i++)
    {
       if(tb->handles[i] == BLK_NULL)
+      {
          continue;
+      }
       shown = TRUE;
 
       sprintf(tmp, "%2d - %s : %-*s (%s)\n\r", i + 1, timetodate(tb->msgs[i].time), 55 - (int)strlen(tb->msgs[i].owner), tb->msgs[i].header,
@@ -185,7 +200,9 @@ int show_board(const struct unit_data *ch, struct unit_data *board, struct board
    }
 
    if(!shown)
+   {
       strcat(buf, "The board is empty.\n\r");
+   }
 
    page_string(CHAR_DESCRIPTOR(ch), buf);
 
@@ -212,14 +229,16 @@ void edit_board(struct descriptor_data *d)
 
    /* add final newline for board-messages, if needed */
    if(len < 2 || (len > 1 && (d->localstr)[len - 2] != '\n' && (d->localstr)[len - 1] != '\r'))
+   {
       strcat(d->localstr, "\n\r");
+   }
 
    save_board_msg(((struct board_save_info *)d->editref)->tb, ((struct board_save_info *)d->editref)->index, d->localstr);
 
    struct board_info *tb = ((struct board_save_info *)d->editref)->tb;
 
    free(d->editref);
-   d->editref = NULL;
+   d->editref = nullptr;
 
    compact_board(tb);
 }
@@ -236,40 +255,56 @@ void compact_board(struct board_info *tb)
    int                     compacted = FALSE;
 
    for(index = 0; index < MAX_MSGS - 1; index++)
+   {
       if(tb->handles[index] == BLK_NULL)
+      {
          break;
+      }
+   }
 
    if(index >= MAX_MSGS)
+   {
       return;
+   }
 
    /* We got a blank entry */
 
    for(; index < MAX_MSGS - 1; index++)
    {
-      for(d = descriptor_list; d; d = d->next)
+      for(d = descriptor_list; d != nullptr; d = d->next)
       {
-         if(d->postedit == edit_board && d->editref && ((struct board_save_info *)d->editref)->tb == tb &&
+         if(d->postedit == edit_board && (d->editref != nullptr) && ((struct board_save_info *)d->editref)->tb == tb &&
             ((((struct board_save_info *)d->editref)->index == index) || ((struct board_save_info *)d->editref)->index == index + 1))
+         {
             break; // Can't compact any more!
+         }
       }
 
-      if(d)
+      if(d != nullptr)
+      {
          break;
+      }
 
       tb->msgs[index]    = tb->msgs[index + 1];
       tb->handles[index] = tb->handles[index + 1];
 
       if(tb->handles[index] != BLK_NULL)
+      {
          compacted = TRUE;
+      }
 
       tb->handles[index + 1]     = BLK_NULL;
-      tb->msgs[index + 1].header = tb->msgs[index + 1].owner = NULL;
+      tb->msgs[index + 1].header = tb->msgs[index + 1].owner = nullptr;
    }
 
-   if(compacted)
+   if(compacted != 0)
+   {
       compact_board(tb);
+   }
    else
+   {
       blk_write_reserved(tb->bf, tb->handles, MAX_MSGS * sizeof(blk_handle));
+   }
 }
 
 void write_board(struct unit_data *ch, struct board_info *tb, char *arg, struct unit_data *board)
@@ -281,15 +316,19 @@ void write_board(struct unit_data *ch, struct board_info *tb, char *arg, struct 
    {
       if(tb->handles[i] == BLK_NULL)
       {
-         for(d = descriptor_list; d; d = d->next)
+         for(d = descriptor_list; d != nullptr; d = d->next)
          {
-            if(d->postedit == edit_board && d->editref && ((struct board_save_info *)d->editref)->tb == tb &&
+            if(d->postedit == edit_board && (d->editref != nullptr) && ((struct board_save_info *)d->editref)->tb == tb &&
                ((struct board_save_info *)d->editref)->index == i)
+            {
                break;
+            }
          }
 
-         if(d == NULL)
+         if(d == nullptr)
+         {
             break;
+         }
       }
    }
 
@@ -301,7 +340,7 @@ void write_board(struct unit_data *ch, struct board_info *tb, char *arg, struct 
 
    arg = skip_spaces(arg);
 
-   if(!*arg)
+   if(*arg == 0)
    {
       send_to_char("You have to write a headline!\n\r", ch);
       return;
@@ -314,21 +353,27 @@ void write_board(struct unit_data *ch, struct board_info *tb, char *arg, struct 
    }
 
    /* We crashed here once on Wed May 22, 1996 */
-   if(tb->msgs[i].text) /* was somebody writing, and lost link? */
+   if(tb->msgs[i].text != nullptr)
+   { /* was somebody writing, and lost link? */
       free(tb->msgs[i].text);
+   }
 
-   if(tb->msgs[i].header)
+   if(tb->msgs[i].header != nullptr)
+   {
       free(tb->msgs[i].header);
-   if(tb->msgs[i].owner)
+   }
+   if(tb->msgs[i].owner != nullptr)
+   {
       free(tb->msgs[i].owner);
+   }
 
    tb->msgs[i].header = str_dup(arg);
    tb->msgs[i].owner  = str_dup(TITLENAME(ch));
-   tb->msgs[i].time   = time(0);
+   tb->msgs[i].time   = time(nullptr);
    tb->msgs[i].text   = str_dup("");
 
    send_to_char("You begin to write a message on the board.\n\r", ch);
-   act("$1n starts to write a message.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+   act("$1n starts to write a message.", A_HIDEINV, ch, nullptr, nullptr, TO_ROOM);
 
    struct board_save_info *bsi;
 
@@ -342,19 +387,20 @@ void write_board(struct unit_data *ch, struct board_info *tb, char *arg, struct 
    CHAR_DESCRIPTOR(ch)->editref  = bsi;
 
    set_descriptor_fptr(CHAR_DESCRIPTOR(ch), interpreter_string_add, TRUE);
-
-   return;
 }
 
-int reply_board(struct unit_data *ch, struct board_info *tb, char *arg, struct unit_data *board)
+auto reply_board(struct unit_data *ch, struct board_info *tb, char *arg, struct unit_data *board) -> int
 {
-   char number[MAX_INPUT_LENGTH], head[80];
+   char number[MAX_INPUT_LENGTH];
+   char head[80];
    int  msg;
 
    one_argument(arg, number);
 
-   if(!str_is_number(number))
+   if(str_is_number(number) == 0u)
+   {
       return SFR_SHARE;
+   }
 
    msg = atoi(number);
 
@@ -373,24 +419,31 @@ int reply_board(struct unit_data *ch, struct board_info *tb, char *arg, struct u
    }
 
    /* Add a 'Re: ' */
-   if(str_nccmp(tb->msgs[msg - 1].header, "re: ", 4)) /* No re: */
+   if(str_nccmp(tb->msgs[msg - 1].header, "re: ", 4) != 0)
+   { /* No re: */
       sprintf(head, "Re: %.*s", 51 - (int)strlen(TITLENAME(ch)), tb->msgs[msg - 1].header);
-   else /* Just use existing re: */
+   }
+   else
+   { /* Just use existing re: */
       sprintf(head, "%.*s", 55 - (int)strlen(TITLENAME(ch)), tb->msgs[msg - 1].header);
+   }
 
    write_board(ch, tb, head, board);
    return SFR_BLOCK;
 }
 
-int read_board(struct unit_data *ch, struct board_info *tb, char *arg)
+auto read_board(struct unit_data *ch, struct board_info *tb, char *arg) -> int
 {
-   char number[MAX_INPUT_LENGTH], buf[MAX_STRING_LENGTH];
+   char number[MAX_INPUT_LENGTH];
+   char buf[MAX_STRING_LENGTH];
    int  msg;
 
    one_argument(arg, number);
 
-   if(!str_is_number(number))
+   if(str_is_number(number) == 0u)
+   {
       return SFR_SHARE;
+   }
 
    msg = atoi(number);
 
@@ -411,27 +464,30 @@ int read_board(struct unit_data *ch, struct board_info *tb, char *arg)
    load_board_msg(tb, msg - 1, TRUE);
 
    sprintf(buf, "Message %d : %s (%s)\n\r\n\r%s", msg, tb->msgs[msg - 1].header, tb->msgs[msg - 1].owner,
-           tb->msgs[msg - 1].text ? tb->msgs[msg - 1].text : "");
+           tb->msgs[msg - 1].text != nullptr ? tb->msgs[msg - 1].text : "");
 
-   if(tb->msgs[msg - 1].text)
+   if(tb->msgs[msg - 1].text != nullptr)
    {
       free(tb->msgs[msg - 1].text);
-      tb->msgs[msg - 1].text = NULL;
+      tb->msgs[msg - 1].text = nullptr;
    }
 
    page_string(CHAR_DESCRIPTOR(ch), buf);
    return SFR_BLOCK;
 }
 
-int remove_msg(struct unit_data *ch, struct board_info *tb, char *arg)
+auto remove_msg(struct unit_data *ch, struct board_info *tb, char *arg) -> int
 {
-   int  msg, index;
+   int  msg;
+   int  index;
    char number[MAX_INPUT_LENGTH];
 
    one_argument(arg, number);
 
-   if(!str_is_number(number))
+   if(str_is_number(number) == 0u)
+   {
       return SFR_SHARE;
+   }
 
    msg = atoi(number);
 
@@ -451,7 +507,7 @@ int remove_msg(struct unit_data *ch, struct board_info *tb, char *arg)
 
    index = msg - 1;
 
-   if(IS_MORTAL(ch) && str_ccmp(tb->msgs[index].owner, TITLENAME(ch)))
+   if(IS_MORTAL(ch) && (str_ccmp(tb->msgs[index].owner, TITLENAME(ch)) != 0))
    {
       send_to_char("You may only remove your own messages.\n\r", ch);
       return SFR_BLOCK;
@@ -463,10 +519,10 @@ int remove_msg(struct unit_data *ch, struct board_info *tb, char *arg)
    blk_delete(tb->bf, tb->handles[index]);
 
    tb->handles[index]     = BLK_NULL;
-   tb->msgs[index].header = tb->msgs[index].owner = NULL;
+   tb->msgs[index].header = tb->msgs[index].owner = nullptr;
 
    send_to_char("Message removed.\n\r", ch);
-   act("$1n just removed message $2d.", A_HIDEINV, ch, &msg, 0, TO_ROOM);
+   act("$1n just removed message $2d.", A_HIDEINV, ch, &msg, nullptr, TO_ROOM);
 
    blk_write_reserved(tb->bf, tb->handles, MAX_MSGS * sizeof(blk_handle));
 
@@ -497,12 +553,15 @@ int remove_msg(struct unit_data *ch, struct board_info *tb, char *arg)
 
 void save_board_msg(struct board_info *tb, int index, char *text)
 {
-   ubit8     *buffer, *start;
+   ubit8     *buffer;
+   ubit8     *start;
    blk_length len;
    ubit8      buf[4 * MAX_STRING_LENGTH];
 
    if(tb->handles[index] != BLK_NULL)
+   {
       blk_delete(tb->bf, tb->handles[index]);
+   }
 
    start = buffer = buf;
 
@@ -522,22 +581,23 @@ void save_board_msg(struct board_info *tb, int index, char *text)
    blk_write_reserved(tb->bf, tb->handles, MAX_MSGS * sizeof(blk_handle));
 
    free(tb->msgs[index].text);
-   tb->msgs[index].text = NULL;
+   tb->msgs[index].text = nullptr;
 }
 
 void load_board_msg(struct board_info *tb, int index, bool text)
 {
-   ubit8 *buffer, *keep;
+   ubit8 *buffer;
+   ubit8 *keep;
    char   buf[MAX_STRING_LENGTH];
 
-   keep = buffer = (ubit8 *)blk_read(tb->bf, tb->handles[index], 0);
+   keep = buffer = (ubit8 *)blk_read(tb->bf, tb->handles[index], nullptr);
 
-   if(buffer == NULL) /* Read error */
+   if(buffer == nullptr) /* Read error */
    {
       tb->msgs[index].header = str_dup("DESTROYED");
       tb->msgs[index].owner  = str_dup("none");
       tb->msgs[index].time   = 0;
-      tb->msgs[index].text   = NULL;
+      tb->msgs[index].text   = nullptr;
 
       return;
    }
@@ -554,13 +614,13 @@ void load_board_msg(struct board_info *tb, int index, bool text)
       tb->msgs[index].header = bread_str_alloc(&buffer);
       tb->msgs[index].owner  = bread_str_alloc(&buffer);
       tb->msgs[index].time   = bread_ubit32(&buffer);
-      tb->msgs[index].text   = NULL;
+      tb->msgs[index].text   = nullptr;
    }
 
    free(keep);
 }
 
-struct board_info *init_board(char *file_name)
+auto init_board(char *file_name) -> struct board_info *
 {
    int                i;
    struct board_info *tb;
@@ -569,41 +629,50 @@ struct board_info *init_board(char *file_name)
 
    CREATE(tb, struct board_info, 1);
 
-   if((tb->bf = blk_open(file_name, BOARD_BLK_SIZE)) == NULL)
+   if((tb->bf = blk_open(file_name, BOARD_BLK_SIZE)) == nullptr)
+   {
       assert(FALSE);
+   }
 
    tb->min_level = 0;
    tb->next      = board_list;
    board_list    = tb;
 
-   if((tb->handles = (blk_handle *)blk_read_reserved(tb->bf, 0)) == NULL)
+   if((tb->handles = (blk_handle *)blk_read_reserved(tb->bf, nullptr)) == nullptr)
    {
       CREATE(tb->handles, blk_handle, MAX_MSGS);
       for(i = 0; i < MAX_MSGS; i++)
+      {
          tb->handles[i] = BLK_NULL;
+      }
    }
 
    for(i = 0; i < MAX_MSGS; i++)
+   {
       if(tb->handles[i] == BLK_NULL)
       {
-         tb->msgs[i].header = 0;
-         tb->msgs[i].owner  = 0;
+         tb->msgs[i].header = nullptr;
+         tb->msgs[i].owner  = nullptr;
          tb->msgs[i].time   = 0;
-         tb->msgs[i].text   = 0;
+         tb->msgs[i].text   = nullptr;
       }
       else
+      {
          load_board_msg(tb, i, FALSE); /* no text loaded, only headers */
+      }
+   }
 
    return tb;
 }
 
-struct board_info *get_board(struct unit_fptr *fptr)
+auto get_board(struct unit_fptr *fptr) -> struct board_info *
 {
    struct board_info *tb;
-   char               file_name[200], file_name2[200];
+   char               file_name[200];
+   char               file_name2[200];
    int                level = 0;
 
-   if(fptr->data)
+   if(fptr->data != nullptr)
    {
       char *lp;
 
@@ -621,17 +690,23 @@ struct board_info *get_board(struct unit_fptr *fptr)
    else
    {
       slog(LOG_ALL, 0, "Board without file-name initialization...");
-      return NULL;
+      return nullptr;
    }
 
    sprintf(file_name2, "%sboards/%s", libdir, file_name);
 
-   for(tb = board_list; tb; tb = tb->next)
+   for(tb = board_list; tb != nullptr; tb = tb->next)
+   {
       if(strcmp(file_name2, tb->bf->name) == 0)
+      {
          break;
+      }
+   }
 
-   if(tb == NULL)
+   if(tb == nullptr)
+   {
       tb = init_board(file_name2);
+   }
 
    tb->min_level = MAX(level, tb->min_level);
 
@@ -640,15 +715,15 @@ struct board_info *get_board(struct unit_fptr *fptr)
 
 void do_boards(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   extern struct unit_data *unit_list;
-
    struct unit_data  *u;
-   struct unit_fptr  *f = NULL;
+   struct unit_fptr  *f = nullptr;
    struct board_info *b;
-   char               buf[256], tmp[256];
+   char               buf[256];
+   char               tmp[256];
 
-   for(u = unit_list; u; u = u->gnext)
-      if(IS_OBJ(u) && UNIT_IN(u) && UNIT_MINV(u) <= CHAR_LEVEL(ch) && (f = find_fptr(u, SFUN_BULLETIN_BOARD)))
+   for(u = unit_list; u != nullptr; u = u->gnext)
+   {
+      if(IS_OBJ(u) && UNIT_IN(u) && UNIT_MINV(u) <= CHAR_LEVEL(ch) && ((f = find_fptr(u, SFUN_BULLETIN_BOARD)) != nullptr))
       {
          b = get_board(f);
          if(b->min_level <= (CHAR_LEVEL(ch)))
@@ -659,4 +734,5 @@ void do_boards(struct unit_data *ch, char *arg, const struct command_info *cmd)
             send_to_char(buf, ch);
          }
       }
+   }
 }

@@ -26,12 +26,12 @@
 /* Sun Jun 27 1993 HHS: made vars for world status                         */
 /* Tue Jul 6 1993 HHS: added exchangable lib dir                           */
 
+#include <cctype>
 #include <cerrno>
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 #include <unistd.h>
 
 #ifdef DOS
@@ -74,10 +74,10 @@ struct eventq_elem
 };
 
 /* constants */
-struct eventq_elem     *event_heap = 0;
+struct eventq_elem     *event_heap = nullptr;
 int                     heapspace = 0, events = 0;
-struct descriptor_data *descriptor_list = NULL;
-struct descriptor_data *next_to_process = NULL;
+struct descriptor_data *descriptor_list = nullptr;
+struct descriptor_data *next_to_process = nullptr;
 
 /* For multi-connectors */
 class cMultiMaster Multi;
@@ -107,7 +107,7 @@ const char *compile_time = __TIME__;
 /* external functions */
 void string_add(struct descriptor_data *d, char *str);
 
-void boot_db(void);
+void boot_db();
 
 /* external functions in lib */
 #ifdef GENERIC_BSD
@@ -121,21 +121,21 @@ void srand48(long seedval);
 // int gettimeofday(struct timeval *tp, struct timezone *tzp);
 
 /* local functions */
-void           run_the_game(void);
-void           game_loop(void);
-struct timeval timediff(struct timeval *a, struct timeval *b);
+void run_the_game();
+void game_loop();
+auto timediff(struct timeval *a, struct timeval *b) -> struct timeval;
 
 /* local events */
 void game_event();
-void check_idle_event(void *, void *);
-void perform_violence_event(void *, void *);
-void point_update_event(void *, void *);
+void check_idle_event(void * /*p1*/, void * /*p2*/);
+void perform_violence_event(void * /*p1*/, void * /*p2*/);
+void point_update_event(void * /*p1*/, void * /*p2*/);
 void point_update();
-void food_update_event(void *, void *);
+void food_update_event(void * /*p1*/, void * /*p2*/);
 void food_update();
-void update_crimes_event(void *, void *);
+void update_crimes_event(void * /*p1*/, void * /*p2*/);
 void update_crimes();
-void check_reboot_event(void *, void *);
+void check_reboot_event(void * /*p1*/, void * /*p2*/);
 void check_reboot();
 void swap_check(void *, void *);
 
@@ -154,7 +154,7 @@ int getrlimit(int, struct rlimit *);
 //
 // Need this to be sure the typedefs are right for 64 bit architecture
 //
-void type_validate(void)
+void type_validate()
 {
    assert(sizeof(void *) == 8);
    assert(sizeof(char) == 1);
@@ -166,11 +166,12 @@ void type_validate(void)
    slog(LOG_ALL, 0, "64-bit architecture checked out OK");
 }
 
-int main(int argc, char **argv)
+auto main(int argc, char **argv) -> int
 {
    void cleanup_playerfile(int argc, char *argv[]);
 
-   int pos = 1, sp;
+   int pos = 1;
+   int sp;
 
    extern char    **player_name_list;
    extern cNamelist persist_namelist;
@@ -219,16 +220,22 @@ int main(int argc, char **argv)
             {
                char *name = strrchr(argv[pos], '/');
 
-               if(name && strchr(name, '.') == NULL)
+               if((name != nullptr) && strchr(name, '.') == nullptr)
+               {
                   player_name_list = add_name(name + 1, player_name_list);
+               }
                pos++;
             }
 
             if(pos >= argc)
+            {
                pos--;
+            }
 
             while(*(argv[pos]) == '-')
+            {
                pos--;
+            }
             break;
 
          case 'p':
@@ -238,24 +245,36 @@ int main(int argc, char **argv)
             {
                char *name = strrchr(argv[pos], '/');
 
-               if(!str_is_empty(name + 1))
+               if(str_is_empty(name + 1) == 0u)
+               {
                   persist_namelist.AppendName(name + 1);
+               }
                pos++;
             }
 
             if(pos >= argc)
+            {
                pos--;
+            }
 
             if(sp != pos)
+            {
                while(*(argv[pos]) == '-')
+               {
                   pos--;
+               }
+            }
             break;
 
          case 'd':
-            if(*(argv[pos] + 2))
+            if(*(argv[pos] + 2) != 0)
+            {
                strcpy(libdir, argv[pos] + 2);
+            }
             else if(++pos < argc)
+            {
                strcpy(libdir, argv[pos]);
+            }
             else
             {
                slog(LOG_OFF, 0, "Directory arg expected after option -d.");
@@ -264,10 +283,14 @@ int main(int argc, char **argv)
             break;
 
          case 'z':
-            if(*(argv[pos] + 2))
+            if(*(argv[pos] + 2) != 0)
+            {
                strcpy(zondir, argv[pos] + 2);
+            }
             else if(++pos < argc)
+            {
                strcpy(zondir, argv[pos]);
+            }
             else
             {
                slog(LOG_OFF, 0, "Directory arg expected after option -z.");
@@ -283,11 +306,13 @@ int main(int argc, char **argv)
    }
 
    if(pos < argc)
-      if(!isdigit(*argv[pos]))
+   {
+      if(isdigit(*argv[pos]) == 0)
       {
          ShowUsage(argv[0]);
          exit(1);
       }
+   }
 
    slog(LOG_OFF, 0, "Using 'root' as base directory.");
 
@@ -297,7 +322,7 @@ int main(int argc, char **argv)
    /* Other used routines are declared obsolete by SVID3 */
    srand(time(0));
 #else
-   srandom(time(0));
+   srandom(time(nullptr));
 #endif
 
    run_the_game();
@@ -305,14 +330,14 @@ int main(int argc, char **argv)
 }
 
 /* Init sockets, run game, and cleanup sockets */
-void run_the_game(void)
+void run_the_game()
 {
 #ifdef PROFILE
    extern char etext;
 #endif
 
-   void signal_setup(void);
-   int  load(void);
+   void signal_setup();
+   auto load()->int;
    void coma(int s);
 
    /*
@@ -324,7 +349,7 @@ void run_the_game(void)
    #endif
    */
 
-   descriptor_list = NULL;
+   descriptor_list = nullptr;
 
    slog(LOG_OFF, 0, "Reading server configuration.");
 
@@ -334,7 +359,7 @@ void run_the_game(void)
 
    init_mother(g_cServerConfig.m_nMotherPort);
 
-   if(g_cServerConfig.m_bLawful && load() >= 6)
+   if((g_cServerConfig.m_bLawful != 0) && load() >= 6)
    {
       slog(LOG_OFF, 0, "System load too high at startup.");
       coma(0);
@@ -352,13 +377,13 @@ void run_the_game(void)
    */
    slog(LOG_OFF, 0, "Priming eventqueue.");
 
-   event_enq(PULSE_SEC * SECS_PER_REAL_MIN * 2, check_idle_event, 0, 0);
-   event_enq(PULSE_VIOLENCE, perform_violence_event, 0, 0);
-   event_enq(PULSE_POINTS, point_update_event, 0, 0);
-   event_enq(PULSE_SEC * SECS_PER_MUD_HOUR, food_update_event, 0, 0);
-   event_enq(PULSE_SEC * SECS_PER_REAL_MIN * 5, update_crimes_event, 0, 0);
-   event_enq(PULSE_SEC * SECS_PER_REAL_MIN * 10, check_reboot_event, 0, 0);
-   event_enq(PULSE_SEC * 120, swap_check, 0, 0);
+   event_enq(PULSE_SEC * SECS_PER_REAL_MIN * 2, check_idle_event, nullptr, nullptr);
+   event_enq(PULSE_VIOLENCE, perform_violence_event, nullptr, nullptr);
+   event_enq(PULSE_POINTS, point_update_event, nullptr, nullptr);
+   event_enq(PULSE_SEC * SECS_PER_MUD_HOUR, food_update_event, nullptr, nullptr);
+   event_enq(PULSE_SEC * SECS_PER_REAL_MIN * 5, update_crimes_event, nullptr, nullptr);
+   event_enq(PULSE_SEC * SECS_PER_REAL_MIN * 10, check_reboot_event, nullptr, nullptr);
+   event_enq(PULSE_SEC * 120, swap_check, nullptr, nullptr);
 
    slog(LOG_OFF, 0, "Entering game loop.");
 
@@ -384,12 +409,12 @@ void run_the_game(void)
 
    slog(LOG_OFF, 0, "Memory used when shutting down: %d bytes.", memory_total_alloc);
 
-   void db_shutdown(void);
+   void db_shutdown();
    db_shutdown();
 
    slog(LOG_OFF, 0, "Memory used at final checkpoint: %d bytes.", memory_total_alloc);
 
-   if(mud_reboot)
+   if(mud_reboot != 0)
    {
       slog(LOG_OFF, 0, "Rebooting.");
       exit(42);
@@ -401,12 +426,15 @@ void run_the_game(void)
    }
 }
 
-static void event_process(void)
+static void event_process()
 {
-   struct eventq_elem tmp_event, tmp, *newtop, *child;
-   int                child_index;
+   struct eventq_elem  tmp_event;
+   struct eventq_elem  tmp;
+   struct eventq_elem *newtop;
+   struct eventq_elem *child;
+   int                 child_index;
 
-   while(events && event_heap->when <= tics)
+   while((events != 0) && event_heap->when <= tics)
    {
       /* dequeue & process event */
       tmp_event   = *event_heap;
@@ -417,10 +445,14 @@ static void event_process(void)
       {
          child_index = ((child_index + 1) << 1) - 1;
          if(child_index >= events)
+         {
             break;
+         }
          /* select smaller child */
          if(child_index + 1 < events && (event_heap + child_index)->when > (event_heap + child_index + 1)->when)
+         {
             child_index++;
+         }
          child = event_heap + child_index;
          if(child->when < newtop->when)
          {
@@ -430,24 +462,29 @@ static void event_process(void)
             newtop  = child;
          }
          else
+         {
             break;
+         }
       }
-      if(tmp_event.func)
+      if(tmp_event.func != nullptr)
+      {
          (tmp_event.func)(tmp_event.arg1, tmp_event.arg2);
+      }
    }
 }
 
 void game_loop()
 {
-   struct timeval now, old;
+   struct timeval now;
+   struct timeval old;
    long           delay;
 
-   void clear_destructed(void);
+   void clear_destructed();
 
    tics = 0;
-   gettimeofday(&old, (struct timezone *)0);
+   gettimeofday(&old, (struct timezone *)nullptr);
 
-   while(!mud_shutdown)
+   while(mud_shutdown == 0)
    {
       /* work */
       game_event();
@@ -461,7 +498,7 @@ void game_loop()
       /* Timer stuff. MUD is always at least OPT_USEC useconds in making
          one cycle. */
 
-      gettimeofday(&now, (struct timezone *)0);
+      gettimeofday(&now, (struct timezone *)nullptr);
 
       delay = OPT_USEC - (1000000L * (now.tv_sec - old.tv_sec) + (now.tv_usec - old.tv_usec));
 
@@ -479,16 +516,16 @@ void game_loop()
 }
 
 /* Accept new connects, relay commands, and call 'heartbeat-functs' */
-void game_event(void)
+void game_event()
 {
    int                     i;
-   char                   *pcomm = NULL;
+   char                   *pcomm = nullptr;
    struct descriptor_data *point;
    static char             buf[80];
    static struct timeval   null_time = {0, 0};
 
    void multi_close(struct multi_element * pe);
-   void multi_clear(void);
+   void multi_clear();
 
    i = CaptainHook.Wait(&null_time);
 
@@ -499,11 +536,11 @@ void game_event(void)
    }
 
    /* process_commands; */
-   for(point = descriptor_list; point; point = next_to_process)
+   for(point = descriptor_list; point != nullptr; point = next_to_process)
    {
       next_to_process = point->next;
 
-      if(--(point->wait) <= 0 && !point->qInput.IsEmpty())
+      if(--(point->wait) <= 0 && (point->qInput.IsEmpty() == 0))
       {
          struct cQueueElem *qe = point->qInput.GetHead();
          pcomm                 = (char *)qe->Data();
@@ -514,7 +551,7 @@ void game_event(void)
          point->timer       = 0;
          point->prompt_mode = PROMPT_EXPECT;
 
-         if(point->snoop.snoop_by)
+         if(point->snoop.snoop_by != nullptr)
          {
             char buffer[MAX_INPUT_LENGTH + 10];
             sprintf(buffer, "%s%s\n\r", SNOOP_PROMPT, pcomm);
@@ -527,38 +564,52 @@ void game_event(void)
    }
 
    /* give the people some prompts */
-   for(point = descriptor_list; point; point = point->next)
+   for(point = descriptor_list; point != nullptr; point = point->next)
    {
       if(point->prompt_mode == PROMPT_EXPECT)
       {
-         if(point->editing)
+         if(point->editing != nullptr)
+         {
             strcpy(buf, "] ");
+         }
          else
          {
             *buf = 0;
-            if(descriptor_is_playing(point) &&
-               !(point->character && IS_PC(point->character) && IS_SET(PC_FLAGS(point->character), PC_COMPACT)))
+            if((descriptor_is_playing(point) != 0) &&
+               !((point->character != nullptr) && IS_PC(point->character) && IS_SET(PC_FLAGS(point->character), PC_COMPACT)))
+            {
                send_to_descriptor("\n\r", point);
+            }
 
-            if(descriptor_is_playing(point))
+            if(descriptor_is_playing(point) != 0)
             {
                if(IS_NPC(point->character) || IS_SET(PC_FLAGS(point->character), PC_PROMPT))
                {
                   if(IS_PC(point->character) && IS_CREATOR(point->character))
+                  {
                      if(UNIT_MINV(point->character))
+                     {
                         sprintf(buf, "%d> ", UNIT_MINV(point->character));
+                     }
                      else
+                     {
                         strcpy(buf, "> ");
+                     }
+                  }
                   else
+                  {
                      sprintf(buf, g_cServerConfig.m_sColor.pPrompt, CHAR_MANA(point->character), CHAR_ENDURANCE(point->character),
                              (signed long)UNIT_HIT(point->character));
+                  }
                }
                else
+               {
                   strcpy(buf, "> ");
+               }
             }
          }
 
-         if(*buf)
+         if(*buf != 0)
          {
             protocol_send_text(point->multi, point->id, buf, MULTI_PROMPT_CHAR);
          }
@@ -577,7 +628,9 @@ void game_event(void)
 /* insert new event in heap */
 void event_enq(int when, void (*func)(void *, void *), void *arg1, void *arg2)
 {
-   struct eventq_elem *end, *parent, tmp;
+   struct eventq_elem *end;
+   struct eventq_elem *parent;
+   struct eventq_elem  tmp;
    int                 parent_index;
 
    if(when <= 0)
@@ -587,10 +640,14 @@ void event_enq(int when, void (*func)(void *, void *), void *arg1, void *arg2)
 
    if((events + 1) > heapspace)
    {
-      if(!heapspace)
+      if(heapspace == 0)
+      {
          CREATE(event_heap, struct eventq_elem, heapspace = HEAPSPACE_INCREMENT);
+      }
       else
+      {
          RECREATE(event_heap, struct eventq_elem, heapspace += HEAPSPACE_INCREMENT);
+      }
    }
    end       = event_heap + events;
    end->when = tics + when;
@@ -601,8 +658,10 @@ void event_enq(int when, void (*func)(void *, void *), void *arg1, void *arg2)
    parent_index = events;
    for(;;)
    {
-      if(!parent_index)
+      if(parent_index == 0)
+      {
          break;
+      }
       parent_index = ((parent_index + 1) >> 1) - 1;
       parent       = event_heap + parent_index;
       if(end->when < parent->when)
@@ -613,7 +672,9 @@ void event_enq(int when, void (*func)(void *, void *), void *arg1, void *arg2)
          end     = parent;
       }
       else
+      {
          break;
+      }
    }
    events++;
 }
@@ -624,8 +685,12 @@ void event_deenq(void (*func)(void *, void *), void *arg1, void *arg2)
    int i;
 
    for(i = 0; i < events; i++)
+   {
       if(event_heap[i].func == func && event_heap[i].arg1 == arg1 && event_heap[i].arg2 == arg2)
-         event_heap[i].func = 0;
+      {
+         event_heap[i].func = nullptr;
+      }
+   }
 }
 
 /* deallocate event and remove from queue */
@@ -635,54 +700,60 @@ void event_deenq_relaxed(void (*func)(void *, void *), void *arg1, void *arg2)
    int i;
 
    for(i = 0; i < events; i++)
-      if((event_heap[i].func == func) && (!arg1 || (event_heap[i].arg1 == arg1)) && (!arg2 || (event_heap[i].arg2 == arg2)))
-         event_heap[i].func = 0;
+   {
+      if((event_heap[i].func == func) && ((arg1 == nullptr) || (event_heap[i].arg1 == arg1)) &&
+         ((arg2 == nullptr) || (event_heap[i].arg2 == arg2)))
+      {
+         event_heap[i].func = nullptr;
+      }
+   }
 }
 
 /* events */
 
 void check_idle_event(void *p1, void *p2)
 {
-   void check_idle(void);
+   void check_idle();
 
    check_idle();
-   event_enq(PULSE_ZONE, check_idle_event, 0, 0);
+   event_enq(PULSE_ZONE, check_idle_event, nullptr, nullptr);
 }
 
 void perform_violence_event(void *p1, void *p2)
 {
    CombatList.PerformViolence();
-   event_enq(PULSE_VIOLENCE, perform_violence_event, 0, 0);
+   event_enq(PULSE_VIOLENCE, perform_violence_event, nullptr, nullptr);
 }
 
 void point_update_event(void *p1, void *p2)
 {
    point_update();
-   event_enq(PULSE_POINTS, point_update_event, 0, 0);
+   event_enq(PULSE_POINTS, point_update_event, nullptr, nullptr);
 }
 
 void food_update_event(void *p1, void *p2)
 {
    food_update();
-   event_enq(WAIT_SEC * SECS_PER_MUD_HOUR, food_update_event, 0, 0);
+   event_enq(WAIT_SEC * SECS_PER_MUD_HOUR, food_update_event, nullptr, nullptr);
 }
 
 void update_crimes_event(void *p1, void *p2)
 {
    update_crimes();
-   event_enq(1200, update_crimes_event, 0, 0);
+   event_enq(1200, update_crimes_event, nullptr, nullptr);
 }
 
 void check_reboot_event(void *p1, void *p2)
 {
    check_reboot();
-   event_enq(2400, check_reboot_event, 0, 0);
+   event_enq(2400, check_reboot_event, nullptr, nullptr);
 }
 
 /* utility procedure */
-struct timeval timediff(struct timeval *a, struct timeval *b)
+auto timediff(struct timeval *a, struct timeval *b) -> struct timeval
 {
-   struct timeval rslt, tmp;
+   struct timeval rslt;
+   struct timeval tmp;
 
    tmp = *a;
 
@@ -697,7 +768,9 @@ struct timeval timediff(struct timeval *a, struct timeval *b)
       rslt.tv_sec  = 0;
    }
    else
+   {
       rslt.tv_sec = tmp.tv_sec - b->tv_sec;
+   }
 
    return rslt;
 }

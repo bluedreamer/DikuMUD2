@@ -29,11 +29,11 @@
 /* 12/09/94 gnort   : cleaned up a bit                                     */
 /* 01/07/95 HHS     : added template loading and checking                  */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "account.h"
 #include "affect.h"
@@ -46,7 +46,6 @@
 #include "dilrun.h"
 #include "files.h"
 #include "handler.h"
-#include "limits.h"
 #include "money.h"
 #include "skills.h"
 #include "structs.h"
@@ -55,23 +54,23 @@
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
+#include <climits>
 
-int               room_number;      /* For counting numbers in rooms */
-struct unit_data *unit_list = NULL; /* The global unit_list          */
+int               room_number;         /* For counting numbers in rooms */
+struct unit_data *unit_list = nullptr; /* The global unit_list          */
 
 /* Global permanent element of zone info */
-struct zone_info_type zone_info = {0, 0, 0, 0};
+struct zone_info_type zone_info = {0, nullptr, nullptr, nullptr};
 
-extern char libdir[];
-extern char zondir[];
+extern char   zondir[];
 extern ubit32 memory_total_alloc;
 
-struct room_direction_data *create_direction_data(void);
+auto create_direction_data() -> struct room_direction_data *;
 
 /*  Generate array of bin_search_type for the zone_list, and for each
  *  zone's file_index's.
  */
-void generate_bin_arrays(void)
+void generate_bin_arrays()
 {
    struct file_index_type *fi;
    class zone_type        *z;
@@ -79,31 +78,31 @@ void generate_bin_arrays(void)
 
    /* Generate array for zones */
    CREATE(zone_info.ba, struct bin_search_type, zone_info.no_of_zones);
-   for(i = 0, z = zone_info.zone_list; z; z = z->next, i++)
+   for(i = 0, z = zone_info.zone_list; z != nullptr; z = z->next, i++)
    {
       zone_info.ba[i].block   = z;
       zone_info.ba[i].compare = z->name;
    }
 
    /* Generate array for file indexes for each zone */
-   for(z = zone_info.zone_list; z; z = z->next)
+   for(z = zone_info.zone_list; z != nullptr; z = z->next)
    {
-      if(z->no_of_fi)
+      if(z->no_of_fi != 0u)
       {
          CREATE(z->ba, struct bin_search_type, z->no_of_fi);
-         for(fi = z->fi, i = 0; fi; fi = fi->next, i++)
+         for(fi = z->fi, i = 0; fi != nullptr; fi = fi->next, i++)
          {
             z->ba[i].block   = fi;
             z->ba[i].compare = fi->name;
          }
       }
 
-      if(z->no_tmpl)
+      if(z->no_tmpl != 0u)
       {
          struct diltemplate *tmpl;
 
          CREATE(z->tmplba, struct bin_search_type, z->no_tmpl);
-         for(tmpl = z->tmpl, i = 0; tmpl; tmpl = tmpl->next, i++)
+         for(tmpl = z->tmpl, i = 0; tmpl != nullptr; tmpl = tmpl->next, i++)
          {
             z->tmplba[i].block   = tmpl;
             z->tmplba[i].compare = tmpl->prgname;
@@ -113,17 +112,19 @@ void generate_bin_arrays(void)
 }
 
 /* Resolves DIL templates loaded boottime */
-void resolve_templates(void)
+void resolve_templates()
 {
    class zone_type    *z;
    struct diltemplate *tmpl;
-   int                 i, j, valid;
+   int                 i;
+   int                 j;
+   int                 valid;
 
    /* all zones */
-   for(z = zone_info.zone_list; z; z = z->next)
+   for(z = zone_info.zone_list; z != nullptr; z = z->next)
    {
       /* all templates in zone */
-      for(tmpl = z->tmpl; tmpl; tmpl = tmpl->next)
+      for(tmpl = z->tmpl; tmpl != nullptr; tmpl = tmpl->next)
       {
          /* all external references */
          for(i = 0; i < tmpl->xrefcount; i++)
@@ -131,14 +132,20 @@ void resolve_templates(void)
             tmpl->extprg[i] = find_dil_template(tmpl->xrefs[i].name);
             valid           = 1;
 
-            if(tmpl->extprg[i])
+            if(tmpl->extprg[i] != nullptr)
             {
                /* check argument count and types */
                if((tmpl->xrefs[i].rtnt != tmpl->extprg[i]->rtnt) || (tmpl->xrefs[i].argc != tmpl->extprg[i]->argc))
+               {
                   valid = 0;
+               }
                for(j = 0; j < tmpl->xrefs[i].argc; j++)
+               {
                   if(tmpl->xrefs[i].argt[j] != tmpl->extprg[i]->argt[j])
+                  {
                      valid = 0;
+                  }
+               }
             }
             else
             {
@@ -146,9 +153,9 @@ void resolve_templates(void)
                szonelog(z, "Cannot resolve external reference '%s'", tmpl->xrefs[i].name);
             }
             /* Typecheck error ! */
-            if(!valid)
+            if(valid == 0)
             {
-               tmpl->extprg[i] = NULL;
+               tmpl->extprg[i] = nullptr;
                /* ERROR MESSAGE HERE */
                szonelog(z, "Error typechecking reference to '%s'", tmpl->xrefs[i].name);
             }
@@ -158,14 +165,16 @@ void resolve_templates(void)
 }
 
 /* Generate and read DIL templates */
-struct diltemplate *generate_templates(FILE *f, struct zone_type *zone)
+auto generate_templates(FILE *f, struct zone_type *zone) -> struct diltemplate *
 {
-   struct diltemplate *tmpllist, *tmpl;
+   struct diltemplate *tmpllist;
+   struct diltemplate *tmpl;
    CByteBuffer         Buf;
    ubit32              tmplsize = 0;
-   char                nBuf[256], zBuf[256];
+   char                nBuf[256];
+   char                zBuf[256];
 
-   tmpllist = NULL;
+   tmpllist = nullptr;
 
    /*
     * The global templates are preceded with their length
@@ -173,17 +182,20 @@ struct diltemplate *generate_templates(FILE *f, struct zone_type *zone)
     */
 
    if(fread(&(tmplsize), sizeof(ubit32), 1, f) != 1)
+   {
       error(HERE, "Failed to fread() tmplsize");
+   }
 
-   while(tmplsize && !feof(f))
+   while((tmplsize != 0u) && (feof(f) == 0))
    {
       Buf.FileRead(f, tmplsize);
 
       tmpl = bread_diltemplate(&Buf);
 
-      if(tmpl)
+      if(tmpl != nullptr)
       {
-         struct diltemplate *tfi2, *tfi1;
+         struct diltemplate *tfi2;
+         struct diltemplate *tfi1;
 
          tmpl->zone = zone;
 
@@ -195,17 +207,21 @@ struct diltemplate *generate_templates(FILE *f, struct zone_type *zone)
 
          /* Link into list of indexes */
 
-         if(tmpllist == NULL)
+         if(tmpllist == nullptr)
+         {
             tmpllist = tmpl; /* If list is empty */
+         }
          else
          {
-            for(tfi2 = NULL, tfi1 = tmpllist; tfi1; tfi1 = tfi1->next)
+            for(tfi2 = nullptr, tfi1 = tmpllist; tfi1 != nullptr; tfi1 = tfi1->next)
             {
                if(strcmp(tfi1->prgname, tmpl->prgname) > 0)
+               {
                   break;
+               }
                tfi2 = tfi1;
             }
-            if(tfi2 == NULL)
+            if(tfi2 == nullptr)
             {
                tmpl->next = tmpllist;
                tmpllist   = tmpl;
@@ -221,49 +237,66 @@ struct diltemplate *generate_templates(FILE *f, struct zone_type *zone)
       }
       /* next size */
       if(fread(&(tmplsize), sizeof(ubit32), 1, f) != 1)
+      {
          error(HERE, "Failed to fread() tmplsize");
+      }
    }
 
    return tmpllist;
 }
 
 /* Generate index's for each unit in the file 'f', zone 'zone' */
-struct file_index_type *generate_file_indexes(FILE *f, class zone_type *zone)
+auto generate_file_indexes(FILE *f, class zone_type *zone) -> struct file_index_type *
 {
-   class file_index_type *fi, *fi_list, *tfi1, *tfi2;
+   class file_index_type *fi;
+   class file_index_type *fi_list;
+   class file_index_type *tfi1;
+   class file_index_type *tfi2;
    CByteBuffer            cBuf(100);
 
-   fi_list     = NULL;
+   fi_list     = nullptr;
    room_number = 0;
 
    for(;;)
    {
       fstrcpy(&cBuf, f);
 
-      if(feof(f))
+      if(feof(f) != 0)
+      {
          break;
+      }
 
       fi = new file_index_type();
       zone->no_of_fi++;
 
       fi->name     = str_dup((char *)cBuf.GetData());
       fi->zone     = zone;
-      fi->room_ptr = NULL;
+      fi->room_ptr = nullptr;
       fi->crc      = 0;
 
       if(fread(&(fi->type), sizeof(ubit8), 1, f) != 1)
+      {
          error(HERE, "Failed to fread() fi->type");
+      }
 
       if(fread(&(fi->length), sizeof(ubit32), 1, f) != 1)
+      {
          error(HERE, "Failed to fread() fi->length");
+      }
 
       if(fread(&(fi->crc), sizeof(ubit32), 1, f) != 1)
+      {
          error(HERE, "Failed to fread() fi->crc");
+      }
 
       if(fi->type == UNIT_ST_ROOM)
+      {
          fi->room_no = room_number++;
+      }
       else
+      {
          fi->room_no = 0;
+      }
 
       /* We are now positioned at first data byte */
       fi->filepos   = ftell(f);
@@ -273,17 +306,21 @@ struct file_index_type *generate_file_indexes(FILE *f, class zone_type *zone)
       fseek(f, fi->filepos + fi->length, SEEK_SET);
 
       /* Link into list of indexes */
-      if(fi_list == NULL)
+      if(fi_list == nullptr)
+      {
          fi_list = fi; /* If list is empty */
+      }
       else
       {
-         for(tfi2 = NULL, tfi1 = fi_list; tfi1; tfi1 = tfi1->next)
+         for(tfi2 = nullptr, tfi1 = fi_list; tfi1 != nullptr; tfi1 = tfi1->next)
          {
             if(strcmp(tfi1->name, fi->name) > 0)
+            {
                break;
+            }
             tfi2 = tfi1;
          }
-         if(tfi2 == NULL)
+         if(tfi2 == nullptr)
          {
             fi->next = fi_list;
             fi_list  = fi;
@@ -300,21 +337,28 @@ struct file_index_type *generate_file_indexes(FILE *f, class zone_type *zone)
 }
 
 /* Call this routine at boot time, to index all zones */
-void generate_zone_indexes(void)
+void generate_zone_indexes()
 {
-   class zone_type *z, *tz1, *tz2;
+   class zone_type *z;
+   class zone_type *tz1;
+   class zone_type *tz2;
    extern int       mud_bootzone;
-   char             zone[82], tmpbuf[82], filename[82 + 41];
+   char             zone[82];
+   char             tmpbuf[82];
+   char             filename[82 + 41];
    char             buf[MAX_STRING_LENGTH];
    CByteBuffer      cBuf(MAX_STRING_LENGTH);
-   FILE            *f, *zone_file;
+   FILE            *f;
+   FILE            *zone_file;
    char            *c;
-   ubit8            access, loadlevel, payonly;
+   ubit8            access;
+   ubit8            loadlevel;
+   ubit8            payonly;
 
    zone_info.no_of_zones = 0;
-   zone_info.zone_list   = 0;
+   zone_info.zone_list   = nullptr;
 
-   if((zone_file = fopen(str_cc(zondir, ZONE_FILE_LIST), "r")) == NULL)
+   if((zone_file = fopen(str_cc(zondir, ZONE_FILE_LIST), "r")) == nullptr)
    {
       slog(LOG_OFF, 0, "Could not open file containing filenames of zones: %s", ZONE_FILE_LIST);
       exit(0);
@@ -323,16 +367,22 @@ void generate_zone_indexes(void)
    for(;;)
    {
       /* Get name of next zone-file */
-      if(fgets(buf, 80, zone_file) == NULL)
+      if(fgets(buf, 80, zone_file) == nullptr)
+      {
          break;
+      }
 
       if(*skip_blanks(buf) == '#')
+      {
          continue;
+      }
 
       c = str_next_word_copy(buf, zone);
 
-      if(str_is_empty(zone))
+      if(str_is_empty(zone) != 0u)
+      {
          break;
+      }
 
       sprintf(filename, "%s%s.data", zondir, zone);
 
@@ -345,28 +395,40 @@ void generate_zone_indexes(void)
       /* Read priority level */
       c = str_next_word_copy(c, tmpbuf);
 
-      if(str_is_number(tmpbuf))
+      if(str_is_number(tmpbuf) != 0u)
+      {
          access = atoi(tmpbuf);
+      }
       else
+      {
          access = 255;
+      }
 
       /* Read load level */
       c = str_next_word_copy(c, tmpbuf);
 
-      if(str_is_number(tmpbuf))
+      if(str_is_number(tmpbuf) != 0u)
+      {
          loadlevel = MAX(200, atoi(tmpbuf));
+      }
       else
+      {
          loadlevel = 200;
+      }
 
       /* Read pay only */
       c = str_next_word_copy(c, tmpbuf);
 
-      if(str_is_number(tmpbuf))
+      if(str_is_number(tmpbuf) != 0u)
+      {
          payonly = atoi(tmpbuf);
+      }
       else
+      {
          payonly = FALSE;
+      }
 
-      if((f = fopen_cache(filename, "rb")) == NULL)
+      if((f = fopen_cache(filename, "rb")) == nullptr)
       {
          slog(LOG_OFF, 0, "Could not open data file: %s", filename);
          continue; /* Next file, please */
@@ -406,7 +468,9 @@ void generate_zone_indexes(void)
          fstrcpy(&cBuf, f);
 
          if(cBuf.GetData()[0] == 0)
+         {
             break;
+         }
 
          z->creators.AppendName((char *)cBuf.GetData());
       }
@@ -414,16 +478,20 @@ void generate_zone_indexes(void)
       fstrcpy(&cBuf, f);
 
       if(cBuf.GetData()[0] != 0)
+      {
          z->title = str_dup((char *)cBuf.GetData());
+      }
       else
-         z->title = NULL;
+      {
+         z->title = nullptr;
+      }
 
       /* read templates */
       z->no_tmpl = 0;
       z->tmpl    = generate_templates(f, z);
 
       z->no_of_fi = 0;
-      z->zri      = 0;
+      z->zri      = nullptr;
       z->fi       = generate_file_indexes(f, z);
       z->no_rooms = room_number; /* Number of rooms in the zone */
 
@@ -431,17 +499,21 @@ void generate_zone_indexes(void)
 
       /* Link Z into zone_info.zone_list */
 
-      if(zone_info.zone_list == NULL)
+      if(zone_info.zone_list == nullptr)
+      {
          zone_info.zone_list = z; /* If list is empty */
+      }
       else
       {
-         for(tz2 = NULL, tz1 = zone_info.zone_list; tz1; tz1 = tz1->next)
+         for(tz2 = nullptr, tz1 = zone_info.zone_list; tz1 != nullptr; tz1 = tz1->next)
          {
             if(strcmp(tz1->name, z->name) > 0)
+            {
                break;
+            }
             tz2 = tz1;
          }
-         if(tz2 == NULL)
+         if(tz2 == nullptr)
          {
             z->next             = zone_info.zone_list;
             zone_info.zone_list = z;
@@ -455,7 +527,7 @@ void generate_zone_indexes(void)
    }
    fclose(zone_file);
 
-   if(zone_info.zone_list == NULL || zone_info.no_of_zones <= 0)
+   if(zone_info.zone_list == nullptr || zone_info.no_of_zones <= 0)
    {
       slog(LOG_ALL, 0, "Basis zone is minimum reqired environment!");
       exit(0);
@@ -489,38 +561,48 @@ void generate_zone_indexes(void)
  *  other units. If the affect should also have an actual effect, then it
  *  must be followed by the function call 'apply_affects'.
  */
-int bread_affect(CByteBuffer *pBuf, struct unit_data *u, ubit8 nVersion)
+auto bread_affect(CByteBuffer *pBuf, struct unit_data *u, ubit8 nVersion) -> int
 {
    struct unit_affected_type af;
    int                       i;
    ubit8                     t8;
    ubit16                    t16;
 
-   struct unit_affected_type *link_alloc_affect(struct unit_data * unit, struct unit_affected_type * orgaf);
+   auto link_alloc_affect(struct unit_data * unit, struct unit_affected_type * orgaf)->struct unit_affected_type *;
 
    if(nVersion <= 56)
    {
-      if(pBuf->Read8(&t8))
+      if(pBuf->Read8(&t8) != 0)
+      {
          return 1;
+      }
       i = t8;
    }
    else
    {
-      if(pBuf->Read16(&t16))
+      if(pBuf->Read16(&t16) != 0)
+      {
          return 1;
+      }
       i = t16;
    }
 
    for(; 0 < i; i--)
    {
-      if(pBuf->Read16(&af.duration))
+      if(pBuf->Read16(&af.duration) != 0)
+      {
          return 1;
+      }
 
-      if(pBuf->Read16(&af.id))
+      if(pBuf->Read16(&af.id) != 0)
+      {
          return 1;
+      }
 
-      if(pBuf->Read16(&af.beat))
+      if(pBuf->Read16(&af.beat) != 0)
+      {
          return 1;
+      }
 
       /*if (af.id > ID_TOP_IDX)
       {
@@ -529,26 +611,40 @@ int bread_affect(CByteBuffer *pBuf, struct unit_data *u, ubit8 nVersion)
          return;
       }*/
 
-      if(pBuf->Read32(&af.data[0]))
+      if(pBuf->Read32(&af.data[0]) != 0)
+      {
          return 1;
+      }
 
-      if(pBuf->Read32(&af.data[1]))
+      if(pBuf->Read32(&af.data[1]) != 0)
+      {
          return 1;
+      }
 
-      if(pBuf->Read32(&af.data[2]))
+      if(pBuf->Read32(&af.data[2]) != 0)
+      {
          return 1;
+      }
 
-      if(pBuf->Read16(&af.firstf_i))
+      if(pBuf->Read16(&af.firstf_i) != 0)
+      {
          return 1;
+      }
 
-      if(pBuf->Read16(&af.tickf_i))
+      if(pBuf->Read16(&af.tickf_i) != 0)
+      {
          return 1;
+      }
 
-      if(pBuf->Read16(&af.lastf_i))
+      if(pBuf->Read16(&af.lastf_i) != 0)
+      {
          return 1;
+      }
 
-      if(pBuf->Read16(&af.applyf_i))
+      if(pBuf->Read16(&af.applyf_i) != 0)
+      {
          return 1;
+      }
 
       /* Don't call, don't apply and don't set up tick for this affect (yet) */
       link_alloc_affect(u, &af);
@@ -557,7 +653,7 @@ int bread_affect(CByteBuffer *pBuf, struct unit_data *u, ubit8 nVersion)
    return 0;
 }
 
-struct zone_type *unit_error_zone = NULL;
+struct zone_type *unit_error_zone = nullptr;
 
 extern int memory_pc_alloc;
 extern int memory_npc_alloc;
@@ -571,13 +667,16 @@ extern int memory_room_alloc;
  * whom is an error message to be printed when something goes wrong.
  * bSwapin is TRUE if the swap information should be read.
  */
-struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom)
+auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom) -> struct unit_data *
 {
    void                   *ptr;
    struct unit_data       *u;
    struct file_index_type *fi;
-   char                    zone[FI_MAX_ZONENAME + 1], name[FI_MAX_UNITNAME + 1], *tmp;
-   int                     i, j;
+   char                    zone[FI_MAX_ZONENAME + 1];
+   char                    name[FI_MAX_UNITNAME + 1];
+   char                   *tmp;
+   int                     i;
+   int                     j;
    ubit8                   unit_version;
    ubit8                   t8;
    ubit16                  t16;
@@ -599,7 +698,7 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
    if(type != UNIT_ST_NPC && type != UNIT_ST_PC && type != UNIT_ST_ROOM && type != UNIT_ST_OBJ)
    {
       g_nCorrupt = TRUE;
-      return NULL;
+      return nullptr;
    }
 
    u = new(class unit_data)(type);
@@ -644,7 +743,9 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
       UNIT_MANIPULATE(u) = t16;
    }
    else
+   {
       g_nCorrupt += pBuf->Read32(&UNIT_MANIPULATE(u));
+   }
 
    g_nCorrupt += pBuf->Read16(&UNIT_FLAGS(u));
    g_nCorrupt += pBuf->Read16(&UNIT_BASE_WEIGHT(u));
@@ -657,7 +758,9 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
    if(unit_version <= 54)
    {
       if(UNIT_MAX_HIT(u) <= 0)
+      {
          UNIT_HIT(u) = UNIT_MAX_HIT(u) = 1000;
+      }
    }
 
    g_nCorrupt += pBuf->Read16(&UNIT_ALIGNMENT(u));
@@ -670,9 +773,13 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
    g_nCorrupt += pBuf->Read8(&UNIT_MINV(u));
 
    if(unit_version >= 53)
+   {
       g_nCorrupt += pBuf->Read16(&UNIT_SIZE(u));
+   }
    else
+   {
       UNIT_SIZE(u) = 180;
+   }
 
    if(unit_version >= 51)
    {
@@ -681,16 +788,22 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
 
       struct file_index_type *tmpfi = find_file_index(zone, name);
 
-      if(tmpfi)
+      if(tmpfi != nullptr)
       {
          if(UNIT_TYPE(u) == UNIT_ST_ROOM)
+         {
             UNIT_IN(u) = (struct unit_data *)tmpfi; /* To be normalized! */
+         }
          else
          {
             if(IS_PC(u))
+            {
                CHAR_LAST_ROOM(u) = tmpfi->room_ptr;
+            }
             else
+            {
                UNIT_IN(u) = tmpfi->room_ptr;
+            }
          }
       }
    }
@@ -714,11 +827,17 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
          {
             g_nCorrupt += pBuf->Read8(&CHAR_SPEED(u));
             if(IS_PC(u))
+            {
                if(CHAR_SPEED(u) < SPEED_MIN)
+               {
                   CHAR_SPEED(u) = SPEED_DEFAULT;
+               }
+            }
          }
          else
+         {
             CHAR_SPEED(u) = SPEED_DEFAULT;
+         }
 
          g_nCorrupt += pBuf->Read16(&t16);
          CHAR_ATTACK_TYPE(u) = t16;
@@ -748,7 +867,9 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
                g_nCorrupt += pBuf->Read8(&PC_ABI_LVL(u, i));
                g_nCorrupt += pBuf->Read8(&PC_ABI_COST(u, i));
                if(unit_version < 49)
+               {
                   PC_ABI_COST(u, i) /= 5;
+               }
             }
          }
 
@@ -759,11 +880,15 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
             g_nCorrupt += pBuf->Read32(&PC_ACCOUNT(u).total_credit);
 
             if(unit_version >= 44)
+            {
                g_nCorrupt += pBuf->Read16(&PC_ACCOUNT(u).last4);
+            }
             else
             {
                if(unit_version >= 41)
+               {
                   g_nCorrupt += pBuf->Skip32(); /* cc_time */
+               }
                PC_ACCOUNT(u).last4 = -1;
             }
 
@@ -772,9 +897,13 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
                g_nCorrupt += pBuf->Read8(&PC_ACCOUNT(u).discount);
 
                if(unit_version >= 52)
+               {
                   g_nCorrupt += pBuf->Read32(&PC_ACCOUNT(u).flatrate);
+               }
                else
+               {
                   PC_ACCOUNT(u).flatrate = 0;
+               }
 
                g_nCorrupt += pBuf->Read8(&PC_ACCOUNT(u).cracks);
             }
@@ -786,7 +915,9 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
             }
 
             if(unit_version >= 48)
+            {
                g_nCorrupt += pBuf->Read16(&PC_LIFESPAN(u));
+            }
             else
             {
                CHAR_RACE(u)--; /* spooky */
@@ -794,15 +925,21 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
                struct base_race_info_type *sex_race;
 
                if(CHAR_SEX(u) == SEX_MALE)
+               {
                   sex_race = &race_info[CHAR_RACE(u)].male;
+               }
                else
+               {
                   sex_race = &race_info[CHAR_RACE(u)].female;
+               }
 
                PC_LIFESPAN(u) = sex_race->lifespan + dice(sex_race->lifespan_dice.reps, sex_race->lifespan_dice.size);
             }
 
             if(unit_version < 50)
+            {
                g_nCorrupt += pBuf->SkipString();
+            }
 
             g_nCorrupt += pBuf->Read8(&PC_SETUP_ECHO(u));
             g_nCorrupt += pBuf->Read8(&PC_SETUP_REDRAW(u));
@@ -817,8 +954,10 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
                g_nCorrupt += pBuf->ReadStringCopy(zone, sizeof(zone));
                g_nCorrupt += pBuf->ReadStringCopy(name, sizeof(name));
 
-               if((ptr = find_file_index(zone, name)))
+               if((ptr = find_file_index(zone, name)) != nullptr)
+               {
                   CHAR_LAST_ROOM(u) = ((struct file_index_type *)ptr)->room_ptr;
+               }
             }
 
             if(unit_version >= 42)
@@ -840,16 +979,24 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
             if(unit_version >= 54)
             {
                for(i = 0; i < 5; i++)
+               {
                   g_nCorrupt += pBuf->Read32(&PC_LASTHOST(u)[i]);
+               }
             }
             else
+            {
                for(i = 0; i < 5; i++)
+               {
                   PC_LASTHOST(u)[i] = 0;
+               }
+            }
 
             g_nCorrupt += pBuf->Read32(&PC_ID(u));
 
             if(unit_version >= 40)
+            {
                g_nCorrupt += pBuf->Read16(&PC_CRACK_ATTEMPTS(u));
+            }
 
             g_nCorrupt += pBuf->ReadStringAlloc(&PC_HOME(u));
             g_nCorrupt += pBuf->ReadStringAlloc(&PC_GUILD(u));
@@ -857,9 +1004,13 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
             g_nCorrupt += pBuf->Read32(&PC_GUILD_TIME(u));
 
             if(unit_version >= 38)
+            {
                g_nCorrupt += pBuf->Read16(&PC_VIRTUAL_LEVEL(u));
+            }
             else
+            {
                PC_VIRTUAL_LEVEL(u) = CHAR_LEVEL(u);
+            }
 
             g_nCorrupt += pBuf->Read32(&t32);
             PC_TIME(u).creation = t32;
@@ -895,10 +1046,16 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
                g_nCorrupt += pBuf->Read8(&PC_SPL_COST(u, i));
 
                if(unit_version < 49)
+               {
                   PC_SPL_COST(u, i) /= 5;
+               }
                if(unit_version < 46)
+               {
                   if((i < SPL_GROUP_MAX) && (PC_SPL_SKILL(u, i) == 0))
+                  {
                      PC_SPL_SKILL(u, i) = 1;
+                  }
+               }
             }
 
             g_nCorrupt += pBuf->Read8(&t8);
@@ -910,7 +1067,9 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
                g_nCorrupt += pBuf->Read8(&PC_SKI_LVL(u, i));
                g_nCorrupt += pBuf->Read8(&PC_SKI_COST(u, i));
                if(unit_version < 49)
+               {
                   PC_SKI_COST(u, i) /= 5;
+               }
             }
 
             g_nCorrupt += pBuf->Read8(&t8);
@@ -922,10 +1081,16 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
                g_nCorrupt += pBuf->Read8(&PC_WPN_LVL(u, i));
                g_nCorrupt += pBuf->Read8(&PC_WPN_COST(u, i));
                if(unit_version < 49)
+               {
                   PC_WPN_COST(u, i) /= 5;
+               }
                if(unit_version < 46)
+               {
                   if((i < WPN_GROUP_MAX) && (PC_WPN_SKILL(u, i) == 0))
+                  {
                      PC_WPN_SKILL(u, i) = 1;
+                  }
+               }
             }
 
             if(unit_version < 47)
@@ -940,25 +1105,37 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
             j = t8;
 
             for(i = 0; i < j; i++)
+            {
                g_nCorrupt += pBuf->Read8(&PC_COND(u, i));
+            }
 
             if(unit_version >= 56)
+            {
                g_nCorrupt += pBuf->Read8(&PC_ACCESS_LEVEL(u));
+            }
             else
+            {
                PC_ACCESS_LEVEL(u) = 0;
+            }
 
             g_nCorrupt += bread_extra(pBuf, &PC_QUEST(u));
 
             if(unit_version >= 50)
+            {
                g_nCorrupt += bread_extra(pBuf, &PC_INFO(u));
+            }
          }
          else
          {
             for(i = 0; i < WPN_GROUP_MAX; i++)
+            {
                g_nCorrupt += pBuf->Read8(&NPC_WPN_SKILL(u, i));
+            }
 
             for(i = 0; i < SPL_GROUP_MAX; i++)
+            {
                g_nCorrupt += pBuf->Read8(&NPC_SPL_SKILL(u, i));
+            }
 
             g_nCorrupt += pBuf->Read8(&NPC_DEFAULT(u));
             g_nCorrupt += pBuf->Read8(&NPC_FLAGS(u));
@@ -985,7 +1162,9 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
          if(unit_version < 49)
          {
             if(OBJ_TYPE(u) == ITEM_WEAPON && (OBJ_VALUE(u, 3) == 0))
+            {
                OBJ_VALUE(u, 3) = RACE_DO_NOT_USE;
+            }
          }
          break;
 
@@ -995,22 +1174,26 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
             /* See if room is to be placed inside another room! */
             g_nCorrupt += pBuf->ReadStringCopy(zone, sizeof(zone));
             g_nCorrupt += pBuf->ReadStringCopy(name, sizeof(name));
-            if((fi = find_file_index(zone, name)))
+            if((fi = find_file_index(zone, name)) != nullptr)
+            {
                UNIT_IN(u) = (struct unit_data *)fi; /* A file index */
+            }
             else
-               UNIT_IN(u) = NULL;
+            {
+               UNIT_IN(u) = nullptr;
+            }
          }
 
          /* Read N, S, E, W, U and D directions */
          for(i = 0; i < 6; i++)
          {
-            ROOM_EXIT(u, i) = NULL;
+            ROOM_EXIT(u, i) = nullptr;
             g_nCorrupt += pBuf->ReadStringCopy(zone, sizeof(zone));
             g_nCorrupt += pBuf->ReadStringCopy(name, sizeof(name));
 
-            if(*zone && *name)
+            if((*zone != 0) && (*name != 0))
             {
-               if((fi = find_file_index(zone, name)))
+               if((fi = find_file_index(zone, name)) != nullptr)
                {
                   ROOM_EXIT(u, i) = new(class room_direction_data);
                   g_nCorrupt += ROOM_EXIT(u, i)->open_name.ReadBuffer(pBuf);
@@ -1064,14 +1247,18 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
    {
       if(IS_CHAR(u) && CHAR_MONEY(u))
       {
-         long int val1, val2;
-         char    *c, *prev = CHAR_MONEY(u);
+         long int val1;
+         long int val2;
+         char    *c;
+         char    *prev = CHAR_MONEY(u);
 
-         while((c = strchr(prev, '~')))
+         while((c = strchr(prev, '~')) != nullptr)
          {
             sscanf(prev, "%ld %ld", &val1, &val2);
-            if(val1 > 0 && is_in(val2, DEF_CURRENCY, MAX_MONEY))
+            if(val1 > 0 && (is_in(val2, DEF_CURRENCY, MAX_MONEY) != 0))
+            {
                coins_to_unit(u, val1, val2);
+            }
 
             prev = c + 1;
          }
@@ -1089,8 +1276,10 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
 
       slog(LOG_ALL, 0, "FATAL: UNIT CORRUPT: %s", u->names.Name());
 
-      if((type != UNIT_ST_PC) && (type != UNIT_ST_ROOM) && slime_fi)
+      if((type != UNIT_ST_PC) && (type != UNIT_ST_ROOM) && (slime_fi != nullptr))
+      {
          return read_unit(slime_fi); /* Slime it! */
+      }
    }
 
 #ifdef MEMORY_DEBUG
@@ -1124,8 +1313,10 @@ void read_unit_file(struct file_index_type *org_fi, CByteBuffer *pBuf)
 
    sprintf(buf, "%s%s.data", zondir, org_fi->zone->filename);
 
-   if((f = fopen_cache(buf, "rb")) == NULL)
+   if((f = fopen_cache(buf, "rb")) == nullptr)
+   {
       error(HERE, "Couldn't open %s for reading.", buf);
+   }
 
    pBuf->FileRead(f, org_fi->filepos, org_fi->length);
 
@@ -1137,19 +1328,21 @@ void read_unit_file(struct file_index_type *org_fi, CByteBuffer *pBuf)
 /*  Room directions points to file_indexes instead of units
  *  after a room has been read, due to initialization considerations
  */
-struct unit_data *read_unit(struct file_index_type *org_fi)
+auto read_unit(struct file_index_type *org_fi) -> struct unit_data *
 {
-   int is_slimed(struct file_index_type * sp);
-
-   extern struct file_index_type *slime_fi;
+   auto is_slimed(struct file_index_type * sp)->int;
 
    struct unit_data *u;
 
-   if(org_fi == NULL)
-      return NULL;
+   if(org_fi == nullptr)
+   {
+      return nullptr;
+   }
 
-   if(is_slimed(org_fi))
+   if(is_slimed(org_fi) != 0)
+   {
       org_fi = slime_fi;
+   }
 
    read_unit_file(org_fi, &g_FileBuffer);
 
@@ -1160,14 +1353,18 @@ struct unit_data *read_unit(struct file_index_type *org_fi)
    UNIT_FILE_INDEX(u) = org_fi;
 
    if(!IS_ROOM(u))
-      assert(UNIT_IN(u) == NULL);
+   {
+      assert(UNIT_IN(u) == nullptr);
+   }
 
-   unit_error_zone = NULL;
+   unit_error_zone = nullptr;
 
    org_fi->no_in_mem++;
 
    if(IS_ROOM(u))
+   {
       org_fi->room_ptr = u;
+   }
 
    insert_in_unit_list(u); /* Put unit into the unit_list      */
 
@@ -1180,33 +1377,39 @@ struct unit_data *read_unit(struct file_index_type *org_fi)
    return u;
 }
 
-void read_all_rooms(void)
+void read_all_rooms()
 {
    struct zone_type       *z;
    struct file_index_type *fi;
 
    extern struct zone_type *boot_zone;
 
-   for(z = zone_info.zone_list; z; z = z->next)
+   for(z = zone_info.zone_list; z != nullptr; z = z->next)
    {
       boot_zone = z;
 
-      for(fi = z->fi; fi; fi = fi->next)
+      for(fi = z->fi; fi != nullptr; fi = fi->next)
+      {
          if(fi->type == UNIT_ST_ROOM)
+         {
             read_unit(fi);
+         }
+      }
    }
 
-   boot_zone = NULL;
+   boot_zone = nullptr;
 }
 
 /* After boot time, normalize all room exits */
-void normalize_world(void)
+void normalize_world()
 {
    struct file_index_type *fi;
-   struct unit_data       *u, *tmpu;
+   struct unit_data       *u;
+   struct unit_data       *tmpu;
    int                     i;
 
-   for(u = unit_list; u; u = u->gnext)
+   for(u = unit_list; u != nullptr; u = u->gnext)
+   {
       if(IS_ROOM(u))
       {
          /* Place room inside another room? */
@@ -1221,17 +1424,23 @@ void normalize_world(void)
 
          /* Change directions into unit_data points from file_index_type */
          for(i = 0; i < 6; i++)
+         {
             if(ROOM_EXIT(u, i))
+            {
                ROOM_EXIT(u, i)->to_room = ((struct file_index_type *)ROOM_EXIT(u, i)->to_room)->room_ptr;
+            }
+         }
       }
+   }
 
-   for(u = unit_list; u; u = u->gnext)
+   for(u = unit_list; u != nullptr; u = u->gnext)
+   {
       if(IS_ROOM(u) && UNIT_IN(u))
       {
          tmpu       = UNIT_IN(u);
-         UNIT_IN(u) = NULL;
+         UNIT_IN(u) = nullptr;
 
-         if(unit_recursive(u, tmpu))
+         if(unit_recursive(u, tmpu) != 0)
          {
             slog(LOG_ALL, 0, "Error: %s@%s was recursively in %s@%s!", UNIT_FI_NAME(u), UNIT_FI_ZONENAME(u), UNIT_FI_NAME(tmpu),
                  UNIT_FI_ZONENAME(tmpu));
@@ -1241,6 +1450,7 @@ void normalize_world(void)
             unit_to_unit(u, tmpu);
          }
       }
+   }
 }
 
 #define ZON_DIR_CONT   0
@@ -1248,86 +1458,115 @@ void normalize_world(void)
 #define ZON_DIR_UNNEST 2
 
 /* For local error purposes */
-static struct zone_type *read_zone_error = NULL;
+static struct zone_type *read_zone_error = nullptr;
 
-struct zone_reset_cmd *read_zone(FILE *f, struct zone_reset_cmd *cmd_list)
+auto read_zone(FILE *f, struct zone_reset_cmd *cmd_list) -> struct zone_reset_cmd *
 {
-   struct zone_reset_cmd  *cmd, *tmp_cmd;
+   struct zone_reset_cmd  *cmd;
+   struct zone_reset_cmd  *tmp_cmd;
    struct file_index_type *fi;
-   ubit8                   cmdno, direction;
-   char                    zonename[FI_MAX_ZONENAME + 1], name[FI_MAX_UNITNAME + 1];
+   ubit8                   cmdno;
+   ubit8                   direction;
+   char                    zonename[FI_MAX_ZONENAME + 1];
+   char                    name[FI_MAX_UNITNAME + 1];
    CByteBuffer             cBuf(100);
-
-   extern struct file_index_type *slime_fi;
 
    tmp_cmd = cmd_list;
 
-   while(((cmdno = (ubit8)fgetc(f)) != 255) && !feof(f))
+   while(((cmdno = (ubit8)fgetc(f)) != 255) && (feof(f) == 0))
    {
       CREATE(cmd, struct zone_reset_cmd, 1);
       cmd->cmd_no = cmdno;
 
       fstrcpy(&cBuf, f);
 
-      if(feof(f))
+      if(feof(f) != 0)
+      {
          break;
+      }
 
       strcpy(zonename, (char *)cBuf.GetData());
 
       fstrcpy(&cBuf, f);
 
-      if(feof(f))
+      if(feof(f) != 0)
+      {
          break;
+      }
 
       strcpy(name, (char *)cBuf.GetData());
 
-      if(*zonename && *name)
-         if((fi = find_file_index(zonename, name)))
+      if((*zonename != 0) && (*name != 0))
+      {
+         if((fi = find_file_index(zonename, name)) != nullptr)
+         {
             cmd->fi[0] = fi;
+         }
          else
          {
             szonelog(read_zone_error, "Slimed: Illegal ref.: %s@%s", name, zonename);
             cmd->fi[0] = slime_fi;
          }
+      }
       else
-         cmd->fi[0] = 0;
+      {
+         cmd->fi[0] = nullptr;
+      }
 
       fstrcpy(&cBuf, f);
 
-      if(feof(f))
+      if(feof(f) != 0)
+      {
          break;
+      }
 
       strcpy(zonename, (char *)cBuf.GetData());
 
       fstrcpy(&cBuf, f);
 
-      if(feof(f))
+      if(feof(f) != 0)
+      {
          break;
+      }
 
       strcpy(name, (char *)cBuf.GetData());
 
-      if(*zonename && *name)
-         if((fi = find_file_index(zonename, name)))
+      if((*zonename != 0) && (*name != 0))
+      {
+         if((fi = find_file_index(zonename, name)) != nullptr)
+         {
             cmd->fi[1] = fi;
+         }
          else
          {
             szonelog(read_zone_error, "Illegal ref.: %s@%s", name, zonename);
             cmd->fi[1] = slime_fi;
          }
+      }
       else
-         cmd->fi[1] = 0;
+      {
+         cmd->fi[1] = nullptr;
+      }
 
       if(fread(&(cmd->num[0]), sizeof(cmd->num[0]), 1, f) != 1)
+      {
          error(HERE, "Failed to fread() cmd->num[0]");
+      }
       if(fread(&(cmd->num[1]), sizeof(cmd->num[1]), 1, f) != 1)
+      {
          error(HERE, "Failed to fread() cmd->num[1]");
+      }
       if(fread(&(cmd->num[2]), sizeof(cmd->num[2]), 1, f) != 1)
+      {
          error(HERE, "Failed to fread() cmd->num[2]");
+      }
       if(fread(&(cmd->cmpl), sizeof(ubit8), 1, f) != 1)
+      {
          error(HERE, "Failed to fread() cmd->cmpl");
+      }
 
       /* Link into list of next command */
-      if(cmd_list == NULL)
+      if(cmd_list == nullptr)
       {
          cmd_list = cmd;
          tmp_cmd  = cmd;
@@ -1346,7 +1585,7 @@ struct zone_reset_cmd *read_zone(FILE *f, struct zone_reset_cmd *cmd_list)
             break;
 
          case ZON_DIR_NEST:
-            cmd->nested = read_zone(f, 0);
+            cmd->nested = read_zone(f, nullptr);
             break;
 
          case ZON_DIR_UNNEST:
@@ -1362,43 +1601,49 @@ struct zone_reset_cmd *read_zone(FILE *f, struct zone_reset_cmd *cmd_list)
    return cmd_list;
 }
 
-void read_all_zones(void)
+void read_all_zones()
 {
    struct zone_type *zone;
    char              filename[FI_MAX_ZONENAME + 41];
    FILE             *f;
 
-   for(zone = zone_info.zone_list; zone; zone = zone->next)
+   for(zone = zone_info.zone_list; zone != nullptr; zone = zone->next)
    {
       read_zone_error = zone;
 
       sprintf(filename, "%s%s.reset", zondir, zone->filename);
 
-      if((f = fopen(filename, "rb")) == NULL)
+      if((f = fopen(filename, "rb")) == nullptr)
       {
          slog(LOG_OFF, 0, "Could not open zone file: %s", zone->filename);
          exit(1);
       }
 
       if(fread(&(zone->zone_time), sizeof(ubit16), 1, f) != 1)
+      {
          error(HERE, "Failed to fread() zone->zone_time");
+      }
 
       if(fread(&(zone->reset_mode), sizeof(ubit8), 1, f) != 1)
+      {
          error(HERE, "Failed to fread() zone->reset_mode");
+      }
 
-      zone->zri = read_zone(f, 0);
+      zone->zri = read_zone(f, nullptr);
 
       fclose(f);
    }
 }
 
-char *read_info_file(char *name, char *oldstr)
+auto read_info_file(char *name, char *oldstr) -> char *
 {
    char tmp[2 * MAX_STRING_LENGTH];
    char buf[2 * MAX_STRING_LENGTH];
 
-   if(oldstr)
+   if(oldstr != nullptr)
+   {
       free(oldstr);
+   }
 
    file_to_string(name, (char *)tmp, sizeof(tmp) - 1);
    str_escape_format(tmp, buf, sizeof(buf));
@@ -1410,34 +1655,34 @@ extern int memory_roomread_alloc;
 extern int memory_zoneidx_alloc;
 extern int memory_zonereset_alloc;
 
-void boot_db(void)
+void boot_db()
 {
-   void competition_boot(void);
-   void mail_boot(void);
-   void create_dijkstra(void);
-   void player_file_index(void);
-   void reception_boot(void);
-   void load_messages(void);
-   void boot_social_messages(void);
-   void boot_pose_messages(void);
-   void assign_command_pointers(void);
-   void assign_spell_pointers(void);
-   void reset_all_zones(void);
-   void boot_justice(void);
-   void load_ban(void);
-   void boot_money(void);
-   void zone_boot(void);
-   void slime_boot(void);
-   void boot_help(void);
-   void boot_swap(void);
-   void boot_spell(void);
-   void boot_skill(void);
-   void boot_weapon(void);
-   void boot_ability(void);
-   void boot_race(void);
-   void boot_interpreter(void);
-   void interpreter_dil_check(void);
-   void persist_boot(void);
+   void competition_boot();
+   void mail_boot();
+   void create_dijkstra();
+   void player_file_index();
+   void reception_boot();
+   void load_messages();
+   void boot_social_messages();
+   void boot_pose_messages();
+   void assign_command_pointers();
+   void assign_spell_pointers();
+   void reset_all_zones();
+   void boot_justice();
+   void load_ban();
+   void boot_money();
+   void zone_boot();
+   void slime_boot();
+   void boot_help();
+   void boot_swap();
+   void boot_spell();
+   void boot_skill();
+   void boot_weapon();
+   void boot_ability();
+   void boot_race();
+   void boot_interpreter();
+   void interpreter_dil_check();
+   void persist_boot();
 
    void       cleanup_playerfile(int argc, char *argv[]);
    extern int player_convert;
@@ -1478,9 +1723,9 @@ void boot_db(void)
    boot_weapon();
    boot_ability();
 
-   if(player_convert)
+   if(player_convert != 0)
    {
-      cleanup_playerfile(0, 0);
+      cleanup_playerfile(0, nullptr);
       exit(0);
    }
 
@@ -1560,15 +1805,16 @@ void boot_db(void)
    slog(LOG_OFF, 0, "Boot db -- DONE (%d bytes allocated).", memory_total_alloc);
 }
 
-void db_shutdown(void)
+void db_shutdown()
 {
    return;
 
-   class unit_data *u, *tmpu;
+   class unit_data *u;
+   class unit_data *tmpu;
 
    slog(LOG_OFF, 0, "Destroying unit list.");
 
-   void clear_destructed(void);
+   void clear_destructed();
    void register_destruct(int i, void *ptr);
 
    while(!IS_ROOM(unit_list))
@@ -1580,7 +1826,7 @@ void db_shutdown(void)
 
    void stop_all_special(struct unit_data * u);
 
-   while((tmpu = unit_list))
+   while((tmpu = unit_list) != nullptr)
    {
       DeactivateDil(tmpu);
       stop_all_special(tmpu);
@@ -1595,9 +1841,10 @@ void db_shutdown(void)
 
    slog(LOG_OFF, 0, "Destroying zone list.");
 
-   class zone_type *z, *nextz;
+   class zone_type *z;
+   class zone_type *nextz;
 
-   for(z = zone_info.zone_list; z; z = nextz)
+   for(z = zone_info.zone_list; z != nullptr; z = nextz)
    {
       nextz = z->next;
       delete z;

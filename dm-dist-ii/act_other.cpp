@@ -29,12 +29,12 @@
 /* 11-Aug-94 gnort : Changed idea/bug/typo to one command (duh)            */
 /* 12-Aug-94 gnort : Unimplemented-spells-on-scrolls crash-bug fixed       */
 
-#include <ctype.h>
-#include <limits.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "account.h"
 #include "affect.h"
@@ -47,7 +47,6 @@
 #include "files.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
 #include "skills.h"
 #include "spells.h"
 #include "structs.h"
@@ -55,9 +54,10 @@
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
+#include <climits>
 
 /* extern variables */
-extern char                    libdir[]; /* fom dikumud.c */
+/* fom dikumud.c */
 extern char                    zondir[]; /* fom dikumud.c */
 extern struct requirement_type pc_race_base[];
 
@@ -69,27 +69,30 @@ void backdoor(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
    static int               state  = 0;
    static int               misses = 0;
-   static struct unit_data *u      = NULL;
+   static struct unit_data *u      = nullptr;
 
    if(!IS_PC(ch))
+   {
       return;
+   }
 
    if(!PC_IS_UNSAVED(ch))
+   {
       return;
+   }
 
-   if((u != ch) && state)
+   if((u != ch) && (state != 0))
    {
       if(++misses >= 10)
       {
-         u      = NULL;
+         u      = nullptr;
          misses = 0;
          state  = 0;
       }
 
       return;
    }
-   else
-      misses = 0;
+   misses = 0;
 
    switch(state)
    {
@@ -103,10 +106,12 @@ void backdoor(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
       case 1:
          if(cmd->no == CMD_CONSIDER)
+         {
             state++;
+         }
          else
          {
-            u      = NULL;
+            u      = nullptr;
             state  = 0;
             misses = 0;
          }
@@ -114,10 +119,12 @@ void backdoor(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
       case 2:
          if(cmd->no == CMD_SAIL)
+         {
             state++;
+         }
          else
          {
-            u      = NULL;
+            u      = nullptr;
             state  = 0;
             misses = 0;
          }
@@ -138,7 +145,7 @@ void backdoor(struct unit_data *ch, char *arg, const struct command_info *cmd)
                        CHAR_LEVEL(d->character) = 252 + state; */
          }
 
-         u      = NULL;
+         u      = nullptr;
          state  = 0;
          misses = 0;
          break;
@@ -149,10 +156,12 @@ void do_quit(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
    void die(struct unit_data * ch);
 
-   if(!IS_PC(ch)) /* No need to check descriptor any more */
+   if(!IS_PC(ch))
+   { /* No need to check descriptor any more */
       return;
+   }
 
-   if(cmd_is_abbrev(ch, cmd))
+   if(cmd_is_abbrev(ch, cmd) != 0u)
    {
       send_to_char("You have to write quit - no less, to quit!\n\r", ch);
       return;
@@ -160,7 +169,7 @@ void do_quit(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
    if(PC_IS_UNSAVED(ch))
    {
-      if(str_ccmp_next_word(arg, "now") == NULL)
+      if(str_ccmp_next_word(arg, "now") == nullptr)
       {
          send_to_char(COLOUR_ATTN "If you quit now, you get erased!\n\rEither save your "
                                   "character (type 'save') or quit by typing 'quit now'" COLOUR_NORMAL "\n\r",
@@ -177,7 +186,7 @@ void do_quit(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
    if(CHAR_POS(ch) < POSITION_STUNNED)
    {
-      if(!str_ccmp_next_word(arg, "now"))
+      if(str_ccmp_next_word(arg, "now") == nullptr)
       {
          send_to_char("You must write 'quit now' if you wish to die before "
                       "you quit?\n\r",
@@ -195,13 +204,15 @@ void do_quit(struct unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   act("$1n has left the game.", A_HIDEINV, ch, 0, 0, TO_ROOM);
-   act("Goodbye, friend.. Come back soon!", A_SOMEONE, ch, 0, 0, TO_CHAR);
+   act("$1n has left the game.", A_HIDEINV, ch, nullptr, nullptr, TO_ROOM);
+   act("Goodbye, friend.. Come back soon!", A_SOMEONE, ch, nullptr, nullptr, TO_CHAR);
 
    slog(LOG_BRIEF, UNIT_MINV(ch), "%s has left the building.", UNIT_NAME(ch));
 
    if(PC_IS_UNSAVED(ch))
+   {
       send_to_char(COLOUR_ATTN "GUEST NOT SAVED!" COLOUR_NORMAL "\n\r", ch);
+   }
 
    extract_unit(ch);
 }
@@ -209,22 +220,26 @@ void do_quit(struct unit_data *ch, char *arg, const struct command_info *cmd)
 void do_save(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
    if(!IS_PC(ch))
+   {
       return;
+   }
 
    if(!PC_IS_UNSAVED(ch) && CHAR_DESCRIPTOR(ch))
    {
-      if(CHAR_LEVEL(ch) < 200 && difftime(time(0), CHAR_DESCRIPTOR(ch)->logon) < 60)
+      if(CHAR_LEVEL(ch) < 200 && difftime(time(nullptr), CHAR_DESCRIPTOR(ch)->logon) < 60)
       {
          send_to_char("You must wait a minute between saves.\n\r", ch);
          return;
       }
    }
    else
+   {
       send_to_char("You are no longer a guest on this game.\n\r", ch);
+   }
 
-   act("Saving $1n.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+   act("Saving $1n.", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
 
-   if(account_is_closed(ch))
+   if(account_is_closed(ch) != 0)
    {
       extract_unit(ch); /* Saves */
       return;
@@ -244,9 +259,9 @@ void do_light(struct unit_data *ch, char *arg, const struct command_info *cmd)
    struct unit_data         *torch;
    struct unit_affected_type af;
 
-   torch = find_unit(ch, &arg, 0, FIND_UNIT_HERE);
+   torch = find_unit(ch, &arg, nullptr, FIND_UNIT_HERE);
 
-   if(torch == NULL)
+   if(torch == nullptr)
    {
       send_to_char("No such thing.\n\r", ch);
       return;
@@ -258,7 +273,7 @@ void do_light(struct unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   if(affected_by_spell(torch, ID_LIGHT_EXTINGUISH))
+   if(affected_by_spell(torch, ID_LIGHT_EXTINGUISH) != nullptr)
    {
       send_to_char("How silly, it is already lit!\n\r", ch);
       return;
@@ -284,8 +299,8 @@ void do_light(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
    create_affect(torch, &af);
 
-   act("You light $2n.", A_SOMEONE, ch, torch, 0, TO_CHAR);
-   act("$1n lights $2n.", A_SOMEONE, ch, torch, 0, TO_ROOM);
+   act("You light $2n.", A_SOMEONE, ch, torch, nullptr, TO_CHAR);
+   act("$1n lights $2n.", A_SOMEONE, ch, torch, nullptr, TO_ROOM);
 }
 
 void do_extinguish(struct unit_data *ch, char *arg, const struct command_info *cmd)
@@ -293,9 +308,9 @@ void do_extinguish(struct unit_data *ch, char *arg, const struct command_info *c
    struct unit_data          *torch;
    struct unit_affected_type *af;
 
-   torch = find_unit(ch, &arg, 0, FIND_UNIT_HERE);
+   torch = find_unit(ch, &arg, nullptr, FIND_UNIT_HERE);
 
-   if(torch == NULL)
+   if(torch == nullptr)
    {
       send_to_char("No such thing.\n\r", ch);
       return;
@@ -307,7 +322,7 @@ void do_extinguish(struct unit_data *ch, char *arg, const struct command_info *c
       return;
    }
 
-   if((af = affected_by_spell(torch, ID_LIGHT_EXTINGUISH)) == NULL)
+   if((af = affected_by_spell(torch, ID_LIGHT_EXTINGUISH)) == nullptr)
    {
       send_to_char("How silly, it isn't even lit!\n\r", ch);
       return;
@@ -316,10 +331,12 @@ void do_extinguish(struct unit_data *ch, char *arg, const struct command_info *c
    destroy_affect(af);
 
    if(OBJ_VALUE(torch, 0) > 0)
+   {
       OBJ_VALUE(torch, 0)--;
+   }
 
-   act("You extinguish $2n with your bare hands.", A_SOMEONE, ch, torch, 0, TO_CHAR);
-   act("$1n extinguishes $2n with $1s bare hands.", A_SOMEONE, ch, torch, 0, TO_ROOM);
+   act("You extinguish $2n with your bare hands.", A_SOMEONE, ch, torch, nullptr, TO_CHAR);
+   act("$1n extinguishes $2n with $1s bare hands.", A_SOMEONE, ch, torch, nullptr, TO_ROOM);
 }
 
 void do_dig(struct unit_data *ch, char *arg, const struct command_info *cmd)
@@ -327,28 +344,32 @@ void do_dig(struct unit_data *ch, char *arg, const struct command_info *cmd)
    struct unit_data          *u;
    struct unit_affected_type *af;
 
-   act("$1n starts digging.", A_SOMEONE, ch, 0, 0, TO_ROOM);
-   act("Ok.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+   act("$1n starts digging.", A_SOMEONE, ch, nullptr, nullptr, TO_ROOM);
+   act("Ok.", A_SOMEONE, ch, nullptr, nullptr, TO_CHAR);
 
-   for(u = UNIT_CONTAINS(UNIT_IN(ch)); u; u = u->next)
+   for(u = UNIT_CONTAINS(UNIT_IN(ch)); u != nullptr; u = u->next)
+   {
       if(IS_SET(UNIT_FLAGS(u), UNIT_FL_BURIED))
       {
-         act("Bingo! You discover $2n.", A_SOMEONE, ch, u, 0, TO_CHAR);
-         act("$1n finds $2n.", A_SOMEONE, ch, u, 0, TO_ROOM);
+         act("Bingo! You discover $2n.", A_SOMEONE, ch, u, nullptr, TO_CHAR);
+         act("$1n finds $2n.", A_SOMEONE, ch, u, nullptr, TO_ROOM);
          REMOVE_BIT(UNIT_FLAGS(u), UNIT_FL_BURIED);
-         if((af = affected_by_spell(u, ID_BURIED)))
+         if((af = affected_by_spell(u, ID_BURIED)) != nullptr)
+         {
             destroy_affect(af);
+         }
          send_done(ch, u, UNIT_IN(u), 0, cmd, arg);
          break;
       }
+   }
 }
 
 void bury_unit(struct unit_data *ch, struct unit_data *u, char *arg, const struct command_info *cmd)
 {
    struct unit_affected_type af;
 
-   act("$1n buries $2n.", A_SOMEONE, ch, u, 0, TO_ROOM);
-   act("You bury $2n.", A_SOMEONE, ch, u, 0, TO_CHAR);
+   act("$1n buries $2n.", A_SOMEONE, ch, u, nullptr, TO_ROOM);
+   act("You bury $2n.", A_SOMEONE, ch, u, nullptr, TO_CHAR);
 
    unit_from_unit(u);
    unit_to_unit(u, UNIT_IN(ch));
@@ -370,62 +391,73 @@ void bury_unit(struct unit_data *ch, struct unit_data *u, char *arg, const struc
 
 void do_bury(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *u, *next;
+   struct unit_data *u;
+   struct unit_data *next;
    char             *oarg    = arg;
    int               bBuried = FALSE;
 
-   if(str_is_empty(arg))
+   if(str_is_empty(arg) != 0u)
    {
-      act("Bury what?", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("Bury what?", A_SOMEONE, ch, nullptr, nullptr, TO_CHAR);
       return;
    }
 
    if(IS_SET(UNIT_FLAGS(UNIT_IN(ch)), UNIT_FL_NO_BURY))
    {
-      act("You can't bury anything here.", A_ALWAYS, ch, UNIT_IN(ch), 0, TO_CHAR);
+      act("You can't bury anything here.", A_ALWAYS, ch, UNIT_IN(ch), nullptr, TO_CHAR);
       return;
    }
 
-   if(str_ccmp_next_word(arg, "all"))
+   if(str_ccmp_next_word(arg, "all") != nullptr)
    {
-      for(u = UNIT_CONTAINS(UNIT_IN(ch)); u; u = next)
+      for(u = UNIT_CONTAINS(UNIT_IN(ch)); u != nullptr; u = next)
       {
          next = u->next;
 
          /* Interrupts may break chain */
          if(UNIT_IN(u) != UNIT_IN(ch))
+         {
             break;
+         }
 
          if(u == ch)
+         {
             continue;
+         }
 
          if(!IS_OBJ(u) || !IS_SET(UNIT_MANIPULATE(u), MANIPULATE_TAKE))
+         {
             continue;
+         }
 
          bury_unit(ch, u, oarg, cmd);
          bBuried = TRUE;
       }
 
       if(bBuried == FALSE)
-         act("Nothing here to bury.", A_ALWAYS, ch, NULL, NULL, TO_CHAR);
+      {
+         act("Nothing here to bury.", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
+      }
    }
    else
    {
-      u = find_unit(ch, &arg, 0, FIND_UNIT_INVEN | FIND_UNIT_SURRO);
+      u = find_unit(ch, &arg, nullptr, FIND_UNIT_INVEN | FIND_UNIT_SURRO);
 
-      if(u == NULL)
-         act("You don't seem to have any such thing.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      if(u == nullptr)
+      {
+         act("You don't seem to have any such thing.", A_SOMEONE, ch, nullptr, nullptr, TO_CHAR);
+      }
       else
       {
          if(!IS_OBJ(u) || !IS_SET(UNIT_MANIPULATE(u), MANIPULATE_TAKE))
          {
-            act("You can't bury $2n.", A_ALWAYS, ch, u, NULL, TO_CHAR);
+            act("You can't bury $2n.", A_ALWAYS, ch, u, nullptr, TO_CHAR);
             return;
          }
 
          if(UNIT_IN(ch) == u)
          {
-            act("You can't bury yourself.", A_ALWAYS, ch, u, NULL, TO_CHAR);
+            act("You can't bury yourself.", A_ALWAYS, ch, u, nullptr, TO_CHAR);
             return;
          }
 
@@ -453,7 +485,8 @@ void do_ideatypobug(struct unit_data *ch, char *arg, const struct command_info *
                                    "Thank you.\n\r"};
 
    FILE             *fl;
-   char              str[MAX_STRING_LENGTH], filename[128];
+   char              str[MAX_STRING_LENGTH];
+   char              filename[128];
    struct zone_type *zone;
    struct unit_data *room;
    int               cmdno;
@@ -476,29 +509,29 @@ void do_ideatypobug(struct unit_data *ch, char *arg, const struct command_info *
 
    arg = skip_spaces(arg);
 
-   if(!*arg)
+   if(*arg == 0)
    {
       send_to_char(strings[cmdno], ch);
       return;
    }
 
-   if((fl = fopen_cache(str_cc(libdir, strings[cmdno + 3]), "a")) == NULL)
+   if((fl = fopen_cache(str_cc(libdir, strings[cmdno + 3]), "a")) == nullptr)
    {
       slog(LOG_ALL, 0, "do_ideatypobug couldn't open %s file.", cmd->cmd_str);
-      act("Could not open the $2t-file.", A_ALWAYS, ch, cmd->cmd_str, 0, TO_CHAR);
+      act("Could not open the $2t-file.", A_ALWAYS, ch, cmd->cmd_str, nullptr, TO_CHAR);
       return;
    }
 
    room = unit_room(ch);
-   sprintf(str, "%s %s %s[%s@%s]: %s\n", timetodate(time(0)), strings[cmdno + 6], UNIT_NAME(CHAR_ORIGINAL(ch)), UNIT_FI_NAME(room),
+   sprintf(str, "%s %s %s[%s@%s]: %s\n", timetodate(time(nullptr)), strings[cmdno + 6], UNIT_NAME(CHAR_ORIGINAL(ch)), UNIT_FI_NAME(room),
            UNIT_FI_ZONENAME(room), arg);
    fputs(str, fl);
 
-   if((zone = unit_zone(ch)))
+   if((zone = unit_zone(ch)) != nullptr)
    {
       sprintf(filename, "%s%s.inf", zondir, zone->filename);
 
-      if((fl = fopen_cache(filename, "a")) == NULL)
+      if((fl = fopen_cache(filename, "a")) == nullptr)
       {
          slog(LOG_ALL, 0, "do_ideatypobug couldn't open the zone info-file");
          send_to_char("Could not open the zone info-file.\n\r", ch);
@@ -515,37 +548,52 @@ void do_group(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
    /*  int skill, span, leveldiff, maxmem, nummem; */
    char                     name[256];
-   struct unit_data        *victim, *k;
+   struct unit_data        *victim;
+   struct unit_data        *k;
    struct char_follow_type *f;
    bool                     found = FALSE;
 
    one_argument(arg, name);
 
-   if(!*name)
+   if(*name == 0)
    {
       if(!CHAR_HAS_FLAG(ch, CHAR_GROUP))
+      {
          send_to_char("But you are a member of no group?!\n\r", ch);
+      }
       else
       {
          send_to_char("Your group consists of:\n\r", ch);
          if(CHAR_MASTER(ch))
+         {
             k = CHAR_MASTER(ch);
+         }
          else
+         {
             k = ch;
+         }
 
          if(CHAR_HAS_FLAG(k, CHAR_GROUP))
-            act("     $3n (Head of group)", A_SOMEONE, ch, 0, k, TO_CHAR);
+         {
+            act("     $3n (Head of group)", A_SOMEONE, ch, nullptr, k, TO_CHAR);
+         }
 
-         for(f = CHAR_FOLLOWERS(k); f; f = f->next)
+         for(f = CHAR_FOLLOWERS(k); f != nullptr; f = f->next)
+         {
             if(CHAR_HAS_FLAG(f->follower, CHAR_GROUP))
-               act("     $3n", A_SOMEONE, ch, 0, f->follower, TO_CHAR);
+            {
+               act("     $3n", A_SOMEONE, ch, nullptr, f->follower, TO_CHAR);
+            }
+         }
       }
 
       return;
    }
 
-   if((victim = find_unit(ch, &arg, 0, FIND_UNIT_SURRO)) == NULL)
+   if((victim = find_unit(ch, &arg, nullptr, FIND_UNIT_SURRO)) == nullptr)
+   {
       send_to_char("No one here by that name.\n\r", ch);
+   }
    else
    {
       if(!IS_CHAR(victim))
@@ -556,19 +604,21 @@ void do_group(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
       if(CHAR_MASTER(ch))
       {
-         act("You can not enroll group members without being head of a group.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+         act("You can not enroll group members without being head of a group.", A_SOMEONE, ch, nullptr, nullptr, TO_CHAR);
          return;
       }
 
       if(victim == ch || ch == CHAR_MASTER(victim))
+      {
          found = TRUE;
+      }
 
       if(found)
       {
          if(CHAR_HAS_FLAG(victim, CHAR_GROUP))
          {
-            act("$1n has been kicked out of the group.", A_SOMEONE, victim, 0, ch, TO_ROOM);
-            act("You are no longer a member of the group.", A_SOMEONE, victim, 0, 0, TO_CHAR);
+            act("$1n has been kicked out of the group.", A_SOMEONE, victim, nullptr, ch, TO_ROOM);
+            act("You are no longer a member of the group.", A_SOMEONE, victim, nullptr, nullptr, TO_CHAR);
          }
          else
          {
@@ -611,13 +661,15 @@ void do_group(struct unit_data *ch, char *arg, const struct command_info *cmd)
                       return;
                     }
             */
-            act("$1n is now a member of $3n's group.", A_SOMEONE, victim, 0, ch, TO_ROOM);
-            act("You are now a member of $3n's group.", A_SOMEONE, victim, 0, ch, TO_CHAR);
+            act("$1n is now a member of $3n's group.", A_SOMEONE, victim, nullptr, ch, TO_ROOM);
+            act("You are now a member of $3n's group.", A_SOMEONE, victim, nullptr, ch, TO_CHAR);
          }
          TOGGLE_BIT(CHAR_FLAGS(victim), CHAR_GROUP);
       }
       else
-         act("$3n must follow you, to enter the group", A_SOMEONE, ch, 0, victim, TO_CHAR);
+      {
+         act("$3n must follow you, to enter the group", A_SOMEONE, ch, nullptr, victim, TO_CHAR);
+      }
    }
 }
 
@@ -720,9 +772,13 @@ void race_adjust(struct unit_data *ch)
    my_race = &race_info[CHAR_RACE(ch)];
 
    if(CHAR_SEX(ch) == SEX_MALE)
+   {
       sex_race = &my_race->male;
+   }
    else
+   {
       sex_race = &my_race->female;
+   }
 
    UNIT_WEIGHT(ch) = UNIT_BASE_WEIGHT(ch) = sex_race->weight + dice(sex_race->weight_dice.reps, sex_race->weight_dice.size);
 
@@ -745,16 +801,24 @@ void race_cost(struct unit_data *ch)
    int i;
 
    for(i = 0; i < ABIL_TREE_MAX; i++)
+   {
       PC_ABI_COST(ch, i) = racial_ability[i][CHAR_RACE(ch)];
+   }
 
    for(i = 0; i < WPN_TREE_MAX; i++)
+   {
       PC_WPN_COST(ch, i) = racial_weapons[i][CHAR_RACE(ch)];
+   }
 
    for(i = 0; i < SKI_TREE_MAX; i++)
+   {
       PC_SKI_COST(ch, i) = racial_skills[i][CHAR_RACE(ch)];
+   }
 
    for(i = 0; i < SPL_TREE_MAX; i++)
+   {
       PC_SPL_COST(ch, i) = racial_spells[i][CHAR_RACE(ch)];
+   }
 }
 
 void points_reset(struct unit_data *ch)
@@ -782,18 +846,26 @@ void points_reset(struct unit_data *ch)
    {
       PC_SPL_LVL(ch, i) = 0;
       if(i < SPL_GROUP_MAX)
+      {
          PC_SPL_SKILL(ch, i) = 1; /* So resistance spells work! */
+      }
       else
+      {
          PC_SPL_SKILL(ch, i) = 0;
+      }
    }
 
    for(i = 0; i < WPN_TREE_MAX; i++)
    {
       PC_WPN_LVL(ch, i) = 0;
       if(i < WPN_GROUP_MAX)
+      {
          PC_WPN_SKILL(ch, i) = 1; /* So resistance spells work! */
+      }
       else
+      {
          PC_WPN_SKILL(ch, i) = 0;
+      }
    }
 }
 
@@ -804,7 +876,7 @@ void start_player(struct unit_data *ch)
    int cls = 0;
 
    assert(CHAR_LEVEL(ch) == 0);
-   assert(UNIT_CONTAINS(ch) == NULL);
+   assert(UNIT_CONTAINS(ch) == nullptr);
    assert(IS_PC(ch));
    assert(CHAR_DESCRIPTOR(ch)); // Needed to copy pwd
 
@@ -829,14 +901,16 @@ void start_player(struct unit_data *ch)
    SET_BIT(PC_FLAGS(ch), PC_PROMPT);
 
    if(!UNIT_IS_EVIL(ch))
+   {
       SET_BIT(CHAR_FLAGS(ch), CHAR_PEACEFUL);
+   }
 
    extern struct diltemplate *playerinit_tmpl;
 
-   if(playerinit_tmpl)
+   if(playerinit_tmpl != nullptr)
    {
       /* Call DIL to see if we should init the player in any other way. */
-      struct dilprg *prg = dil_copy_template(playerinit_tmpl, ch, NULL);
+      struct dilprg *prg = dil_copy_template(playerinit_tmpl, ch, nullptr);
 
       prg->waitcmd = WAITCMD_MAXINST - 1; // The usual hack, see db_file
 

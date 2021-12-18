@@ -28,9 +28,9 @@
  *			sprint_social!!!1!)
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "comm.h"
 #include "db.h"
@@ -73,65 +73,89 @@ struct social_msg
 
 static struct trie_type *soc_trie;
 
-static char *fread_action(FILE *fl)
+static auto fread_action(FILE *fl) -> char *
 {
    char buf[512];
 
    char *m_tmp = fgets(buf, sizeof buf, fl);
 
-   if(feof(fl))
+   if(feof(fl) != 0)
    {
       perror("fread_action");
       exit(1);
    }
 
    if(*buf == '#')
-      return NULL;
+   {
+      return nullptr;
+   }
 
    buf[strlen(buf) - 1] = '\0';
 
    return str_dup(buf);
 }
 
-static int str_to_min_pos(char *str)
+static auto str_to_min_pos(char *str) -> int
 {
    int pos = 0;
 
    if(str_ccmp(str, "dead") == 0)
+   {
       pos = POSITION_DEAD;
+   }
    else if(str_ccmp(str, "sleep") == 0)
+   {
       pos = POSITION_SLEEPING;
+   }
    else if(str_ccmp(str, "rest") == 0)
+   {
       pos = POSITION_RESTING;
+   }
    else if(str_ccmp(str, "sit") == 0)
+   {
       pos = POSITION_SITTING;
+   }
    else if(str_ccmp(str, "fight") == 0)
+   {
       pos = POSITION_FIGHTING;
+   }
    else if(str_ccmp(str, "stand") == 0)
+   {
       pos = POSITION_STANDING;
+   }
    else
+   {
       error(HERE, "Illegal position in actions-file: %s", str);
+   }
 
    return pos;
 }
 
-static int str_to_hide_flag(char *str)
+static auto str_to_hide_flag(char *str) -> int
 {
    int flag = 0;
 
    if(str_ccmp(str, "someone") == 0)
+   {
       flag = A_SOMEONE;
+   }
    else if(str_ccmp(str, "hideinv") == 0)
+   {
       flag = A_HIDEINV;
+   }
    else if(str_ccmp(str, "always") == 0)
+   {
       flag = A_ALWAYS;
+   }
    else
+   {
       error(HERE, "Illegal hide-flag in actions-file: %s", str);
+   }
 
    return flag;
 }
 
-static int soc_sort_cmp(struct social_msg *dat1, struct social_msg *dat2)
+static auto soc_sort_cmp(struct social_msg *dat1, struct social_msg *dat2) -> int
 {
    return strcmp(dat1->cmd_str, dat2->cmd_str);
 }
@@ -139,16 +163,21 @@ static int soc_sort_cmp(struct social_msg *dat1, struct social_msg *dat2)
 /*  Boot builds a array of the socials first, so we can sort them before
  *  putting them into the trie.
  */
-void boot_social_messages(void)
+void boot_social_messages()
 {
    FILE *fl;
-   char  cmd[80], hide[80], min_pos[80], vic_min_pos[80], buf[256];
+   char  cmd[80];
+   char  hide[80];
+   char  min_pos[80];
+   char  vic_min_pos[80];
+   char  buf[256];
    int   level;
 
-   struct social_msg *list      = NULL;
-   int                list_elms = 0, list_size = 0;
+   struct social_msg *list      = nullptr;
+   int                list_elms = 0;
+   int                list_size = 0;
 
-   if((fl = fopen(str_cc(libdir, SOCMESS_FILE), "r")) == NULL)
+   if((fl = fopen(str_cc(libdir, SOCMESS_FILE), "r")) == nullptr)
    {
       perror("boot_social_messages");
       exit(1);
@@ -158,9 +187,9 @@ void boot_social_messages(void)
    {
       do
       {
-         if(fgets(buf, sizeof buf, fl) == NULL)
+         if(fgets(buf, sizeof buf, fl) == nullptr)
          {
-            if(feof(fl))
+            if(feof(fl) != 0)
             {
                int i;
 
@@ -171,15 +200,19 @@ void boot_social_messages(void)
 
                qsort(list, list_elms, sizeof(struct social_msg), (int (*)(const void *, const void *))soc_sort_cmp);
 
-               soc_trie = NULL;
+               soc_trie = nullptr;
 
                for(i = 0; i < list_elms; i++)
+               {
                   soc_trie = add_trienode(list[i].cmd_str, soc_trie);
+               }
 
                qsort_triedata(soc_trie);
 
                for(i = 0; i < list_elms; i++)
+               {
                   set_triedata(list[i].cmd_str, soc_trie, &list[i], FALSE);
+               }
 
                return; /* list is not freed, as it it used for the trie */
             }
@@ -194,7 +227,7 @@ void boot_social_messages(void)
       sscanf(buf, "%s %s %s %s %d", cmd, hide, min_pos, vic_min_pos, &level);
 
       /* alloc new cells */
-      if(list == NULL)
+      if(list == nullptr)
       {
          list_size = 10;
          CREATE(list, struct social_msg, list_size);
@@ -217,7 +250,7 @@ void boot_social_messages(void)
       list[list_elms].char_found = fread_action(fl);
 
       /* if no char_found, the rest is to be ignored */
-      if(list[list_elms].char_found)
+      if(list[list_elms].char_found != nullptr)
       {
          list[list_elms].others_found = fread_action(fl);
          list[list_elms].vict_found   = fread_action(fl);
@@ -231,26 +264,29 @@ void boot_social_messages(void)
 }
 
 /* is cmd an nonabbreviated social-string? */
-bool cmd_is_a_social(char *cmd, int complete)
+auto cmd_is_a_social(char *cmd, int complete) -> bool
 {
    struct social_msg *action;
 
-   if(complete)
-      return ((action = (struct social_msg *)search_trie(cmd, soc_trie)) && str_ccmp(action->cmd_str, cmd) == 0);
-   else
-      return search_trie(cmd, soc_trie) != NULL;
+   if(complete != 0)
+   {
+      return (((action = (struct social_msg *)search_trie(cmd, soc_trie)) != nullptr) && str_ccmp(action->cmd_str, cmd) == 0);
+   }
+   return search_trie(cmd, soc_trie) != NULL;
 }
 
-bool perform_social(struct unit_data *ch, char *arg, const command_info *cmd)
+auto perform_social(struct unit_data *ch, char *arg, const command_info *cmd) -> bool
 {
    struct social_msg *action;
    char              *oarg = arg;
 
    action = (struct social_msg *)search_trie(cmd->cmd_str, soc_trie);
 
-   if((action == NULL) || (action->level > CHAR_LEVEL(ch)))
+   if((action == nullptr) || (action->level > CHAR_LEVEL(ch)))
+   {
       return FALSE;
-   else if(CHAR_POS(ch) < action->min_pos)
+   }
+   if(CHAR_POS(ch) < action->min_pos)
       wrong_position(ch);
    else if(str_is_empty(arg) || !action->char_found)
    {
@@ -291,13 +327,14 @@ bool perform_social(struct unit_data *ch, char *arg, const command_info *cmd)
  * cur: The currently examined string
  * idx: Index to the permutable char of cur
  */
-static int sprint_social(char *b, struct trie_type *t, int *no, char *cur, int idx)
+static auto sprint_social(char *b, struct trie_type *t, int *no, char *cur, int idx) -> int
 {
    struct social_msg *sm;
    struct trie_type  *t2;
-   int                i, count = 0;
+   int                i;
+   int                count = 0;
 
-   if(t)
+   if(t != nullptr)
    {
       cur[idx + 1] = '\0'; /* Make sure cur is correctly nil terminated */
 
@@ -306,13 +343,15 @@ static int sprint_social(char *b, struct trie_type *t, int *no, char *cur, int i
          t2       = t->nexts[i].t;
          cur[idx] = t->nexts[i].c; /* extend the current string */
 
-         if((sm = (struct social_msg *)t2->data)
+         if(((sm = (struct social_msg *)t2->data) != nullptr)
             /* also make sure it is an unabbreviated social-string! */
             && strcmp(sm->cmd_str, cur) == 0)
          {
             sprintf(b, "%-15s", sm->cmd_str);
             if(++*no % 5 == 0)
+            {
                strcat(b, "\n\r");
+            }
             TAIL(b);
 
             count++;
@@ -327,21 +366,26 @@ static int sprint_social(char *b, struct trie_type *t, int *no, char *cur, int i
 
 void do_socials(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   char buf[MAX_STRING_LENGTH], cur[50];
+   char buf[MAX_STRING_LENGTH];
+   char cur[50];
    int  no = 0;
 
    if(!IS_PC(ch))
+   {
       return;
+   }
 
    send_to_char("The following social commands are available:\n\r\n\r", ch);
 
-   if(sprint_social(buf, soc_trie, &no, cur, 0))
+   if(sprint_social(buf, soc_trie, &no, cur, 0) != 0)
    {
       strcat(buf, "\n\r");
       page_string(CHAR_DESCRIPTOR(ch), buf);
    }
    else
+   {
       send_to_char("  None!\n\r", ch);
+   }
 }
 
 void do_insult(struct unit_data *ch, char *arg, const struct command_info *cmd)
@@ -349,15 +393,15 @@ void do_insult(struct unit_data *ch, char *arg, const struct command_info *cmd)
    const char       *insult;
    struct unit_data *victim;
 
-   if(str_is_empty(arg))
+   if(str_is_empty(arg) != 0u)
    {
       send_to_char("Surely you don't want to insult everybody.\n\r", ch);
       return;
    }
 
-   victim = find_unit(ch, &arg, 0, FIND_UNIT_SURRO);
+   victim = find_unit(ch, &arg, nullptr, FIND_UNIT_SURRO);
 
-   if(victim == NULL || !IS_CHAR(victim))
+   if(victim == nullptr || !IS_CHAR(victim))
    {
       send_to_char("No one by that name here.\n\r", ch);
       return;
@@ -378,17 +422,25 @@ void do_insult(struct unit_data *ch, char *arg, const struct command_info *cmd)
             if(CHAR_SEX(ch) == SEX_MALE)
             {
                if(CHAR_SEX(victim) == SEX_MALE)
+               {
                   insult = "$1n accuses you of fighting like a woman!";
+               }
                else
+               {
                   insult = "$1n says that women can't fight.";
+               }
             }
             else /* female (or neutral!) */
             {
                if(CHAR_SEX(victim) == SEX_MALE)
+               {
                   insult = "$1n accuses you of having the smallest.... (brain?)";
+               }
                else
+               {
                   insult = "$1n tells you that you'd loose a beauty contest "
                            "against a troll!";
+               }
             }
             break;
 
@@ -401,9 +453,9 @@ void do_insult(struct unit_data *ch, char *arg, const struct command_info *cmd)
             break;
       }
 
-      act("You insult $3n.", A_SOMEONE, ch, 0, victim, TO_CHAR);
-      act("$1n insults $3n.", A_SOMEONE, ch, 0, victim, TO_NOTVICT);
-      act(insult, A_SOMEONE, ch, 0, victim, TO_VICT);
+      act("You insult $3n.", A_SOMEONE, ch, nullptr, victim, TO_CHAR);
+      act("$1n insults $3n.", A_SOMEONE, ch, nullptr, victim, TO_NOTVICT);
+      act(insult, A_SOMEONE, ch, nullptr, victim, TO_VICT);
    }
 }
 
@@ -418,14 +470,15 @@ struct pose_type
 
 static struct pose_type pose_messages[MAX_POSES];
 
-void boot_pose_messages(void)
+void boot_pose_messages()
 {
    FILE  *fl;
-   sbit16 counter, cls;
+   sbit16 counter;
+   sbit16 cls;
 
    return; /* SUSPEKT  no reason to boot these, eh? */
 
-   if(!(fl = fopen(str_cc(libdir, POSEMESS_FILE), "r")))
+   if((fl = fopen(str_cc(libdir, POSEMESS_FILE), "r")) == nullptr)
    {
       perror("boot_pose_messages");
       exit(0);
@@ -436,7 +489,9 @@ void boot_pose_messages(void)
       int m_tmp = fscanf(fl, " %d ", &pose_messages[counter].level);
 
       if(pose_messages[counter].level < 0)
+      {
          break;
+      }
       for(cls = 0; cls < 4; cls++)
       {
          pose_messages[counter].poser_msg[cls] = fread_action(fl);
@@ -450,7 +505,6 @@ void boot_pose_messages(void)
 void do_pose(struct unit_data *ch, char *argument, const struct command_info *cmd)
 {
    send_to_char("Sorry Buggy command.\n\r", ch);
-   return;
 
 #ifdef SUSPEKT
    struct pose_type *to_pose;

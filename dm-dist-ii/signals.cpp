@@ -22,11 +22,11 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #ifndef DOS
-   #include <signal.h>
+   #include <csignal>
    #include <sys/time.h>
 #endif
 
@@ -50,8 +50,10 @@ void checkpointing(int signal_no)
 
    extern int player_convert;
 
-   if(player_convert)
+   if(player_convert != 0)
+   {
       return;
+   }
 
    if(last_tick != 0 && tics == last_tick)
    {
@@ -93,19 +95,19 @@ void logsig(int signal)
 
 #ifdef DEBUG_HISTORY
 
-void dump_debug_history(void);
+void dump_debug_history();
 
-void (*sigiot_func)(int)  = NULL;
-void (*sigsegv_func)(int) = NULL;
-void (*sigbus_func)(int)  = NULL;
-void (*sigabrt_func)(int) = NULL;
+void (*sigiot_func)(int)  = nullptr;
+void (*sigsegv_func)(int) = nullptr;
+void (*sigbus_func)(int)  = nullptr;
+void (*sigabrt_func)(int) = nullptr;
 
 void sig_debugdump(int tsignal)
 {
    static int here = FALSE;
 
    slog(LOG_ALL, 0, "SIG_IOT #%d received!", tsignal);
-   if(!here)
+   if(here == 0)
    {
       dump_debug_history();
       here = TRUE;
@@ -122,7 +124,7 @@ void sig_debugdump(int tsignal)
 
 #endif /* DEBUG_HISTORY */
 
-void signal_setup(void)
+void signal_setup()
 {
 #ifndef DOS
    struct itimerval itime;
@@ -150,7 +152,7 @@ void signal_setup(void)
    interval.tv_usec  = 0;
    itime.it_interval = interval;
    itime.it_value    = interval;
-   setitimer(ITIMER_VIRTUAL, &itime, 0);
+   setitimer(ITIMER_VIRTUAL, &itime, nullptr);
    signal(SIGVTALRM, checkpointing);
 #endif /* !DOS */
 }

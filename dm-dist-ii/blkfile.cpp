@@ -29,9 +29,9 @@
 /*                   handles - but incompatible with old system.           */
 /* 16/07/94 seifert: The free list uses much less memory now.              */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "blkfile.h"
 #include "db.h"
@@ -70,7 +70,7 @@
    blocked file is opened
 */
 
-static blk_handle blk_fsize(BLK_FILE *bf)
+static auto blk_fsize(BLK_FILE *bf) -> blk_handle
 {
    return fsize(bf->f) / bf->bsize;
 }
@@ -81,20 +81,28 @@ static void blk_read_block(BLK_FILE *bf, blk_handle index)
 
    p = index * bf->bsize;
 
-   if(fseek(bf->f, p, SEEK_SET))
+   if(fseek(bf->f, p, SEEK_SET) != 0)
+   {
       error(HERE, "%s: Unable to seek.", bf->name);
+   }
 
    if(fread(bf->buf, bf->bsize, 1, bf->f) != 1)
+   {
       error(HERE, "%s: Unable to read.", bf->name);
+   }
 }
 
 static void blk_write_block(BLK_FILE *bf, blk_handle index)
 {
-   if(fseek(bf->f, index * bf->bsize, SEEK_SET))
+   if(fseek(bf->f, index * bf->bsize, SEEK_SET) != 0)
+   {
       error(HERE, "%s: Unable to seek.", bf->name);
+   }
 
    if(fwrite(bf->buf, bf->bsize, 1, bf->f) != 1)
+   {
       error(HERE, "%s: Unable to write.", bf->name);
+   }
 }
 
 static void register_free_block(BLK_FILE *bf, blk_handle idx)
@@ -106,9 +114,13 @@ static void register_free_block(BLK_FILE *bf, blk_handle idx)
    if(bf->listtop > bf->listmax)
    {
       if(bf->listtop <= 1)
+      {
          CREATE(bf->list, blk_handle, bf->listtop);
+      }
       else
+      {
          RECREATE(bf->list, blk_handle, bf->listtop);
+      }
       bf->listmax = bf->listtop;
    }
 
@@ -117,16 +129,18 @@ static void register_free_block(BLK_FILE *bf, blk_handle idx)
    /* Insert the block in descending order so we get a nice and  */
    /* straight FORWARD writing of blocks (may help w/ readahead) */
    for(i = 0; i < bf->listtop - 1; i++)
+   {
       if(bf->list[i] < idx)
       {
          memmove(&bf->list[i + 1], &bf->list[i], (bf->listtop - i - 1) * sizeof(blk_handle));
          bf->list[i] = idx;
          break;
       }
+   }
 }
 
 /* Returns a free block and occupies it at the same time. */
-static blk_handle find_occupy_free_blk(BLK_FILE *bf)
+static auto find_occupy_free_blk(BLK_FILE *bf) -> blk_handle
 {
    ubit8 *b;
 
@@ -135,7 +149,9 @@ static blk_handle find_occupy_free_blk(BLK_FILE *bf)
       bf->listtop--;
 
       if(bf->list[bf->listtop] == BLK_RESERVED)
+      {
          error(HERE, "%s: Reserved block mess.", bf->name);
+      }
 
       return bf->list[bf->listtop];
    }
@@ -154,12 +170,15 @@ static blk_handle find_occupy_free_blk(BLK_FILE *bf)
 
 /* Copy data starting at blk_start into data, and return pointer */
 /* to immediate next free space in data.                         */
-static void *blk_extract_data(BLK_FILE *bf, void *blk_start, void *data, blk_length *len)
+static auto blk_extract_data(BLK_FILE *bf, void *blk_start, void *data, blk_length *len) -> void *
 {
-   int no, used;
+   int no;
+   int used;
 
    if(*len == 0)
-      return 0;
+   {
+      return nullptr;
+   }
 
    used = (ubit8 *)blk_start - (ubit8 *)bf->buf;
    no   = bf->bsize - used;
@@ -167,10 +186,14 @@ static void *blk_extract_data(BLK_FILE *bf, void *blk_start, void *data, blk_len
    no = MIN(*len, no); /* Make sure we don't copy too much */
 
    if(no < 0)
+   {
       error(HERE, "%s: Illegal length.", bf->name);
+   }
 
    if(no == 0)
+   {
       return data;
+   }
 
    memcpy(data, blk_start, no);
 
@@ -181,18 +204,23 @@ static void *blk_extract_data(BLK_FILE *bf, void *blk_start, void *data, blk_len
 
 /* Copy from data into blk_start the apropriate number of bytes */
 /* Returns pointer just past last copied element from data      */
-static const void *blk_put_data(BLK_FILE *bf, void *blk_start, const void *data)
+static auto blk_put_data(BLK_FILE *bf, void *blk_start, const void *data) -> const void *
 {
-   int no, used;
+   int no;
+   int used;
 
    used = (ubit8 *)blk_start - (ubit8 *)bf->buf;
    no   = bf->bsize - used;
 
    if(no < 0)
+   {
       error(HERE, "%s: Illegal length.", bf->name);
+   }
 
    if(no == 0)
+   {
       return data;
+   }
 
    memcpy(blk_start, data, no); /* Copy data */
 
@@ -206,8 +234,10 @@ void blk_delete(BLK_FILE *bf, blk_handle index)
    int        first;
    ubit8     *b;
 
-   if(!(bf->f = fopen_cache(bf->name, "r+b")))
+   if((bf->f = fopen_cache(bf->name, "r+b")) == nullptr)
+   {
       error(HERE, "%s: Cache open.", bf->name);
+   }
 
    first = TRUE;
 
@@ -227,7 +257,7 @@ void blk_delete(BLK_FILE *bf, blk_handle index)
          return;
       }
 
-      if(first)
+      if(first != 0)
       {
          if(next_block != BLK_START_V1)
          {
@@ -251,22 +281,29 @@ void blk_delete(BLK_FILE *bf, blk_handle index)
       index = next_block;
    } while(index != BLK_END);
 
-   if(fflush(bf->f))
+   if(fflush(bf->f) != 0)
+   {
       error(HERE, "%s: Flush", bf->name);
+   }
 }
 
 /* Read message starting at index "index", and return pointer to the */
 /* result buffer, if given pointer to a blk_length type, save the    */
 /* length of the buffer in this variable                             */
 /* Returns NULL if error                                             */
-void *blk_read(BLK_FILE *bf, blk_handle index, blk_length *blen)
+auto blk_read(BLK_FILE *bf, blk_handle index, blk_length *blen) -> void *
 {
-   void      *blk_ptr, *data = 0, *odata = 0;
-   blk_handle next_block, oindex;
+   void      *blk_ptr;
+   void      *data  = 0;
+   void      *odata = 0;
+   blk_handle next_block;
+   blk_handle oindex;
    blk_length len = 0;
 
-   if(!(bf->f = fopen_cache(bf->name, "r+b")))
+   if((bf->f = fopen_cache(bf->name, "r+b")) == nullptr)
+   {
       error(HERE, "%s: Cache open.", bf->name);
+   }
 
    oindex = index;
    do
@@ -282,9 +319,11 @@ void *blk_read(BLK_FILE *bf, blk_handle index, blk_length *blen)
               "BLK_READ: Attempt to access free "
               "block in '%s'",
               bf->name);
-         if(blen)
+         if(blen != nullptr)
+         {
             *blen = 0;
-         return NULL;
+         }
+         return nullptr;
       }
 
       if(oindex == index)
@@ -295,9 +334,11 @@ void *blk_read(BLK_FILE *bf, blk_handle index, blk_length *blen)
                  "BLK_READ: Illegal read handle "
                  "in '%s'.",
                  bf->name);
-            if(blen)
+            if(blen != nullptr)
+            {
                *blen = 0;
-            return NULL;
+            }
+            return nullptr;
          }
 
          /* This was the first block, now read the real next_block */
@@ -305,12 +346,18 @@ void *blk_read(BLK_FILE *bf, blk_handle index, blk_length *blen)
 
          len = bread_ubit32((ubit8 **)&blk_ptr);
          if(len > 0)
+         {
             CREATE(data, ubit8, len); /* Alloc space for the buffer */
+         }
          else
-            data = 0;
+         {
+            data = nullptr;
+         }
          odata = data;
-         if(blen)
+         if(blen != nullptr)
+         {
             *blen = len;
+         }
       }
 
       data = blk_extract_data(bf, blk_ptr, data, &len);
@@ -323,17 +370,23 @@ void *blk_read(BLK_FILE *bf, blk_handle index, blk_length *blen)
 
 /* Save the letter pointed to by str in the blk file */
 /* and return a handle to the message                */
-blk_handle blk_write(BLK_FILE *bf, const void *data, blk_length len)
+auto blk_write(BLK_FILE *bf, const void *data, blk_length len) -> blk_handle
 {
-   blk_handle  index, next_block, first_block;
+   blk_handle  index;
+   blk_handle  next_block;
+   blk_handle  first_block;
    const void *org;
    void       *blk_ptr;
 
-   if(!(bf->f = fopen_cache(bf->name, "r+b")))
+   if((bf->f = fopen_cache(bf->name, "r+b")) == nullptr)
+   {
       error(HERE, "%s: Cache open.", bf->name);
+   }
 
    if(len == 0)
+   {
       slog(LOG_ALL, 0, "Zero length save to file %s", bf->name);
+   }
 
    first_block = index = find_occupy_free_blk(bf);
 
@@ -344,36 +397,50 @@ blk_handle blk_write(BLK_FILE *bf, const void *data, blk_length len)
       blk_ptr = bf->buf;
 
       if(first_block == index)
+      {
          bread_ubit16((ubit8 **)&blk_ptr);
+      }
 
       bread_ubit16((ubit8 **)&blk_ptr);
 
       if(first_block == index)
+      {
          bread_ubit32((ubit8 **)&blk_ptr);
+      }
 
       data = blk_put_data(bf, blk_ptr, data);
 
       if((ubit8 *)data - (ubit8 *)org < len)
+      {
          next_block = find_occupy_free_blk(bf);
+      }
       else
+      {
          next_block = BLK_END;
+      }
 
       blk_ptr = bf->buf;
 
       if(first_block == index)
+      {
          bwrite_ubit16((ubit8 **)&blk_ptr, (ubit16)BLK_START_V1);
+      }
 
       bwrite_ubit16((ubit8 **)&blk_ptr, (ubit16)next_block);
 
       if(first_block == index)
+      {
          bwrite_ubit32((ubit8 **)&blk_ptr, (ubit32)len);
+      }
 
       blk_write_block(bf, index);
       index = next_block;
    } while(index != BLK_END);
 
-   if(fflush(bf->f))
+   if(fflush(bf->f) != 0)
+   {
       error(HERE, "%s: Flush", bf->name);
+   }
 
    return first_block;
 }
@@ -388,7 +455,9 @@ void blk_write_reserved(BLK_FILE *bf, const void *data, blk_length len)
    i = bread_ubit16(&b);
 
    if(i != BLK_FREE)
+   {
       blk_delete(bf, i);
+   }
 
    i = blk_write(bf, data, len);
 
@@ -397,16 +466,18 @@ void blk_write_reserved(BLK_FILE *bf, const void *data, blk_length len)
    blk_write_block(bf, BLK_RESERVED);
 }
 
-void *blk_read_reserved(BLK_FILE *bf, blk_length *blen)
+auto blk_read_reserved(BLK_FILE *bf, blk_length *blen) -> void *
 {
    blk_handle i;
    ubit8     *b;
 
    if(bf->blktop == 0)
    {
-      if(blen)
+      if(blen != nullptr)
+      {
          *blen = 0;
-      return NULL;
+      }
+      return nullptr;
    }
 
    blk_read_block(bf, BLK_RESERVED);
@@ -415,43 +486,51 @@ void *blk_read_reserved(BLK_FILE *bf, blk_length *blen)
 
    if(i == BLK_FREE)
    {
-      if(blen)
+      if(blen != nullptr)
+      {
          *blen = 0;
-      return NULL;
+      }
+      return nullptr;
    }
 
    return blk_read(bf, i, blen);
 }
 
 /* block size is the number of bytes contained in each block. Try 128+ */
-BLK_FILE *blk_open(const char *name, blk_length block_size)
+auto blk_open(const char *name, blk_length block_size) -> BLK_FILE *
 {
    blk_handle index;
 
    BLK_FILE *bf;
 
    if(block_size < BLK_MIN_SIZE)
+   {
       error(HERE, "%s: Illegal block size.", name);
+   }
 
    CREATE(bf, BLK_FILE, 1);
    bf->name    = str_dup(name);
    bf->listtop = 0;
    bf->listmax = 0;
    bf->blktop  = 0;
-   bf->list    = 0;
+   bf->list    = nullptr;
    bf->bsize   = block_size;
-   bf->f       = 0;
+   bf->f       = nullptr;
    CREATE(bf->buf, ubit8, bf->bsize);
 
-   if(!(bf->f = fopen_cache(bf->name, "r+b")))
+   if((bf->f = fopen_cache(bf->name, "r+b")) == nullptr)
+   {
       error(HERE, "%s: Cache open.", bf->name);
+   }
 
    bf->blktop = blk_fsize(bf);
 
    for(index = 0;; index++)
    {
       if(fread(bf->buf, bf->bsize, 1, bf->f) != 1)
+      {
          break;
+      }
 
       if(index >= bf->blktop)
       {
@@ -460,7 +539,9 @@ BLK_FILE *blk_open(const char *name, blk_length block_size)
       }
 
       if((*((blk_handle *)bf->buf) == BLK_FREE) && (index != BLK_RESERVED))
+      {
          register_free_block(bf, index);
+      }
    }
 
    return bf;
@@ -473,7 +554,9 @@ void blk_close(BLK_FILE *bf)
 {
    free(bf->name);
    free(bf->buf);
-   if(bf->list)
+   if(bf->list != nullptr)
+   {
       free(bf->list);
+   }
    free(bf);
 }

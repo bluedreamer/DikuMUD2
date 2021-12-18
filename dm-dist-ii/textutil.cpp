@@ -30,10 +30,10 @@
 /* 12/09/94 gnort  : Added const'ness to various functions' string args    */
 /* 14/09/94 seifert: Optimized and split is_name (is_name_raw)             */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "common.h"
 #include "structs.h"
@@ -45,20 +45,30 @@
  *  end of string or newline. Returns position of 'str' after copied
  *  characters.
  */
-char *str_line(const char *str, char *buf)
+auto str_line(const char *str, char *buf) -> char *
 {
-   if(str == NULL || buf == NULL)
-      return NULL;
+   if(str == nullptr || buf == nullptr)
+   {
+      return nullptr;
+   }
 
    for(; *str == ' ' || *str == '\n' || *str == '\r'; str++)
+   {
       ;
+   }
 
    if(*str == '\0')
-      return NULL;
+   {
+      return nullptr;
+   }
 
-   for(; (*buf = *str); buf++, str++)
+   for(; (*buf = *str) != 0; buf++, str++)
+   {
       if(*str == '\n' || *str == '\r')
+      {
          break;
+      }
+   }
 
    *buf = '\0'; /* Erase last separator */
 
@@ -66,31 +76,43 @@ char *str_line(const char *str, char *buf)
 }
 
 /* Make a string lowercase, and also return length of string */
-int str_lower(char *s)
+auto str_lower(char *s) -> int
 {
    int l;
 
-   for(l = 0; *s; s++, l++)
-      if(isupper(*s))
+   for(l = 0; *s != 0; s++, l++)
+   {
+      if(isupper(*s) != 0)
+      {
          *s = tolower(*s);
+      }
+   }
 
    return l;
 }
 
 /* Make a string lowercase in another buffer. Also return length of string */
 
-int str_lower(const char *s, char *d, int nBufSize)
+auto str_lower(const char *s, char *d, int nBufSize) -> int
 {
    int l;
 
-   for(l = 0; *s && (l < nBufSize); s++, d++, l++)
-      if(isupper(*s))
+   for(l = 0; (*s != 0) && (l < nBufSize); s++, d++, l++)
+   {
+      if(isupper(*s) != 0)
+      {
          *d = tolower(*s);
+      }
       else
+      {
          *d = *s;
+      }
+   }
 
    if(l < nBufSize)
+   {
       *d = 0;
+   }
    else
    {
       slog(LOG_ALL, 0,
@@ -103,17 +125,21 @@ int str_lower(const char *s, char *d, int nBufSize)
 }
 
 /* Return a string consisting of `n' spaces */
-char *spc(int n)
+auto spc(int n) -> char *
 {
    static char buf[256];
 
    buf[n] = '\0';
 
    if(n > 256)
+   {
       n = 256;
+   }
 
-   for(; n;)
+   for(; n != 0;)
+   {
       buf[--n] = ' ';
+   }
 
    return buf;
 }
@@ -125,7 +151,7 @@ char *spc(int n)
 #ifdef DOS
 char *itoa_dos(int n)
 #else
-char *itoa(int n)
+auto itoa(int n) -> char *
 #endif
 {
    static char buf[32]; /* 32 digits can even cope with 64 bit ints */
@@ -138,7 +164,7 @@ char *itoa(int n)
  *  of the integer 'n'
  *  I've made it the easy way :)
  */
-char *ltoa(long n)
+auto ltoa(long n) -> char *
 {
    static char buf[32]; /* 32 digits can even cope with 64 bit ints */
 
@@ -156,19 +182,27 @@ char *ltoa(long n)
 /*  Compare two strings without case-sensitivity
  *  Return result as defined in strcmp
  */
-int str_ccmp(const char *s, const char *d)
+auto str_ccmp(const char *s, const char *d) -> int
 {
    if(s == d)
+   {
       return 0;
+   }
 
-   if(s == NULL)
+   if(s == nullptr)
+   {
       return -1;
-   else if(d == NULL)
+   }
+   if(d == NULL)
       return 1;
 
    for(; tolower(*s) == tolower(*d); s++, d++)
+   {
       if(*s == '\0')
+      {
          return 0;
+      }
+   }
 
    return (tolower(*s) - tolower(*d));
 }
@@ -176,29 +210,37 @@ int str_ccmp(const char *s, const char *d)
 /*  Compare max n chars without case-sensitivity
  *  Return result as defined in strcmp
  */
-int str_nccmp(const char *s, const char *d, int n)
+auto str_nccmp(const char *s, const char *d, int n) -> int
 {
    if(s == d)
+   {
       return 0;
+   }
 
-   if(s == NULL)
+   if(s == nullptr)
+   {
       return -1;
-   else if(d == NULL)
+   }
+   if(d == NULL)
       return 1;
 
    for(n--; tolower(*s) == tolower(*d); s++, d++, n--)
+   {
       if(*s == '\0' || n <= 0)
+      {
          return 0;
+      }
+   }
 
    return (tolower(*s) - tolower(*d));
 }
 
 /* Allocate space for a copy of source */
-char *str_dup(const char *source)
+auto str_dup(const char *source) -> char *
 {
    char *dest;
 
-   if(source)
+   if(source != nullptr)
    {
       CREATE(dest, char, strlen(source) + 1);
       strcpy(dest, source);
@@ -206,14 +248,14 @@ char *str_dup(const char *source)
       return dest;
    }
 
-   return NULL;
+   return nullptr;
 }
 
 /*  As defined by 2nd Ed. of K&R ANSI C
  *  Return pointer to first occurence of ct in cs - or NULL
  *  Used to determine ei. "from" and "in"
  */
-char *str_str(const char *cs, const char *ct)
+auto str_str(const char *cs, const char *ct) -> char *
 {
    char *si;
    char *ti;
@@ -224,19 +266,23 @@ char *str_str(const char *cs, const char *ct)
       ti = (char *)ct;
 
       while(*si++ == *ti++)
+      {
          if(*ti == '\0')
+         {
             return (char *)cs;
+         }
+      }
 
-   } while(*cs++);
+   } while(*cs++ != 0);
 
-   return NULL;
+   return nullptr;
 }
 
 /*  As defined by 2nd Ed. of K&R ANSI C, but non case sensitive
  *  Return pointer to first occurence of ct in cs - or NULL
  *  Used to determine ei. "from" and "in"
  */
-char *str_cstr(const char *cs, const char *ct)
+auto str_cstr(const char *cs, const char *ct) -> char *
 {
    char *si;
    char *ti;
@@ -244,95 +290,131 @@ char *str_cstr(const char *cs, const char *ct)
    do
    {
       for(si = (char *)cs, ti = (char *)ct; tolower(*si) == tolower(*ti); si++)
+      {
          if(*++ti == '\0')
+         {
             return (char *)cs;
-   } while(*cs++);
+         }
+      }
+   } while(*cs++ != 0);
 
-   return NULL;
+   return nullptr;
 }
 
 /* return string without leading spaces */
-char *skip_blanks(const char *string)
+auto skip_blanks(const char *string) -> char *
 {
-   if(string == NULL)
-      return NULL;
+   if(string == nullptr)
+   {
+      return nullptr;
+   }
 
-   for(; *string && isspace(*string); string++)
+   for(; (*string != 0) && (isspace(*string) != 0); string++)
+   {
       ;
+   }
 
    return (char *)string;
 }
 
 /* return string without leading spaces */
-char *skip_spaces(const char *string)
+auto skip_spaces(const char *string) -> char *
 {
-   if(string == NULL)
-      return NULL;
+   if(string == nullptr)
+   {
+      return nullptr;
+   }
 
-   for(; *string && isaspace(*string); string++)
+   for(; (*string != 0) && isaspace(*string); string++)
+   {
       ;
+   }
 
    return (char *)string;
 }
 
 void strip_trailing_blanks(char *str)
 {
-   if(!*str) /* empty string: return at once      */
+   if(*str == 0)
+   { /* empty string: return at once      */
       return;
+   }
 
-   for(; *str; ++str) /* wind to end of string             */
+   for(; *str != 0; ++str)
+   { /* wind to end of string             */
       ;
+   }
 
-   if(!isspace(*--str)) /* Not a spaceterminated string      */
-      return;           /* This is mainly for `inter-code' strings */
+   if(isspace(*--str) == 0)
+   {          /* Not a spaceterminated string      */
+      return; /* This is mainly for `inter-code' strings */
+   }
 
-   while(isspace(*--str)) /* rewind to last nonspace character */
+   while(isspace(*--str) != 0)
+   { /* rewind to last nonspace character */
       ;
+   }
 
    *++str = '\0'; /* step ahead and end string         */
 }
 
 void strip_trailing_spaces(char *str)
 {
-   if(!*str) /* empty string: return at once      */
+   if(*str == 0)
+   { /* empty string: return at once      */
       return;
+   }
 
-   for(; *str; ++str) /* wind to end of string             */
+   for(; *str != 0; ++str)
+   { /* wind to end of string             */
       ;
+   }
 
-   if(!isaspace(*--str)) /* Not a spaceterminated string      */
-      return;            /* This is mainly for `inter-code' strings */
+   if(!isaspace(*--str))
+   {          /* Not a spaceterminated string      */
+      return; /* This is mainly for `inter-code' strings */
+   }
 
-   while(isaspace(*--str)) /* rewind to last nonspace character */
+   while(isaspace(*--str))
+   { /* rewind to last nonspace character */
       ;
+   }
 
    *++str = '\0'; /* step ahead and end string         */
 }
 
 /* Returns true is arg is empty */
-ubit1 str_is_empty(const char *arg)
+auto str_is_empty(const char *arg) -> ubit1
 {
-   if(arg == NULL)
+   if(arg == nullptr)
+   {
       return TRUE;
+   }
 
-   return *(skip_blanks(arg)) == '\0';
+   return static_cast<ubit1>(*(skip_blanks(arg)) == '\0');
 }
 
 /* Check if the string contains nothing but numbers */
-ubit1 str_is_number(const char *str)
+auto str_is_number(const char *str) -> ubit1
 {
-   if(!*str)
+   if(*str == 0)
+   {
       return FALSE;
+   }
 
-   for(; *str; str++)
-      if(!isdigit(*str))
+   for(; *str != 0; str++)
+   {
+      if(isdigit(*str) == 0)
+      {
          return FALSE;
+      }
+   }
 
    return TRUE;
 }
 
 /* Check if the next word in str is a number */
-ubit1 next_word_is_number(const char *str)
+auto next_word_is_number(const char *str) -> ubit1
 {
    char tmp[MAX_STRING_LENGTH];
    str_next_word(str, tmp);
@@ -342,28 +424,39 @@ ubit1 next_word_is_number(const char *str)
 /* Block must end with null pointer, -1 if not found otherwise index */
 /* Warning, argument 1 is made into lowercase!                       */
 /* Warning, list of names must be in lowercase to match up! */
-int search_block(const char *oarg, const char **list, ubit1 exact)
+auto search_block(const char *oarg, const char **list, ubit1 exact) -> int
 {
    char arg[4096];
-   int  i, l;
+   int  i;
+   int  l;
 
    /* Make into lower case, and get length of string */
    l = str_lower(oarg, arg, sizeof(arg));
 
-   if(exact)
+   if(exact != 0u)
    {
-      for(i = 0; list[i]; i++)
+      for(i = 0; list[i] != nullptr; i++)
+      {
          if(strcmp(arg, list[i]) == 0)
+         {
             return i;
+         }
+      }
    }
    else
    {
-      if(!l)
+      if(l == 0)
+      {
          l = 1; /* Avoid "" to match the first available string */
+      }
 
-      for(i = 0; list[i]; i++)
+      for(i = 0; list[i] != nullptr; i++)
+      {
          if(strncmp(arg, list[i], l) == 0)
+         {
             return i;
+         }
+      }
    }
 
    return -1;
@@ -371,7 +464,7 @@ int search_block(const char *oarg, const char **list, ubit1 exact)
 
 /* Block must end with null pointer                                  */
 /* Warning, argument 1 is made into lowercase!                       */
-int search_block_length(const char *oarg, int length, const char **list, ubit1 exact)
+auto search_block_length(const char *oarg, int length, const char **list, ubit1 exact) -> int
 {
    char arg[4096];
    int  i;
@@ -379,39 +472,53 @@ int search_block_length(const char *oarg, int length, const char **list, ubit1 e
    /* Make into lower case, and get length of string */
    str_lower(oarg, arg, sizeof(arg));
 
-   if(exact)
+   if(exact != 0u)
    {
-      for(i = 0; list[i]; i++)
-         if(!strncmp(arg, list[i], length))
+      for(i = 0; list[i] != nullptr; i++)
+      {
+         if(strncmp(arg, list[i], length) == 0)
+         {
             if(list[i][length] <= ' ')
+            {
                return i;
+            }
+         }
+      }
    }
    else
    {
-      if(!length)
+      if(length == 0)
+      {
          length = 1; /* Avoid "" to match the first available string */
-      for(i = 0; list[i]; i++)
-         if(!strncmp(arg, list[i], length))
+      }
+      for(i = 0; list[i] != nullptr; i++)
+      {
+         if(strncmp(arg, list[i], length) == 0)
+         {
             return i;
+         }
+      }
    }
 
    return -1;
 }
 
-int fill_word(const char *argument)
+auto fill_word(const char *argument) -> int
 {
-   return (search_block(argument, fillwords, TRUE) >= 0);
+   return static_cast<int>(search_block(argument, fillwords, TRUE) >= 0);
 }
 
 /* Exactly as str_next-word, except it wont change the case */
-char *str_next_word_copy(const char *argument, char *first_arg)
+auto str_next_word_copy(const char *argument, char *first_arg) -> char *
 {
    /* Find first non blank */
    argument = skip_spaces(argument);
 
    /* Copy next word and make it lower case */
    for(; *argument > ' '; argument++)
+   {
       *first_arg++ = *argument;
+   }
 
    *first_arg = '\0';
 
@@ -419,14 +526,16 @@ char *str_next_word_copy(const char *argument, char *first_arg)
 }
 
 /* Copy next word from argument into first_arg and make lowercase*/
-char *str_next_word(const char *argument, char *first_arg)
+auto str_next_word(const char *argument, char *first_arg) -> char *
 {
    /* Find first non blank */
    argument = skip_spaces(argument);
 
    /* Copy next word and make it lower case */
    for(; *argument > ' '; argument++)
+   {
       *first_arg++ = tolower(*argument);
+   }
 
    *first_arg = '\0';
 
@@ -436,61 +545,79 @@ char *str_next_word(const char *argument, char *first_arg)
 /*  Find the first sub-argument of a string,
  *  return pointer to first char in primary argument, following the sub-arg
  */
-char *one_argument(const char *argument, char *first_arg)
+auto one_argument(const char *argument, char *first_arg) -> char *
 {
    assert(argument && first_arg);
 
    do
+   {
       argument = str_next_word(argument, first_arg);
-   while(fill_word(first_arg));
+   } while(fill_word(first_arg) != 0);
 
    return (char *)argument;
 }
 
 /* determine if 'arg1' is an abbreviation of 'arg2'. */
-ubit1 is_abbrev(const char *arg1, const char *arg2)
+auto is_abbrev(const char *arg1, const char *arg2) -> ubit1
 {
-   if(!*arg1)
+   if(*arg1 == 0)
+   {
       return FALSE;
+   }
 
-   for(; *arg1; arg1++, arg2++)
+   for(; *arg1 != 0; arg1++, arg2++)
+   {
       if(tolower(*arg1) != tolower(*arg2))
+      {
          return FALSE;
+      }
+   }
 
    return TRUE;
 }
 
 /* determine if 'arg1' is an abbreviation of 'arg2'.          */
 /* The empty string is never an abbrevation of another string */
-ubit1 is_multi_abbrev(const char *arg1, const char *arg2)
+auto is_multi_abbrev(const char *arg1, const char *arg2) -> ubit1
 {
-   if(!*arg1)
+   if(*arg1 == 0)
+   {
       return FALSE;
+   }
 
-   for(; *arg1 && !isspace(*arg1); arg1++, arg2++)
+   for(; (*arg1 != 0) && (isspace(*arg1) == 0); arg1++, arg2++)
+   {
       if(tolower(*arg1) != tolower(*arg2))
+      {
          return FALSE;
+      }
+   }
 
    return TRUE;
 }
 
 /* Block must end with null pointer, -1 if not found otherwise index */
 /* Warning, argument 1 is converted into lowercase!                  */
-int search_block_abbrevs(const char *oarg, const char **list, const char **end)
+auto search_block_abbrevs(const char *oarg, const char **list, const char **end) -> int
 {
    char        arg[4096];
-   char        buf1[MAX_INPUT_LENGTH], buf2[MAX_INPUT_LENGTH];
-   char       *s, *ps, *bestpos;
-   const char *d, *pd;
+   char        buf1[MAX_INPUT_LENGTH];
+   char        buf2[MAX_INPUT_LENGTH];
+   char       *s;
+   char       *ps;
+   char       *bestpos;
+   const char *d;
+   const char *pd;
    int         i;
-   int         match, bestidx;
+   int         match;
+   int         bestidx;
 
    i = str_lower(skip_spaces(oarg), arg, sizeof(arg));
 
    bestidx = -1;
-   bestpos = NULL;
+   bestpos = nullptr;
 
-   for(i = 0; list[i]; i++)
+   for(i = 0; list[i] != nullptr; i++)
    {
       for(match = 0, s = arg, d = list[i];;)
       {
@@ -498,16 +625,18 @@ int search_block_abbrevs(const char *oarg, const char **list, const char **end)
          pd = d;
          s  = str_next_word(s, buf1);
          d  = str_next_word(d, buf2);
-         if(is_multi_abbrev(buf1, buf2))
+         if(is_multi_abbrev(buf1, buf2) != 0u)
          {
             s = skip_spaces(s);
             d = skip_spaces(d);
             match++;
          }
          else
+         {
             break;
+         }
       }
-      if(match && ps > bestpos)
+      if((match != 0) && ps > bestpos)
       {
          bestpos = ps;
          bestidx = i;
@@ -526,7 +655,7 @@ int search_block_abbrevs(const char *oarg, const char **list, const char **end)
 }
 
 /* returns a pointer to a (static) string wich contains s1 and s2 */
-char *str_cc(const char *s1, const char *s2)
+auto str_cc(const char *s1, const char *s2) -> char *
 {
    static char buf[1024];
 
@@ -541,7 +670,8 @@ char *str_cc(const char *s1, const char *s2)
 
 void str_insert(char *str, char *itxt)
 {
-   int nlen, slen;
+   int nlen;
+   int slen;
 
    nlen = strlen(itxt);
    slen = strlen(str);
@@ -557,13 +687,15 @@ void str_insert(char *str, char *itxt)
 void str_substitute(const char *old, const char *newstr, char *str)
 {
    char *b;
-   int   olen, nlen, slen;
+   int   olen;
+   int   nlen;
+   int   slen;
 
    olen = strlen(old);
    nlen = strlen(newstr);
    slen = strlen(str);
 
-   while((b = str_str(str, old)))
+   while((b = str_str(str, old)) != nullptr)
    {
       if(nlen <= olen)
       {
@@ -586,14 +718,20 @@ void str_rem(char *s, char c)
    int diff;
 
    if(c == '\0')
+   {
       return;
+   }
 
-   for(diff = 0; *(s + diff);)
+   for(diff = 0; *(s + diff) != 0;)
    {
       if(*s == c)
+      {
          diff++;
+      }
       else
+      {
          s++;
+      }
 
       *s = *(s + diff);
    }
@@ -604,9 +742,13 @@ void str_rem_punct(char *s)
 {
    int diff;
 
-   for(diff = 0; *s; s++)
-      if(ispunct(*s))
+   for(diff = 0; *s != 0; s++)
+   {
+      if(ispunct(*s) != 0)
+      {
          *s = ' ';
+      }
+   }
 }
 
 /* Replace all occurences of non alfa, digit with space in s */
@@ -615,14 +757,16 @@ void str_blank_punct(char *s)
    static char c[3] = {' ', ' ', 0};
    int         diff;
 
-   for(diff = 0; *s; s++)
-      if(ispunct(*s))
+   for(diff = 0; *s != 0; s++)
+   {
+      if(ispunct(*s) != 0)
       {
          c[0] = *s;
          *s   = ' ';
          str_insert(s + 1, c);
          s += 2;
       }
+   }
 }
 
 /* Remove all multiple space occurences in s */
@@ -630,18 +774,24 @@ void str_remspc(char *s)
 {
    char *cp;
 
-   while(*s && (*s != ' ' || *(s + 1) != ' '))
+   while((*s != 0) && (*s != ' ' || *(s + 1) != ' '))
+   {
       s++;
+   }
 
    if(*s == 0)
+   {
       return;
+   }
 
    cp = s;
 
-   while(*cp)
+   while(*cp != 0)
    {
       while(*cp == ' ' && *(cp + 1) == ' ')
+      {
          cp++;
+      }
 
       *s++ = *cp++;
    }
@@ -667,22 +817,31 @@ void str_chraround(char *str, char c)
 /*   Assumes nothing that arg is without leading spaces,  */
 /*   no double spaces and contains text                   */
 
-char *is_name_raw(const char *arg, const char *names[])
+auto is_name_raw(const char *arg, const char *names[]) -> char *
 {
-   int i, j;
+   int i;
+   int j;
 
-   for(i = 0; names[i]; i++)
+   for(i = 0; names[i] != nullptr; i++)
    {
-      for(j = 0; names[i][j]; j++)
+      for(j = 0; names[i][j] != 0; j++)
+      {
          if(tolower(arg[j]) != tolower(names[i][j]))
+         {
             break;
+         }
+      }
 
-      if(!names[i][j])
-         if(!arg[j] || isaspace(arg[j]))
+      if(names[i][j] == 0)
+      {
+         if((arg[j] == 0) || isaspace(arg[j]))
+         {
             return ((char *)arg) + j;
+         }
+      }
    }
 
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -698,15 +857,19 @@ char *is_name_raw(const char *arg, const char *names[])
 /* We need to copy to BUF in order to prevent crash when */
 /* str_remspc might want to change "constant" strings    */
 
-char *is_name(const char *arg, const char *names[])
+auto is_name(const char *arg, const char *names[]) -> char *
 {
    char buf[MAX_INPUT_LENGTH];
 
    for(; isaspace(*arg); arg++)
+   {
       ;
+   }
 
-   if(!*arg)
-      return 0;
+   if(*arg == 0)
+   {
+      return nullptr;
+   }
 
    strcpy(buf, arg);
    str_remspc(buf);
@@ -715,58 +878,69 @@ char *is_name(const char *arg, const char *names[])
 }
 
 /* Create an empty namelist */
-char **create_namelist(void)
+auto create_namelist() -> char **
 {
    char **list;
 
    CREATE(list, char *, 1);
-   list[0] = NULL;
+   list[0] = nullptr;
 
    return list;
 }
 
 /* Add a new name to the end of an existing namelist */
-char **add_name(const char *name, char **namelist)
+auto add_name(const char *name, char **namelist) -> char **
 {
    int pos = 0;
 
    assert(name && namelist);
 
-   while(namelist[pos])
+   while(namelist[pos] != nullptr)
+   {
       pos++;
+   }
 
    RECREATE(namelist, char *, pos + 2);
 
    namelist[pos]     = str_dup(name);
-   namelist[pos + 1] = NULL;
+   namelist[pos + 1] = nullptr;
 
    return namelist;
 }
 
 /* Delete a name from namelist, move last name to field */
-char **del_name(const char *name, char **namelist)
+auto del_name(const char *name, char **namelist) -> char **
 {
-   int pos = 0, end = 0;
+   int pos = 0;
+   int end = 0;
 
    assert(name && namelist);
 
-   if(!namelist[0] || !namelist[1])
+   if((namelist[0] == nullptr) || (namelist[1] == nullptr))
+   {
       return namelist;
+   }
 
-   while(namelist[end])
+   while(namelist[end] != nullptr)
+   {
       end++;
+   }
 
    for(pos = 0; pos < end; pos++)
+   {
       if(strcmp(name, namelist[pos]) == 0)
       {
          free(namelist[pos]);
          while(++pos <= end)
+         {
             namelist[pos - 1] = namelist[pos];
+         }
 
          assert(end > 0);
          RECREATE(namelist, char *, end);
          return namelist;
       }
+   }
 
    return namelist;
 }
@@ -780,7 +954,7 @@ void free_namelist(char **list)
 
    original = list;
 
-   while(*list)
+   while(*list != nullptr)
    {
       free(*(list));
       /* MS: Well, ugly but we have to do while free macro is in use! */
@@ -791,25 +965,28 @@ void free_namelist(char **list)
 }
 
 /* don't look too closely at this obscenity - it won't stay long */
-char **namestring_to_namelist(const char *str)
+auto namestring_to_namelist(const char *str) -> char **
 {
-   char  buf[100], **rslt;
-   char *save;
+   char   buf[100];
+   char **rslt;
+   char  *save;
 
    assert(str && *str);
 
    save = const_cast<char *>(str);
 
    rslt = create_namelist();
-   while((str = one_argument(str, buf)), *buf)
+   while((str = one_argument(str, buf)), *buf != 0)
+   {
       rslt = add_name(buf, rslt);
+   }
 
    free(save); /* yes, it is pathetic */
 
    return rslt;
 }
 
-char **copy_namelist(char **source)
+auto copy_namelist(char **source) -> char **
 {
    char **rslt;
 
@@ -817,7 +994,7 @@ char **copy_namelist(char **source)
 
    rslt = create_namelist();
 
-   while(*source)
+   while(*source != nullptr)
    {
       rslt = add_name(*source, rslt);
       source++;
@@ -831,18 +1008,24 @@ char **copy_namelist(char **source)
  *  Return NIL if not identical, otherwise return pointer to location
  *  just after the match
  */
-char *str_ccmp_next_word(const char *buf, const char *next_word)
+auto str_ccmp_next_word(const char *buf, const char *next_word) -> char *
 {
    buf = skip_spaces(buf);
 
-   for(; *next_word; next_word++, buf++)
+   for(; *next_word != 0; next_word++, buf++)
+   {
       if(*next_word != *buf)
-         return NULL;
+      {
+         return nullptr;
+      }
+   }
 
-   if(!*buf || isaspace(*buf)) /* Buf must end here or be word separated */
+   if((*buf == 0) || isaspace(*buf))
+   { /* Buf must end here or be word separated */
       return (char *)buf;
+   }
 
-   return NULL;
+   return nullptr;
 }
 
 /*  Must receive a string of the format 'name@zone\0' or
@@ -852,38 +1035,43 @@ char *str_ccmp_next_word(const char *buf, const char *next_word)
  */
 void split_fi_ref(const char *str, char *zone, char *name)
 {
-   const char *c, *t;
+   const char *c;
+   const char *t;
    int         l;
 
    str = skip_spaces(str);
 
-   if((c = strchr(str, '@')))
+   if((c = strchr(str, '@')) != nullptr)
    {
       l = MIN(c - str, FI_MAX_UNITNAME);
       strncpy(name, str, l);
       name[l] = '\0';
 
       l = MIN(strlen(c + 1), FI_MAX_ZONENAME);
-      if((t = strchr(c + 1, ' ')))
+      if((t = strchr(c + 1, ' ')) != nullptr)
+      {
          l = MIN(l, t - (c + 1));
+      }
       strncpy(zone, c + 1, l);
       zone[l] = 0;
    }
-   else if((c = strchr(str, '/')))
+   else if((c = strchr(str, '/')) != nullptr)
    {
       l = MIN(c - str, FI_MAX_ZONENAME);
       strncpy(zone, str, l);
       zone[l] = '\0';
 
       l = MIN(strlen(c + 1), FI_MAX_UNITNAME);
-      if((t = strchr(c + 1, ' ')))
+      if((t = strchr(c + 1, ' ')) != nullptr)
+      {
          l = MIN(l, t - (c + 1));
+      }
       strncpy(name, c + 1, l);
       name[l] = 0;
    }
    else
    {
-      if((c = strchr(str, ' ')))
+      if((c = strchr(str, ' ')) != nullptr)
       {
          l = MIN(c - str, FI_MAX_UNITNAME);
          strncpy(name, str, l);
@@ -900,27 +1088,31 @@ void split_fi_ref(const char *str, char *zone, char *name)
    }
 }
 
-char *catnames(char *s, const char **names)
+auto catnames(char *s, const char **names) -> char *
 {
    const char **nam;
    ubit1        ok = FALSE;
 
-   if(names)
+   if(names != nullptr)
    {
       strcpy(s, "{");
       TAIL(s);
-      for(nam = names; *nam; nam++)
+      for(nam = names; *nam != nullptr; nam++)
       {
          ok = TRUE;
          sprintf(s, "\"%s\",", *nam);
          TAIL(s);
       }
-      if(ok)
+      if(ok != 0u)
+      {
          s--; /* remove the comma */
+      }
       strcpy(s, "}");
    }
    else
+   {
       sprintf(s, "NULL");
+   }
 
    TAIL(s);
 
@@ -929,34 +1121,42 @@ char *catnames(char *s, const char **names)
 
 /* Takes a string and return a pointer to the string on the next line */
 /* or the end of string                                               */
-char *text_skip_line(char *buf)
+auto text_skip_line(char *buf) -> char *
 {
    char *c;
 
-   if(!*buf)
-      return NULL;
+   if(*buf == 0)
+   {
+      return nullptr;
+   }
 
-   if(!(c = strchr(buf, '\n')) || !(c = strchr(buf, '\r')))
+   if(((c = strchr(buf, '\n')) == nullptr) || ((c = strchr(buf, '\r')) == nullptr))
    {
       TAIL(buf);
       return buf;
    }
 
    while(*c == '\n' || *c == '\r')
+   {
       ++c;
+   }
 
    return c;
 }
 
-char *text_read_line(char *buf, char *res)
+auto text_read_line(char *buf, char *res) -> char *
 {
-   while(*buf && *buf != '\n' && *buf != '\r')
+   while((*buf != 0) && *buf != '\n' && *buf != '\r')
+   {
       *res++ = *buf++;
+   }
 
    *res = '\0';
 
    while(*buf == '\n' || *buf == '\r')
+   {
       buf++;
+   }
 
    return buf;
 }
@@ -964,22 +1164,26 @@ char *text_read_line(char *buf, char *res)
 /* Format the string "str" following the format rules. No longer than */
 /* 'destlen' result. Returns resulting length.                        */
 
-int str_escape_format(const char *src, char *dest, int destlen, int formatting)
+auto str_escape_format(const char *src, char *dest, int destlen, int formatting) -> int
 {
    const char *org_dest = dest;
 
    /* Process string */
 
-   if(formatting)
+   if(formatting != 0)
+   {
       src = skip_blanks(src);
+   }
 
-   while(*src)
+   while(*src != 0)
    {
       if(org_dest - dest > destlen - 3)
+      {
          break;
+      }
 
       /* Make double space after '.' */
-      if(formatting && *src == '.' && isspace(*(src + 1)))
+      if((formatting != 0) && *src == '.' && (isspace(*(src + 1)) != 0))
       {
          *dest++ = *src++;
          *dest++ = ' ';
@@ -1025,59 +1229,91 @@ int str_escape_format(const char *src, char *dest, int destlen, int formatting)
                switch(tolower(*src))
                {
                   case 'n':
-                     if(bright)
+                     if(bright != 0)
+                     {
                         strcpy(dest, CONTROL_FGB_BLACK);
+                     }
                      else
+                     {
                         strcpy(dest, CONTROL_FG_BLACK);
+                     }
                      break;
 
                   case 'r':
-                     if(bright)
+                     if(bright != 0)
+                     {
                         strcpy(dest, CONTROL_FGB_RED);
+                     }
                      else
+                     {
                         strcpy(dest, CONTROL_FG_RED);
+                     }
                      break;
 
                   case 'g':
-                     if(bright)
+                     if(bright != 0)
+                     {
                         strcpy(dest, CONTROL_FGB_GREEN);
+                     }
                      else
+                     {
                         strcpy(dest, CONTROL_FG_GREEN);
+                     }
                      break;
 
                   case 'y':
-                     if(bright)
+                     if(bright != 0)
+                     {
                         strcpy(dest, CONTROL_FGB_YELLOW);
+                     }
                      else
+                     {
                         strcpy(dest, CONTROL_FG_YELLOW);
+                     }
                      break;
 
                   case 'b':
-                     if(bright)
+                     if(bright != 0)
+                     {
                         strcpy(dest, CONTROL_FGB_BLUE);
+                     }
                      else
+                     {
                         strcpy(dest, CONTROL_FG_BLUE);
+                     }
                      break;
 
                   case 'm':
-                     if(bright)
+                     if(bright != 0)
+                     {
                         strcpy(dest, CONTROL_FGB_MAGENTA);
+                     }
                      else
+                     {
                         strcpy(dest, CONTROL_FG_MAGENTA);
+                     }
                      break;
 
                   case 'c':
-                     if(bright)
+                     if(bright != 0)
+                     {
                         strcpy(dest, CONTROL_FGB_CYAN);
+                     }
                      else
+                     {
                         strcpy(dest, CONTROL_FG_CYAN);
+                     }
                      break;
 
                   case 'w':
-                     if(bright)
+                     if(bright != 0)
+                     {
                         strcpy(dest, CONTROL_FGB_WHITE);
+                     }
                      else
+                     {
                         strcpy(dest, CONTROL_FG_WHITE);
+                     }
                      break;
 
                   default:
@@ -1134,8 +1370,10 @@ int str_escape_format(const char *src, char *dest, int destlen, int formatting)
 
                src++;
                c = src;
-               while(isdigit(*c) && rep < (int)sizeof(Buf) - 1)
+               while((isdigit(*c) != 0) && rep < (int)sizeof(Buf) - 1)
+               {
                   Buf[rep++] = *c++;
+               }
                Buf[rep] = 0;
 
                if(rep > 0)
@@ -1144,13 +1382,19 @@ int str_escape_format(const char *src, char *dest, int destlen, int formatting)
                   rep = atoi(Buf);
                }
                else
+               {
                   rep = 1;
+               }
 
                if(org_dest - dest + rep > destlen - 3)
+               {
                   break;
+               }
 
                for(i = 0; i < rep; i++)
+               {
                   *dest++ = ' ';
+               }
 
                continue;
             }
@@ -1159,8 +1403,10 @@ int str_escape_format(const char *src, char *dest, int destlen, int formatting)
                *dest++ = '\n';
                *dest++ = '\r';
                src++;
-               while(isspace(*src))
+               while(isspace(*src) != 0)
+               {
                   src++;
+               }
                continue;
 
             default:
@@ -1169,21 +1415,27 @@ int str_escape_format(const char *src, char *dest, int destlen, int formatting)
                break;
             }
          }
-         if(*src)
+         if(*src != 0)
+         {
             src++;
+         }
          continue;
       } /* if ('&') */
 
-      if(formatting)
+      if(formatting != 0)
       {
-         if(isspace(*src))
+         if(isspace(*src) != 0)
          {
-            if(!isspace(*(src + 1)))
+            if(isspace(*(src + 1)) == 0)
+            {
                *dest++ = ' ';
+            }
             src++;
          }
          else
+         {
             *dest++ = *src++;
+         }
       }
       else
       {
@@ -1193,7 +1445,9 @@ int str_escape_format(const char *src, char *dest, int destlen, int formatting)
             *dest++ = '\r';
          }
          else
+         {
             *dest++ = *src++;
+         }
       }
    }
 
@@ -1208,7 +1462,7 @@ int str_escape_format(const char *src, char *dest, int destlen, int formatting)
    return org_dest - dest;
 }
 
-char *str_escape_format(const char *src, int formatting)
+auto str_escape_format(const char *src, int formatting) -> char *
 {
    char buf[MAX_STRING_LENGTH] = "";
    str_escape_format(src, buf, sizeof(buf), formatting);

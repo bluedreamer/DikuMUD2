@@ -26,21 +26,22 @@
 #include "utility.h"
 #include "utils.h"
 
-extra_descr_data::extra_descr_data(void)
+extra_descr_data::extra_descr_data()
 {
-   next = NULL;
+   next = nullptr;
 }
 
-extra_descr_data::~extra_descr_data(void)
+extra_descr_data::~extra_descr_data()
 {
-   next = NULL;
+   next = nullptr;
 }
 
 void extra_descr_data::AppendBuffer(CByteBuffer *pBuf)
 {
    ubit8  u;
    int    i = 0;
-   ubit32 nOrgPos, nPos;
+   ubit32 nOrgPos;
+   ubit32 nPos;
 
    nOrgPos = pBuf->GetLength();
 
@@ -49,7 +50,7 @@ void extra_descr_data::AppendBuffer(CByteBuffer *pBuf)
    struct extra_descr_data *e = this;
 
    /* While description is non null, keep writing */
-   for(; e; e = e->next)
+   for(; e != nullptr; e = e->next)
    {
       i++;
       pBuf->AppendString(e->descr.StringPtr());
@@ -68,13 +69,14 @@ void extra_descr_data::AppendBuffer(CByteBuffer *pBuf)
    }
 }
 
-void extra_descr_data::free_list(void)
+void extra_descr_data::free_list()
 {
-   class extra_descr_data *tmp_descr, *ex;
+   class extra_descr_data *tmp_descr;
+   class extra_descr_data *ex;
 
    ex = this;
 
-   while(ex)
+   while(ex != nullptr)
    {
       tmp_descr = ex;
       ex        = ex->next;
@@ -87,45 +89,55 @@ void extra_descr_data::free_list(void)
 /* The empty word "" or NULL matches an empty namelist.       */
 /*                                                            */
 
-class extra_descr_data *extra_descr_data::find_raw(const char *word)
+auto extra_descr_data::find_raw(const char *word) -> class extra_descr_data *
 {
    ubit32 i;
 
    // MS2020 warning. if (this == 0) return NULL;
 
-   for(class extra_descr_data *exd = this; exd; exd = exd->next)
+   for(class extra_descr_data *exd = this; exd != nullptr; exd = exd->next)
    {
       if(exd->names.Length() < 1)
       {
-         if(str_is_empty(word))
+         if(str_is_empty(word) != 0u)
+         {
             return exd;
+         }
       }
       else
       {
          for(i = 0; i < exd->names.Length(); i++)
+         {
             if(str_ccmp(word, exd->names.Name(i)) == 0)
+            {
                return exd;
+            }
+         }
       }
    }
 
-   return NULL;
+   return nullptr;
 }
 
 /*                                                            */
 /* Adds an extra description just before the one given (this) */
 /*                                                            */
 
-class extra_descr_data *extra_descr_data::add(const char **names, const char *descr)
+auto extra_descr_data::add(const char **names, const char *descr) -> class extra_descr_data *
 {
    class extra_descr_data *new_ex;
 
    new_ex = new(class extra_descr_data);
 
-   if(names)
+   if(names != nullptr)
+   {
       new_ex->names.CopyList(names);
+   }
 
-   if(!str_is_empty(descr))
+   if(str_is_empty(descr) == 0u)
+   {
       new_ex->descr.Reassign(descr);
+   }
 
    new_ex->next = this;
 
@@ -136,17 +148,17 @@ class extra_descr_data *extra_descr_data::add(const char **names, const char *de
 /* Adds an extra description just before the one given (this) */
 /*                                                            */
 
-class extra_descr_data *extra_descr_data::add(const char *name, const char *descr)
+auto extra_descr_data::add(const char *name, const char *descr) -> class extra_descr_data *
 {
    const char *names[2];
 
    names[0] = name;
-   names[1] = NULL;
+   names[1] = nullptr;
 
    return add(names, descr);
 }
 
-class extra_descr_data *extra_descr_data::remove(class extra_descr_data *exd)
+auto extra_descr_data::remove(class extra_descr_data *exd) -> class extra_descr_data *
 {
    class extra_descr_data *list = this;
 
@@ -163,31 +175,34 @@ class extra_descr_data *extra_descr_data::remove(class extra_descr_data *exd)
    {
       class extra_descr_data *pex;
 
-      for(pex = list; pex && pex->next; pex = pex->next)
+      for(pex = list; (pex != nullptr) && (pex->next != nullptr); pex = pex->next)
+      {
          if(pex->next == exd)
          {
             pex->next = exd->next;
             delete exd;
             return list;
          }
+      }
    }
 
    /* This should not be possible */
 
    error(HERE, "Remove extra descr got unmatching list and exd.\n");
-   return NULL;
+   return nullptr;
 }
 
-class extra_descr_data *extra_descr_data::remove(const char *name)
+auto extra_descr_data::remove(const char *name) -> class extra_descr_data *
 {
    // MS2020 warning if (this == NULL)     return NULL;
 
    class extra_descr_data *tex = find_raw(name);
 
-   if(tex)
+   if(tex != nullptr)
+   {
       return this->remove(tex);
-   else
-      return this;
+   }
+   return this;
 }
 
 /* ===================================================================== */
@@ -197,58 +212,72 @@ class extra_descr_data *extra_descr_data::remove(const char *name)
 /*  We don't want people to be able to see $-prefixed extras
  *  so check for that...
  */
-class extra_descr_data *unit_find_extra(const char *word, class unit_data *unit)
+auto unit_find_extra(const char *word, class unit_data *unit) -> class extra_descr_data *
 {
    word = skip_spaces(word);
 
-   if(unit && *word != '$')
+   if((unit != nullptr) && *word != '$')
    {
       class extra_descr_data *i;
 
       word = skip_spaces(word);
 
-      for(i = UNIT_EXTRA_DESCR(unit); i; i = i->next)
+      for(i = UNIT_EXTRA_DESCR(unit); i != nullptr; i = i->next)
       {
-         if(i->names.Name())
+         if(i->names.Name() != nullptr)
          {
             if(i->names.Name(0)[0] == '$')
+            {
                continue;
+            }
 
-            if(i->names.IsName((char *)word))
+            if(i->names.IsName((char *)word) != nullptr)
+            {
                return i;
+            }
          }
          else if(UNIT_NAMES(unit).IsName((char *)word))
+         {
             return i;
+         }
       }
    }
 
-   return NULL;
+   return nullptr;
 }
 
-class extra_descr_data *char_unit_find_extra(class unit_data *ch, class unit_data **target, char *word, class unit_data *list)
+auto char_unit_find_extra(class unit_data *ch, class unit_data **target, char *word, class unit_data *list) -> class extra_descr_data *
 {
-   class extra_descr_data *exd = NULL;
+   class extra_descr_data *exd = nullptr;
 
-   for(; list; list = list->next)
-      if(CHAR_CAN_SEE(ch, list) && (exd = unit_find_extra(word, list)))
+   for(; list != nullptr; list = list->next)
+   {
+      if(CHAR_CAN_SEE(ch, list) && ((exd = unit_find_extra(word, list)) != nullptr))
       {
-         if(target)
+         if(target != nullptr)
+         {
             *target = list;
+         }
          return exd;
       }
+   }
 
-   if(target)
-      *target = NULL;
+   if(target != nullptr)
+   {
+      *target = nullptr;
+   }
 
-   return NULL;
+   return nullptr;
 }
 
-const char *unit_find_extra_string(class unit_data *ch, char *word, class unit_data *list)
+auto unit_find_extra_string(class unit_data *ch, char *word, class unit_data *list) -> const char *
 {
-   class extra_descr_data *exd = char_unit_find_extra(ch, NULL, word, list);
+   class extra_descr_data *exd = char_unit_find_extra(ch, nullptr, word, list);
 
-   if(exd)
+   if(exd != nullptr)
+   {
       return exd->descr.String();
+   }
 
-   return NULL;
+   return nullptr;
 }

@@ -27,20 +27,20 @@
                  DIL can create strange object values, and asserting is NOT
                  a good idea for these types of objects. */
 
-#include <assert.h>
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cassert>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "db.h"
 #include "handler.h"
-#include "limits.h"
 #include "money.h"
 #include "structs.h"
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
 extern char libdir[]; /* from dikumud.c */
 
@@ -50,27 +50,33 @@ char             *cur_strings[MAX_CURRENCY + 1];
 /* procedures also used in the dmc part */
 
 /* Returns the amount adjusted to closest payable value in the currency */
-static amount_t adjust_money(amount_t amt, currency_t currency)
+static auto adjust_money(amount_t amt, currency_t currency) -> amount_t
 {
    int i;
 
    for(i = 0; i <= MAX_MONEY; i++)
+   {
       if(money_types[i].currency == currency)
       {
          /* Calculate remainder of amount */
          amount_t tmp = amt % money_types[i].min_value;
 
          if(tmp >= money_types[i].min_value / 2)
+         {
             tmp -= money_types[i].min_value; /* Round up value */
+         }
 
          amt -= tmp; /* adjust amount */
 
          /* Zero isn't an acceptable outcome, so make it the minimum */
          if(amt < money_types[i].min_value)
+         {
             amt = money_types[i].min_value;
+         }
 
          return amt;
       }
+   }
 
    slog(LOG_OFF, 0, "Illegal currency (%d) used in call of adjust_money()", currency);
 
@@ -79,7 +85,7 @@ static amount_t adjust_money(amount_t amt, currency_t currency)
    return 0;
 }
 
-currency_t local_currency(struct unit_data *unit)
+auto local_currency(struct unit_data *unit) -> currency_t
 {
    /*  Well, I dunno...
     *  Any ideas?
@@ -90,49 +96,67 @@ currency_t local_currency(struct unit_data *unit)
 /*  Print out an optimal representation of currency
  *  e.g.: (1230, DEF_CURRENCY) -> '10 copper coins and 3 iron coins'
  */
-const char *money_string(amount_t amt, currency_t currency, ubit1 verbose)
+auto money_string(amount_t amt, currency_t currency, ubit1 verbose) -> const char *
 {
    static char        buf[512];
    char               tmp[256];
    struct money_type *money_tmp[MAX_MONEY + 1];
-   sbit8              i, nr = 0, count = 0;
+   sbit8              i;
+   sbit8              nr    = 0;
+   sbit8              count = 0;
    amount_t           times;
 
    /* Get an array of all types in this currency */
    for(i = 0; i <= MAX_MONEY; i++)
+   {
       if(money_types[i].currency == currency)
+      {
          money_tmp[nr++] = &money_types[i];
+      }
+   }
 
    *buf = *tmp = '\0';
 
    amt = adjust_money(amt, currency);
 
-   while(nr--)
-      if((times = (amt / money_tmp[nr]->relative_value)))
+   while((nr--) != 0)
+   {
+      if((times = (amt / money_tmp[nr]->relative_value)) != 0)
       {
          strcat(buf, tmp);
          amt -= money_tmp[nr]->relative_value * times;
 
-         if(verbose)
+         if(verbose != 0u)
          {
             if(times == 1)
-               sprintf(tmp, "%s %s, ", strchr("aeiou", *(money_tmp[nr]->strings[0])) ? "an" : "a", money_tmp[nr]->strings[0]);
+            {
+               sprintf(tmp, "%s %s, ", strchr("aeiou", *(money_tmp[nr]->strings[0])) != nullptr ? "an" : "a", money_tmp[nr]->strings[0]);
+            }
             else
+            {
                sprintf(tmp, "%d %s, ", (int)times, money_tmp[nr]->strings[money_tmp[nr]->pl_idx]);
+            }
          }
-         else /* Short version for lists... */
+         else
+         { /* Short version for lists... */
             sprintf(tmp, "%d %s, ", (int)times, money_tmp[nr]->abbrev);
+         }
 
          count++;
       }
+   }
 
-   if(count == 0) /* This shouldn't happen (I guess) */
+   if(count == 0)
+   { /* This shouldn't happen (I guess) */
       return "nothing";
+   }
 
    tmp[strlen(tmp) - 2] = '\0'; /* Cut off last comma */
 
-   if(count > 1) /* Kill buf's last comma and put in `and' */
+   if(count > 1)
+   { /* Kill buf's last comma and put in `and' */
       strcpy(&buf[strlen(buf) - 2], " and ");
+   }
 
    strcat(buf, tmp);
    return buf;
@@ -143,12 +167,14 @@ const char *money_string(amount_t amt, currency_t currency, ubit1 verbose)
 /* Local procedures */
 
 /* Money calculations. Assures we never get negative money */
-static amount_t calc_money(amount_t v1, char op, amount_t v2)
+static auto calc_money(amount_t v1, char op, amount_t v2) -> amount_t
 {
    amount_t res = 0;
 
    if(v1 < 0 || v2 < 0)
+   {
       return 0;
+   }
 
    switch(op)
    {
@@ -165,14 +191,16 @@ static amount_t calc_money(amount_t v1, char op, amount_t v2)
          assert(FALSE);
    }
 
-   if(res < 0) /* overflow */
+   if(res < 0)
+   { /* overflow */
       return MAX(v1, v2);
+   }
 
    return res;
 }
 
 /* Set all the values on money correctly according to amount - return money */
-struct unit_data *set_money(struct unit_data *money, amount_t amt)
+auto set_money(struct unit_data *money, amount_t amt) -> struct unit_data *
 {
    char   tmp[256];
    ubit32 i;
@@ -188,11 +216,17 @@ struct unit_data *set_money(struct unit_data *money, amount_t amt)
    UNIT_NAMES(money).Free();
 
    /* Set relevant strings as names */
-   for(i = 0; money_types[MONEY_TYPE(money)].strings[i]; ++i)
+   for(i = 0; money_types[MONEY_TYPE(money)].strings[i] != nullptr; ++i)
+   {
       if(amt == 1 && money_types[MONEY_TYPE(money)].pl_idx == i)
+      {
          break;
+      }
       else
+      {
          UNIT_NAMES(money).AppendName(money_types[MONEY_TYPE(money)].strings[i]);
+      }
+   }
 
    /* This isn't very pretty, but i couldn't come up with anything better
     * at this hour :-)
@@ -201,11 +235,16 @@ struct unit_data *set_money(struct unit_data *money, amount_t amt)
     */
    for(i = 0; i < UNIT_NAMES(money).Length(); ++i)
    {
-      ubit32 j, m = i;
+      ubit32 j;
+      ubit32 m = i;
 
       for(j = i; j < UNIT_NAMES(money).Length(); ++j)
+      {
          if(strlen(UNIT_NAMES(money).Name(m)) < strlen(UNIT_NAMES(money).Name(j)))
+         {
             m = j;
+         }
+      }
 
       if(m != i)
       {
@@ -227,8 +266,11 @@ struct unit_data *set_money(struct unit_data *money, amount_t amt)
    UNIT_TITLE(money).Reassign(obj_money_string(money, amt));
 
    if(amt == 1)
+   {
       sprintf(tmp, "A single %s has been left here.", money_singularis(money));
+   }
    else
+   {
       sprintf(tmp, "A %s %s has been left here.",
               amt == 2      ? "couple of"
               : amt < 10    ? "few"
@@ -237,17 +279,18 @@ struct unit_data *set_money(struct unit_data *money, amount_t amt)
               : amt < 50000 ? "large pile of"
                             : "mountain of",
               money_pluralis(money));
+   }
 
    UNIT_OUT_DESCR(money).Reassign(tmp);
 
    return money;
 }
 
-static struct unit_data *make_money(struct file_index_type *fi, amount_t amt)
+static auto make_money(struct file_index_type *fi, amount_t amt) -> struct unit_data *
 {
    struct unit_data *money = read_unit(fi);
    char              buf[512];
-   const char       *namelist[] = {NULL};
+   const char       *namelist[] = {nullptr};
 
    assert(IS_OBJ(money));
 
@@ -276,7 +319,7 @@ void money_transfer(struct unit_data *from, struct unit_data *to, amount_t amt, 
 {
    amt = adjust_money(amt, currency);
 
-   if(from)
+   if(from != nullptr)
    {
       /* amt <= money in from... */
 
@@ -288,72 +331,92 @@ void money_transfer(struct unit_data *from, struct unit_data *to, amount_t amt, 
       } mon_array[MAX_MONEY + 1];
 
       struct unit_data *tmp;
-      int               i, last;
-      amount_t          temp, calc = amt;
+      int               i;
+      int               last;
+      amount_t          temp;
+      amount_t          calc = amt;
 
       /* Initialize computation */
       for(i = 0; i <= MAX_MONEY; i++)
       {
          mon_array[i].take = mon_array[i].have = 0;
          mon_array[i].value                    = money_types[i].relative_value;
-         mon_array[i].unit                     = NULL;
+         mon_array[i].unit                     = nullptr;
          mon_array[i].cur                      = DEF_CURRENCY;
       }
 
       /* Note down money-objects in from, and their values */
-      for(tmp = UNIT_CONTAINS(from); tmp; tmp = tmp->next)
+      for(tmp = UNIT_CONTAINS(from); tmp != nullptr; tmp = tmp->next)
+      {
          if(IS_MONEY(tmp) && MONEY_CURRENCY(tmp) == currency)
          {
             mon_array[MONEY_TYPE(tmp)].have = MONEY_AMOUNT(tmp);
             mon_array[MONEY_TYPE(tmp)].unit = tmp;
             mon_array[MONEY_TYPE(tmp)].cur  = MONEY_CURRENCY(tmp);
          }
+      }
 
       /* Take as many coins (in number) as possible.
        * Stop when we have one `big' coin too many
        */
       for(i = last = 0; i <= MAX_MONEY && 0 < calc; i++)
+      {
          if(0 < mon_array[i].have)
          {
             /* Is there more than we need here? */
             if(calc < calc_money(mon_array[i].have, '*', mon_array[i].value))
+            {
                /* Yes, take just more than enough */
                mon_array[i].take = calc / mon_array[i].value + 1;
-            else /* No, take them all */
+            }
+            else
+            { /* No, take them all */
                mon_array[i].take = mon_array[i].have;
+            }
 
             last = i; /* Biggest type taken yet */
 
             /* Update calc with money taken */
             calc -= calc_money(mon_array[i].take, '*', mon_array[i].value);
          }
+      }
 
       assert(calc <= 0); /* We have enough now; maybe too much */
 
       /* Now try to see if we can put anything back */
       for(i = last; 0 <= i && calc < 0; --i)
-         if(0 < mon_array[i].take) /* Did we take any of these? */
+      {
+         if(0 < mon_array[i].take)
+         { /* Did we take any of these? */
             /* Put back as many as we can `afford' or have */
             if(0 < (temp = MIN((-calc) / mon_array[i].value, mon_array[i].take)))
             {
                mon_array[i].take -= temp;
                calc += calc_money(mon_array[i].value, '*', temp);
             }
+         }
+      }
 
       assert(calc <= 0); /* We still have enough; maybe too much */
 
       /* Now take the money we calculated could be taken */
       for(i = 0; i <= last; i++)
-         if(mon_array[i].take)
+      {
+         if(mon_array[i].take != 0)
          {
             tmp = split_money(mon_array[i].unit, mon_array[i].take);
             unit_from_unit(tmp);
 
-            if(to)
+            if(to != nullptr)
+            {
                unit_to_unit(tmp, to);
+            }
             else
+            {
                extract_unit(tmp);
+            }
          }
+      }
 
       /*  If we took too much, give change.
        *  The magic involved here should be invisible to the players...
@@ -362,18 +425,26 @@ void money_transfer(struct unit_data *from, struct unit_data *to, amount_t amt, 
       {
          calc = -calc; /* Make it positive */
 
-         if(to)
+         if(to != nullptr)
          {
             /* Find the coin that needs to be split up */
             for(i = 0; i <= last; ++i)
-               if(calc < mon_array[i].value && mon_array[i].take)
+            {
+               if(calc < mon_array[i].value && (mon_array[i].take != 0))
+               {
                   break;
+               }
+            }
             assert(0 < i && i <= last);
 
             /* Get that coin from `to' */
-            for(tmp = UNIT_CONTAINS(to); tmp; tmp = tmp->next)
+            for(tmp = UNIT_CONTAINS(to); tmp != nullptr; tmp = tmp->next)
+            {
                if(IS_MONEY(tmp) && MONEY_TYPE(tmp) == i)
+               {
                   break;
+               }
+            }
             assert(tmp);
 
             tmp = split_money(tmp, 1);
@@ -387,29 +458,38 @@ void money_transfer(struct unit_data *from, struct unit_data *to, amount_t amt, 
          money_to_unit(from, calc, DEF_CURRENCY);
       }
    }
-   else if(to)
+   else if(to != nullptr)
    { /* Create the money according to arguments and give to `to' */
       struct money_type *money_tmp[MAX_MONEY + 1];
       struct unit_data  *tmp;
-      int                i, nr;
+      int                i;
+      int                nr;
       amount_t           times;
 
       for(i = 0, nr = 0; i <= MAX_MONEY; i++)
+      {
          if(money_types[i].currency == currency)
+         {
             money_tmp[nr++] = &money_types[i];
+         }
+      }
 
       for(i = nr - 1; 0 <= i; --i)
+      {
          if(0 < (times = amt / money_tmp[i]->relative_value))
          {
             amt -= money_tmp[i]->relative_value * times;
             tmp = make_money(money_tmp[i]->fi, times);
             unit_to_unit(tmp, to);
          }
-      if(amt)
+      }
+      if(amt != 0)
+      {
          slog(LOG_ALL, 0,
               "Unadjusted or negative amount given as argument"
               " to money_to_unit() (left: %d)",
               amt);
+      }
    }
    else
    {
@@ -436,25 +516,32 @@ void coins_to_unit(struct unit_data *unit, amount_t amt, int type)
  *  inventory.
  *  Use ANY_CURRENCY as currency-type to count up ALL money...
  */
-amount_t unit_holds_total(struct unit_data *u, currency_t currency)
+auto unit_holds_total(struct unit_data *u, currency_t currency) -> amount_t
 {
    struct unit_data *tmp;
-   amount_t          amt = 0, rec;
+   amount_t          amt = 0;
+   amount_t          rec;
 
    if(IS_ROOM(u) || IS_CHAR(u) || (IS_OBJ(u) && OBJ_TYPE(u) == ITEM_CONTAINER))
    {
-      for(tmp = UNIT_CONTAINS(u); tmp; tmp = tmp->next)
+      for(tmp = UNIT_CONTAINS(u); tmp != nullptr; tmp = tmp->next)
+      {
          if(IS_MONEY(tmp) && (currency == ANY_CURRENCY || MONEY_CURRENCY(tmp) == currency))
          {
-            if(amt < amt + (amount_t)MONEY_VALUE(tmp)) /* primitive overflow check */
+            if(amt < amt + (amount_t)MONEY_VALUE(tmp))
+            { /* primitive overflow check */
                amt += MONEY_VALUE(tmp);
+            }
          }
          else if(IS_ROOM(tmp) || IS_CHAR(tmp) || (IS_OBJ(tmp) && OBJ_TYPE(tmp) == ITEM_CONTAINER))
          {
             rec = unit_holds_total(tmp, currency);
-            if(amt < amt + rec) /* primitive overflow check */
+            if(amt < amt + rec)
+            { /* primitive overflow check */
                amt += rec;
+            }
          }
+      }
    }
    return amt;
 }
@@ -462,17 +549,23 @@ amount_t unit_holds_total(struct unit_data *u, currency_t currency)
 /*  Counts up what amount of a given currency char holds in inventory.
  *  Use ANY_CURRENCY as currency-type to count up ALL money...
  */
-amount_t char_holds_amount(struct unit_data *ch, currency_t currency)
+auto char_holds_amount(struct unit_data *ch, currency_t currency) -> amount_t
 {
    struct unit_data *tmp;
    amount_t          amt = 0;
 
    assert(IS_CHAR(ch));
 
-   for(tmp = UNIT_CONTAINS(ch); tmp; tmp = tmp->next)
+   for(tmp = UNIT_CONTAINS(ch); tmp != nullptr; tmp = tmp->next)
+   {
       if(IS_MONEY(tmp) && (currency == ANY_CURRENCY || MONEY_CURRENCY(tmp) == currency))
-         if(amt < amt + (amount_t)MONEY_VALUE(tmp)) /* primitive overflow check */
+      {
+         if(amt < amt + (amount_t)MONEY_VALUE(tmp))
+         { /* primitive overflow check */
             amt += MONEY_VALUE(tmp);
+         }
+      }
+   }
 
    return amt;
 }
@@ -480,7 +573,7 @@ amount_t char_holds_amount(struct unit_data *ch, currency_t currency)
 /*  Checks if the character is able to pay the amount with the currency
  *  (Currently) based on what money he has in inventory.
  */
-ubit1 char_can_afford(struct unit_data *ch, amount_t amt, currency_t currency)
+auto char_can_afford(struct unit_data *ch, amount_t amt, currency_t currency) -> ubit1
 {
    struct unit_data *tmp;
 
@@ -488,28 +581,35 @@ ubit1 char_can_afford(struct unit_data *ch, amount_t amt, currency_t currency)
 
    amt = adjust_money(amt, currency);
 
-   for(tmp = UNIT_CONTAINS(ch); tmp; tmp = tmp->next)
+   for(tmp = UNIT_CONTAINS(ch); tmp != nullptr; tmp = tmp->next)
+   {
       if(IS_MONEY(tmp) && MONEY_CURRENCY(tmp) == currency)
       {
-         if(amt < amt - (amount_t)MONEY_VALUE(tmp)) /* primitive overflow check */
+         if(amt < amt - (amount_t)MONEY_VALUE(tmp))
+         { /* primitive overflow check */
             return TRUE;
-         else
-            amt -= MONEY_VALUE(tmp);
+         }
+         amt -= MONEY_VALUE(tmp);
       }
+   }
 
-   return amt <= 0;
+   return static_cast<ubit1>(amt <= 0);
 }
 
 /* Check if there is some money of `type' in unit. (For piling purposes.) */
-struct unit_data *unit_has_money_type(struct unit_data *unit, ubit8 type)
+auto unit_has_money_type(struct unit_data *unit, ubit8 type) -> struct unit_data *
 {
    struct unit_data *tmp;
 
-   for(tmp = UNIT_CONTAINS(unit); tmp; tmp = tmp->next)
+   for(tmp = UNIT_CONTAINS(unit); tmp != nullptr; tmp = tmp->next)
+   {
       if(IS_MONEY(tmp) && MONEY_TYPE(tmp) == type)
+      {
          return tmp;
+      }
+   }
 
-   return NULL;
+   return nullptr;
 }
 
 /*  Split `money' into two objects.
@@ -517,7 +617,7 @@ struct unit_data *unit_has_money_type(struct unit_data *unit, ubit8 type)
  *  (which is why you must ALWAYS make sure the new object is either piled,
  *  or moved!)
  */
-struct unit_data *split_money(struct unit_data *money, amount_t amt)
+auto split_money(struct unit_data *money, amount_t amt) -> struct unit_data *
 {
    assert(IS_MONEY(money));
 
@@ -536,7 +636,9 @@ struct unit_data *split_money(struct unit_data *money, amount_t amt)
       set_money(money, calc_money(MONEY_AMOUNT(money), '-', amt));
 
       if(UNIT_IN(money))
+      {
          intern_unit_to_unit(pnew, UNIT_IN(money), FALSE);
+      }
 
       return pnew;
    }
@@ -550,57 +652,70 @@ struct unit_data *split_money(struct unit_data *money, amount_t amt)
  */
 void pile_money(struct unit_data *money)
 {
-   struct unit_data *tmp, *unit = UNIT_IN(money);
+   struct unit_data *tmp;
+   struct unit_data *unit = UNIT_IN(money);
 
    assert(IS_MONEY(money) && unit);
 
-   for(tmp = UNIT_CONTAINS(unit); tmp; tmp = tmp->next)
+   for(tmp = UNIT_CONTAINS(unit); tmp != nullptr; tmp = tmp->next)
+   {
       if(tmp != money && IS_MONEY(tmp) && MONEY_TYPE(tmp) == MONEY_TYPE(money))
       {
          set_money(money, calc_money(MONEY_AMOUNT(money), '+', MONEY_AMOUNT(tmp)));
          extract_unit(tmp);
          return;
       }
+   }
 }
 
 /*  Round amount down/up to nearest `types' number of coins
  */
-amount_t money_round(ubit1 up, amount_t amt, currency_t currency, int types)
+auto money_round(ubit1 up, amount_t amt, currency_t currency, int types) -> amount_t
 {
    struct money_type *money_tmp[MAX_MONEY + 1];
-   int                i, nr            = 0;
-   amount_t           times, remainder = amt;
+   int                i;
+   int                nr = 0;
+   amount_t           times;
+   amount_t           remainder = amt;
 
    assert(0 < types);
 
    /* Get an array of all types in this currency */
    for(i = 0; i <= MAX_MONEY; i++)
+   {
       if(money_types[i].currency == currency)
+      {
          money_tmp[nr++] = &money_types[i];
+      }
+   }
 
    /*  Loop while we have coin-types left,
     *  but don't select a `type' more than `types' times...
     */
-   while(nr-- && types)
-      if((times = (remainder / money_tmp[nr]->relative_value)))
+   while(((nr--) != 0) && (types != 0))
+   {
+      if((times = (remainder / money_tmp[nr]->relative_value)) != 0)
       {
          --types;
          remainder -= money_tmp[nr]->relative_value * times;
       }
+   }
 
    /* After this loop, remainder is guaranteed to be non-negative
     * Its value represents the MOST coins of the top `types' values which can
     * be removed without taking too much, meaning that it is a rounded down
     * value.  To round up, just take a single coin of last type used.
     */
-   if(up && remainder > 0)
+   if((up != 0u) && remainder > 0)
+   {
       remainder -= money_tmp[nr + 1]->relative_value;
+   }
 
    return amt - remainder; /* This value IS adjusted! */
 }
 
 /* Print out representation of supplied money-object with the amount amt */
-char *obj_money_string(struct unit_data *obj, amount_t amt)
+auto obj_money_string(struct unit_data *obj, amount_t amt) -> char *
 {
    static char        buf[128];
    struct money_type *money_tmp;
@@ -610,24 +725,30 @@ char *obj_money_string(struct unit_data *obj, amount_t amt)
    money_tmp = &money_types[MONEY_TYPE(obj)];
 
    if(amt == 0)
+   {
       amt = MONEY_AMOUNT(obj);
+   }
 
    if(amt == 1)
-      sprintf(buf, "%s %s", strchr("aeiou", *(money_tmp->strings[0])) ? "an" : "a", money_tmp->strings[0]);
+   {
+      sprintf(buf, "%s %s", strchr("aeiou", *(money_tmp->strings[0])) != nullptr ? "an" : "a", money_tmp->strings[0]);
+   }
    else
+   {
       sprintf(buf, "%d %s", (int)amt, money_tmp->strings[money_tmp->pl_idx]);
+   }
 
    return buf;
 }
 
-amount_t char_can_carry_amount(struct unit_data *ch, struct unit_data *money)
+auto char_can_carry_amount(struct unit_data *ch, struct unit_data *money) -> amount_t
 {
    int d_wgt = char_carry_w_limit(ch) - UNIT_CONTAINING_W(ch);
 
    return MIN((amount_t)(d_wgt * MONEY_WEIGHT(money)), MONEY_AMOUNT(money));
 }
 
-amount_t unit_can_hold_amount(struct unit_data *unit, struct unit_data *money)
+auto unit_can_hold_amount(struct unit_data *unit, struct unit_data *money) -> amount_t
 {
    int d_wgt = UNIT_CAPACITY(unit) - UNIT_CONTAINING_W(unit);
 
@@ -643,7 +764,7 @@ void do_makemoney(struct unit_data *ch, char *arg, const struct command_info *cm
    currency_t cur;
    amount_t   amt = 0;
 
-   if(!IS_PC(ch) || str_is_empty(arg) || (amt = atol(arg)) < 0)
+   if(!IS_PC(ch) || (str_is_empty(arg) != 0u) || (amt = atol(arg)) < 0)
    {
       send_to_char("Rather silly, isn't it?\n\r", ch);
       return;
@@ -651,7 +772,7 @@ void do_makemoney(struct unit_data *ch, char *arg, const struct command_info *cm
 
    cur = local_currency(ch);
    money_to_unit(ch, amt, cur);
-   act("You just made $2t.", A_ALWAYS, ch, money_string(amt, cur, TRUE), 0, TO_CHAR);
+   act("You just made $2t.", A_ALWAYS, ch, money_string(amt, cur, TRUE), nullptr, TO_CHAR);
 }
 
 #endif /* DMC_SRC */
@@ -662,10 +783,14 @@ void do_makemoney(struct unit_data *ch, char *arg, const struct command_info *cm
 
 static void set_money_strings(FILE *fl, int idx)
 {
-   char buf[512], *tmp[32], *c, *s, *sc;
-   int  i = 0;
+   char  buf[512];
+   char *tmp[32];
+   char *c;
+   char *s;
+   char *sc;
+   int   i = 0;
 
-   if(fgets(buf, sizeof buf, fl) == NULL)
+   if(fgets(buf, sizeof buf, fl) == nullptr)
    {
       slog(LOG_OFF, 0, "Error reading money strings.");
       assert(FALSE);
@@ -682,27 +807,33 @@ static void set_money_strings(FILE *fl, int idx)
    {
       s = skip_spaces(s);
 
-      if((c = strchr(s, ',')))
+      if((c = strchr(s, ',')) != nullptr)
+      {
          *(c++) = '\0';
+      }
 
-      while(isspace(*(s + strlen(s) - 1)))
+      while(isspace(*(s + strlen(s) - 1)) != 0)
+      {
          *(s + strlen(s) - 1) = '\0';
+      }
 
       tmp[i++] = str_dup(s);
 
-      if((s = c) == NULL && sc)
+      if((s = c) == nullptr && (sc != nullptr))
       {
          s                       = sc;
-         sc                      = NULL;
+         sc                      = nullptr;
          money_types[idx].pl_idx = i;
       }
-   } while(s);
+   } while(s != nullptr);
 
-   tmp[i] = NULL;
+   tmp[i] = nullptr;
 
    CREATE(money_types[idx].strings, char *, i + 1);
    for(; 0 <= i; --i)
+   {
       money_types[idx].strings[i] = tmp[i];
+   }
 }
 
 static void set_relval(FILE *fl, int idx)
@@ -710,14 +841,16 @@ static void set_relval(FILE *fl, int idx)
    char buf[128];
    long res;
 
-   if(fgets(buf, sizeof buf, fl) == NULL || sscanf(buf, "%ld", &res) != 1)
+   if(fgets(buf, sizeof buf, fl) == nullptr || sscanf(buf, "%ld", &res) != 1)
    {
       slog(LOG_OFF, 0, "Error reading relative value.");
       assert(FALSE);
    }
 
-   if(strchr(buf, '*'))
+   if(strchr(buf, '*') != nullptr)
+   {
       res *= money_types[idx - 1].relative_value;
+   }
 
    money_types[idx].relative_value = res;
 }
@@ -726,32 +859,38 @@ static void set_relval(FILE *fl, int idx)
  *    1: cut of trailing whitespace from line
  *    2: return a copy of read string
  */
-static char *get_string(FILE *fl, const char *err, ubit8 flag)
+static auto get_string(FILE *fl, const char *err, ubit8 flag) -> char *
 {
    static char buf[256];
 
-   if(fgets(buf, sizeof buf, fl) == NULL)
+   if(fgets(buf, sizeof buf, fl) == nullptr)
    {
       slog(LOG_OFF, 0, "get_string(): %s", err);
       assert(FALSE);
    }
 
-   if(flag & 1)
-      while(isspace(*(buf + strlen(buf) - 1)))
+   if((flag & 1) != 0)
+   {
+      while(isspace(*(buf + strlen(buf) - 1)) != 0)
+      {
          *(buf + strlen(buf) - 1) = '\0';
+      }
+   }
 
-   return flag & 2 ? str_dup(buf) : buf;
+   return (flag & 2) != 0 ? str_dup(buf) : buf;
 }
 
-void boot_money(void)
+void boot_money()
 {
    FILE      *fl;
    char       buf[256];
-   int        tmp, idx, prev_idx;
+   int        tmp;
+   int        idx;
+   int        prev_idx;
    currency_t cur;
    ubit1      currencies = TRUE;
 
-   if((fl = fopen(str_cc(libdir, MONEYDEF_FILE), "r")) == NULL)
+   if((fl = fopen(str_cc(libdir, MONEYDEF_FILE), "r")) == nullptr)
    {
       perror("boot_money");
       exit(1);
@@ -761,9 +900,9 @@ void boot_money(void)
    {
       do
       {
-         if(fgets(buf, sizeof buf, fl) == NULL)
+         if(fgets(buf, sizeof buf, fl) == nullptr)
          {
-            if(feof(fl))
+            if(feof(fl) != 0)
             {
                fclose(fl);
                goto done; /* My first goto _ever!_ */
@@ -773,7 +912,7 @@ void boot_money(void)
          }
       } while(buf[0] == '\n' || buf[0] == '#'); /* Skip empty lines & comments */
 
-      if(currencies)
+      if(currencies != 0u)
       {
          if(buf[0] == '~')
          {
@@ -783,7 +922,9 @@ void boot_money(void)
 
          sscanf(buf, "%d", &tmp);
          if(0 <= tmp && tmp <= MAX_CURRENCY)
+         {
             cur_strings[tmp] = get_string(fl, "currency strings", 2);
+         }
          else
          {
             slog(LOG_OFF, 0, "Illegal index of currency strings. (%d)", tmp);
@@ -812,7 +953,7 @@ void boot_money(void)
 
       set_relval(fl, idx);
 
-      if(fgets(buf, sizeof buf, fl) == NULL || sscanf(buf, "%d", &tmp) != 1)
+      if(fgets(buf, sizeof buf, fl) == nullptr || sscanf(buf, "%d", &tmp) != 1)
       {
          slog(LOG_OFF, 0, "Error reading coins_per_weight");
          assert(FALSE);
@@ -835,11 +976,19 @@ done:
       tmp = -1;
 
       for(idx = 0; idx <= MAX_MONEY; ++idx)
+      {
          if(money_types[idx].currency == cur)
+         {
             tmp = (tmp < 0) ? money_types[idx].relative_value : MIN(tmp, money_types[idx].relative_value);
+         }
+      }
 
       for(idx = 0; idx <= MAX_MONEY; ++idx)
+      {
          if(money_types[idx].currency == cur)
+         {
             money_types[idx].min_value = tmp;
+         }
+      }
    }
 }

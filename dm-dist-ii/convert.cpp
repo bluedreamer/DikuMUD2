@@ -25,12 +25,12 @@
 /* 09/09/93 seifert : Changed to accomodate blkfile V2                     */
 /*          seifert : Changed to accomodate single player files.           */
 
-#include <limits.h>
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <climits>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "affect.h"
 #include "blkfile.h"
@@ -47,28 +47,28 @@
 #include "utility.h"
 #include "utils.h"
 
-int required_xp(int level);
-
-int  save_contents(const char *pFileName, struct unit_data *unit, int fast, int bContainer);
-int  player_exists(const char *pName);
-int  delete_player(const char *pName);
-int  delete_inventory(const char *pName);
+auto save_contents(const char *pFileName, struct unit_data *unit, int fast, int bContainer) -> int;
+auto player_exists(const char *pName) -> int;
+auto delete_player(const char *pName) -> int;
+auto delete_inventory(const char *pName) -> int;
 void save_player_file(struct unit_data *pc);
 
-char **player_name_list = NULL;
+char **player_name_list = nullptr;
 int    max_id           = -1;
 int    top_id           = -1;
-ubit8 *ids              = NULL; /* For checking duplicate players... */
+ubit8 *ids              = nullptr; /* For checking duplicate players... */
 
 #define OUTPUT_DIR "lib/"
 
 void convert_free_unit(struct unit_data *u)
 {
    while(UNIT_CONTAINS(u))
+   {
       convert_free_unit(UNIT_CONTAINS(u));
+   }
 
-   UNIT_AFFECTED(u) = NULL;
-   UNIT_FUNC(u)     = NULL;
+   UNIT_AFFECTED(u) = nullptr;
+   UNIT_FUNC(u)     = nullptr;
 
    unit_from_unit(u);
    remove_from_unit_list(u);
@@ -78,33 +78,38 @@ void convert_free_unit(struct unit_data *u)
 
 void free_inventory(struct unit_data *u)
 {
-   struct unit_data *tmp, *nxt;
+   struct unit_data *tmp;
+   struct unit_data *nxt;
 
-   for(tmp = u; tmp; tmp = nxt)
+   for(tmp = u; tmp != nullptr; tmp = nxt)
    {
       nxt = tmp->next;
       convert_free_unit(tmp);
    }
 }
 
-int days_old(time_t last_logon)
+auto days_old(time_t last_logon) -> int
 {
-   return (int)(difftime(time(0), last_logon) / SECS_PER_REAL_DAY);
+   return (int)(difftime(time(nullptr), last_logon) / SECS_PER_REAL_DAY);
 }
 
-struct unit_data *convert_item(struct unit_data *u, struct unit_data *pc, int bList)
+auto convert_item(struct unit_data *u, struct unit_data *pc, int bList) -> struct unit_data *
 {
    struct unit_data *nu = u;
 
-   if(bList)
+   if(bList != 0)
    {
       if(strcmp(UNIT_FI_ZONE(u)->name, "treasure") == 0)
+      {
          printf("\n%s@treasure", UNIT_FI_NAME(u));
+      }
       return u;
    }
 
    if(IS_OBJ(u))
+   {
       UNIT_SIZE(u) = UNIT_SIZE(pc);
+   }
 
    return u;
 
@@ -162,8 +167,10 @@ void convert_inventory(struct unit_data *u, struct unit_data *pc, int bList = FA
 {
    struct unit_data *bla;
 
-   if(u == NULL)
+   if(u == nullptr)
+   {
       return;
+   }
 
    convert_inventory(UNIT_CONTAINS(u), pc, bList);
 
@@ -216,7 +223,8 @@ void convert_inventory(struct unit_data *u, struct unit_data *pc, int bList = FA
  * the playerfile, including affects and inventory                         */
 void convert_player(struct unit_data *pc)
 {
-   struct extra_descr_data *exd, *nextexd;
+   struct extra_descr_data *exd;
+   struct extra_descr_data *nextexd;
 
    int lvl;
 
@@ -245,7 +253,7 @@ void convert_player(struct unit_data *pc)
 }
 
 /* Return TRUE if Ok. */
-int sanity_check(struct unit_data *u)
+auto sanity_check(struct unit_data *u) -> int
 {
    void race_adjust(struct unit_data * ch);
 
@@ -279,13 +287,13 @@ int sanity_check(struct unit_data *u)
       return FALSE;
    }
 
-   if(PC_TIME(u).creation > time(0))
+   if(PC_TIME(u).creation > time(nullptr))
    {
       printf("Corrupted creation time.");
       return FALSE;
    }
 
-   if(PC_TIME(u).connect > time(0))
+   if(PC_TIME(u).connect > time(nullptr))
    {
       printf("Corrupted connect time.");
       return FALSE;
@@ -306,7 +314,7 @@ int sanity_check(struct unit_data *u)
    return TRUE;
 }
 
-int shall_delete(struct unit_data *pc)
+auto shall_delete(struct unit_data *pc) -> int
 {
    int days;
 
@@ -314,7 +322,9 @@ int shall_delete(struct unit_data *pc)
 
    /* Player which have paid at some point in time remain almost permanent. */
    if(PC_ACCOUNT(pc).total_credit > 0)
+   {
       return FALSE;
+   }
 
    if(days > 360)
    {
@@ -355,86 +365,96 @@ int shall_delete(struct unit_data *pc)
    return FALSE;
 }
 
-int shall_exclude(const char *name)
+auto shall_exclude(const char *name) -> int
 {
    char buf[256];
 
-   int _parse_name(const char *arg, char *name);
+   auto _parse_name(const char *arg, char *name)->int;
 
-   if(!_parse_name(name, buf) == 0)
+   if(static_cast<int>(_parse_name(name, buf)) == 0 == 0)
+   {
       return TRUE;
+   }
 
    return FALSE;
 }
 
-struct unit_data *convert_load_player(char *name)
+auto convert_load_player(char *name) -> struct unit_data *
 {
    struct unit_data        *ch;
    extern struct unit_data *destroy_room;
 
-   if(!player_exists(name))
+   if(player_exists(name) == 0)
    {
       /* printf("No such player.\n"); */
-      return NULL;
+      return nullptr;
    }
 
    ch = load_player(name);
 
-   if(!ch)
-      return NULL;
+   if(ch == nullptr)
+   {
+      return nullptr;
+   }
 
    insert_in_unit_list(ch);
    unit_to_unit(ch, destroy_room);
 
-   if(shall_exclude(name))
+   if(shall_exclude(name) != 0)
    {
       printf("EXCLUDED.\n");
       convert_free_unit(ch);
-      return NULL;
+      return nullptr;
    }
 
-   if(!sanity_check(ch))
+   if(sanity_check(ch) == 0)
    {
       printf("SANITY ERROR.\n");
       convert_free_unit(ch);
-      return NULL;
+      return nullptr;
    }
 
    if(PC_ID(ch) > top_id)
    {
       printf("TOP ID ERROR %d vs %d.\n", PC_ID(ch), top_id);
       convert_free_unit(ch);
-      return NULL;
+      return nullptr;
    }
 
    if(PC_TIME(ch).played > SECS_PER_REAL_DAY * 180)
+   {
       printf("Had played over 180 days! Wierd!");
+   }
 
    if(PC_ID(ch) > max_id)
+   {
       max_id = PC_ID(ch);
+   }
 
    return ch;
 }
 
-void list(void)
+void list()
 {
    long              total_time = 0;
-   int               i, years, days;
+   int               i;
+   int               years;
+   int               days;
    struct unit_data *pc;
-   class unit_data  *void_char = new(class unit_data)(UNIT_ST_NPC);
+   auto             *void_char = new(class unit_data)(UNIT_ST_NPC);
 
-   for(i = 0; player_name_list[i]; i++)
+   for(i = 0; player_name_list[i] != nullptr; i++)
    {
       printf("%-15s: ", player_name_list[i]);
 
       pc = convert_load_player(player_name_list[i]);
-      if(pc == NULL)
+      if(pc == nullptr)
       {
          printf("ERROR: Corrupt\n");
          continue;
       }
 
-      if(str_ccmp(player_name_list[i], UNIT_NAME(pc)))
+      if(str_ccmp(player_name_list[i], UNIT_NAME(pc)) != 0)
       {
          printf("ERROR: Name Mismatch");
          continue;
@@ -443,20 +463,28 @@ void list(void)
       printf("Id [%4d]  Lvl [%3d]  %-3s (%3d days)", PC_ID(pc), CHAR_LEVEL(pc), IS_MORTAL(pc) ? "   " : (IS_GOD(pc) ? "GOD" : "DEM"),
              days_old(PC_TIME(pc).connect));
 
-      if(ids[PC_ID(pc)])
+      if(ids[PC_ID(pc)] != 0u)
+      {
          printf("Duplicate ID! (%ld)", (signed long)PC_ID(pc));
+      }
       else
+      {
          ids[PC_ID(pc)] = 1;
+      }
 
       total_time += PC_TIME(pc).played;
 
-      if(shall_exclude(UNIT_NAME(pc)))
+      if(shall_exclude(UNIT_NAME(pc)) != 0)
+      {
          printf(" WILL DELETE (EXCLUDED)");
+      }
 
-      if(shall_delete(pc))
+      if(shall_delete(pc) != 0)
+      {
          printf(" WILL DELETE (AGE)");
+      }
 
-      UNIT_CONTAINS(void_char) = NULL;
+      UNIT_CONTAINS(void_char) = nullptr;
       load_contents(player_name_list[i], void_char);
 
       if(UNIT_CONTAINS(void_char))
@@ -465,7 +493,9 @@ void list(void)
          convert_inventory(UNIT_CONTAINS(void_char), pc, TRUE);
          free_inventory(UNIT_CONTAINS(void_char));
          if(days_old(PC_TIME(pc).connect) > 60)
+         {
             printf("-DEL");
+         }
       }
 
       printf("\n");
@@ -480,26 +510,26 @@ void list(void)
    printf("Maximum ID was %d / Top %d\n", max_id, top_id);
 }
 
-void convert_file(void)
+void convert_file()
 {
    int               i;
    struct unit_data *pc;
-   class unit_data  *void_char = new(class unit_data)(UNIT_ST_NPC);
+   auto             *void_char = new(class unit_data)(UNIT_ST_NPC);
 
-   for(i = 0; player_name_list[i]; i++)
+   for(i = 0; player_name_list[i] != nullptr; i++)
    {
       printf("\n%-15s: ", player_name_list[i]);
 
       pc = convert_load_player(player_name_list[i]);
 
-      if(pc == NULL)
+      if(pc == nullptr)
       {
          printf("Corrupt Player ERASED.");
          delete_player(player_name_list[i]);
          continue;
       }
 
-      if(str_ccmp(player_name_list[i], UNIT_NAME(pc)))
+      if(str_ccmp(player_name_list[i], UNIT_NAME(pc)) != 0)
       {
          printf("NAME MISMATCH - ERASED.");
          convert_free_unit(pc);
@@ -507,14 +537,18 @@ void convert_file(void)
          continue;
       }
 
-      if(ids[PC_ID(pc)])
+      if(ids[PC_ID(pc)] != 0u)
+      {
          printf("Duplicate ID! (%ld)", (signed long)PC_ID(pc));
+      }
       else
+      {
          ids[PC_ID(pc)] = 1;
+      }
 
       printf("%-15s Lvl [%3d] %-3s", UNIT_NAME(pc), CHAR_LEVEL(pc), IS_MORTAL(pc) ? "   " : (IS_GOD(pc) ? "GOD" : "DEM"));
 
-      if(shall_delete(pc))
+      if(shall_delete(pc) != 0)
       {
          convert_free_unit(pc);
          delete_player(player_name_list[i]);
@@ -525,7 +559,7 @@ void convert_file(void)
       convert_player(pc);
       save_player_file(pc);
 
-      UNIT_CONTAINS(void_char) = NULL;
+      UNIT_CONTAINS(void_char) = nullptr;
       load_contents(player_name_list[i], void_char);
       if(UNIT_CONTAINS(void_char))
       {
@@ -549,28 +583,26 @@ void convert_file(void)
    }
 }
 
-void cleanup(void)
+void cleanup()
 {
    int               i;
    struct unit_data *pc;
-   class unit_data  *void_char = new(class unit_data)(UNIT_ST_NPC);
+   auto             *void_char = new(class unit_data)(UNIT_ST_NPC);
 
-   void save_player_file(struct unit_data * pc);
-
-   for(i = 0; player_name_list[i]; i++)
+   for(i = 0; player_name_list[i] != nullptr; i++)
    {
       printf("\n%-15s: ", player_name_list[i]);
 
       pc = convert_load_player(player_name_list[i]);
 
-      if(pc == NULL)
+      if(pc == nullptr)
       {
          printf("Corrupt Player ERASED.");
          delete_player(player_name_list[i]);
          continue;
       }
 
-      if(str_ccmp(player_name_list[i], UNIT_NAME(pc)))
+      if(str_ccmp(player_name_list[i], UNIT_NAME(pc)) != 0)
       {
          printf("NAME MISMATCH - ERASED.");
          convert_free_unit(pc);
@@ -580,7 +612,7 @@ void cleanup(void)
 
       printf("%-15s Lvl [%3d] %-3s", UNIT_NAME(pc), CHAR_LEVEL(pc), IS_MORTAL(pc) ? "   " : (IS_GOD(pc) ? "GOD" : "DEM"));
 
-      if(shall_delete(pc))
+      if(shall_delete(pc) != 0)
       {
          convert_free_unit(pc);
          delete_player(player_name_list[i]);
@@ -589,7 +621,7 @@ void cleanup(void)
 
       fflush(stdout);
 
-      UNIT_CONTAINS(void_char) = NULL;
+      UNIT_CONTAINS(void_char) = nullptr;
       load_contents(player_name_list[i], void_char);
       if(UNIT_CONTAINS(void_char))
       {
@@ -612,9 +644,8 @@ void cleanup_playerfile(int argc, char *argv[])
    char c;
 
    extern struct unit_data *entry_room;
-   extern struct unit_data *destroy_room;
 
-   int read_player_id(void);
+   auto read_player_id()->int;
 
    top_id = read_player_id();
    CREATE(ids, ubit8, top_id + 1);
@@ -634,11 +665,17 @@ void cleanup_playerfile(int argc, char *argv[])
    printf("\n\n");
 
    if(c == 'Z')
+   {
       convert_file();
+   }
    else if(toupper(c) == 'C')
+   {
       cleanup();
+   }
    else
+   {
       list();
+   }
 
    printf("\n\nFinished.\n");
 }

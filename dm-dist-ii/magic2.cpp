@@ -25,8 +25,8 @@
  *		    needed it, thus killing spells[12].c
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "affect.h"
 #include "comm.h"
@@ -35,7 +35,6 @@
 #include "fight.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
 #include "magic.h"
 #include "movement.h"
 #include "skills.h"
@@ -44,13 +43,11 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
 #define RIFT_RISK 100
 
 /* Extern structures */
-extern struct unit_data     *unit_list;
-extern struct command_info   cmd_auto_unknown;
-extern struct zone_info_type zone_info;
 
 /* When you attempt lesser summoning, greater summoning, random teleport,
    or controlled teleport - there is a risk of pretty bad failure.
@@ -60,9 +57,9 @@ extern struct zone_info_type zone_info;
    target is optional intended target.
    spl is the originating spell. */
 
-struct unit_data *random_room(void)
+auto random_room() -> struct unit_data *
 {
-   struct unit_data       *room = NULL;
+   struct unit_data       *room = nullptr;
    struct zone_type       *zone;
    struct file_index_type *fi;
    int                     no;
@@ -70,24 +67,32 @@ struct unit_data *random_room(void)
    for(;;)
    {
       no = number(1, zone_info.no_of_zones) - 1;
-      for(zone = zone_info.zone_list; zone && no > 0; zone = zone->next, no--)
+      for(zone = zone_info.zone_list; (zone != nullptr) && no > 0; zone = zone->next, no--)
+      {
          ;
+      }
 
       no = number(1, zone->no_of_fi) - 1;
-      for(fi = zone->fi; fi && (no > 0 || !fi->room_ptr); fi = fi->next, no--)
+      for(fi = zone->fi; (fi != nullptr) && (no > 0 || (fi->room_ptr == nullptr)); fi = fi->next, no--)
+      {
          ;
+      }
 
-      if(!(fi && (room = fi->room_ptr)))
-         return NULL; /* Give up */
+      if(!((fi != nullptr) && ((room = fi->room_ptr) != nullptr)))
+      {
+         return nullptr; /* Give up */
+      }
 
-      if(may_teleport_away(room)) /* Can we go to that room? */
+      if(may_teleport_away(room) != 0u)
+      { /* Can we go to that room? */
          return room;
+      }
    }
 
-   return NULL;
+   return nullptr;
 }
 
-struct unit_data *random_npc(void)
+auto random_npc() -> struct unit_data *
 {
    struct unit_data *u;
    int               i;
@@ -96,23 +101,25 @@ struct unit_data *random_npc(void)
 
    i = number(1, world_nochars);
 
-   for(u = unit_list; u; u = u->gnext, i--)
+   for(u = unit_list; u != nullptr; u = u->gnext, i--)
    {
-      if(IS_NPC(u) && i <= 0 && may_teleport_away(u) && !is_destructed(DR_UNIT, u))
+      if(IS_NPC(u) && i <= 0 && (may_teleport_away(u) != 0u) && (is_destructed(DR_UNIT, u) == 0))
+      {
          return u;
+      }
    }
 
-   return NULL;
+   return nullptr;
 }
 
-struct unit_data *random_pc(void)
+auto random_pc() -> struct unit_data *
 {
-   return NULL;
+   return nullptr;
 }
 
-struct unit_data *random_char(void)
+auto random_char() -> struct unit_data *
 {
-   return NULL;
+   return nullptr;
 }
 
 void summon_attack_npc(struct unit_data *caster, int n)
@@ -121,15 +128,17 @@ void summon_attack_npc(struct unit_data *caster, int n)
 
    for(; n > 0; n--)
    {
-      if((u = random_npc()) && (u != caster) && may_teleport_away(u))
+      if(((u = random_npc()) != nullptr) && (u != caster) && (may_teleport_away(u) != 0u))
       {
          if(CHAR_FIGHTING(u))
+         {
             stop_fighting(u);
-         act("$1n disappears into a rift!", A_ALWAYS, u, 0, 0, TO_ROOM);
+         }
+         act("$1n disappears into a rift!", A_ALWAYS, u, nullptr, nullptr, TO_ROOM);
          create_fptr(u, SFUN_RETURN_TO_ORIGIN, PULSE_SEC * 10, SFB_TICK, unit_room(u));
          unit_from_unit(u);
          unit_to_unit(u, UNIT_IN(caster));
-         act("$1n appears though a rift!", A_ALWAYS, u, 0, 0, TO_ROOM);
+         act("$1n appears though a rift!", A_ALWAYS, u, nullptr, nullptr, TO_ROOM);
          provoked_attack(u, caster);
       }
    }
@@ -143,13 +152,13 @@ void rift_failure(struct unit_data *caster, struct unit_data *target)
 
    extern struct unit_data *void_room;
 
-   act("You cause a great disturbance in the powers of magic.", A_ALWAYS, caster, 0, 0, TO_CHAR);
-   act("$1n causes a great disturbance in the powers of magic.", A_ALWAYS, caster, 0, 0, TO_ROOM);
+   act("You cause a great disturbance in the powers of magic.", A_ALWAYS, caster, nullptr, nullptr, TO_CHAR);
+   act("$1n causes a great disturbance in the powers of magic.", A_ALWAYS, caster, nullptr, nullptr, TO_ROOM);
 
    if(IS_IMMORTAL(caster))
    {
-      act("In the last second you successfully close the rift!", A_ALWAYS, caster, 0, 0, TO_CHAR);
-      act("$1n battles the rift for a split second, and closes it again!", A_ALWAYS, caster, 0, 0, TO_ROOM);
+      act("In the last second you successfully close the rift!", A_ALWAYS, caster, nullptr, nullptr, TO_CHAR);
+      act("$1n battles the rift for a split second, and closes it again!", A_ALWAYS, caster, nullptr, nullptr, TO_ROOM);
       return;
    }
 
@@ -157,7 +166,7 @@ void rift_failure(struct unit_data *caster, struct unit_data *target)
 
    if(i <= 35)
    {
-      if(!target || number(0, 1))
+      if((target == nullptr) || (number(0, 1) != 0))
       {
          char mbuf[MAX_INPUT_LENGTH] = {0};
          set_spellargs(&sa, caster, caster, caster, mbuf, 100);
@@ -202,45 +211,49 @@ void spell_clear_skies(struct spell_args *sa)
 {
    struct unit_data *room = unit_room(sa->caster);
 
-   if((sa->hm / 20 <= 0) || (IS_SET(UNIT_FLAGS(room), UNIT_FL_NO_WEATHER | UNIT_FL_INDOORS)))
+   if((sa->hm / 20 <= 0) || ((IS_SET(UNIT_FLAGS(room), UNIT_FL_NO_WEATHER | UNIT_FL_INDOORS)) != 0))
    {
-      act("Nothing happens.", A_ALWAYS, sa->caster, 0, 0, TO_CHAR);
+      act("Nothing happens.", A_ALWAYS, sa->caster, nullptr, nullptr, TO_CHAR);
       return;
    }
 
    unit_zone(sa->caster)->weather.change += sa->hm / 20;
    unit_zone(sa->caster)->weather.change = MIN(unit_zone(sa->caster)->weather.change, 12);
 
-   act("You feel a warm breeze.", A_ALWAYS, sa->caster, 0, 0, TO_ALL);
+   act("You feel a warm breeze.", A_ALWAYS, sa->caster, nullptr, nullptr, TO_ALL);
 }
 
 void spell_storm_call(struct spell_args *sa)
 {
    struct unit_data *room = unit_room(sa->caster);
 
-   if((sa->hm / 20 <= 0) || (IS_SET(UNIT_FLAGS(room), UNIT_FL_NO_WEATHER | UNIT_FL_INDOORS)))
+   if((sa->hm / 20 <= 0) || ((IS_SET(UNIT_FLAGS(room), UNIT_FL_NO_WEATHER | UNIT_FL_INDOORS)) != 0))
    {
-      act("Nothing happens.", A_ALWAYS, sa->caster, 0, 0, TO_CHAR);
+      act("Nothing happens.", A_ALWAYS, sa->caster, nullptr, nullptr, TO_CHAR);
       return;
    }
 
    unit_zone(sa->caster)->weather.change -= sa->hm / 20;
    unit_zone(sa->caster)->weather.change = MAX(unit_zone(sa->caster)->weather.change, -12);
 
-   act("A cold wind chills you to the bone.", A_ALWAYS, sa->caster, 0, 0, TO_ALL);
+   act("A cold wind chills you to the bone.", A_ALWAYS, sa->caster, nullptr, nullptr, TO_ALL);
 }
 
 void spell_random_teleport(struct spell_args *sa)
 {
    struct unit_data *room;
 
-   if(!(room = random_room()))
+   if((room = random_room()) == nullptr)
+   {
       return;
+   }
 
    sa->hm = spell_resistance(sa->medium, unit_room(sa->caster), SPL_RANDOM_TELEPORT);
 
    if(sa->hm < 0)
+   {
       return;
+   }
 
    if(number(1, RIFT_RISK) <= 5)
    {
@@ -248,7 +261,7 @@ void spell_random_teleport(struct spell_args *sa)
       return;
    }
 
-   if(!may_teleport(sa->caster, room))
+   if(may_teleport(sa->caster, room) == 0u)
    {
       send_to_char("It seems that you can't teleport there.\n\r", sa->caster);
       return;
@@ -267,15 +280,17 @@ void spell_random_teleport(struct spell_args *sa)
 #endif
 
    if(IS_CHAR(sa->medium))
-      act("$1n disappears in a puff of green smoke.", A_SOMEONE, sa->target, 0, 0, TO_ROOM);
+   {
+      act("$1n disappears in a puff of green smoke.", A_SOMEONE, sa->target, nullptr, nullptr, TO_ROOM);
+   }
 
    unit_from_unit(sa->target);
    unit_to_unit(sa->target, room);
 
    if(IS_CHAR(sa->medium))
    {
-      act("$1n appears in a puff of green smoke.", A_SOMEONE, sa->target, 0, 0, TO_ROOM);
-      act("You feel confused.", A_SOMEONE, sa->target, 0, 0, TO_CHAR);
+      act("$1n appears in a puff of green smoke.", A_SOMEONE, sa->target, nullptr, nullptr, TO_ROOM);
+      act("You feel confused.", A_SOMEONE, sa->target, nullptr, nullptr, TO_CHAR);
    }
 
    char mbuf[MAX_INPUT_LENGTH] = {0};
@@ -301,7 +316,7 @@ void spell_transport(struct spell_args *sa)
    room = unit_room(sa->target);
    assert(room);
 
-   if(!may_teleport(sa->caster, room))
+   if(may_teleport(sa->caster, room) == 0u)
    {
       send_to_char("It seems that you can't teleport there.\n\r", sa->caster);
       return;
@@ -326,18 +341,22 @@ void spell_transport(struct spell_args *sa)
    if(move_to(unit_room(sa->caster), room) == DIR_IMPOSSIBLE)
    {
       /* No non-intercontinental teleports */
-      act("The magic disperses.", A_ALWAYS, sa->caster, 0, 0, TO_CHAR);
+      act("The magic disperses.", A_ALWAYS, sa->caster, nullptr, nullptr, TO_CHAR);
       return;
    }
 
    if(IS_CHAR(sa->medium))
-      act("$1n disappears in a puff of green smoke.", A_SOMEONE, sa->caster, 0, 0, TO_ROOM);
+   {
+      act("$1n disappears in a puff of green smoke.", A_SOMEONE, sa->caster, nullptr, nullptr, TO_ROOM);
+   }
 
    unit_from_unit(sa->caster);
    unit_to_unit(sa->caster, room);
 
    if(IS_CHAR(sa->medium))
-      act("$1n appears in a puff of green smoke.", A_SOMEONE, sa->caster, 0, 0, TO_ROOM);
+   {
+      act("$1n appears in a puff of green smoke.", A_SOMEONE, sa->caster, nullptr, nullptr, TO_ROOM);
+   }
 
    char mbuf[MAX_INPUT_LENGTH] = {0};
    do_look(sa->caster, mbuf, &cmd_auto_unknown);
@@ -362,7 +381,7 @@ void spell_control_teleport(struct spell_args *sa)
    room = unit_room(sa->target);
    assert(room);
 
-   if(!may_teleport(sa->caster, room))
+   if(may_teleport(sa->caster, room) == 0u)
    {
       send_to_char("It seems that you can't teleport there.\n\r", sa->caster);
       return;
@@ -382,13 +401,17 @@ void spell_control_teleport(struct spell_args *sa)
    }
 
    if(IS_CHAR(sa->medium))
-      act("$1n disappears in a puff of green smoke.", A_SOMEONE, sa->caster, 0, 0, TO_ROOM);
+   {
+      act("$1n disappears in a puff of green smoke.", A_SOMEONE, sa->caster, nullptr, nullptr, TO_ROOM);
+   }
 
    unit_from_unit(sa->caster);
    unit_to_unit(sa->caster, room);
 
    if(IS_CHAR(sa->medium))
-      act("$1n appears in a puff of green smoke.", A_SOMEONE, sa->caster, 0, 0, TO_ROOM);
+   {
+      act("$1n appears in a puff of green smoke.", A_SOMEONE, sa->caster, nullptr, nullptr, TO_ROOM);
+   }
 
    char mbuf[MAX_INPUT_LENGTH] = {0};
    do_look(sa->caster, mbuf, &cmd_auto_unknown);
@@ -413,7 +436,7 @@ void spell_undead_door(struct spell_args *sa)
 
    /* find destination */
 
-   if(!may_teleport(sa->caster, roomt) || !may_teleport(sa->target, roomf))
+   if((may_teleport(sa->caster, roomt) == 0u) || (may_teleport(sa->target, roomf) == 0u))
    {
       send_to_char("It seems that you can't switch with this undead.\n\r", sa->caster);
       return;
@@ -434,9 +457,9 @@ void spell_undead_door(struct spell_args *sa)
 
    if(IS_CHAR(sa->medium))
    {
-      act("$1n is replaced with $3n!", A_SOMEONE, sa->caster, 0, sa->target, TO_ROOM);
+      act("$1n is replaced with $3n!", A_SOMEONE, sa->caster, nullptr, sa->target, TO_ROOM);
 
-      act("$1n is replaced with $3n!", A_SOMEONE, sa->target, 0, sa->caster, TO_ROOM);
+      act("$1n is replaced with $3n!", A_SOMEONE, sa->target, nullptr, sa->caster, TO_ROOM);
    }
 
    unit_from_unit(sa->caster);
@@ -455,11 +478,13 @@ void spell_summon_char_1(struct spell_args *sa)
    struct unit_data *room;
 
    if(CHAR_LEVEL(sa->target) > CHAR_LEVEL(sa->caster))
+   {
       return;
+   }
 
    room = unit_room(sa->caster);
 
-   if(!same_surroundings(room, sa->caster))
+   if(same_surroundings(room, sa->caster) == 0u)
    {
       send_to_char("The magic fizzles as there is nowhere for the creature to "
                    "arrive.\n\r",
@@ -467,7 +492,7 @@ void spell_summon_char_1(struct spell_args *sa)
       return;
    }
 
-   if(!may_teleport(sa->target, room))
+   if(may_teleport(sa->target, room) == 0u)
    {
       send_to_char("Powers beyond your control prevent the summoning.\n\r", sa->caster);
       return;
@@ -475,7 +500,7 @@ void spell_summon_char_1(struct spell_args *sa)
 
    if(sa->hm < 0)
    {
-      act("$2n tried to summon you.", A_ALWAYS, sa->target, sa->caster, 0, TO_CHAR);
+      act("$2n tried to summon you.", A_ALWAYS, sa->target, sa->caster, nullptr, TO_CHAR);
       return;
    }
 
@@ -494,28 +519,34 @@ void spell_summon_char_1(struct spell_args *sa)
    }
 
    if(IS_PC(sa->caster) && IS_PC(sa->target))
+   {
       slog(LOG_ALL, 0, "%s was summoned by %s to %s@%s.", UNIT_NAME(sa->target), UNIT_NAME(sa->caster), UNIT_FI_NAME(room),
            UNIT_FI_ZONENAME(room));
+   }
 
-   act("You are summoned!", A_SOMEONE, sa->target, 0, 0, TO_CHAR);
-   act("$1n disappears in a puff of smoke!", A_SOMEONE, sa->target, 0, 0, TO_ROOM);
+   act("You are summoned!", A_SOMEONE, sa->target, nullptr, nullptr, TO_CHAR);
+   act("$1n disappears in a puff of smoke!", A_SOMEONE, sa->target, nullptr, nullptr, TO_ROOM);
 
    unit_from_unit(sa->target);
    unit_to_unit(sa->target, room);
 
    char mbuf[MAX_INPUT_LENGTH] = {0};
    do_look(sa->target, mbuf, &cmd_auto_unknown);
-   act("$1n appears in a puff of smoke!", A_SOMEONE, sa->target, 0, 0, TO_ROOM);
+   act("$1n appears in a puff of smoke!", A_SOMEONE, sa->target, nullptr, nullptr, TO_ROOM);
 
    if(CHAR_FIGHTING(sa->target))
+   {
       stop_fighting(sa->target);
+   }
 
    REMOVE_BIT(CHAR_FLAGS(sa->target), CHAR_LEGAL_TARGET);
 
    provoked_attack(sa->target, sa->caster);
 
    if(CHAR_COMBAT(sa->caster))
+   {
       CHAR_COMBAT(sa->caster)->changeSpeed(2 * 12);
+   }
 }
 
 void spell_summon_char_2(struct spell_args *sa)
@@ -524,13 +555,13 @@ void spell_summon_char_2(struct spell_args *sa)
 
    if(sa->hm < 0)
    {
-      act("$2n tried to summon you.", A_ALWAYS, sa->target, sa->caster, 0, TO_CHAR);
+      act("$2n tried to summon you.", A_ALWAYS, sa->target, sa->caster, nullptr, TO_CHAR);
       return;
    }
 
    room = unit_room(sa->caster);
 
-   if(!same_surroundings(room, sa->caster))
+   if(same_surroundings(room, sa->caster) == 0u)
    {
       send_to_char("The magic fizzles as there is nowhere for the creature to "
                    "arrive.\n\r",
@@ -538,7 +569,7 @@ void spell_summon_char_2(struct spell_args *sa)
       return;
    }
 
-   if(!may_teleport(sa->target, room))
+   if(may_teleport(sa->target, room) == 0u)
    {
       send_to_char("Powers beyond your control prevent the summoning.\n\r", sa->caster);
       return;
@@ -559,54 +590,65 @@ void spell_summon_char_2(struct spell_args *sa)
    }
 
    if(IS_PC(sa->caster) && IS_PC(sa->target))
+   {
       slog(LOG_ALL, 0, "%s was summoned by %s to %s@%s.", UNIT_NAME(sa->target), UNIT_NAME(sa->caster), UNIT_FI_NAME(room),
            UNIT_FI_ZONENAME(room));
+   }
 
-   act("You are summoned!", A_SOMEONE, sa->target, 0, 0, TO_CHAR);
-   act("$1n disappears in a flash of light!", A_HIDEINV, sa->target, 0, 0, TO_ROOM);
+   act("You are summoned!", A_SOMEONE, sa->target, nullptr, nullptr, TO_CHAR);
+   act("$1n disappears in a flash of light!", A_HIDEINV, sa->target, nullptr, nullptr, TO_ROOM);
 
    unit_from_unit(sa->target);
    unit_to_unit(sa->target, room);
 
    char mbuf[MAX_INPUT_LENGTH] = {0};
    do_look(sa->target, mbuf, &cmd_auto_unknown);
-   act("$1n appears in a flash of light!", A_HIDEINV, sa->target, 0, 0, TO_ROOM);
+   act("$1n appears in a flash of light!", A_HIDEINV, sa->target, nullptr, nullptr, TO_ROOM);
 
    if(CHAR_FIGHTING(sa->target))
+   {
       stop_fighting(sa->target);
+   }
 
    REMOVE_BIT(CHAR_FLAGS(sa->target), CHAR_LEGAL_TARGET);
 
    provoked_attack(sa->target, sa->caster);
 
    if(CHAR_COMBAT(sa->caster))
+   {
       CHAR_COMBAT(sa->caster)->changeSpeed(2 * 12);
+   }
 }
 
 void spell_animate_dead(struct spell_args *sa)
 {
    extern struct file_index_type *zombie_fi;
-   struct unit_data              *u, *zombie;
+   struct unit_data              *u;
+   struct unit_data              *zombie;
    char                           buf[1024];
 
-   if(OBJ_TYPE(sa->target) != ITEM_CONTAINER || !affected_by_spell(sa->target, ID_CORPSE))
+   if(OBJ_TYPE(sa->target) != ITEM_CONTAINER || (affected_by_spell(sa->target, ID_CORPSE) == nullptr))
+   {
       return;
+   }
 
    if(!RACE_IS_HUMANOID(OBJ_VALUE(sa->target, 4)))
+   {
       return;
+   }
 
    zombie = read_unit(zombie_fi);
    unit_to_unit(zombie, UNIT_IN(sa->target));
 
-   act("$1n animates $2n into a zombie.", A_ALWAYS, sa->caster, sa->target, 0, TO_ROOM);
-   act("You animate $2n into a zombie.", A_ALWAYS, sa->caster, sa->target, 0, TO_CHAR);
+   act("$1n animates $2n into a zombie.", A_ALWAYS, sa->caster, sa->target, nullptr, TO_ROOM);
+   act("You animate $2n into a zombie.", A_ALWAYS, sa->caster, sa->target, nullptr, TO_CHAR);
 
    strcpy(buf, UNIT_NAME(sa->caster));
    do_follow(zombie, buf, &cmd_auto_unknown);
 
    UNIT_ALIGNMENT(sa->caster) -= 50;
 
-   while((u = UNIT_CONTAINS(sa->target)))
+   while((u = UNIT_CONTAINS(sa->target)) != nullptr)
    {
       unit_from_unit(u);
       unit_to_unit(u, zombie);
@@ -618,19 +660,23 @@ void spell_control_undead(struct spell_args *sa)
 {
    char buf[1024];
    if(!CHAR_IS_UNDEAD(sa->target))
+   {
       return;
+   }
 
    UNIT_ALIGNMENT(sa->caster) -= 50;
 
    if(sa->hm >= 30)
    {
-      act("$3n is controlled by $1n.", A_ALWAYS, sa->caster, 0, sa->target, TO_ROOM);
+      act("$3n is controlled by $1n.", A_ALWAYS, sa->caster, nullptr, sa->target, TO_ROOM);
       strcpy(buf, UNIT_NAME(sa->caster));
       do_follow(sa->target, buf, &cmd_auto_unknown);
-      create_fptr(sa->target, SFUN_OBEY, WAIT_SEC * 60 * 5, SFB_CMD | SFB_PRIORITY | SFB_TICK, NULL);
+      create_fptr(sa->target, SFUN_OBEY, WAIT_SEC * 60 * 5, SFB_CMD | SFB_PRIORITY | SFB_TICK, nullptr);
    }
    else
+   {
       provoked_attack(sa->target, sa->caster);
+   }
 }
 
 void spell_colourspray_1(struct spell_args *sa)
@@ -652,16 +698,22 @@ void spell_invisibility(struct spell_args *sa)
 {
    struct unit_affected_type af;
 
-   if(IS_PC(sa->target)) /* Assume willing target */
+   if(IS_PC(sa->target))
+   { /* Assume willing target */
       sa->hm = spell_cast_check(sa->medium, SPL_INVISIBILITY);
+   }
    else
+   {
       sa->hm = spell_resistance(sa->medium, sa->target, SPL_INVISIBILITY);
+   }
 
    if(sa->hm < 0)
+   {
       return;
+   }
 
-   act("$1n fades away.", A_HIDEINV, sa->target, 0, 0, TO_ROOM);
-   act("You become invisible.", A_HIDEINV, sa->target, 0, 0, TO_CHAR);
+   act("$1n fades away.", A_HIDEINV, sa->target, nullptr, nullptr, TO_ROOM);
+   act("You become invisible.", A_HIDEINV, sa->target, nullptr, nullptr, TO_CHAR);
 
    af.id       = ID_INVISIBILITY;
    af.duration = skill_duration(sa->hm);
@@ -680,15 +732,22 @@ void spell_invisibility(struct spell_args *sa)
 
 void spell_wizard_eye(struct spell_args *sa)
 {
-   struct unit_data *pOrgUnit, *pTo;
+   struct unit_data *pOrgUnit;
+   struct unit_data *pTo;
 
    if(!UNIT_IN(sa->target))
+   {
       pTo = sa->target;
+   }
    else
+   {
       pTo = UNIT_IN(sa->target);
+   }
 
-   if(sa->hm < 0 || unit_recursive(sa->caster, pTo))
+   if(sa->hm < 0 || (unit_recursive(sa->caster, pTo) != 0))
+   {
       return;
+   }
 
    pOrgUnit = UNIT_IN(sa->caster);
    unit_from_unit(sa->caster);
@@ -704,7 +763,9 @@ void spell_fear(struct spell_args *sa)
    struct unit_affected_type af;
 
    if(!CHAR_IS_MAMMAL(sa->target) && !CHAR_IS_HUMANOID(sa->target))
+   {
       return;
+   }
 
    provoked_attack(sa->target, sa->caster);
 
@@ -752,17 +813,21 @@ void spell_xray_vision(struct spell_args *sa)
    struct unit_data *u;
 
    if(sa->hm < 0)
+   {
       return;
+   }
 
-   if(UNIT_CONTAINS(sa->target) == NULL)
+   if(UNIT_CONTAINS(sa->target) == nullptr)
    {
       send_to_char("It is empty.\n\r", sa->caster);
       return;
    }
 
-   act("$2n contains:", A_SOMEONE, sa->caster, sa->target, 0, TO_CHAR);
-   for(u = UNIT_CONTAINS(sa->target); u; u = u->next)
-      act("$2n", A_HIDEINV, sa->caster, u, 0, TO_CHAR);
+   act("$2n contains:", A_SOMEONE, sa->caster, sa->target, nullptr, TO_CHAR);
+   for(u = UNIT_CONTAINS(sa->target); u != nullptr; u = u->next)
+   {
+      act("$2n", A_HIDEINV, sa->caster, u, nullptr, TO_CHAR);
+   }
 }
 
 void spell_command(struct spell_args *sa)
@@ -770,7 +835,7 @@ void spell_command(struct spell_args *sa)
    char buf[MAX_INPUT_LENGTH];
 
    str_next_word(sa->arg, buf);
-   if(*buf)
+   if(*buf != 0)
    {
       act("$1n commands $3n to $2t.", A_SOMEONE, sa->caster, buf, sa->target, TO_NOTVICT);
       act("$1n commands you to $2t.", A_SOMEONE, sa->caster, buf, sa->target, TO_VICT);
@@ -785,9 +850,13 @@ void spell_command(struct spell_args *sa)
    }
 
    if(sa->hm >= 0 && IS_MORTAL(sa->target))
+   {
       command_interpreter(sa->target, buf);
+   }
    else
+   {
       provoked_attack(sa->target, sa->caster);
+   }
 }
 
 void spell_fireball_1(struct spell_args *sa)
@@ -870,7 +939,7 @@ void spell_mana_boost(struct spell_args *sa)
    if(sa->hm > 0)
    {
       CHAR_MANA(sa->target) = MIN(mana_limit(sa->target), CHAR_MANA(sa->target) + CHAR_MANA(sa->target) * skill_duration(sa->hm) / 10);
-      act("You are filled with essence.", A_ALWAYS, sa->target, 0, 0, TO_CHAR);
-      act("$1n seems to be filled with energy.", A_HIDEINV, sa->target, 0, 0, TO_ROOM);
+      act("You are filled with essence.", A_ALWAYS, sa->target, nullptr, nullptr, TO_CHAR);
+      act("$1n seems to be filled with energy.", A_HIDEINV, sa->target, nullptr, nullptr, TO_ROOM);
    }
 }

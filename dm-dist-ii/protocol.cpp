@@ -22,10 +22,10 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <assert.h>
-#include <errno.h>
-#include <stdio.h>
-#include <string.h>
+#include <cassert>
+#include <cerrno>
+#include <cstdio>
+#include <cstring>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -39,10 +39,12 @@
 // Read as much as we can...
 // -1 on error, 0 on ok.
 //
-int read_to_queue(int fd, cQueue *q)
+auto read_to_queue(int fd, cQueue *q) -> int
 {
    char buf[1460];
-   int  sofar = 0, thisround, errors = 0;
+   int  sofar = 0;
+   int  thisround;
+   int  errors = 0;
 
    for(;;)
    {
@@ -60,7 +62,9 @@ int read_to_queue(int fd, cQueue *q)
       else /* (thisround < 0) */
       {
          if(errno == EWOULDBLOCK)
+         {
             return 0;
+         }
 
          slog(LOG_ALL, 0, "Read from socket %d error %d", fd, errno);
          return -1;
@@ -79,8 +83,10 @@ void protocol_send_close(cHook *Hook, ubit16 id)
    ubit16 len = 0;
    ubit8  buf[20];
 
-   if(!Hook->IsHooked())
+   if(Hook->IsHooked() == 0)
+   {
       return;
+   }
 
    memcpy(&(buf[0]), MULTI_TERMINATE, 2);
    memcpy(&(buf[2]), &id, sizeof(id));
@@ -98,8 +104,10 @@ void protocol_send_confirm(cHook *Hook, ubit16 id)
    ubit16 len = 0;
    ubit8  buf[20];
 
-   if(!Hook->IsHooked())
+   if(Hook->IsHooked() == 0)
+   {
       return;
+   }
 
    memcpy(&(buf[0]), MULTI_CONNECT_CON, 2);
    memcpy(&(buf[2]), &id, sizeof(id));
@@ -114,11 +122,14 @@ void protocol_send_confirm(cHook *Hook, ubit16 id)
 void protocol_send_request(cHook *Hook)
 {
    int    n;
-   ubit16 id = 0, len = 0;
+   ubit16 id  = 0;
+   ubit16 len = 0;
    ubit8  buf[10];
 
-   if(!Hook->IsHooked())
+   if(Hook->IsHooked() == 0)
+   {
       return;
+   }
 
    memcpy(&(buf[0]), MULTI_CONNECT_REQ, 2);
    memcpy(&(buf[2]), &id, sizeof(id));
@@ -136,16 +147,18 @@ void protocol_send_host(cHook *Hook, ubit16 id, char *host, ubit16 nPort, ubit8 
    int    n;
    ubit16 len = 0;
    ubit8  buf[80];
-   char  *ptext = NULL; // MS2020
+   char  *ptext = nullptr; // MS2020
    ubit8 *b;
 
-   if(!Hook->IsHooked())
+   if(Hook->IsHooked() == 0)
+   {
       return;
+   }
 
    strncpy(bufms, host, sizeof(bufms) - 1); // MS2020
    ptext = bufms;                           // MS2020
 
-   if(host)
+   if(host != nullptr)
    {
       ptext     = host;
       ptext[49] = 0;
@@ -177,13 +190,16 @@ void protocol_send_text(cHook *Hook, const ubit16 id, const char *text, const ub
 #define MAX_TEXT_LEN (4 * 1460 - 6)
 
    int    n;
-   ubit16 len, txlen;
+   ubit16 len;
+   ubit16 txlen;
    ubit8  buf[6 + MAX_TEXT_LEN];
 
    assert(id != 0);
 
-   if(!Hook->IsHooked())
+   if(Hook->IsHooked() == 0)
+   {
       return;
+   }
 
    len = strlen(text) + 1;
 
@@ -195,11 +211,17 @@ void protocol_send_text(cHook *Hook, const ubit16 id, const char *text, const ub
          indentation purposes! (if possible) */
 
       for(; txlen != 0; txlen--)
+      {
          if(ISNEWL(text[txlen - 1]))
+         {
             break;
+         }
+      }
 
       if(txlen == 0)
+      {
          txlen = MIN(MAX_TEXT_LEN, len);
+      }
    }
 
    buf[0] = MULTI_UNIQUE_CHAR;
@@ -215,7 +237,9 @@ void protocol_send_text(cHook *Hook, const ubit16 id, const char *text, const ub
    len -= txlen;
 
    if(len > 0)
+   {
       protocol_send_text(Hook, id, &text[txlen], type);
+   }
 #undef MAX_TEXT_LEN
 }
 
@@ -231,8 +255,10 @@ void protocol_send_setup(cHook *Hook, ubit16 id, struct terminal_setup_type *set
 
    assert(id != 0);
 
-   if(!Hook->IsHooked())
+   if(Hook->IsHooked() == 0)
+   {
       return;
+   }
 
    len = sizeof(struct terminal_setup_type);
 
@@ -258,7 +284,7 @@ void protocol_send_setup(cHook *Hook, ubit16 id, struct terminal_setup_type *set
 /*      -2 on protocol fail                                                */
 /* or type on success                                                      */
 /*                                                                         */
-int protocol_parse_incoming(cHook *Hook, ubit16 *pid, ubit16 *plen, char **str, ubit8 *text_type)
+auto protocol_parse_incoming(cHook *Hook, ubit16 *pid, ubit16 *plen, char **str, ubit8 *text_type) -> int
 {
    int    n;
    ubit16 id;
@@ -266,11 +292,15 @@ int protocol_parse_incoming(cHook *Hook, ubit16 *pid, ubit16 *plen, char **str, 
    char   buf[10];
    char  *data;
 
-   if(str)
-      *str = NULL;
+   if(str != nullptr)
+   {
+      *str = nullptr;
+   }
 
-   if(!Hook->IsHooked())
+   if(Hook->IsHooked() == 0)
+   {
       return 0;
+   }
 
    n = read_to_queue(Hook->tfd(), &Hook->qRX);
 
@@ -281,7 +311,9 @@ int protocol_parse_incoming(cHook *Hook, ubit16 *pid, ubit16 *plen, char **str, 
    }
 
    if(Hook->qRX.Bytes() < 6)
+   {
       return 0;
+   }
 
    Hook->qRX.Copy((ubit8 *)buf, 6);
 
@@ -302,11 +334,15 @@ int protocol_parse_incoming(cHook *Hook, ubit16 *pid, ubit16 *plen, char **str, 
 
    Hook->qRX.Cut(6);
 
-   if(pid)
+   if(pid != nullptr)
+   {
       *pid = id;
+   }
 
-   if(plen)
+   if(plen != nullptr)
+   {
       *plen = len;
+   }
 
    switch(buf[1])
    {
@@ -359,7 +395,9 @@ int protocol_parse_incoming(cHook *Hook, ubit16 *pid, ubit16 *plen, char **str, 
       case MULTI_PAGE_CHAR:
       case MULTI_PROMPT_CHAR:
          if(id == 0)
+         {
             slog(LOG_ALL, 0, "Received text from ID zero!");
+         }
          break; /* Get text */
 
       default:

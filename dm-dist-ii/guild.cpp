@@ -22,11 +22,11 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "affect.h"
 #include "comm.h"
@@ -35,7 +35,6 @@
 #include "handler.h"
 #include "interpreter.h"
 #include "justice.h"
-#include "limits.h"
 #include "magic.h"
 #include "money.h"
 #include "movement.h"
@@ -46,6 +45,7 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
 struct guild_type
 {
@@ -60,15 +60,17 @@ struct guild_type
    char **ppExcludeQuest;
 };
 
-struct extra_descr_data *find_quest(char *word, struct unit_data *unit)
+auto find_quest(char *word, struct unit_data *unit) -> struct extra_descr_data *
 {
-   if(!IS_PC(unit) || !word)
-      return NULL;
+   if(!IS_PC(unit) || (word == nullptr))
+   {
+      return nullptr;
+   }
 
    return PC_QUEST(unit)->find_raw(word);
 }
 
-int char_guild_level(struct unit_data *ch)
+auto char_guild_level(struct unit_data *ch) -> int
 {
    ubit32                   i;
    struct extra_descr_data *exd;
@@ -76,17 +78,23 @@ int char_guild_level(struct unit_data *ch)
    assert(IS_CHAR(ch));
 
    if(IS_NPC(ch))
+   {
       return CHAR_LEVEL(ch);
+   }
 
-   if(PC_GUILD(ch) && *PC_GUILD(ch))
+   if(PC_GUILD(ch) && (*PC_GUILD(ch) != 0))
    {
       exd = find_quest(str_cc("$", PC_GUILD(ch)), ch);
 
-      if(exd)
+      if(exd != nullptr)
       {
          for(i = 0; i < exd->names.Length(); i++)
-            if(isdigit(*exd->names.Name(i)))
+         {
+            if(isdigit(*exd->names.Name(i)) != 0)
+            {
                return atoi(exd->names.Name(i));
+            }
+         }
       }
    }
 
@@ -101,43 +109,55 @@ void advance_guild_level(struct unit_data *ch)
    ubit32 i;
 
    if(!IS_PC(ch))
+   {
       return;
+   }
 
-   if(PC_GUILD(ch) && *PC_GUILD(ch))
+   if(PC_GUILD(ch) && (*PC_GUILD(ch) != 0))
    {
       exd = find_quest(str_cc("$", PC_GUILD(ch)), ch);
 
-      if(exd)
+      if(exd != nullptr)
       {
          for(i = 0; i < exd->names.Length(); i++)
-            if(isdigit(*exd->names.Name(i)))
+         {
+            if(isdigit(*exd->names.Name(i)) != 0)
             {
                lvl++;
                exd->names.Substitute(i, itoa(lvl));
                return;
             }
+         }
       }
    }
 }
 
 static void free_guild_data(struct guild_type *pGt)
 {
-   if(pGt->pGuildName)
+   if(pGt->pGuildName != nullptr)
+   {
       free(pGt->pGuildName);
+   }
 
-   if(pGt->ppLeaveQuest)
+   if(pGt->ppLeaveQuest != nullptr)
+   {
       free_namelist(pGt->ppLeaveQuest);
+   }
 
-   if(pGt->ppEnterQuest)
+   if(pGt->ppEnterQuest != nullptr)
+   {
       free_namelist(pGt->ppEnterQuest);
+   }
 
-   if(pGt->ppExcludeQuest)
+   if(pGt->ppExcludeQuest != nullptr)
+   {
       free_namelist(pGt->ppExcludeQuest);
+   }
 
    free(pGt);
 }
 
-static struct guild_type *parse_guild_data(struct unit_data *npc, char *pStr)
+static auto parse_guild_data(struct unit_data *npc, char *pStr) -> struct guild_type *
 {
    char              *pTmp1;
    struct guild_type *pG;
@@ -154,24 +174,25 @@ static struct guild_type *parse_guild_data(struct unit_data *npc, char *pStr)
    ok += parse_match_num(&pTmp1, "Guild Leave Cost", &pG->nLeaveCost);
    pG->ppExcludeQuest = parse_match_namelist(&pTmp1, "Guild Exclude Quest");
 
-   if(ok != 2 || !pG->pGuildName || !pG->ppLeaveQuest || !pG->ppEnterQuest || !pG->ppExcludeQuest)
+   if(ok != 2 || (pG->pGuildName == nullptr) || (pG->ppLeaveQuest == nullptr) || (pG->ppEnterQuest == nullptr) ||
+      (pG->ppExcludeQuest == nullptr))
    {
       szonelog(UNIT_FI_ZONE(npc), "GUILD-ERROR (%s@%s): Illegal initialization element.", UNIT_FI_NAME(npc), UNIT_FI_ZONENAME(npc));
       free_guild_data(pG);
-      return NULL;
+      return nullptr;
    }
 
    return pG;
 }
 
-int guild_master_init(struct spec_arg *sarg)
+auto guild_master_init(struct spec_arg *sarg) -> int
 {
    struct guild_type *pG;
 
    if(sarg->cmd->no != CMD_AUTO_EXTRACT)
    {
       pG = (struct guild_type *)parse_guild_data(sarg->owner, (char *)sarg->fptr->data);
-      if(pG == NULL)
+      if(pG == nullptr)
       {
          destroy_fptr(sarg->owner, sarg->fptr);
       }
@@ -195,16 +216,20 @@ void act_to_guild(const char *msg, char *guild, struct unit_data *member, struct
 
    extern struct descriptor_data *descriptor_list;
 
-   if(guild == NULL || *guild == '\0')
+   if(guild == nullptr || *guild == '\0')
    {
       slog(LOG_ALL, 0, "No guild name in send_to_guild");
       return;
    }
 
-   for(d = descriptor_list; d; d = d->next)
-      if(descriptor_is_playing(d) && (d->character != nonmember) && IS_PC(d->character) && PC_GUILD(d->character) &&
+   for(d = descriptor_list; d != nullptr; d = d->next)
+   {
+      if((descriptor_is_playing(d) != 0) && (d->character != nonmember) && IS_PC(d->character) && PC_GUILD(d->character) &&
          strcmp(PC_GUILD(d->character), guild) == 0)
+      {
          act(msg, A_ALWAYS, member, nonmember, d->character, TO_VICT);
+      }
+   }
 }
 
 /* Purpose: To be used as a guild 'block' routine before special commands: */
@@ -213,14 +238,14 @@ void act_to_guild(const char *msg, char *guild, struct unit_data *member, struct
 /* Example: "wizard#This is a members only club, $3n."                     */
 /*          $1 and $3 can be used in text string.                          */
 /*                                                                         */
-int teach_members_only(struct spec_arg *sarg)
+auto teach_members_only(struct spec_arg *sarg) -> int
 {
    char *str;
    int   guild;
 
    if((sarg->cmd->no == CMD_PRACTICE) && IS_PC(sarg->activator) && CHAR_AWAKE(sarg->owner))
    {
-      if(!(str = strchr((char *)sarg->fptr->data, '#')))
+      if((str = strchr((char *)sarg->fptr->data, '#')) == nullptr)
       {
          slog(LOG_ALL, 0, "Error in SFUN argument, teach_members_only");
          return SFR_SHARE;
@@ -233,11 +258,13 @@ int teach_members_only(struct spec_arg *sarg)
          *str  = '#';
       }
       else
+      {
          guild = -1;
+      }
 
       if(guild != 0)
       {
-         act(str + 1, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+         act(str + 1, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_ROOM);
          return SFR_BLOCK;
       }
    }
@@ -254,19 +281,24 @@ int teach_members_only(struct spec_arg *sarg)
 /* Example: "1#warrior#midgaard/cth_square3#guard#$1n stops you and says, */
 /*          'Members only!'#$1n stops $3n, and says, 'Members only!'"     */
 
-int guard_guild_way(struct spec_arg *sarg)
+auto guard_guild_way(struct spec_arg *sarg) -> int
 {
-   char *str, *location, *excl = NULL, *msg1 = NULL, *msg2 = NULL, *guild_no;
+   char *str;
+   char *location;
+   char *excl = NULL;
+   char *msg1 = NULL;
+   char *msg2 = NULL;
+   char *guild_no;
    int   guild_cmp;
 
-   int charname_in_list(struct unit_data * ch, char *arg);
+   auto charname_in_list(struct unit_data * ch, char *arg)->int;
 
-   if((str = (char *)sarg->fptr->data) && (sarg->cmd->no == (*str - '0')) && CHAR_IS_READY(sarg->owner))
+   if(((str = (char *)sarg->fptr->data) != nullptr) && (sarg->cmd->no == (*str - '0')) && CHAR_IS_READY(sarg->owner))
    {
       guild_no = str + 2;
 
-      if(!(location = strchr(guild_no, '#')) || !(excl = strchr(location + 1, '#')) || !(msg1 = strchr(excl + 1, '#')) ||
-         !(msg2 = strchr(msg1 + 1, '#')))
+      if(((location = strchr(guild_no, '#')) == nullptr) || ((excl = strchr(location + 1, '#')) == nullptr) ||
+         ((msg1 = strchr(excl + 1, '#')) == nullptr) || ((msg2 = strchr(msg1 + 1, '#')) == nullptr))
       {
          slog(LOG_ALL, 0, "Illegal data string in guard_way: %s", str);
          return SFR_SHARE;
@@ -274,25 +306,29 @@ int guard_guild_way(struct spec_arg *sarg)
 
       if(IS_PC(sarg->activator))
       {
-         if((PC_GUILD(sarg->activator) != NULL) && (*PC_GUILD(sarg->activator) != '\0'))
+         if((PC_GUILD(sarg->activator) != nullptr) && (*PC_GUILD(sarg->activator) != '\0'))
          {
             *location = '\0';
             guild_cmp = strcmp(PC_GUILD(sarg->activator), guild_no);
             *location = '#';
 
             if(guild_cmp == 0)
+            {
                return SFR_SHARE;
+            }
          }
          else
+         {
             /* Uhm. Well, if you are not a member of *any* guild      */
             /* you should be able to enter... Well, maybe as a guest? */
             /* I mean, you need someone to assist you??? Hm? I'm too  */
             /* lazy to do so now. ANyway it is another fundtion       */
             return SFR_SHARE;
+         }
       }
 
       *excl = '\0';
-      if(*(location + 1) && strcmp(location + 1, UNIT_FI_NAME(UNIT_IN(sarg->owner))))
+      if((*(location + 1) != 0) && (strcmp(location + 1, UNIT_FI_NAME(UNIT_IN(sarg->owner))) != 0))
       {
          *excl = '#';
          return SFR_SHARE;
@@ -300,14 +336,14 @@ int guard_guild_way(struct spec_arg *sarg)
       *excl = '#';
 
       *msg1 = '\0';
-      if(charname_in_list(sarg->activator, excl + 1))
+      if(charname_in_list(sarg->activator, excl + 1) != 0)
       {
          *msg1 = '#';
          return SFR_SHARE;
       }
       *msg2 = '\0';
-      act(msg1 + 1, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_VICT);
-      act(msg2 + 1, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_NOTVICT);
+      act(msg1 + 1, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_VICT);
+      act(msg2 + 1, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_NOTVICT);
       *msg1 = '#';
       *msg2 = '#';
       return SFR_BLOCK;
@@ -326,15 +362,19 @@ void leave_guild(struct unit_data *player)
    {
       exd = find_quest(str_cc("$", PC_GUILD(player)), player);
 
-      if(exd && !exd->names.IsName("quitter"))
+      if((exd != nullptr) && (exd->names.IsName("quitter") == nullptr))
+      {
          exd->names.AppendName("quitter");
+      }
 
       send_to_char("You are no longer a member of your guild.\n\r", player);
    }
    else
    {
-      if((exd = find_quest(str_cc("$", PC_GUILD(player)), player)))
+      if((exd = find_quest(str_cc("$", PC_GUILD(player)), player)) != nullptr)
+      {
          PC_QUEST(player) = PC_QUEST(player)->remove(exd);
+      }
 
       send_to_char("You are no longer a member of your guild, but you are "
                    "welcome back at any time.\n\r",
@@ -343,7 +383,7 @@ void leave_guild(struct unit_data *player)
 
    free(PC_GUILD(player));
 
-   PC_GUILD(player)      = NULL;
+   PC_GUILD(player)      = nullptr;
    PC_GUILD_TIME(player) = PC_TIME(player).played;
 }
 
@@ -353,7 +393,9 @@ void guild_banish_player(struct unit_data *ch)
    struct extra_descr_data *pExd;
 
    if(!IS_PC(ch))
+   {
       return;
+   }
 
    if(PC_GUILD(ch))
    {
@@ -361,7 +403,7 @@ void guild_banish_player(struct unit_data *ch)
       leave_guild(ch);
 
       pExd = find_quest(str_cc("$", c), ch);
-      if(pExd && !pExd->names.IsName("banished"))
+      if((pExd != nullptr) && (pExd->names.IsName("banished") == nullptr))
       {
          pExd->names.AppendName("banished");
          send_to_char("You have been banished from your own guild!\n\r", ch);
@@ -371,27 +413,29 @@ void guild_banish_player(struct unit_data *ch)
    }
 }
 
-int can_leave_guild(struct guild_type *pG, struct unit_data *master, struct unit_data *ch)
+auto can_leave_guild(struct guild_type *pG, struct unit_data *master, struct unit_data *ch) -> int
 {
    char     **p;
    currency_t currency = local_currency(master);
 
    if(!IS_PC(ch))
+   {
       return FALSE;
+   }
 
    if(!PC_GUILD(ch) || (strcmp(PC_GUILD(ch), pG->pGuildName) != 0))
    {
-      act("$1n says, 'You are not a member here, $3n'", A_SOMEONE, master, 0, ch, TO_ROOM);
+      act("$1n says, 'You are not a member here, $3n'", A_SOMEONE, master, nullptr, ch, TO_ROOM);
       return FALSE;
    }
 
    if(CHAR_LEVEL(ch) > START_LEVEL)
    {
-      for(p = pG->ppLeaveQuest; *p; p++)
+      for(p = pG->ppLeaveQuest; *p != nullptr; p++)
       {
-         if(*p && **p)
+         if((*p != nullptr) && (**p != 0))
          {
-            if(find_quest(*p, ch) == NULL)
+            if(find_quest(*p, ch) == nullptr)
             {
                act("$1n says, 'You must first complete the $2t quest, $3n'", A_SOMEONE, master, *p, ch, TO_ROOM);
                return FALSE;
@@ -399,7 +443,7 @@ int can_leave_guild(struct guild_type *pG, struct unit_data *master, struct unit
          }
       }
 
-      if(!char_can_afford(ch, pG->nLeaveCost, currency))
+      if(char_can_afford(ch, pG->nLeaveCost, currency) == 0u)
       {
          act("$1n says, 'You can't afford the cost of $2t, $3n.'", A_SOMEONE, master, money_string(pG->nLeaveCost, currency, TRUE), ch,
              TO_ROOM);
@@ -417,57 +461,65 @@ void join_guild(struct unit_data *ch, char *guild_name)
    assert(IS_PC(ch));
 
    if(PC_GUILD(ch))
+   {
       free(PC_GUILD(ch));
+   }
 
    PC_GUILD(ch)      = str_dup(guild_name);
    PC_GUILD_TIME(ch) = PC_TIME(ch).played;
 
-   exd = quest_add(ch, str_cc("$", PC_GUILD(ch)), itoa(time(0)));
+   exd = quest_add(ch, str_cc("$", PC_GUILD(ch)), itoa(time(nullptr)));
    exd->names.AppendName("0");
    exd->names.AppendName("$guild");
 }
 
-int can_join_guild(struct guild_type *pG, struct unit_data *master, struct unit_data *ch)
+auto can_join_guild(struct guild_type *pG, struct unit_data *master, struct unit_data *ch) -> int
 {
    currency_t currency = local_currency(master);
    char     **p;
 
    if(!IS_PC(ch))
+   {
       return FALSE;
+   }
 
    if(PC_GUILD(ch))
    {
       if(strcmp(pG->pGuildName, PC_GUILD(ch)) == 0)
-         act("$1n says, 'You are already a member, $3n'", A_SOMEONE, master, 0, ch, TO_ROOM);
+      {
+         act("$1n says, 'You are already a member, $3n'", A_SOMEONE, master, nullptr, ch, TO_ROOM);
+      }
       else
+      {
          act("$1n says, 'You must first break your ties with your current"
              " guild, $3n'",
-             A_SOMEONE, master, 0, ch, TO_ROOM);
+             A_SOMEONE, master, nullptr, ch, TO_ROOM);
+      }
       return FALSE;
    }
 
    if(CHAR_LEVEL(ch) > START_LEVEL)
    {
-      for(p = pG->ppEnterQuest; *p; p++)
+      for(p = pG->ppEnterQuest; *p != nullptr; p++)
       {
-         if(**p && find_quest(*p, ch) == NULL)
+         if((**p != 0) && find_quest(*p, ch) == nullptr)
          {
             act("$1n says, 'You must first complete the $2t quest, $3n'", A_SOMEONE, master, *p, ch, TO_ROOM);
             return FALSE;
          }
       }
 
-      if(find_quest(str_cc("$", pG->pGuildName), ch))
+      if(find_quest(str_cc("$", pG->pGuildName), ch) != nullptr)
       {
          act("$1n says, 'Don't you think we remeber how you acted last "
              "time, $3n? ",
-             A_SOMEONE, master, 0, ch, TO_ROOM);
+             A_SOMEONE, master, nullptr, ch, TO_ROOM);
          return FALSE;
       }
 
-      for(p = pG->ppExcludeQuest; *p; p++)
+      for(p = pG->ppExcludeQuest; *p != nullptr; p++)
       {
-         if(find_quest(*p, ch))
+         if(find_quest(*p, ch) != nullptr)
          {
             act("$1n says, 'We will never be able to accept you as a "
                 "member due to the $2t quest, $3n'",
@@ -476,7 +528,7 @@ int can_join_guild(struct guild_type *pG, struct unit_data *master, struct unit_
          }
       }
 
-      if(!char_can_afford(ch, pG->nEnterCost, currency))
+      if(char_can_afford(ch, pG->nEnterCost, currency) == 0u)
       {
          act("$1n says, 'You can't afford the entry cost of $2t, $3n.'", A_SOMEONE, master, money_string(pG->nEnterCost, currency, TRUE),
              ch, TO_ROOM);
@@ -490,38 +542,46 @@ int can_join_guild(struct guild_type *pG, struct unit_data *master, struct unit_
 /* You must be able to be expelled, to resign, to enroll and to obtain */
 /* a higher guild status. All these matters will be implemented after  */
 /* I have got the experience system to work.                           */
-int guild_master(struct spec_arg *sarg)
+auto guild_master(struct spec_arg *sarg) -> int
 {
-   char              *arg    = (char *)sarg->arg;
-   static int         pc_pos = -2;
-   struct guild_type *pG     = (struct guild_type *)sarg->fptr->data;
+   char      *arg    = (char *)sarg->arg;
+   static int pc_pos = -2;
+   auto      *pG     = (struct guild_type *)sarg->fptr->data;
 
-   if(!pG)
+   if(pG == nullptr)
+   {
       return SFR_SHARE;
+   }
 
    if(sarg->cmd->no == CMD_AUTO_EXTRACT)
    {
       free_guild_data(pG);
-      sarg->fptr->data = NULL;
+      sarg->fptr->data = nullptr;
       return SFR_SHARE;
    }
 
-   if(!sarg->activator || !IS_PC(sarg->activator))
+   if((sarg->activator == nullptr) || !IS_PC(sarg->activator))
+   {
       return SFR_SHARE;
+   }
 
    if(!CHAR_IS_READY(sarg->activator) || !CHAR_IS_READY(sarg->owner))
+   {
       return SFR_SHARE;
+   }
 
    if(sarg->cmd->no == CMD_JOIN)
    {
-      if(PC_GUILD(sarg->activator) == NULL || *PC_GUILD(sarg->activator) == '\0')
+      if(PC_GUILD(sarg->activator) == nullptr || *PC_GUILD(sarg->activator) == '\0')
       {
-         if(can_join_guild(pG, sarg->owner, sarg->activator))
+         if(can_join_guild(pG, sarg->owner, sarg->activator) != 0)
          {
-            act("$1n says, 'Welcome in our guild, $3n'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+            act("$1n says, 'Welcome in our guild, $3n'", A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_ROOM);
 
             if(CHAR_LEVEL(sarg->activator) > START_LEVEL)
+            {
                money_transfer(sarg->activator, sarg->owner, pG->nEnterCost, local_currency(sarg->owner));
+            }
 
             join_guild(sarg->activator, pG->pGuildName);
          }
@@ -530,11 +590,11 @@ int guild_master(struct spec_arg *sarg)
       {
          act("$1n says, 'You must first break your ties with your current"
              " guild, $3n'",
-             A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+             A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_ROOM);
       }
       return SFR_BLOCK;
    }
-   else if(sarg->cmd->no == CMD_INSULT)
+   if(sarg->cmd->no == CMD_INSULT)
    {
       if(find_unit(sarg->activator, &arg, 0, FIND_UNIT_SURRO) != sarg->owner)
          return SFR_SHARE;
@@ -568,7 +628,7 @@ int guild_master(struct spec_arg *sarg)
 
 /* Purpose: To be used as a guild general stuff routine.                   */
 /* sarg->fptr->data contains guild name.                                         */
-int guild_basis(struct spec_arg *sarg)
+auto guild_basis(struct spec_arg *sarg) -> int
 {
    int               i;
    struct unit_data *u;
@@ -583,7 +643,9 @@ int guild_basis(struct spec_arg *sarg)
          if(IS_PC(u) && CHAR_FIGHTING(u) == sarg->owner && PC_GUILD(u) && CHAR_CAN_SEE(sarg->owner, u))
          {
             if(strcmp(PC_GUILD(u), (char *)sarg->fptr->data) == 0)
+            {
                guild_banish_player(u);
+            }
          }
       }
 
@@ -602,25 +664,30 @@ int guild_basis(struct spec_arg *sarg)
    return SFR_SHARE;
 }
 
-int guild_title(struct spec_arg *sarg)
+auto guild_title(struct spec_arg *sarg) -> int
 {
-   char  buf[MAX_STRING_LENGTH], male[MAX_STRING_LENGTH], female[MAX_STRING_LENGTH];
+   char  buf[MAX_STRING_LENGTH];
+   char  male[MAX_STRING_LENGTH];
+   char  female[MAX_STRING_LENGTH];
    char *c;
-   int   i, title_no;
-
-   extern const char *pc_race_adverbs[];
+   int   i;
+   int   title_no;
 
    if((sarg->cmd->no != CMD_TITLE) || !IS_PC(sarg->activator))
+   {
       return SFR_SHARE;
+   }
 
    c = (char *)sarg->fptr->data;
 
-   if(!(c = str_line(c, buf)))
-      return SFR_BLOCK;
-
-   if((PC_GUILD(sarg->activator) == NULL) || (strcmp(PC_GUILD(sarg->activator), buf) != 0))
+   if((c = str_line(c, buf)) == nullptr)
    {
-      act("$1n says, 'Thou art not a member $3n'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+      return SFR_BLOCK;
+   }
+
+   if((PC_GUILD(sarg->activator) == nullptr) || (strcmp(PC_GUILD(sarg->activator), buf) != 0))
+   {
+      act("$1n says, 'Thou art not a member $3n'", A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_ROOM);
       return SFR_BLOCK;
    }
 
@@ -629,33 +696,47 @@ int guild_title(struct spec_arg *sarg)
 
    for(i = 0;; i++)
    {
-      if(!(c = str_line(c, male)))
+      if((c = str_line(c, male)) == nullptr)
+      {
          break;
+      }
 
-      if(!(c = str_line(c, female)))
+      if((c = str_line(c, female)) == nullptr)
+      {
          break;
+      }
 
       if(i == title_no)
+      {
          break;
+      }
    }
 
    if(CHAR_SEX(sarg->activator) == SEX_FEMALE)
+   {
       sprintf(buf, female, pc_race_adverbs[CHAR_RACE(sarg->activator)]);
+   }
    else
+   {
       sprintf(buf, male, pc_race_adverbs[CHAR_RACE(sarg->activator)]);
+   }
 
    if(strcmp(buf, UNIT_TITLE_STRING(sarg->activator)) == 0)
    {
-      if(c == NULL)
-         act("$1n says, 'You have reached the ultimate title, $3n'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+      if(c == nullptr)
+      {
+         act("$1n says, 'You have reached the ultimate title, $3n'", A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_ROOM);
+      }
       else
-         act("$1n says, 'You must first be an older member $3N'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+      {
+         act("$1n says, 'You must first be an older member $3N'", A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_ROOM);
+      }
       return SFR_BLOCK;
    }
 
    UNIT_TITLE(sarg->activator).Reassign(buf);
 
-   act("$1n says, 'Enjoy the new title, $3n!'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+   act("$1n says, 'Enjoy the new title, $3n!'", A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_ROOM);
 
    return SFR_BLOCK;
 }
@@ -672,9 +753,9 @@ void do_guild(struct unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   for(exd = PC_QUEST(ch); exd; exd = exd->next)
+   for(exd = PC_QUEST(ch); exd != nullptr; exd = exd->next)
    {
-      if(exd->names.IsName("$guild"))
+      if(exd->names.IsName("$guild") != nullptr)
       {
          found = TRUE;
          sprintf(buf, "%-30s %-2s\n\r", exd->names.Name(0) + 1, exd->names.Name(1));
@@ -682,6 +763,8 @@ void do_guild(struct unit_data *ch, char *arg, const struct command_info *cmd)
       }
    }
 
-   if(!found)
+   if(found == 0)
+   {
       send_to_char("None.\n\r", ch);
+   }
 }

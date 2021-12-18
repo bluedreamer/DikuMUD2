@@ -24,12 +24,12 @@
 
 /* #define ACCOUNT_DEBUG */
 
-#include <ctype.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 #include <dirent.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
 
 #include "account.h"
 #include "comm.h"
@@ -69,10 +69,14 @@ void account_cclog(struct unit_data *ch, int amount)
 
 static void account_log(char action, struct unit_data *god, struct unit_data *pc, int amount)
 {
-   time_t now = time(0);
+   time_t now = time(nullptr);
    char  *c;
    char   buf[1024];
-   ubit32 gid, pid, total, crc, m_xor;
+   ubit32 gid;
+   ubit32 pid;
+   ubit32 total;
+   ubit32 crc;
+   ubit32 m_xor;
    FILE  *f;
 
    m_xor = number(0x10000000, 0xFFFFFF00 >> 1);
@@ -82,19 +86,27 @@ static void account_log(char action, struct unit_data *god, struct unit_data *pc
    f = fopen_cache(str_cc(libdir, ACCOUNT_LOG), "r+b");
 
    if(fseek(f, 8L, SEEK_SET) != 0)
+   {
       error(HERE, "Unable to seek in account log.");
+   }
    sprintf(buf, "%08x", next_crc);
 
    if(fwrite(buf, sizeof(char), 8, f) != 8)
+   {
       error(HERE, "Unable to write 1 in account log.");
+   }
 
    c = buf;
    sprintf(c, "%c %-15s %-15s %8d ", action, UNIT_NAME(god), UNIT_NAME(pc), amount);
 
    if(IS_PC(god))
+   {
       gid = PC_ID(god) ^ (m_xor);
+   }
    else
+   {
       gid = 0 ^ (m_xor);
+   }
 
    pid   = PC_ID(pc) ^ (m_xor << 1);
    total = PC_ACCOUNT(pc).total_credit;
@@ -119,20 +131,20 @@ static void account_log(char action, struct unit_data *god, struct unit_data *pc
 }
 
 /* Hours in 0..23, minutes in 0..59 */
-int index_to_time(int index)
+auto index_to_time(int index) -> int
 {
    return 100 * ((index * MINUTE_GRANULARITY) / 60) + (index * MINUTE_GRANULARITY) % 60;
 }
 
 /* Hours in 0..23, minutes in 0..59 */
-int time_to_index(ubit8 hours, ubit8 minutes)
+auto time_to_index(ubit8 hours, ubit8 minutes) -> int
 {
    return ((hours * 60) + minutes) / MINUTE_GRANULARITY;
 }
 
 void account_local_stat(const struct unit_data *ch, struct unit_data *u)
 {
-   if(!g_cServerConfig.m_bAccounting)
+   if(g_cServerConfig.m_bAccounting == 0)
    {
       send_to_char("Game is not in accounting mode.\n\r", ch);
       return;
@@ -146,9 +158,10 @@ void account_local_stat(const struct unit_data *ch, struct unit_data *u)
 
    char  *pTmstr = ctime((time_t *)&PC_ACCOUNT(u).flatrate);
    char   buf[MAX_STRING_LENGTH];
-   time_t now = time(0);
+   time_t now = time(nullptr);
 
    if(IS_ADMINISTRATOR(ch))
+   {
       sprintf(buf,
               "Credit         : %5.2f\n\r"
               "Credit Limit   : %5.2f\n\r"
@@ -161,12 +174,17 @@ void account_local_stat(const struct unit_data *ch, struct unit_data *u)
               PC_ACCOUNT(u).last4 == -1 ? "NONE" : "REGISTERED", PC_ACCOUNT(u).discount,
               PC_ACCOUNT(u).flatrate < (ubit32)now ? "Expired" : "Expires on ",
               PC_ACCOUNT(u).flatrate < (ubit32)now ? " (none)\n\r" : pTmstr, PC_ACCOUNT(u).cracks);
+   }
    else
    {
       if(PC_ACCOUNT(u).total_credit > 0)
+      {
          sprintf(buf, "Has paid for playing.\n\r");
+      }
       else
+      {
          sprintf(buf, "Has NOT yet paid for playing.\n\r");
+      }
    }
 
    send_to_char(buf, ch);
@@ -176,10 +194,13 @@ void account_global_stat(const struct unit_data *ch)
 {
    char  buf[100 * TIME_GRANULARITY];
    char *b;
-   int   i, j;
+   int   i;
+   int   j;
 
-   if(!g_cServerConfig.m_bAccounting)
+   if(g_cServerConfig.m_bAccounting == 0)
+   {
       return;
+   }
 
    sprintf(buf,
            "\n\rAccounting mode:\n\r"
@@ -198,7 +219,8 @@ void account_global_stat(const struct unit_data *ch)
 
    for(i = 0; i < TIME_GRANULARITY; i++)
    {
-      int st, et;
+      int st;
+      int et;
 
       st = index_to_time(i);
       et = st + MINUTE_GRANULARITY - 1;
@@ -220,9 +242,10 @@ void account_global_stat(const struct unit_data *ch)
 
 void account_overdue(const struct unit_data *ch)
 {
-   int i, j;
+   int i;
+   int j;
 
-   if(g_cServerConfig.m_bAccounting)
+   if(g_cServerConfig.m_bAccounting != 0)
    {
       char Buf[256];
 
@@ -260,13 +283,13 @@ void account_paypoint(struct unit_data *ch)
 
 void account_closed(struct unit_data *ch)
 {
-   if(g_cServerConfig.m_bAccounting)
+   if(g_cServerConfig.m_bAccounting != 0)
    {
       send_to_char(g_cAccountConfig.m_pClosedMessage, ch);
    }
 }
 
-static ubit32 seconds_used(ubit8 bhr, ubit8 bmi, ubit8 bse, ubit8 ehr, ubit8 emi, ubit8 ese)
+static auto seconds_used(ubit8 bhr, ubit8 bmi, ubit8 bse, ubit8 ehr, ubit8 emi, ubit8 ese) -> ubit32
 {
    ubit32 secs;
 
@@ -279,19 +302,25 @@ static ubit32 seconds_used(ubit8 bhr, ubit8 bmi, ubit8 bse, ubit8 ehr, ubit8 emi
    return secs;
 }
 
-static int tm_less_than(struct tm *b, struct tm *e)
+static auto tm_less_than(struct tm *b, struct tm *e) -> int
 {
    if(b->tm_wday != e->tm_wday)
+   {
       return TRUE;
+   }
 
    if(b->tm_hour > e->tm_hour)
+   {
       return FALSE;
+   }
 
    if(b->tm_hour == e->tm_hour)
    {
       if(b->tm_min > e->tm_min)
+      {
          return FALSE;
-      else if(b->tm_min == e->tm_min)
+      }
+      if(b->tm_min == e->tm_min)
       {
          if(b->tm_sec > e->tm_sec)
             return FALSE;
@@ -305,12 +334,15 @@ static int tm_less_than(struct tm *b, struct tm *e)
 
 static void account_calc(struct unit_data *pc, struct tm *b, struct tm *e)
 {
-   int       bidx, eidx;
+   int       bidx;
+   int       eidx;
    struct tm t;
    ubit32    secs;
 
-   if(PC_ACCOUNT(pc).flatrate > (ubit32)time(0))
+   if(PC_ACCOUNT(pc).flatrate > (ubit32)time(nullptr))
+   {
       return;
+   }
 
    bidx = time_to_index(b->tm_hour, b->tm_min);
    assert(bidx < TIME_GRANULARITY);
@@ -337,10 +369,14 @@ static void account_calc(struct unit_data *pc, struct tm *b, struct tm *e)
 
    float amt = (((float)secs) * ((float)day_charge[b->tm_wday][bidx]) / 3600.0);
 
-   if(is_in(PC_ACCOUNT(pc).discount, 1, 99))
+   if(is_in(PC_ACCOUNT(pc).discount, 1, 99) != 0)
+   {
       PC_ACCOUNT(pc).credit -= (((float)(100 - PC_ACCOUNT(pc).discount)) * amt) / 100.0;
+   }
    else
+   {
       PC_ACCOUNT(pc).credit -= amt;
+   }
 
 #ifdef ACCOUNT_DEBUG
    {
@@ -371,21 +407,28 @@ static void account_calc(struct unit_data *pc, struct tm *b, struct tm *e)
       }
    }
 
-   if(tm_less_than(b, e))
+   if(tm_less_than(b, e) != 0)
+   {
       account_calc(pc, b, e);
+   }
 }
 
 void account_subtract(struct unit_data *pc, time_t from, time_t to)
 {
-   struct tm bt, et;
+   struct tm bt;
+   struct tm et;
 
    assert(IS_PC(pc));
 
-   if(!g_cServerConfig.m_bAccounting)
+   if(g_cServerConfig.m_bAccounting == 0)
+   {
       return;
+   }
 
    if(CHAR_LEVEL(pc) >= g_cAccountConfig.m_nFreeFromLevel)
+   {
       return;
+   }
 
    bt = *localtime(&from);
    et = *localtime(&to);
@@ -399,14 +442,16 @@ void account_subtract(struct unit_data *pc, time_t from, time_t to)
    account_calc(pc, &bt, &et);
 }
 
-int account_is_overdue(const struct unit_data *ch)
+auto account_is_overdue(const struct unit_data *ch) -> int
 {
-   if(g_cServerConfig.m_bAccounting && (CHAR_LEVEL(ch) < g_cAccountConfig.m_nFreeFromLevel))
+   if((g_cServerConfig.m_bAccounting != 0) && (CHAR_LEVEL(ch) < g_cAccountConfig.m_nFreeFromLevel))
    {
-      if(PC_ACCOUNT(ch).flatrate > (ubit32)time(0))
+      if(PC_ACCOUNT(ch).flatrate > (ubit32)time(nullptr))
+      {
          return FALSE;
+      }
 
-      return (PC_ACCOUNT(ch).credit < 0.0);
+      return static_cast<int>(PC_ACCOUNT(ch).credit < 0.0);
    }
 
    return FALSE;
@@ -415,12 +460,13 @@ int account_is_overdue(const struct unit_data *ch)
 static void account_status(const struct unit_data *ch)
 {
    char   Buf[256];
-   int    j, i;
+   int    j;
+   int    i;
    char  *pTmstr;
    ubit32 discount = PC_ACCOUNT(ch).discount;
    ubit32 lcharge  = ((100 - discount) * g_cAccountConfig.m_nHourlyRate) / 100;
 
-   if(account_is_overdue(ch))
+   if(account_is_overdue(ch) != 0)
    {
       send_to_char("Your account is overdue.\n\r", ch);
       send_to_char(g_cAccountConfig.m_pOverdueMessage, ch);
@@ -432,7 +478,7 @@ static void account_status(const struct unit_data *ch)
       send_to_char(Buf, ch);
    }
 
-   if(PC_ACCOUNT(ch).flatrate > (ubit32)time(0))
+   if(PC_ACCOUNT(ch).flatrate > (ubit32)time(nullptr))
    {
       pTmstr = ctime((time_t *)&PC_ACCOUNT(ch).flatrate);
       sprintf(Buf, "Your account is on a flat rate until %s", pTmstr);
@@ -491,19 +537,22 @@ static void account_status(const struct unit_data *ch)
    }
 }
 
-int account_is_closed(struct unit_data *ch)
+auto account_is_closed(struct unit_data *ch) -> int
 {
-   int i, j;
+   int i;
+   int j;
 
-   if(g_cServerConfig.m_bAccounting && (CHAR_LEVEL(ch) < g_cAccountConfig.m_nFreeFromLevel))
+   if((g_cServerConfig.m_bAccounting != 0) && (CHAR_LEVEL(ch) < g_cAccountConfig.m_nFreeFromLevel))
    {
-      if(PC_ACCOUNT(ch).flatrate > (ubit32)time(0))
+      if(PC_ACCOUNT(ch).flatrate > (ubit32)time(nullptr))
+      {
          return FALSE;
+      }
 
       i = (int)PC_ACCOUNT(ch).credit;
       j = PC_ACCOUNT(ch).credit_limit;
 
-      return (i < -j);
+      return static_cast<int>(i < -j);
    }
 
    return FALSE;
@@ -522,9 +571,13 @@ void account_withdraw(struct unit_data *god, struct unit_data *whom, ubit32 amou
 {
    PC_ACCOUNT(whom).credit -= (float)amount;
    if((ubit32)amount > PC_ACCOUNT(whom).total_credit)
+   {
       PC_ACCOUNT(whom).total_credit = 0;
+   }
    else
+   {
       PC_ACCOUNT(whom).total_credit -= amount;
+   }
 
    slog(LOG_ALL, 255, "%s withdrew %d from account %s.", UNIT_NAME(god), amount, UNIT_NAME(whom));
 
@@ -536,7 +589,7 @@ void account_flatrate_change(struct unit_data *god, struct unit_data *whom, sbit
    char   Buf[256];
    sbit32 add = days * SECS_PER_REAL_DAY;
 
-   time_t now = time(0);
+   time_t now = time(nullptr);
 
    if(days > 0)
    {
@@ -576,21 +629,23 @@ void do_account(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
    char              Buf[256];
    char              word[MAX_INPUT_LENGTH];
-   struct unit_data *u, *note;
+   struct unit_data *u;
+   struct unit_data *note;
    char             *c = (char *)arg;
 
-   const char *operations[] = {"insert", "withdraw", "limit", "discount", "flatrate", NULL};
-   int         i, amount;
+   const char *operations[] = {"insert", "withdraw", "limit", "discount", "flatrate", nullptr};
+   int         i;
+   int         amount;
 
    extern struct file_index_type *letter_fi;
 
-   if(!g_cServerConfig.m_bAccounting || !IS_PC(ch))
+   if((g_cServerConfig.m_bAccounting == 0) || !IS_PC(ch))
    {
       send_to_char("That command is not available.\n\r", ch);
       return;
    }
 
-   if(str_is_empty(arg) || !IS_ADMINISTRATOR(ch))
+   if((str_is_empty(arg) != 0u) || !IS_ADMINISTRATOR(ch))
    {
       account_status(ch);
       return;
@@ -636,9 +691,9 @@ void do_account(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
    assert(IS_ADMINISTRATOR(ch));
 
-   u = find_unit(ch, &c, 0, FIND_UNIT_SURRO | FIND_UNIT_WORLD);
+   u = find_unit(ch, &c, nullptr, FIND_UNIT_SURRO | FIND_UNIT_WORLD);
 
-   if((u == NULL) || !IS_PC(u))
+   if((u == nullptr) || !IS_PC(u))
    {
       send_to_char("No such player found.\n\r", ch);
       return;
@@ -658,9 +713,9 @@ void do_account(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
    amount = atoi(word);
 
-   if(is_in(i, 0, 2))
+   if(is_in(i, 0, 2) != 0)
    {
-      if(!is_in(amount, 0, g_cAccountConfig.m_nMaxCharge))
+      if(is_in(amount, 0, g_cAccountConfig.m_nMaxCharge) == 0)
       {
          send_to_char("Invalid amount.\n\r", ch);
          return;
@@ -681,7 +736,7 @@ void do_account(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
          sprintf(Buf, "%s inserted %.2f %s on your account.\n\r", UNIT_NAME(ch), (float)amount / 100.0, g_cAccountConfig.m_pCoinName);
          note                   = read_unit(letter_fi);
-         UNIT_EXTRA_DESCR(note) = UNIT_EXTRA_DESCR(note)->add((char *)NULL, Buf);
+         UNIT_EXTRA_DESCR(note) = UNIT_EXTRA_DESCR(note)->add((char *)nullptr, Buf);
          unit_to_unit(note, u);
          break;
 
@@ -712,7 +767,7 @@ void do_account(struct unit_data *ch, char *arg, const struct command_info *cmd)
          break;
 
       case 3: /* Discount */
-         if(!is_in(amount, 0, 100))
+         if(is_in(amount, 0, 100) == 0)
          {
             send_to_char("Invalid discount, select 0% to 100%.\n\r", ch);
             return;
@@ -733,17 +788,21 @@ void do_account(struct unit_data *ch, char *arg, const struct command_info *cmd)
          break;
 
       case 4: /* Flatrate: account papi flatrate 30 add, 20 remove, etc. */
-         if(!is_in(amount, 1, 365))
+         if(is_in(amount, 1, 365) == 0)
          {
             send_to_char("Invalid number of days, select 1 to 365.\n\r", ch);
             return;
          }
 
          c = str_next_word(c, word);
-         if(is_abbrev(word, "add"))
+         if(is_abbrev(word, "add") != 0u)
+         {
             ;
-         else if(is_abbrev(word, "remove"))
+         }
+         else if(is_abbrev(word, "remove") != 0u)
+         {
             amount = -amount;
+         }
          else
          {
             send_to_char("You must either add or remove.\n\r", ch);
@@ -808,8 +867,10 @@ void charge_sanity(ubit8 b_hr, ubit8 b_min, ubit8 e_hr, ubit8 e_min, int charge)
 
 void numlist_to_charge(int *numlist, int len, int *day_charge)
 {
-   int i, j;
-   int start_idx, end_idx;
+   int i;
+   int j;
+   int start_idx;
+   int end_idx;
 
    for(i = 0; i < len; i += 3)
    {
@@ -840,8 +901,10 @@ void numlist_sanity(int *numlist, int numlen)
 {
    int i;
 
-   if(numlist == NULL)
+   if(numlist == nullptr)
+   {
       return;
+   }
 
    if(numlen % 3 != 0)
    {
@@ -855,10 +918,12 @@ void numlist_sanity(int *numlist, int numlen)
    }
 }
 
-int flatrate_sanity(int *numlist, int numlen)
+auto flatrate_sanity(int *numlist, int numlen) -> int
 {
-   if(numlist == NULL)
+   if(numlist == nullptr)
+   {
       return FALSE;
+   }
 
    if(numlen != 2)
    {
@@ -866,13 +931,13 @@ int flatrate_sanity(int *numlist, int numlen)
       exit(0);
    }
 
-   if(!is_in(numlist[0], 30, 365))
+   if(is_in(numlist[0], 30, 365) == 0)
    {
       slog(LOG_ALL, 0, "Account flatrate illegal days, must be 30..365.");
       exit(0);
    }
 
-   if(!is_in(numlist[1], 1, 1000000))
+   if(is_in(numlist[1], 1, 1000000) == 0)
    {
       slog(LOG_ALL, 0, "Account flatrate illegal amount.");
       exit(0);
@@ -881,12 +946,12 @@ int flatrate_sanity(int *numlist, int numlen)
    return TRUE;
 }
 
-CAccountConfig::CAccountConfig(void)
+CAccountConfig::CAccountConfig()
 {
-   m_pOverdueMessage  = NULL;
-   m_pClosedMessage   = NULL;
-   m_pPaypointMessage = NULL;
-   m_pCoinName        = NULL;
+   m_pOverdueMessage  = nullptr;
+   m_pClosedMessage   = nullptr;
+   m_pPaypointMessage = nullptr;
+   m_pCoinName        = nullptr;
    m_nFreeFromLevel   = 200;
    m_nAccountLimit    = 1500;
    m_nAccountFree     = 1000;
@@ -900,28 +965,30 @@ CAccountConfig::CAccountConfig(void)
    memset(&m_flatrate, 0, sizeof(m_flatrate));
 }
 
-void CAccountConfig::Boot(void)
+void CAccountConfig::Boot()
 {
    char  Buf[2 * MAX_STRING_LENGTH];
    char *c;
-   int   len, i, j;
+   int   len;
+   int   i;
+   int   j;
    int  *numlist;
    FILE *f;
 
-   if(!g_cServerConfig.m_bAccounting)
+   if(g_cServerConfig.m_bAccounting == 0)
+   {
       return;
-
-   extern char libdir[];
+   }
 
    slog(LOG_OFF, 0, "Booting account system.");
 
-   if(!file_exists(str_cc(libdir, ACCOUNT_LOG)))
+   if(file_exists(str_cc(libdir, ACCOUNT_LOG)) == 0u)
    {
-      time_t now = time(0);
+      time_t now = time(nullptr);
 
       f = fopen(str_cc(libdir, ACCOUNT_LOG), "wb");
 
-      if(f == NULL)
+      if(f == nullptr)
       {
          slog(LOG_ALL, 0, "Can't create account log file.");
          exit(0);
@@ -948,7 +1015,7 @@ void CAccountConfig::Boot(void)
 
    m_pCoinName = parse_match_name(&c, "Coinage Name");
 
-   if(m_pCoinName == NULL)
+   if(m_pCoinName == nullptr)
    {
       slog(LOG_ALL, 0, "Error reading coin name.");
       exit(0);
@@ -956,7 +1023,7 @@ void CAccountConfig::Boot(void)
 
    m_pOverdueMessage = parse_match_name(&c, "Account Overdue");
 
-   if(m_pOverdueMessage == NULL)
+   if(m_pOverdueMessage == nullptr)
    {
       slog(LOG_ALL, 0, "Error reading overdue message.");
       exit(0);
@@ -969,7 +1036,7 @@ void CAccountConfig::Boot(void)
    }
 
    m_pClosedMessage = parse_match_name(&c, "Account Closed");
-   if(m_pClosedMessage == NULL)
+   if(m_pClosedMessage == nullptr)
    {
       slog(LOG_ALL, 0, "Error reading closed message.");
       exit(0);
@@ -981,64 +1048,70 @@ void CAccountConfig::Boot(void)
       m_pClosedMessage = str_dup((char *)Buf);
    }
 
-   if(!parse_match_num(&c, "Min Charge", &m_nMinCharge))
+   if(parse_match_num(&c, "Min Charge", &m_nMinCharge) == 0)
    {
       slog(LOG_ALL, 0, "Error reading 'Min Charge'.");
       exit(0);
    }
 
-   if(!parse_match_num(&c, "Max Charge", &m_nMaxCharge))
+   if(parse_match_num(&c, "Max Charge", &m_nMaxCharge) == 0)
    {
       slog(LOG_ALL, 0, "Error reading 'Max Charge'.");
       exit(0);
    }
 
-   if(!parse_match_num(&c, "Charge Level", &m_nFreeFromLevel))
+   if(parse_match_num(&c, "Charge Level", &m_nFreeFromLevel) == 0)
    {
       slog(LOG_ALL, 0, "Error reading 'Charge Level'.");
       exit(0);
    }
 
-   if(!parse_match_num(&c, "Account Free", &m_nAccountFree))
+   if(parse_match_num(&c, "Account Free", &m_nAccountFree) == 0)
    {
       slog(LOG_ALL, 0, "Error reading account free.");
       exit(0);
    }
 
-   if(!parse_match_num(&c, "Account Limit", &m_nAccountLimit))
+   if(parse_match_num(&c, "Account Limit", &m_nAccountLimit) == 0)
    {
       slog(LOG_ALL, 0, "Error reading account limit");
       exit(0);
    }
 
-   if(!parse_match_num(&c, "Credit Card", &m_bCreditCard))
+   if(parse_match_num(&c, "Credit Card", &m_bCreditCard) == 0)
    {
       slog(LOG_ALL, 0, "Error reading Credit Card usage.");
       exit(0);
    }
 
-   if(!parse_match_num(&c, "Base Charge", &m_nHourlyRate))
+   if(parse_match_num(&c, "Base Charge", &m_nHourlyRate) == 0)
    {
       slog(LOG_ALL, 0, "Error reading base charge.");
       exit(0);
    }
 
    for(i = 0; i < 7; i++)
+   {
       for(j = 0; j < TIME_GRANULARITY; j++)
+      {
          day_charge[i][j] = m_nHourlyRate;
+      }
+   }
 
    numlist = parse_match_numlist(&c, "Base Range", &len);
 
-   if(numlist)
+   if(numlist != nullptr)
    {
       numlist_sanity(numlist, len);
       for(i = 0; i < 7; i++)
+      {
          numlist_to_charge(numlist, len, day_charge[i]);
+      }
       free(numlist);
    }
 
    numlist = parse_match_numlist(&c, "ChargeSun", &len);
-   if(numlist)
+   if(numlist != nullptr)
    {
       numlist_sanity(numlist, len);
       numlist_to_charge(numlist, len, day_charge[0]);
@@ -1046,7 +1119,7 @@ void CAccountConfig::Boot(void)
    }
 
    numlist = parse_match_numlist(&c, "ChargeMon", &len);
-   if(numlist)
+   if(numlist != nullptr)
    {
       numlist_sanity(numlist, len);
       numlist_to_charge(numlist, len, day_charge[1]);
@@ -1054,7 +1127,7 @@ void CAccountConfig::Boot(void)
    }
 
    numlist = parse_match_numlist(&c, "ChargeTue", &len);
-   if(numlist)
+   if(numlist != nullptr)
    {
       numlist_sanity(numlist, len);
       numlist_to_charge(numlist, len, day_charge[2]);
@@ -1062,7 +1135,7 @@ void CAccountConfig::Boot(void)
    }
 
    numlist = parse_match_numlist(&c, "ChargeWed", &len);
-   if(numlist)
+   if(numlist != nullptr)
    {
       numlist_sanity(numlist, len);
       numlist_to_charge(numlist, len, day_charge[3]);
@@ -1070,7 +1143,7 @@ void CAccountConfig::Boot(void)
    }
 
    numlist = parse_match_numlist(&c, "ChargeThu", &len);
-   if(numlist)
+   if(numlist != nullptr)
    {
       numlist_sanity(numlist, len);
       numlist_to_charge(numlist, len, day_charge[4]);
@@ -1078,7 +1151,7 @@ void CAccountConfig::Boot(void)
    }
 
    numlist = parse_match_numlist(&c, "ChargeFri", &len);
-   if(numlist)
+   if(numlist != nullptr)
    {
       numlist_sanity(numlist, len);
       numlist_to_charge(numlist, len, day_charge[5]);
@@ -1086,7 +1159,7 @@ void CAccountConfig::Boot(void)
    }
 
    numlist = parse_match_numlist(&c, "ChargeSat", &len);
-   if(numlist)
+   if(numlist != nullptr)
    {
       numlist_sanity(numlist, len);
       numlist_to_charge(numlist, len, day_charge[6]);
@@ -1100,9 +1173,9 @@ void CAccountConfig::Boot(void)
       sprintf(Buf, "Flatrate%d", i + 1);
 
       numlist = parse_match_numlist(&c, Buf, &len);
-      if(numlist)
+      if(numlist != nullptr)
       {
-         if(flatrate_sanity(numlist, len))
+         if(flatrate_sanity(numlist, len) != 0)
          {
             m_flatrate[i].days  = numlist[0];
             m_flatrate[i].price = numlist[1];
@@ -1113,7 +1186,7 @@ void CAccountConfig::Boot(void)
          strcat(Buf, " Message");
 
          m_flatrate[i].pMessage = parse_match_name(&c, Buf);
-         if(m_flatrate[i].pMessage == NULL)
+         if(m_flatrate[i].pMessage == nullptr)
          {
             slog(LOG_ALL, 0, "Error reading flatrate message.");
             exit(0);
@@ -1128,9 +1201,9 @@ void CAccountConfig::Boot(void)
    }
 
    numlist = parse_match_numlist(&c, "Flatrate2", &len);
-   if(numlist)
+   if(numlist != nullptr)
    {
-      if(flatrate_sanity(numlist, len))
+      if(flatrate_sanity(numlist, len) != 0)
       {
          m_flatrate[1].days  = numlist[0];
          m_flatrate[1].price = numlist[1];
@@ -1140,7 +1213,7 @@ void CAccountConfig::Boot(void)
    }
 
    m_pPaypointMessage = parse_match_name(&c, "Account Paypoint");
-   if(m_pPaypointMessage == NULL)
+   if(m_pPaypointMessage == nullptr)
    {
       slog(LOG_ALL, 0, "Error reading paypoint message.");
       exit(0);

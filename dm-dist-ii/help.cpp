@@ -22,9 +22,9 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
 
 #include "comm.h"
 #include "db.h"
@@ -53,34 +53,41 @@ static struct help_file_type help_file[3];
 
 extern char libdir[]; /* from dikumud.c        */
 
-int search_help_cmp(const void *keyval, const void *datum)
+auto search_help_cmp(const void *keyval, const void *datum) -> int
 {
-   if(is_abbrev((char *)keyval, ((struct help_index_type *)datum)->keyword))
+   if(is_abbrev((char *)keyval, ((struct help_index_type *)datum)->keyword) != 0u)
+   {
       return 0;
-   else
-      return str_ccmp((char *)keyval, ((struct help_index_type *)datum)->keyword);
+   }
+   return str_ccmp((char *)keyval, ((struct help_index_type *)datum)->keyword);
 }
 
 /* Returns TRUE if help was presented */
-static int help(struct help_file_type *hlp, struct descriptor_data *d, char *arg)
+static auto help(struct help_file_type *hlp, struct descriptor_data *d, char *arg) -> int
 {
-   char                    buf[MAX_STRING_LENGTH], line[256];
+   char                    buf[MAX_STRING_LENGTH];
+   char                    line[256];
    char                    buf2[MAX_STRING_LENGTH];
    struct help_index_type *tmp;
    FILE                   *help_fl;
 
-   if((hlp->help_idx == NULL) || (hlp->elements < 1))
+   if((hlp->help_idx == nullptr) || (hlp->elements < 1))
+   {
       return FALSE;
+   }
 
-   if((tmp = (struct help_index_type *)bsearch(arg, hlp->help_idx, hlp->elements + 1, sizeof(struct help_index_type), search_help_cmp)))
+   if((tmp = (struct help_index_type *)bsearch(arg, hlp->help_idx, hlp->elements + 1, sizeof(struct help_index_type), search_help_cmp)) !=
+      nullptr)
    {
       int i = (tmp - hlp->help_idx);
 
       /*  Have to unroll backwards to make sure we find FIRST
        *  occurence of argument
        */
-      while(0 < i && is_abbrev(arg, hlp->help_idx[i - 1].keyword))
+      while(0 < i && (is_abbrev(arg, hlp->help_idx[i - 1].keyword) != 0u))
+      {
          --i;
+      }
 
       help_fl = fopen_cache(hlp->filename, "r");
       assert(help_fl);
@@ -97,7 +104,9 @@ static int help(struct help_file_type *hlp, struct descriptor_data *d, char *arg
       {
          ms2020 = fgets(line, sizeof(line), help_fl);
          if(*line == '#')
+         {
             break;
+         }
          strcat(buf, line);
       }
 
@@ -111,18 +120,22 @@ static int help(struct help_file_type *hlp, struct descriptor_data *d, char *arg
 
 /* Returns TRUE if help was found and displayed */
 
-int help_base(struct descriptor_data *d, char *arg)
+auto help_base(struct descriptor_data *d, char *arg) -> int
 {
    ubit8 bHelp = FALSE;
 
    arg = skip_spaces(arg);
    str_lower(arg);
 
-   if((CHAR_LEVEL(d->character) >= IMMORTAL_LEVEL) && help(&help_file[2], d, arg))
+   if((CHAR_LEVEL(d->character) >= IMMORTAL_LEVEL) && (help(&help_file[2], d, arg) != 0))
+   {
       bHelp = TRUE;
+   }
 
-   if(!help(&help_file[0], d, arg) && !help(&help_file[1], d, arg))
+   if((help(&help_file[0], d, arg) == 0) && (help(&help_file[1], d, arg) == 0))
+   {
       return bHelp;
+   }
 
    return TRUE;
 }
@@ -130,9 +143,11 @@ int help_base(struct descriptor_data *d, char *arg)
 void do_help(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
    if(!IS_PC(ch) || !CHAR_DESCRIPTOR(ch))
+   {
       return;
+   }
 
-   if(str_is_empty(arg))
+   if(str_is_empty(arg) != 0u)
    {
       struct zone_type *zone = unit_zone(ch);
 
@@ -140,8 +155,10 @@ void do_help(struct unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   if(!help_base(CHAR_DESCRIPTOR(ch), arg))
-      act("There is no help available on the subject '$2t'.", A_ALWAYS, ch, arg, 0, TO_CHAR);
+   if(help_base(CHAR_DESCRIPTOR(ch), arg) == 0)
+   {
+      act("There is no help available on the subject '$2t'.", A_ALWAYS, ch, arg, nullptr, TO_CHAR);
+   }
 }
 
 /* BOOT stuff below */
@@ -149,7 +166,7 @@ void do_help(struct unit_data *ch, char *arg, const struct command_info *cmd)
 /*  one_word is like one_argument, except that words in quotes "" are
  *  regarded as ONE word
  */
-char *one_word(char *arg, char *first_arg)
+auto one_word(char *arg, char *first_arg) -> char *
 {
    do
    {
@@ -160,23 +177,31 @@ char *one_word(char *arg, char *first_arg)
       if(*arg == '\"') /* is it a quote " */
       {
          for(arg++; arg[look_at] >= ' ' && arg[look_at] != '\"'; ++look_at)
+         {
             first_arg[look_at] = tolower(arg[look_at]);
+         }
 
-         if(arg[look_at] == '\"') /* " (damn dumb emacs syntax colouring) */
+         if(arg[look_at] == '\"')
+         { /* " (damn dumb emacs syntax colouring) */
             arg++;
+         }
       }
       else
+      {
          for(look_at = 0; ' ' < arg[look_at]; look_at++)
+         {
             first_arg[look_at] = tolower(arg[look_at]);
+         }
+      }
 
       first_arg[look_at] = '\0';
       arg += look_at;
-   } while(fill_word(first_arg));
+   } while(fill_word(first_arg) != 0);
 
    return arg;
 }
 
-int build_help_cmp(const void *keyval, const void *datum)
+auto build_help_cmp(const void *keyval, const void *datum) -> int
 {
    return str_ccmp(((struct help_index_type *)keyval)->keyword, ((struct help_index_type *)datum)->keyword);
 }
@@ -184,16 +209,18 @@ int build_help_cmp(const void *keyval, const void *datum)
 static void generate_help_idx(struct help_file_type *hlp, const char *name)
 {
    FILE *fl;
-   char  buf[256], tmp[256], *scan;
+   char  buf[256];
+   char  tmp[256];
+   char *scan;
    long  pos;
 
-   hlp->help_idx = NULL;
+   hlp->help_idx = nullptr;
    hlp->elements = 0;
    hlp->filename = str_dup(str_cc(libdir, name));
 
    touch_file(hlp->filename);
 
-   if((fl = fopen_cache(hlp->filename, "r")) == NULL)
+   if((fl = fopen_cache(hlp->filename, "r")) == nullptr)
    {
       slog(LOG_OFF, 0, "   Could not open help file [%s]", hlp->filename);
       exit(0);
@@ -215,9 +242,11 @@ static void generate_help_idx(struct help_file_type *hlp, const char *name)
          /* extract the keywords */
          scan = one_word(scan, tmp);
          if(*tmp == '\0')
+         {
             break;
+         }
 
-         if(hlp->help_idx == NULL)
+         if(hlp->help_idx == nullptr)
          {
             hlp->size = HELP_INCREMENT;
             CREATE(hlp->help_idx, struct help_index_type, hlp->size);
@@ -234,20 +263,25 @@ static void generate_help_idx(struct help_file_type *hlp, const char *name)
 
       /* skip the text */
       do
+      {
          ms2020 = fgets(buf, sizeof buf, fl);
-      while(*buf != '#' && !feof(fl));
+      } while(*buf != '#' && (feof(fl) == 0));
 
-      if(feof(fl))
+      if(feof(fl) != 0)
+      {
          break;
+      }
 
       if(buf[1] == '~')
+      {
          break;
+      }
    }
 
    qsort(hlp->help_idx, hlp->elements + 1, sizeof(struct help_index_type), build_help_cmp);
 }
 
-void boot_help(void)
+void boot_help()
 {
    generate_help_idx(&help_file[0], HELP_FILE);
    generate_help_idx(&help_file[1], HELP_FILE_LOCAL);

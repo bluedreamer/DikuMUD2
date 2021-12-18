@@ -32,11 +32,11 @@
 /* 21/07/94 gnort  : Removed dollar doubling on input, which is ok, as     */
 /*                   player input is NEVER fed directly to act             */
 
-#include <ctype.h>
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cctype>
+#include <cerrno>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "comm.h"
 #include "constants.h"
@@ -63,7 +63,7 @@ void send_to_descriptor(const char *messg, struct descriptor_data *d)
 {
    void multi_close(struct multi_element * pe);
 
-   if(d && messg && *messg)
+   if((d != nullptr) && (messg != nullptr) && (*messg != 0))
    {
       if(d->prompt_mode == PROMPT_IGNORE)
       {
@@ -73,7 +73,7 @@ void send_to_descriptor(const char *messg, struct descriptor_data *d)
 
       protocol_send_text(d->multi, d->id, messg, MULTI_TEXT_CHAR);
 
-      if(d->snoop.snoop_by)
+      if(d->snoop.snoop_by != nullptr)
       {
          send_to_descriptor(SNOOP_PROMPT, CHAR_DESCRIPTOR(d->snoop.snoop_by));
          send_to_descriptor(messg, CHAR_DESCRIPTOR(d->snoop.snoop_by));
@@ -83,13 +83,11 @@ void send_to_descriptor(const char *messg, struct descriptor_data *d)
 
 void page_string(struct descriptor_data *d, const char *messg)
 {
-   void multi_close(struct multi_element * pe);
-
-   if(d && messg && *messg)
+   if((d != nullptr) && (messg != nullptr) && (*messg != 0))
    {
       protocol_send_text(d->multi, d->id, messg, MULTI_PAGE_CHAR);
 
-      if(d->snoop.snoop_by)
+      if(d->snoop.snoop_by != nullptr)
       {
          send_to_descriptor(SNOOP_PROMPT, CHAR_DESCRIPTOR(d->snoop.snoop_by));
          send_to_descriptor(messg, CHAR_DESCRIPTOR(d->snoop.snoop_by));
@@ -100,51 +98,77 @@ void page_string(struct descriptor_data *d, const char *messg)
 void send_to_char(const char *messg, const struct unit_data *ch)
 {
    if(IS_CHAR(ch))
+   {
       send_to_descriptor(messg, CHAR_DESCRIPTOR(ch));
+   }
 }
 
 void send_to_all(const char *messg)
 {
    struct descriptor_data *i;
 
-   if(messg && *messg)
-      for(i = descriptor_list; i; i = i->next)
-         if(descriptor_is_playing(i))
+   if((messg != nullptr) && (*messg != 0))
+   {
+      for(i = descriptor_list; i != nullptr; i = i->next)
+      {
+         if(descriptor_is_playing(i) != 0)
+         {
             send_to_descriptor(messg, i);
+         }
+      }
+   }
 }
 
 void send_to_zone_outdoor(const struct zone_type *z, const char *messg)
 {
    struct descriptor_data *i;
 
-   if(messg && *messg)
-      for(i = descriptor_list; i; i = i->next)
-         if(descriptor_is_playing(i) && UNIT_IS_OUTSIDE(i->character) && unit_zone(i->character) == z && CHAR_AWAKE(i->character) &&
+   if((messg != nullptr) && (*messg != 0))
+   {
+      for(i = descriptor_list; i != nullptr; i = i->next)
+      {
+         if((descriptor_is_playing(i) != 0) && UNIT_IS_OUTSIDE(i->character) && unit_zone(i->character) == z && CHAR_AWAKE(i->character) &&
             !IS_SET(UNIT_FLAGS(UNIT_IN(i->character)), UNIT_FL_NO_WEATHER) &&
             !IS_SET(UNIT_FLAGS(unit_room(i->character)), UNIT_FL_NO_WEATHER))
+         {
             send_to_descriptor(messg, i);
+         }
+      }
+   }
 }
 
 void send_to_outdoor(const char *messg)
 {
    struct descriptor_data *i;
 
-   if(messg && *messg)
-      for(i = descriptor_list; i; i = i->next)
-         if(descriptor_is_playing(i) && UNIT_IS_OUTSIDE(i->character) && CHAR_AWAKE(i->character) &&
+   if((messg != nullptr) && (*messg != 0))
+   {
+      for(i = descriptor_list; i != nullptr; i = i->next)
+      {
+         if((descriptor_is_playing(i) != 0) && UNIT_IS_OUTSIDE(i->character) && CHAR_AWAKE(i->character) &&
             !IS_SET(UNIT_FLAGS(UNIT_IN(i->character)), UNIT_FL_NO_WEATHER) &&
             !IS_SET(UNIT_FLAGS(unit_room(i->character)), UNIT_FL_NO_WEATHER))
+         {
             send_to_descriptor(messg, i);
+         }
+      }
+   }
 }
 
 void send_to_room(const char *messg, struct unit_data *room)
 {
    struct unit_data *i;
 
-   if(messg)
-      for(i = UNIT_CONTAINS(room); i; i = i->next)
+   if(messg != nullptr)
+   {
+      for(i = UNIT_CONTAINS(room); i != nullptr; i = i->next)
+      {
          if(IS_CHAR(i) && CHAR_DESCRIPTOR(i))
+         {
             send_to_descriptor(messg, CHAR_DESCRIPTOR(i));
+         }
+      }
+   }
 }
 
 void act_generate(char *buf, const char *str, int show_type, const void *arg1, const void *arg2, const void *arg3, int type,
@@ -152,7 +176,7 @@ void act_generate(char *buf, const char *str, int show_type, const void *arg1, c
 {
    const char *strp;
    char       *point;
-   const char *i = NULL;
+   const char *i = nullptr;
 
    union
    {
@@ -166,20 +190,30 @@ void act_generate(char *buf, const char *str, int show_type, const void *arg1, c
 
    *buf = 0;
 
-   if(!IS_CHAR(to) || !CHAR_DESCRIPTOR(to) || arg1 == NULL)
+   if(!IS_CHAR(to) || !CHAR_DESCRIPTOR(to) || arg1 == nullptr)
+   {
       return;
+   }
 
    if(to == (class unit_data *)arg1 && (type == TO_ROOM || type == TO_NOTVICT || type == TO_REST))
+   {
       return;
+   }
 
    if(to == (class unit_data *)arg3 && type == TO_NOTVICT)
+   {
       return;
+   }
 
    if(UNIT_IN(to) == (class unit_data *)arg1 && type == TO_REST)
+   {
       return;
+   }
 
    if((show_type == A_HIDEINV && !CHAR_CAN_SEE(to, (class unit_data *)arg1)) || (show_type != A_ALWAYS && !CHAR_AWAKE(to)))
+   {
       return;
+   }
 
    for(strp = str, point = buf;;)
    {
@@ -206,9 +240,9 @@ void act_generate(char *buf, const char *str, int show_type, const void *arg1, c
                return;
          }
 
-         if(i == NULL)
+         if(i == nullptr)
          {
-            if(sub.vo != NULL)
+            if(sub.vo != nullptr)
             {
                switch(*++strp)
                {
@@ -222,10 +256,14 @@ void act_generate(char *buf, const char *str, int show_type, const void *arg1, c
                            i         = UNIT_NAME(sub.un);
                         }
                         else
+                        {
                            i = UNIT_TITLE(sub.un).String();
+                        }
                      }
                      else
+                     {
                         i = SOMETON(sub.un);
+                     }
                      break;
                   case 'N':
                      i = UNIT_SEE_NAME(to, sub.un);
@@ -241,9 +279,13 @@ void act_generate(char *buf, const char *str, int show_type, const void *arg1, c
                      break;
                   case 'p':
                      if(IS_CHAR(sub.un))
+                     {
                         i = char_pos[CHAR_POS(sub.un)];
+                     }
                      else
+                     {
                         i = "lying";
+                     }
                      break;
                   case 'a':
                      i = UNIT_ANA(sub.un);
@@ -262,25 +304,31 @@ void act_generate(char *buf, const char *str, int show_type, const void *arg1, c
             }
          }
 
-         if(i == NULL)
+         if(i == nullptr)
+         {
             i = "NULL";
+         }
 
-         if(uppercase && *i)
+         if((uppercase != 0) && (*i != 0))
          {
             *point++ = toupper(*i);
             i++;
             uppercase = FALSE;
          }
 
-         while((*point = *(i++)))
+         while((*point = *(i++)) != 0)
+         {
             point++;
+         }
 
-         i = NULL;
+         i = nullptr;
 
          ++strp;
       }
-      else if(!(*(point++) = *(strp++)))
+      else if((*(point++) = *(strp++)) == 0)
+      {
          break;
+      }
    }
 
    *(point - 1) = '\n';
@@ -291,33 +339,46 @@ void act_generate(char *buf, const char *str, int show_type, const void *arg1, c
 
    point = buf;
    while(*point == CONTROL_CHAR)
+   {
       point += 2;
+   }
 
    *point = toupper(*point);
 }
 
 void act(const char *str, int show_type, const void *arg1, const void *arg2, const void *arg3, int type)
 {
-   struct unit_data *to, *u;
+   struct unit_data *to;
+   struct unit_data *u;
    char              buf[MAX_STRING_LENGTH];
 
    /* This to catch old-style FALSE/TRUE calls...  */
    assert(show_type == A_SOMEONE || show_type == A_HIDEINV || show_type == A_ALWAYS);
 
-   if(!str || !*str)
+   if((str == nullptr) || (*str == 0))
+   {
       return;
+   }
 
    if(type == TO_VICT)
+   {
       to = (struct unit_data *)arg3;
+   }
    else if(type == TO_CHAR)
+   {
       to = (struct unit_data *)arg1;
-   else if(arg1 == NULL || UNIT_IN((struct unit_data *)arg1) == NULL)
+   }
+   else if(arg1 == nullptr || UNIT_IN((struct unit_data *)arg1) == nullptr)
+   {
       return;
+   }
    else
+   {
       to = UNIT_CONTAINS(UNIT_IN((struct unit_data *)arg1));
+   }
 
    /* same unit or to person */
-   for(; to; to = to->next)
+   for(; to != nullptr; to = to->next)
    {
       if(IS_CHAR(to))
       {
@@ -326,19 +387,26 @@ void act(const char *str, int show_type, const void *arg1, const void *arg2, con
       }
 
       if(type == TO_VICT || type == TO_CHAR)
+      {
          return;
+      }
       if(UNIT_CHARS(to) && UNIT_IS_TRANSPARENT(to))
-         for(u = UNIT_CONTAINS(to); u; u = u->next)
+      {
+         for(u = UNIT_CONTAINS(to); u != nullptr; u = u->next)
+         {
             if IS_CHAR(u)
             {
                act_generate(buf, str, show_type, arg1, arg2, arg3, type, u);
                send_to_descriptor(buf, CHAR_DESCRIPTOR(u));
             }
+         }
+      }
    }
 
    /* other units outside transparent unit */
-   if((to = UNIT_IN(UNIT_IN((struct unit_data *)arg1))) && UNIT_IS_TRANSPARENT(UNIT_IN((struct unit_data *)arg1)))
-      for(to = UNIT_CONTAINS(to); to; to = to->next)
+   if(((to = UNIT_IN(UNIT_IN((struct unit_data *)arg1))) != nullptr) && UNIT_IS_TRANSPARENT(UNIT_IN((struct unit_data *)arg1)))
+   {
+      for(to = UNIT_CONTAINS(to); to != nullptr; to = to->next)
       {
          if(IS_CHAR(to))
          {
@@ -347,11 +415,16 @@ void act(const char *str, int show_type, const void *arg1, const void *arg2, con
          }
 
          if(UNIT_CHARS(to) && UNIT_IS_TRANSPARENT(to) && to != UNIT_IN((struct unit_data *)arg1))
-            for(u = UNIT_CONTAINS(to); u; u = u->next)
+         {
+            for(u = UNIT_CONTAINS(to); u != nullptr; u = u->next)
+            {
                if(IS_CHAR(u))
                {
                   act_generate(buf, str, show_type, arg1, arg2, arg3, type, u);
                   send_to_descriptor(buf, CHAR_DESCRIPTOR(u));
                }
+            }
+         }
       }
+   }
 }

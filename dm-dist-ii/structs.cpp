@@ -35,52 +35,54 @@ int world_nozones   = 0; /* number of zones in the world   */
 
 /* Descriptor stuff is in system.c */
 
-room_direction_data::room_direction_data(void)
+room_direction_data::room_direction_data()
 {
-   key       = NULL;
-   to_room   = NULL;
+   key       = nullptr;
+   to_room   = nullptr;
    exit_info = 0;
 }
 
-room_direction_data::~room_direction_data(void)
-{
-}
+room_direction_data::~room_direction_data() = default;
 
-char_data::char_data(void)
+char_data::char_data()
 {
    world_nochars++;
 
-   specific.pc = NULL;
-   money       = NULL;
-   descriptor  = NULL;
-   Combat      = NULL;
-   followers   = NULL;
-   master      = NULL;
-   last_room   = NULL;
+   specific.pc = nullptr;
+   money       = nullptr;
+   descriptor  = nullptr;
+   Combat      = nullptr;
+   followers   = nullptr;
+   master      = nullptr;
+   last_room   = nullptr;
 
    memset(&points, 0, sizeof(points));
 }
 
-char_data::~char_data(void)
+char_data::~char_data()
 {
    world_nochars--;
 }
 
-room_data::room_data(void)
+room_data::room_data()
 {
    world_norooms++;
 }
 
-room_data::~room_data(void)
+room_data::~room_data()
 {
    world_norooms--;
 
    for(int i = 0; i <= 5; i++)
-      if(dir_option[i])
+   {
+      if(dir_option[i] != nullptr)
+      {
          delete dir_option[i];
+      }
+   }
 }
 
-obj_data::obj_data(void)
+obj_data::obj_data()
 {
    world_noobjects++;
 
@@ -93,20 +95,20 @@ obj_data::obj_data(void)
    resistance   = 0;
 }
 
-obj_data::~obj_data(void)
+obj_data::~obj_data()
 {
    world_noobjects--;
 }
 
-pc_data::pc_data(void)
+pc_data::pc_data()
 {
    world_nopc++;
 
-   info     = NULL;
-   bank     = NULL;
-   guild    = NULL;
-   hometown = NULL;
-   quest    = NULL;
+   info     = nullptr;
+   bank     = nullptr;
+   guild    = nullptr;
+   hometown = nullptr;
+   quest    = nullptr;
 
    memset(&setup, 0, sizeof(setup));
    memset(&time, 0, sizeof(setup));
@@ -145,24 +147,30 @@ pc_data::pc_data(void)
    filename[0]  = 0;
 }
 
-pc_data::~pc_data(void)
+pc_data::~pc_data()
 {
    world_nopc--;
 
-   if(guild)
+   if(guild != nullptr)
+   {
       free(guild);
+   }
 
-   if(hometown)
+   if(hometown != nullptr)
+   {
       free(hometown);
+   }
 
-   if(bank)
+   if(bank != nullptr)
+   {
       free(bank);
+   }
 
    info->free_list();
    quest->free_list();
 }
 
-npc_data::npc_data(void)
+npc_data::npc_data()
 {
    world_nonpc++;
 
@@ -172,60 +180,72 @@ npc_data::npc_data(void)
    flags       = 0;
 }
 
-npc_data::~npc_data(void)
+npc_data::~npc_data()
 {
    world_nonpc--;
 }
 
-zone_type::zone_type(void)
+zone_type::zone_type()
 {
-   name     = NULL;
-   notes    = NULL;
-   help     = NULL;
-   filename = NULL;
+   name     = nullptr;
+   notes    = nullptr;
+   help     = nullptr;
+   filename = nullptr;
 
-   fi = NULL;
-   ba = NULL;
+   fi = nullptr;
+   ba = nullptr;
 
-   zri  = NULL;
-   next = NULL;
+   zri  = nullptr;
+   next = nullptr;
 
-   tmpl   = NULL;
-   tmplba = NULL;
+   tmpl   = nullptr;
+   tmplba = nullptr;
 
-   spmatrix = NULL;
+   spmatrix = nullptr;
 
    access = 255;
 }
 
-zone_type::~zone_type(void)
+zone_type::~zone_type()
 {
-   if(name)
+   if(name != nullptr)
+   {
       free(name);
+   }
 
-   if(title)
+   if(title != nullptr)
+   {
       free(title);
+   }
 
-   if(notes)
+   if(notes != nullptr)
+   {
       free(notes);
+   }
 
-   if(help)
+   if(help != nullptr)
+   {
       free(help);
+   }
 
-   if(filename)
+   if(filename != nullptr)
+   {
       free(filename);
+   }
 
-   struct file_index_type *p, *nextfi;
+   struct file_index_type *p;
+   struct file_index_type *nextfi;
 
-   for(p = fi; p; p = nextfi)
+   for(p = fi; p != nullptr; p = nextfi)
    {
       nextfi = p->next;
       delete p;
    }
 
-   struct zone_reset_cmd *pzri, *nextzri;
+   struct zone_reset_cmd *pzri;
+   struct zone_reset_cmd *nextzri;
 
-   for(pzri = zri; pzri; pzri = nextzri)
+   for(pzri = zri; pzri != nullptr; pzri = nextzri)
    {
       nextzri = pzri->next;
       free(pzri);
@@ -254,35 +274,37 @@ zone_type::~zone_type(void)
    free(spmatrix);
 }
 
-file_index_type::file_index_type(void)
+file_index_type::file_index_type()
 {
-   name     = NULL;
-   zone     = NULL;
-   next     = NULL;
-   room_ptr = NULL;
+   name     = nullptr;
+   zone     = nullptr;
+   next     = nullptr;
+   room_ptr = nullptr;
 }
 
-file_index_type::~file_index_type(void)
+file_index_type::~file_index_type()
 {
-   if(name)
+   if(name != nullptr)
+   {
       free(name);
+   }
 }
 
 unit_data::unit_data(ubit8 type)
 {
    status = type;
 
-   data.ch     = NULL;
-   func        = NULL;
-   affected    = NULL;
-   fi          = NULL;
-   key         = NULL;
-   outside     = NULL;
-   inside      = NULL;
-   next        = NULL;
-   gnext       = NULL;
-   gprevious   = NULL;
-   extra_descr = NULL;
+   data.ch     = nullptr;
+   func        = nullptr;
+   affected    = nullptr;
+   fi          = nullptr;
+   key         = nullptr;
+   outside     = nullptr;
+   inside      = nullptr;
+   next        = nullptr;
+   gnext       = nullptr;
+   gprevious   = nullptr;
+   extra_descr = nullptr;
 
    chars       = 0;
    manipulate  = 0;
@@ -301,23 +323,33 @@ unit_data::unit_data(ubit8 type)
    alignment   = 0;
 
    if(IS_ROOM(this))
+   {
       U_ROOM(this) = new(class room_data);
+   }
    else if(IS_OBJ(this))
+   {
       U_OBJ(this) = new(class obj_data);
+   }
    else if(IS_CHAR(this))
    {
       U_CHAR(this) = new(class char_data);
 
       if(IS_PC(this))
+      {
          U_PC(this) = new(class pc_data);
+      }
       else
+      {
          U_NPC(this) = new(class npc_data);
+      }
    }
    else
+   {
       assert(FALSE);
+   }
 }
 
-unit_data::~unit_data(void)
+unit_data::~unit_data()
 {
 #ifdef MEMORY_DEBUG
    extern int memory_pc_alloc;
@@ -337,17 +369,21 @@ unit_data::~unit_data(void)
 #ifdef DMSERVER
    extern class unit_data *unit_list;
 
-   assert(gnext == NULL);
-   assert(gprevious == NULL);
-   assert(next == NULL);
+   assert(gnext == nullptr);
+   assert(gprevious == nullptr);
+   assert(next == nullptr);
    assert(unit_list != this);
 #endif
 
    while(UNIT_FUNC(this))
+   {
       destroy_fptr(this, UNIT_FUNC(this)); /* Unlinks, no free */
+   }
 
    while(UNIT_AFFECTED(this))
+   {
       unlink_affect(this, UNIT_AFFECTED(this));
+   }
 
    type = UNIT_TYPE(this);
 
@@ -356,20 +392,30 @@ unit_data::~unit_data(void)
    extra_descr->free_list();
 
    if(IS_OBJ(this))
+   {
       delete U_OBJ(this);
+   }
    else if(IS_ROOM(this))
+   {
       delete U_ROOM(this);
+   }
    else if(IS_CHAR(this))
    {
       if(IS_NPC(this))
+      {
          delete U_NPC(this);
+      }
       else
+      {
          delete U_PC(this);
+      }
 
       delete U_CHAR(this);
    }
    else
+   {
       assert(FALSE);
+   }
 
 #ifdef MEMORY_DEBUG
    switch(type)

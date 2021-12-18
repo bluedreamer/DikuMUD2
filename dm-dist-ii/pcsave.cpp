@@ -28,11 +28,11 @@
 /* 09/09/93 seifert: Deletes player data after new has been written.       */
 /* 30/03/94 seifert: find_player returns BLK_NULL if no player data        */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "account.h"
 #include "affect.h"
@@ -59,9 +59,7 @@ static const char *tmp_player_name = PLAY_DIR "player.tmp";
 extern char libdir[];
 extern char plydir[];
 
-struct descriptor_data *find_descriptor(const char *name, struct descriptor_data *except);
-
-char *PlayerFileName(const char *pName)
+auto PlayerFileName(const char *pName) -> char *
 {
    static char Buf[MAX_INPUT_LENGTH + 1];
    char        TmpBuf[MAX_INPUT_LENGTH + 1];
@@ -74,41 +72,44 @@ char *PlayerFileName(const char *pName)
 }
 
 /* Return TRUE if exists */
-int player_exists(const char *pName)
+auto player_exists(const char *pName) -> int
 {
    return file_exists(PlayerFileName(pName));
 }
 
-struct unit_data *find_player(char *name)
+auto find_player(char *name) -> struct unit_data *
 {
    struct descriptor_data *d;
 
-   d = find_descriptor(name, NULL);
+   d = find_descriptor(name, nullptr);
 
-   if(d && (d->fptr == descriptor_interpreter) && d->character)
+   if((d != nullptr) && (d->fptr == descriptor_interpreter) && (d->character != nullptr))
+   {
       return d->character;
-   else
-      return NULL;
+   }
+   return NULL;
 }
 
 /* Return TRUE if deleted */
-int delete_inventory(const char *pName)
+auto delete_inventory(const char *pName) -> int
 {
-   char *ContentsFileName(const char *pName);
+   auto ContentsFileName(const char *pName)->char *;
 
-   if(remove(ContentsFileName(pName)))
+   if(remove(ContentsFileName(pName)) != 0)
+   {
       return FALSE;
+   }
 
    return TRUE;
 }
 
 /* Return TRUE if deleted */
-int delete_player(const char *pName)
+auto delete_player(const char *pName) -> int
 {
-   char *ContentsFileName(const char *pName);
-
-   if(remove(PlayerFileName(pName)))
+   if(remove(PlayerFileName(pName)) != 0)
+   {
       return FALSE;
+   }
 
    delete_inventory(pName);
 
@@ -116,12 +117,12 @@ int delete_player(const char *pName)
 }
 
 /* Given a name, return pointer to player-idx blk, or BLK_NULL if non exist */
-int find_player_id(char *pName)
+auto find_player_id(char *pName) -> int
 {
    FILE *pFile;
    int   id;
 
-   if(str_is_empty(pName))
+   if(str_is_empty(pName) != 0u)
    {
       slog(LOG_ALL, 0, "Empty string in find_player_id.");
       return -1;
@@ -129,13 +130,17 @@ int find_player_id(char *pName)
 
    pFile = fopen(PlayerFileName(pName), "rb");
 
-   if(pFile == NULL)
+   if(pFile == nullptr)
+   {
       return -1;
+   }
 
    rewind(pFile);
 
    if(fread(&id, sizeof(int), 1, pFile) != 1)
+   {
       error(HERE, "Unable to read ID for player: '%s'", pName);
+   }
 
    fclose(pFile);
 
@@ -143,7 +148,7 @@ int find_player_id(char *pName)
 }
 
 /* Call to read current id from file*/
-sbit32 read_player_id(void)
+auto read_player_id() -> sbit32
 {
    sbit32 tmp_sl;
    FILE  *pFile;
@@ -160,7 +165,7 @@ sbit32 read_player_id(void)
 }
 
 /* Call to generate new id */
-int new_player_id(void)
+auto new_player_id() -> int
 {
    FILE *pFile;
 
@@ -202,8 +207,10 @@ void save_player_disk(const char *pName, char *pPassword, int id, int nPlyLen, c
       full?). Anyway if that is a problem it should have been caught by
       the n == nPlyLen */
 
-   if(fseek(pPlayerFile, 0L, SEEK_END))
+   if(fseek(pPlayerFile, 0L, SEEK_END) != 0)
+   {
       assert(FALSE);
+   }
 
    assert(ftell(pPlayerFile) == (long int)(nPlyLen + sizeof(nPlyLen) + sizeof(id)));
 
@@ -223,7 +230,8 @@ void save_player_file(struct unit_data *pc)
    static bool             locked = FALSE;
    blk_length              nPlyLen;
    int                     tmp_i;
-   struct unit_data       *tmp_u, *list = NULL;
+   struct unit_data       *tmp_u;
+   struct unit_data       *list = NULL;
    struct descriptor_data *tmp_descr;
    CByteBuffer            *pBuf = &g_FileBuffer;
 
@@ -233,8 +241,10 @@ void save_player_file(struct unit_data *pc)
    assert(strlen(PC_FILENAME(pc)) < PC_MAX_NAME);
    assert(!is_destructed(DR_UNIT, pc));
 
-   if(is_destructed(DR_UNIT, pc))
+   if(is_destructed(DR_UNIT, pc) != 0)
+   {
       return;
+   }
 
    if(locked)
    {
@@ -245,24 +255,30 @@ void save_player_file(struct unit_data *pc)
    locked = TRUE;
 
    if(PC_IS_UNSAVED(pc))
+   {
       PC_TIME(pc).played++;
+   }
 
    /* PRIMITIVE SANITY CHECK */
    assert(PC_ID(pc) >= 0 && PC_ID(pc) <= 1000000);
 
    if(UNIT_IN(pc) && !IS_SET(UNIT_FLAGS(unit_room(pc)), UNIT_FL_NOSAVE))
+   {
       CHAR_LAST_ROOM(pc) = unit_room(pc);
+   }
 
    tmp_descr           = CHAR_DESCRIPTOR(pc);
-   CHAR_DESCRIPTOR(pc) = NULL; /* Do this to turn off all messages! */
+   CHAR_DESCRIPTOR(pc) = nullptr; /* Do this to turn off all messages! */
 
    /* Remove all inventory and equipment in order to make a CLEAN save */
-   while((tmp_u = UNIT_CONTAINS(pc)))
+   while((tmp_u = UNIT_CONTAINS(pc)) != nullptr)
    {
       if(IS_OBJ(tmp_u))
       {
-         if((tmp_i = OBJ_EQP_POS(tmp_u)))
+         if((tmp_i = OBJ_EQP_POS(tmp_u)) != 0)
+         {
             unequip_object(tmp_u);
+         }
          OBJ_EQP_POS(tmp_u) = tmp_i;
       }
       unit_from_unit(tmp_u);
@@ -278,10 +294,10 @@ void save_player_file(struct unit_data *pc)
    save_player_disk(PC_FILENAME(pc), PC_PWD(pc), PC_ID(pc), nPlyLen, pBuf->GetData());
 
    /* Restore all inventory and equipment */
-   while((tmp_u = list))
+   while((tmp_u = list) != nullptr)
    {
       list        = list->next;
-      tmp_u->next = NULL;
+      tmp_u->next = nullptr;
 
       unit_to_unit(tmp_u, pc);
 
@@ -289,8 +305,10 @@ void save_player_file(struct unit_data *pc)
       {
          tmp_i              = OBJ_EQP_POS(tmp_u);
          OBJ_EQP_POS(tmp_u) = 0;
-         if(tmp_i)
+         if(tmp_i != 0)
+         {
             equip_char(pc, tmp_u, tmp_i);
+         }
       }
    }
 
@@ -303,11 +321,12 @@ void save_player_file(struct unit_data *pc)
 void save_player_contents(struct unit_data *pc, int fast)
 {
    static bool locked = FALSE;
-   time_t      t0, keep_period;
+   time_t      t0;
+   time_t      keep_period;
    amount_t    daily_cost;
    currency_t  cur = local_currency(pc);
 
-   int save_contents(const char *pFileName, struct unit_data *unit, int fast, int bContainer);
+   auto save_contents(const char *pFileName, struct unit_data *unit, int fast, int bContainer)->int;
 
    assert(IS_PC(pc));
 
@@ -324,13 +343,15 @@ void save_player_contents(struct unit_data *pc, int fast)
         filbuffer_length); */
 
    /* Calculate for how long player may keep objects until erased */
-   t0          = time(0);
+   t0          = time(nullptr);
    keep_period = t0;
 
    daily_cost = save_contents(PC_FILENAME(pc), pc, fast, FALSE);
 
    if(daily_cost <= 0)
+   {
       keep_period += SECS_PER_REAL_DAY * 30;
+   }
    else
    {
       amount_t amount = char_holds_amount(pc, DEF_CURRENCY);
@@ -350,14 +371,17 @@ void save_player_contents(struct unit_data *pc, int fast)
          }
 
          if(tmp_i < 30)
+         {
             keep_period += (int)(((float)SECS_PER_REAL_DAY * (float)amount) / (float)daily_cost);
+         }
 
          tdiff = (keep_period - t0) / SECS_PER_REAL_HOUR;
          act("Inventory expires in $2d hours ($3t daily).", A_ALWAYS, pc, (int *)&tdiff, money_string(daily_cost, cur, FALSE), TO_CHAR);
       }
       else
       {
-         act("You can't afford to keep your inventory (cost is $3t).", A_ALWAYS, pc, 0, money_string(daily_cost, cur, FALSE), TO_CHAR);
+         act("You can't afford to keep your inventory (cost is $3t).", A_ALWAYS, pc, nullptr, money_string(daily_cost, cur, FALSE),
+             TO_CHAR);
       }
    }
 
@@ -372,7 +396,7 @@ void save_player(struct unit_data *pc)
       time_t t0;
       ubit32 used;
 
-      t0 = time(0);
+      t0 = time(nullptr);
       if(t0 < CHAR_DESCRIPTOR(pc)->logon)
       {
          slog(LOG_ALL, 0, "PCSAVE: Current less than last logon");
@@ -388,10 +412,14 @@ void save_player(struct unit_data *pc)
       PC_TIME(pc).played += used;
       CHAR_DESCRIPTOR(pc)->logon = t0;
 
-      if(account_is_closed(pc))
+      if(account_is_closed(pc) != 0)
+      {
          account_closed(pc);
-      else if(account_is_overdue(pc))
+      }
+      else if(account_is_overdue(pc) != 0)
+      {
          account_overdue(pc);
+      }
 
       competition_update(pc);
    }
@@ -405,37 +433,49 @@ void save_player(struct unit_data *pc)
 
 /* Read player from file, starting at index "index" */
 /* String is allocated                              */
-struct unit_data *load_player_file(FILE *pFile)
+auto load_player_file(FILE *pFile) -> struct unit_data *
 {
    struct unit_data *pc;
-   int               nPlyLen, n, id;
+   int               nPlyLen;
+   int               n;
+   int               id;
    CByteBuffer      *pBuf;
 
    assert(pFile);
 
    n = fread(&id, sizeof(int), 1, pFile);
    if(n != 1)
-      return NULL;
+   {
+      return nullptr;
+   }
 
    n = fread(&nPlyLen, sizeof(nPlyLen), 1, pFile);
    if(n != 1)
-      return NULL;
+   {
+      return nullptr;
+   }
 
    pBuf = &g_FileBuffer;
    n    = pBuf->FileRead(pFile, nPlyLen);
 
    if(n != nPlyLen)
+   {
       slog(LOG_ALL, 0, "ERROR: PC FILE LENGTH MISMATCHED RECORDED LENGTH!");
+   }
 
    char mbuf[MAX_INPUT_LENGTH];
    strcpy(mbuf, "Player");
    pc = read_unit_string(pBuf, UNIT_ST_PC, nPlyLen, TRUE, mbuf);
 
-   if(pc == NULL)
-      return NULL;
+   if(pc == nullptr)
+   {
+      return nullptr;
+   }
 
-   if(g_nCorrupt)
-      return NULL;
+   if(g_nCorrupt != 0)
+   {
+      return nullptr;
+   }
 
    return pc;
 }
@@ -443,41 +483,43 @@ struct unit_data *load_player_file(FILE *pFile)
 /* Read player from file, starting at index "index"   */
 /* String is allocated                                */
 /* Is neither inserted in unit_list not into anything */
-struct unit_data *load_player(const char *pName)
+auto load_player(const char *pName) -> struct unit_data *
 {
    FILE             *pFile;
    struct unit_data *pc;
 
    void stop_all_special(struct unit_data * u);
 
-   if(str_is_empty(pName))
-      return NULL;
+   if(str_is_empty(pName) != 0u)
+   {
+      return nullptr;
+   }
 
    pFile = fopen(PlayerFileName(pName), "rb");
-   if(pFile == NULL)
-      return NULL;
+   if(pFile == nullptr)
+   {
+      return nullptr;
+   }
 
    pc = load_player_file(pFile);
 
    fclose(pFile);
 
-   if(pc == NULL)
+   if(pc == nullptr)
    {
       slog(LOG_ALL, 0, "Corrupted player %s.", pName);
-      return NULL;
-   }
-   else
-   {
-      stop_affect(pc);
-      stop_all_special(pc);
-      DeactivateDil(pc);
+      return nullptr;
    }
 
-   if(str_ccmp(pName, PC_FILENAME(pc)))
+   stop_affect(pc);
+   stop_all_special(pc);
+   DeactivateDil(pc);
+
+   if(str_ccmp(pName, PC_FILENAME(pc)) != 0)
    {
       slog(LOG_ALL, 0, "Mismatching player name %s / %s.", pName, PC_FILENAME(pc));
       extract_unit(pc);
-      return NULL;
+      return nullptr;
    }
 
    if(PC_IS_UNSAVED(pc))
@@ -490,19 +532,21 @@ struct unit_data *load_player(const char *pName)
 }
 
 /* Call at boot time to index file */
-void player_file_index(void)
+void player_file_index()
 {
    FILE  *pFile;
    sbit32 tmp_sl;
    int    n;
 
    /* Get rid of any temporary player save file */
-   while(file_exists(tmp_player_name))
+   while(file_exists(tmp_player_name) != 0u)
    {
       n = remove(tmp_player_name);
       if(n != 0)
+      {
          slog(LOG_ALL, 0, "Remove failed");
-      if(file_exists(tmp_player_name))
+      }
+      if(file_exists(tmp_player_name) != 0u)
       {
          n = rename(tmp_player_name, "./playingfuck");
          if(n != 0)
@@ -512,7 +556,7 @@ void player_file_index(void)
       }
    }
 
-   if(!file_exists(str_cc(libdir, PLAYER_ID_NAME)))
+   if(file_exists(str_cc(libdir, PLAYER_ID_NAME)) == 0u)
    {
       touch_file(str_cc(libdir, PLAYER_ID_NAME));
       player_id = -7;

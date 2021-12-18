@@ -26,11 +26,11 @@
 /* 01-Feb-95 gnort: Removed logging of new password in do_set              */
 /* Tue Dec 16 1997 God: added age and lifespan                             */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 #include <unistd.h>
 
 #include "affect.h"
@@ -84,86 +84,84 @@ struct field_type
 };
 
 static const char *unit_field_names[MAX_SET_FIELDS + 1] = {
-   "add-name",     "del-name",     "title",          "descr",         "add-extra",  "del-extra", "manipulate",
-   "flags",        "weight",       "capacity",       "max-hit",       "hit",        "key",       "alignment",
-   "open-flags",   "toughness",    "lights",         "bright",        "room-flags", "movement",  "ccinfo",
-   "add-dir-name", "del-dir-name", "dir-flags",      "dir-key",       "value0",     "value1",    "value2",
-   "value3",       "value4",       "obj-flags",      "cost",          "rent",       "type",      "equip",
-   "guild-name",   "pwd",          "pc-flags",       "crimes",        "drunk",      "full",      "thirsty",
-   "default-pos",  "npc-flags",    "hometown",       "exp",           "char-flags", "mana",      "endurance",
-   "attack-type",  "hand-quality", "size",           "race",          "sex",        "level",     "position",
-   "ability",      "skill-points", "ability-points", "remove-affect", "add-quest",  "del-quest", "speed",
-   "add-info",     "del-info",     "access",         "age",           "lifespan",   NULL};
+   "add-name",   "del-name",   "title",   "descr",        "add-extra",      "del-extra",     "manipulate",  "flags",     "weight",
+   "capacity",   "max-hit",    "hit",     "key",          "alignment",      "open-flags",    "toughness",   "lights",    "bright",
+   "room-flags", "movement",   "ccinfo",  "add-dir-name", "del-dir-name",   "dir-flags",     "dir-key",     "value0",    "value1",
+   "value2",     "value3",     "value4",  "obj-flags",    "cost",           "rent",          "type",        "equip",     "guild-name",
+   "pwd",        "pc-flags",   "crimes",  "drunk",        "full",           "thirsty",       "default-pos", "npc-flags", "hometown",
+   "exp",        "char-flags", "mana",    "endurance",    "attack-type",    "hand-quality",  "size",        "race",      "sex",
+   "level",      "position",   "ability", "skill-points", "ability-points", "remove-affect", "add-quest",   "del-quest", "speed",
+   "add-info",   "del-info",   "access",  "age",          "lifespan",       nullptr};
 
 struct field_type unit_field_data[MAX_SET_FIELDS + 1] = {
-   {UT_UNIT, AT_STR, 0, 200, 200, 253},                  /* add-name        */
-   {UT_UNIT, AT_STR, 0, 200, 200, 253},                  /* del-name        */
-   {UT_UNIT, AT_STR, 0, 200, 200, 200},                  /* title           */
-   {UT_UNIT, AT_DES, 0, 200, 200, 253},                  /* long-description*/
-   {UT_UNIT, AT_KEYDES, 0, 200, 200, 200},               /* add-extra       */
-   {UT_UNIT, AT_STR, 0, 200, 200, 200},                  /* del-extra       */
+   {UT_UNIT, AT_STR, nullptr, 200, 200, 253},            /* add-name        */
+   {UT_UNIT, AT_STR, nullptr, 200, 200, 253},            /* del-name        */
+   {UT_UNIT, AT_STR, nullptr, 200, 200, 200},            /* title           */
+   {UT_UNIT, AT_DES, nullptr, 200, 200, 253},            /* long-description*/
+   {UT_UNIT, AT_KEYDES, nullptr, 200, 200, 200},         /* add-extra       */
+   {UT_UNIT, AT_STR, nullptr, 200, 200, 200},            /* del-extra       */
    {UT_UNIT, AT_BIT, unit_manipulate, 200, 200, 250},    /* manipulate      */
    {UT_UNIT, AT_BIT, unit_flags, 200, 200, 250},         /* unit-flags      */
-   {UT_UNIT, AT_VAL, 0, 200, 200, 230},                  /* weight          */
-   {UT_UNIT, AT_VAL, 0, 200, 200, 230},                  /* capacity        */
-   {UT_UNIT, AT_VAL, 0, 200, 200, 253},                  /* max-hp          */
-   {UT_UNIT, AT_VAL, 0, 200, 200, 253},                  /* hp              */
-   {UT_UNIT, AT_UNT, 0, 200, 200, 253},                  /* key             */
-   {UT_UNIT, AT_VAL, 0, 200, 200, 249},                  /* alignment       */
+   {UT_UNIT, AT_VAL, nullptr, 200, 200, 230},            /* weight          */
+   {UT_UNIT, AT_VAL, nullptr, 200, 200, 230},            /* capacity        */
+   {UT_UNIT, AT_VAL, nullptr, 200, 200, 253},            /* max-hp          */
+   {UT_UNIT, AT_VAL, nullptr, 200, 200, 253},            /* hp              */
+   {UT_UNIT, AT_UNT, nullptr, 200, 200, 253},            /* key             */
+   {UT_UNIT, AT_VAL, nullptr, 200, 200, 249},            /* alignment       */
    {UT_UNIT, AT_BIT, unit_open_flags, 200, 200, 253},    /* open-flags      */
-   {UT_UNIT, AT_VAL, 0, 200, 200, 253},                  /* tgh             */
-   {UT_UNIT, AT_VAL, 0, 253, 253, 253},                  /* lights          */
-   {UT_UNIT, AT_VAL, 0, 200, 200, 253},                  /* bright          */
+   {UT_UNIT, AT_VAL, nullptr, 200, 200, 253},            /* tgh             */
+   {UT_UNIT, AT_VAL, nullptr, 253, 253, 253},            /* lights          */
+   {UT_UNIT, AT_VAL, nullptr, 200, 200, 253},            /* bright          */
    {UT_ROOM, AT_BIT, room_flags, 200, 200, 200},         /* room-flags      */
    {UT_ROOM, AT_TYP, room_landscape, 200, 200, 200},     /* movement        */
-   {UT_PC, AT_VAL, 0, 255, 255, 255},                    /* cc-info         */
-   {UT_ROOM, AT_DIRSTR, 0, 200, 200, 200},               /* add-dir-name    */
-   {UT_ROOM, AT_DIRSTR, 0, 200, 200, 200},               /* del-dir-name    */
+   {UT_PC, AT_VAL, nullptr, 255, 255, 255},              /* cc-info         */
+   {UT_ROOM, AT_DIRSTR, nullptr, 200, 200, 200},         /* add-dir-name    */
+   {UT_ROOM, AT_DIRSTR, nullptr, 200, 200, 200},         /* del-dir-name    */
    {UT_ROOM, AT_DIRBIT, unit_open_flags, 200, 200, 200}, /* dir-flags       */
-   {UT_ROOM, AT_DIRUNT, 0, 200, 200, 200},               /* dir-key         */
-   {UT_OBJ, AT_VAL, 0, 200, 240, 200},                   /* value0          */
-   {UT_OBJ, AT_VAL, 0, 200, 240, 200},                   /* value1          */
-   {UT_OBJ, AT_VAL, 0, 200, 240, 200},                   /* value2          */
-   {UT_OBJ, AT_VAL, 0, 200, 240, 200},                   /* value3          */
-   {UT_OBJ, AT_VAL, 0, 200, 240, 200},                   /* value4          */
+   {UT_ROOM, AT_DIRUNT, nullptr, 200, 200, 200},         /* dir-key         */
+   {UT_OBJ, AT_VAL, nullptr, 200, 240, 200},             /* value0          */
+   {UT_OBJ, AT_VAL, nullptr, 200, 240, 200},             /* value1          */
+   {UT_OBJ, AT_VAL, nullptr, 200, 240, 200},             /* value2          */
+   {UT_OBJ, AT_VAL, nullptr, 200, 240, 200},             /* value3          */
+   {UT_OBJ, AT_VAL, nullptr, 200, 240, 200},             /* value4          */
    {UT_OBJ, AT_BIT, obj_flags, 200, 200, 200},           /* obj-flags       */
-   {UT_OBJ, AT_VAL, 0, 200, 200, 200},                   /* cost            */
-   {UT_OBJ, AT_VAL, 0, 200, 200, 200},                   /* rent            */
+   {UT_OBJ, AT_VAL, nullptr, 200, 200, 200},             /* cost            */
+   {UT_OBJ, AT_VAL, nullptr, 200, 200, 200},             /* rent            */
    {UT_OBJ, AT_TYP, obj_types, 200, 240, 200},           /* type            */
    {UT_OBJ, AT_TYP, obj_pos, 200, 240, 200},             /* equip           */
-   {UT_PC, AT_STR, 0, 200, 253, 253},                    /* guild-name      */
-   {UT_PC, AT_STR, 0, 240, 253, 230},                    /* pwd             */
+   {UT_PC, AT_STR, nullptr, 200, 253, 253},              /* guild-name      */
+   {UT_PC, AT_STR, nullptr, 240, 253, 230},              /* pwd             */
    {UT_PC, AT_BIT, pc_flags, 200, 200, 253},             /* pc-flags        */
-   {UT_PC, AT_VAL, 0, 200, 200, 253},                    /* crimes          */
-   {UT_PC, AT_VAL, 0, 200, 200, 200},                    /* drunk           */
-   {UT_PC, AT_VAL, 0, 200, 200, 200},                    /* full            */
-   {UT_PC, AT_VAL, 0, 200, 200, 200},                    /* thirsty         */
-   {UT_NPC, AT_VAL, 0, 200, 200, 253},                   /* default-pos     */
+   {UT_PC, AT_VAL, nullptr, 200, 200, 253},              /* crimes          */
+   {UT_PC, AT_VAL, nullptr, 200, 200, 200},              /* drunk           */
+   {UT_PC, AT_VAL, nullptr, 200, 200, 200},              /* full            */
+   {UT_PC, AT_VAL, nullptr, 200, 200, 200},              /* thirsty         */
+   {UT_NPC, AT_VAL, nullptr, 200, 200, 253},             /* default-pos     */
    {UT_NPC, AT_BIT, npc_flags, 200, 200, 200},           /* npc-flags       */
-   {UT_PC, AT_STR, 0, 200, 230, 230},                    /* hometown        */
-   {UT_CHAR, AT_VAL, 0, 253, 253, 253},                  /* exp             */
+   {UT_PC, AT_STR, nullptr, 200, 230, 230},              /* hometown        */
+   {UT_CHAR, AT_VAL, nullptr, 253, 253, 253},            /* exp             */
    {UT_CHAR, AT_BIT, char_flags, 200, 200, 253},         /* char-flags      */
-   {UT_CHAR, AT_VAL, 0, 200, 200, 240},                  /* mana            */
-   {UT_CHAR, AT_VAL, 0, 200, 200, 240},                  /* endurance       */
+   {UT_CHAR, AT_VAL, nullptr, 200, 200, 240},            /* mana            */
+   {UT_CHAR, AT_VAL, nullptr, 200, 200, 240},            /* endurance       */
    {UT_CHAR, AT_TYP, wpn_text, 200, 200, 253},           /* attack-type     */
-   {UT_CHAR, AT_VAL, 0, 200, 200, 253},                  /* hand-quality    */
-   {UT_UNIT, AT_VAL, 0, 200, 200, 230},                  /* height          */
+   {UT_CHAR, AT_VAL, nullptr, 200, 200, 253},            /* hand-quality    */
+   {UT_UNIT, AT_VAL, nullptr, 200, 200, 230},            /* height          */
    {UT_CHAR, AT_TYP, pc_races, 200, 200, 253},           /* race            */
    {UT_CHAR, AT_TYP, char_sex, 200, 200, 253},           /* sex             */
-   {UT_NPC, AT_VAL, 0, 255, 255, 255},                   /* level           */
+   {UT_NPC, AT_VAL, nullptr, 255, 255, 255},             /* level           */
    {UT_CHAR, AT_TYP, char_pos, 200, 253, 253},           /* position        */
    {UT_CHAR, AT_TYPVAL, abil_text, 240, 253, 253},       /* ability         */
-   {UT_PC, AT_VAL, 0, 230, 253, 253},                    /* skill-points    */
-   {UT_PC, AT_VAL, 0, 230, 253, 253},                    /* ability-points  */
-   {UT_UNIT, AT_VAL, 0, 200, 230, 200},                  /* remove affects  */
-   {UT_PC, AT_STR, 0, 200, 200, 230},                    /* add-quest       */
-   {UT_PC, AT_STR, 0, 200, 200, 230},                    /* del-quest       */
-   {UT_CHAR, AT_VAL, 0, 200, 253, 230},                  /* speed           */
-   {UT_PC, AT_STR, 0, 255, 254, 254},                    /* add-info        */
-   {UT_PC, AT_STR, 0, 255, 254, 254},                    /* del-info        */
-   {UT_PC, AT_VAL, 0, 255, 254, 254},                    /* access          */
-   {UT_PC, AT_VAL, 0, 255, 254, 254},                    /* age             */
-   {UT_PC, AT_VAL, 0, 255, 254, 254}                     /* lifespan        */
+   {UT_PC, AT_VAL, nullptr, 230, 253, 253},              /* skill-points    */
+   {UT_PC, AT_VAL, nullptr, 230, 253, 253},              /* ability-points  */
+   {UT_UNIT, AT_VAL, nullptr, 200, 230, 200},            /* remove affects  */
+   {UT_PC, AT_STR, nullptr, 200, 200, 230},              /* add-quest       */
+   {UT_PC, AT_STR, nullptr, 200, 200, 230},              /* del-quest       */
+   {UT_CHAR, AT_VAL, nullptr, 200, 253, 230},            /* speed           */
+   {UT_PC, AT_STR, nullptr, 255, 254, 254},              /* add-info        */
+   {UT_PC, AT_STR, nullptr, 255, 254, 254},              /* del-info        */
+   {UT_PC, AT_VAL, nullptr, 255, 254, 254},              /* access          */
+   {UT_PC, AT_VAL, nullptr, 255, 254, 254},              /* age             */
+   {UT_PC, AT_VAL, nullptr, 255, 254, 254}               /* lifespan        */
 };
 
 // Post-porcessing of adding-extra descriptions.
@@ -171,12 +169,18 @@ void edit_extra(struct descriptor_data *d)
 {
    struct extra_descr_data *exd;
 
-   for(exd = UNIT_EXTRA_DESCR(d->editing); exd; exd = exd->next)
+   for(exd = UNIT_EXTRA_DESCR(d->editing); exd != nullptr; exd = exd->next)
+   {
       if(exd == d->editref)
+      {
          break; // It still exists!
+      }
+   }
 
-   if(exd)
+   if(exd != nullptr)
+   {
       exd->descr.Reassign(d->localstr);
+   }
 }
 
 // Post-porcessing of adding-extra descriptions.
@@ -184,12 +188,18 @@ void edit_info(struct descriptor_data *d)
 {
    struct extra_descr_data *exd;
 
-   for(exd = PC_INFO(d->editing); exd; exd = exd->next)
+   for(exd = PC_INFO(d->editing); exd != nullptr; exd = exd->next)
+   {
       if(exd == d->editref)
+      {
          break; // It still exists!
+      }
+   }
 
-   if(exd)
+   if(exd != nullptr)
+   {
       exd->descr.Reassign(d->localstr);
+   }
 }
 
 void edit_outside_descr(struct descriptor_data *d)
@@ -202,29 +212,44 @@ void edit_inside_descr(struct descriptor_data *d)
    UNIT_IN_DESCR(d->editing).Reassign(d->localstr);
 }
 
-int search_block_set(char *arg, const char **list, bool exact)
+auto search_block_set(char *arg, const char **list, bool exact) -> int
 {
-   int i, l;
+   int i;
+   int l;
 
    /* Substitute '_' and get length of string */
-   for(l = 0; arg[l]; l++)
+   for(l = 0; arg[l] != 0; l++)
+   {
       if(arg[l] == '_')
+      {
          arg[l] = ' ';
+      }
+   }
 
    if(exact)
    {
-      for(i = 0; list[i]; i++)
-         if(!strcmp(arg, list[i]))
+      for(i = 0; list[i] != nullptr; i++)
+      {
+         if(strcmp(arg, list[i]) == 0)
+         {
             return i;
+         }
+      }
    }
    else
    {
       if(l == 0)
+      {
          l = 1; /* Avoid "" to match the first available string */
+      }
 
-      for(i = 0; list[i]; i++)
-         if(!str_nccmp(arg, list[i], l)) /* no regard of case */
+      for(i = 0; list[i] != nullptr; i++)
+      {
+         if(str_nccmp(arg, list[i], l) == 0)
+         { /* no regard of case */
             return i;
+         }
+      }
    }
 
    return -1;
@@ -258,8 +283,9 @@ int search_block_set(char *arg, const char **list, bool exact)
 
 void show_fields(struct unit_data *ch)
 {
-   char string[MAX_STRING_LENGTH], *c;
-   int  i;
+   char  string[MAX_STRING_LENGTH];
+   char *c;
+   int   i;
 
    for(*string = '\0', i = 0, c = string; i < MAX_SET_FIELDS; i++)
    {
@@ -275,11 +301,13 @@ void show_fields(struct unit_data *ch)
 
 void show_structure(const char *structure[], struct unit_data *ch)
 {
-   char **c, *cc, buf[MAX_STRING_LENGTH];
+   char **c;
+   char  *cc;
+   char   buf[MAX_STRING_LENGTH];
 
    strcpy(buf, "Not defined yet.\n\r");
 
-   for(cc = buf, c = (char **)structure; *c; c++)
+   for(cc = buf, c = (char **)structure; *c != nullptr; c++)
    {
       sprintf(cc, "%s\n\r", *c);
       TAIL(cc);
@@ -287,33 +315,42 @@ void show_structure(const char *structure[], struct unit_data *ch)
    send_to_char(buf, ch);
 }
 
-long int get_bit(char *bitlst, const char *structure[])
+auto get_bit(char *bitlst, const char *structure[]) -> long int
 {
-   char    *l, *s, bit[MAX_STRING_LENGTH];
-   long int bitval = 0, tmpval;
+   char    *l;
+   char    *s;
+   char     bit[MAX_STRING_LENGTH];
+   long int bitval = 0;
+   long int tmpval;
 
    /* walk through bitlist */
-   for(l = bitlst; *l;)
+   for(l = bitlst; *l != 0;)
    {
       /* copy bitname */
-      for(s = bit; *l && *l != '|'; *(s++) = *(l++))
+      for(s = bit; (*l != 0) && *l != '|'; *(s++) = *(l++))
+      {
          ;
+      }
 
       *s = 0;
-      if(*l)
+      if(*l != 0)
+      {
          l++;
+      }
 
-      if(!str_is_empty(bit))
+      if(str_is_empty(bit) == 0u)
       {
          if((tmpval = search_block_set(bit, structure, FALSE)) == -1)
+         {
             return -1;
+         }
          SET_BIT(bitval, 1 << tmpval);
       }
    }
    return bitval;
 }
 
-int get_type(char *typdef, const char *structure[])
+auto get_type(char *typdef, const char *structure[]) -> int
 {
    return search_block_set(typdef, structure, FALSE);
 }
@@ -321,7 +358,8 @@ int get_type(char *typdef, const char *structure[])
 /* modification of anything in units */
 void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   char arg[MAX_STRING_LENGTH], buf[MAX_STRING_LENGTH];
+   char arg[MAX_STRING_LENGTH];
+   char buf[MAX_STRING_LENGTH];
    int  type;
 
    char     strarg[MAX_STRING_LENGTH];
@@ -329,18 +367,18 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
    long int valarg = 0;
    long int bitarg = 0;
 
-   struct file_index_type    *untarg = NULL;
+   struct file_index_type    *untarg = nullptr;
    struct extra_descr_data   *ed;
    struct unit_data          *unt;
    struct unit_affected_type *aff;
 
-   int required_xp(int level);
-
    if(!CHAR_DESCRIPTOR(ch))
+   {
       return;
+   }
 
    /* Check argument */
-   if(str_is_empty(argument))
+   if(str_is_empty(argument) != 0u)
    {
       send_to_char("Syntax: set <name> <field> <arguments>.\n\r", ch);
       return;
@@ -355,14 +393,14 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
    }
    else
    {
-      unt = find_unit(ch, &argument, 0, FIND_UNIT_WORLD | FIND_UNIT_SURRO | FIND_UNIT_INVEN | FIND_UNIT_EQUIP);
-      if(unt == NULL)
+      unt = find_unit(ch, &argument, nullptr, FIND_UNIT_WORLD | FIND_UNIT_SURRO | FIND_UNIT_INVEN | FIND_UNIT_EQUIP);
+      if(unt == nullptr)
       {
          send_to_char("No such thing.\n\r", ch);
          return;
       }
       /* Temporary fix, as modifying money CAN crash the game!   /gnort */
-      else if(IS_MONEY(unt) && CHAR_LEVEL(ch) < 255)
+      if(IS_MONEY(unt) && CHAR_LEVEL(ch) < 255)
       {
          send_to_char("You can't modify money yet, sorry.\n\r", ch);
          return;
@@ -412,7 +450,7 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
    switch(unit_field_data[type].atype)
    {
       case AT_STR:
-         if(str_is_empty(argument))
+         if(str_is_empty(argument) != 0u)
          {
             send_to_char("Argument expected.\n\r", ch);
             return;
@@ -420,7 +458,7 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          break;
 
       case AT_DES:
-         if(unit_is_edited(unt))
+         if(unit_is_edited(unt) != nullptr)
          {
             send_to_char("Unit is already being edited.\n\r", ch);
             return;
@@ -432,7 +470,7 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
       case AT_VAL:
          send_to_char("Arg:<value>\n\r", ch);
          argument = str_next_word(argument, arg);
-         if(str_is_empty(arg))
+         if(str_is_empty(arg) != 0u)
          {
             send_to_char("Numeric argument expected.\n\r", ch);
             return;
@@ -472,7 +510,7 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          send_to_char("Arg:<unitpath>\n\r", ch);
          argument = str_next_word(argument, strarg);
          /* find unit by 'path' name in arg */
-         if((untarg = str_to_file_index(strarg)) == NULL)
+         if((untarg = str_to_file_index(strarg)) == nullptr)
          {
             send_to_char("Invalid or missing unit path for field.\n\r", ch);
             return;
@@ -483,12 +521,12 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
 
       case AT_KEYDES:
          send_to_char("Arg:<string> (description)\n\r", ch);
-         if(str_is_empty(argument))
+         if(str_is_empty(argument) != 0u)
          {
             send_to_char("Missing string argument.\n\r", ch);
             return;
          }
-         if(unit_is_edited(unt))
+         if(unit_is_edited(unt) != nullptr)
          {
             send_to_char("Unit is already being edited.\n\r", ch);
             return;
@@ -509,7 +547,7 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          sprintf(buf, "Type found is %s [%d]\n\r", unit_field_data[type].structure[typarg], typarg);
          send_to_char(buf, ch);
          argument = str_next_word(argument, arg);
-         if(str_is_empty(arg))
+         if(str_is_empty(arg) != 0u)
          {
             send_to_char("Numeric argument expected.\n\r", ch);
             return;
@@ -552,7 +590,7 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          }
          sprintf(buf, "Direction found is %s [%d]\n\r", dirs[typarg], typarg);
          send_to_char(buf, ch);
-         if(str_is_empty(argument))
+         if(str_is_empty(argument) != 0u)
          {
             send_to_char("Missing string argument.\n\r", ch);
             return;
@@ -572,7 +610,7 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          sprintf(buf, "Direction found is %s [%d]\n\r", dirs[typarg], typarg);
          send_to_char(buf, ch);
          argument = str_next_word(argument, arg);
-         if((untarg = str_to_file_index(arg)) == NULL)
+         if((untarg = str_to_file_index(arg)) == nullptr)
          {
             send_to_char("Invalid or missing unit path for field.\n\r", ch);
             return;
@@ -592,7 +630,7 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          }
          sprintf(buf, "Direction found is %s [%d]\n\r", dirs[typarg], typarg);
          send_to_char(buf, ch);
-         if(unit_is_edited(unt))
+         if(unit_is_edited(unt) != nullptr)
          {
             send_to_char("Unit is already being edited.\n\r", ch);
             return;
@@ -653,16 +691,16 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
 
       case 4: /* "add-extra" */
          argument = str_next_word(argument, strarg);
-         act("Searching for $2t.", A_ALWAYS, ch, strarg, 0, TO_CHAR);
+         act("Searching for $2t.", A_ALWAYS, ch, strarg, nullptr, TO_CHAR);
 
-         if((ed = unit_find_extra(strarg, unt)) == NULL)
+         if((ed = unit_find_extra(strarg, unt)) == nullptr)
          {
             /* the field was not found. create a new one. */
             ed                    = new(class extra_descr_data);
             ed->next              = UNIT_EXTRA_DESCR(unt);
             UNIT_EXTRA_DESCR(unt) = ed;
 
-            while(*strarg) /* insert names */
+            while(*strarg != 0) /* insert names */
             {
                ed->names.AppendName(strarg);
                argument = str_next_word(argument, strarg);
@@ -674,10 +712,12 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          {
             /* add the rest of the names if they do not exist */
             argument = str_next_word(argument, strarg);
-            while(*strarg)
+            while(*strarg != 0)
             {
-               if(ed->names.IsName(strarg))
+               if(ed->names.IsName(strarg) != nullptr)
+               {
                   ed->names.AppendName(strarg);
+               }
 
                argument = str_next_word(argument, strarg);
             }
@@ -692,13 +732,13 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          return;
 
       case 5: /* "del-extra" */
-         if(str_is_empty(argument))
+         if(str_is_empty(argument) != 0u)
          {
             send_to_char("You must supply a field name.\n\r", ch);
             return;
          }
 
-         if((ed = unit_find_extra(argument, unt)) == NULL)
+         if((ed = unit_find_extra(argument, unt)) == nullptr)
          {
             send_to_char("No field with that keyword.\n\r", ch);
             return;
@@ -714,9 +754,13 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
 
       case 7: /* "unit-flags" */
          if(IS_SET(UNIT_FLAGS(unt), UNIT_FL_TRANS) && !IS_SET(bitarg, UNIT_FL_TRANS))
+         {
             trans_unset(unt);
+         }
          else if(!IS_SET(UNIT_FLAGS(unt), UNIT_FL_TRANS) && IS_SET(bitarg, UNIT_FL_TRANS))
+         {
             trans_set(unt);
+         }
 
          UNIT_FLAGS(unt) = bitarg;
          return;
@@ -742,10 +786,14 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          return;
 
       case 13: /* "alignment" */
-         if(is_in(valarg, -1000, 1000))
+         if(is_in(valarg, -1000, 1000) != 0)
+         {
             UNIT_ALIGNMENT(unt) = valarg;
+         }
          else
+         {
             send_to_char("Shame on you: Value must be in -1000..+1000!\n\r", ch);
+         }
          return;
 
       case 14: /* "open_flags" */
@@ -767,7 +815,7 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          return;
 
       case 17: /* "bright" */
-         if(!is_in(valarg, -6, 6))
+         if(is_in(valarg, -6, 6) == 0)
          {
             send_to_char("Expected -6..+6\n\r", ch);
             return;
@@ -792,14 +840,16 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          }
          else
          {
-            if(is_in(valarg, 0, 9999))
+            if(is_in(valarg, 0, 9999) != 0)
             {
                send_to_char("Setting CC information.\n\r", ch);
                PC_ACCOUNT(unt).last4  = valarg;
                PC_ACCOUNT(unt).cracks = 0;
             }
             else
+            {
                send_to_char("Illegal value, expected -1 or 0..9999.\n\r", ch);
+            }
          }
          return;
 
@@ -942,20 +992,24 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          return;
 
       case 35: /* "guild-name" */
-         if(str_ccmp_next_word(argument, "none"))
+         if(str_ccmp_next_word(argument, "none") != nullptr)
          {
             if(PC_GUILD(unt))
             {
                free(PC_GUILD(unt));
-               PC_GUILD(unt) = NULL;
+               PC_GUILD(unt) = nullptr;
             }
             send_to_char("Changed.\n\r", ch);
             return;
          }
-         if(PC_GUILD(unt) == NULL)
+         if(PC_GUILD(unt) == nullptr)
+         {
             CREATE(PC_GUILD(unt), char, strlen(argument) + 1);
+         }
          else
+         {
             RECREATE(PC_GUILD(unt), char, strlen(argument) + 1);
+         }
          strcpy(PC_GUILD(unt), argument);
          send_to_char("Changed.\n\r", ch);
          return;
@@ -994,10 +1048,14 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          return;
 
       case 44: /* hometown */
-         if(PC_HOME(unt) == NULL)
+         if(PC_HOME(unt) == nullptr)
+         {
             CREATE(PC_HOME(unt), char, strlen(argument) + 1);
+         }
          else
+         {
             RECREATE(PC_HOME(unt), char, strlen(argument) + 1);
+         }
 
          strcpy(PC_HOME(unt), argument);
          send_to_char("Changed.\n\r", ch);
@@ -1005,11 +1063,15 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
 
       case 45: /* "exp" */
          if(CHAR_LEVEL(unt) < MORTAL_MAX_LEVEL && valarg > required_xp(1000))
+         {
             send_to_char("You are not allowed to set exp that high for "
                          "mortals\n\r",
                          ch);
+         }
          else
+         {
             CHAR_EXP(unt) = valarg;
+         }
          return;
 
       case 46: /* "affected-by" */
@@ -1049,10 +1111,14 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          return;
 
       case 54: /* "level" */
-         if(is_in(valarg, 0, 199))
+         if(is_in(valarg, 0, 199) != 0)
+         {
             CHAR_LEVEL(unt) = valarg;
+         }
          else
+         {
             send_to_char("Shame on you: Value must be in 0..199!\n\r", ch);
+         }
          return;
 
       case 55: /* "position" */
@@ -1060,10 +1126,14 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          return;
 
       case 56: /* "ability" */
-         if(is_in(valarg, 0, 200))
+         if(is_in(valarg, 0, 200) != 0)
+         {
             CHAR_ABILITY(unt, typarg) = valarg;
+         }
          else
+         {
             send_to_char("Shame on you: Value must be in 0%..200%!\n\r", ch);
+         }
          return;
 
       case 57: /* "skill-points" */
@@ -1075,13 +1145,15 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          return;
 
       case 59: /* "remove-affect" */
-         if((aff = affected_by_spell(unt, valarg)))
+         if((aff = affected_by_spell(unt, valarg)) != nullptr)
          {
             destroy_affect(aff);
             send_to_char("Affect attempted removed.\n\r", ch);
          }
          else
+         {
             send_to_char("No such affect.\n\r", ch);
+         }
          return;
 
       case 60: /* "add-quest" */
@@ -1091,7 +1163,7 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          return;
 
       case 61: /* "del-quest" */
-         if(str_is_empty(argument))
+         if(str_is_empty(argument) != 0u)
          {
             send_to_char("You must supply a field name.\n\r", ch);
             return;
@@ -1103,24 +1175,28 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          return;
 
       case 62: /* "speed" */
-         if(is_in(valarg, SPEED_MIN, SPEED_MAX))
+         if(is_in(valarg, SPEED_MIN, SPEED_MAX) != 0)
+         {
             CHAR_SPEED(unt) = valarg;
+         }
          else
+         {
             send_to_char("Speed must be in [12..200]!\n\r", ch);
+         }
          return;
 
       case 63: /* "add-info" */
          argument = str_next_word(argument, strarg);
-         act("Searching for $2t.", A_ALWAYS, ch, strarg, 0, TO_CHAR);
+         act("Searching for $2t.", A_ALWAYS, ch, strarg, nullptr, TO_CHAR);
 
-         if((ed = PC_INFO(unt)->find_raw(strarg)) == NULL)
+         if((ed = PC_INFO(unt)->find_raw(strarg)) == nullptr)
          {
             /* the field was not found. create a new one. */
             ed           = new(class extra_descr_data);
             ed->next     = PC_INFO(unt);
             PC_INFO(unt) = ed;
 
-            while(*strarg) /* insert names */
+            while(*strarg != 0) /* insert names */
             {
                ed->names.AppendName(strarg);
                argument = str_next_word(argument, strarg);
@@ -1132,10 +1208,12 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          {
             /* add the rest of the names if they do not exist */
             argument = str_next_word(argument, strarg);
-            while(*strarg)
+            while(*strarg != 0)
             {
-               if(ed->names.IsName(strarg))
+               if(ed->names.IsName(strarg) != nullptr)
+               {
                   ed->names.AppendName(strarg);
+               }
 
                argument = str_next_word(argument, strarg);
             }
@@ -1150,7 +1228,7 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          return;
 
       case 64: /* "del-info" */
-         if(str_is_empty(argument))
+         if(str_is_empty(argument) != 0u)
          {
             send_to_char("You must supply a field name.\n\r", ch);
             return;
@@ -1169,20 +1247,28 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
          /* This sets a time_t so that the PC's age
           * will be as many years as valarg
           */
-         if(is_in(valarg, 10, 1000))
-            PC_TIME(unt).birth = time(NULL) - (valarg * SECS_PER_MUD_YEAR);
+         if(is_in(valarg, 10, 1000) != 0)
+         {
+            PC_TIME(unt).birth = time(nullptr) - (valarg * SECS_PER_MUD_YEAR);
+         }
          else
+         {
             send_to_char("Value must be in 10..1000!\n\r", ch);
+         }
          return;
 
       case 67: /* "lifespan" */
          /* This sets a time_t so that the PC's age
           * will be as many years as valarg
           */
-         if(is_in(valarg, 10, 1000))
+         if(is_in(valarg, 10, 1000) != 0)
+         {
             PC_LIFESPAN(unt) = valarg;
+         }
          else
+         {
             send_to_char("Value must be in 10..1000!\n\r", ch);
+         }
          return;
 
       default: /* undefined field type */
@@ -1199,19 +1285,24 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
 #define SET_SPELL  1
 #define SET_WEAPON 2
 
-static const char *skill_field_names[] = {"skill", "spell", "weapon", NULL};
+static const char *skill_field_names[] = {"skill", "spell", "weapon", nullptr};
 
 void do_setskill(struct unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   int               type, skillarg, valarg = 0;
-   char              buf[MAX_STRING_LENGTH], arg[MAX_STRING_LENGTH];
+   int               type;
+   int               skillarg;
+   int               valarg = 0;
+   char              buf[MAX_STRING_LENGTH];
+   char              arg[MAX_STRING_LENGTH];
    struct unit_data *unt;
 
    if(!CHAR_DESCRIPTOR(ch))
+   {
       return;
+   }
 
    /* Check argument */
-   if(str_is_empty(argument))
+   if(str_is_empty(argument) != 0u)
    {
       send_to_char("Syntax: setskill <name> (skill|spell|weapon)"
                    " <field> <value>.\n\r",
@@ -1220,7 +1311,7 @@ void do_setskill(struct unit_data *ch, char *argument, const struct command_info
    }
 
    /* find unit to set */
-   if((unt = find_unit(ch, &argument, 0, FIND_UNIT_WORLD)) == NULL)
+   if((unt = find_unit(ch, &argument, nullptr, FIND_UNIT_WORLD)) == nullptr)
    {
       send_to_char("No such person or thing\n\r", ch);
       return;
@@ -1280,9 +1371,13 @@ void do_setskill(struct unit_data *ch, char *argument, const struct command_info
          valarg   = atoi(arg);
 
          if(IS_PC(unt))
+         {
             PC_SPL_SKILL(unt, skillarg) = valarg;
+         }
          else
+         {
             NPC_SPL_SKILL(unt, skillarg) = valarg;
+         }
          break;
 
       case SET_WEAPON:
@@ -1301,9 +1396,13 @@ void do_setskill(struct unit_data *ch, char *argument, const struct command_info
          valarg   = atoi(arg);
 
          if(IS_PC(unt))
+         {
             PC_WPN_SKILL(unt, skillarg) = valarg;
+         }
          else
+         {
             NPC_WPN_SKILL(unt, skillarg) = valarg;
+         }
    }
 
    sprintf(buf, "New value: %d\n\rOk.\n\r", valarg);

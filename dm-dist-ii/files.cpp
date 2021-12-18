@@ -22,8 +22,8 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <ctype.h>
-#include <stdio.h>
+#include <cctype>
+#include <cstdio>
 
 #include "files.h"
 #include "textutil.h"
@@ -32,30 +32,37 @@
 #include "utils.h"
 
 /* Returns the size of a file in bytes */
-long fsize(FILE *f)
+auto fsize(FILE *f) -> long
 {
-   long oldpos, size;
+   long oldpos;
+   long size;
 
    oldpos = ftell(f);
 
-   if(fseek(f, 0L, SEEK_END)) /* Seek to end of file */
+   if(fseek(f, 0L, SEEK_END) != 0)
+   { /* Seek to end of file */
       assert(FALSE);
+   }
 
    size = ftell(f);
 
-   if(fseek(f, oldpos, SEEK_SET)) /* Seek to end of file */
+   if(fseek(f, oldpos, SEEK_SET) != 0)
+   { /* Seek to end of file */
       assert(FALSE);
+   }
 
    return size;
 }
 
 /* check if a file exists */
-ubit1 file_exists(const char *name)
+auto file_exists(const char *name) -> ubit1
 {
    FILE *fp;
 
-   if((fp = fopen(name, "r")) == NULL)
+   if((fp = fopen(name, "r")) == nullptr)
+   {
       return FALSE;
+   }
 
    fclose(fp);
    return TRUE;
@@ -66,10 +73,12 @@ void touch_file(char *name)
 {
    FILE *fp;
 
-   if(file_exists(name))
+   if(file_exists(name) != 0u)
+   {
       return;
+   }
 
-   if((fp = fopen(name, "w")) == NULL)
+   if((fp = fopen(name, "w")) == nullptr)
    {
       fprintf(stderr, "touch_file(): Couldn't create %s...\n", name);
       assert(FALSE);
@@ -77,7 +86,7 @@ void touch_file(char *name)
    fclose(fp);
 }
 
-char *fread_line_commented(FILE *fl, char *buf, int max)
+auto fread_line_commented(FILE *fl, char *buf, int max) -> char *
 {
    char *s;
 
@@ -85,22 +94,27 @@ char *fread_line_commented(FILE *fl, char *buf, int max)
    {
       s = fgets(buf, max, fl);
 
-      if(s == NULL)
+      if(s == nullptr)
+      {
          break;
+      }
 
       if(*skip_spaces(buf) != '#')
+      {
          break;
+      }
    }
 
    return s;
 }
 
 /* read and allocate space for a '~'-terminated string from a given file */
-char *fread_string_copy(FILE *fl, char *buf, int max)
+auto fread_string_copy(FILE *fl, char *buf, int max) -> char *
 {
    char *obuf;
    char *point;
-   int   flag, total;
+   int   flag;
+   int   total;
 
    memset(buf, '\0', max);
    total = 0;
@@ -108,7 +122,7 @@ char *fread_string_copy(FILE *fl, char *buf, int max)
 
    do
    {
-      if(!fgets(buf, max - total, fl))
+      if(fgets(buf, max - total, fl) == nullptr)
       {
          error(HERE, "fread_string_copy");
       }
@@ -120,50 +134,57 @@ char *fread_string_copy(FILE *fl, char *buf, int max)
          error(HERE, "fread_string_copy: string too large (db.c)");
       }
 
-      for(point = buf + strlen(buf) - 2; point >= buf && isspace(*point); point--)
+      for(point = buf + strlen(buf) - 2; point >= buf && (isspace(*point) != 0); point--)
+      {
          ;
+      }
 
-      if((flag = (*point == '~')))
+      if((flag = static_cast<int>(*point == '~')) != 0)
+      {
          if(*(buf + strlen(buf) - 3) == '\n')
          {
             *(buf + strlen(buf) - 2) = '\r';
             *(buf + strlen(buf) - 1) = '\0';
          }
          else
+         {
             *(buf + strlen(buf) - 2) = '\0';
+         }
+      }
       else
       {
          *(buf + strlen(buf) + 1) = '\0';
          *(buf + strlen(buf))     = '\r';
       }
       TAIL(buf);
-   } while(!flag);
+   } while(flag == 0);
 
    return obuf;
 }
 
 /* read and allocate space for a '~'-terminated string from a given file */
-char *fread_string(FILE *fl)
+auto fread_string(FILE *fl) -> char *
 {
    char buf[MAX_STRING_LENGTH];
 
    fread_string_copy(fl, buf, MAX_STRING_LENGTH);
 
    if(strlen(buf) > 0)
+   {
       return str_dup(buf);
-   else
-      return 0;
+   }
+   return 0;
 }
 
 /* Read contents of a file, but skip all remark lines and blank lines. */
-int config_file_to_string(char *name, char *buf, int max_len)
+auto config_file_to_string(char *name, char *buf, int max_len) -> int
 {
    FILE *fl;
    char  tmp[500];
 
    *buf = '\0';
 
-   if(!(fl = fopen(name, "r")))
+   if((fl = fopen(name, "r")) == nullptr)
    {
       DEBUG("File-to-string error.\n");
       *buf = '\0';
@@ -172,13 +193,17 @@ int config_file_to_string(char *name, char *buf, int max_len)
 
    do
    {
-      if(fgets(tmp, sizeof(tmp) - 1, fl))
+      if(fgets(tmp, sizeof(tmp) - 1, fl) != nullptr)
       {
          if(tmp[0] == '#')
+         {
             continue;
+         }
 
          if(tmp[0] == 0)
+         {
             continue;
+         }
 
          if(strlen(buf) + strlen(tmp) + 2 > (ubit32)max_len)
          {
@@ -192,7 +217,7 @@ int config_file_to_string(char *name, char *buf, int max_len)
          *(buf + strlen(buf) + 1) = '\0';
          *(buf + strlen(buf))     = '\r';
       }
-   } while(!feof(fl));
+   } while(feof(fl) == 0);
 
    fclose(fl);
 
@@ -200,14 +225,14 @@ int config_file_to_string(char *name, char *buf, int max_len)
 }
 
 /* read contents of a text file, and place in buf */
-int file_to_string(char *name, char *buf, int max_len)
+auto file_to_string(char *name, char *buf, int max_len) -> int
 {
    FILE *fl;
    char  tmp[500];
 
    *buf = '\0';
 
-   if(!(fl = fopen(name, "r")))
+   if((fl = fopen(name, "r")) == nullptr)
    {
       slog(LOG_ALL, 0, "File-to-string error");
       *buf = '\0';
@@ -216,7 +241,7 @@ int file_to_string(char *name, char *buf, int max_len)
 
    do
    {
-      if(fgets(tmp, sizeof(tmp) - 1, fl))
+      if(fgets(tmp, sizeof(tmp) - 1, fl) != nullptr)
       {
          if(strlen(buf) + strlen(tmp) + 2 > (ubit32)max_len)
          {
@@ -229,14 +254,14 @@ int file_to_string(char *name, char *buf, int max_len)
          *(buf + strlen(buf) + 1) = '\0';
          *(buf + strlen(buf))     = '\r';
       }
-   } while(!feof(fl));
+   } while(feof(fl) == 0);
 
    fclose(fl);
 
    return 0;
 }
 
-long fread_num(FILE *fl)
+auto fread_num(FILE *fl) -> long
 {
    long tmp;
 
@@ -251,8 +276,10 @@ void fstrcpy(CByteBuffer *pBuf, FILE *f)
 
    pBuf->Clear();
 
-   while((c = fgetc(f)) && (c != EOF))
+   while(((c = fgetc(f)) != 0) && (c != EOF))
+   {
       pBuf->Append8(c);
+   }
 
    pBuf->Append8(0);
 }
@@ -272,29 +299,41 @@ struct fcache_type
 };
 
 static struct fcache_type fcache[FCACHE_MAX] = {
-   {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0},
-   {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0},
-   {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0},
-   {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0},
-   {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0},
-   {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0},
-   {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0},
-   {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0},
-   {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0},
-   {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0},
-   {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0},
-   {0, 0, 0, 0}};
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
+   {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}};
 
-char *enl_strcpy(char *dest, char *source, int *dest_size)
+auto enl_strcpy(char *dest, char *source, int *dest_size) -> char *
 {
    int len = strlen(source);
 
-   if((dest == NULL) || (*dest_size < len + 1))
+   if((dest == nullptr) || (*dest_size < len + 1))
    {
-      if(dest)
+      if(dest != nullptr)
+      {
          RECREATE(dest, char, len + 1);
+      }
       else
+      {
          CREATE(dest, char, 1 + len);
+      }
 
       *dest_size = len + 1;
    }
@@ -314,10 +353,13 @@ BUT 'read-only' files may be written to!
 
 */
 
-FILE *fopen_cache(char *name, const char *mode)
+auto fopen_cache(char *name, const char *mode) -> FILE *
 {
-   int        i, min_i, hit_i;
-   static int pure_hits = 0, purge = 0;
+   int        i;
+   int        min_i;
+   int        hit_i;
+   static int pure_hits = 0;
+   static int purge     = 0;
 
    min_i = number(0, FCACHE_MAX - 1); /* In case many are equal */
    hit_i = -1;
@@ -325,56 +367,68 @@ FILE *fopen_cache(char *name, const char *mode)
    for(i = 0; i < FCACHE_MAX; i++)
    {
       if(fcache[i].hits < fcache[min_i].hits)
+      {
          min_i = i;
-      if(fcache[i].name && !strcmp(name, fcache[i].name))
+      }
+      if((fcache[i].name != nullptr) && (strcmp(name, fcache[i].name) == 0))
+      {
          hit_i = i;
+      }
       fcache[i].hits--;
    }
 
    if(hit_i == -1)
    {
-      if(fcache[min_i].file)
+      if(fcache[min_i].file != nullptr)
       {
          if(fclose(fcache[min_i].file) != 0)
+         {
             error(HERE, "Error on fcache fclose() on file [%s].", fcache[min_i].name);
+         }
          purge++;
       }
       fcache[min_i].name = enl_strcpy(fcache[min_i].name, name, &fcache[min_i].name_s);
       fcache[min_i].hits = 0;
 
-      if(strchr(mode, 'w'))
+      if(strchr(mode, 'w') != nullptr)
+      {
          fcache[min_i].file = fopen(name, "w+b");
-      else if(strchr(mode, 'a'))
+      }
+      else if(strchr(mode, 'a') != nullptr)
+      {
          fcache[min_i].file = fopen(name, "a+b");
-      else if(strchr(mode, 'r'))
+      }
+      else if(strchr(mode, 'r') != nullptr)
+      {
          fcache[min_i].file = fopen(name, "r+b");
+      }
       else
+      {
          error(HERE, "Bad file mode [%s] for file [%s]", mode, name);
+      }
 
       return fcache[min_i].file;
    }
+
+   if(strchr(mode, 'w'))
+      fcache[hit_i].file = freopen(name, "w+b", fcache[hit_i].file);
+   else if(strchr(mode, 'a'))
+      fseek(fcache[hit_i].file, 0L, SEEK_END);
+   else if(strchr(mode, 'r'))
+      fseek(fcache[hit_i].file, 0L, SEEK_SET);
    else
-   {
-      if(strchr(mode, 'w'))
-         fcache[hit_i].file = freopen(name, "w+b", fcache[hit_i].file);
-      else if(strchr(mode, 'a'))
-         fseek(fcache[hit_i].file, 0L, SEEK_END);
-      else if(strchr(mode, 'r'))
-         fseek(fcache[hit_i].file, 0L, SEEK_SET);
-      else
-         error(HERE, "Bad file mode [%s] for file [%s]", mode, name);
+      error(HERE, "Bad file mode [%s] for file [%s]", mode, name);
 
-      pure_hits++;
+   pure_hits++;
 
-      fcache[hit_i].hits = 0;
+   fcache[hit_i].hits = 0;
 
-      /* Consider fflush(fcache[hit_i].file); */
+   /* Consider fflush(fcache[hit_i].file); */
 
-      return fcache[hit_i].file;
-   }
+   return fcache[hit_i].file;
 }
 
-void fclose_cache(void)
+void fclose_cache()
 {
    int i;
 
@@ -382,17 +436,15 @@ void fclose_cache(void)
 
    for(i = 0; i < FCACHE_MAX; i++)
    {
-      if(fcache[i].file)
+      if(fcache[i].file != nullptr)
       {
          if(fclose(fcache[i].file) != 0)
          {
             slog(LOG_ALL, 0, "fcache close failed on file %s.", fcache[i].name);
             return;
          }
-         else
-         {
-            fcache[i].file = NULL;
-         }
+
+         fcache[i].file = NULL;
       }
    }
 }

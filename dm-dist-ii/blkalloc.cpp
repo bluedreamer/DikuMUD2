@@ -25,12 +25,12 @@
 
 #define BLOCKSIZE = 256000 /* nothing bigger than this please */
 
-void *blkalloc_start = 0;
-void *blkalloc_end   = 0;
+void *blkalloc_start = nullptr;
+void *blkalloc_end   = nullptr;
 
-void *blkalloc(size_t size)
+auto blkalloc(size_t size) -> void *
 {
-   void *res = 0;
+   void *res = nullptr;
 
    if(size >= BLOCKSIZE)
       return (malloc(size));

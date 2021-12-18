@@ -25,17 +25,16 @@
  *			sacrifice characters.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "affect.h"
 #include "comm.h"
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
 #include "money.h"
 #include "skills.h"
 #include "spells.h"
@@ -43,6 +42,7 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
 void save_player_file(struct unit_data *pc);
 
@@ -54,7 +54,7 @@ void add_sacrifice_info(struct unit_data *demi, struct unit_data *ch, long power
    sprintf(Buf, "$S%s", UNIT_NAME(ch));
    str_lower(Buf + 2);
    exd = PC_QUEST(demi)->find_raw(Buf);
-   if(exd == NULL)
+   if(exd == nullptr)
    {
       quest_add(demi, Buf, ltoa(power));
    }
@@ -69,7 +69,6 @@ void do_manifest(struct unit_data *ch, char *arg, const struct command_info *cmd
 {
 #ifndef DEMIGOD
    send_to_char("This command has been removed.\r\n", ch);
-   return;
 #else
    struct unit_data *player;
    struct unit_data *monster;
@@ -216,16 +215,18 @@ void do_pray(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
    struct unit_data *target;
 
-   if(str_is_empty(arg))
+   if(str_is_empty(arg) != 0u)
    {
-      act("You feel righteous", A_ALWAYS, ch, 0, 0, TO_CHAR);
+      act("You feel righteous", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
       if(CHAR_AWAKE(ch))
-         act("$1n prays to all the gods.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+      {
+         act("$1n prays to all the gods.", A_HIDEINV, ch, nullptr, nullptr, TO_ROOM);
+      }
    }
 
-   target = find_unit(ch, &arg, 0, FIND_UNIT_SURRO | FIND_UNIT_WORLD);
+   target = find_unit(ch, &arg, nullptr, FIND_UNIT_SURRO | FIND_UNIT_WORLD);
 
-   if(target == NULL || !IS_CHAR(target))
+   if(target == nullptr || !IS_CHAR(target))
    {
       send_to_char("No one by that name here.\n\r", ch);
       return;
@@ -233,13 +234,13 @@ void do_pray(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
    if(ch == target)
    {
-      act("You feel pretty selfish.", A_ALWAYS, ch, 0, 0, TO_CHAR);
-      act("$1n prays to $1mself.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+      act("You feel pretty selfish.", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
+      act("$1n prays to $1mself.", A_HIDEINV, ch, nullptr, nullptr, TO_ROOM);
       return;
    }
 
-   act("You pray to $3n.", A_ALWAYS, ch, 0, target, TO_CHAR);
-   act("$1n prays to $3n.", A_HIDEINV, ch, 0, target, TO_ROOM);
+   act("You pray to $3n.", A_ALWAYS, ch, nullptr, target, TO_CHAR);
+   act("$1n prays to $3n.", A_HIDEINV, ch, nullptr, target, TO_ROOM);
 
 #ifdef DEMIGOD
 
@@ -261,15 +262,19 @@ void do_pray(struct unit_data *ch, char *arg, const struct command_info *cmd)
 #endif
 }
 
-int sacrifice_unit_power(struct unit_data *item, int demigod)
+auto sacrifice_unit_power(struct unit_data *item, int demigod) -> int
 {
    if(!IS_OBJ(item))
-      return 0;
-
-   if(demigod)
    {
-      if(affected_by_spell(item, ID_CORPSE))
+      return 0;
+   }
+
+   if(demigod != 0)
+   {
+      if(affected_by_spell(item, ID_CORPSE) != nullptr)
+      {
          return OBJ_VALUE(item, 3) * 1000;
+      }
 
       switch(OBJ_TYPE(item))
       {
@@ -283,8 +288,10 @@ int sacrifice_unit_power(struct unit_data *item, int demigod)
    }
    else
    {
-      if(affected_by_spell(item, ID_CORPSE))
+      if(affected_by_spell(item, ID_CORPSE) != nullptr)
+      {
          return 10;
+      }
 
       switch(OBJ_TYPE(item))
       {
@@ -298,22 +305,30 @@ int sacrifice_unit_power(struct unit_data *item, int demigod)
    }
 }
 
-int sacrifice_unit(struct unit_data *u, int pow, int demigod)
+auto sacrifice_unit(struct unit_data *u, int pow, int demigod) -> int
 {
    if(UNIT_CONTAINS(u))
+   {
       pow += sacrifice_unit(UNIT_CONTAINS(u), pow, demigod);
+   }
 
-   if(u->next)
+   if(u->next != nullptr)
+   {
       pow += sacrifice_unit(u->next, pow, demigod);
+   }
 
    return pow + sacrifice_unit_power(u, demigod);
 }
 
-static bool contains_character(struct unit_data *u)
+static auto contains_character(struct unit_data *u) -> bool
 {
-   for(u = UNIT_CONTAINS(u); u; u = u->next)
+   for(u = UNIT_CONTAINS(u); u != nullptr; u = u->next)
+   {
       if(IS_CHAR(u) || (UNIT_CONTAINS(u) && contains_character(u)))
+      {
          return TRUE;
+      }
+   }
 
    return FALSE;
 }
@@ -322,7 +337,6 @@ void base_sacrifice(struct unit_data *ch, char *arg, int noble)
 {
 #ifndef DEMIGOD
    send_to_char("This command has been removed.\r\n", ch);
-   return;
 #else
    struct unit_data *u, *god;
    char              buf[MAX_INPUT_LENGTH];
@@ -446,7 +460,7 @@ void do_sacrifice(struct unit_data *ch, char *arg, const struct command_info *cm
    base_sacrifice(ch, arg, FALSE);
 }
 
-int sacrifice(struct spec_arg *sarg)
+auto sacrifice(struct spec_arg *sarg) -> int
 {
    if(sarg->cmd->no == CMD_SACRIFICE)
    {
@@ -519,7 +533,7 @@ void make_demigod(struct unit_data *ch)
 #endif
 }
 
-int demi_stuff(struct spec_arg *sarg)
+auto demi_stuff(struct spec_arg *sarg) -> int
 {
 #ifdef DEMIGOD
    int                      i, nExp, nMember;

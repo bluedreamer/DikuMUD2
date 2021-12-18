@@ -55,6 +55,4 @@ void gain_exp(struct unit_data *ch, int gain);
 void gain_exp_regardless(struct unit_data *ch, int gain);
 void gain_condition(struct unit_data *ch, int condition, int value);
 
-
-
 #endif /* _MUD_LIMITS_H */

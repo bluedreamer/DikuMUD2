@@ -22,10 +22,10 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "bytestring.h"
 #include "essential.h"
@@ -41,10 +41,10 @@ CByteBuffer::CByteBuffer(ubit32 nSize)
    m_nAllocated = nSize;
    m_pData      = (ubit8 *)calloc(nSize, 1);
 
-   assert(m_pData != NULL);
+   assert(m_pData != nullptr);
 }
 
-CByteBuffer::~CByteBuffer(void)
+CByteBuffer::~CByteBuffer()
 {
    free(m_pData);
 }
@@ -68,8 +68,10 @@ void CByteBuffer::SetSize(ubit32 nSize)
 
 void CByteBuffer::SetData(ubit8 *pData, ubit32 nSize)
 {
-   if(m_pData)
+   if(m_pData != nullptr)
+   {
       free(m_pData);
+   }
    Clear();
 
    m_pData = pData;
@@ -82,60 +84,77 @@ void CByteBuffer::SetData(ubit8 *pData, ubit32 nSize)
 void CByteBuffer::IncreaseSize(ubit32 nAdd)
 {
    if(nAdd > m_nAllocated)
+   {
       m_nAllocated += nAdd + 128;
+   }
    else
+   {
       m_nAllocated *= 2;
+   }
 
    SetSize(m_nAllocated);
 }
 
-int CByteBuffer::FileRead(FILE *f, ubit32 nLength)
+auto CByteBuffer::FileRead(FILE *f, ubit32 nLength) -> int
 {
    Clear();
 
    if(m_nAllocated < nLength)
+   {
       IncreaseSize(nLength - m_nAllocated + 1);
+   }
 
    int n = fread(m_pData, 1, nLength, f);
 
    if(n > 0)
+   {
       m_nLength = n;
+   }
 
    return n;
 }
 
-int CByteBuffer::FileWrite(FILE *f)
+auto CByteBuffer::FileWrite(FILE *f) -> int
 {
    int n;
 
    if(m_nLength > 0)
+   {
       return fwrite(m_pData, 1, m_nLength, f);
-   else
-      return 0;
+   }
+   return 0;
 }
 
-int CByteBuffer::FileRead(FILE *f, long nOffset, ubit32 nLength)
+auto CByteBuffer::FileRead(FILE *f, long nOffset, ubit32 nLength) -> int
 {
    Clear();
 
    if(m_nAllocated < nLength)
+   {
       IncreaseSize(nLength - m_nAllocated + 1);
+   }
 
-   if(fseek(f, nOffset, SEEK_SET))
+   if(fseek(f, nOffset, SEEK_SET) != 0)
+   {
       return -1;
+   }
 
    int n = fread(m_pData, 1, nLength, f);
 
    if(n > 0)
+   {
       m_nLength = nLength;
+   }
 
    return n;
 }
 
-int CByteBuffer::Read(ubit8 *pBuf, ubit32 nLen)
+auto CByteBuffer::Read(ubit8 *pBuf, ubit32 nLen) -> int
 {
    if(m_nReadPos + nLen > m_nLength)
+   {
       return 1;
+   }
 
    memcpy(pBuf, m_pData + m_nReadPos, nLen);
    m_nReadPos += nLen;
@@ -143,42 +162,42 @@ int CByteBuffer::Read(ubit8 *pBuf, ubit32 nLen)
    return 0;
 }
 
-int CByteBuffer::Read8(ubit8 *pNum)
+auto CByteBuffer::Read8(ubit8 *pNum) -> int
 {
    return Read(pNum, sizeof(ubit8));
 }
 
-int CByteBuffer::Read8(sbit8 *pNum)
+auto CByteBuffer::Read8(sbit8 *pNum) -> int
 {
    return Read((ubit8 *)pNum, sizeof(ubit8));
 }
 
-int CByteBuffer::Read16(ubit16 *pNum)
+auto CByteBuffer::Read16(ubit16 *pNum) -> int
 {
    return Read((ubit8 *)pNum, sizeof(ubit16));
 }
 
-int CByteBuffer::Read16(sbit16 *pNum)
+auto CByteBuffer::Read16(sbit16 *pNum) -> int
 {
    return Read((ubit8 *)pNum, sizeof(sbit16));
 }
 
-int CByteBuffer::Read32(ubit32 *pNum)
+auto CByteBuffer::Read32(ubit32 *pNum) -> int
 {
    return Read((ubit8 *)pNum, sizeof(ubit32));
 }
 
-int CByteBuffer::Read32(sbit32 *pNum)
+auto CByteBuffer::Read32(sbit32 *pNum) -> int
 {
    return Read((ubit8 *)pNum, sizeof(sbit32));
 }
 
-int CByteBuffer::ReadFloat(float *pFloat)
+auto CByteBuffer::ReadFloat(float *pFloat) -> int
 {
    return Read((ubit8 *)pFloat, sizeof(float));
 }
 
-int CByteBuffer::ReadStringCopy(char *pStr, ubit32 nMaxSize)
+auto CByteBuffer::ReadStringCopy(char *pStr, ubit32 nMaxSize) -> int
 {
    ubit32 nLen = 1 + strlen((char *)m_pData + m_nReadPos);
 
@@ -191,13 +210,13 @@ int CByteBuffer::ReadStringCopy(char *pStr, ubit32 nMaxSize)
    return Read((ubit8 *)pStr, nLen);
 }
 
-int CByteBuffer::ReadStringAlloc(char **ppStr)
+auto CByteBuffer::ReadStringAlloc(char **ppStr) -> int
 {
    int nLen = 1 + strlen((char *)m_pData + m_nReadPos);
 
    if(nLen == 1)
    {
-      *ppStr = NULL;
+      *ppStr = nullptr;
       return Skip8();
    }
 
@@ -208,7 +227,7 @@ int CByteBuffer::ReadStringAlloc(char **ppStr)
    return Read((ubit8 *)*ppStr, nLen);
 }
 
-int CByteBuffer::ReadNames(char ***pppStr)
+auto CByteBuffer::ReadNames(char ***pppStr) -> int
 {
    char *c;
    *pppStr = create_namelist();
@@ -216,82 +235,100 @@ int CByteBuffer::ReadNames(char ***pppStr)
 
    for(;;)
    {
-      if(SkipString(&c))
+      if(SkipString(&c) != 0)
+      {
          return 1;
+      }
 
-      if(*c)
+      if(*c != 0)
+      {
          *pppStr = add_name(c, *pppStr);
+      }
       else
+      {
          break;
+      }
    }
 
    return 0;
 }
 
-int CByteBuffer::ReadBlock(ubit8 **ppData, ubit32 *pnLen)
+auto CByteBuffer::ReadBlock(ubit8 **ppData, ubit32 *pnLen) -> int
 {
-   *ppData = NULL;
+   *ppData = nullptr;
 
-   if(Read32(pnLen))
+   if(Read32(pnLen) != 0)
+   {
       return 1;
+   }
 
    *ppData = (ubit8 *)malloc(*pnLen);
 
-   if(ppData == NULL)
+   if(ppData == nullptr)
+   {
       return 1;
+   }
 
    return Read(*ppData, *pnLen);
 }
 
-int CByteBuffer::Skip(int nLen)
+auto CByteBuffer::Skip(int nLen) -> int
 {
    if(m_nReadPos + nLen > m_nLength)
+   {
       return 1;
+   }
 
    m_nReadPos += nLen;
 
    return 0;
 }
 
-int CByteBuffer::Skip8(void)
+auto CByteBuffer::Skip8() -> int
 {
    return Skip(sizeof(ubit8));
 }
 
-int CByteBuffer::Skip16(void)
+auto CByteBuffer::Skip16() -> int
 {
    return Skip(sizeof(ubit16));
 }
 
-int CByteBuffer::Skip32(void)
+auto CByteBuffer::Skip32() -> int
 {
    return Skip(sizeof(ubit32));
 }
 
-int CByteBuffer::SkipFloat(void)
+auto CByteBuffer::SkipFloat() -> int
 {
    return Skip(sizeof(float));
 }
 
-int CByteBuffer::SkipString(char **ppStr)
+auto CByteBuffer::SkipString(char **ppStr) -> int
 {
-   if(ppStr)
+   if(ppStr != nullptr)
+   {
       *ppStr = (char *)m_pData + m_nReadPos;
+   }
 
    return Skip(1 + strlen((char *)m_pData + m_nReadPos));
 }
 
-int CByteBuffer::SkipNames(void)
+auto CByteBuffer::SkipNames() -> int
 {
    char *c;
 
    for(;;)
    {
-      if(SkipString(&c))
+      if(SkipString(&c) != 0)
+      {
          return 1;
+      }
 
       if(c[0] == 0)
+      {
          break;
+      }
    }
 
    return 0;
@@ -300,7 +337,9 @@ int CByteBuffer::SkipNames(void)
 void CByteBuffer::Append(const ubit8 *pData, ubit32 nLen)
 {
    if(nLen + m_nLength > m_nAllocated)
+   {
       IncreaseSize(nLen);
+   }
 
    memcpy(m_pData + m_nLength, pData, nLen);
 
@@ -340,15 +379,19 @@ void CByteBuffer::AppendBlock(const ubit8 *pData, ubit32 nLen)
 
 void CByteBuffer::AppendString(const char *pStr)
 {
-   if(pStr)
+   if(pStr != nullptr)
+   {
       Append((ubit8 *)pStr, strlen(pStr) + 1);
+   }
    else
+   {
       AppendString("");
+   }
 }
 
 void CByteBuffer::AppendDoubleString(const char *pStr)
 {
-   if(pStr)
+   if(pStr != nullptr)
    {
       AppendString(pStr);
       TAIL(pStr);
@@ -363,9 +406,13 @@ void CByteBuffer::AppendDoubleString(const char *pStr)
 
 void CByteBuffer::AppendNames(const char **ppNames)
 {
-   if(ppNames)
-      for(; *ppNames && **ppNames; ppNames++)
+   if(ppNames != nullptr)
+   {
+      for(; (*ppNames != nullptr) && (**ppNames != 0); ppNames++)
+      {
          AppendString(*ppNames);
+      }
+   }
 
    AppendString("");
 }
@@ -373,7 +420,7 @@ void CByteBuffer::AppendNames(const char **ppNames)
 /* =================================================================== */
 /* =================================================================== */
 
-ubit8 bread_ubit8(ubit8 **b)
+auto bread_ubit8(ubit8 **b) -> ubit8
 {
    ubit8 i;
 
@@ -383,7 +430,7 @@ ubit8 bread_ubit8(ubit8 **b)
    return i;
 }
 
-ubit16 bread_ubit16(ubit8 **b)
+auto bread_ubit16(ubit8 **b) -> ubit16
 {
    ubit16 i;
 
@@ -393,7 +440,7 @@ ubit16 bread_ubit16(ubit8 **b)
    return i;
 }
 
-ubit32 bread_ubit32(ubit8 **b)
+auto bread_ubit32(ubit8 **b) -> ubit32
 {
    ubit32 i;
 
@@ -403,7 +450,7 @@ ubit32 bread_ubit32(ubit8 **b)
    return i;
 }
 
-float bread_float(ubit8 **b)
+auto bread_float(ubit8 **b) -> float
 {
    float f;
 
@@ -413,15 +460,17 @@ float bread_float(ubit8 **b)
    return f;
 }
 
-ubit8 *bread_data(ubit8 **b, ubit32 *plen)
+auto bread_data(ubit8 **b, ubit32 *plen) -> ubit8 *
 {
    ubit32 len;
    ubit8 *data;
 
-   data = NULL;
+   data = nullptr;
    len  = bread_ubit32(b);
-   if(plen)
+   if(plen != nullptr)
+   {
       *plen = len;
+   }
 
    if(len > 0)
    {
@@ -437,8 +486,10 @@ ubit8 *bread_data(ubit8 **b, ubit32 *plen)
 /* Copy string from **b into *str               */
 void bread_strcpy(ubit8 **b, char *str)
 {
-   for(; (*str++ = **b); (*b)++)
+   for(; (*str++ = **b) != 0; (*b)++)
+   {
       ;
+   }
    (*b)++;
 }
 
@@ -447,11 +498,12 @@ void bread_strcpy(ubit8 **b, char *str)
  *  string is one or more characters, and return
  *  pointer to allocated string (or 0)
  */
-char *bread_str_alloc(ubit8 **b)
+auto bread_str_alloc(ubit8 **b) -> char *
 {
-   if(**b)
+   if(**b != 0u)
    {
-      char *c, *t;
+      char *c;
+      char *t;
       t = (char *)*b;
 
       c = str_dup(t);
@@ -461,12 +513,12 @@ char *bread_str_alloc(ubit8 **b)
    }
 
    (*b)++;
-   return NULL;
+   return nullptr;
 }
 
 /* Returns pointer to the string and skips past the end to next
    point in buffer */
-char *bread_str_skip(ubit8 **b)
+auto bread_str_skip(ubit8 **b) -> char *
 {
    char *o = (char *)*b;
 
@@ -480,7 +532,7 @@ char *bread_str_skip(ubit8 **b)
 /* string ("")                                  */
 /* Returns * to nameblock, nameblock may be     */
 /* but is never null ({""}).                    */
-char **bread_nameblock(ubit8 **b)
+auto bread_nameblock(ubit8 **b) -> char **
 {
    char   buf[MAX_STRING_LENGTH];
    char **nb;
@@ -490,10 +542,14 @@ char **bread_nameblock(ubit8 **b)
    for(;;)
    {
       bread_strcpy(b, buf);
-      if(*buf)
+      if(*buf != 0)
+      {
          nb = add_name(buf, nb);
+      }
       else
+      {
          break;
+      }
    }
 
    return nb;
@@ -538,10 +594,12 @@ void bwrite_data(ubit8 **b, ubit8 *data, ubit32 len)
 /* but NIL is returned                          */
 void bwrite_string(ubit8 **b, const char *str)
 {
-   if(str)
+   if(str != nullptr)
    {
-      for(; *str; str++, (*b)++)
+      for(; *str != 0; str++, (*b)++)
+      {
          **b = *str;
+      }
 
       **b = '\0';
       *b += 1;
@@ -558,10 +616,12 @@ void bwrite_double_string(ubit8 **b, char *str)
 {
    int i;
 
-   if(str)
+   if(str != nullptr)
    {
-      for(i = 0; i < 2; str++, (*b)++, (*str ? 0 : i++))
+      for(i = 0; i < 2; str++, (*b)++, (*str != 0 ? 0 : i++))
+      {
          **b = *str;
+      }
 
       **b = '\0';
       *b += 1;
@@ -576,9 +636,13 @@ void bwrite_double_string(ubit8 **b, char *str)
 /* Stored: As 'N' strings followed by the empty string ("") */
 void bwrite_nameblock(ubit8 **b, char **nb)
 {
-   if(nb)
-      for(; *nb && **nb; nb++)
+   if(nb != nullptr)
+   {
+      for(; (*nb != nullptr) && (**nb != 0); nb++)
+      {
          bwrite_string(b, *nb);
+      }
+   }
 
    bwrite_string(b, "");
 }

@@ -27,10 +27,10 @@
 /* 29/09/94 seifert: Added overhead count and changed CRC to one byte.     */
 /*                   This makes the system more shaky, but less mem hungry */
 
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cassert>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "essential.h"
 
@@ -92,12 +92,13 @@ void memory_status(char *Buf)
 void safe_set_info(void *p, ubit32 len)
 {
    ubit32 crc;
-   ubit16 low, high;
+   ubit16 low;
+   ubit16 high;
    ubit8 *ptr;
 
    assert(len > 0);
 
-   if(p == NULL)
+   if(p == nullptr)
    {
       perror("Unable to satisfy memory allocation request");
       assert(FALSE);
@@ -118,14 +119,15 @@ void safe_set_info(void *p, ubit32 len)
 
 /* Reset and check debug info from memory block */
 /* Return len of data checkked.                 */
-ubit32 safe_check_info(void *p)
+auto safe_check_info(void *p) -> ubit32
 {
    ubit32 crc;
-   ubit16 low, high;
+   ubit16 low;
+   ubit16 high;
    ubit32 len;
    ubit8 *pEnd;
 
-   if(!p)
+   if(p == nullptr)
    {
       perror("NULL pointer to memory block.");
       assert(FALSE);
@@ -151,7 +153,7 @@ ubit32 safe_check_info(void *p)
    return len;
 }
 
-void *safe_malloc(size_t size)
+auto safe_malloc(size_t size) -> void *
 {
    void *p;
 
@@ -169,7 +171,7 @@ void *safe_malloc(size_t size)
    return (ubit8 *)p + RAN_SIZE + CRC_SIZE / 2; /* Skip control info */
 }
 
-void *safe_realloc(void *p, size_t size)
+auto safe_realloc(void *p, size_t size) -> void *
 {
    assert(size > 0);
 
@@ -185,7 +187,7 @@ void *safe_realloc(void *p, size_t size)
    return (ubit8 *)p + RAN_SIZE + CRC_SIZE / 2; /* Skip control info */
 }
 
-void *safe_calloc(size_t nobj, size_t size)
+auto safe_calloc(size_t nobj, size_t size) -> void *
 {
    void  *p;
    size_t sum;
@@ -201,8 +203,10 @@ void safe_free(void *p)
 {
    ubit32 len;
 
-   if(p == NULL)
+   if(p == nullptr)
+   {
       assert(FALSE);
+   }
    p   = (ubit8 *)p - (RAN_SIZE + CRC_SIZE / 2);
    len = safe_check_info(p);
    memset(p, 255, len);

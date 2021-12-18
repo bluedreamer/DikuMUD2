@@ -22,18 +22,18 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 #if !defined(DOS)
    #include <sys/time.h>
 
    #ifdef SOLARIS /* Yuk!  /gnort */
       #define _POSIX_C_SOURCE 3
    #endif
-   #include <signal.h>
+   #include <csignal>
 #endif
 
 #include "comm.h"
@@ -54,27 +54,25 @@ extern struct descriptor_data *descriptor_list, *next_to_process;
 /* external procs */
 #if !defined(DOS) && !defined(AMIGA)
    #ifndef HPUX
-int select(int width, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
-   #endif
 
-int system(const char *string);
+   #endif
 
    #ifdef GENERIC_BSD
 int sigsetmask(int mask);
    #endif
 #endif
 
-int close_connection(int s);
-int new_connection(int s);
+auto close_connection(int s) -> int;
+auto new_connection(int s) -> int;
 
-void night_watchman(void)
+void night_watchman()
 {
    long       tc;
    struct tm *t_info;
 
    extern int mud_shutdown;
 
-   tc     = time(0);
+   tc     = time(nullptr);
    t_info = localtime(&tc);
 
    if((t_info->tm_hour == 8) && (t_info->tm_wday > 0) && (t_info->tm_wday < 6))
@@ -86,13 +84,17 @@ void night_watchman(void)
          mud_shutdown = 1;
       }
       else if(t_info->tm_min > 40)
+      {
          send_to_all("ATTENTION: " MUD_NAME " will shut down in 10 minutes.\n\r");
+      }
       else if(t_info->tm_min > 30)
+      {
          send_to_all("Warning: The game will close in 20 minutes.\n\r");
+      }
    }
 }
 
-void check_reboot(void)
+void check_reboot()
 {
 #if !(defined(LINUX) || defined(DOS) || defined(AMIGA))
    long       tc;
@@ -100,19 +102,21 @@ void check_reboot(void)
    char       dummy;
    FILE      *boot;
 
-   extern int mud_shutdown, mud_reboot;
+   extern int mud_shutdown;
+   extern int mud_reboot;
 
-   tc     = time(0);
+   tc     = time(nullptr);
    t_info = localtime(&tc);
 
    if((t_info->tm_hour + 1) == REBOOT_AT && t_info->tm_min > 30)
-      if((boot = fopen("./reboot", "r")))
+   {
+      if((boot = fopen("./reboot", "r")) != nullptr)
       {
          if(t_info->tm_min > 50)
          {
             slog(LOG_ALL, 0, "Reboot exists.");
             fread(&dummy, sizeof(dummy), 1, boot);
-            if(!feof(boot)) /* the file is nonepty */
+            if(feof(boot) == 0) /* the file is nonepty */
             {
                slog(LOG_ALL, 0, "Reboot is nonempty.");
 
@@ -138,11 +142,11 @@ void check_reboot(void)
                   sigaddset(&set, SIGVTALRM);
                   sigaddset(&set, SIGINT);
 
-                  sigprocmask(SIG_SETMASK, &set, NULL);
+                  sigprocmask(SIG_SETMASK, &set, nullptr);
                }
    #endif
 
-               if(system("./reboot"))
+               if(system("./reboot") != 0)
                {
                   slog(LOG_ALL, 0, "Reboot script terminated abnormally");
                   send_to_all("The reboot was cancelled.\n\r");
@@ -154,20 +158,19 @@ void check_reboot(void)
                   {
                      sigset_t set;
                      sigemptyset(&set);
-                     sigprocmask(SIG_SETMASK, &set, NULL);
+                     sigprocmask(SIG_SETMASK, &set, nullptr);
                   }
    #endif
                   return;
                }
-               else
-                  rename("reboot", "reboot.SUCCEEDED");
+               rename("reboot", "reboot.SUCCEEDED");
    #ifdef GENERIC_BSD
                sigsetmask(0);
    #else
                {
                   sigset_t set;
                   sigemptyset(&set);
-                  sigprocmask(SIG_SETMASK, &set, NULL);
+                  sigprocmask(SIG_SETMASK, &set, nullptr);
                }
    #endif
             }
@@ -176,14 +179,19 @@ void check_reboot(void)
             mud_shutdown = mud_reboot = 1;
          }
          else if(t_info->tm_min > 40)
+         {
             send_to_all("ATTENTION: " MUD_NAME " will reboot "
                         "in 10 minutes.\n\r");
+         }
          else if(t_info->tm_min > 30)
+         {
             send_to_all("Warning: The game will close and reboot "
                         "in 20 minutes.\n\r");
+         }
 
          fclose(boot);
       }
+   }
 #endif
 }
 
@@ -191,15 +199,15 @@ void check_reboot(void)
 #define NEW
 #ifdef GR
 
-int workhours()
+auto workhours() -> int
 {
    long       tc;
    struct tm *t_info;
 
-   tc     = time(0);
+   tc     = time(nullptr);
    t_info = localtime(&tc);
 
-   return ((t_info->tm_wday > 0) && (t_info->tm_wday < 6) && (t_info->tm_hour >= 9) && (t_info->tm_hour < 17));
+   return static_cast<int>((t_info->tm_wday > 0) && (t_info->tm_wday < 6) && (t_info->tm_hour >= 9) && (t_info->tm_hour < 17));
 }
 
 /*
@@ -210,7 +218,7 @@ int workhours()
  * to harness man's desire to play. Who needs a friggin' degree, anyhow?
  */
 
-int load(void)
+auto load() -> int
 {
    #ifdef DOS
    struct syslinfo
@@ -264,22 +272,21 @@ int load(void)
    #endif
 }
 
-char *nogames(void)
+auto nogames() -> char *
 {
    #ifndef DOS
    static char text[200];
    FILE       *fl;
 
-   if((fl = fopen("lib/nogames", "r")))
+   if((fl = fopen("lib/nogames", "r")) != nullptr)
    {
       slog(LOG_ALL, 0, "/usr/games/nogames exists");
       char *ms2002 = fgets(text, 199, fl);
       return (text);
       fclose(fl);
    }
-   else
    #endif
-      return (0);
+   return (0);
 }
 
    #define COMA_SIGN                                                                                                                       \

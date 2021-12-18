@@ -24,9 +24,9 @@
 
 /* 23/07/92 seifert: Fixed grave bug in reordering af ticks                */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "affect.h"
 #include "comm.h"
@@ -34,15 +34,15 @@
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
 #include "magic.h"
 #include "skills.h"
 #include "spells.h"
 #include "structs.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
-ubit1 raw_destruct_affect(struct unit_affected_type *af)
+auto raw_destruct_affect(struct unit_affected_type *af) -> ubit1
 {
    void unlink_affect(struct unit_data * u, struct unit_affected_type * af);
 
@@ -50,20 +50,26 @@ ubit1 raw_destruct_affect(struct unit_affected_type *af)
    return FALSE;                 /* CANCEL */
 }
 
-ubit1 skill_overflow(int skill, int change, ubit1 set)
+auto skill_overflow(int skill, int change, ubit1 set) -> ubit1
 {
-   if(set)
+   if(set != 0u)
    {
       if(skill == 0)
+      {
          return TRUE;
+      }
 
       if(((skill + change) > SKILL_MAX) || ((skill + change) < 0))
+      {
          return TRUE;
+      }
    }
    else
    {
       if(((skill - change) > SKILL_MAX) || ((skill - change) < 0))
+      {
          return TRUE;
+      }
    }
 
    return FALSE;
@@ -72,14 +78,16 @@ ubit1 skill_overflow(int skill, int change, ubit1 set)
 /*                                                      */
 /* Data[0] Must contain bits to set in CHAR_FLAGS()     */
 /*                                                      */
-ubit1 apf_mod_char_flags(struct unit_affected_type *af, struct unit_data *unit, ubit1 set)
+auto apf_mod_char_flags(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
 {
    struct unit_affected_type *taf;
 
    assert(IS_CHAR(unit));
 
-   if(set)
+   if(set != 0u)
+   {
       SET_BIT(CHAR_FLAGS(unit), (ubit32)af->data[0]);
+   }
    else
    {
       REMOVE_BIT(CHAR_FLAGS(unit), (ubit32)af->data[0]);
@@ -90,9 +98,13 @@ ubit1 apf_mod_char_flags(struct unit_affected_type *af, struct unit_data *unit, 
       /* implies that a character can not permanently have     */
       /* these bits set, since a call of this function will    */
       /* remove them                                           */
-      for(taf = UNIT_AFFECTED(af->owner); taf; taf = taf->next)
+      for(taf = UNIT_AFFECTED(af->owner); taf != nullptr; taf = taf->next)
+      {
          if((taf != af) && (taf->applyf_i == APF_MOD_CHAR_FLAGS))
+         {
             SET_BIT(CHAR_FLAGS(unit), (ubit32)taf->data[0]);
+         }
+      }
    }
    return TRUE;
 }
@@ -100,14 +112,16 @@ ubit1 apf_mod_char_flags(struct unit_affected_type *af, struct unit_data *unit, 
 /*                                                      */
 /* Data[0] Must contain bits to set in OBJ_FLAGS() */
 /*                                                      */
-ubit1 apf_mod_obj_flags(struct unit_affected_type *af, struct unit_data *unit, ubit1 set)
+auto apf_mod_obj_flags(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
 {
    struct unit_affected_type *taf;
 
    assert(IS_OBJ(unit));
 
-   if(set)
+   if(set != 0u)
+   {
       SET_BIT(OBJ_FLAGS(unit), (ubit32)af->data[0]);
+   }
    else
    {
       REMOVE_BIT(OBJ_FLAGS(unit), (ubit32)af->data[0]);
@@ -118,9 +132,13 @@ ubit1 apf_mod_obj_flags(struct unit_affected_type *af, struct unit_data *unit, u
       /* implies that a object can not permanently have these  */
       /* bits set, since a call of this function will remove   */
       /* them                                                  */
-      for(taf = UNIT_AFFECTED(af->owner); taf; taf = taf->next)
+      for(taf = UNIT_AFFECTED(af->owner); taf != nullptr; taf = taf->next)
+      {
          if((taf != af) && (taf->applyf_i == APF_MOD_OBJ_FLAGS))
+         {
             SET_BIT(OBJ_FLAGS(unit), (ubit32)taf->data[0]);
+         }
+      }
    }
    return TRUE;
 }
@@ -128,12 +146,14 @@ ubit1 apf_mod_obj_flags(struct unit_affected_type *af, struct unit_data *unit, u
 /*                                                      */
 /* Data[0] Must contain bits to set in UNIT_FLAGS()     */
 /*                                                      */
-ubit1 apf_mod_unit_flags(struct unit_affected_type *af, struct unit_data *unit, ubit1 set)
+auto apf_mod_unit_flags(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
 {
    struct unit_affected_type *taf;
 
-   if(set)
+   if(set != 0u)
+   {
       SET_BIT(UNIT_FLAGS(unit), (ubit16)af->data[0]);
+   }
    else
    {
       REMOVE_BIT(UNIT_FLAGS(unit), (ubit16)af->data[0]);
@@ -144,17 +164,20 @@ ubit1 apf_mod_unit_flags(struct unit_affected_type *af, struct unit_data *unit, 
       /* implies that a character can not permanently have     */
       /* these bits set, since a call of this function will    */
       /* remove them                                           */
-      for(taf = UNIT_AFFECTED(af->owner); taf; taf = taf->next)
+      for(taf = UNIT_AFFECTED(af->owner); taf != nullptr; taf = taf->next)
+      {
          if((taf != af) && (taf->applyf_i == APF_MOD_UNIT_FLAGS))
+         {
             SET_BIT(UNIT_FLAGS(unit), (ubit16)taf->data[0]);
+         }
+      }
    }
    return TRUE;
 }
 
-ubit1 apf_weapon_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1 set)
+auto apf_weapon_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
 {
-   int                     modify;
-   extern struct tree_type wpn_tree[];
+   int modify;
 
    if(!IS_CHAR(unit))
    {
@@ -166,21 +189,27 @@ ubit1 apf_weapon_adj(struct unit_affected_type *af, struct unit_data *unit, ubit
    if(IS_NPC(unit))
    {
       while(modify > WPN_GROUP_MAX)
+      {
          modify = TREE_PARENT(wpn_tree, modify);
+      }
    }
 
-   if(set)
+   if(set != 0u)
    {
       if(IS_PC(unit))
       {
-         if(skill_overflow(PC_WPN_SKILL(unit, modify), af->data[1], set))
+         if(skill_overflow(PC_WPN_SKILL(unit, modify), af->data[1], set) != 0u)
+         {
             return raw_destruct_affect(af);
+         }
          PC_WPN_SKILL(unit, modify) += af->data[1];
       }
       else
       {
-         if(skill_overflow(NPC_WPN_SKILL(unit, modify), af->data[1], set))
+         if(skill_overflow(NPC_WPN_SKILL(unit, modify), af->data[1], set) != 0u)
+         {
             return raw_destruct_affect(af);
+         }
          NPC_WPN_SKILL(unit, modify) += af->data[1];
       }
    }
@@ -188,7 +217,7 @@ ubit1 apf_weapon_adj(struct unit_affected_type *af, struct unit_data *unit, ubit
    {
       if(IS_PC(unit))
       {
-         if(skill_overflow(PC_WPN_SKILL(unit, modify), af->data[1], set))
+         if(skill_overflow(PC_WPN_SKILL(unit, modify), af->data[1], set) != 0u)
          {
             af->duration = 0; /* Stall the destruction until possible */
             return FALSE;     /* CANCEL the destruction               */
@@ -197,7 +226,7 @@ ubit1 apf_weapon_adj(struct unit_affected_type *af, struct unit_data *unit, ubit
       }
       else
       {
-         if(skill_overflow(NPC_WPN_SKILL(unit, modify), af->data[1], set))
+         if(skill_overflow(NPC_WPN_SKILL(unit, modify), af->data[1], set) != 0u)
          {
             af->duration = 0; /* Stall the destruction until possible */
             return FALSE;     /* CANCEL the destruction               */
@@ -210,7 +239,7 @@ ubit1 apf_weapon_adj(struct unit_affected_type *af, struct unit_data *unit, ubit
 }
 
 /* NPC's are ignored, they don't have skills. */
-ubit1 apf_skill_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1 set)
+auto apf_skill_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
 {
    if(!IS_CHAR(unit))
    {
@@ -218,12 +247,14 @@ ubit1 apf_skill_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1
       return TRUE;
    }
 
-   if(set)
+   if(set != 0u)
    {
       if(IS_PC(unit))
       {
-         if(skill_overflow(PC_SKI_SKILL(unit, af->data[0]), af->data[1], set))
+         if(skill_overflow(PC_SKI_SKILL(unit, af->data[0]), af->data[1], set) != 0u)
+         {
             return raw_destruct_affect(af);
+         }
          PC_SKI_SKILL(unit, af->data[0]) += af->data[1];
       }
    }
@@ -231,7 +262,7 @@ ubit1 apf_skill_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1
    {
       if(IS_PC(unit))
       {
-         if(skill_overflow(PC_SKI_SKILL(unit, af->data[0]), af->data[1], set))
+         if(skill_overflow(PC_SKI_SKILL(unit, af->data[0]), af->data[1], set) != 0u)
          {
             af->duration = 0; /* Stall the destruction until possible */
             return FALSE;     /* CANCEL the destruction               */
@@ -247,10 +278,9 @@ ubit1 apf_skill_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1
 /* Data[1] must contain the amount to change              */
 /* Data[1] is added when set, and subtracted when not set */
 /* Unit can be CHAR                                       */
-ubit1 apf_spell_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1 set)
+auto apf_spell_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
 {
-   int                     modify;
-   extern struct tree_type spl_tree[];
+   int modify;
 
    if(!IS_CHAR(unit))
    {
@@ -262,21 +292,27 @@ ubit1 apf_spell_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1
    if(IS_NPC(unit))
    {
       while(modify > SPL_GROUP_MAX)
+      {
          modify = TREE_PARENT(spl_tree, modify);
+      }
    }
 
-   if(set)
+   if(set != 0u)
    {
       if(IS_PC(unit))
       {
-         if(skill_overflow(PC_SPL_SKILL(unit, modify), af->data[1], set))
+         if(skill_overflow(PC_SPL_SKILL(unit, modify), af->data[1], set) != 0u)
+         {
             return raw_destruct_affect(af);
+         }
          PC_SPL_SKILL(unit, modify) += af->data[1];
       }
       else
       {
-         if(skill_overflow(NPC_SPL_SKILL(unit, modify), af->data[1], set))
+         if(skill_overflow(NPC_SPL_SKILL(unit, modify), af->data[1], set) != 0u)
+         {
             return raw_destruct_affect(af);
+         }
          NPC_SPL_SKILL(unit, modify) += af->data[1];
       }
    }
@@ -284,7 +320,7 @@ ubit1 apf_spell_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1
    {
       if(IS_PC(unit))
       {
-         if(skill_overflow(PC_SPL_SKILL(unit, modify), af->data[1], set))
+         if(skill_overflow(PC_SPL_SKILL(unit, modify), af->data[1], set) != 0u)
          {
             af->duration = 0; /* Stall the destruction until possible */
             return FALSE;     /* CANCEL the destruction               */
@@ -293,7 +329,7 @@ ubit1 apf_spell_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1
       }
       else
       {
-         if(skill_overflow(NPC_SPL_SKILL(unit, modify), af->data[1], set))
+         if(skill_overflow(NPC_SPL_SKILL(unit, modify), af->data[1], set) != 0u)
          {
             af->duration = 0; /* Stall the destruction until possible */
             return FALSE;     /* CANCEL the destruction               */
@@ -309,23 +345,27 @@ ubit1 apf_spell_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1
 /* Data[1] must contain the amount to change              */
 /* Data[1] is added when set, and subtracted when not set */
 /* Unit must be a CHAR!                                   */
-ubit1 apf_ability_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1 set)
+auto apf_ability_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
 {
    assert(IS_CHAR(unit));
 
-   if(set)
+   if(set != 0u)
    {
-      if(skill_overflow(CHAR_ABILITY(unit, af->data[0]), af->data[1], set))
+      if(skill_overflow(CHAR_ABILITY(unit, af->data[0]), af->data[1], set) != 0u)
+      {
          return raw_destruct_affect(af);
+      }
 
       CHAR_ABILITY(unit, af->data[0]) += af->data[1];
 
       if(af->data[0] == ABIL_HP)
+      {
          UNIT_MAX_HIT(unit) = hit_limit(unit);
+      }
    }
    else
    {
-      if(skill_overflow(CHAR_ABILITY(unit, af->data[0]), af->data[1], set))
+      if(skill_overflow(CHAR_ABILITY(unit, af->data[0]), af->data[1], set) != 0u)
       {
          af->duration = 0; /* Stall the destruction until possible */
          return FALSE;     /* CANCEL the destruction               */
@@ -333,52 +373,64 @@ ubit1 apf_ability_adj(struct unit_affected_type *af, struct unit_data *unit, ubi
       CHAR_ABILITY(unit, af->data[0]) -= af->data[1];
 
       if(af->data[0] == ABIL_HP)
+      {
          UNIT_MAX_HIT(unit) = hit_limit(unit);
+      }
    }
 
    return TRUE;
 }
 
 /* Data[0] = Amount of light sources */
-ubit1 apf_light(struct unit_affected_type *af, struct unit_data *unit, ubit1 set)
+auto apf_light(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
 {
-   if(!set)
+   if(set == 0u)
+   {
       af->data[0] = -af->data[0];
+   }
 
    if(IS_ROOM(unit))
+   {
       UNIT_LIGHTS(unit) += af->data[0];
+   }
 
    modify_bright(unit, af->data[0]);
 
-   if(!set)
+   if(set == 0u)
+   {
       af->data[0] = -af->data[0];
+   }
 
    return TRUE;
 }
 
 /* Data[0] = The new armour-type */
 /* Data[1] = The original armour-type */
-ubit1 apf_natural_armour(struct unit_affected_type *af, struct unit_data *unit, ubit1 set)
+auto apf_natural_armour(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
 {
    if(!IS_CHAR(unit))
+   {
       return TRUE;
+   }
 
-   if(!is_in(af->data[0], ARM_CLOTHES, ARM_PLATE) || (af->data[0] < CHAR_NATURAL_ARMOUR(unit)))
+   if((is_in(af->data[0], ARM_CLOTHES, ARM_PLATE) == 0) || (af->data[0] < CHAR_NATURAL_ARMOUR(unit)))
    {
       af->data[0] = -1; /* Ineffective, other spell cancels this one */
       return TRUE;
    }
 
-   if(set)
+   if(set != 0u)
    {
       struct unit_affected_type *taf;
 
-      for(taf = UNIT_AFFECTED(unit); taf; taf = taf->next)
+      for(taf = UNIT_AFFECTED(unit); taf != nullptr; taf = taf->next)
+      {
          if((taf->id == ID_NATURAL_ARMOUR) && (taf != af))
          {
             af->data[1] = taf->data[1];
             break;
          }
+      }
 
       CHAR_NATURAL_ARMOUR(unit) = MAX(CHAR_NATURAL_ARMOUR(unit), af->data[0]);
    }
@@ -394,32 +446,42 @@ ubit1 apf_natural_armour(struct unit_affected_type *af, struct unit_data *unit, 
 /* Data[0] = The new speed            */
 /* Data[2] = The original speed - [2] because it is not tested in the
              unequip_object affect remove match. */
-ubit1 apf_speed(struct unit_affected_type *af, struct unit_data *unit, ubit1 set)
+auto apf_speed(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
 {
    if(!IS_CHAR(unit))
+   {
       return TRUE;
+   }
 
    if((af->data[0] < 4) || (af->data[2] < 0))
+   {
       return TRUE;
+   }
 
-   if(set)
+   if(set != 0u)
    {
       struct unit_affected_type *taf;
 
       af->data[2] = CHAR_SPEED(unit);
 
-      for(taf = UNIT_AFFECTED(unit); taf; taf = taf->next)
+      for(taf = UNIT_AFFECTED(unit); taf != nullptr; taf = taf->next)
+      {
          if((taf->id == ID_SPEED) && (taf != af))
          {
             af->data[2] = -1;
             break;
          }
+      }
 
-      if(taf == NULL)
+      if(taf == nullptr)
+      {
          CHAR_SPEED(unit) = af->data[0];
+      }
    }
    else
+   {
       CHAR_SPEED(unit) = af->data[2];
+   }
 
    return TRUE;
 }

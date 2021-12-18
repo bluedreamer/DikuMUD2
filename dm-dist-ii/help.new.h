@@ -27,26 +27,25 @@
 
 class help_index_type
 {
-  public:
+public:
    help_index_type(void);
    ~help_index_type(void);
 
    char *keyword;
-   long pos;
+   long  pos;
 };
-
 
 class help_file_type
 {
-  public:
+public:
    help_file_type(void);
    ~help_file_type(void);
 
    void generate_help_idx(const char *filename);
 
-   struct help_index_type *help_idx; /* the help keyword list */
-   int elements, size;         /* info about the list   */
-   char *filename;
+   struct help_index_type *help_idx;       /* the help keyword list */
+   int                     elements, size; /* info about the list   */
+   char                   *filename;
 };
 
 #endif /* _MUD_HELP_H */

@@ -28,8 +28,8 @@
 /* 31/08/94 gnort  : Fixed infite loop in may_teleport()   (!!!!!!!!)      */
 /* 13/09/94 seifert: No you didn't - you made an infinite loop (!)         */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "affect.h"
 #include "comm.h"
@@ -40,7 +40,6 @@
 #include "fight.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
 #include "magic.h"
 #include "skills.h"
 #include "spells.h"
@@ -48,26 +47,28 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
 /* Extern structures */
 extern struct unit_data *unit_list;
-extern struct tree_type  spl_tree[];
 
 /* Returns TRUE when effect is shown by DIL */
 
-int dil_effect(const char *pStr, struct spell_args *sa)
+auto dil_effect(const char *pStr, struct spell_args *sa) -> int
 {
-   int run_dil(struct spec_arg * sarg);
-
-   if(str_is_empty(pStr))
+   if(str_is_empty(pStr) != 0u)
+   {
       return FALSE;
+   }
 
    struct diltemplate *tmpl;
 
    tmpl = find_dil_template(pStr);
 
-   if(tmpl == NULL)
+   if(tmpl == nullptr)
+   {
       return FALSE;
+   }
 
    if(tmpl->argc != 3)
    {
@@ -112,12 +113,12 @@ int dil_effect(const char *pStr, struct spell_args *sa)
 
    sarg.owner     = prg->owner;
    sarg.activator = sa->caster;
-   sarg.medium    = NULL;
-   sarg.target    = NULL;
-   sarg.pInt      = NULL;
+   sarg.medium    = nullptr;
+   sarg.target    = nullptr;
+   sarg.pInt      = nullptr;
    sarg.fptr      = fptr;
    sarg.cmd       = &cmd_auto_tick;
-   sarg.arg       = NULL;
+   sarg.arg       = nullptr;
    sarg.mflags    = SFB_TICK | SFB_AWARE;
 
    run_dil(&sarg);
@@ -128,7 +129,7 @@ int dil_effect(const char *pStr, struct spell_args *sa)
 /* This procedure uses mana from a medium */
 /* returns TRUE if ok, and FALSE if there was not enough mana.  */
 /* wands and staffs uses one charge, no matter what 'mana' is. --HHS */
-ubit1 use_mana(struct unit_data *medium, int mana)
+auto use_mana(struct unit_data *medium, int mana) -> ubit1
 {
    if(IS_CHAR(medium))
    {
@@ -137,8 +138,7 @@ ubit1 use_mana(struct unit_data *medium, int mana)
          CHAR_MANA(medium) -= mana;
          return TRUE;
       }
-      else
-         return FALSE;
+      return FALSE;
    }
    else if(IS_OBJ(medium))
    {
@@ -152,7 +152,9 @@ ubit1 use_mana(struct unit_data *medium, int mana)
                return TRUE;
             }
             else
+            {
                return FALSE;
+            }
             break;
          default:
             return FALSE; /* no mana in other objects */
@@ -162,25 +164,34 @@ ubit1 use_mana(struct unit_data *medium, int mana)
 }
 
 /* Determines if healing combat mana should be cast?? */
-ubit1 cast_magic_now(struct unit_data *ch, int mana)
+auto cast_magic_now(struct unit_data *ch, int mana) -> ubit1
 {
-   int hleft, sleft;
+   int hleft;
+   int sleft;
 
    if(CHAR_MANA(ch) > mana)
    {
       if(UNIT_MAX_HIT(ch) <= 0)
+      {
          hleft = 0;
+      }
       else
+      {
          hleft = (100 * UNIT_HIT(ch)) / UNIT_MAX_HIT(ch);
+      }
 
-      sleft = mana ? CHAR_MANA(ch) / mana : 20;
+      sleft = mana != 0 ? CHAR_MANA(ch) / mana : 20;
 
       if(sleft >= 5)
+      {
          return TRUE;
+      }
 
       if(hleft >= 95)
+      {
          return FALSE;
-      else if(hleft > 80) /* Small chance, allow heal to be possible */
+      }
+      if(hleft > 80) /* Small chance, allow heal to be possible */
          return (number(1, MAX(1, 16 - 2 * sleft)) == 1);
       else if(hleft > 50)
          return (number(1, MAX(1, 6 - sleft)) == 1);
@@ -196,147 +207,181 @@ ubit1 cast_magic_now(struct unit_data *ch, int mana)
 
 /* down and up is how much percentage that num will be adjusted randomly */
 /* up or down                                                            */
-int variation(int num, int d, int u)
+auto variation(int num, int d, int u) -> int
 {
    return number(num - (num * d) / 100, num + (num * u) / 100);
 }
 
 /* See if unit is allowed to be transferred away from its surroundings */
 /* i.e. if a player is allowed to transfer out of jail, etc.           */
-ubit1 may_teleport_away(struct unit_data *unit)
+auto may_teleport_away(struct unit_data *unit) -> ubit1
 {
    if(IS_SET(UNIT_FLAGS(unit), UNIT_FL_NO_TELEPORT))
+   {
       return FALSE;
+   }
 
-   while((unit = UNIT_IN(unit)))
+   while((unit = UNIT_IN(unit)) != nullptr)
+   {
       if(IS_SET(UNIT_FLAGS(unit), UNIT_FL_NO_TELEPORT))
+      {
          return FALSE;
+      }
+   }
 
    return TRUE;
 }
 
 /* See if unit is allowed to be transferred to 'dest' */
-ubit1 may_teleport_to(struct unit_data *unit, struct unit_data *dest)
+auto may_teleport_to(struct unit_data *unit, struct unit_data *dest) -> ubit1
 {
-   if(unit == dest || IS_SET(UNIT_FLAGS(dest), UNIT_FL_NO_TELEPORT) || unit_recursive(unit, dest) ||
+   if(unit == dest || IS_SET(UNIT_FLAGS(dest), UNIT_FL_NO_TELEPORT) || (unit_recursive(unit, dest) != 0) ||
       UNIT_WEIGHT(unit) + UNIT_WEIGHT(dest) > UNIT_CAPACITY(dest))
+   {
       return FALSE;
+   }
 
    do
    {
       if(IS_SET(UNIT_FLAGS(dest), UNIT_FL_NO_TELEPORT))
+      {
          return FALSE;
-   } while((dest = UNIT_IN(dest)));
+      }
+   } while((dest = UNIT_IN(dest)) != nullptr);
 
    return TRUE;
 }
 
 /* See if unit is allowed to be transferred to 'dest' */
-ubit1 may_teleport(struct unit_data *unit, struct unit_data *dest)
+auto may_teleport(struct unit_data *unit, struct unit_data *dest) -> ubit1
 {
-   return may_teleport_away(unit) && may_teleport_to(unit, dest);
+   return (static_cast<ubit1>(may_teleport_away(unit) != 0u) && (may_teleport_to(unit, dest)) != 0u);
 }
 
 /* ===================================================================== */
 
-int object_power(struct unit_data *unit)
+auto object_power(struct unit_data *unit) -> int
 {
    if(IS_OBJ(unit))
    {
       if(OBJ_TYPE(unit) == ITEM_POTION || OBJ_TYPE(unit) == ITEM_SCROLL || OBJ_TYPE(unit) == ITEM_WAND || OBJ_TYPE(unit) == ITEM_STAFF)
+      {
          return OBJ_VALUE(unit, 0);
-      else
-         return OBJ_RESISTANCE(unit);
+      }
+      return OBJ_RESISTANCE(unit);
    }
    else
+   {
       return 0;
+   }
 }
 
-int room_power(struct unit_data *unit)
+auto room_power(struct unit_data *unit) -> int
 {
    if(IS_ROOM(unit))
+   {
       return ROOM_RESISTANCE(unit);
-   else
-      return 0;
+   }
+   return 0;
 }
 
 /* Return how well a unit defends itself against a spell, by using */
 /* its skill (not its power) - That is the group (or attack).      */
 /*                                                                 */
-int spell_defense_skill(struct unit_data *unit, int spell)
+auto spell_defense_skill(struct unit_data *unit, int spell) -> int
 {
    int max;
 
    if(IS_PC(unit))
    {
       if(TREE_ISLEAF(spl_tree, spell))
+      {
          max = PC_SPL_SKILL(unit, spell) / 2;
+      }
       else
+      {
          max = PC_SPL_SKILL(unit, spell);
+      }
 
       while(!TREE_ISROOT(spl_tree, spell))
       {
          spell = TREE_PARENT(spl_tree, spell);
 
          if(PC_SPL_SKILL(unit, spell) > max)
+         {
             max = PC_SPL_SKILL(unit, spell);
+         }
       }
 
       return max;
    }
 
    if(IS_OBJ(unit))
+   {
       return object_power(unit); //  Philosophical... / 2 ?
+   }
 
    if(IS_NPC(unit))
    {
       if(TREE_ISLEAF(spl_tree, spell))
+      {
          spell = TREE_PARENT(spl_tree, spell);
+      }
 
       if(TREE_ISROOT(spl_tree, spell))
+      {
          max = NPC_SPL_SKILL(unit, spell);
+      }
       else
+      {
          max = NPC_SPL_SKILL(unit, spell) / 2;
+      }
 
       while(!TREE_ISROOT(spl_tree, spell))
       {
          spell = TREE_PARENT(spl_tree, spell);
 
          if(NPC_SPL_SKILL(unit, spell) > max)
+         {
             max = NPC_SPL_SKILL(unit, spell);
+         }
       }
 
       return max;
    }
-   else
-      return room_power(unit);
+   return room_power(unit);
 }
 
 /* Return how well a unit attacks with a spell, by using its skill */
 /* (not its power).                                                */
 /*                                                                 */
-int spell_attack_skill(struct unit_data *unit, int spell)
+auto spell_attack_skill(struct unit_data *unit, int spell) -> int
 {
    if(IS_PC(unit))
+   {
       return PC_SPL_SKILL(unit, spell);
+   }
 
    if(IS_OBJ(unit))
+   {
       return object_power(unit);
+   }
 
    if(IS_NPC(unit))
    {
       if(TREE_ISLEAF(spl_tree, spell))
+      {
          spell = TREE_PARENT(spl_tree, spell);
+      }
 
       return NPC_SPL_SKILL(unit, spell);
    }
-   else
-      return room_power(unit);
+   return room_power(unit);
 }
 
 /* Return the power in a unit for a given spell type     */
 /* For CHAR's determine if Divine or Magic power is used */
-int spell_attack_ability(struct unit_data *medium, int spell)
+auto spell_attack_ability(struct unit_data *medium, int spell) -> int
 {
    if(IS_CHAR(medium))
    {
@@ -349,12 +394,13 @@ int spell_attack_ability(struct unit_data *medium, int spell)
    return spell_attack_skill(medium, spell);
 }
 
-int spell_ability(struct unit_data *u, int ability, int spell)
+auto spell_ability(struct unit_data *u, int ability, int spell) -> int
 {
    if(IS_CHAR(u))
+   {
       return CHAR_ABILITY(u, ability);
-   else
-      return spell_defense_skill(u, spell);
+   }
+   return spell_defense_skill(u, spell);
 }
 
 /* ===================================================================== */
@@ -363,21 +409,22 @@ int spell_ability(struct unit_data *u, int ability, int spell)
 /* else. These are typically aggressive spells like 'sleep' etc. where */
 /* the defender is entiteled a saving throw.                           */
 /*                                                                     */
-int spell_resistance(struct unit_data *att, struct unit_data *def, int spell)
+auto spell_resistance(struct unit_data *att, struct unit_data *def, int spell) -> int
 {
    if(IS_CHAR(att) && IS_CHAR(def))
+   {
       return resistance_skill_check(spell_attack_ability(att, spell), spell_ability(def, ABIL_BRA, spell), spell_attack_skill(att, spell),
                                     spell_defense_skill(def, spell));
-   else
-      return resistance_skill_check(spell_attack_ability(att, spell), spell_ability(def, ABIL_BRA, spell), spell_attack_skill(att, spell),
-                                    spell_defense_skill(def, spell));
+   }
+   return resistance_skill_check(spell_attack_ability(att, spell), spell_ability(def, ABIL_BRA, spell), spell_attack_skill(att, spell),
+                                 spell_defense_skill(def, spell));
 }
 
 /* Use this function when a spell caster competes against his own */
 /* skill/ability when casting a spell. For example healing spells */
 /* create food etc.                                               */
 /* Returns how well it went "100" is perfect > better.            */
-int spell_cast_check(struct unit_data *att, int spell)
+auto spell_cast_check(struct unit_data *att, int spell) -> int
 {
    return resistance_skill_check(spell_attack_ability(att, spell), 0, spell_attack_skill(att, spell), 0);
 }
@@ -388,7 +435,7 @@ int spell_cast_check(struct unit_data *att, int spell)
 /* nessecary work for you                                    */
 /* Qty is 1 for small, 2 for medium and 3 for large versions */
 /* of each spell                                             */
-int spell_offensive(struct spell_args *sa, int spell_number, int bonus)
+auto spell_offensive(struct spell_args *sa, int spell_number, int bonus) -> int
 {
    int               def_shield_bonus;
    int               armour_type;
@@ -397,17 +444,16 @@ int spell_offensive(struct spell_args *sa, int spell_number, int bonus)
    int               bEffect;
    struct unit_data *def_shield;
 
-   int  spell_bonus(struct unit_data * att, struct unit_data * medium, struct unit_data * def, int hit_loc, int spell_number,
-                    int *pDef_armour_type, struct unit_data **pDef_armour);
+   auto spell_bonus(struct unit_data * att, struct unit_data * medium, struct unit_data * def, int hit_loc, int spell_number,
+                    int *pDef_armour_type, struct unit_data **pDef_armour)
+      ->int;
    void damage_object(struct unit_data * ch, struct unit_data * obj, int dam);
-
-   extern struct damage_chart_type spell_chart[SPL_TREE_MAX];
 
    /* Does the spell perhaps only hit head / body? All?? Right now I
       do it randomly */
    hit_loc = hit_location(sa->caster, sa->target);
 
-   bonus += spell_bonus(sa->caster, sa->medium, sa->target, hit_loc, spell_number, &armour_type, NULL);
+   bonus += spell_bonus(sa->caster, sa->medium, sa->target, hit_loc, spell_number, &armour_type, nullptr);
 
    roll = open100();
    roll_description(sa->caster, "spell", roll);
@@ -417,7 +463,7 @@ int spell_offensive(struct spell_args *sa, int spell_number, int bonus)
 
    def_shield_bonus = shield_bonus(sa->caster, sa->target, &def_shield);
 
-   if(def_shield && spell_info[spell_number].shield != SHIELD_M_USELESS)
+   if((def_shield != nullptr) && spell_info[spell_number].shield != SHIELD_M_USELESS)
    {
       if((spell_info[spell_number].shield == SHIELD_M_BLOCK) && (number(1, 100) <= def_shield_bonus))
       {
@@ -434,9 +480,13 @@ int spell_offensive(struct spell_args *sa, int spell_number, int bonus)
    bEffect = dil_effect(sa->pEffect, sa);
 
    if(sa->hm > 0)
-      damage(sa->caster, sa->target, 0, sa->hm, MSG_TYPE_SPELL, spell_number, COM_MSG_EBODY, !bEffect);
+   {
+      damage(sa->caster, sa->target, nullptr, sa->hm, MSG_TYPE_SPELL, spell_number, COM_MSG_EBODY, static_cast<int>(bEffect) == 0);
+   }
    else
-      damage(sa->caster, sa->target, 0, 0, MSG_TYPE_SPELL, spell_number, COM_MSG_MISS, !bEffect);
+   {
+      damage(sa->caster, sa->target, nullptr, 0, MSG_TYPE_SPELL, spell_number, COM_MSG_MISS, static_cast<int>(bEffect) == 0);
+   }
 
    return sa->hm;
 }

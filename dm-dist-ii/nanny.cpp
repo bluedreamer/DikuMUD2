@@ -27,11 +27,11 @@
 /* 22/10/92 gnort  : Put pwd-hide on all operations in nanny.              */
 /* 05/1/93  HHS    : Included wizlock                                      */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 #include <unistd.h>
 
 #include <arpa/inet.h>
@@ -56,7 +56,6 @@
 #include "files.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
 #include "main.h"
 #include "modify.h"
 #include "money.h"
@@ -67,22 +66,19 @@
 #include "trie.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
 #define STATE(d) ((d)->state)
 
-extern struct unit_data       *unit_list;
-extern struct descriptor_data *descriptor_list;
-extern int                     wizlock;
-
 void nanny_get_name(struct descriptor_data *d, char *arg);
-void set_descriptor_fptr(struct descriptor_data *d, void (*fptr)(struct descriptor_data *, char *), ubit1 call);
-void nanny_menu(struct descriptor_data *d, char *arg);
-void nanny_credit_card(struct descriptor_data *d, char *arg);
+
+void nanny_menu(struct descriptor_data *d, const char *arg);
+void nanny_credit_card(struct descriptor_data *d, const char *arg);
 void nanny_new_pwd(struct descriptor_data *d, char *arg);
-void nanny_change_information(struct descriptor_data *d, char *arg);
-void nanny_change_terminal(struct descriptor_data *d, char *arg);
+void nanny_change_information(struct descriptor_data *d, const char *arg);
+void nanny_change_terminal(struct descriptor_data *d, const char *arg);
 void multi_close(struct multi_element *pe);
-int  player_exists(const char *pName);
+auto player_exists(const char *pName) -> int;
 void save_player_file(struct unit_data *ch);
 
 extern struct diltemplate *nanny_dil_tmpl;
@@ -91,32 +87,42 @@ extern struct diltemplate *nanny_dil_tmpl;
  *  Stuff for controlling the non-playing sockets (get name, pwd etc)      *
  ************************************************************************* */
 
-int _parse_name(const char *arg, char *name)
+auto _parse_name(const char *arg, char *name) -> int
 {
    int                i;
    static const char *illegal_names[] = {
       "on", /* I picture tell on/off & shout on/off ..*/
       "off", "someone", "guard", "cityguard", "captain", "typing", "undefined", "safe", "corpse",   "here",
 
-      "you", "room",    "zone",  "world",     "group",   "reset",  "self",      "all",  "creators", NULL};
+      "you", "room",    "zone",  "world",     "group",   "reset",  "self",      "all",  "creators", nullptr};
 
    arg = skip_spaces(arg); /* skip whitespaces */
 
    /* i+1 = chars copied    */
    /* PC_MAX_NAME-1 = chars */
 
-   for(i = 0; (*name = *arg); arg++, i++, name++)
-      if((*arg <= ' ') || !isalpha(*arg) || (i + 1) > (PC_MAX_NAME - 1))
+   for(i = 0; (*name = *arg) != 0; arg++, i++, name++)
+   {
+      if((*arg <= ' ') || (isalpha(*arg) == 0) || (i + 1) > (PC_MAX_NAME - 1))
+      {
          return 1;
+      }
+   }
 
-   if(i <= 2) /* Names must be at least 3 chars due to passwords */
+   if(i <= 2)
+   { /* Names must be at least 3 chars due to passwords */
       return 1;
+   }
 
-   if(fill_word(name - i)) /* Don't allow fillwords */
+   if(fill_word(name - i) != 0)
+   { /* Don't allow fillwords */
       return 1;
+   }
 
    if(search_block(name - i, illegal_names, TRUE) != -1)
+   {
       return 1;
+   }
 
    str_lower(name);
 
@@ -125,16 +131,17 @@ int _parse_name(const char *arg, char *name)
 
 /* This is called from main_loop every n seconds (long duration) to check */
 /* for idle time for any descriptors                                      */
-void check_idle(void)
+void check_idle()
 {
-   struct descriptor_data *d, *next_d;
-   time_t                  now = time(0);
+   struct descriptor_data *d;
+   struct descriptor_data *next_d;
+   time_t                  now = time(nullptr);
 
-   for(d = descriptor_list; d; d = next_d)
+   for(d = descriptor_list; d != nullptr; d = next_d)
    {
       next_d = d->next;
       d->timer++;
-      if(!descriptor_is_playing(d)) /* Not in game yet */
+      if(descriptor_is_playing(d) == 0) /* Not in game yet */
       {
          if(d->fptr == nanny_get_name)
          {
@@ -186,8 +193,8 @@ void connect_game(struct unit_data *pc)
 {
    assert(CHAR_DESCRIPTOR(pc));
 
-   PC_TIME(pc).connect        = time(0);
-   CHAR_DESCRIPTOR(pc)->logon = time(0);
+   PC_TIME(pc).connect        = time(nullptr);
+   CHAR_DESCRIPTOR(pc)->logon = time(nullptr);
 
    CHAR_DESCRIPTOR(pc)->CreateBBS();
 
@@ -195,7 +202,9 @@ void connect_game(struct unit_data *pc)
 
    no_players++;
    if(no_players > max_no_players)
+   {
       max_no_players = no_players;
+   }
 }
 
 void disconnect_game(struct unit_data *pc)
@@ -211,7 +220,7 @@ void reconnect_game(struct descriptor_data *d, struct unit_data *ch)
    assert(!UNIT_IN(d->character));
    assert(!CHAR_DESCRIPTOR(ch));
 
-   CHAR_DESCRIPTOR(d->character) = NULL;
+   CHAR_DESCRIPTOR(d->character) = nullptr;
    extract_unit(d->character);
    d->character        = ch;
    CHAR_DESCRIPTOR(ch) = d;
@@ -223,26 +232,32 @@ void reconnect_game(struct descriptor_data *d, struct unit_data *ch)
 
    if(CHAR_LAST_ROOM(ch) && (CHAR_LAST_ROOM(ch) != UNIT_IN(ch)))
    {
-      act("$1n has reconnected, and is moved to another location.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+      act("$1n has reconnected, and is moved to another location.", A_HIDEINV, ch, nullptr, nullptr, TO_ROOM);
       unit_from_unit(ch);
       unit_to_unit(ch, CHAR_LAST_ROOM(ch));
-      CHAR_LAST_ROOM(ch) = NULL;
+      CHAR_LAST_ROOM(ch) = nullptr;
    }
-   act("$1n has reconnected.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+   act("$1n has reconnected.", A_HIDEINV, ch, nullptr, nullptr, TO_ROOM);
    slog(LOG_BRIEF, UNIT_MINV(ch), "%s[%s] has reconnected.", PC_FILENAME(ch), CHAR_DESCRIPTOR(ch)->host);
-   CHAR_DESCRIPTOR(ch)->logon = time(0);
-   PC_TIME(ch).connect        = time(0);
+   CHAR_DESCRIPTOR(ch)->logon = time(nullptr);
+   PC_TIME(ch).connect        = time(nullptr);
    set_descriptor_fptr(d, descriptor_interpreter, FALSE);
 }
 
 void update_lasthost(struct unit_data *pc, ubit32 s_addr)
 {
    if((sbit32)s_addr == -1)
+   {
       return;
+   }
 
    for(int i = 0; i < 5; i++)
+   {
       if(PC_LASTHOST(pc)[i] == s_addr)
+      {
          return;
+      }
+   }
 
    memmove(&PC_LASTHOST(pc)[0], &PC_LASTHOST(pc)[1], sizeof(ubit32) * 4);
    PC_LASTHOST(pc)[4] = s_addr;
@@ -262,9 +277,9 @@ void enter_game(struct unit_data *ch)
 
    extern struct command_info cmd_info[];
 
-   ubit8 player_has_mail(struct unit_data * ch);
-   char *ContentsFileName(const char *);
-   void  start_all_special(struct unit_data * u);
+   auto player_has_mail(struct unit_data * ch)->ubit8;
+   auto ContentsFileName(const char *)->char *;
+   void start_all_special(struct unit_data * u);
 
    assert(ch);
    assert(!UNIT_IN(ch));
@@ -277,8 +292,8 @@ void enter_game(struct unit_data *ch)
 
       CHAR_DESCRIPTOR(ch)->timer       = 0;
       CHAR_DESCRIPTOR(ch)->prompt_mode = PROMPT_EXPECT;
-      CHAR_DESCRIPTOR(ch)->logon       = time(0);
-      PC_TIME(ch).connect              = time(0);
+      CHAR_DESCRIPTOR(ch)->logon       = time(nullptr);
+      PC_TIME(ch).connect              = time(nullptr);
       set_descriptor_fptr(CHAR_DESCRIPTOR(ch), descriptor_interpreter, FALSE);
 
       ActivateDil(ch);
@@ -293,10 +308,12 @@ void enter_game(struct unit_data *ch)
    if(CHAR_LAST_ROOM(ch))
    {
       load_room          = CHAR_LAST_ROOM(ch);
-      CHAR_LAST_ROOM(ch) = NULL;
+      CHAR_LAST_ROOM(ch) = nullptr;
    }
    else
+   {
       load_room = hometown_unit(PC_HOME(ch));
+   }
 
    unit_to_unit(ch, load_room);
 
@@ -304,13 +321,17 @@ void enter_game(struct unit_data *ch)
    {
       sprintf(buf, "%s has entered the world.\n\r", UNIT_NAME(ch));
 
-      for(i = descriptor_list; i; i = i->next)
-         if(descriptor_is_playing(i) && i->character != ch && CHAR_CAN_SEE(CHAR_ORIGINAL(i->character), ch) &&
+      for(i = descriptor_list; i != nullptr; i = i->next)
+      {
+         if((descriptor_is_playing(i) != 0) && i->character != ch && CHAR_CAN_SEE(CHAR_ORIGINAL(i->character), ch) &&
             IS_PC(CHAR_ORIGINAL(i->character)) && IS_SET(PC_FLAGS(CHAR_ORIGINAL(i->character)), PC_INFORM) &&
-            !same_surroundings(ch, i->character))
+            (same_surroundings(ch, i->character) == 0u))
+         {
             send_to_descriptor(buf, i);
+         }
+      }
 
-      act("$1n has arrived.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+      act("$1n has arrived.", A_HIDEINV, ch, nullptr, nullptr, TO_ROOM);
    }
 
    /* New player stats. Level can be zero after reroll while ID is not. */
@@ -320,7 +341,7 @@ void enter_game(struct unit_data *ch)
 
       slog(LOG_BRIEF, 0, "%s[%s] (GUEST) has entered the game.", PC_FILENAME(ch), CHAR_DESCRIPTOR(ch)->host);
 
-      int new_player_id(void);
+      auto new_player_id()->int;
 
       PC_ID(ch) = new_player_id();
 
@@ -332,9 +353,9 @@ void enter_game(struct unit_data *ch)
       do_look(ch, mbuf, &cmd_info[CMD_DOWN]);
    }
 
-   if(file_exists(ContentsFileName(PC_FILENAME(ch))))
+   if(file_exists(ContentsFileName(PC_FILENAME(ch))) != 0u)
    {
-      ubit32 rent_calc(struct unit_data * ch, time_t savetime);
+      auto rent_calc(struct unit_data * ch, time_t savetime)->ubit32;
 
       load_contents(PC_FILENAME(ch), ch);
       rent_calc(ch, last_connect);
@@ -346,18 +367,22 @@ void enter_game(struct unit_data *ch)
       {
          extern void tax_player(struct unit_data * ch);
 
-         CHAR_MONEY(ch) = NULL;
+         CHAR_MONEY(ch) = nullptr;
          tax_player(ch);
       }
    }
 
    competition_enroll(ch);
 
-   if(player_has_mail(ch))
+   if(player_has_mail(ch) != 0u)
+   {
       send_to_char(COLOUR_ATTN "You have a great urge to visit the postoffice.\n\r" COLOUR_NORMAL, ch);
+   }
 
    if(IS_ULTIMATE(ch) && PC_IS_UNSAVED(ch))
+   {
       save_player(ch);
+   }
 
    start_affect(ch);      /* Activate affect ticks */
    start_all_special(ch); /* Activate fptr ticks   */
@@ -367,32 +392,36 @@ void set_descriptor_fptr(struct descriptor_data *d, void (*fptr)(struct descript
 {
    if(d->fptr == interpreter_string_add)
    {
-      if(d->localstr)
+      if(d->localstr != nullptr)
+      {
          free(d->localstr);
+      }
 
-      d->localstr = NULL;
-      d->editref  = NULL;
-      d->postedit = NULL;
-      d->editing  = NULL;
+      d->localstr = nullptr;
+      d->editref  = nullptr;
+      d->postedit = nullptr;
+      d->editing  = nullptr;
    }
 
    d->fptr = fptr;
-   if(call)
+   if(call != 0u)
    {
       char mbuf[MAX_INPUT_LENGTH] = {0};
       d->state                    = 0;
       (d->fptr)(d, mbuf);
    }
    else
+   {
       d->state = 1;
+   }
 }
 
 /* Return TRUE if help is given (found)... */
-int nanny_help_check(struct descriptor_data *d, char *arg, char *def)
+auto nanny_help_check(struct descriptor_data *d, char *arg, char *def) -> int
 {
    char buf[200 + MAX_INPUT_LENGTH];
 
-   int help_base(struct descriptor_data * d, char *arg);
+   auto help_base(struct descriptor_data * d, char *arg)->int;
 
    arg = skip_spaces(arg);
 
@@ -400,12 +429,16 @@ int nanny_help_check(struct descriptor_data *d, char *arg, char *def)
 
    str_lower(buf);
    if(!(strcmp("help", buf) == 0 || strcmp("hel", buf) == 0 || strcmp("he", buf) == 0 || strcmp("h", buf) == 0 || strcmp(buf, "?") == 0))
+   {
       return FALSE;
+   }
 
-   if(str_is_empty(arg))
+   if(str_is_empty(arg) != 0u)
+   {
       arg = def;
+   }
 
-   if(!help_base(d, arg))
+   if(help_base(d, arg) == 0)
    {
       sprintf(buf, "There is no help on the subject '%s'.\n\r", arg);
       send_to_descriptor(buf, d);
@@ -439,7 +472,7 @@ void nanny_motd(struct descriptor_data *d, char *arg)
 
 void nanny_newbie(struct descriptor_data *d, char *arg)
 {
-   if(!str_is_empty(g_cServerConfig.m_pNewbie) && STATE(d)++ == 0)
+   if((str_is_empty(g_cServerConfig.m_pNewbie) == 0u) && STATE(d)++ == 0)
    {
       page_string(d, g_cServerConfig.m_pNewbie);
       page_string(d, "\n\r\n*** PRESS RETURN: ");
@@ -449,7 +482,7 @@ void nanny_newbie(struct descriptor_data *d, char *arg)
    set_descriptor_fptr(d, nanny_motd, TRUE);
 }
 
-void nanny_throw(struct descriptor_data *d, char *arg)
+void nanny_throw(struct descriptor_data *d, const char *arg)
 {
    struct descriptor_data *td;
    struct unit_data       *u;
@@ -464,10 +497,12 @@ void nanny_throw(struct descriptor_data *d, char *arg)
 
    if(*arg == 'y' || *arg == 'Y')
    {
-      while((td = find_descriptor(PC_FILENAME(d->character), d)))
+      while((td = find_descriptor(PC_FILENAME(d->character), d)) != nullptr)
+      {
          descriptor_close(td);
+      }
 
-      for(u = unit_list; u; u = u->gnext)
+      for(u = unit_list; u != nullptr; u = u->gnext)
       {
          if(IS_PC(u) && str_ccmp(PC_FILENAME(d->character), PC_FILENAME(u)) == 0)
          {
@@ -488,7 +523,7 @@ void nanny_throw(struct descriptor_data *d, char *arg)
          }
       }
 
-      if(!player_exists(PC_FILENAME(d->character)))
+      if(player_exists(PC_FILENAME(d->character)) == 0)
       {
          send_to_descriptor("Guest, purging all connections - "
                             "please retry.\n\r",
@@ -500,7 +535,7 @@ void nanny_throw(struct descriptor_data *d, char *arg)
       set_descriptor_fptr(d, nanny_motd, TRUE);
       return;
    }
-   else if(*arg == 'n' || *arg == 'N')
+   if(*arg == 'n' || *arg == 'N')
    {
       send_to_descriptor("Ok, goodbye then.\n\r", d);
       set_descriptor_fptr(d, nanny_close, TRUE);
@@ -515,13 +550,13 @@ void nanny_dil(struct descriptor_data *d, char *arg)
 
    exd = UNIT_EXTRA_DESCR(d->character)->find_raw("$nanny");
 
-   if(exd && !str_is_empty(exd->names.Name(1)))
+   if((exd != nullptr) && (str_is_empty(exd->names.Name(1)) == 0u))
    {
       char buf[256];
 
       strcpy(buf, exd->names.Name(1));
 
-      if(nanny_help_check(d, arg, buf))
+      if(nanny_help_check(d, arg, buf) != 0)
       {
          page_string(d, "\n\r**Press Return**");
 
@@ -531,11 +566,11 @@ void nanny_dil(struct descriptor_data *d, char *arg)
       }
    }
 
-   if(nanny_dil_tmpl)
+   if(nanny_dil_tmpl != nullptr)
    {
       struct dilprg *prg;
 
-      prg          = dil_copy_template(nanny_dil_tmpl, d->character, NULL);
+      prg          = dil_copy_template(nanny_dil_tmpl, d->character, nullptr);
       prg->waitcmd = WAITCMD_MAXINST - 1; // The usual hack, see db_file
 
       prg->sp->vars[0].val.string = str_dup(arg);
@@ -543,9 +578,9 @@ void nanny_dil(struct descriptor_data *d, char *arg)
       dil_activate(prg);
    }
 
-   if(UNIT_EXTRA_DESCR(d->character)->find_raw("$nanny") == NULL)
+   if(UNIT_EXTRA_DESCR(d->character)->find_raw("$nanny") == nullptr)
    {
-      if(!str_is_empty(PC_GUILD(d->character)))
+      if(str_is_empty(PC_GUILD(d->character)) == 0u)
       {
          char buf[256];
 
@@ -572,7 +607,7 @@ void nanny_pwd_confirm(struct descriptor_data *d, char *arg)
 
    send_to_descriptor(CONTROL_ECHO_ON "\n\r", d);
 
-   if(strncmp(crypt(arg, PC_FILENAME(d->character)), PC_PWD(d->character), 10))
+   if(strncmp(crypt(arg, PC_FILENAME(d->character)), PC_PWD(d->character), 10) != 0)
    {
       send_to_descriptor("Passwords don't match.\n\r", d);
       set_descriptor_fptr(d, nanny_new_pwd, TRUE);
@@ -581,7 +616,8 @@ void nanny_pwd_confirm(struct descriptor_data *d, char *arg)
 
    /* See if guest is in game, if so - a guest was LD       */
    /* Password has now been redefined                       */
-   for(u = unit_list; u; u = u->gnext)
+   for(u = unit_list; u != nullptr; u = u->gnext)
+   {
       if(IS_PC(u) && (str_ccmp(PC_FILENAME(u), PC_FILENAME(d->character)) == 0))
       {
          assert(!CHAR_DESCRIPTOR(u));
@@ -590,13 +626,16 @@ void nanny_pwd_confirm(struct descriptor_data *d, char *arg)
          reconnect_game(d, u);
          return;
       }
+   }
 
    set_descriptor_fptr(d, nanny_dil, TRUE);
 }
 
-int check_pwd(struct descriptor_data *d, char *pwd)
+auto check_pwd(struct descriptor_data *d, char *pwd) -> int
 {
-   int i, bA, bNA;
+   int i;
+   int bA;
+   int bNA;
 
    if(strlen(pwd) < 5)
    {
@@ -608,16 +647,24 @@ int check_pwd(struct descriptor_data *d, char *pwd)
    }
 
    if(strlen(pwd) > 10)
+   {
       pwd[10] = 0;
+   }
 
    bA  = FALSE;
    bNA = FALSE;
 
-   for(i = 0; pwd[i]; i++)
-      if(isalpha(pwd[i]))
+   for(i = 0; pwd[i] != 0; i++)
+   {
+      if(isalpha(pwd[i]) != 0)
+      {
          bA = TRUE;
+      }
       else
+      {
          bNA = TRUE;
+      }
+   }
 
    if(bA == FALSE)
    {
@@ -655,7 +702,7 @@ void nanny_new_pwd(struct descriptor_data *d, char *arg)
 
    send_to_descriptor(CONTROL_ECHO_ON "\n\r", d);
 
-   if(!check_pwd(d, arg))
+   if(check_pwd(d, arg) == 0)
    {
       set_descriptor_fptr(d, nanny_new_pwd, TRUE);
       return;
@@ -680,7 +727,7 @@ void nanny_change_pwd_confirm(struct descriptor_data *d, char *arg)
 
    send_to_descriptor(CONTROL_ECHO_ON "\n\r", d);
 
-   if(strncmp(crypt(arg, PC_FILENAME(d->character)), PC_PWD(d->character), 10))
+   if(strncmp(crypt(arg, PC_FILENAME(d->character)), PC_PWD(d->character), 10) != 0)
    {
       send_to_descriptor("Passwords don't match.\n\r", d);
       set_descriptor_fptr(d, nanny_change_pwd, TRUE);
@@ -701,7 +748,7 @@ void nanny_change_pwd(struct descriptor_data *d, char *arg)
 
    send_to_descriptor(CONTROL_ECHO_ON "\n\r", d);
 
-   if(!check_pwd(d, arg))
+   if(check_pwd(d, arg) == 0)
    {
       set_descriptor_fptr(d, nanny_change_pwd, TRUE);
       return;
@@ -717,7 +764,7 @@ void nanny_kill_confirm(struct descriptor_data *d, char *arg)
 {
    struct unit_data *u;
 
-   int delete_player(const char *);
+   auto delete_player(const char *)->int;
 
    if(STATE(d)++ == 0)
    {
@@ -744,7 +791,7 @@ void nanny_kill_confirm(struct descriptor_data *d, char *arg)
       char buf[100];
       strcpy(buf, PC_FILENAME(d->character));
 
-      if(find_descriptor(buf, d))
+      if(find_descriptor(buf, d) != nullptr)
       {
          send_to_descriptor("A copy is connected, get rid of "
                             "it first.\n\r",
@@ -753,8 +800,9 @@ void nanny_kill_confirm(struct descriptor_data *d, char *arg)
          return;
       }
 
-      for(u = unit_list; u; u = u->gnext)
-         if(IS_PC(u) && !str_ccmp(PC_FILENAME(u), PC_FILENAME(d->character)))
+      for(u = unit_list; u != nullptr; u = u->gnext)
+      {
+         if(IS_PC(u) && (str_ccmp(PC_FILENAME(u), PC_FILENAME(d->character)) == 0))
          {
             send_to_descriptor("A copy is connected, "
                                "get rid of it first.\n\r",
@@ -762,6 +810,7 @@ void nanny_kill_confirm(struct descriptor_data *d, char *arg)
             set_descriptor_fptr(d, nanny_change_terminal, TRUE);
             return;
          }
+      }
 
       slog(LOG_ALL, 0, "%s deleted %sself from menu.", PC_FILENAME(d->character), B_HMHR(d->character));
       send_to_descriptor("\n\rThank you, hope to see you soon.\n\r", d);
@@ -772,7 +821,7 @@ void nanny_kill_confirm(struct descriptor_data *d, char *arg)
 }
 
 /* Return TRUE when done... */
-ubit1 base_string_add(struct descriptor_data *d, char *str)
+auto base_string_add(struct descriptor_data *d, char *str) -> ubit1
 {
    char *scan;
    int   terminator = 0;
@@ -780,32 +829,34 @@ ubit1 base_string_add(struct descriptor_data *d, char *str)
    if(STATE(d)++ == 0)
    {
       send_to_descriptor("Terminate with a '@'.\n\r\n\r", d);
-      if(d->localstr)
+      if(d->localstr != nullptr)
       {
          slog(LOG_ALL, 0, "Spooky localstr in base_string_add - tell papi.");
          free(d->localstr); // Spooky!
       }
-      d->localstr = NULL;
+      d->localstr = nullptr;
       return FALSE;
    }
 
    /* determine if this is the terminal string, and truncate if so */
-   for(scan = str; *scan; scan++)
-      if((terminator = (*scan == '@' && scan[1] == '\0')))
+   for(scan = str; *scan != 0; scan++)
+   {
+      if((terminator = static_cast<int>(*scan == '@' && scan[1] == '\0')) != 0)
       {
          *scan = '\0';
          break;
       }
+   }
 
-   if(MAX_STRING_LENGTH - (d->localstr ? strlen(d->localstr) : 0) < strlen(str))
+   if(MAX_STRING_LENGTH - (d->localstr != nullptr ? strlen(d->localstr) : 0) < strlen(str))
    {
-      str[MAX_STRING_LENGTH - (d->localstr ? strlen(d->localstr) : 0)] = '\0';
-      terminator                                                       = 1;
+      str[MAX_STRING_LENGTH - (d->localstr != nullptr ? strlen(d->localstr) : 0)] = '\0';
+      terminator                                                                  = 1;
 
       send_to_descriptor("String too long - Truncated.\n\r", d);
    }
 
-   if(d->localstr == NULL)
+   if(d->localstr == nullptr)
    {
       CREATE(d->localstr, char, strlen(str) + 3);
       strcpy(d->localstr, str);
@@ -816,23 +867,26 @@ ubit1 base_string_add(struct descriptor_data *d, char *str)
       strcat(d->localstr, str);
    }
 
-   if(terminator)
+   if(terminator != 0)
    {
-      if(d->postedit)
+      if(d->postedit != nullptr)
+      {
          d->postedit(d);
+      }
 
-      if(d->localstr)
+      if(d->localstr != nullptr)
+      {
          free(d->localstr);
+      }
 
-      d->localstr = NULL;
-      d->editref  = NULL;
-      d->postedit = NULL;
-      d->editing  = NULL;
+      d->localstr = nullptr;
+      d->editref  = nullptr;
+      d->postedit = nullptr;
+      d->editing  = nullptr;
 
       return TRUE;
    }
-   else
-      strcat(d->localstr, "\n\r");
+   strcat(d->localstr, "\n\r");
 
    return FALSE;
 }
@@ -840,8 +894,10 @@ ubit1 base_string_add(struct descriptor_data *d, char *str)
 /* Add user input to the 'current' string (as defined by d->str) */
 void interpreter_string_add(struct descriptor_data *d, char *str)
 {
-   if(base_string_add(d, str))
+   if(base_string_add(d, str) != 0u)
+   {
       set_descriptor_fptr(d, descriptor_interpreter, FALSE);
+   }
 }
 
 /* Removes empty descriptions and makes ONE newline after each. */
@@ -851,29 +907,31 @@ void nanny_fix_descriptions(struct unit_data *u)
    struct extra_descr_data *exd;
    char                     buf[1024];
 
-   for(exd = UNIT_EXTRA_DESCR(u); exd; exd = exd->next)
+   for(exd = UNIT_EXTRA_DESCR(u); exd != nullptr; exd = exd->next)
    {
-      if(exd->names.Name())
-         strcpy(buf, exd->names.Name());
-      else
-         *buf = 0;
-
-      if(!exd->names.Name() || search_block(buf, bodyparts, TRUE))
+      if(exd->names.Name() != nullptr)
       {
-         if(str_is_empty(exd->descr.String()))
+         strcpy(buf, exd->names.Name());
+      }
+      else
+      {
+         *buf = 0;
+      }
+
+      if((exd->names.Name() == nullptr) || (search_block(buf, bodyparts, TRUE) != 0))
+      {
+         if(str_is_empty(exd->descr.String()) != 0u)
          {
             UNIT_EXTRA_DESCR(u) = UNIT_EXTRA_DESCR(u)->remove(exd);
             exd                 = UNIT_EXTRA_DESCR(u);
             nanny_fix_descriptions(u);
             return;
          }
-         else
-         {
-            char buf[MAX_STRING_LENGTH];
-            strcpy(buf, exd->descr.String());
-            strip_trailing_blanks(buf);
-            exd->descr.Reassign(buf);
-         }
+
+         char buf[MAX_STRING_LENGTH];
+         strcpy(buf, exd->descr.String());
+         strip_trailing_blanks(buf);
+         exd->descr.Reassign(buf);
       }
    }
 }
@@ -881,7 +939,7 @@ void nanny_fix_descriptions(struct unit_data *u)
 /* Add user input to the 'current' string (as defined by d->str) */
 void nanny_string_add(struct descriptor_data *d, char *str)
 {
-   if(base_string_add(d, str))
+   if(base_string_add(d, str) != 0u)
    {
       nanny_fix_descriptions(d->character);
       set_descriptor_fptr(d, nanny_change_information, TRUE);
@@ -895,16 +953,14 @@ void nanny_wizi(struct descriptor_data *d, char *arg)
       send_to_descriptor("\n\rEnter the desired Wizinvis level: ", d);
       return;
    }
-   else
-   {
-      int i = atoi(arg);
-      if(!is_in(i, 0, CHAR_LEVEL(d->character)))
-         send_to_descriptor("Invalid wizi level.\n\r", d);
-      else
-         UNIT_MINV(d->character) = i;
 
-      set_descriptor_fptr(d, nanny_menu, TRUE);
-   }
+   int i = atoi(arg);
+   if(!is_in(i, 0, CHAR_LEVEL(d->character)))
+      send_to_descriptor("Invalid wizi level.\n\r", d);
+   else
+      UNIT_MINV(d->character) = i;
+
+   set_descriptor_fptr(d, nanny_menu, TRUE);
 }
 
 void nanny_background(struct descriptor_data *d, char *arg)
@@ -928,15 +984,19 @@ void list_body_parts(struct descriptor_data *d)
 
    *c = 0;
 
-   for(i = 0; bodyparts[i]; i++)
+   for(i = 0; bodyparts[i] != nullptr; i++)
    {
       sprintf(c, "%2d) %-12s   ", i + 1, bodyparts[i]);
       if((i + 1) % 4 == 0)
+      {
          strcat(c, "\n\r");
+      }
       TAIL(c);
    }
    if((i + 1) % 4 != 0)
+   {
       strcat(c, "\n\r");
+   }
    strcat(c, "\n\r");
 
    send_to_descriptor(Buf, d);
@@ -965,14 +1025,14 @@ void nanny_describe_bodypart(struct descriptor_data *d, char *arg)
       nanny_describe_bodypart(d, arg);
       return;
    }
-   else if(toupper(*arg) == 'R')
+   if(toupper(*arg) == 'R')
    {
       set_descriptor_fptr(d, nanny_change_information, TRUE);
       return;
    }
 
    i = atoi(arg);
-   if(!is_in(i, 1, 29))
+   if(is_in(i, 1, 29) == 0)
    {
       send_to_descriptor("No such bodypart, please choose 1 to 29.\n\r\n\r", d);
       STATE(d) = 0;
@@ -984,7 +1044,7 @@ void nanny_describe_bodypart(struct descriptor_data *d, char *arg)
 
    exd = unit_find_extra(bodyparts[i - 1], d->character);
 
-   if(exd && !str_is_empty(exd->descr.String()))
+   if((exd != nullptr) && (str_is_empty(exd->descr.String()) == 0u))
    {
       sprintf(Buf, "\n\rYour current '%s' description:\n\r", bodyparts[i - 1]);
       send_to_descriptor(Buf, d);
@@ -998,12 +1058,12 @@ void nanny_describe_bodypart(struct descriptor_data *d, char *arg)
 
    send_to_descriptor(Buf, d);
 
-   if(exd == NULL)
+   if(exd == nullptr)
    {
       char **namelist = create_namelist();
       namelist        = add_name(bodyparts[i - 1], namelist);
 
-      exd = UNIT_EXTRA_DESCR(d->character) = UNIT_EXTRA_DESCR(d->character)->add((const char **)namelist, NULL);
+      exd = UNIT_EXTRA_DESCR(d->character) = UNIT_EXTRA_DESCR(d->character)->add((const char **)namelist, nullptr);
       free_namelist(namelist);
    }
 
@@ -1025,7 +1085,7 @@ void nanny_change_width(struct descriptor_data *d, char *arg)
    }
 
    i = atoi(arg);
-   if(!is_in(i, 40, 132))
+   if(is_in(i, 40, 132) == 0)
    {
       send_to_descriptor("Invalid scrren width, please choose a number "
                          "in the range 40 to 132.\n\r",
@@ -1049,7 +1109,7 @@ void nanny_change_height(struct descriptor_data *d, char *arg)
    }
 
    i = atoi(arg);
-   if(!is_in(i, 15, 60))
+   if(is_in(i, 15, 60) == 0)
    {
       send_to_descriptor("Invalid screen width, please choose a number "
                          "in the range 15 to 60.\n\r",
@@ -1085,7 +1145,7 @@ void nanny_charge_confirm(struct descriptor_data *d, char *arg)
 
    send_to_descriptor(CONTROL_ECHO_ON "\n\r", d);
 
-   if(str_is_empty(arg))
+   if(str_is_empty(arg) != 0u)
    {
       send_to_descriptor(COLOUR_ATTN "\n\r\n\rYou have cancelled your "
                                      "transaction.\n\r" COLOUR_NORMAL,
@@ -1185,16 +1245,20 @@ void nanny_charge(struct descriptor_data *d, char *arg)
       return;
    }
 
-   for(; *arg && !isdigit(*arg); arg++)
+   for(; (*arg != 0) && (isdigit(*arg) == 0); arg++)
+   {
       ;
+   }
 
-   for(p = arg; *p && isdigit(*p); p++)
+   for(p = arg; (*p != 0) && (isdigit(*p) != 0); p++)
+   {
       ;
+   }
    *p = 0;
 
    i = atoi(arg);
 
-   if(!str_is_number(arg))
+   if(str_is_number(arg) == 0u)
    {
       send_to_descriptor(COLOUR_ATTN "\n\rYou did not enter a number, "
                                      "please retry.\n\r" COLOUR_NORMAL,
@@ -1212,7 +1276,7 @@ void nanny_charge(struct descriptor_data *d, char *arg)
       return;
    }
 
-   if(!is_in(i, g_cAccountConfig.m_nMinCharge / 100, g_cAccountConfig.m_nMaxCharge / 100))
+   if(is_in(i, g_cAccountConfig.m_nMinCharge / 100, g_cAccountConfig.m_nMaxCharge / 100) == 0)
    {
       sprintf(buf,
               COLOUR_ATTN "\n\rPlease choose an amount between "
@@ -1234,7 +1298,7 @@ void nanny_charge(struct descriptor_data *d, char *arg)
    set_descriptor_fptr(d, nanny_charge_confirm, TRUE);
 }
 
-void nanny_credit_card(struct descriptor_data *d, char *arg)
+void nanny_credit_card(struct descriptor_data *d, const char *arg)
 {
    char Buf[200];
 
@@ -1246,9 +1310,13 @@ void nanny_credit_card(struct descriptor_data *d, char *arg)
       strcpy(mbuf, "credit card registration");
 
       if(STATE(d)++ == 0)
+      {
          do_help(d->character, mbuf, &cmd_auto_unknown);
+      }
       else
+      {
          set_descriptor_fptr(d, nanny_menu, TRUE);
+      }
       return;
    }
 
@@ -1357,7 +1425,7 @@ void nanny_credit_card(struct descriptor_data *d, char *arg)
    }
 }
 
-void nanny_change_terminal(struct descriptor_data *d, char *arg)
+void nanny_change_terminal(struct descriptor_data *d, const char *arg)
 {
    int n;
 
@@ -1452,19 +1520,19 @@ void nanny_change_terminal(struct descriptor_data *d, char *arg)
          return;
 
       case '3':
-         PC_SETUP_TELNET(d->character) = !PC_SETUP_TELNET(d->character);
+         PC_SETUP_TELNET(d->character) = static_cast<ubit8>(!PC_SETUP_TELNET(d->character));
          send_to_descriptor("Telnet option toggled.\n\r", d);
          set_descriptor_fptr(d, nanny_change_terminal, TRUE);
          return;
 
       case '4':
-         PC_SETUP_ECHO(d->character) = !PC_SETUP_ECHO(d->character);
+         PC_SETUP_ECHO(d->character) = static_cast<ubit8>(!PC_SETUP_ECHO(d->character));
          send_to_descriptor("Echo option toggled.\n\r", d);
          set_descriptor_fptr(d, nanny_change_terminal, TRUE);
          return;
 
       case '5':
-         PC_SETUP_REDRAW(d->character) = !PC_SETUP_REDRAW(d->character);
+         PC_SETUP_REDRAW(d->character) = static_cast<ubit8>(!PC_SETUP_REDRAW(d->character));
          send_to_descriptor("Redraw option toggled.\n\r", d);
          set_descriptor_fptr(d, nanny_change_terminal, TRUE);
          return;
@@ -1479,7 +1547,9 @@ void nanny_change_terminal(struct descriptor_data *d, char *arg)
 
       case 'R':
          if(!PC_IS_UNSAVED(d->character))
+         {
             save_player_file(d->character);
+         }
 
          set_descriptor_fptr(d, nanny_menu, TRUE);
          MplexSendSetup(d);
@@ -1500,18 +1570,25 @@ void nanny_view_descriptions(struct descriptor_data *d, char *arg)
 
    STATE(d)++;
 
-   for(exd = UNIT_EXTRA_DESCR(d->character), i = 1; exd; i++, exd = exd->next)
+   for(exd = UNIT_EXTRA_DESCR(d->character), i = 1; exd != nullptr; i++, exd = exd->next)
    {
-      if(exd->names.Name())
+      if(exd->names.Name() != nullptr)
+      {
          strcpy(Buf, exd->names.Name());
+      }
       else
+      {
          *Buf = 0;
+      }
 
       if(i >= STATE(d))
-         if(!exd->names.Name() || search_block(Buf, bodyparts, TRUE) != -1)
+      {
+         if((exd->names.Name() == nullptr) || search_block(Buf, bodyparts, TRUE) != -1)
          {
-            if(exd->names.Name() == NULL)
+            if(exd->names.Name() == nullptr)
+            {
                send_to_descriptor("Your default description:\n\r\n\r", d);
+            }
             else
             {
                sprintf(Buf, "Your %s description:\n\r\n\r", exd->names.Name());
@@ -1522,13 +1599,16 @@ void nanny_view_descriptions(struct descriptor_data *d, char *arg)
             send_to_descriptor("\n\rPress return for next", d);
             break;
          }
+      }
    }
 
-   if(exd == NULL)
+   if(exd == nullptr)
+   {
       set_descriptor_fptr(d, nanny_change_information, TRUE);
+   }
 }
 
-void nanny_change_information(struct descriptor_data *d, char *arg)
+void nanny_change_information(struct descriptor_data *d, const char *arg)
 {
    struct extra_descr_data *exd;
 
@@ -1549,7 +1629,7 @@ void nanny_change_information(struct descriptor_data *d, char *arg)
       case '1':
          exd = unit_find_extra(UNIT_NAME(d->character), d->character);
 
-         if(exd && !str_is_empty(exd->descr.String()))
+         if((exd != nullptr) && (str_is_empty(exd->descr.String()) == 0u))
          {
             send_to_descriptor("\n\rYour current description:\n\r", d);
             send_to_descriptor(exd->descr.String(), d);
@@ -1559,8 +1639,10 @@ void nanny_change_information(struct descriptor_data *d, char *arg)
                             " when they look at you.\n\r",
                             d);
 
-         if(exd == NULL)
-            exd = UNIT_EXTRA_DESCR(d->character) = UNIT_EXTRA_DESCR(d->character)->add((char *)NULL, NULL);
+         if(exd == nullptr)
+         {
+            exd = UNIT_EXTRA_DESCR(d->character) = UNIT_EXTRA_DESCR(d->character)->add((char *)nullptr, nullptr);
+         }
 
          d->editref  = exd;
          d->postedit = edit_extra;
@@ -1579,7 +1661,9 @@ void nanny_change_information(struct descriptor_data *d, char *arg)
 
       case 'R':
          if(!PC_IS_UNSAVED(d->character))
+         {
             save_player_file(d->character);
+         }
          set_descriptor_fptr(d, nanny_menu, TRUE);
          return;
 
@@ -1590,7 +1674,7 @@ void nanny_change_information(struct descriptor_data *d, char *arg)
    }
 }
 
-void nanny_menu(struct descriptor_data *d, char *arg)
+void nanny_menu(struct descriptor_data *d, const char *arg)
 {
    static int wizi_level = 0;
 
@@ -1600,10 +1684,12 @@ void nanny_menu(struct descriptor_data *d, char *arg)
       {
          extern struct trie_type *intr_trie;
 
-         struct command_info *cmd_ptr = (struct command_info *)search_trie("wizinv", intr_trie);
+         auto *cmd_ptr = (struct command_info *)search_trie("wizinv", intr_trie);
 
-         if(cmd_ptr)
+         if(cmd_ptr != nullptr)
+         {
             wizi_level = cmd_ptr->minimum_level;
+         }
       }
       send_to_descriptor("\n\rWelcome to " MUD_NAME "\n\r\n" COLOUR_MENU "  1" COLOUR_NORMAL ") Enter " MUD_NAME "\n\r" COLOUR_MENU
                          "  2" COLOUR_NORMAL ") Change "
@@ -1611,12 +1697,16 @@ void nanny_menu(struct descriptor_data *d, char *arg)
                          d);
 
       if(CHAR_LEVEL(d->character) >= wizi_level)
+      {
          send_to_descriptor(COLOUR_MENU "  W" COLOUR_NORMAL ") Set Wizi-Level\n\r", d);
+      }
 
-      if(g_cAccountConfig.m_bCreditCard && (PC_ACCOUNT(d->character).last4 != -1))
+      if((g_cAccountConfig.m_bCreditCard != 0) && (PC_ACCOUNT(d->character).last4 != -1))
+      {
          send_to_descriptor(COLOUR_MENU "  C" COLOUR_NORMAL ") Charge on Credit "
                                         "Card\n\r",
                             d);
+      }
 
       send_to_descriptor(COLOUR_MENU "  0" COLOUR_NORMAL ") Exit " MUD_NAME "\n\r", d);
 
@@ -1631,7 +1721,7 @@ void nanny_menu(struct descriptor_data *d, char *arg)
          return;
 
       case '1':
-         if(account_is_closed(d->character))
+         if(account_is_closed(d->character) != 0)
          {
             account_closed(d->character);
             set_descriptor_fptr(d, nanny_menu, TRUE);
@@ -1652,7 +1742,7 @@ void nanny_menu(struct descriptor_data *d, char *arg)
          return;
 
       case 'C':
-         if(g_cServerConfig.m_bAccounting)
+         if(g_cServerConfig.m_bAccounting != 0)
          {
             set_descriptor_fptr(d, nanny_credit_card, TRUE);
             return;
@@ -1709,7 +1799,7 @@ void nanny_existing_pwd(struct descriptor_data *d, char *arg)
 
    send_to_descriptor(CONTROL_ECHO_ON, d);
 
-   if(str_is_empty(arg))
+   if(str_is_empty(arg) != 0u)
    {
       UNIT_NAMES(d->character).Free();
       send_to_descriptor("\n\r\n\rWrong password, please login again.", d);
@@ -1720,12 +1810,12 @@ void nanny_existing_pwd(struct descriptor_data *d, char *arg)
 
    if(strncmp(crypt(arg, PC_PWD(d->character)), PC_PWD(d->character), 10) != 0)
    {
-      if(!str_is_empty(arg))
+      if(str_is_empty(arg) == 0u)
       {
          slog(LOG_ALL, 0, "%s entered a wrong password [%s].", PC_FILENAME(d->character), d->host);
          PC_CRACK_ATTEMPTS(d->character)++;
 
-         if((td = find_descriptor(PC_FILENAME(d->character), d)))
+         if((td = find_descriptor(PC_FILENAME(d->character), d)) != nullptr)
          {
             send_to_descriptor(COLOUR_ATTN "\n\rSomeone just attempted to login under "
                                            "your name using an illegal password.\n\r" COLOUR_NORMAL,
@@ -1734,7 +1824,9 @@ void nanny_existing_pwd(struct descriptor_data *d, char *arg)
             d->wait = PULSE_SEC * 5 + PC_CRACK_ATTEMPTS(td->character) * PULSE_SEC;
          }
          else if(!PC_IS_UNSAVED(d->character))
+         {
             save_player_file(d->character);
+         }
       }
 
       send_to_descriptor("\n\rWrong password.\n\r", d);
@@ -1747,7 +1839,7 @@ void nanny_existing_pwd(struct descriptor_data *d, char *arg)
    sprintf(buf, "\rWelcome back %s, you last visited " MUD_NAME " on %s\r", UNIT_NAME(d->character), ctime(&PC_TIME(d->character).connect));
    send_to_descriptor(buf, d);
 
-   if((td = find_descriptor(PC_FILENAME(d->character), d)))
+   if((td = find_descriptor(PC_FILENAME(d->character), d)) != nullptr)
    {
       set_descriptor_fptr(d, nanny_throw, TRUE);
       return;
@@ -1755,7 +1847,7 @@ void nanny_existing_pwd(struct descriptor_data *d, char *arg)
 
    /* See if player is in game (guests are not created in file entries) */
    /* Enters game (reconnects) if true                                  */
-   for(u = unit_list; u; u = u->gnext)
+   for(u = unit_list; u != nullptr; u = u->gnext)
    {
       if(IS_PC(u) && str_ccmp(PC_FILENAME(u), PC_FILENAME(d->character)) == 0)
       {
@@ -1788,7 +1880,7 @@ void nanny_name_confirm(struct descriptor_data *d, char *arg)
    char mbuf[MAX_INPUT_LENGTH];
    strcpy(mbuf, "login");
 
-   if(nanny_help_check(d, arg, mbuf))
+   if(nanny_help_check(d, arg, mbuf) != 0)
    {
       STATE(d) = 0;
       nanny_name_confirm(d, arg);
@@ -1814,7 +1906,9 @@ void nanny_name_confirm(struct descriptor_data *d, char *arg)
       set_descriptor_fptr(d, nanny_get_name, FALSE);
    }
    else
+   {
       send_to_descriptor("Please type Yes, No or Help: ", d);
+   }
 }
 
 void nanny_get_name(struct descriptor_data *d, char *arg)
@@ -1823,20 +1917,20 @@ void nanny_get_name(struct descriptor_data *d, char *arg)
    struct descriptor_data *td;
    int                     n;
 
-   if(str_is_empty(arg))
+   if(str_is_empty(arg) != 0u)
    {
       set_descriptor_fptr(d, nanny_close, TRUE);
       return;
    }
 
-   if(_parse_name(arg, tmp_name))
+   if(_parse_name(arg, tmp_name) != 0)
    {
       send_to_descriptor("Illegal name, please try another.\n\r", d);
       send_to_descriptor("Name: ", d);
       return;
    }
 
-   if(player_exists(tmp_name))
+   if(player_exists(tmp_name) != 0)
    {
       struct unit_data *ch;
 
@@ -1850,7 +1944,7 @@ void nanny_get_name(struct descriptor_data *d, char *arg)
       /* Known player, lets load his character information. */
       ch = load_player(tmp_name);
 
-      if(ch == NULL)
+      if(ch == nullptr)
       {
          send_to_descriptor("LOAD ERROR! PLEASE MAKE A NOTE OF ANY "
                             "SPECIAL ACTIONS YOU MAY HAVE TAKEN JUST "
@@ -1862,13 +1956,13 @@ void nanny_get_name(struct descriptor_data *d, char *arg)
          return;
       }
 
-      CHAR_DESCRIPTOR(d->character) = NULL;
+      CHAR_DESCRIPTOR(d->character) = nullptr;
       extract_unit(d->character);
 
       CHAR_DESCRIPTOR(ch) = d;
       d->character        = ch;
 
-      if(wizlock && CHAR_LEVEL(d->character) < wizlock)
+      if((wizlock != 0) && CHAR_LEVEL(d->character) < wizlock)
       {
          send_to_descriptor("Sorry, the game is wizlocked for "
                             "your level.\n\r",
@@ -1882,40 +1976,38 @@ void nanny_get_name(struct descriptor_data *d, char *arg)
       set_descriptor_fptr(d, nanny_existing_pwd, TRUE);
       return;
    }
-   else
+
+   /* Check for wizlock */
+   if(wizlock)
    {
-      /* Check for wizlock */
-      if(wizlock)
-      {
-         send_to_descriptor("Sorry, no new players now, the game "
-                            "is wizlocked!\n\r",
-                            d);
-         slog(LOG_BRIEF, 0, "Wizlock lockout for %s.", PC_FILENAME(d->character));
-         set_descriptor_fptr(d, nanny_close, TRUE);
-         return;
-      }
-
-      /* New player                                           */
-      /* Check for both duplicate descriptors, and link death */
-
-      /* all in lowercase... */
-      strcpy(PC_FILENAME(d->character), tmp_name);
-
-      CAPC(tmp_name);
-      UNIT_NAMES(d->character).AppendName(tmp_name);
-      strcpy(PC_PWD(d->character), "");
-
-      /* If someone is connected, we borrow his pwd */
-      if((td = find_descriptor(tmp_name, d)))
-      {
-         strcpy(PC_PWD(d->character), PC_PWD(td->character));
-         set_descriptor_fptr(d, nanny_existing_pwd, TRUE);
-         return;
-      }
-
-      /* Check for LD after PWD confirmation, this is due to */
-      /* that the PWD is lost when a guests link is lost!    */
-
-      set_descriptor_fptr(d, nanny_name_confirm, TRUE);
+      send_to_descriptor("Sorry, no new players now, the game "
+                         "is wizlocked!\n\r",
+                         d);
+      slog(LOG_BRIEF, 0, "Wizlock lockout for %s.", PC_FILENAME(d->character));
+      set_descriptor_fptr(d, nanny_close, TRUE);
+      return;
    }
+
+   /* New player                                           */
+   /* Check for both duplicate descriptors, and link death */
+
+   /* all in lowercase... */
+   strcpy(PC_FILENAME(d->character), tmp_name);
+
+   CAPC(tmp_name);
+   UNIT_NAMES(d->character).AppendName(tmp_name);
+   strcpy(PC_PWD(d->character), "");
+
+   /* If someone is connected, we borrow his pwd */
+   if((td = find_descriptor(tmp_name, d)))
+   {
+      strcpy(PC_PWD(d->character), PC_PWD(td->character));
+      set_descriptor_fptr(d, nanny_existing_pwd, TRUE);
+      return;
+   }
+
+   /* Check for LD after PWD confirmation, this is due to */
+   /* that the PWD is lost when a guests link is lost!    */
+
+   set_descriptor_fptr(d, nanny_name_confirm, TRUE);
 }

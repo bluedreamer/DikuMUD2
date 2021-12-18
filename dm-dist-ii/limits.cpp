@@ -27,9 +27,9 @@
 /* 10/04/94 seifert: Mana gain relative to Charisma & level!               */
 /* 6/12/94  bombman: Demigods neen no food or drink                        */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "comm.h"
 #include "common.h"
@@ -38,72 +38,76 @@
 #include "guild.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
 #include "skills.h"
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
 extern struct unit_data *unit_list;
 
 /* External procedures */
 
-int                   required_xp(int level);               /* common.c   */
-void                  update_pos(struct unit_data *victim); /* in fight.c */
-struct time_info_data age(struct unit_data *ch);
+/* common.c   */
+/* in fight.c */
+auto age(struct unit_data *ch) -> struct time_info_data;
 
 /* Count the number of items a unit contains */
-int char_carry_n(struct unit_data *unit)
+auto char_carry_n(struct unit_data *unit) -> int
 {
    int i;
 
-   for(unit = UNIT_CONTAINS(unit), i = 0; unit; unit = unit->next)
+   for(unit = UNIT_CONTAINS(unit), i = 0; unit != nullptr; unit = unit->next)
+   {
       if(!IS_OBJ(unit) || ((OBJ_EQP_POS(unit) == 0) && (OBJ_TYPE(unit) != ITEM_MONEY)))
+      {
          i++;
+      }
+   }
 
    return i;
 }
 
-int char_carry_n_limit(struct unit_data *ch)
+auto char_carry_n_limit(struct unit_data *ch) -> int
 {
    return 10 + (CHAR_DEX(ch) / 10);
 }
 
-int char_can_carry_n(struct unit_data *ch, int n)
+auto char_can_carry_n(struct unit_data *ch, int n) -> int
 {
-   return (char_carry_n_limit(ch) >= (char_carry_n(ch) + n));
+   return static_cast<int>(char_carry_n_limit(ch) >= (char_carry_n(ch) + n));
 }
 
-int char_carry_w_limit(struct unit_data *ch)
+auto char_carry_w_limit(struct unit_data *ch) -> int
 {
    return 50 + MAX(50, UNIT_BASE_WEIGHT(ch) / 2) + CHAR_STR(ch) * 2;
 }
 
-int char_can_carry_w(struct unit_data *ch, int weight)
+auto char_can_carry_w(struct unit_data *ch, int weight) -> int
 {
-   return (char_carry_w_limit(ch) >= (UNIT_CONTAINING_W(ch) + weight));
+   return static_cast<int>(char_carry_w_limit(ch) >= (UNIT_CONTAINING_W(ch) + weight));
 }
 
-int char_can_carry_unit(struct unit_data *ch, struct unit_data *unit)
+auto char_can_carry_unit(struct unit_data *ch, struct unit_data *unit) -> int
 {
-   return (char_can_carry_w(ch, UNIT_WEIGHT(unit)) && char_can_carry_n(ch, 1));
+   return static_cast<int>((char_can_carry_w(ch, UNIT_WEIGHT(unit)) != 0) && (char_can_carry_n(ch, 1) != 0));
 }
 
-int char_can_get_unit(struct unit_data *ch, struct unit_data *unit)
+auto char_can_get_unit(struct unit_data *ch, struct unit_data *unit) -> int
 {
-   return UNIT_WEAR((unit), MANIPULATE_TAKE) && CHAR_CAN_SEE(ch, unit) && char_can_carry_unit(ch, unit);
+   return UNIT_WEAR((unit), MANIPULATE_TAKE) && CHAR_CAN_SEE(ch, unit) && (char_can_carry_unit(ch, unit) != 0);
 }
 
-int char_drag_w_limit(struct unit_data *ch)
+auto char_drag_w_limit(struct unit_data *ch) -> int
 {
    return (3 * char_carry_w_limit(ch));
 }
 
-int char_can_drag_w(struct unit_data *ch, int weight)
+auto char_can_drag_w(struct unit_data *ch, int weight) -> int
 {
-   return (char_drag_w_limit(ch) >= weight);
+   return static_cast<int>(char_drag_w_limit(ch) >= weight);
 }
 
 /* For lifespan 100 (Human), result is                     */
@@ -115,13 +119,15 @@ int char_can_drag_w(struct unit_data *ch, int weight)
 /* When age in [81..mx] calculate the line between p5 & p6 */
 /* When age > mx return p7                                 */
 
-int age_graph(int age, int lifespan, int p0, int p1, int p2, int p3, int p4, int p5, int p6, int p7)
+auto age_graph(int age, int lifespan, int p0, int p1, int p2, int p3, int p4, int p5, int p6, int p7) -> int
 {
    int step = MAX(1, lifespan / 6);
 
    if(age <= step)
+   {
       return (int)(p0 + (((age) * (p1 - p0)) / step));
-   else if(age <= 2 * step)
+   }
+   if(age <= 2 * step)
       return (int)(p1 + (((age - step) * (p2 - p1)) / step));
    else if(age <= 3 * step)
       return (int)(p2 + (((age - 2 * step) * (p3 - p2)) / step));
@@ -142,29 +148,32 @@ int age_graph(int age, int lifespan, int p0, int p1, int p2, int p3, int p4, int
 
 /* This function is copied into basis.zon - remember to update accordingly!! */
 
-static int hit_limit_number(struct unit_data *ch, int point)
+static auto hit_limit_number(struct unit_data *ch, int point) -> int
 {
    if(IS_PC(ch))
    {
-      if(IS_IMMORTAL(ch)) // MS2020
+      if(IS_IMMORTAL(ch))
+      { // MS2020
          return 3 * point + 20;
+      }
 
       if(age(ch).year > PC_LIFESPAN(ch))
+      {
          return -1;
+      }
 
       return 3 * point + 20;
    }
-   else
-      return 3 * point + 10;
+   return 3 * point + 10;
 }
 
-int hit_limit(struct unit_data *ch)
+auto hit_limit(struct unit_data *ch) -> int
 {
    return hit_limit_number(ch, CHAR_HPP(ch));
 }
 
 /* Hitpoint gain pr. game hour */
-int hit_gain(struct unit_data *ch)
+auto hit_gain(struct unit_data *ch) -> int
 {
    int gain;
 
@@ -172,9 +181,13 @@ int hit_gain(struct unit_data *ch)
 
    /* 10 turns to regenerate */
    if(CHAR_POS(ch) != POSITION_FIGHTING)
+   {
       gain = 1 + hit_limit_number(ch, CHAR_CON(ch)) / 10;
+   }
    else
+   {
       gain = 0;
+   }
 
    switch(CHAR_POS(ch))
    {
@@ -190,7 +203,7 @@ int hit_gain(struct unit_data *ch)
 
    struct unit_data *u = ch;
 
-   while(u)
+   while(u != nullptr)
    {
       if(IS_SET(UNIT_FLAGS(u), UNIT_FL_SACRED))
       {
@@ -204,13 +217,15 @@ int hit_gain(struct unit_data *ch)
    {
       /* gain = graf(age(ch).year, 2,5,10,18,6,4,2); */
       if((PC_COND(ch, FULL) < 0) || (PC_COND(ch, THIRST) < 0))
+      {
          gain += 3 * MIN(PC_COND(ch, FULL), 3 * PC_COND(ch, THIRST));
+      }
    }
 
    return gain;
 }
 
-int move_limit(struct unit_data *ch)
+auto move_limit(struct unit_data *ch) -> int
 {
    int ml = CHAR_CON(ch) * 2 + 150;
 
@@ -218,28 +233,33 @@ int move_limit(struct unit_data *ch)
    {
       int pct;
 
-      if(IS_IMMORTAL(ch)) // MS2020
+      if(IS_IMMORTAL(ch))
+      { // MS2020
          return ml;
+      }
 
       pct = age_graph(age(ch).year, PC_LIFESPAN(ch), 80, 130, 110, 90, 70, 50, 20, 0);
 
       return (pct * ml) / 100; /* actually it is (100 * pct) / 100 */
    }
-   else
-      return ml;
+   return ml;
 }
 
 /* move gain pr. game hour */
-int move_gain(struct unit_data *ch)
+auto move_gain(struct unit_data *ch) -> int
 {
    int gain;
 
    assert(IS_CHAR(ch));
 
    if(CHAR_POS(ch) != POSITION_FIGHTING)
+   {
       gain = 1 + move_limit(ch) / 10; /* 10 turns to regenerate */
+   }
    else
+   {
       gain = 0;
+   }
 
    /* Position calculations    */
    switch(CHAR_POS(ch))
@@ -256,7 +276,7 @@ int move_gain(struct unit_data *ch)
 
    struct unit_data *u = ch;
 
-   while(u)
+   while(u != nullptr)
    {
       if(IS_SET(UNIT_FLAGS(u), UNIT_FL_SACRED))
       {
@@ -270,13 +290,15 @@ int move_gain(struct unit_data *ch)
    {
       /* gain = graf(age(ch).year, ... Age calcs? */
       if((PC_COND(ch, FULL) < 0) || (PC_COND(ch, THIRST) < 0))
+      {
          gain += 3 * MIN(PC_COND(ch, FULL), 3 * PC_COND(ch, THIRST));
+      }
    }
 
    return gain;
 }
 
-int mana_limit(struct unit_data *ch)
+auto mana_limit(struct unit_data *ch) -> int
 {
    assert(IS_CHAR(ch));
 
@@ -286,19 +308,20 @@ int mana_limit(struct unit_data *ch)
    {
       int pct;
 
-      if(IS_IMMORTAL(ch)) // MS2020
+      if(IS_IMMORTAL(ch))
+      { // MS2020
          return ml;
+      }
 
       pct = age_graph(age(ch).year, PC_LIFESPAN(ch), 0, 100, 105, 110, 120, 130, 140, 0);
 
       return (ml * pct) / 100;
    }
-   else
-      return ml;
+   return ml;
 }
 
 /* manapoint gain pr. game hour */
-int mana_gain(struct unit_data *ch)
+auto mana_gain(struct unit_data *ch) -> int
 {
    int gain;
 
@@ -312,7 +335,9 @@ int mana_gain(struct unit_data *ch)
       gain = MAX(1, gain);
    }
    else
+   {
       gain = 0;
+   }
 
    switch(CHAR_POS(ch))
    {
@@ -327,7 +352,7 @@ int mana_gain(struct unit_data *ch)
 
    struct unit_data *u = ch;
 
-   while(u)
+   while(u != nullptr)
    {
       if(IS_SET(UNIT_FLAGS(u), UNIT_FL_SACRED))
       {
@@ -340,7 +365,9 @@ int mana_gain(struct unit_data *ch)
    if(IS_PC(ch))
    {
       if((PC_COND(ch, FULL) < 0) || (PC_COND(ch, THIRST) < 0))
+      {
          gain += 3 * MIN(PC_COND(ch, FULL), 3 * PC_COND(ch, THIRST));
+      }
    }
 
    return gain;
@@ -354,7 +381,9 @@ void advance_level(struct unit_data *ch)
    assert(IS_PC(ch));
 
    if(IS_IMMORTAL(ch))
+   {
       return;
+   }
 
 #ifdef NOBLE
    if(IS_NOBLE(ch))
@@ -388,7 +417,9 @@ void gain_condition(struct unit_data *ch, int condition, int value)
    bool intoxicated;
 
    if(!IS_PC(ch) || (PC_COND(ch, condition) >= 48))
+   {
       return;
+   }
 
    /* No change in sacred rooms */
 
@@ -398,37 +429,57 @@ void gain_condition(struct unit_data *ch, int condition, int value)
 
    PC_COND(ch, condition) = MIN(24, PC_COND(ch, condition));
 
-   if(condition == DRUNK) /* How can one be less sober than 0? */
+   if(condition == DRUNK)
+   { /* How can one be less sober than 0? */
       PC_COND(ch, condition) = MAX(0, PC_COND(ch, condition));
+   }
    else
+   {
       PC_COND(ch, condition) = MAX(-96, PC_COND(ch, condition));
+   }
 
    if(PC_COND(ch, condition) > 3)
+   {
       return;
+   }
 
    switch(condition)
    {
       case FULL:
          if(condition > -4)
+         {
             send_to_char("You are hungry.\n\r", ch);
+         }
          else if(condition > -8)
+         {
             send_to_char("You are very hungry.\n\r", ch);
+         }
          else if(condition > -12)
+         {
             send_to_char("You are starving.\n\r", ch);
+         }
          break;
 
       case THIRST:
          if(condition > -4)
+         {
             send_to_char("You are thirsty.\n\r", ch);
+         }
          else if(condition > -8)
+         {
             send_to_char("You are very thirsty.\n\r", ch);
+         }
          else if(condition > -12)
+         {
             send_to_char("You are dehydrated.\n\r", ch);
+         }
          break;
 
       case DRUNK:
          if(intoxicated && (PC_COND(ch, DRUNK) == 0))
+         {
             send_to_char("You are now sober.\n\r", ch);
+         }
          break;
 
       default:
@@ -437,13 +488,14 @@ void gain_condition(struct unit_data *ch, int condition, int value)
 }
 
 /* Update both PC's & NPC's */
-void point_update(void)
+void point_update()
 {
-   struct unit_data *u, *next_dude;
+   struct unit_data *u;
+   struct unit_data *next_dude;
    int               hgain;
 
    /* characters */
-   for(u = unit_list; u; u = next_dude)
+   for(u = unit_list; u != nullptr; u = next_dude)
    {
       next_dude = u->gnext;
       if(IS_NPC(u) || (IS_PC(u) && !IS_SET(PC_FLAGS(u), PC_SPIRIT)))
@@ -456,30 +508,41 @@ void point_update(void)
 
             hgain = hit_gain(u);
             if(hgain >= 0)
+            {
                UNIT_HIT(u) = MIN(UNIT_HIT(u) + hgain, hit_limit(u));
+            }
             else
-               damage(u, u, 0, -hgain, MSG_TYPE_OTHER, MSG_OTHER_STARVATION, COM_MSG_EBODY);
+            {
+               damage(u, u, nullptr, -hgain, MSG_TYPE_OTHER, MSG_OTHER_STARVATION, COM_MSG_EBODY);
+            }
 
             CHAR_MANA(u)      = MAX(0, CHAR_MANA(u));
             CHAR_ENDURANCE(u) = MAX(0, CHAR_ENDURANCE(u));
 
             if(CHAR_POS(u) == POSITION_STUNNED)
+            {
                update_pos(u);
+            }
          }
          else if(CHAR_POS(u) == POSITION_INCAP)
-            damage(u, u, 0, 1, MSG_TYPE_OTHER, MSG_OTHER_BLEEDING, COM_MSG_EBODY);
+         {
+            damage(u, u, nullptr, 1, MSG_TYPE_OTHER, MSG_OTHER_BLEEDING, COM_MSG_EBODY);
+         }
          else if(IS_PC(u) && (CHAR_POS(u) == POSITION_MORTALLYW))
-            damage(u, u, 0, 2, MSG_TYPE_OTHER, MSG_OTHER_BLEEDING, COM_MSG_EBODY);
+         {
+            damage(u, u, nullptr, 2, MSG_TYPE_OTHER, MSG_OTHER_BLEEDING, COM_MSG_EBODY);
+         }
       }
    }
 }
 
-void food_update(void)
+void food_update()
 {
-   struct unit_data *u, *next_dude;
+   struct unit_data *u;
+   struct unit_data *next_dude;
 
    /* characters */
-   for(u = unit_list; u; u = next_dude)
+   for(u = unit_list; u != nullptr; u = next_dude)
    {
       next_dude = u->gnext;
 
@@ -487,22 +550,32 @@ void food_update(void)
       {
          struct unit_data *tu = u;
 
-         while(tu)
+         while(tu != nullptr)
          {
             if(IS_SET(UNIT_FLAGS(tu), UNIT_FL_SACRED))
+            {
                break;
+            }
             tu = UNIT_IN(tu);
          }
 
-         if(tu)
+         if(tu != nullptr)
+         {
             continue;
+         }
 
          if(PC_COND(u, FULL) < 48)
+         {
             gain_condition(u, FULL, -1);
+         }
          if(PC_COND(u, THIRST) < 48)
+         {
             gain_condition(u, THIRST, -1);
+         }
          if(PC_COND(u, DRUNK) > 0)
+         {
             gain_condition(u, DRUNK, -1);
+         }
       }
    }
 }
@@ -514,7 +587,9 @@ void set_title(struct unit_data *ch)
    assert(IS_PC(ch));
 
    if(CHAR_LEVEL(ch) == 0)
+   {
       UNIT_TITLE(ch).Reassign("the guest");
+   }
    else if(CHAR_LEVEL(ch) <= START_LEVEL)
    {
       assert(CHAR_RACE(ch) < PC_RACE_MAX);
@@ -522,7 +597,9 @@ void set_title(struct unit_data *ch)
       UNIT_TITLE(ch).Reassign(buf);
    }
    else if(IS_IMMORTAL(ch))
+   {
       UNIT_TITLE(ch).Reassign("the God");
+   }
 }
 
 void gain_exp_regardless(struct unit_data *ch, int gain)
@@ -530,7 +607,9 @@ void gain_exp_regardless(struct unit_data *ch, int gain)
    int j;
 
    if(!IS_PC(ch))
+   {
       return;
+   }
 
    if(gain > 0)
    {
@@ -548,16 +627,22 @@ void gain_exp_regardless(struct unit_data *ch, int gain)
    else /* gain <= 0 */
    {
       if((((sbit32)CHAR_EXP(ch)) + gain) < required_xp(START_LEVEL))
+      {
          CHAR_EXP(ch) = required_xp(START_LEVEL);
+      }
       else
+      {
          CHAR_EXP(ch) += gain;
+      }
    }
 }
 
 void gain_exp(struct unit_data *ch, int gain)
 {
    if(IS_MORTAL(ch))
+   {
       gain_exp_regardless(ch, gain);
+   }
 }
 
 void do_level(struct unit_data *ch, char *arg, const struct command_info *cmd)
@@ -590,9 +675,9 @@ void do_level(struct unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   now = str_ccmp_next_word(arg, "now") != NULL;
+   now = static_cast<int>(str_ccmp_next_word(arg, "now") != nullptr);
 
-   if(!now && PC_SKILL_POINTS(ch) >= skill_point_gain())
+   if((now == 0) && PC_SKILL_POINTS(ch) >= skill_point_gain())
    {
       send_to_char("You havn't used your skill points at all, if you "
                    "really want to level now, type 'level now'\n\r",
@@ -600,7 +685,7 @@ void do_level(struct unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   if(!now && PC_ABILITY_POINTS(ch) >= ability_point_gain())
+   if((now == 0) && PC_ABILITY_POINTS(ch) >= ability_point_gain())
    {
       send_to_char("You havn't used your ability points at all, if you "
                    "really want to level now, type 'level now'\n\r",

@@ -26,12 +26,12 @@
 
 /* 16/03/94 MS: Corrected 'i' bug which made program continue...           */
 
-#include <ctype.h>
-#include <stdarg.h> /* va_args in pain_error()        */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <cstdarg> /* va_args in pain_error()        */
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "comm.h"
 #include "common.h"
@@ -330,7 +330,7 @@ struct pain_cmd_type
 };
 
 /* Intended to be used for error-reports */
-static struct unit_data *p_error_unit = NULL;
+static struct unit_data *p_error_unit = nullptr;
 
 /* ---------------------------------------------------------------------- */
 /*                      P A I N   F U N C T I O N S                       */
@@ -353,7 +353,9 @@ void pain_error(const char *str, ...)
 void pain_next_cmd(struct pain_type *pain)
 {
    if(++pain->idx >= pain->top)
+   {
       pain->idx = 0;
+   }
 }
 
 void pain_gotoline(struct pain_type *pain)
@@ -364,21 +366,23 @@ void pain_gotoline(struct pain_type *pain)
       pain_next_cmd(pain);
    }
    else
+   {
       pain->idx = pain->cmds[pain->idx].gotoline;
+   }
 }
 
 /* . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . */
 
 /* 'A' command */
-int pain_act(struct unit_data *npc, struct pain_type *pain)
+auto pain_act(struct unit_data *npc, struct pain_type *pain) -> int
 {
-   act((char *)pain->cmds[pain->idx].ptr[0], A_SOMEONE, npc, 0, 0, TO_ROOM);
+   act((char *)pain->cmds[pain->idx].ptr[0], A_SOMEONE, npc, nullptr, nullptr, TO_ROOM);
    pain_next_cmd(pain);
    return FALSE; /* Stop command loop until next tick */
 }
 
 /* 'C' command */
-int pain_command(struct unit_data *npc, struct pain_type *pain)
+auto pain_command(struct unit_data *npc, struct pain_type *pain) -> int
 {
    command_interpreter(npc, (char *)pain->cmds[pain->idx].ptr[0]);
    pain_next_cmd(pain);
@@ -386,7 +390,7 @@ int pain_command(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'D' Command */
-int pain_closed(struct unit_data *npc, struct pain_type *pain)
+auto pain_closed(struct unit_data *npc, struct pain_type *pain) -> int
 {
    int i;
 
@@ -406,24 +410,28 @@ int pain_closed(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'd' command */
-int pain_charcmd(struct unit_data *npc, struct pain_type *pain)
+auto pain_charcmd(struct unit_data *npc, struct pain_type *pain) -> int
 {
    struct unit_data *u;
    char              buf[MAX_INPUT_LENGTH];
 
-   if(!pain->vars[0]) /* Is there a PC target? */
+   if(pain->vars[0] == nullptr) /* Is there a PC target? */
    {
       pain_gotoline(pain);
       return FALSE; /* Wait a tick */
    }
 
-   for(u = UNIT_CONTAINS(UNIT_IN(npc)); u; u = u->next)
-      if(u == pain->vars[0])
-         break;
-
-   if(!u)
+   for(u = UNIT_CONTAINS(UNIT_IN(npc)); u != nullptr; u = u->next)
    {
-      pain->vars[0] = 0;
+      if(u == pain->vars[0])
+      {
+         break;
+      }
+   }
+
+   if(u == nullptr)
+   {
+      pain->vars[0] = nullptr;
       pain_gotoline(pain);
       return FALSE; /* Wait a tick */
    }
@@ -436,15 +444,17 @@ int pain_charcmd(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'G' command */
-int pain_goto(struct unit_data *npc, struct pain_type *pain)
+auto pain_goto(struct unit_data *npc, struct pain_type *pain) -> int
 {
    struct file_index_type *fi;
    int                     res;
 
    fi = (struct file_index_type *)pain->cmds[pain->idx].ptr[0];
 
-   if(fi->room_ptr)
+   if(fi->room_ptr != nullptr)
+   {
       res = npc_move(npc, fi->room_ptr);
+   }
    else
    {
       pain_error("PAIN 'G' : This part has not yet been made!");
@@ -452,20 +462,22 @@ int pain_goto(struct unit_data *npc, struct pain_type *pain)
       return FALSE;
    }
 
-   if(res == MOVE_GOAL) /* Destination reached! */
+   if(res == MOVE_GOAL)
+   { /* Destination reached! */
       pain_next_cmd(pain);
+   }
 
    return FALSE; /* Stop command loop until next tick */
 }
 
 /* 'H' command */
-int pain_has(struct unit_data *npc, struct pain_type *pain)
+auto pain_has(struct unit_data *npc, struct pain_type *pain) -> int
 {
    char *c;
 
    c = (char *)pain->cmds[pain->idx].ptr[0];
 
-   if(find_unit(npc, &c, 0, FIND_UNIT_IN_ME))
+   if(find_unit(npc, &c, nullptr, FIND_UNIT_IN_ME) != nullptr)
    {
       pain_gotoline(pain);
       return TRUE; /* Continue command loop immediately */
@@ -477,29 +489,28 @@ int pain_has(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'I' command */
-int pain_in_room(struct unit_data *npc, struct pain_type *pain)
+auto pain_in_room(struct unit_data *npc, struct pain_type *pain) -> int
 {
    struct unit_data *u;
-   char             *c, buf[256];
+   char             *c;
+   char              buf[256];
 
    c = (char *)pain->cmds[pain->idx].ptr[0];
 
-   if((u = find_unit(npc, &c, 0, FIND_UNIT_SURRO)))
+   if((u = find_unit(npc, &c, nullptr, FIND_UNIT_SURRO)) != nullptr)
    {
       if(u != npc)
       {
          pain_gotoline(pain);
          return TRUE;
       }
-      else
+
+      c = (char *)pain->cmds[pain->idx].ptr[0];
+      sprintf(buf, "2.%s", c);
+      if(find_unit(npc, &c, 0, FIND_UNIT_SURRO))
       {
-         c = (char *)pain->cmds[pain->idx].ptr[0];
-         sprintf(buf, "2.%s", c);
-         if(find_unit(npc, &c, 0, FIND_UNIT_SURRO))
-         {
-            pain_gotoline(pain);
-            return TRUE;
-         }
+         pain_gotoline(pain);
+         return TRUE;
       }
    }
 
@@ -509,7 +520,7 @@ int pain_in_room(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'i' command */
-int pain_intercept(struct unit_data *npc, struct pain_type *pain)
+auto pain_intercept(struct unit_data *npc, struct pain_type *pain) -> int
 {
    pain_next_cmd(pain);
 
@@ -517,14 +528,14 @@ int pain_intercept(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'J' command */
-int pain_jump(struct unit_data *npc, struct pain_type *pain)
+auto pain_jump(struct unit_data *npc, struct pain_type *pain) -> int
 {
    pain_gotoline(pain);
    return FALSE; /* Command loop will stall one tick */
 }
 
 /* 'L' command */
-int pain_locked(struct unit_data *npc, struct pain_type *pain)
+auto pain_locked(struct unit_data *npc, struct pain_type *pain) -> int
 {
    int i;
 
@@ -537,14 +548,16 @@ int pain_locked(struct unit_data *npc, struct pain_type *pain)
          return TRUE; /* Continue command loop immediately */
       }
    }
-   else /* Not closed */
+   else
+   { /* Not closed */
       pain_next_cmd(pain);
+   }
 
    return TRUE; /* Continue command loop immediately */
 }
 
 /* 'l' command */
-int pain_load(struct unit_data *npc, struct pain_type *pain)
+auto pain_load(struct unit_data *npc, struct pain_type *pain) -> int
 {
    struct unit_data *u;
 
@@ -555,7 +568,7 @@ int pain_load(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'r' command */
-int pain_remote_load(struct unit_data *npc, struct pain_type *pain)
+auto pain_remote_load(struct unit_data *npc, struct pain_type *pain) -> int
 {
    struct unit_data *u;
 
@@ -566,18 +579,22 @@ int pain_remote_load(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'R' command */
-int pain_random(struct unit_data *npc, struct pain_type *pain)
+auto pain_random(struct unit_data *npc, struct pain_type *pain) -> int
 {
    if(number(1, 100) <= pain->cmds[pain->idx].data[0])
+   {
       pain_gotoline(pain);
+   }
    else
+   {
       pain_next_cmd(pain);
+   }
 
    return TRUE; /* Continue command loop immediately */
 }
 
 /* 'S' command */
-int pain_scan_pc(struct unit_data *npc, struct pain_type *pain)
+auto pain_scan_pc(struct unit_data *npc, struct pain_type *pain) -> int
 {
    scan4_unit(npc, UNIT_ST_PC);
 
@@ -595,18 +612,18 @@ int pain_scan_pc(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'T' command */
-int pain_trash(struct unit_data *npc, struct pain_type *pain)
+auto pain_trash(struct unit_data *npc, struct pain_type *pain) -> int
 {
    struct unit_data *u;
 
-   amount_t obj_trade_price(struct unit_data * u);
+   auto obj_trade_price(struct unit_data * u)->amount_t;
 
-   for(u = UNIT_CONTAINS(UNIT_IN(npc)); u; u = u->next)
+   for(u = UNIT_CONTAINS(UNIT_IN(npc)); u != nullptr; u = u->next)
    {
       if(UNIT_WEAR(u, MANIPULATE_TAKE) && (UNIT_WEIGHT(u) <= 200) &&
          ((OBJ_TYPE(u) == ITEM_DRINKCON) || (obj_trade_price(u) <= (sbit32)pain->cmds[pain->idx].data[0])))
       {
-         act("$1n picks up $3n.", A_SOMEONE, npc, 0, u, TO_ROOM);
+         act("$1n picks up $3n.", A_SOMEONE, npc, nullptr, u, TO_ROOM);
          /* unit_down(u, npc); */
          extract_unit(u); /* Not sure this is fair... */
          pain_gotoline(pain);
@@ -619,37 +636,34 @@ int pain_trash(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'W' command */
-int pain_wait(struct unit_data *npc, struct pain_type *pain)
+auto pain_wait(struct unit_data *npc, struct pain_type *pain) -> int
 {
-   struct time_info_data mud_date(time_t t);
+   auto                  mud_date(time_t t)->struct time_info_data;
    struct time_info_data time_info;
 
-   time_info = mud_date(time(0));
+   time_info = mud_date(time(nullptr));
 
    if(pain->cmds[pain->idx].data[0] == time_info.hours)
    {
       pain_gotoline(pain);
       return TRUE; /* Continue command loop immediately */
    }
-   else
-      pain_next_cmd(pain);
+   pain_next_cmd(pain);
 
    return TRUE; /* Continue command loop immediately */
 }
 
 /* 'M' command */
-int pain_waitmsg(struct unit_data *npc, struct pain_type *pain)
+auto pain_waitmsg(struct unit_data *npc, struct pain_type *pain) -> int
 {
-   if(pain->cmds[pain->idx].data[0])
+   if(pain->cmds[pain->idx].data[0] != 0)
    {
       pain->cmds[pain->idx].data[0]--;
       return FALSE; /* Wait yet another tick */
    }
-   else
-   {
-      pain_gotoline(pain);
-      return TRUE; /* Continue command loop immediately */
-   }
+
+   pain_gotoline(pain);
+   return TRUE; /* Continue command loop immediately */
 }
 
 /* ---------------------------------------------------------------------- */
@@ -664,13 +678,17 @@ void pain_free(struct pain_type *p)
    {
       for(i = 0; i < p->top; i++)
       {
-         if(p->cmds[i].ptr[0])
+         if(p->cmds[i].ptr[0] != nullptr)
          {
             if((p->cmds[i].func == pain_act) || (p->cmds[i].func == pain_command) || (p->cmds[i].func == pain_charcmd) ||
                (p->cmds[i].func == pain_has) || (p->cmds[i].func == pain_in_room))
+            {
                free(p->cmds[i].ptr[0]);
+            }
             else if(p->cmds[i].func == pain_waitmsg)
+            {
                free_namelist((char **)p->cmds[i].ptr[0]);
+            }
          }
       }
       free(p->cmds);
@@ -678,18 +696,21 @@ void pain_free(struct pain_type *p)
    free(p);
 }
 
-int pain_exec(struct spec_arg *sarg)
+auto pain_exec(struct spec_arg *sarg) -> int
 {
-   int               i, cont;
+   int               i;
+   int               cont;
    struct pain_type *p;
 
    p = (struct pain_type *)sarg->fptr->data;
 
    if(sarg->cmd->no == CMD_AUTO_EXTRACT)
    {
-      if(p)
+      if(p != nullptr)
+      {
          pain_free(p);
-      sarg->fptr->data = NULL;
+      }
+      sarg->fptr->data = nullptr;
       return SFR_SHARE;
    }
 
@@ -700,8 +721,10 @@ int pain_exec(struct spec_arg *sarg)
       return SFR_BLOCK;
    }
 
-   if(is_destructed(DR_UNIT, sarg->owner))
+   if(is_destructed(DR_UNIT, sarg->owner) != 0)
+   {
       return SFR_BLOCK;
+   }
 
    /* for pain-error-info */
    p_error_unit = sarg->owner;
@@ -713,12 +736,11 @@ int pain_exec(struct spec_arg *sarg)
          pain_intercept(sarg->owner, p);
          return SFR_SHARE;
       }
-      else
-         return SFR_SHARE;
+      return SFR_SHARE;
    }
 
-   if((p->cmds[p->idx].func == pain_waitmsg) && (sarg->cmd->no == p->cmds[p->idx].data[0]) && (p->vars[0]) &&
-      (p->vars[0] == sarg->activator) && (is_name(sarg->arg, (const char **)p->cmds[p->idx].ptr[0])))
+   if((p->cmds[p->idx].func == pain_waitmsg) && (sarg->cmd->no == p->cmds[p->idx].data[0]) && ((p->vars[0]) != nullptr) &&
+      (p->vars[0] == sarg->activator) && ((is_name(sarg->arg, (const char **)p->cmds[p->idx].ptr[0])) != nullptr))
    {
       cont = TRUE;
       pain_next_cmd(p);
@@ -727,14 +749,16 @@ int pain_exec(struct spec_arg *sarg)
 
    if((sarg->cmd->no == CMD_AUTO_TICK) && !CHAR_FIGHTING(sarg->owner))
    {
-      for(cont = TRUE, i = 0; cont && (i < 100); i++)
+      for(cont = TRUE, i = 0; (cont != 0) && (i < 100); i++)
+      {
          cont = ((*p->cmds[p->idx].func)(sarg->owner, p));
+      }
 
       if(i >= 100)
       {
          pain_error("PAIN - Endless loop in execution.");
          pain_free(p);
-         sarg->fptr->data = NULL;
+         sarg->fptr->data = nullptr;
          destroy_fptr(sarg->owner, sarg->fptr);
          return SFR_SHARE;
       }
@@ -755,43 +779,55 @@ int pain_exec(struct spec_arg *sarg)
 
 /* Gets the next string from buf up until the next '@' mark */
 /*                                                          */
-char *pi_getstr(char *c, char *buf)
+auto pi_getstr(char *c, char *buf) -> char *
 {
-   for(; (*buf = *c) && (*c++ != PAIN_SEPARATOR); buf++)
+   for(; ((*buf = *c) != 0) && (*c++ != PAIN_SEPARATOR); buf++)
+   {
       ;
+   }
 
    *buf = '\0'; /* Erase last separator */
 
-   if(*c)
+   if(*c != 0)
+   {
       return c - 1;
-   else
-      return c;
+   }
+   return c;
 }
 
 /* Gets the next string from buf up until the next '!' mark */
 /*                                                          */
-char *pi_getstr_excla(char *c, char *buf)
+auto pi_getstr_excla(char *c, char *buf) -> char *
 {
-   for(; (*buf = *c) && (*c++ != '!'); buf++)
+   for(; ((*buf = *c) != 0) && (*c++ != '!'); buf++)
+   {
       ;
+   }
 
    *buf = '\0'; /* Erase last separator */
 
-   if(*c)
+   if(*c != 0)
+   {
       return c - 1;
-   else
-      return c;
+   }
+   return c;
 }
 
-char *pi_getnum(char *c, int *res)
+auto pi_getnum(char *c, int *res) -> char *
 {
-   if(!isdigit(*c))
+   if(isdigit(*c) == 0)
+   {
       *res = -1;
+   }
    else
+   {
       *res = 0;
+   }
 
-   for(*res = 0; *c && isdigit(*c); c++)
+   for(*res = 0; (*c != 0) && (isdigit(*c) != 0); c++)
+   {
       *res = 10 * (*res) + (*c - '0');
+   }
 
    return c;
 }
@@ -802,39 +838,49 @@ struct line_no_convert
    int actual;
 };
 
-int translate_line(int top, int sym, struct line_no_convert *line_numbers)
+auto translate_line(int top, int sym, struct line_no_convert *line_numbers) -> int
 {
    int i;
    for(i = 0; i < top; i++)
+   {
       if(sym == line_numbers[i].symbolic)
+      {
          return line_numbers[i].actual;
+      }
+   }
 
    return -1;
 }
 
-struct pain_type *pain_doinit(struct unit_data *npc, char *text)
+auto pain_doinit(struct unit_data *npc, char *text) -> struct pain_type *
 {
-   int               i, j, top, error;
-   char              buf[MAX_STRING_LENGTH], zone[80], name[80], *b = NULL;
+   int               i;
+   int               j;
+   int               top;
+   int               error;
+   char              buf[MAX_STRING_LENGTH];
+   char              zone[80];
+   char              name[80];
+   char             *b = NULL;
    struct pain_type *pain;
 
-   struct pain_cmd_type   *cmd_list     = 0;
-   struct line_no_convert *line_numbers = 0;
+   struct pain_cmd_type   *cmd_list     = nullptr;
+   struct line_no_convert *line_numbers = nullptr;
 
    struct pain_cmd_type   cmd;
    struct line_no_convert line_no = {-1, -1};
    struct command_info   *cmd_ptr;
-   char                 **namelist = NULL;
+   char                 **namelist = nullptr;
 
    extern struct trie_type *intr_trie;
 
-   static const char *specmsg[] = {"_dead", "_combat", "_unknown", NULL};
+   static const char *specmsg[] = {"_dead", "_combat", "_unknown", nullptr};
 
    top   = 0;
    i     = 0;
    error = FALSE;
 
-   while(*text && !error)
+   while((*text != 0) && (error == 0))
    {
       /* Skip all blanks */
       if((*text == ' ') || (*text == '\n') || (*text == '\r'))
@@ -845,8 +891,8 @@ struct pain_type *pain_doinit(struct unit_data *npc, char *text)
 
       cmd.gotoline = -1;
       cmd.data[0] = cmd.data[1] = 0;
-      cmd.ptr[0] = cmd.ptr[1] = 0;
-      cmd.func                = 0;
+      cmd.ptr[0] = cmd.ptr[1] = nullptr;
+      cmd.func                = nullptr;
 
       /* Read symbolic line number */
       text = pi_getnum(text, &i);
@@ -865,11 +911,15 @@ struct pain_type *pain_doinit(struct unit_data *npc, char *text)
       line_no.symbolic = i;
       line_no.actual   = top;
 
-      while(*text && ((*text == ' ') || (*text == '\n') || (*text == '\r')))
+      while((*text != 0) && ((*text == ' ') || (*text == '\n') || (*text == '\r')))
+      {
          text++;
+      }
 
-      if(!*text)
+      if(*text == 0)
+      {
          continue;
+      }
 
       switch(*text++)
       {
@@ -911,7 +961,7 @@ struct pain_type *pain_doinit(struct unit_data *npc, char *text)
             text       = pi_getstr(text, buf);
             cmd.ptr[0] = pc_str_to_file_index(npc, buf);
             cmd.func   = pain_goto;
-            if(!cmd.ptr[0])
+            if(cmd.ptr[0] == nullptr)
             {
                pain_error("Unknown unit referece in PAIN-Goto: %s", buf);
                error = TRUE;
@@ -937,7 +987,7 @@ struct pain_type *pain_doinit(struct unit_data *npc, char *text)
 
          case 'i':
             text = pi_getstr(text, buf); /* Command */
-            if(!(cmd_ptr = (struct command_info *)search_trie(buf, intr_trie)))
+            if((cmd_ptr = (struct command_info *)search_trie(buf, intr_trie)) == nullptr)
             {
                pain_error("PAIN - Illegal interpreter 'command'"
                           " reference: %s",
@@ -950,9 +1000,11 @@ struct pain_type *pain_doinit(struct unit_data *npc, char *text)
             text = pi_getstr(text, buf);
             split_fi_ref(buf, zone, name);
             if(*zone == 0)
+            {
                strcpy(zone, UNIT_FI_ZONENAME(npc));
+            }
 
-            if(!(cmd.ptr[0] = find_file_index(zone, name)))
+            if((cmd.ptr[0] = find_file_index(zone, name)) == nullptr)
             {
                pain_error("PAIN - Illegal symbolic reference: %s/%s", zone, name);
                error = TRUE;
@@ -983,7 +1035,7 @@ struct pain_type *pain_doinit(struct unit_data *npc, char *text)
          case 'l':
             text = pi_getstr(text, buf);
             split_fi_ref(buf, zone, name);
-            if(!(cmd.ptr[0] = find_file_index(zone, name)))
+            if((cmd.ptr[0] = find_file_index(zone, name)) == nullptr)
             {
                pain_error("PAIN - Illegal symbolic reference: %s", buf);
                error = TRUE;
@@ -1003,7 +1055,7 @@ struct pain_type *pain_doinit(struct unit_data *npc, char *text)
          case 'r':
             text = pi_getstr_excla(text, buf);
             split_fi_ref(buf, zone, name);
-            if(!(cmd.ptr[0] = find_file_index(zone, name)))
+            if((cmd.ptr[0] = find_file_index(zone, name)) == nullptr)
             {
                pain_error("PAIN - Illegal symbolic reference: %s", buf);
                error = TRUE;
@@ -1011,7 +1063,7 @@ struct pain_type *pain_doinit(struct unit_data *npc, char *text)
 
             text = pi_getstr(text, buf);
             split_fi_ref(buf, zone, name);
-            if(!(cmd.ptr[1] = world_room(zone, name)))
+            if((cmd.ptr[1] = world_room(zone, name)) == nullptr)
             {
                pain_error("PAIN 'r': - Illegal symbolic ROOM reference: %s", buf);
                error = TRUE;
@@ -1047,7 +1099,7 @@ struct pain_type *pain_doinit(struct unit_data *npc, char *text)
             text         = pi_getnum(text, &i);
             cmd.gotoline = i;
             text         = pi_getstr(text, buf);
-            if(!(cmd_ptr = (struct command_info *)search_trie(buf, intr_trie)))
+            if((cmd_ptr = (struct command_info *)search_trie(buf, intr_trie)) == nullptr)
             {
                if((i = search_block(buf, specmsg, TRUE)) != -1)
                {
@@ -1057,6 +1109,7 @@ struct pain_type *pain_doinit(struct unit_data *npc, char *text)
                   error = TRUE;
                }
                else
+               {
                   switch(i)
                   {
                      case 0:
@@ -1069,14 +1122,19 @@ struct pain_type *pain_doinit(struct unit_data *npc, char *text)
                         cmd.data[0] = CMD_AUTO_UNKNOWN;
                         break;
                   }
+               }
             }
             else
+            {
                cmd.data[0] = cmd_ptr->no;
+            }
             text       = pi_getstr(text, buf);
             namelist   = create_namelist();
             cmd.ptr[0] = namelist;
-            for(b = buf; *b; b = pi_getstr(b, name))
+            for(b = buf; *b != 0; b = pi_getstr(b, name))
+            {
                add_name(name, namelist);
+            }
             text        = pi_getnum(text, &i);
             cmd.data[1] = i;
             cmd.func    = pain_waitmsg;
@@ -1084,8 +1142,10 @@ struct pain_type *pain_doinit(struct unit_data *npc, char *text)
 
          case '*':
             text = pi_getstr(text, buf);
-            if(*text) /* Skip separator if any (or end) */
+            if(*text != 0)
+            { /* Skip separator if any (or end) */
                text++;
+            }
             continue; /* Skip alloc stuff */
             break;
 
@@ -1095,7 +1155,7 @@ struct pain_type *pain_doinit(struct unit_data *npc, char *text)
             break;
       } /* switch */
 
-      if(!error)
+      if(error == 0)
       {
          if(++top == 1)
          {
@@ -1110,17 +1170,19 @@ struct pain_type *pain_doinit(struct unit_data *npc, char *text)
          line_numbers[top - 1] = line_no;
          cmd_list[top - 1]     = cmd;
       }
-      if(*text) /* Skip the pain separator, or the 0 when at end */
+      if(*text != 0)
+      { /* Skip the pain separator, or the 0 when at end */
          text++;
+      }
    }
 
-   if(cmd_list)
+   if(cmd_list != nullptr)
    {
       CREATE(pain, struct pain_type, 1);
       pain->top  = top;
       pain->idx  = 0;
       pain->cmds = cmd_list;
-      for(i = 0; (i < top) && !error; i++)
+      for(i = 0; (i < top) && (error == 0); i++)
       {
          if(cmd_list[i].gotoline != -1)
          {
@@ -1130,45 +1192,47 @@ struct pain_type *pain_doinit(struct unit_data *npc, char *text)
                error = TRUE;
             }
             else
+            {
                cmd_list[i].gotoline = j;
+            }
          }
       }
 
       free(line_numbers);
 
-      if(error)
+      if(error != 0)
       {
          pain_error("PAIN error - PAIN aborted.");
          pain_free(pain);
-         return NULL;
+         return nullptr;
       }
       return pain;
    }
 
-   return NULL;
+   return nullptr;
 }
 
-int pain_init(struct spec_arg *sarg)
+auto pain_init(struct spec_arg *sarg) -> int
 {
    struct pain_type *p;
 
-   if(sarg->fptr->data)
+   if(sarg->fptr->data != nullptr)
    {
       if(sarg->cmd->no == CMD_AUTO_EXTRACT)
       {
          free(sarg->fptr->data);
-         sarg->fptr->data = NULL;
+         sarg->fptr->data = nullptr;
          return SFR_SHARE;
       }
 
       p_error_unit = sarg->owner;
 
-      if((p = pain_doinit(sarg->owner, (char *)sarg->fptr->data)))
+      if((p = pain_doinit(sarg->owner, (char *)sarg->fptr->data)) != nullptr)
       {
          sarg->fptr->index = SFUN_PAIN;
 
          free(sarg->fptr->data);
-         sarg->fptr->data = NULL;
+         sarg->fptr->data = nullptr;
 
          sarg->fptr->data = p;
          if(sarg->fptr->heart_beat < WAIT_SEC * 5)

@@ -25,18 +25,18 @@
 #ifndef _MUD_NAMELIST_H
 #define _MUD_NAMELIST_H
 
-#include "hashstring.h"
 #include "bytestring.h"
+#include "hashstring.h"
 
 class cNamelist
 {
-  public:
+public:
    cNamelist(void);
    cNamelist(const char **list);
    ~cNamelist(void);
 
    void Free(void);
-   void CopyList(const char * const * const list);
+   void CopyList(const char *const *const list);
    void CopyList(class cNamelist *);
 
    void AppendBuffer(CByteBuffer *pBuf);
@@ -48,8 +48,8 @@ class cNamelist
    void Remove(ubit32 idx);
    void RemoveName(const char *name);
 
-   void Substitute(ubit32 idx, const char *newname);
-   const char *Name(ubit32 idx = 0);
+   void             Substitute(ubit32 idx, const char *newname);
+   const char      *Name(ubit32 idx = 0);
    cStringInstance *InstanceName(ubit32 idx = 0);
 
    void AppendName(const char *name);
@@ -57,16 +57,16 @@ class cNamelist
 
    cNamelist *Duplicate(void);
 
-   const int IsNameIdx(const char *name);
-   const int IsNameRawIdx(const char *name);
+   const int   IsNameIdx(const char *name);
+   const int   IsNameRawIdx(const char *name);
    const char *IsNameRaw(const char *name);
    const char *IsName(const char *name);
 
    inline ubit32 Length(void) { return length; }
 
-  private:
+private:
    class cStringInstance **namelist;
-   ubit32 length;
+   ubit32                  length;
 };
 
 #endif

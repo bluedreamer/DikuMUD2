@@ -22,8 +22,8 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 
 #include "common.h"
 #include "config.h"
@@ -49,7 +49,7 @@ void ShowUsage(const char *name)
    fprintf(stderr, "Copyright (C) 1994 - 1996 by Valhalla.\n");
 }
 
-CServerConfiguration::CServerConfiguration(void)
+CServerConfiguration::CServerConfiguration()
 {
    m_bAccounting   = 0;
    m_bBBS          = FALSE;
@@ -66,17 +66,17 @@ CServerConfiguration::CServerConfiguration(void)
    memset(&m_sSubnetMask, 0, sizeof(m_sSubnetMask));
    memset(&m_sLocalhost, 0, sizeof(m_sLocalhost));
 
-   m_pCredits = NULL;
-   m_pNews    = NULL;
-   m_pMotd    = NULL;
-   m_pWizlist = NULL;
-   m_pLogo    = NULL;
-   m_pWelcome = NULL;
-   m_pGoodbye = NULL;
-   m_pNewbie  = NULL;
+   m_pCredits = nullptr;
+   m_pNews    = nullptr;
+   m_pMotd    = nullptr;
+   m_pWizlist = nullptr;
+   m_pLogo    = nullptr;
+   m_pWelcome = nullptr;
+   m_pGoodbye = nullptr;
+   m_pNewbie  = nullptr;
 }
 
-int CServerConfiguration::FromLAN(char *pFromHost)
+auto CServerConfiguration::FromLAN(char *pFromHost) -> int const
 {
    struct in_addr sTmp;
 
@@ -86,10 +86,10 @@ int CServerConfiguration::FromLAN(char *pFromHost)
       return FALSE;
    }
 
-   return ((m_sSubnetMask.s_addr & m_sLocalhost.s_addr) == (m_sSubnetMask.s_addr & sTmp.s_addr));
+   return static_cast<int>((m_sSubnetMask.s_addr & m_sLocalhost.s_addr) == (m_sSubnetMask.s_addr & sTmp.s_addr));
 }
 
-int CServerConfiguration::ValidMplex(struct sockaddr_in *isa)
+auto CServerConfiguration::ValidMplex(struct sockaddr_in *isa) -> int
 {
    struct in_addr sTmp;
 
@@ -98,7 +98,9 @@ int CServerConfiguration::ValidMplex(struct sockaddr_in *isa)
    for(i = 0; i < 10; i++)
    {
       if(isa->sin_addr.s_addr == m_aMplexHosts[i].s_addr)
+      {
          return TRUE;
+      }
    }
 
    return FALSE;
@@ -106,7 +108,7 @@ int CServerConfiguration::ValidMplex(struct sockaddr_in *isa)
 
 void CServerConfiguration::TripleColorFormat(struct SFightColorSet *pSet, char **ppList)
 {
-   if(ppList == NULL)
+   if(ppList == nullptr)
    {
       slog(LOG_ALL, 0, "Color triple non existant.");
       exit(0);
@@ -114,8 +116,10 @@ void CServerConfiguration::TripleColorFormat(struct SFightColorSet *pSet, char *
 
    int i = 0;
 
-   while(ppList[i])
+   while(ppList[i] != nullptr)
+   {
       i++;
+   }
 
    if(i != 3)
    {
@@ -130,18 +134,17 @@ void CServerConfiguration::TripleColorFormat(struct SFightColorSet *pSet, char *
    free_namelist(ppList);
 }
 
-void CServerConfiguration::Boot(void)
+void CServerConfiguration::Boot()
 {
    char        Buf[2 * MAX_STRING_LENGTH];
-   char       *c, **list;
+   char       *c;
+   char      **list;
    const char *d;
    int         i;
 
-   extern char libdir[];
-
    slog(LOG_OFF, 0, "Booting server.");
 
-   if(!file_exists(str_cc(libdir, SERVER_CONFIG)))
+   if(file_exists(str_cc(libdir, SERVER_CONFIG)) == 0u)
    {
       slog(LOG_ALL, 0, "No server configuration file.");
       return;
@@ -151,100 +154,100 @@ void CServerConfiguration::Boot(void)
 
    c = Buf;
 
-   if(parse_match_num(&c, "Port", &i))
+   if(parse_match_num(&c, "Port", &i) != 0)
    {
       m_nMotherPort = i;
    }
 
-   if(!is_in(m_nMotherPort, 2000, 8000))
+   if(is_in(m_nMotherPort, 2000, 8000) == 0)
    {
       slog(LOG_ALL, 0, "Mother port not in [2000..8000].");
       exit(0);
    }
 
-   if(parse_match_num(&c, "Rent", &i))
+   if(parse_match_num(&c, "Rent", &i) != 0)
    {
       m_nRentModifier = i;
    }
 
-   if(!is_in(m_nRentModifier, 0, 100))
+   if(is_in(m_nRentModifier, 0, 100) == 0)
    {
       slog(LOG_ALL, 0, "Rent modifier not in [0..100].");
       exit(0);
    }
 
-   if(parse_match_num(&c, "BOB", &i))
+   if(parse_match_num(&c, "BOB", &i) != 0)
    {
       m_bBOB = i;
    }
 
-   if(!is_in(m_bBOB, 0, 1))
+   if(is_in(m_bBOB, 0, 1) == 0)
    {
       slog(LOG_ALL, 0, "BOB not 0 or 1");
       exit(0);
    }
 
-   if(parse_match_num(&c, "Alias Shout", &i))
+   if(parse_match_num(&c, "Alias Shout", &i) != 0)
    {
       m_bAliasShout = i;
    }
 
-   if(!is_in(m_bAliasShout, 0, 1))
+   if(is_in(m_bAliasShout, 0, 1) == 0)
    {
       slog(LOG_ALL, 0, "Alias Shout not 0 or 1");
       exit(0);
    }
 
-   if(parse_match_num(&c, "No Specials", &i))
+   if(parse_match_num(&c, "No Specials", &i) != 0)
    {
       m_bNoSpecials = i;
    }
 
-   if(!is_in(m_bNoSpecials, 0, 1))
+   if(is_in(m_bNoSpecials, 0, 1) == 0)
    {
       slog(LOG_ALL, 0, "Specials not 0 or 1");
       exit(0);
    }
 
-   if(parse_match_num(&c, "Lawful", &i))
+   if(parse_match_num(&c, "Lawful", &i) != 0)
    {
       m_bLawful = i;
    }
 
-   if(!is_in(m_bLawful, 0, 1))
+   if(is_in(m_bLawful, 0, 1) == 0)
    {
       slog(LOG_ALL, 0, "Lawful not 0 or 1");
       exit(0);
    }
 
-   if(parse_match_num(&c, "BBS", &i))
+   if(parse_match_num(&c, "BBS", &i) != 0)
    {
       m_bBBS = i;
    }
 
-   if(!is_in(m_bBBS, 0, 1))
+   if(is_in(m_bBBS, 0, 1) == 0)
    {
       slog(LOG_ALL, 0, "BBS not 0 or 1");
       exit(0);
    }
 
-   if(parse_match_num(&c, "Accounting", &i))
+   if(parse_match_num(&c, "Accounting", &i) != 0)
    {
       m_bAccounting = i;
    }
 
-   if(!is_in(m_bAccounting, 0, 1))
+   if(is_in(m_bAccounting, 0, 1) == 0)
    {
       slog(LOG_ALL, 0, "Accounting not 0 or 1");
       exit(0);
    }
 
-   if(parse_match_num(&c, "Shout", &i))
+   if(parse_match_num(&c, "Shout", &i) != 0)
    {
       m_nShout = i;
    }
 
-   if(!is_in(m_nShout, 0, 255))
+   if(is_in(m_nShout, 0, 255) == 0)
    {
       slog(LOG_ALL, 0, "Shout level not [0..255]");
       exit(0);
@@ -252,8 +255,10 @@ void CServerConfiguration::Boot(void)
 
    d = parse_match_name(&c, "subnetmask");
 
-   if(d == NULL)
+   if(d == nullptr)
+   {
       d = "255.255.255.255";
+   }
 
    if(inet_aton(d, &m_sSubnetMask) == 0)
    {
@@ -263,8 +268,10 @@ void CServerConfiguration::Boot(void)
 
    d = parse_match_name(&c, "localhost");
 
-   if(d == NULL)
+   if(d == nullptr)
+   {
       d = "127.0.0.1";
+   }
 
    if(inet_aton(d, &m_sLocalhost) == 0)
    {
@@ -276,7 +283,7 @@ void CServerConfiguration::Boot(void)
 
    ppNames = parse_match_namelist(&c, "mplex hosts");
 
-   if(ppNames == NULL)
+   if(ppNames == nullptr)
    {
       slog(LOG_ALL, 0, "Mplex hosts must be specified.");
       exit(0);
@@ -284,8 +291,10 @@ void CServerConfiguration::Boot(void)
 
    int l = 0;
 
-   while(ppNames[l])
+   while(ppNames[l] != nullptr)
+   {
       l++;
+   }
 
    if(l < 1)
    {
@@ -310,37 +319,39 @@ void CServerConfiguration::Boot(void)
          }
       }
       else
+      {
          m_aMplexHosts[i] = m_aMplexHosts[i - 1];
+      }
    }
 
    m_sColor.pDefault = str_escape_format("&cw");
 
    d                = parse_match_name(&c, "color prompt");
-   m_sColor.pPrompt = d ? str_escape_format(d) : "";
+   m_sColor.pPrompt = d != nullptr ? str_escape_format(d) : "";
    free(d);
 
    d                  = parse_match_name(&c, "color who");
-   m_sColor.pWhoTitle = d ? str_escape_format(d) : "";
+   m_sColor.pWhoTitle = d != nullptr ? str_escape_format(d) : "";
    free(d);
 
    d                 = parse_match_name(&c, "color who elem");
-   m_sColor.pWhoElem = d ? str_escape_format(d) : "";
+   m_sColor.pWhoElem = d != nullptr ? str_escape_format(d) : "";
    free(d);
 
    d                   = parse_match_name(&c, "color room title");
-   m_sColor.pRoomTitle = d ? str_escape_format(d) : "";
+   m_sColor.pRoomTitle = d != nullptr ? str_escape_format(d) : "";
    free(d);
 
    d                  = parse_match_name(&c, "color room text");
-   m_sColor.pRoomText = d ? str_escape_format(d) : "";
+   m_sColor.pRoomText = d != nullptr ? str_escape_format(d) : "";
    free(d);
 
    d                    = parse_match_name(&c, "color exits begin");
-   m_sColor.pExitsBegin = d ? str_escape_format(d) : "";
+   m_sColor.pExitsBegin = d != nullptr ? str_escape_format(d) : "";
    free(d);
 
    d                  = parse_match_name(&c, "color exits end");
-   m_sColor.pExitsEnd = d ? str_escape_format(d) : "";
+   m_sColor.pExitsEnd = d != nullptr ? str_escape_format(d) : "";
    free(d);
 
    /* MELEE STUFF */
@@ -364,7 +375,7 @@ void CServerConfiguration::Boot(void)
 
    slog(LOG_OFF, 0, "Reading newsfile, credits, wizlist and motd.");
 
-   char *read_info_file(char *name, char *oldstr);
+   auto read_info_file(char *name, char *oldstr)->char *;
 
    touch_file(str_cc(libdir, WIZLIST_FILE));
    m_pWizlist = read_info_file(str_cc(libdir, WIZLIST_FILE), m_pWizlist);

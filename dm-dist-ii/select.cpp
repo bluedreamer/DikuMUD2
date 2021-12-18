@@ -21,10 +21,10 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <assert.h>
-#include <errno.h>
-#include <signal.h>
-#include <string.h>
+#include <cassert>
+#include <cerrno>
+#include <csignal>
+#include <cstring>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -38,44 +38,49 @@ cCaptainHook CaptainHook;
 /*                                HOOK                                 */
 /* ------------------------------------------------------------------- */
 
-cHook::cHook(void)
+cHook::cHook()
 {
    fd = -1;
 }
 
-cHook::~cHook(void)
+cHook::~cHook()
 {
    Unhook();
 }
 
-int cHook::tfd(void)
+auto cHook::tfd() -> int const
 {
    return fd;
 }
 
-int cHook::IsHooked(void)
+auto cHook::IsHooked() -> int const
 {
-   return fd != -1;
+   return static_cast<int>(fd != -1);
 }
 
-void cHook::Unhook(void)
+void cHook::Unhook()
 {
-   if(IsHooked())
+   if(IsHooked() != 0)
+   {
       CaptainHook.Unhook(this);
+   }
 
    fd = -1;
 }
 
-void cHook::PushWrite(void)
+void cHook::PushWrite()
 {
-   int   sofar, len;
+   int   sofar;
+   int   len;
    int   thisround;
    ubit8 buf[1460];
 
-   if(!IsHooked())
+   if(IsHooked() == 0)
+   {
       return;
+   }
 
-   while(!qTX.IsEmpty())
+   while(qTX.IsEmpty() == 0)
    {
       len = MIN(sizeof(buf), qTX.Bytes());
 
@@ -93,7 +98,7 @@ void cHook::PushWrite(void)
             Unhook();
             return;
          }
-         else if(thisround < 0)
+         if(thisround < 0)
          {
             if(errno == EWOULDBLOCK) /* I'd rather this didn't happen */
             {
@@ -116,7 +121,9 @@ void cHook::PushWrite(void)
          sofar += thisround;
 
          if(sofar >= len)
+         {
             break;
+         }
       }
    }
 }
@@ -124,12 +131,16 @@ void cHook::PushWrite(void)
 void cHook::Write(ubit8 *pData, ubit32 nLen, int bCopy)
 {
    if(nLen <= 0)
-      return;
-
-   if(!IsHooked())
    {
-      if(!bCopy)
+      return;
+   }
+
+   if(IsHooked() == 0)
+   {
+      if(bCopy == 0)
+      {
          free(pData);
+      }
       return;
    }
 
@@ -142,27 +153,33 @@ void cHook::Write(ubit8 *pData, ubit32 nLen, int bCopy)
 /*                            CAPTAIN HOOK                             */
 /* ------------------------------------------------------------------- */
 
-cCaptainHook::cCaptainHook(void)
+cCaptainHook::cCaptainHook()
 {
    signal(SIGPIPE, SIG_IGN); // Or else pipe fucks the whole thing up...
 
-   for(int i = 0; i < 256; i++)
-      pfHook[i] = NULL;
+   for(auto &i : pfHook)
+   {
+      i = nullptr;
+   }
 
    nTop = 0;
    nMax = 0;
 }
 
-cCaptainHook::~cCaptainHook(void)
+cCaptainHook::~cCaptainHook()
 {
    Close();
 }
 
-void cCaptainHook::Close(void)
+void cCaptainHook::Close()
 {
-   for(int i = 0; i < 256; i++)
-      if(pfHook[i])
-         pfHook[i]->Unhook();
+   for(auto &i : pfHook)
+   {
+      if(i != nullptr)
+      {
+         i->Unhook();
+      }
+   }
 
    nTop = 0;
    nMax = 0;
@@ -172,7 +189,7 @@ void cCaptainHook::Hook(int nHandle, cHook *hook)
 {
    static int newid = 0;
 
-   assert(pfHook[nHandle] == NULL);
+   assert(pfHook[nHandle] == nullptr);
    assert(hook->fd == -1);
 
    pfHook[nHandle] = hook;
@@ -187,7 +204,9 @@ void cCaptainHook::Hook(int nHandle, cHook *hook)
    nTop++;
 
    if(nHandle > nMax)
+   {
       nMax = nHandle;
+   }
 
    // DEBUG("HOOKED: Fd %d, Flags %d, Max %d\n", nHandle, nFlag, nMax);
 }
@@ -201,7 +220,9 @@ void cCaptainHook::Unhook(cHook *hook)
 
    i = close(nHandle);
    if(i < 0)
+   {
       slog(LOG_ALL, 0, "Captain Hook: Close error %d.", errno);
+   }
 
    for(i = 0; i < nTop; i++)
    {
@@ -214,28 +235,32 @@ void cCaptainHook::Unhook(cHook *hook)
    }
 
    pfHook[nHandle]->id = -1;
-   pfHook[nHandle]     = NULL;
+   pfHook[nHandle]     = nullptr;
 
    nMax = 0;
    for(i = 0; i < nTop; i++)
    {
       if(nIdx[i] > nMax)
+      {
          nMax = nIdx[i];
+      }
    }
 }
 
 // If an unhook is performed during the wait, the possible select may be
 // postponed until the next call to wait().
 //
-int cCaptainHook::Wait(struct timeval *timeout)
+auto cCaptainHook::Wait(struct timeval *timeout) -> int
 {
-   int n, lmax;
+   int n;
+   int lmax;
 
    /* The following two are used in Wait() because the Input & Write
       can cause any descriptor to become unhooked. It is then the job
       of the Unhook to update this table of descriptors accordingly */
 
-   int nTable[256], nId[256];
+   int nTable[256];
+   int nId[256];
    int nTableTop;
 
    memcpy(nTable, nIdx, sizeof(int) * nTop);
@@ -252,29 +277,37 @@ int cCaptainHook::Wait(struct timeval *timeout)
 
       FD_SET(nTable[i], &read_set);
 
-      if(!pfHook[nTable[i]]->qTX.IsEmpty())
+      if(pfHook[nTable[i]]->qTX.IsEmpty() == 0)
+      {
          FD_SET(nTable[i], &write_set);
+      }
    }
 
-   n = select(nMax + 1, &read_set, &write_set, NULL, timeout);
+   n = select(nMax + 1, &read_set, &write_set, nullptr, timeout);
 
    if(n == -1)
    {
       // Do not set to zero, it means that a timeout occurred.
       //
       if(errno == EAGAIN)
+      {
          n = 1;
+      }
       else if(errno == EINTR)
       {
          // slog(LOG_ALL, 0, "CaptainHook: Select Interrupted.\n");
          n = 1;
       }
       else
+      {
          slog(LOG_ALL, 0, "CaptainHook: Select error %d.\n", errno);
+      }
    }
    else if(n > 0)
    {
-      int nFlag, tmpfd, i;
+      int nFlag;
+      int tmpfd;
+      int i;
 
       /* We need to do this the hard way, because nTable[] can be
          changed radically by any sequence of read or write */
@@ -285,30 +318,38 @@ int cCaptainHook::Wait(struct timeval *timeout)
          tmpfd = nTable[i];
 
          if(FD_ISSET(tmpfd, &read_set))
+         {
             SET_BIT(nFlag, SELECT_READ);
+         }
 
          if(FD_ISSET(tmpfd, &write_set))
+         {
             SET_BIT(nFlag, SELECT_WRITE);
+         }
 
          cHook *pfTmpHook = pfHook[tmpfd];
 
          /* It could have been unhooked by any previous sequence of
             Input() or Write() sequences */
 
-         if(nFlag && pfTmpHook)
+         if((nFlag != 0) && (pfTmpHook != nullptr))
          {
             int nTmpid = pfTmpHook->id;
 
             if((pfTmpHook == pfHook[tmpfd]) && (pfTmpHook->id == nId[i]))
             {
-               if(nFlag & (SELECT_READ | SELECT_EXCEPT))
+               if((nFlag & (SELECT_READ | SELECT_EXCEPT)) != 0)
+               {
                   pfTmpHook->Input(nFlag);
+               }
             }
 
             if((pfTmpHook == pfHook[tmpfd]) && (pfTmpHook->id == nId[i]))
             {
-               if(nFlag & SELECT_WRITE)
+               if((nFlag & SELECT_WRITE) != 0)
+               {
                   pfTmpHook->PushWrite();
+               }
             }
          }
       }

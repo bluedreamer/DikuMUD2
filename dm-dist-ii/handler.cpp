@@ -37,12 +37,12 @@
 /* 14/09/94 gnort   : Made unit_vector dynamic rather than static (blegh)  */
 /* 11/01/95 gnort   : Moved find_raw_ex_descr() from act_info.c over here  */
 
-#include <ctype.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "affect.h"
 #include "blkfile.h"
@@ -60,23 +60,25 @@
 #include "utility.h"
 #include "utils.h"
 
-extern struct unit_data       *unit_list;
-extern struct unit_data       *combat_list;
-extern struct descriptor_data *descriptor_list;
+extern struct unit_data *combat_list;
 
 /* External procedures */
 
 void stop_special(struct unit_data *u, struct unit_fptr *fptr);
 
-struct descriptor_data *unit_is_edited(struct unit_data *u)
+auto unit_is_edited(struct unit_data *u) -> struct descriptor_data *
 {
    struct descriptor_data *d;
 
-   for(d = descriptor_list; d; d = d->next)
+   for(d = descriptor_list; d != nullptr; d = d->next)
+   {
       if(d->editing == u)
+      {
          return d;
+      }
+   }
 
-   return NULL;
+   return nullptr;
 }
 
 /* By using this, we can easily sort the list if ever needed */
@@ -88,16 +90,20 @@ void insert_in_unit_list(struct unit_data *u)
 
    if(!IS_PC(u))
    {
-      for(; tmp_u && IS_PC(tmp_u); tmp_u = tmp_u->gnext)
+      for(; (tmp_u != nullptr) && IS_PC(tmp_u); tmp_u = tmp_u->gnext)
+      {
          ;
+      }
    }
 
-   if((tmp_u == NULL) || (tmp_u == unit_list)) /* Head of list */
+   if((tmp_u == nullptr) || (tmp_u == unit_list)) /* Head of list */
    {
       u->gnext     = unit_list;
-      u->gprevious = NULL;
-      if(unit_list)
+      u->gprevious = nullptr;
+      if(unit_list != nullptr)
+      {
          unit_list->gprevious = u;
+      }
       unit_list = u;
    }
    else /* Middle of list  */
@@ -115,28 +121,38 @@ void remove_from_unit_list(struct unit_data *unit)
    assert(unit->gprevious || unit->gnext || (unit_list == unit));
 
    if(unit_list == unit)
+   {
       unit_list = unit->gnext;
-   else /* Then this is always true 'if (unit->gprevious)'  */
+   }
+   else
+   { /* Then this is always true 'if (unit->gprevious)'  */
       unit->gprevious->gnext = unit->gnext;
+   }
 
-   if(unit->gnext)
+   if(unit->gnext != nullptr)
+   {
       unit->gnext->gprevious = unit->gprevious;
+   }
 
-   unit->gnext = unit->gprevious = NULL;
+   unit->gnext = unit->gprevious = nullptr;
 }
 
-struct unit_fptr *find_fptr(struct unit_data *u, ubit16 idx)
+auto find_fptr(struct unit_data *u, ubit16 idx) -> struct unit_fptr *
 {
    struct unit_fptr *tf;
 
-   for(tf = UNIT_FUNC(u); tf; tf = tf->next)
+   for(tf = UNIT_FUNC(u); tf != nullptr; tf = tf->next)
+   {
       if(tf->index == idx)
+      {
          return tf;
+      }
+   }
 
-   return NULL;
+   return nullptr;
 }
 
-struct unit_fptr *create_fptr(struct unit_data *u, ubit16 index, ubit16 beat, ubit16 flags, void *data)
+auto create_fptr(struct unit_data *u, ubit16 index, ubit16 beat, ubit16 flags, void *data) -> struct unit_fptr *
 {
    struct unit_fptr *f;
 
@@ -166,7 +182,6 @@ void destroy_fptr(struct unit_data *u, struct unit_fptr *f)
    struct spec_arg   sarg;
 
    extern struct unit_function_array_type unit_function_array[];
-   extern struct command_info             cmd_auto_extract;
 
    void register_destruct(int i, void *ptr);
    void add_func_history(struct unit_data * u, ubit16, ubit16);
@@ -181,10 +196,10 @@ void destroy_fptr(struct unit_data *u, struct unit_fptr *f)
 #endif
 
    sarg.owner     = (struct unit_data *)u;
-   sarg.activator = NULL;
-   sarg.medium    = NULL;
-   sarg.target    = NULL;
-   sarg.pInt      = NULL;
+   sarg.activator = nullptr;
+   sarg.medium    = nullptr;
+   sarg.target    = nullptr;
+   sarg.pInt      = nullptr;
    sarg.fptr      = f;
    sarg.cmd       = &cmd_auto_extract;
    sarg.arg       = "";
@@ -198,12 +213,16 @@ void destroy_fptr(struct unit_data *u, struct unit_fptr *f)
 
    /* Only unlink function, do not free it! */
    if(UNIT_FUNC(u) == f)
+   {
       UNIT_FUNC(u) = f->next;
+   }
    else
    {
-      for(tf = UNIT_FUNC(u); tf && (tf->next != f); tf = tf->next)
+      for(tf = UNIT_FUNC(u); (tf != nullptr) && (tf->next != f); tf = tf->next)
+      {
          ;
-      if(tf)
+      }
+      if(tf != nullptr)
       {
          assert(tf->next == f);
          tf->next = f->next;
@@ -215,7 +234,8 @@ void destroy_fptr(struct unit_data *u, struct unit_fptr *f)
 /* Call die_follower if a person dies         */
 void stop_following(struct unit_data *ch)
 {
-   struct char_follow_type *j, *k;
+   struct char_follow_type *j;
+   struct char_follow_type *k;
 
    extern struct command_info *cmd_follow;
 
@@ -230,15 +250,17 @@ void stop_following(struct unit_data *ch)
    else
    { /* locate follower who is not head of list */
       for(k = CHAR_FOLLOWERS(CHAR_MASTER(ch)); k->next->follower != ch; k = k->next)
+      {
          ;
+      }
       j       = k->next;
       k->next = j->next;
       free(j);
    }
 
-   CHAR_MASTER(ch) = 0;
+   CHAR_MASTER(ch) = nullptr;
 
-   send_done(ch, NULL, NULL, 0, cmd_follow, "");
+   send_done(ch, nullptr, nullptr, 0, cmd_follow, "");
 }
 
 /* Set 'ch' to follow leader. Circles allowed. */
@@ -246,32 +268,35 @@ void start_following(struct unit_data *ch, struct unit_data *leader)
 {
    struct char_follow_type *k;
 
-   extern struct command_info *cmd_follow;
-
    assert(!is_destructed(DR_UNIT, leader));
    assert(!is_destructed(DR_UNIT, ch));
 
    REMOVE_BIT(CHAR_FLAGS(ch), CHAR_GROUP);
    if(CHAR_MASTER(ch))
+   {
       stop_following(ch);
+   }
    CHAR_MASTER(ch) = leader;
    CREATE(k, struct char_follow_type, 1);
    k->follower            = ch;
    k->next                = CHAR_FOLLOWERS(leader);
    CHAR_FOLLOWERS(leader) = k;
 
-   send_done(ch, NULL, leader, 0, cmd_follow, "");
+   send_done(ch, nullptr, leader, 0, cmd_follow, "");
 }
 
 /* Called by extract_unit when a character that follows/is followed dies */
 void die_follower(struct unit_data *ch)
 {
-   struct char_follow_type *j, *k;
+   struct char_follow_type *j;
+   struct char_follow_type *k;
 
    if(CHAR_MASTER(ch))
+   {
       stop_following(ch);
+   }
 
-   for(k = CHAR_FOLLOWERS(ch); k; k = j)
+   for(k = CHAR_FOLLOWERS(ch); k != nullptr; k = j)
    {
       j = k->next;
       stop_following(k->follower);
@@ -282,24 +307,29 @@ void die_follower(struct unit_data *ch)
 /* in order to correctly update the environment of the unit */
 void modify_bright(struct unit_data *unit, int bright)
 {
-   struct unit_data *ext, *in;
+   struct unit_data *ext;
+   struct unit_data *in;
 
    UNIT_BRIGHT(unit) += bright;
 
-   if((in = UNIT_IN(unit))) /* Light up what the unit is inside */
+   if((in = UNIT_IN(unit)) != nullptr)
+   { /* Light up what the unit is inside */
       UNIT_LIGHTS(in) += bright;
+   }
 
    if(IS_OBJ(unit) && OBJ_EQP_POS(unit))
+   {
       /* The char holding the torch light up the SAME way the torch does! */
       /* this works with the equib/unequib functions. This is NOT a case  */
       /* of transparancy.  */
       modify_bright(in, bright);
-   else if(in && UNIT_IS_TRANSPARENT(in))
+   }
+   else if((in != nullptr) && UNIT_IS_TRANSPARENT(in))
    {
       /* the unit is inside a transperant unit, so it lights up too */
       /* this works with actions in unit-up/down                    */
       UNIT_BRIGHT(in) += bright;
-      if((ext = UNIT_IN(in)))
+      if((ext = UNIT_IN(in)) != nullptr)
       {
          UNIT_LIGHTS(ext) += bright;
          UNIT_ILLUM(in) += bright;
@@ -312,14 +342,18 @@ void trans_set(struct unit_data *u)
    struct unit_data *u2;
    int               sum = 0;
 
-   for(u2 = UNIT_CONTAINS(u); u2; u2 = u2->next)
+   for(u2 = UNIT_CONTAINS(u); u2 != nullptr; u2 = u2->next)
+   {
       sum += UNIT_BRIGHT(u2);
+   }
 
    UNIT_ILLUM(u) = sum;
    UNIT_BRIGHT(u) += sum;
 
    if(UNIT_IN(u))
+   {
       UNIT_LIGHTS(UNIT_IN(u)) += sum;
+   }
 }
 
 void trans_unset(struct unit_data *u)
@@ -327,7 +361,9 @@ void trans_unset(struct unit_data *u)
    UNIT_BRIGHT(u) -= UNIT_ILLUM(u);
 
    if(UNIT_IN(u))
+   {
       UNIT_LIGHTS(UNIT_IN(u)) -= UNIT_ILLUM(u);
+   }
 
    UNIT_ILLUM(u) = 0;
 }
@@ -353,36 +389,42 @@ void recalc_dex_red(struct unit_data *ch)
 }
 */
 
-struct unit_data *equipment(struct unit_data *ch, ubit8 pos)
+auto equipment(struct unit_data *ch, ubit8 pos) -> struct unit_data *
 {
    struct unit_data *u;
 
    assert(IS_CHAR(ch));
 
-   for(u = UNIT_CONTAINS(ch); u; u = u->next)
+   for(u = UNIT_CONTAINS(ch); u != nullptr; u = u->next)
+   {
       if(IS_OBJ(u) && pos == OBJ_EQP_POS(u))
+      {
          return u;
+      }
+   }
 
-   return NULL;
+   return nullptr;
 }
 
 /* The following functions find armor / weapons on a person with     */
 /* type checks (i.e. trash does not protect!).                       */
-struct unit_data *equipment_type(struct unit_data *ch, int pos, ubit8 type)
+auto equipment_type(struct unit_data *ch, int pos, ubit8 type) -> struct unit_data *
 {
    struct unit_data *obj;
 
    obj = equipment(ch, pos);
 
-   if(obj && OBJ_TYPE(obj) == type)
+   if((obj != nullptr) && OBJ_TYPE(obj) == type)
+   {
       return obj;
-   else
-      return NULL;
+   }
+   return NULL;
 }
 
 void equip_char(struct unit_data *ch, struct unit_data *obj, ubit8 pos)
 {
-   struct unit_affected_type *af, newaf;
+   struct unit_affected_type *af;
+   struct unit_affected_type  newaf;
 
    assert(pos > 0 && IS_OBJ(obj) && IS_CHAR(ch));
    assert(!equipment(ch, pos));
@@ -394,7 +436,8 @@ void equip_char(struct unit_data *ch, struct unit_data *obj, ubit8 pos)
 
    modify_bright(ch, UNIT_BRIGHT(obj)); /* Update light sources */
 
-   for(af = UNIT_AFFECTED(obj); af; af = af->next)
+   for(af = UNIT_AFFECTED(obj); af != nullptr; af = af->next)
+   {
       if(af->id < 0) /* It is a transfer affect! */
       {
          newaf          = *af;
@@ -402,12 +445,14 @@ void equip_char(struct unit_data *ch, struct unit_data *obj, ubit8 pos)
          newaf.duration = -1;        /* Permanent until unequip */
          create_affect(ch, &newaf);
       }
+   }
 }
 
-struct unit_data *unequip_object(struct unit_data *obj)
+auto unequip_object(struct unit_data *obj) -> struct unit_data *
 {
    struct unit_data          *ch;
-   struct unit_affected_type *af, *caf;
+   struct unit_affected_type *af;
+   struct unit_affected_type *caf;
 
    ch = UNIT_IN(obj);
 
@@ -420,10 +465,11 @@ struct unit_data *unequip_object(struct unit_data *obj)
 
    modify_bright(ch, -UNIT_BRIGHT(obj)); /* Update light sources */
 
-   for(af = UNIT_AFFECTED(obj); af; af = af->next)
+   for(af = UNIT_AFFECTED(obj); af != nullptr; af = af->next)
+   {
       if(af->id < 0) /* It is a transfer affect! */
       {
-         for(caf = UNIT_AFFECTED(ch); caf; caf = caf->next)
+         for(caf = UNIT_AFFECTED(ch); caf != nullptr; caf = caf->next)
          {
             if((-caf->id == af->id) && (caf->duration == -1) && (caf->data[0] == af->data[0]) && (caf->data[1] == af->data[1]) &&
                // THIS IS NOT TESTED! (caf->data[2] == af->data[2]) &&
@@ -435,11 +481,12 @@ struct unit_data *unequip_object(struct unit_data *obj)
             }
          }
       }
+   }
 
    return obj;
 }
 
-struct unit_data *unequip_char(struct unit_data *ch, ubit8 pos)
+auto unequip_char(struct unit_data *ch, ubit8 pos) -> struct unit_data *
 {
    struct unit_data *obj;
 
@@ -455,57 +502,71 @@ struct unit_data *unequip_char(struct unit_data *ch, ubit8 pos)
 /* through itself. For example if Papi carries a coffin and God is   */
 /* inside the coffin, when God types trans Papi this function will   */
 /* return TRUE                                                       */
-int unit_recursive(struct unit_data *from, struct unit_data *to)
+auto unit_recursive(struct unit_data *from, struct unit_data *to) -> int
 {
    struct unit_data *u;
 
-   for(u = to; u; u = UNIT_IN(u))
+   for(u = to; u != nullptr; u = UNIT_IN(u))
+   {
       if(u == from)
+      {
          return TRUE;
+      }
+   }
 
    return FALSE;
 }
 
-struct zone_type *unit_zone(const struct unit_data *unit)
+auto unit_zone(const struct unit_data *unit) -> struct zone_type *
 {
-   struct unit_data *org = (struct unit_data *)unit;
+   auto *org = (struct unit_data *)unit;
 
-   for(; unit; unit = UNIT_IN(unit))
+   for(; unit != nullptr; unit = UNIT_IN(unit))
+   {
       if(!UNIT_IN(unit))
       {
          assert(IS_ROOM(unit));
          return UNIT_FILE_INDEX(unit)->zone;
       }
+   }
 
    slog(LOG_ALL, 0, "ZONE: FATAL: %s@%s IN NO ROOMS WHILE NOT A ROOM!!", UNIT_FI_NAME(org), UNIT_FI_ZONENAME(org));
-   return NULL;
+   return nullptr;
 }
 
-struct unit_data *unit_room(struct unit_data *unit)
+auto unit_room(struct unit_data *unit) -> struct unit_data *
 {
    struct unit_data *org = unit;
 
-   for(; unit; unit = UNIT_IN(unit))
+   for(; unit != nullptr; unit = UNIT_IN(unit))
+   {
       if(IS_ROOM(unit))
+      {
          return unit;
+      }
+   }
 
    slog(LOG_ALL, 0, "ROOM: FATAL: %s@%s IN NO ROOMS WHILE NOT A ROOM!!", UNIT_FI_NAME(org), UNIT_FI_ZONENAME(org));
-   return 0;
+   return nullptr;
 }
 
 void intern_unit_up(struct unit_data *unit, ubit1 pile)
 {
-   struct unit_data *u, *in, *toin, *extin;
-   sbit8             bright, selfb;
+   struct unit_data *u;
+   struct unit_data *in;
+   struct unit_data *toin;
+   struct unit_data *extin;
+   sbit8             bright;
+   sbit8             selfb;
 
    assert(UNIT_IN(unit));
 
    /* resolve *ALL* light!!! */
-   in     = UNIT_IN(unit);             /* where to move unit up to */
-   toin   = UNIT_IN(in);               /* unit around in           */
-   extin  = toin ? UNIT_IN(toin) : 0;  /* unit around toin         */
-   bright = UNIT_BRIGHT(unit);         /* brightness inc. trans    */
-   selfb  = bright - UNIT_ILLUM(unit); /* brightness excl. trans   */
+   in     = UNIT_IN(unit);                             /* where to move unit up to */
+   toin   = UNIT_IN(in);                               /* unit around in           */
+   extin  = toin != nullptr ? UNIT_IN(toin) : nullptr; /* unit around toin         */
+   bright = UNIT_BRIGHT(unit);                         /* brightness inc. trans    */
+   selfb  = bright - UNIT_ILLUM(unit);                 /* brightness excl. trans   */
 
    UNIT_LIGHTS(in) -= bright; /* Subtract Light */
    if(UNIT_IS_TRANSPARENT(in))
@@ -513,43 +574,57 @@ void intern_unit_up(struct unit_data *unit, ubit1 pile)
       UNIT_ILLUM(in) -= selfb;
       UNIT_BRIGHT(in) -= selfb;
    }
-   else if(toin)
+   else if(toin != nullptr)
+   {
       UNIT_LIGHTS(toin) += bright;
+   }
 
-   if(toin && UNIT_IS_TRANSPARENT(toin))
+   if((toin != nullptr) && UNIT_IS_TRANSPARENT(toin))
    {
       UNIT_BRIGHT(toin) += selfb;
       UNIT_ILLUM(toin) += selfb;
-      if(extin)
+      if(extin != nullptr)
+      {
          UNIT_LIGHTS(extin) += selfb;
+      }
    }
 
    if(IS_CHAR(unit))
+   {
       --UNIT_CHARS(UNIT_IN(unit));
+   }
 
    UNIT_WEIGHT(UNIT_IN(unit)) -= UNIT_WEIGHT(unit);
 
    if(unit == UNIT_CONTAINS(UNIT_IN(unit)))
+   {
       UNIT_CONTAINS(UNIT_IN(unit)) = unit->next;
+   }
    else
    {
       for(u = UNIT_CONTAINS(UNIT_IN(unit)); u->next != unit; u = u->next)
+      {
          ;
+      }
       u->next = unit->next;
    }
 
-   unit->next = NULL;
+   unit->next = nullptr;
 
-   if((UNIT_IN(unit) = UNIT_IN(UNIT_IN(unit))))
+   if((UNIT_IN(unit) = UNIT_IN(UNIT_IN(unit))) != nullptr)
    {
       unit->next                   = UNIT_CONTAINS(UNIT_IN(unit));
       UNIT_CONTAINS(UNIT_IN(unit)) = unit;
       if(IS_CHAR(unit))
+      {
          ++UNIT_CHARS(UNIT_IN(unit));
+      }
    }
 
-   if(pile && IS_MONEY(unit) && UNIT_IN(unit))
+   if((pile != 0u) && IS_MONEY(unit) && UNIT_IN(unit))
+   {
       pile_money(unit);
+   }
 }
 
 void unit_up(struct unit_data *unit)
@@ -560,20 +635,25 @@ void unit_up(struct unit_data *unit)
 void unit_from_unit(struct unit_data *unit)
 {
    while(UNIT_IN(unit))
+   {
       intern_unit_up(unit, FALSE);
+   }
 }
 
 void intern_unit_down(struct unit_data *unit, struct unit_data *to, ubit1 pile)
 {
-   struct unit_data *u, *in, *extin;
-   sbit8             bright, selfb;
+   struct unit_data *u;
+   struct unit_data *in;
+   struct unit_data *extin;
+   sbit8             bright;
+   sbit8             selfb;
 
    assert(UNIT_IN(unit) == UNIT_IN(to));
    assert(unit != to);
 
    /* do *ALL* light here!!!! */
    in     = UNIT_IN(unit);
-   extin  = in ? UNIT_IN(in) : 0;
+   extin  = in != nullptr ? UNIT_IN(in) : nullptr;
    bright = UNIT_BRIGHT(unit);
    selfb  = bright - UNIT_ILLUM(unit);
 
@@ -583,27 +663,37 @@ void intern_unit_down(struct unit_data *unit, struct unit_data *to, ubit1 pile)
       UNIT_BRIGHT(to) += selfb;
       UNIT_ILLUM(to) += selfb;
    }
-   else if(in)
+   else if(in != nullptr)
+   {
       UNIT_LIGHTS(in) -= bright;
+   }
 
-   if(in && UNIT_IS_TRANSPARENT(in))
+   if((in != nullptr) && UNIT_IS_TRANSPARENT(in))
    {
       UNIT_BRIGHT(in) -= selfb;
       UNIT_ILLUM(in) -= selfb;
-      if(extin)
+      if(extin != nullptr)
+      {
          UNIT_LIGHTS(extin) -= selfb;
+      }
    }
 
    if(UNIT_IN(unit))
    {
       if(IS_CHAR(unit))
+      {
          --UNIT_CHARS(UNIT_IN(unit));
+      }
       if(unit == UNIT_CONTAINS(UNIT_IN(unit)))
+      {
          UNIT_CONTAINS(UNIT_IN(unit)) = unit->next;
+      }
       else
       {
          for(u = UNIT_CONTAINS(UNIT_IN(unit)); u->next != unit; u = u->next)
+         {
             ;
+         }
          u->next = unit->next;
       }
    }
@@ -613,11 +703,15 @@ void intern_unit_down(struct unit_data *unit, struct unit_data *to, ubit1 pile)
    UNIT_CONTAINS(to) = unit;
 
    if(IS_CHAR(unit))
+   {
       ++UNIT_CHARS(UNIT_IN(unit));
+   }
    UNIT_WEIGHT(to) += UNIT_WEIGHT(unit);
 
-   if(pile && IS_MONEY(unit))
+   if((pile != 0u) && IS_MONEY(unit))
+   {
       pile_money(unit);
+   }
 }
 
 void unit_down(struct unit_data *unit, struct unit_data *to)
@@ -630,12 +724,16 @@ void intern_unit_to_unit(struct unit_data *unit, struct unit_data *to, ubit1 pil
    assert(to);
 
    if(UNIT_IN(to))
+   {
       intern_unit_to_unit(unit, UNIT_IN(to), FALSE);
+   }
 
    intern_unit_down(unit, to, FALSE);
 
-   if(pile && IS_MONEY(unit))
+   if((pile != 0u) && IS_MONEY(unit))
+   {
       pile_money(unit);
+   }
 }
 
 void unit_to_unit(struct unit_data *unit, struct unit_data *to)
@@ -668,16 +766,16 @@ void unsnoop(struct unit_data *ch, int mode)
 
    if(CHAR_IS_SNOOPING(ch))
    {
-      act("You no longer snoop $3n.", A_SOMEONE, ch, 0, CHAR_DESCRIPTOR(ch)->snoop.snooping, TO_CHAR);
-      CHAR_DESCRIPTOR(CHAR_DESCRIPTOR(ch)->snoop.snooping)->snoop.snoop_by = 0;
-      CHAR_DESCRIPTOR(ch)->snoop.snooping                                  = 0;
+      act("You no longer snoop $3n.", A_SOMEONE, ch, nullptr, CHAR_DESCRIPTOR(ch)->snoop.snooping, TO_CHAR);
+      CHAR_DESCRIPTOR(CHAR_DESCRIPTOR(ch)->snoop.snooping)->snoop.snoop_by = nullptr;
+      CHAR_DESCRIPTOR(ch)->snoop.snooping                                  = nullptr;
    }
 
-   if(CHAR_IS_SNOOPED(ch) && mode)
+   if(CHAR_IS_SNOOPED(ch) && (mode != 0))
    {
-      act("You no longer snoop $3n, $3e was extracted.", A_SOMEONE, CHAR_DESCRIPTOR(ch)->snoop.snoop_by, 0, ch, TO_CHAR);
-      CHAR_DESCRIPTOR(CHAR_DESCRIPTOR(ch)->snoop.snoop_by)->snoop.snooping = 0;
-      CHAR_DESCRIPTOR(ch)->snoop.snoop_by                                  = 0;
+      act("You no longer snoop $3n, $3e was extracted.", A_SOMEONE, CHAR_DESCRIPTOR(ch)->snoop.snoop_by, nullptr, ch, TO_CHAR);
+      CHAR_DESCRIPTOR(CHAR_DESCRIPTOR(ch)->snoop.snoop_by)->snoop.snooping = nullptr;
+      CHAR_DESCRIPTOR(ch)->snoop.snoop_by                                  = nullptr;
    }
 }
 
@@ -693,15 +791,21 @@ void switchbody(struct unit_data *ch, struct unit_data *vict)
    CHAR_DESCRIPTOR(ch)->character = vict;
 
    if(IS_PC(ch))
+   {
       CHAR_DESCRIPTOR(ch)->original = ch;
+   }
    if(CHAR_IS_SNOOPING(ch))
+   {
       CHAR_DESCRIPTOR(CHAR_DESCRIPTOR(ch)->snoop.snooping)->snoop.snoop_by = vict;
+   }
    if(CHAR_IS_SNOOPED(ch))
+   {
       CHAR_DESCRIPTOR(CHAR_DESCRIPTOR(ch)->snoop.snoop_by)->snoop.snooping = vict;
+   }
 
    CHAR_DESCRIPTOR(vict) = CHAR_DESCRIPTOR(ch);
-   CHAR_DESCRIPTOR(ch)   = NULL;
-   CHAR_LAST_ROOM(vict)  = NULL;
+   CHAR_DESCRIPTOR(ch)   = nullptr;
+   CHAR_LAST_ROOM(vict)  = nullptr;
 }
 
 void unswitchbody(struct unit_data *npc)
@@ -714,16 +818,20 @@ void unswitchbody(struct unit_data *npc)
    send_to_char("You return to your original body.\n\r", npc);
 
    if(CHAR_IS_SNOOPING(npc))
+   {
       CHAR_DESCRIPTOR(CHAR_DESCRIPTOR(npc)->snoop.snooping)->snoop.snoop_by = CHAR_ORIGINAL(npc);
+   }
 
    if(CHAR_IS_SNOOPED(npc))
+   {
       CHAR_DESCRIPTOR(CHAR_DESCRIPTOR(npc)->snoop.snoop_by)->snoop.snooping = CHAR_ORIGINAL(npc);
+   }
 
    CHAR_DESCRIPTOR(npc)->character = CHAR_ORIGINAL(npc);
-   CHAR_DESCRIPTOR(npc)->original  = NULL;
+   CHAR_DESCRIPTOR(npc)->original  = nullptr;
 
    CHAR_DESCRIPTOR(CHAR_DESCRIPTOR(npc)->character) = CHAR_DESCRIPTOR(npc);
-   CHAR_DESCRIPTOR(npc)                             = NULL;
+   CHAR_DESCRIPTOR(npc)                             = nullptr;
 }
 
 /* Used when a unit is to be extracted from the game */
@@ -734,7 +842,6 @@ void extract_unit(struct unit_data *unit)
 
    extern struct unit_data *destroy_room;
 
-   void register_destruct(int i, void *ptr);
    void nanny_menu(struct descriptor_data * d, char *arg);
    void stop_all_special(struct unit_data * u);
 
@@ -743,8 +850,10 @@ void extract_unit(struct unit_data *unit)
    /* destruct_affect is called inside extract we   */
    /* got a recursive call.                         */
 
-   if(is_destructed(DR_UNIT, unit))
+   if(is_destructed(DR_UNIT, unit) != 0)
+   {
       return;
+   }
 
    /* We can't extract rooms! Sanity, MS 300595, wierd bug... */
    assert(!IS_ROOM(unit));
@@ -760,17 +869,21 @@ void extract_unit(struct unit_data *unit)
    register_destruct(DR_UNIT, unit);
 
    if(UNIT_IS_EQUIPPED(unit))
+   {
       unequip_object(unit);
+   }
 
    stop_all_special(unit);
    stop_affect(unit);
 
    while(UNIT_CONTAINS(unit))
+   {
       extract_unit(UNIT_CONTAINS(unit));
+   }
 
    if(!IS_PC(unit) || UNIT_IN(unit))
    {
-      while((d = unit_is_edited(unit)))
+      while((d = unit_is_edited(unit)) != nullptr)
       {
          send_to_char("\n\rUnit was extracted, "
                       "sorry.\n\r",
@@ -782,16 +895,22 @@ void extract_unit(struct unit_data *unit)
       if(IS_CHAR(unit))
       {
          if(CHAR_IS_SWITCHED(unit))
+         {
             unswitchbody(unit);
+         }
 
          /* If the PC which is switched is extracted, then unswitch */
          if(IS_PC(unit) && !CHAR_DESCRIPTOR(unit))
-            for(d = descriptor_list; d; d = d->next)
+         {
+            for(d = descriptor_list; d != nullptr; d = d->next)
+            {
                if(d->original == unit)
                {
                   unswitchbody(d->character);
                   break;
                }
+            }
+         }
 
          if(CHAR_DESCRIPTOR(unit))
          {
@@ -801,16 +920,22 @@ void extract_unit(struct unit_data *unit)
          }
 
          if(CHAR_FOLLOWERS(unit) || CHAR_MASTER(unit))
+         {
             die_follower(unit);
+         }
 
          stop_fighting(unit);
 
          if(CHAR_IS_SNOOPING(unit) || CHAR_IS_SNOOPED(unit))
+         {
             unsnoop(unit, 1); /* Remove all snoopers */
+         }
       }
 
       if(UNIT_IN(unit))
+      {
          unit_from_unit(unit);
+      }
 
       unit_to_unit(unit, destroy_room);
 
@@ -828,19 +953,21 @@ void extract_unit(struct unit_data *unit)
 /* (It will not change the -basic- weight of a player)   */
 void weight_change_unit(struct unit_data *unit, int weight)
 {
-   for(; unit; unit = UNIT_IN(unit))
+   for(; unit != nullptr; unit = UNIT_IN(unit))
+   {
       UNIT_WEIGHT(unit) += weight;
+   }
 }
 
-struct extra_descr_data *quest_add(struct unit_data *ch, char *name, char *descr)
+auto quest_add(struct unit_data *ch, const char *name, char *descr) -> struct extra_descr_data *
 {
    const char *namelist[2];
 
-   assert(name != NULL);
+   assert(name != nullptr);
    assert(name[0]);
 
    namelist[0] = name;
-   namelist[1] = NULL;
+   namelist[1] = nullptr;
 
    return (PC_QUEST(ch) = PC_QUEST(ch)->add(namelist, descr));
 }
@@ -849,13 +976,12 @@ struct extra_descr_data *quest_add(struct unit_data *ch, char *name, char *descr
 void szonelog(struct zone_type *zone, const char *fmt, ...)
 {
    char    name[256];
-   char    buf[MAX_STRING_LENGTH], buf2[MAX_STRING_LENGTH];
+   char    buf[MAX_STRING_LENGTH];
+   char    buf2[MAX_STRING_LENGTH];
    va_list args;
    FILE   *f;
 
-   extern char zondir[];
-
-   time_t now   = time(0);
+   time_t now   = time(nullptr);
    char  *tmstr = ctime(&now);
 
    tmstr[strlen(tmstr) - 1] = '\0';
@@ -864,7 +990,7 @@ void szonelog(struct zone_type *zone, const char *fmt, ...)
    vsprintf(buf, fmt, args);
    va_end(args);
 
-   if(zone == NULL)
+   if(zone == nullptr)
    {
       slog(LOG_ALL, 0, buf);
       return;
@@ -875,8 +1001,12 @@ void szonelog(struct zone_type *zone, const char *fmt, ...)
 
    sprintf(name, "%s%s.err", zondir, zone->filename);
 
-   if((f = fopen_cache(name, "a")) == NULL)
+   if((f = fopen_cache(name, "a")) == nullptr)
+   {
       slog(LOG_ALL, 0, "Unable to append to zonelog '%s'", name);
+   }
    else
+   {
       fprintf(f, "%s :: %s\n", tmstr, buf);
+   }
 }

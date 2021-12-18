@@ -23,7 +23,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "comm.h"
 #include "interpreter.h"
@@ -34,9 +34,13 @@
 static void chg_wimpy(struct unit_data *ch)
 {
    if(IS_SET(CHAR_FLAGS(ch), CHAR_WIMPY))
+   {
       send_to_char("You feel brave again.\n\r", ch);
+   }
    else
+   {
       send_to_char("Ok, you'll flee when death is near.\n\r", ch);
+   }
 
    TOGGLE_BIT(CHAR_FLAGS(ch), CHAR_WIMPY);
 }
@@ -44,9 +48,13 @@ static void chg_wimpy(struct unit_data *ch)
 static void chg_expert(struct unit_data *ch)
 {
    if(IS_SET(PC_FLAGS(ch), PC_EXPERT))
+   {
       send_to_char("You are now in normal mode.\n\r", ch);
+   }
    else
+   {
       send_to_char("You are now in expert mode.\n\r", ch);
+   }
 
    TOGGLE_BIT(PC_FLAGS(ch), PC_EXPERT);
 }
@@ -54,9 +62,13 @@ static void chg_expert(struct unit_data *ch)
 static void chg_brief(struct unit_data *ch)
 {
    if(IS_SET(PC_FLAGS(ch), PC_BRIEF))
+   {
       send_to_char("Brief mode off.\n\r", ch);
+   }
    else
+   {
       send_to_char("Brief mode on.\n\r", ch);
+   }
 
    TOGGLE_BIT(PC_FLAGS(ch), PC_BRIEF);
 }
@@ -64,9 +76,13 @@ static void chg_brief(struct unit_data *ch)
 static void chg_compact(struct unit_data *ch)
 {
    if(IS_SET(PC_FLAGS(ch), PC_COMPACT))
+   {
       send_to_char("You are now in the uncompacted mode.\n\r", ch);
+   }
    else
+   {
       send_to_char("You are now in compact mode.\n\r", ch);
+   }
 
    TOGGLE_BIT(PC_FLAGS(ch), PC_COMPACT);
 }
@@ -74,9 +90,13 @@ static void chg_compact(struct unit_data *ch)
 static void chg_peaceful(struct unit_data *ch)
 {
    if(IS_SET(CHAR_FLAGS(ch), CHAR_PEACEFUL))
+   {
       send_to_char("They will come in peace and leave in pieces.\n\r", ch);
+   }
    else
+   {
       send_to_char("You will no longer attack aggressors.\n\r", ch);
+   }
 
    TOGGLE_BIT(CHAR_FLAGS(ch), CHAR_PEACEFUL);
 }
@@ -92,17 +112,25 @@ static void chg_inform(struct unit_data *ch)
    TOGGLE_BIT(PC_FLAGS(ch), PC_INFORM);
 
    if(IS_SET(PC_FLAGS(ch), PC_INFORM))
+   {
       send_to_char("You will now get more information.\n\r", ch);
+   }
    else
+   {
       send_to_char("You will now get less information.\n\r", ch);
+   }
 }
 
 static void chg_shout(struct unit_data *ch)
 {
    if(IS_SET(PC_FLAGS(ch), PC_NOSHOUT))
+   {
       send_to_char("You can now hear shouts again.\n\r", ch);
+   }
    else
+   {
       send_to_char("From now on, you won't hear shouts.\n\r", ch);
+   }
 
    TOGGLE_BIT(PC_FLAGS(ch), PC_NOSHOUT);
 }
@@ -110,9 +138,13 @@ static void chg_shout(struct unit_data *ch)
 static void chg_tell(struct unit_data *ch)
 {
    if(IS_SET(PC_FLAGS(ch), PC_NOTELL))
+   {
       send_to_char("You can now hear tells again.\n\r", ch);
+   }
    else
+   {
       send_to_char("From now on, you won't hear tells.\n\r", ch);
+   }
 
    TOGGLE_BIT(PC_FLAGS(ch), PC_NOTELL);
 }
@@ -120,16 +152,20 @@ static void chg_tell(struct unit_data *ch)
 static void chg_exits(struct unit_data *ch)
 {
    if(IS_SET(PC_FLAGS(ch), PC_EXITS))
+   {
       send_to_char("Exit information disabled.\n\r", ch);
+   }
    else
+   {
       send_to_char("Exit information enabled.\n\r", ch);
+   }
 
    TOGGLE_BIT(PC_FLAGS(ch), PC_EXITS);
 }
 
 static void chg_columns(struct unit_data *ch, const char *arg)
 {
-   if(str_is_empty(arg) || !str_is_number(arg))
+   if((str_is_empty(arg) != 0u) || (str_is_number(arg) == 0u))
    {
       send_to_char("You must enter a column number between 40 and 160.\n\r", ch);
       return;
@@ -143,7 +179,7 @@ static void chg_columns(struct unit_data *ch, const char *arg)
       return;
    }
 
-   act("Your screen width is now $2d columns.", A_ALWAYS, ch, &width, 0, TO_CHAR);
+   act("Your screen width is now $2d columns.", A_ALWAYS, ch, &width, nullptr, TO_CHAR);
 
    PC_SETUP_WIDTH(ch) = (ubit8)width;
 
@@ -152,7 +188,7 @@ static void chg_columns(struct unit_data *ch, const char *arg)
 
 static void chg_rows(struct unit_data *ch, const char *arg)
 {
-   if(str_is_empty(arg) || !str_is_number(arg))
+   if((str_is_empty(arg) != 0u) || (str_is_number(arg) == 0u))
    {
       send_to_char("You must enter a row number between 15 and 60.\n\r", ch);
       return;
@@ -168,14 +204,14 @@ static void chg_rows(struct unit_data *ch, const char *arg)
 
    PC_SETUP_HEIGHT(ch) = (ubit8)height;
 
-   act("Your screen height is $2d rows.", A_ALWAYS, ch, &height, 0, TO_CHAR);
+   act("Your screen height is $2d rows.", A_ALWAYS, ch, &height, nullptr, TO_CHAR);
 
    MplexSendSetup(CHAR_DESCRIPTOR(ch));
 }
 
 static void chg_terminal(struct unit_data *ch, const char *arg)
 {
-   const char *Terminals[] = {"dumb", "tty", "ansi", NULL};
+   const char *Terminals[] = {"dumb", "tty", "ansi", nullptr};
 
    char buf[1024];
    int  n;
@@ -223,12 +259,16 @@ static void chg_telnet(struct unit_data *ch)
       return;
    }
 
-   PC_SETUP_TELNET(ch) = !PC_SETUP_TELNET(ch);
+   PC_SETUP_TELNET(ch) = static_cast<ubit8>(!PC_SETUP_TELNET(ch));
 
    if(PC_SETUP_TELNET(ch))
-      act("You are now assumed to be using telnet.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+   {
+      act("You are now assumed to be using telnet.", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
+   }
    else
-      act("You are now assumed not to be using telnet.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+   {
+      act("You are now assumed not to be using telnet.", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
+   }
 
    MplexSendSetup(CHAR_DESCRIPTOR(ch));
 }
@@ -241,12 +281,16 @@ static void chg_character_echo(struct unit_data *ch)
       return;
    }
 
-   PC_SETUP_ECHO(ch) = !PC_SETUP_ECHO(ch);
+   PC_SETUP_ECHO(ch) = static_cast<ubit8>(!PC_SETUP_ECHO(ch));
 
    if(PC_SETUP_ECHO(ch))
-      act("You will now get all typed characters echoed.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+   {
+      act("You will now get all typed characters echoed.", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
+   }
    else
-      act("You will now receive no echo characters.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+   {
+      act("You will now receive no echo characters.", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
+   }
 
    MplexSendSetup(CHAR_DESCRIPTOR(ch));
 }
@@ -259,12 +303,16 @@ static void chg_redraw_prompt(struct unit_data *ch)
       return;
    }
 
-   PC_SETUP_REDRAW(ch) = !PC_SETUP_REDRAW(ch);
+   PC_SETUP_REDRAW(ch) = static_cast<ubit8>(!PC_SETUP_REDRAW(ch));
 
    if(PC_SETUP_REDRAW(ch))
-      act("You will now get your prompt redrawn.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+   {
+      act("You will now get your prompt redrawn.", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
+   }
    else
-      act("Your prompt will no longer get redrawn.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+   {
+      act("Your prompt will no longer get redrawn.", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
+   }
 
    MplexSendSetup(CHAR_DESCRIPTOR(ch));
 }
@@ -274,9 +322,13 @@ static void chg_echo_say(struct unit_data *ch)
    TOGGLE_BIT(PC_FLAGS(ch), PC_ECHO);
 
    if(IS_SET(PC_FLAGS(ch), PC_ECHO))
-      act("You will now get your communications echoed.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+   {
+      act("You will now get your communications echoed.", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
+   }
    else
-      act("You will no longer get your communications echoed.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+   {
+      act("You will no longer get your communications echoed.", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
+   }
 }
 
 void do_change(struct unit_data *ch, char *arg, const struct command_info *cmd)
@@ -287,7 +339,7 @@ void do_change(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
                                 "prompt",  "exits",
 
-                                "columns", "rows",     "terminal", "telnet", "character echo", "redraw prompt", NULL};
+                                "columns", "rows",     "terminal", "telnet", "character echo", "redraw prompt", nullptr};
 
    char buf[MAX_INPUT_LENGTH];
 
@@ -298,15 +350,17 @@ void do_change(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 
    if(!CHAR_DESCRIPTOR(ch))
+   {
       return;
+   }
 
-   if(str_is_empty(arg))
+   if(str_is_empty(arg) != 0u)
    {
       send_to_char("Usage: change <type> [arguments]\n\r"
                    "<type> being one of:\n\r",
                    ch);
 
-      for(const char **p = args; *p; p++)
+      for(const char **p = args; *p != nullptr; p++)
       {
          sprintf(buf, "   %s\n\r", *p);
          send_to_char(buf, ch);

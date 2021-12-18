@@ -23,11 +23,11 @@
  * *********************************************************************** */
 /* 28-Aug gnort: hometown_unit didn't test if str was NULL! */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "comm.h"
 #include "db.h"
@@ -40,27 +40,32 @@
 
 /* ----- FUNCTIONS ----- */
 
-struct unit_data *hometown_unit(char *str)
+auto hometown_unit(char *str) -> struct unit_data *
 {
    extern struct unit_data *entry_room;
 
-   if(str)
+   if(str != nullptr)
    {
-      char              name[80], zone[80];
+      char              name[80];
+      char              zone[80];
       struct unit_data *u;
 
       split_fi_ref(str, zone, name);
-      if((u = world_room(zone, name)))
+      if((u = world_room(zone, name)) != nullptr)
+      {
          return u;
+      }
    }
 
    return entry_room;
 }
 
-int change_hometown(struct spec_arg *sarg)
+auto change_hometown(struct spec_arg *sarg) -> int
 {
-   if(!is_command(sarg->cmd, "moveto"))
+   if(is_command(sarg->cmd, "moveto") == 0u)
+   {
       return SFR_SHARE;
+   }
 
    send_to_char("Defunct at the moment...\n\r", sarg->activator);
 

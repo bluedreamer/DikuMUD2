@@ -22,14 +22,14 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <stdio.h>
+#include <cstdio>
 
 #include "handler.h"
 #include "interpreter.h"
 #include "spec_assign.h"
 #include "utils.h"
 
-int spec_unused(struct spec_arg *sarg)
+auto spec_unused(struct spec_arg *sarg) -> int
 {
    if(sarg->cmd->no != CMD_AUTO_EXTRACT)
    {
@@ -88,8 +88,8 @@ struct unit_function_array_type unit_function_array[] = {
    {"xxx", spec_unused, SD_NULL, SFB_CMD, 0},
    {"Competition Board", competition_board, SD_NULL, SFB_CMD, 0},
    {"combat poison sting", combat_poison_sting, SD_NULL, SFB_COM, 0},
-   {"OBSOLETE USE SPELL GAS BREATH", NULL, SD_NULL, SFB_COM, 0},
-   {"OBSOLETE", NULL, SD_NULL, SFB_CMD, 0},
+   {"OBSOLETE USE SPELL GAS BREATH", nullptr, SD_NULL, SFB_COM, 0},
+   {"OBSOLETE", nullptr, SD_NULL, SFB_CMD, 0},
    {"Combat Magic Heal", combat_magic_heal, SD_ASCII, SFB_COM, 0},
 
    {"Guard Way", guard_way, SD_ASCII, SFB_CMD, 0},
@@ -149,9 +149,9 @@ struct unit_function_array_type unit_function_array[] = {
    {"Link Dead", link_dead, SD_NEVER, SFB_CMD, 0},
    {"Sacrifice", sacrifice, SD_NULL, SFB_CMD, 0},
 
-   {"XXX Arena", NULL, SD_NULL, SFB_CMD, 0},
-   {"XXX Arena", NULL, SD_NULL, SFB_CMD, 0},
-   {"XXX Arena", NULL, SD_NEVER, SFB_DEAD | SFB_CMD | SFB_COM, 0},
+   {"XXX Arena", nullptr, SD_NULL, SFB_CMD, 0},
+   {"XXX Arena", nullptr, SD_NULL, SFB_CMD, 0},
+   {"XXX Arena", nullptr, SD_NEVER, SFB_DEAD | SFB_CMD | SFB_COM, 0},
    {"Restrict Quest", obj_quest, SD_ASCII, SFB_CMD, 0},
    {"Restrict Guild", obj_guild, SD_ASCII, SFB_CMD, 0},
    {"XXX", spec_unused, SD_NULL, SFB_TICK, 0},

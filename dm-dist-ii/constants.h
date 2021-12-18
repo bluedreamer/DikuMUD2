@@ -25,9 +25,9 @@
 #ifndef _MUD_CONSTANTS_H
 #define _MUD_CONSTANTS_H
 
-#include "values.h"
 #include "essential.h"
 #include "skills.h"
+#include "values.h"
 
 extern const struct skill_interval how_good[];
 extern const struct skill_interval weapon_skills[];
@@ -36,14 +36,14 @@ extern const struct skill_interval skill_skills[];
 
 extern const char *char_pos[];
 extern const char *enter_dirs[];
-extern const int rev_dir[];
+extern const int   rev_dir[];
 extern const char *room_landscape[];
-extern const int movement_loss[];
+extern const int   movement_loss[];
 extern const char *weekdays[];
 extern const char *month_name[];
-extern const sbit8 time_light[SUN_SET+1];
+extern const sbit8 time_light[SUN_SET + 1];
 extern const char *color_liquid[];
-extern const int drink_aff[LIQ_MAX+2][3];
+extern const int   drink_aff[LIQ_MAX + 2][3];
 extern const char *fullness[];
 extern const char *arm_text[];
 extern const char *shi_text[];

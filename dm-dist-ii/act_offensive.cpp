@@ -22,9 +22,9 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "affect.h"
 #include "comm.h"
@@ -32,35 +32,38 @@
 #include "fight.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
 #include "skills.h"
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
 /* extern variables */
 
 void do_decapitate(struct unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data          *corpse, *head;
+   struct unit_data          *corpse;
+   struct unit_data          *head;
    struct unit_affected_type *af;
    struct unit_affected_type  naf;
-   char                      *c, *d;
-   char                       buf[256], buf2[256];
+   char                      *c;
+   char                      *d;
+   char                       buf[256];
+   char                       buf2[256];
 
    extern struct file_index_type *head_fi;
 
-   if(str_is_empty(argument))
+   if(str_is_empty(argument) != 0u)
    {
       send_to_char("What corpse do you wish to decapitate?\n\r", ch);
       return;
    }
 
-   corpse = find_unit(ch, &argument, 0, FIND_UNIT_INVEN | FIND_UNIT_SURRO);
+   corpse = find_unit(ch, &argument, nullptr, FIND_UNIT_INVEN | FIND_UNIT_SURRO);
 
-   if(!corpse)
+   if(corpse == nullptr)
    {
       send_to_char("No such corpse around.\n\r", ch);
       return;
@@ -68,24 +71,24 @@ void do_decapitate(struct unit_data *ch, char *argument, const struct command_in
 
    if(IS_CHAR(corpse))
    {
-      act("Perhaps you should kill $3m first?", A_SOMEONE, ch, 0, corpse, TO_CHAR);
+      act("Perhaps you should kill $3m first?", A_SOMEONE, ch, nullptr, corpse, TO_CHAR);
       return;
    }
 
    c = str_str(UNIT_OUT_DESCR_STRING(corpse), " corpse of ");
    d = str_str(UNIT_OUT_DESCR_STRING(corpse), " is here.");
 
-   if(!IS_OBJ(corpse) || c == NULL || d == NULL)
+   if(!IS_OBJ(corpse) || c == nullptr || d == nullptr)
    {
-      act("Huh? That can't be done.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("Huh? That can't be done.", A_SOMEONE, ch, nullptr, nullptr, TO_CHAR);
       return;
    }
 
    strncpy(buf, c + 11, d - (c + 11));
    buf[d - (c + 11)] = 0;
 
-   act("You brutally decapitate the $2N.", A_SOMEONE, ch, corpse, 0, TO_CHAR);
-   act("$1n brutally decapitates the $2N.", A_SOMEONE, ch, corpse, 0, TO_ROOM);
+   act("You brutally decapitate the $2N.", A_SOMEONE, ch, corpse, nullptr, TO_CHAR);
+   act("$1n brutally decapitates the $2N.", A_SOMEONE, ch, corpse, nullptr, TO_ROOM);
 
    head = read_unit(head_fi);
 
@@ -114,7 +117,7 @@ void do_decapitate(struct unit_data *ch, char *argument, const struct command_in
    af = affected_by_spell(corpse, ID_REWARD);
 
    unit_to_unit(head, ch);
-   if(af)
+   if(af != nullptr)
    {
       create_affect(head, af);
       destroy_affect(af);
@@ -125,24 +128,24 @@ void do_hit(struct unit_data *ch, char *argument, const struct command_info *cmd
 {
    struct unit_data *victim;
 
-   if(str_is_empty(argument))
+   if(str_is_empty(argument) != 0u)
    {
-      act("Who do you want to hit?", A_ALWAYS, ch, NULL, NULL, TO_CHAR);
+      act("Who do you want to hit?", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
       return;
    }
 
-   victim = find_unit(ch, &argument, 0, FIND_UNIT_SURRO);
+   victim = find_unit(ch, &argument, nullptr, FIND_UNIT_SURRO);
 
-   if(!victim || !IS_CHAR(victim))
+   if((victim == nullptr) || !IS_CHAR(victim))
    {
-      act("There is nobody here called $2t which you can hit.", A_ALWAYS, ch, argument, NULL, TO_CHAR);
+      act("There is nobody here called $2t which you can hit.", A_ALWAYS, ch, argument, nullptr, TO_CHAR);
       return;
    }
 
    if(victim == ch)
    {
       send_to_char("You hit yourself... OUCH!.\n\r", ch);
-      act("$1n hits $1mself, and says OUCH!", A_SOMEONE, ch, 0, victim, TO_ROOM);
+      act("$1n hits $1mself, and says OUCH!", A_SOMEONE, ch, nullptr, victim, TO_ROOM);
    }
    else
    {
@@ -153,13 +156,19 @@ void do_hit(struct unit_data *ch, char *argument, const struct command_info *cmd
          return;
       }
 #endif
-      if(pk_test(ch, victim, TRUE))
+      if(pk_test(ch, victim, TRUE) != 0)
+      {
          return;
+      }
 
       if(!CHAR_FIGHTING(ch))
+      {
          simple_one_hit(ch, victim);
+      }
       else
+      {
          send_to_char("You do the best you can!\n\r", ch);
+      }
    }
 }
 
@@ -167,9 +176,9 @@ void do_kill(struct unit_data *ch, char *argument, const struct command_info *cm
 {
    struct unit_data *victim;
 
-   if(str_is_empty(argument))
+   if(str_is_empty(argument) != 0u)
    {
-      act("Who do you want to kill?", A_ALWAYS, ch, NULL, NULL, TO_CHAR);
+      act("Who do you want to kill?", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
       return;
    }
 
@@ -179,21 +188,23 @@ void do_kill(struct unit_data *ch, char *argument, const struct command_info *cm
       return;
    }
 
-   victim = find_unit(ch, &argument, 0, FIND_UNIT_SURRO);
+   victim = find_unit(ch, &argument, nullptr, FIND_UNIT_SURRO);
 
-   if(!victim || !IS_CHAR(victim))
+   if((victim == nullptr) || !IS_CHAR(victim))
    {
-      act("There is nobody here called $2t which you can kill.", A_ALWAYS, ch, argument, NULL, TO_CHAR);
+      act("There is nobody here called $2t which you can kill.", A_ALWAYS, ch, argument, nullptr, TO_CHAR);
       return;
    }
 
    if(ch == victim)
+   {
       send_to_char("Your mother would be so sad.. :(\n\r", ch);
+   }
    else
    {
-      act("You chop $3m to pieces! Ah! The blood!", A_SOMEONE, ch, 0, victim, TO_CHAR);
-      act("$3n chops you to pieces!", A_SOMEONE, victim, 0, ch, TO_CHAR);
-      act("$1n brutally slays $3n.", A_SOMEONE, ch, 0, victim, TO_NOTVICT);
+      act("You chop $3m to pieces! Ah! The blood!", A_SOMEONE, ch, nullptr, victim, TO_CHAR);
+      act("$3n chops you to pieces!", A_SOMEONE, victim, nullptr, ch, TO_CHAR);
+      act("$1n brutally slays $3n.", A_SOMEONE, ch, nullptr, victim, TO_NOTVICT);
       set_fighting(ch, victim, TRUE); /* Point to the killer! */
       raw_kill(victim);
    }

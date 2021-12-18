@@ -27,7 +27,7 @@
 
 #include "structs.h"
 
-void ConnectionBoot( void );
+void ConnectionBoot(void);
 void ConnectionBegin(class unit_data *pc);
 void ConnectionLog(class unit_data *pc);
 

@@ -29,10 +29,10 @@
 /* 22/01/93 hhs: corrected drop bug in blow away                           */
 /* 02/08/94 gnort: Fixed a bug in force_move; added support for 2nd string */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <unistd.h>
 
 #include "common.h"
@@ -80,15 +80,21 @@ void persist_create(struct unit_data *u)
    strcat(pt->name, "XXXXXX");
 
    for(int i = 0; i < 10; i++)
-      if((c = mktemp(pt->name)))
+   {
+      if((c = mktemp(pt->name)) != nullptr)
+      {
          break;
+      }
+   }
 
-   if(c == NULL)
+   if(c == nullptr)
+   {
       slog(LOG_ALL, 0, "MONSTER STRANGENESS: MKTEMP FAILED WITH NULL");
+   }
 
-   assert(c != NULL);
-   assert(u != NULL);
-   assert(pt != NULL);
+   assert(c != nullptr);
+   assert(u != nullptr);
+   assert(pt != nullptr);
 
    create_fptr(u, SFUN_PERSIST_INTERNAL, PULSE_SEC * 30, SFB_SAVE | SFB_TICK, pt);
 
@@ -113,9 +119,9 @@ void persist_recreate(struct unit_data *u, char *name)
 }
 
 /* Corpses rely on this.... */
-int persist_intern(struct spec_arg *sarg)
+auto persist_intern(struct spec_arg *sarg) -> int
 {
-   struct persist_type *pt = (struct persist_type *)sarg->fptr->data;
+   auto *pt = (struct persist_type *)sarg->fptr->data;
 
    assert(pt);
 
@@ -136,29 +142,35 @@ int persist_intern(struct spec_arg *sarg)
    }
 
    if((UNIT_WEIGHT(sarg->owner) != pt->weight) || (UNIT_FILE_INDEX(UNIT_IN(sarg->owner)) != pt->in))
+   {
       persist_save(sarg->owner, pt);
+   }
 
    return SFR_SHARE;
 }
 
-void persist_boot(void)
+void persist_boot()
 {
    char              name[50];
    struct unit_data *u;
 
-   struct unit_data *base_load_contents(const char *pFileName, const struct unit_data *unit);
+   auto base_load_contents(const char *pFileName, const struct unit_data *unit)->struct unit_data *;
 
    for(ubit32 i = 0; i < persist_namelist.Length(); i++)
    {
       strcpy(name, str_cc(libdir, PERSIST_DIR));
       strcat(name, persist_namelist.Name(i));
 
-      u = base_load_contents(name, NULL);
+      u = base_load_contents(name, nullptr);
 
-      if(u)
+      if(u != nullptr)
+      {
          persist_recreate(u, name);
+      }
       else
+      {
          remove(name);
+      }
    }
 
    persist_namelist.Free();

@@ -25,10 +25,10 @@
 /* 24 Aug 1993, gnort:  Introduced more interesting communication.         */
 /*                      You can now continue writing on non-full notes     */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "comm.h"
 #include "db.h"
@@ -50,37 +50,46 @@ ubit8 g_nShout = 0;
 
 extern struct descriptor_data *descriptor_list;
 
-int is_ignored(struct unit_data *ch, struct unit_data *victim)
+auto is_ignored(struct unit_data *ch, struct unit_data *victim) -> int
 {
    struct extra_descr_data *pexd;
    char                     tmp[128];
 
    if(!IS_PC(ch) || !IS_PC(victim))
+   {
       return FALSE;
+   }
 
    pexd = PC_INFO(ch)->find_raw("$ignore");
 
-   if(pexd)
+   if(pexd != nullptr)
    {
-      if(pexd->names.IsName(itoa(PC_ID(victim))))
+      if(pexd->names.IsName(itoa(PC_ID(victim))) != nullptr)
+      {
          return TRUE;
+      }
    }
 
    return FALSE;
 }
 
-char *drunk_speech(struct unit_data *ch, const char *str)
+auto drunk_speech(struct unit_data *ch, const char *str) -> char *
 {
    static char result[MAX_STRING_LENGTH];
-   char       *c, b;
+   char       *c;
+   char        b;
    int         drunk;
 
    if(!IS_PC(ch))
+   {
       return (char *)str;
+   }
    if((drunk = PC_COND(ch, DRUNK)) <= 4)
+   {
       return (char *)str;
+   }
 
-   for(c = result; *str; str++)
+   for(c = result; *str != 0; str++)
    {
       b = tolower(*str);
 
@@ -105,7 +114,7 @@ char *drunk_speech(struct unit_data *ch, const char *str)
             }
             else if(drunk > 22)
             {
-               if(b == ' ' && *(str + 1) != ' ' && drunk > 20 && !number(0, 3))
+               if(b == ' ' && *(str + 1) != ' ' && drunk > 20 && (number(0, 3) == 0))
                {
                   *c++ = '*';
                   *c++ = 'H';
@@ -132,19 +141,23 @@ void do_emote(struct unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(arg))
+   if(str_is_empty(arg) != 0u)
+   {
       send_to_char("What do you want to emote?\n\r", ch);
+   }
    else
    {
       if(IS_PC(ch) && !IS_SET(PC_FLAGS(ch), PC_ECHO))
       {
-         act("$1n $2t", A_SOMEONE, ch, arg, 0, TO_ROOM);
+         act("$1n $2t", A_SOMEONE, ch, arg, nullptr, TO_ROOM);
          send_to_char("Ok.\n\r", ch);
       }
       else
-         act("$1n $2t", A_SOMEONE, ch, arg, 0, TO_ALL);
+      {
+         act("$1n $2t", A_SOMEONE, ch, arg, nullptr, TO_ALL);
+      }
 
-      send_done(ch, NULL, NULL, 0, cmd, arg);
+      send_done(ch, nullptr, nullptr, 0, cmd, arg);
    }
 }
 
@@ -162,8 +175,10 @@ void do_say(struct unit_data *ch, char *argument, const struct command_info *cmd
       return;
    }
 
-   if(str_is_empty(argument))
+   if(str_is_empty(argument) != 0u)
+   {
       send_to_char("What do you want to say?\n\r", ch);
+   }
    else
    {
       const char *mode = "say";
@@ -181,11 +196,15 @@ void do_say(struct unit_data *ch, char *argument, const struct command_info *cmd
       act(COLOUR_COMM "$1n $2ts '$3t'" COLOUR_NORMAL, A_SOMEONE, ch, mode, drunk_speech(ch, argument), TO_ROOM);
 
       if(IS_PC(ch) && !IS_SET(PC_FLAGS(ch), PC_ECHO))
+      {
          send_to_char("Ok.\n\r", ch);
+      }
       else
+      {
          act("You $2t '$3t'", A_ALWAYS, ch, mode, argument, TO_CHAR);
+      }
 
-      send_done(ch, NULL, NULL, 0, cmd, argument);
+      send_done(ch, nullptr, nullptr, 0, cmd, argument);
    }
 }
 
@@ -196,13 +215,11 @@ void do_shout(struct unit_data *ch, char *argument, const struct command_info *c
    const char             *others = COLOUR_COMM "$1n shouts '$2t'" COLOUR_NORMAL;
    int                     endcost;
 
-   extern ubit8 g_nShout;
-
    if(IS_PC(ch) && (CHAR_LEVEL(ch) < g_nShout))
    {
       char buf[256];
 
-      act("You can not shout until you are level $2d.", A_ALWAYS, ch, &g_nShout, 0, TO_CHAR);
+      act("You can not shout until you are level $2d.", A_ALWAYS, ch, &g_nShout, nullptr, TO_CHAR);
       return;
    }
 
@@ -233,9 +250,11 @@ void do_shout(struct unit_data *ch, char *argument, const struct command_info *c
    }
 
    if(IS_MORTAL(ch))
+   {
       CHAR_ENDURANCE(ch) -= endcost;
+   }
 
-   if(str_is_empty(argument))
+   if(str_is_empty(argument) != 0u)
    {
       send_to_char("Shout? Yes! Fine! Shout we must, but WHAT??\n\r", ch);
       return;
@@ -254,27 +273,38 @@ void do_shout(struct unit_data *ch, char *argument, const struct command_info *c
          break;
    }
 
-   for(i = descriptor_list; i; i = i->next)
-      if((i->character != ch) && descriptor_is_playing(i) && !(IS_PC(i->character) && IS_SET(PC_FLAGS(i->character), PC_NOSHOUT)))
+   for(i = descriptor_list; i != nullptr; i = i->next)
+   {
+      if((i->character != ch) && (descriptor_is_playing(i) != 0) && !(IS_PC(i->character) && IS_SET(PC_FLAGS(i->character), PC_NOSHOUT)))
+      {
          act(others, A_SOMEONE, ch, drunk_speech(ch, argument), i->character, TO_VICT);
+      }
+   }
 
    if(IS_PC(ch) && IS_SET(PC_FLAGS(ch), PC_ECHO))
-      act(me, A_ALWAYS, ch, 0, argument, TO_CHAR);
+   {
+      act(me, A_ALWAYS, ch, nullptr, argument, TO_CHAR);
+   }
    else
+   {
       send_to_char("Ok.\n\r", ch);
+   }
 
    if(IS_PC(ch) && IS_SET(PC_FLAGS(ch), PC_NOSHOUT))
+   {
       send_to_char("You realize that you can't hear people shouting back.\n\r", ch);
+   }
 
-   send_done(ch, NULL, NULL, 0, cmd, argument);
+   send_done(ch, nullptr, nullptr, 0, cmd, argument);
 }
 
 void do_tell(struct unit_data *ch, char *aaa, const struct command_info *cmd)
 {
-   struct unit_data        *vict = 0;
+   struct unit_data        *vict = nullptr;
    struct char_follow_type *f;
    char                     type;
-   const char              *others, *me;
+   const char              *others;
+   const char              *me;
    char                    *c;
    int                      switched = FALSE;
    char                    *argument = (char *)aaa;
@@ -285,7 +315,7 @@ void do_tell(struct unit_data *ch, char *aaa, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(argument))
+   if(str_is_empty(argument) != 0u)
    {
       send_to_char("Who do you wish to tell what??\n\r", ch);
       return;
@@ -299,23 +329,27 @@ void do_tell(struct unit_data *ch, char *aaa, const struct command_info *cmd)
 
    argument = skip_spaces(argument);
 
-   if((c = strchr(argument, ',')))
+   if((c = strchr(argument, ',')) != nullptr)
+   {
       *c = 0;
+   }
 
-   if(strncmp(argument, "group", 5) && !(vict = find_unit(ch, &argument, 0, FIND_UNIT_WORLD)))
+   if((strncmp(argument, "group", 5) != 0) && ((vict = find_unit(ch, &argument, nullptr, FIND_UNIT_WORLD)) == nullptr))
    {
       send_to_char("No-one by that name here..\n\r", ch);
-      if(c)
+      if(c != nullptr)
+      {
          *c = ',';
+      }
       return;
    }
-   if(c)
+   if(c != nullptr)
    {
       *c = ',';
       argument++;
    }
 
-   if(vict && !IS_CHAR(vict))
+   if((vict != nullptr) && !IS_CHAR(vict))
    {
       send_to_char("It can't hear you! (It's not alive!)\n\r", ch);
       return;
@@ -327,12 +361,14 @@ void do_tell(struct unit_data *ch, char *aaa, const struct command_info *cmd)
       return;
    }
 
-   if(!vict) /* group */
+   if(vict == nullptr)
+   { /* group */
       argument += 5;
+   }
 
    argument = skip_spaces(argument);
 
-   if(str_is_empty(argument))
+   if(str_is_empty(argument) != 0u)
    {
       send_to_char("What?\n\r", ch);
       return;
@@ -340,15 +376,15 @@ void do_tell(struct unit_data *ch, char *aaa, const struct command_info *cmd)
 
    type = argument[strlen(argument) - 1];
 
-   if(vict)
+   if(vict != nullptr)
    {
-      if(IS_PC(vict) && CHAR_DESCRIPTOR(vict) == NULL)
+      if(IS_PC(vict) && CHAR_DESCRIPTOR(vict) == nullptr)
       {
          struct descriptor_data *d;
 
-         for(d = descriptor_list; d; d = d->next)
+         for(d = descriptor_list; d != nullptr; d = d->next)
          {
-            if(descriptor_is_playing(d) && d->original == vict)
+            if((descriptor_is_playing(d) != 0) && d->original == vict)
             {
                /* AHA! He is switched! */
                vict     = d->character;
@@ -359,17 +395,18 @@ void do_tell(struct unit_data *ch, char *aaa, const struct command_info *cmd)
       }
 
       if(CHAR_POS(vict) <= POSITION_SLEEPING || (IS_PC(vict) && IS_SET(PC_FLAGS(vict), PC_NOTELL)) ||
-         (IS_PC(vict) && (CHAR_DESCRIPTOR(vict) == NULL)))
-         act("$3e can't hear you.", A_ALWAYS, ch, 0, vict, TO_CHAR);
-
+         (IS_PC(vict) && (CHAR_DESCRIPTOR(vict) == nullptr)))
+      {
+         act("$3e can't hear you.", A_ALWAYS, ch, nullptr, vict, TO_CHAR);
+      }
       else if(CHAR_DESCRIPTOR(vict) && CHAR_DESCRIPTOR(vict)->editing)
       {
-         act("$3n is busy writing a message, $3e can't hear you!", A_ALWAYS, ch, 0, vict, TO_CHAR);
+         act("$3n is busy writing a message, $3e can't hear you!", A_ALWAYS, ch, nullptr, vict, TO_CHAR);
          return;
       }
-      else if(is_ignored(vict, ch))
+      else if(is_ignored(vict, ch) != 0)
       {
-         act("$3n ignores you.", A_ALWAYS, ch, 0, vict, TO_CHAR);
+         act("$3n ignores you.", A_ALWAYS, ch, nullptr, vict, TO_CHAR);
          return;
       }
       else
@@ -392,21 +429,29 @@ void do_tell(struct unit_data *ch, char *aaa, const struct command_info *cmd)
          }
 
          if(IS_PC(ch) && !IS_SET(PC_FLAGS(ch), PC_ECHO))
+         {
             send_to_char("Ok.\n\r", ch);
+         }
          else
+         {
             act(me, A_ALWAYS, ch, argument, CHAR_ORIGINAL(vict), TO_CHAR);
+         }
 
-         if(switched)
-            act("SWITCHED TELL TRANSFER to you via $2n!", A_ALWAYS, vict, CHAR_ORIGINAL(vict), 0, TO_CHAR);
+         if(switched != 0)
+         {
+            act("SWITCHED TELL TRANSFER to you via $2n!", A_ALWAYS, vict, CHAR_ORIGINAL(vict), nullptr, TO_CHAR);
+         }
 
          act(others, A_SOMEONE, ch, drunk_speech(ch, argument), vict, TO_VICT);
 
          if(IS_PC(ch) && IS_SET(PC_FLAGS(ch), PC_NOTELL))
+         {
             send_to_char("You realize that you can't hear people telling "
                          "back.\n\r",
                          ch);
+         }
 
-         send_done(ch, NULL, vict, 0, cmd, argument, vict);
+         send_done(ch, nullptr, vict, 0, cmd, argument, vict);
       }
       return;
    }
@@ -435,9 +480,13 @@ void do_tell(struct unit_data *ch, char *aaa, const struct command_info *cmd)
    }
 
    if(IS_PC(ch) && !IS_SET(PC_FLAGS(ch), PC_ECHO))
+   {
       send_to_char("Ok.\n\r", ch);
+   }
    else
-      act(me, A_ALWAYS, ch, argument, NULL, TO_CHAR);
+   {
+      act(me, A_ALWAYS, ch, argument, nullptr, TO_CHAR);
+   }
 
    /* who's head of group? */
    vict = CHAR_MASTER(ch) ? CHAR_MASTER(ch) : ch;
@@ -445,21 +494,22 @@ void do_tell(struct unit_data *ch, char *aaa, const struct command_info *cmd)
    if((ch != vict) && IS_SET(CHAR_FLAGS(vict), CHAR_GROUP))
    {
       act(others, A_SOMEONE, ch, drunk_speech(ch, argument), vict, TO_VICT);
-      send_done(ch, NULL, vict, 0, cmd, argument, vict);
+      send_done(ch, nullptr, vict, 0, cmd, argument, vict);
    }
 
-   for(f = CHAR_FOLLOWERS(vict); f; f = f->next)
+   for(f = CHAR_FOLLOWERS(vict); f != nullptr; f = f->next)
+   {
       if(ch != f->follower && IS_SET(CHAR_FLAGS(f->follower), CHAR_GROUP))
       {
          act(others, A_SOMEONE, ch, drunk_speech(ch, argument), f->follower, TO_VICT);
-         send_done(ch, NULL, vict, 0, cmd, argument, vict);
+         send_done(ch, nullptr, vict, 0, cmd, argument, vict);
       }
+   }
 }
 
 void do_reply(struct unit_data *ch, char *aaa, const struct command_info *cmd)
 {
    do_not_here(ch, aaa, cmd);
-   return;
 }
 
 void ignore_toggle(struct unit_data *ch, struct unit_data *victim)
@@ -470,26 +520,26 @@ void ignore_toggle(struct unit_data *ch, struct unit_data *victim)
 
    if(!IS_PC(victim))
    {
-      act("You can't ignore $3n.", A_SOMEONE, ch, NULL, victim, TO_CHAR);
+      act("You can't ignore $3n.", A_SOMEONE, ch, nullptr, victim, TO_CHAR);
       return;
    }
 
    pexd = PC_INFO(ch)->find_raw("$ignore");
 
-   if(pexd == NULL)
+   if(pexd == nullptr)
    {
       PC_INFO(ch) = PC_INFO(ch)->add("$ignore", "");
       pexd        = PC_INFO(ch);
    }
 
-   if(pexd->names.IsName(itoa(PC_ID(victim))))
+   if(pexd->names.IsName(itoa(PC_ID(victim))) != nullptr)
    {
-      act("You no longer ignore $2n.", A_ALWAYS, ch, victim, NULL, TO_CHAR);
+      act("You no longer ignore $2n.", A_ALWAYS, ch, victim, nullptr, TO_CHAR);
       pexd->names.RemoveName(itoa(PC_ID(victim)));
    }
    else
    {
-      act("You now ignore $2n.", A_ALWAYS, ch, victim, NULL, TO_CHAR);
+      act("You now ignore $2n.", A_ALWAYS, ch, victim, nullptr, TO_CHAR);
       pexd->names.AppendName(itoa(PC_ID(victim)));
    }
 }
@@ -505,18 +555,22 @@ void do_ignore(struct unit_data *ch, char *argument, const struct command_info *
       return;
    }
 
-   if(str_is_empty(argument))
+   if(str_is_empty(argument) != 0u)
    {
       send_to_char("Who do you wish to ignore?\n\r", ch);
       return;
    }
 
-   victim = find_unit(ch, &argument, 0, FIND_UNIT_WORLD);
+   victim = find_unit(ch, &argument, nullptr, FIND_UNIT_WORLD);
 
-   if(victim)
+   if(victim != nullptr)
+   {
       ignore_toggle(ch, victim);
+   }
    else
+   {
       send_to_char("No such player to ignore.\n\r", ch);
+   }
 }
 
 void do_whisper(struct unit_data *ch, char *aaa, const struct command_info *cmd)
@@ -537,24 +591,28 @@ void do_whisper(struct unit_data *ch, char *aaa, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(arg))
+   if(str_is_empty(arg) != 0u)
    {
       send_to_char("Who do you want to whisper to.. and what??\n\r", ch);
       return;
    }
 
-   if((c = strchr(arg, ',')))
+   if((c = strchr(arg, ',')) != nullptr)
+   {
       *c = 0;
+   }
 
-   if(!(vict = find_unit(ch, &arg, 0, FIND_UNIT_SURRO)))
+   if((vict = find_unit(ch, &arg, nullptr, FIND_UNIT_SURRO)) == nullptr)
    {
       send_to_char("No-one by that name here..\n\r", ch);
-      if(c)
+      if(c != nullptr)
+      {
          *c = ',';
+      }
       return;
    }
 
-   if(c)
+   if(c != nullptr)
    {
       *c = ',';
       arg++;
@@ -562,7 +620,7 @@ void do_whisper(struct unit_data *ch, char *aaa, const struct command_info *cmd)
 
    if(vict == ch)
    {
-      act("$1n whispers quietly to $1mself.", A_SOMEONE, ch, 0, 0, TO_ROOM);
+      act("$1n whispers quietly to $1mself.", A_SOMEONE, ch, nullptr, nullptr, TO_ROOM);
       send_to_char("You can't seem to get your mouth"
                    " close enough to your ear...\n\r",
                    ch);
@@ -570,19 +628,25 @@ void do_whisper(struct unit_data *ch, char *aaa, const struct command_info *cmd)
    else
    {
       arg = skip_spaces(arg);
-      if(str_is_empty(arg))
+      if(str_is_empty(arg) != 0u)
+      {
          send_to_char("Whisper what?\n\r", ch);
+      }
       else
       {
          act(COLOUR_COMM "$1n whispers to you, '$2t'" COLOUR_NORMAL, A_SOMEONE, ch, drunk_speech(ch, arg), vict, TO_VICT);
 
          if(IS_PC(ch) && !IS_SET(PC_FLAGS(ch), PC_ECHO))
+         {
             send_to_char("Ok.\n\r", ch);
+         }
          else
+         {
             act("You whisper to $3n '$2t'", A_ALWAYS, ch, arg, vict, TO_CHAR);
+         }
 
-         act("$1n whispers something to $3n.", A_SOMEONE, ch, 0, vict, TO_NOTVICT);
-         send_done(ch, NULL, vict, 0, cmd, arg);
+         act("$1n whispers something to $3n.", A_SOMEONE, ch, nullptr, vict, TO_NOTVICT);
+         send_done(ch, nullptr, vict, 0, cmd, arg);
       }
    }
 }
@@ -605,32 +669,40 @@ void do_ask(struct unit_data *ch, char *aaa, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(argument))
+   if(str_is_empty(argument) != 0u)
    {
       send_to_char("Who or what do you want to ask??\n\r", ch);
       return;
    }
 
-   if((c = strchr(argument, ',')))
-      *c = 0;
-
-   if(!(vict = find_unit(ch, &argument, 0, FIND_UNIT_SURRO)))
+   if((c = strchr(argument, ',')) != nullptr)
    {
-      act(COLOUR_COMM "$1n asks '$3t'" COLOUR_NORMAL, A_SOMEONE, ch, 0, drunk_speech(ch, argument), TO_ROOM);
+      *c = 0;
+   }
+
+   if((vict = find_unit(ch, &argument, nullptr, FIND_UNIT_SURRO)) == nullptr)
+   {
+      act(COLOUR_COMM "$1n asks '$3t'" COLOUR_NORMAL, A_SOMEONE, ch, nullptr, drunk_speech(ch, argument), TO_ROOM);
       if(IS_PC(ch) && !IS_SET(PC_FLAGS(ch), PC_ECHO))
+      {
          send_to_char("Ok.\n\r", ch);
+      }
       else
-         act("You ask '$3t'", A_ALWAYS, ch, 0, argument, TO_CHAR);
+      {
+         act("You ask '$3t'", A_ALWAYS, ch, nullptr, argument, TO_CHAR);
+      }
 
-      send_done(ch, NULL, vict, 0, cmd, argument);
+      send_done(ch, nullptr, vict, 0, cmd, argument);
 
-      if(c)
+      if(c != nullptr)
+      {
          *c = ',';
+      }
 
       return;
    }
 
-   if(c)
+   if(c != nullptr)
    {
       *c = ',';
       argument++;
@@ -638,13 +710,15 @@ void do_ask(struct unit_data *ch, char *aaa, const struct command_info *cmd)
 
    if(vict == ch)
    {
-      act("$1n quietly asks $1mself a question.", A_SOMEONE, ch, 0, 0, TO_ROOM);
+      act("$1n quietly asks $1mself a question.", A_SOMEONE, ch, nullptr, nullptr, TO_ROOM);
       send_to_char("You think about it for a while...\n\r", ch);
    }
    else
    {
-      if(str_is_empty(argument))
+      if(str_is_empty(argument) != 0u)
+      {
          send_to_char("What?\n\r", ch);
+      }
       else
       {
          argument = skip_spaces(argument);
@@ -652,13 +726,17 @@ void do_ask(struct unit_data *ch, char *aaa, const struct command_info *cmd)
          act(COLOUR_COMM "$1n asks you '$2t'" COLOUR_NORMAL, A_SOMEONE, ch, drunk_speech(ch, argument), vict, TO_VICT);
 
          if(IS_PC(ch) && !IS_SET(PC_FLAGS(ch), PC_ECHO))
+         {
             send_to_char("Ok.\n\r", ch);
+         }
          else
+         {
             act("You ask $2n '$3t'", A_ALWAYS, ch, vict, argument, TO_CHAR);
+         }
 
          act(COLOUR_COMM "$1n asks $3n '$2t'" COLOUR_NORMAL, A_SOMEONE, ch, drunk_speech(ch, argument), vict, TO_NOTVICT);
 
-         send_done(ch, NULL, vict, 0, cmd, argument);
+         send_done(ch, nullptr, vict, 0, cmd, argument);
       }
    }
 }
@@ -668,21 +746,21 @@ void do_ask(struct unit_data *ch, char *aaa, const struct command_info *cmd)
 void do_write(struct unit_data *ch, char *aaa, const struct command_info *cmd)
 {
    struct extra_descr_data *exd;
-   struct unit_data        *paper    = NULL;
+   struct unit_data        *paper    = nullptr;
    char                    *argument = (char *)aaa;
 
-   void interpreter_string_add(struct descriptor_data * d, char *str);
-
    if(!CHAR_DESCRIPTOR(ch))
+   {
       return;
+   }
 
-   if(str_is_empty(argument))
+   if(str_is_empty(argument) != 0u)
    {
       send_to_char("Write on what?\n\r", ch);
       return;
    }
 
-   if((paper = find_unit(ch, &argument, 0, FIND_UNIT_IN_ME)) == NULL)
+   if((paper = find_unit(ch, &argument, nullptr, FIND_UNIT_IN_ME)) == nullptr)
    {
       send_to_char("You've got no such thing to write on.\n\r", ch);
       return;
@@ -720,11 +798,11 @@ void do_write(struct unit_data *ch, char *aaa, const struct command_info *cmd)
       return;
    }
 
-   if((exd = unit_find_extra(UNIT_NAME(paper), paper)))
+   if((exd = unit_find_extra(UNIT_NAME(paper), paper)) != nullptr)
    {
       if(exd->descr.Length() > MAX_NOTE_LENGTH - 10)
       {
-         act("There's simply no room for anything more on the note!", A_ALWAYS, ch, 0, 0, TO_CHAR);
+         act("There's simply no room for anything more on the note!", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
          return;
       }
       send_to_char("There's something written on it already:\n\r\n\r", ch);
@@ -732,10 +810,10 @@ void do_write(struct unit_data *ch, char *aaa, const struct command_info *cmd)
       return;
    }
 
-   act("You begin to jot down a note on $2n.", A_ALWAYS, ch, paper, 0, TO_CHAR);
-   act("$1n begins to jot down a note.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+   act("You begin to jot down a note on $2n.", A_ALWAYS, ch, paper, nullptr, TO_CHAR);
+   act("$1n begins to jot down a note.", A_HIDEINV, ch, nullptr, nullptr, TO_ROOM);
 
-   UNIT_EXTRA_DESCR(paper) = UNIT_EXTRA_DESCR(paper)->add((char *)NULL, NULL);
+   UNIT_EXTRA_DESCR(paper) = UNIT_EXTRA_DESCR(paper)->add((char *)nullptr, nullptr);
 
    CHAR_DESCRIPTOR(ch)->editref  = UNIT_EXTRA_DESCR(paper);
    CHAR_DESCRIPTOR(ch)->postedit = edit_extra;

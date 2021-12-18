@@ -22,11 +22,11 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "db.h"
 #include "dbfind.h"
@@ -40,25 +40,31 @@
 
 extern struct descriptor_data *descriptor_list;
 
-struct descriptor_data *find_descriptor(const char *name, struct descriptor_data *except)
+auto find_descriptor(const char *name, struct descriptor_data *except) -> struct descriptor_data *
 {
    struct descriptor_data *d;
 
    /* Check if already playing */
-   for(d = descriptor_list; d; d = d->next)
+   for(d = descriptor_list; d != nullptr; d = d->next)
+   {
       if(d != except && str_ccmp(PC_FILENAME(CHAR_ORIGINAL(d->character)), name) == 0)
+      {
          return d;
+      }
+   }
 
-   return NULL;
+   return nullptr;
 }
 
 /*  Top is the size of the array (minimum 1).
  *  Returns pointer to element of array or null.
  *  Perhaps an index vs. -1 would be better?
  */
-struct bin_search_type *binary_search(struct bin_search_type *ba, const char *str, int top)
+auto binary_search(struct bin_search_type *ba, const char *str, int top) -> struct bin_search_type *
 {
-   int mid = 0, bot, cmp;
+   int mid = 0;
+   int bot;
+   int cmp;
 
    cmp = 1; /* Assume no compare                        */
    bot = 0; /* Point to lowest element in array         */
@@ -68,61 +74,81 @@ struct bin_search_type *binary_search(struct bin_search_type *ba, const char *st
    {
       mid = (bot + top) / 2;
       if((cmp = strcmp(str, ba[mid].compare)) < 0)
+      {
          top = mid - 1;
+      }
       else if(cmp > 0)
+      {
          bot = mid + 1;
-      else /* cmp == 0 */
+      }
+      else
+      { /* cmp == 0 */
          break;
+      }
    }
 
-   return (cmp ? 0 : &ba[mid]);
+   return (cmp != 0 ? nullptr : &ba[mid]);
 }
 
 /* Find a named zone */
-struct zone_type *find_zone(const char *zonename)
+auto find_zone(const char *zonename) -> struct zone_type *
 {
    struct bin_search_type *ba;
 
-   if((zonename == NULL) || !*zonename)
-      return NULL;
+   if((zonename == nullptr) || (*zonename == 0))
+   {
+      return nullptr;
+   }
 
    ba = binary_search(zone_info.ba, zonename, zone_info.no_of_zones);
 
-   return ba ? (struct zone_type *)ba->block : NULL;
+   return ba != nullptr ? (struct zone_type *)ba->block : nullptr;
 }
 
 /* Zonename & name must point to non-empty strings */
-struct file_index_type *find_file_index(const char *zonename, const char *name)
+auto find_file_index(const char *zonename, const char *name) -> struct file_index_type *
 {
    struct zone_type       *zone;
    struct bin_search_type *ba;
 
-   if(!*name)
-      return NULL;
+   if(*name == 0)
+   {
+      return nullptr;
+   }
 
-   if((zone = find_zone(zonename)) == NULL)
-      return NULL;
+   if((zone = find_zone(zonename)) == nullptr)
+   {
+      return nullptr;
+   }
 
-   if((ba = binary_search(zone->ba, name, zone->no_of_fi)) == NULL)
-      return NULL;
+   if((ba = binary_search(zone->ba, name, zone->no_of_fi)) == nullptr)
+   {
+      return nullptr;
+   }
 
    return (struct file_index_type *)ba->block;
 }
 
 /* Zonename & name must point to non-empty strings */
-struct diltemplate *find_dil_index(char *zonename, char *name)
+auto find_dil_index(char *zonename, char *name) -> struct diltemplate *
 {
    struct zone_type       *zone;
    struct bin_search_type *ba;
 
-   if(str_is_empty(name))
-      return NULL;
+   if(str_is_empty(name) != 0u)
+   {
+      return nullptr;
+   }
 
-   if((zone = find_zone(zonename)) == NULL)
-      return NULL;
+   if((zone = find_zone(zonename)) == nullptr)
+   {
+      return nullptr;
+   }
 
-   if((ba = binary_search(zone->tmplba, name, zone->no_tmpl)) == NULL)
-      return NULL;
+   if((ba = binary_search(zone->tmplba, name, zone->no_tmpl)) == nullptr)
+   {
+      return nullptr;
+   }
 
    return (struct diltemplate *)ba->block;
 }
@@ -133,12 +159,15 @@ struct diltemplate *find_dil_index(char *zonename, char *name)
  * call by a DIL program.
  * Uses find_dil_index...
  */
-struct diltemplate *find_dil_template(const char *name)
+auto find_dil_template(const char *name) -> struct diltemplate *
 {
-   char zbuf[256], pbuf[256];
+   char zbuf[256];
+   char pbuf[256];
 
-   if(str_is_empty(name))
-      return NULL;
+   if(str_is_empty(name) != 0u)
+   {
+      return nullptr;
+   }
 
    split_fi_ref(name, zbuf, pbuf);
 
@@ -148,19 +177,20 @@ struct diltemplate *find_dil_template(const char *name)
 /*  Find a room in the world based on zone name and name e.g.
  *  "midgaard", "prison" and return a pointer to the room
  */
-struct unit_data *world_room(const char *zone, const char *name)
+auto world_room(const char *zone, const char *name) -> struct unit_data *
 {
    struct file_index_type *fi;
 
-   return (fi = find_file_index(zone, name)) ? fi->room_ptr : NULL;
+   return (fi = find_file_index(zone, name)) != nullptr ? fi->room_ptr : nullptr;
 }
 
 /*  Find file index.
  *  String MUST be in format 'name@zone\0' or 'zone/name'.
  */
-struct file_index_type *str_to_file_index(const char *str)
+auto str_to_file_index(const char *str) -> struct file_index_type *
 {
-   char name[FI_MAX_UNITNAME + 1], zone[FI_MAX_ZONENAME + 1];
+   char name[FI_MAX_UNITNAME + 1];
+   char zone[FI_MAX_ZONENAME + 1];
 
    split_fi_ref(str, zone, name);
 
@@ -170,14 +200,17 @@ struct file_index_type *str_to_file_index(const char *str)
 /*  As str_to_file_index, except that if no zone is given, the
  *  zone of the 'ch' is assumed
  */
-struct file_index_type *pc_str_to_file_index(const struct unit_data *ch, const char *str)
+auto pc_str_to_file_index(const struct unit_data *ch, const char *str) -> struct file_index_type *
 {
-   char name[MAX_INPUT_LENGTH + 1], zone[MAX_INPUT_LENGTH + 1];
+   char name[MAX_INPUT_LENGTH + 1];
+   char zone[MAX_INPUT_LENGTH + 1];
 
    split_fi_ref(str, zone, name);
 
-   if(*name && !*zone)
+   if((*name != 0) && (*zone == 0))
+   {
       strcpy(zone, unit_zone(ch)->name);
+   }
 
    return find_file_index(zone, name);
 }

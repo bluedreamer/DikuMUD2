@@ -29,8 +29,8 @@
  *		    Rewrote spell_identify_1() to use the wstat system.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 #include "affect.h"
 #include "comm.h"
@@ -39,7 +39,6 @@
 #include "fight.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
 #include "magic.h"
 #include "movement.h"
 #include "skills.h"
@@ -49,12 +48,12 @@
 #include "utility.h"
 #include "utils.h"
 #include "values.h"
+#include <climits>
 
 /* Extern structures */
-extern struct unit_data *unit_list;
 
 /* Extern procedure */
-void update_pos(struct unit_data *victim);
+
 void modify_hit(struct unit_data *ch, int hit);
 
 void spell_remove_curse(struct spell_args *sa)
@@ -69,7 +68,7 @@ void spell_remove_curse(struct spell_args *sa)
    /* removes curse on unit and contents (if obj) */
    /* each unit gets to save (only fair)          */
 
-   if((af = affected_by_spell(sa->target, ID_CURSE)))
+   if((af = affected_by_spell(sa->target, ID_CURSE)) != nullptr)
    {
       /* it IS hard to remove curse */
       sa->hm = spell_resistance(sa->medium, sa->target, SPL_REMOVE_CURSE);
@@ -83,13 +82,15 @@ void spell_remove_curse(struct spell_args *sa)
       destroy_affect(af);
    }
 
-   for(u = UNIT_CONTAINS(sa->target); u; u = u->next)
+   for(u = UNIT_CONTAINS(sa->target); u != nullptr; u = u->next)
    {
       sa->hm = spell_resistance(sa->medium, sa->target, SPL_REMOVE_CURSE);
       if(sa->hm > 0)
       {
-         if((af = affected_by_spell(u, ID_CURSE)))
+         if((af = affected_by_spell(u, ID_CURSE)) != nullptr)
+         {
             destroy_affect(af);
+         }
       }
    }
 }
@@ -102,41 +103,47 @@ void spell_cause_wounds_1(struct spell_args *sa)
       */
 
    if(CHAR_IS_HUMANOID(sa->target) || CHAR_IS_MAMMAL(sa->target))
+   {
       sa->hm = spell_offensive(sa, SPL_CAUSE_WOUNDS_1);
+   }
    else
    {
       int effect = dil_effect(sa->pEffect, sa);
 
       sa->hm = -1;
 
-      damage(sa->caster, sa->target, 0, 0, MSG_TYPE_SPELL, SPL_CAUSE_WOUNDS_1, COM_MSG_MISS, !effect);
+      damage(sa->caster, sa->target, nullptr, 0, MSG_TYPE_SPELL, SPL_CAUSE_WOUNDS_1, COM_MSG_MISS, static_cast<int>(effect) == 0);
    }
 }
 
 void spell_cause_wounds_2(struct spell_args *sa)
 {
    if(CHAR_IS_HUMANOID(sa->target) || CHAR_IS_MAMMAL(sa->target))
+   {
       sa->hm = spell_offensive(sa, SPL_CAUSE_WOUNDS_2);
+   }
    else
    {
       int effect = dil_effect(sa->pEffect, sa);
 
       sa->hm = -1;
 
-      damage(sa->caster, sa->target, 0, 0, MSG_TYPE_SPELL, SPL_CAUSE_WOUNDS_2, COM_MSG_MISS, !effect);
+      damage(sa->caster, sa->target, nullptr, 0, MSG_TYPE_SPELL, SPL_CAUSE_WOUNDS_2, COM_MSG_MISS, static_cast<int>(effect) == 0);
    }
 }
 
 void spell_cause_wounds_3(struct spell_args *sa)
 {
    if(CHAR_IS_HUMANOID(sa->target) || CHAR_IS_MAMMAL(sa->target))
+   {
       sa->hm = spell_offensive(sa, SPL_CAUSE_WOUNDS_3);
+   }
    else
    {
       int effect = dil_effect(sa->pEffect, sa);
       sa->hm     = -1;
 
-      damage(sa->caster, sa->target, 0, 0, MSG_TYPE_SPELL, SPL_CAUSE_WOUNDS_3, COM_MSG_MISS, !effect);
+      damage(sa->caster, sa->target, nullptr, 0, MSG_TYPE_SPELL, SPL_CAUSE_WOUNDS_3, COM_MSG_MISS, static_cast<int>(effect) == 0);
    }
 }
 
@@ -153,7 +160,7 @@ void spell_dispel_evil(struct spell_args *sa)
       return;
    }
 
-   if((af = affected_by_spell(sa->target, ID_PROT_GOOD)))
+   if((af = affected_by_spell(sa->target, ID_PROT_GOOD)) != nullptr)
    {
       destroy_affect(af);
       return;
@@ -176,7 +183,7 @@ void spell_dispel_good(struct spell_args *sa)
       return;
    }
 
-   if((af = affected_by_spell(sa->target, ID_PROT_EVIL)))
+   if((af = affected_by_spell(sa->target, ID_PROT_EVIL)) != nullptr)
    {
       sa->hm = -2;
       destroy_affect(af);
@@ -244,21 +251,27 @@ void spell_repel_undead_2(struct spell_args *sa)
             create_affect(u, &af);
          }
          else
+         {
             provoked_attack(u, sa->caster);
+         }
       }
    }
 }
 
 void spell_cure_blind(struct spell_args *sa)
 {
-   struct unit_affected_type *af = NULL;
+   struct unit_affected_type *af = nullptr;
 
    if(sa->hm >= 0)
    {
-      if((af = affected_by_spell(sa->target, ID_BLIND_CHAR)))
+      if((af = affected_by_spell(sa->target, ID_BLIND_CHAR)) != nullptr)
+      {
          destroy_affect(af);
+      }
       else
+      {
          sa->hm = -1;
+      }
    }
 }
 
@@ -266,7 +279,7 @@ void spell_sanctuary(struct spell_args *sa)
 {
    struct unit_affected_type af;
 
-   if(affected_by_spell(sa->target, ID_SANCTUARY))
+   if(affected_by_spell(sa->target, ID_SANCTUARY) != nullptr)
    {
       sa->hm = -1;
       return;
@@ -290,8 +303,10 @@ void spell_sustain(struct spell_args *sa)
 {
    struct unit_affected_type af;
 
-   if(affected_by_spell(sa->target, ID_SUSTAIN))
+   if(affected_by_spell(sa->target, ID_SUSTAIN) != nullptr)
+   {
       return;
+   }
 
    if(sa->hm >= 0)
    {
@@ -311,47 +326,59 @@ void spell_sustain(struct spell_args *sa)
 
 void spell_lock(struct spell_args *sa)
 {
-   struct door_data *a_door = NULL;
+   struct door_data *a_door = nullptr;
 
-   struct door_data *locate_lock(struct unit_data * ch, char *arg);
+   auto locate_lock(struct unit_data * ch, char *arg)->struct door_data *;
 
    char mbuf[MAX_INPUT_LENGTH];
    strcpy(mbuf, sa->arg);
 
-   if(str_is_empty(sa->arg) || (a_door = locate_lock(sa->caster, mbuf)) == NULL)
+   if((str_is_empty(sa->arg) != 0u) || (a_door = locate_lock(sa->caster, mbuf)) == nullptr)
    {
       send_to_char("The spell fails.\n\r", sa->caster);
       return;
    }
 
-   if(!a_door->flags || !IS_SET(*a_door->flags, EX_OPEN_CLOSE))
+   if((a_door->flags == nullptr) || !IS_SET(*a_door->flags, EX_OPEN_CLOSE))
+   {
       send_to_char("The spell has no effect.\n\r", sa->caster);
+   }
    else if(!IS_SET(*a_door->flags, EX_CLOSED))
+   {
       send_to_char("The spell fails.\n\r", sa->caster);
+   }
    else if(IS_SET(*a_door->flags, EX_LOCKED))
+   {
       send_to_char("The spell fails!\n\r", sa->caster);
+   }
    else
    {
-      if(!a_door->thing) /* a door */
+      if(a_door->thing == nullptr) /* a door */
       {
          assert(a_door->room);
          sa->hm = spell_resistance(sa->medium, a_door->room, SPL_LOCK);
       }
       else
+      {
          sa->hm = spell_resistance(sa->medium, a_door->thing, SPL_LOCK);
+      }
 
       if(sa->hm >= 0)
       {
          SET_BIT(*a_door->flags, EX_LOCKED);
-         act("*cluck*", A_SOMEONE, sa->caster, 0, 0, TO_ALL);
+         act("*cluck*", A_SOMEONE, sa->caster, nullptr, nullptr, TO_ALL);
 
-         if(a_door->reverse)
+         if(a_door->reverse != nullptr)
          {
             if(UNIT_CONTAINS(a_door->reverse))
-               act("*cluck*", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), 0, 0, TO_ALL);
+            {
+               act("*cluck*", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), nullptr, nullptr, TO_ALL);
+            }
 
-            if(a_door->rev_flags)
+            if(a_door->rev_flags != nullptr)
+            {
                SET_BIT(*a_door->rev_flags, EX_LOCKED);
+            }
          }
       }
    }
@@ -359,28 +386,32 @@ void spell_lock(struct spell_args *sa)
 
 void spell_unlock(struct spell_args *sa)
 {
-   struct door_data *a_door = NULL;
-
-   struct door_data *locate_lock(struct unit_data * ch, char *arg);
+   struct door_data *a_door = nullptr;
 
    char mbuf[MAX_INPUT_LENGTH];
    strcpy(mbuf, sa->arg);
 
-   if(str_is_empty(sa->arg) || !(a_door = locate_lock(sa->caster, mbuf)))
+   if((str_is_empty(sa->arg) != 0u) || ((a_door = locate_lock(sa->caster, mbuf)) == nullptr))
    {
       send_to_char("The spell failed.\n\r", sa->caster);
       return;
    }
 
-   if(!a_door->flags || !IS_SET(*a_door->flags, EX_OPEN_CLOSE))
+   if((a_door->flags == nullptr) || !IS_SET(*a_door->flags, EX_OPEN_CLOSE))
+   {
       send_to_char("The spell failed.\n\r", sa->caster);
+   }
    else if(!IS_SET(*a_door->flags, EX_CLOSED))
+   {
       send_to_char("The spell failed.\n\r", sa->caster);
+   }
    else if(!IS_SET(*a_door->flags, EX_LOCKED))
+   {
       send_to_char("The spell failed.\n\r", sa->caster);
+   }
    else
    {
-      if(a_door->room) /* a door */
+      if(a_door->room != nullptr) /* a door */
       {
          sa->hm = spell_resistance(sa->medium, a_door->room, SPL_UNLOCK);
       }
@@ -393,15 +424,19 @@ void spell_unlock(struct spell_args *sa)
       if(sa->hm >= 0)
       {
          REMOVE_BIT(*a_door->flags, EX_LOCKED);
-         act("*click*", A_SOMEONE, sa->caster, a_door->name, 0, TO_ALL);
+         act("*click*", A_SOMEONE, sa->caster, a_door->name, nullptr, TO_ALL);
 
-         if(a_door->reverse)
+         if(a_door->reverse != nullptr)
          {
             if(UNIT_CONTAINS(a_door->reverse))
-               act("*cluck*", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), 0, 0, TO_ALL);
+            {
+               act("*cluck*", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), nullptr, nullptr, TO_ALL);
+            }
 
-            if(a_door->rev_flags)
+            if(a_door->rev_flags != nullptr)
+            {
                REMOVE_BIT(*a_door->rev_flags, EX_LOCKED);
+            }
          }
       }
    }
@@ -463,7 +498,9 @@ void spell_identify_1(struct spell_args *sa)
    char                     buffer[1024];
 
    if(sa->hm < 0)
+   {
       return;
+   }
 
    *buffer = '\0';
 
@@ -479,7 +516,7 @@ void spell_identify_1(struct spell_args *sa)
       switch(OBJ_TYPE(sa->target))
       {
          case ITEM_CONTAINER:
-            sprintf(extra, "This is a %s.\n\r", affected_by_spell(sa->target, ID_CORPSE) ? "corpse" : "container");
+            sprintf(extra, "This is a %s.\n\r", affected_by_spell(sa->target, ID_CORPSE) != nullptr ? "corpse" : "container");
             break;
 
          case ITEM_BOAT:
@@ -489,7 +526,9 @@ void spell_identify_1(struct spell_args *sa)
          case ITEM_DRINKCON:
          case ITEM_FOOD:
             if(OBJ_VALUE(sa->target, 3))
+            {
                sprintf(extra, "It is poisoned.\n\r");
+            }
             break;
       }
 
@@ -498,16 +537,22 @@ void spell_identify_1(struct spell_args *sa)
 
    exd = UNIT_EXTRA_DESCR(sa->target)->find_raw("$identify");
 
-   if(!*buffer)
+   if(*buffer == 0)
    {
-      if(exd == NULL)
+      if(exd == nullptr)
+      {
          send_to_char("You get no insight into the secret of this item.\n\r", sa->caster);
+      }
    }
    else
+   {
       send_to_char(buffer, sa->caster);
+   }
 
-   if((exd = UNIT_EXTRA_DESCR(sa->target)->find_raw("$identify")))
+   if((exd = UNIT_EXTRA_DESCR(sa->target)->find_raw("$identify")) != nullptr)
+   {
       send_to_char(exd->descr.String(), sa->caster);
+   }
 }
 
 void spell_identify_2(struct spell_args *sa)
@@ -516,22 +561,26 @@ void spell_identify_2(struct spell_args *sa)
    int                      i = 0;
 
    if(sa->hm < 0)
+   {
       return;
+   }
 
-   if((exd = UNIT_EXTRA_DESCR(sa->target)->find_raw("$identify")))
+   if((exd = UNIT_EXTRA_DESCR(sa->target)->find_raw("$identify")) != nullptr)
    {
       send_to_char(exd->descr.String(), sa->caster);
       i = 1;
    }
 
-   if((exd = UNIT_EXTRA_DESCR(sa->target)->find_raw("$improved identify")))
+   if((exd = UNIT_EXTRA_DESCR(sa->target)->find_raw("$improved identify")) != nullptr)
    {
       send_to_char(exd->descr.String(), sa->caster);
       i = 1;
    }
 
-   if(!i)
+   if(i == 0)
+   {
       send_to_char("There is nothing exceptional to learn "
                    "about this item.\n\r",
                    sa->caster);
+   }
 }

@@ -79,17 +79,17 @@ int odin_statue(struct spec_arg *sarg);
 int force_move(struct spec_arg *sarg);
 int ww_pool(struct spec_arg *sarg);
 int ww_block_river(struct spec_arg *sarg);
-int ww_stone_render (struct spec_arg *sarg);
+int ww_stone_render(struct spec_arg *sarg);
 int ww_earth_blood(struct spec_arg *sarg);
 int ww_raver(struct spec_arg *sarg);
 int ww_vat_machine(struct spec_arg *sarg);
-int ww_quest_done (struct spec_arg *sarg);
-int ww_block_attack (struct spec_arg *sarg);
+int ww_quest_done(struct spec_arg *sarg);
+int ww_block_attack(struct spec_arg *sarg);
 
-int obj_good (struct spec_arg *sarg);
-int obj_evil (struct spec_arg *sarg);
-int obj_quest (struct spec_arg *sarg);
-int obj_guild (struct spec_arg *sarg);
+int obj_good(struct spec_arg *sarg);
+int obj_evil(struct spec_arg *sarg);
+int obj_quest(struct spec_arg *sarg);
+int obj_guild(struct spec_arg *sarg);
 
 int change_hometown(struct spec_arg *sarg);
 

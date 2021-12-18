@@ -23,11 +23,11 @@
  * *********************************************************************** */
 /* 12-Jan-95 Gnort:  Fixed security-hole in admin-obj...                   */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "affect.h"
 #include "comm.h"
@@ -37,7 +37,6 @@
 #include "handler.h"
 #include "interpreter.h"
 #include "justice.h"
-#include "limits.h"
 #include "magic.h"
 #include "main.h"
 #include "money.h"
@@ -48,6 +47,7 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
 #define DEFAULT_ENTRY_ZONE "udgaard"
 #define DEFAULT_ENTRY_NAME "temple"
@@ -65,24 +65,22 @@
 #define PC_DEATHOBJ_NAME "death_seq"
 #define DESTROY_ROOM     "destroy_room"
 
-struct unit_data *void_room    = 0;
-struct unit_data *destroy_room = 0;
-struct unit_data *heaven_room  = 0;
-struct unit_data *seq_room     = 0;
-struct unit_data *time_room    = 0;
-struct unit_data *entry_room   = 0;
+struct unit_data *void_room    = nullptr;
+struct unit_data *destroy_room = nullptr;
+struct unit_data *heaven_room  = nullptr;
+struct unit_data *seq_room     = nullptr;
+struct unit_data *time_room    = nullptr;
+struct unit_data *entry_room   = nullptr;
 
-struct file_index_type *demigod_fi    = 0; /* Default demigod shape */
-struct file_index_type *zombie_fi     = 0;
-struct file_index_type *letter_fi     = 0;
-struct file_index_type *corpse_fi     = 0;
-struct file_index_type *head_fi       = 0;
-struct file_index_type *deathobj_fi   = 0;
-struct file_index_type *beginner_note = 0;
+struct file_index_type *demigod_fi    = nullptr; /* Default demigod shape */
+struct file_index_type *zombie_fi     = nullptr;
+struct file_index_type *letter_fi     = nullptr;
+struct file_index_type *corpse_fi     = nullptr;
+struct file_index_type *head_fi       = nullptr;
+struct file_index_type *deathobj_fi   = nullptr;
+struct file_index_type *beginner_note = nullptr;
 
-extern char zondir[];
-
-void basis_boot(void)
+void basis_boot()
 {
    void_room = world_room(BASIS_ZONE, VOID_ROOM);
    assert(void_room);
@@ -106,8 +104,10 @@ void basis_boot(void)
    assert(zombie_fi);
 
    demigod_fi = find_file_index(BASIS_ZONE, DEMIGOD_NAME);
-   if(demigod_fi == NULL)
+   if(demigod_fi == nullptr)
+   {
       demigod_fi = zombie_fi;
+   }
 
    head_fi = find_file_index(BASIS_ZONE, HEAD_NAME);
    assert(head_fi);
@@ -119,7 +119,7 @@ void basis_boot(void)
    assert(deathobj_fi);
 
    entry_room = world_room(DEFAULT_ENTRY_ZONE, DEFAULT_ENTRY_NAME);
-   if(entry_room == NULL)
+   if(entry_room == nullptr)
    {
       slog(LOG_ALL, 0, "Entry room does not exist, using void.");
       entry_room = void_room;
@@ -127,15 +127,13 @@ void basis_boot(void)
 }
 
 /* These events happen rarely (daemon is every 30 minutes) */
-void random_event_world(void)
+void random_event_world()
 {
    struct unit_data *u;
 
-   extern struct unit_data *unit_list;
-
-   for(u = unit_list; u; u = u->gnext)
+   for(u = unit_list; u != nullptr; u = u->gnext)
    {
-      if(IS_NPC(u) && !number(0, 100))
+      if(IS_NPC(u) && (number(0, 100) == 0))
       {
          set_reward_char(u, 0);
          return;
@@ -149,9 +147,7 @@ void random_event_player(struct unit_data *u, struct unit_data *daemon)
    int               i;
    struct unit_data *tmpu;
 
-   extern struct unit_data *unit_list;
-
-   if(u == NULL)
+   if(u == nullptr)
    {
       random_event_world();
       return;
@@ -169,38 +165,40 @@ void random_event_player(struct unit_data *u, struct unit_data *daemon)
          return;
 
       case 4:
-         act("You feel an itch where you can not scratch.", A_ALWAYS, u, 0, 0, TO_CHAR);
+         act("You feel an itch where you can not scratch.", A_ALWAYS, u, nullptr, nullptr, TO_CHAR);
          break;
 
       case 5:
-         act("You feel happy.", A_ALWAYS, u, 0, 0, TO_CHAR);
+         act("You feel happy.", A_ALWAYS, u, nullptr, nullptr, TO_CHAR);
          break;
 
       case 6:
-         act("You feel sad.", A_ALWAYS, u, 0, 0, TO_CHAR);
+         act("You feel sad.", A_ALWAYS, u, nullptr, nullptr, TO_CHAR);
          break;
 
       case 7:
-         act("You feel lucky.", A_ALWAYS, u, 0, 0, TO_CHAR);
+         act("You feel lucky.", A_ALWAYS, u, nullptr, nullptr, TO_CHAR);
          break;
 
       case 8:
          tmpu = read_unit(find_file_index("udgaard", "tuborg"));
-         if(tmpu)
+         if(tmpu != nullptr)
          {
             unit_to_unit(tmpu, u);
-            act("The Gods grant you nectar to quench your thirst.", A_ALWAYS, u, 0, 0, TO_CHAR);
-            act("Suddenly the sky opens and $2n drops into the hands of $1n.", A_ALWAYS, u, tmpu, 0, TO_ROOM);
+            act("The Gods grant you nectar to quench your thirst.", A_ALWAYS, u, nullptr, nullptr, TO_CHAR);
+            act("Suddenly the sky opens and $2n drops into the hands of $1n.", A_ALWAYS, u, tmpu, nullptr, TO_ROOM);
          }
          else
-            act("You have an inexplainable craving for a refreshing Green Tuborg.", A_ALWAYS, u, 0, 0, TO_CHAR);
+         {
+            act("You have an inexplainable craving for a refreshing Green Tuborg.", A_ALWAYS, u, nullptr, nullptr, TO_CHAR);
+         }
          break;
 
       case 9:
-         for(u = unit_list; u; u = u->gnext)
+         for(u = unit_list; u != nullptr; u = u->gnext)
          {
             /* Only outlaw the ones that have signed */
-            if(IS_PC(u) && !number(0, 1000) && IS_SET(CHAR_FLAGS(u), PC_PK_RELAXED))
+            if(IS_PC(u) && (number(0, 1000) == 0) && IS_SET(CHAR_FLAGS(u), PC_PK_RELAXED))
             {
                set_reward_char(u, 0);
                return;
@@ -210,15 +208,19 @@ void random_event_player(struct unit_data *u, struct unit_data *daemon)
 
       case 10:
          i = number(1, 1000 * CHAR_LEVEL(u));
-         act("You learn that you have won $2t in the lottery.", A_ALWAYS, u, money_string(i, DEF_CURRENCY, TRUE), 0, TO_CHAR);
+         act("You learn that you have won $2t in the lottery.", A_ALWAYS, u, money_string(i, DEF_CURRENCY, TRUE), nullptr, TO_CHAR);
          money_to_unit(u, i, DEF_CURRENCY);
          break;
 
       case 11:
-         if(number(0, 1))
-            spell_perform(SPL_DISEASE_1, MEDIA_SPELL, daemon, daemon, u, mbuf, NULL);
+         if(number(0, 1) != 0)
+         {
+            spell_perform(SPL_DISEASE_1, MEDIA_SPELL, daemon, daemon, u, mbuf, nullptr);
+         }
          else
-            spell_perform(SPL_DISEASE_2, MEDIA_SPELL, daemon, daemon, u, mbuf, NULL);
+         {
+            spell_perform(SPL_DISEASE_2, MEDIA_SPELL, daemon, daemon, u, mbuf, nullptr);
+         }
          break;
 
          /*  MANY OPTIONS! Ideas:
@@ -229,20 +231,22 @@ void random_event_player(struct unit_data *u, struct unit_data *daemon)
    }
 }
 
-int error_rod(struct spec_arg *sarg)
+auto error_rod(struct spec_arg *sarg) -> int
 {
    struct zone_type *zone;
    FILE             *fl;
    char              filename[256];
 
    if((sarg->cmd->no != CMD_USE) || (!IS_PC(sarg->activator)) || (OBJ_EQP_POS(sarg->owner) != WEAR_HOLD))
+   {
       return SFR_SHARE;
+   }
 
    zone = unit_zone(sarg->activator);
 
    strcpy(filename, UNIT_NAME(sarg->activator));
 
-   if(!IS_ADMINISTRATOR(sarg->activator) && !zone->creators.IsName(filename))
+   if(!IS_ADMINISTRATOR(sarg->activator) && (zone->creators.IsName(filename) == nullptr))
    {
       send_to_char("You are only allowed to erase errors "
                    "in your own zone.\n\r",
@@ -252,7 +256,7 @@ int error_rod(struct spec_arg *sarg)
 
    sprintf(filename, "%s%s.err", zondir, zone->filename);
 
-   if(!(fl = fopen(filename, "w")))
+   if((fl = fopen(filename, "w")) == nullptr)
    {
       slog(LOG_ALL, 0, "Could not clear the zone error-file");
       send_to_char("Could not clear the zone error-file.\n\r", sarg->activator);
@@ -260,26 +264,28 @@ int error_rod(struct spec_arg *sarg)
    }
    fclose(fl);
 
-   act("$1n uses $2n.", A_HIDEINV, sarg->activator, sarg->owner, 0, TO_ROOM);
+   act("$1n uses $2n.", A_HIDEINV, sarg->activator, sarg->owner, nullptr, TO_ROOM);
    send_to_char("Error file was erased.\n\r", sarg->activator);
    slog(LOG_ALL, UNIT_MINV(sarg->activator), "%s cleared %s", UNIT_NAME(sarg->activator), filename);
    return SFR_BLOCK;
 }
 
-int info_rod(struct spec_arg *sarg)
+auto info_rod(struct spec_arg *sarg) -> int
 {
    struct zone_type *zone;
    FILE             *fl;
    char              filename[256];
 
-   if(!is_command(sarg->cmd, "wave") || !IS_PC(sarg->activator) || OBJ_EQP_POS(sarg->owner) != WEAR_HOLD)
+   if((is_command(sarg->cmd, "wave") == 0u) || !IS_PC(sarg->activator) || OBJ_EQP_POS(sarg->owner) != WEAR_HOLD)
+   {
       return SFR_SHARE;
+   }
 
    zone = unit_zone(sarg->activator);
 
    strcpy(filename, UNIT_NAME(sarg->activator));
 
-   if(!IS_ADMINISTRATOR(sarg->activator) && !zone->creators.IsName(filename))
+   if(!IS_ADMINISTRATOR(sarg->activator) && (zone->creators.IsName(filename) == nullptr))
    {
       send_to_char("You are only allowed to erase user-information"
                    " in your own zone.",
@@ -289,7 +295,7 @@ int info_rod(struct spec_arg *sarg)
 
    sprintf(filename, "%s%s.inf", zondir, zone->filename);
 
-   if(!(fl = fopen(filename, "w")))
+   if((fl = fopen(filename, "w")) == nullptr)
    {
       slog(LOG_ALL, 0, "Could not clear the zone user info-file");
       send_to_char("Could not clear the zone user info-file.\n\r", sarg->activator);
@@ -297,13 +303,13 @@ int info_rod(struct spec_arg *sarg)
    }
    fclose(fl);
 
-   act("$1n uses $2n.", A_HIDEINV, sarg->activator, sarg->owner, 0, TO_ROOM);
+   act("$1n uses $2n.", A_HIDEINV, sarg->activator, sarg->owner, nullptr, TO_ROOM);
    send_to_char("Zone user information file was erased.\n\r", sarg->activator);
    slog(LOG_ALL, UNIT_MINV(sarg->activator), "%s cleared %s", UNIT_NAME(sarg->activator), filename);
    return SFR_BLOCK;
 }
 
-int recep_daemon(struct spec_arg *sarg)
+auto recep_daemon(struct spec_arg *sarg) -> int
 {
 #ifdef SUSPEKT
    static int idx = -1;
@@ -333,48 +339,59 @@ int recep_daemon(struct spec_arg *sarg)
    return SFR_SHARE;
 }
 
-int chaos_daemon(struct spec_arg *sarg)
+auto chaos_daemon(struct spec_arg *sarg) -> int
 {
    char             *arg = (char *)sarg->arg;
    struct unit_data *u;
 
-   if(sarg->cmd->no == CMD_AUTO_TICK || (is_command(sarg->cmd, "tickle") && IS_ULTIMATE(sarg->activator) &&
-                                         sarg->owner == find_unit(sarg->activator, &arg, 0, FIND_UNIT_SURRO)))
+   if(sarg->cmd->no == CMD_AUTO_TICK || ((is_command(sarg->cmd, "tickle") != 0u) && IS_ULTIMATE(sarg->activator) &&
+                                         sarg->owner == find_unit(sarg->activator, &arg, nullptr, FIND_UNIT_SURRO)))
    {
       u = random_unit(sarg->owner, FIND_UNIT_WORLD, UNIT_ST_PC);
-      if(u && IS_MORTAL(u))
+      if((u != nullptr) && IS_MORTAL(u))
       {
-         act("$1n grins evilly at $3n.", A_ALWAYS, sarg->owner, 0, u, TO_ROOM);
+         act("$1n grins evilly at $3n.", A_ALWAYS, sarg->owner, nullptr, u, TO_ROOM);
          random_event_player(u, sarg->owner);
       }
       else
-         random_event_player(NULL, sarg->owner);
+      {
+         random_event_player(nullptr, sarg->owner);
+      }
    }
 
    return SFR_SHARE;
 }
 
-int death_room(struct spec_arg *sarg)
+auto death_room(struct spec_arg *sarg) -> int
 {
-   int dam, i;
+   int dam;
+   int i;
 
    if(sarg->cmd->no != CMD_AUTO_TICK)
+   {
       return SFR_SHARE;
+   }
 
-   if(sarg->fptr->data)
+   if(sarg->fptr->data != nullptr)
+   {
       dam = atoi((char *)sarg->fptr->data);
+   }
    else
+   {
       dam = 10000;
+   }
 
    scan4_unit_room(sarg->owner, UNIT_ST_PC | UNIT_ST_NPC);
 
    for(i = 0; i < unit_vector.top; i++)
    {
       /* Damage below can theoretically cause death of other persons */
-      if(is_destructed(DR_UNIT, unit_vector.units[i]))
+      if(is_destructed(DR_UNIT, unit_vector.units[i]) != 0)
+      {
          continue;
+      }
 
-      damage(unit_vector.units[i], unit_vector.units[i], NULL, dam, MSG_TYPE_OTHER, MSG_OTHER_BLEEDING, COM_MSG_EBODY);
+      damage(unit_vector.units[i], unit_vector.units[i], nullptr, dam, MSG_TYPE_OTHER, MSG_OTHER_BLEEDING, COM_MSG_EBODY);
    }
 
    return SFR_SHARE;
@@ -384,14 +401,14 @@ int death_room(struct spec_arg *sarg)
 
 extern struct log_buffer log_buf[];
 
-int log_object(struct spec_arg *sarg)
+auto log_object(struct spec_arg *sarg) -> int
 {
    ubit8            *ip;
    enum log_level    lev = LOG_OFF;
    char              c;
    struct unit_data *ch = UNIT_IN(sarg->owner);
 
-   if(sarg->fptr->data == NULL)
+   if(sarg->fptr->data == nullptr)
    {
       CREATE(ip, ubit8, 1);
       *ip = 0;
@@ -400,7 +417,9 @@ int log_object(struct spec_arg *sarg)
       sarg->fptr->data          = ip;
    }
    else
+   {
       ip = (ubit8 *)sarg->fptr->data;
+   }
 
    c = OBJ_VALUE(sarg->owner, 0);
 
@@ -408,7 +427,7 @@ int log_object(struct spec_arg *sarg)
    {
       case CMD_AUTO_EXTRACT:
          free(ip);
-         sarg->fptr->data = 0;
+         sarg->fptr->data = nullptr;
          return SFR_SHARE;
 
       case CMD_AUTO_TICK:
@@ -430,10 +449,12 @@ int log_object(struct spec_arg *sarg)
 
          if(LOG_OFF < lev && IS_PC(ch) && PC_IMMORTAL(ch))
          {
-            while(!str_is_empty(log_buf[*ip].str))
+            while(str_is_empty(log_buf[*ip].str) == 0u)
             {
                if(log_buf[*ip].level <= lev && log_buf[*ip].wizinv_level <= CHAR_LEVEL(ch))
-                  act("<LOG: $2t>", A_ALWAYS, ch, log_buf[*ip].str, 0, TO_CHAR);
+               {
+                  act("<LOG: $2t>", A_ALWAYS, ch, log_buf[*ip].str, nullptr, TO_CHAR);
+               }
                *ip = ((*ip + 1) % MAXLOG);
             }
             return SFR_BLOCK;
@@ -441,24 +462,30 @@ int log_object(struct spec_arg *sarg)
          return SFR_SHARE;
 
       default:
-         if(sarg->cmd->cmd_str && sarg->activator == UNIT_IN(sarg->owner) && !strcmp("log", sarg->cmd->cmd_str))
+         if((sarg->cmd->cmd_str != nullptr) && sarg->activator == UNIT_IN(sarg->owner) && (strcmp("log", sarg->cmd->cmd_str) == 0))
          {
             sarg->arg = skip_spaces(sarg->arg);
-            if(is_abbrev(sarg->arg, "all"))
-               c = 'a';
-            else if(is_abbrev(sarg->arg, "extensive"))
-               c = 'e';
-            else if(is_abbrev(sarg->arg, "brief"))
-               c = 'b';
-            else if(is_abbrev(sarg->arg, "off"))
+            if(is_abbrev(sarg->arg, "all") != 0u)
             {
-               act("Ok, log is now off.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+               c = 'a';
+            }
+            else if(is_abbrev(sarg->arg, "extensive") != 0u)
+            {
+               c = 'e';
+            }
+            else if(is_abbrev(sarg->arg, "brief") != 0u)
+            {
+               c = 'b';
+            }
+            else if(is_abbrev(sarg->arg, "off") != 0u)
+            {
+               act("Ok, log is now off.", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
                OBJ_VALUE(sarg->owner, 0) = 'o';
                return SFR_BLOCK;
             }
-            else if(is_abbrev(sarg->arg, "help"))
+            else if(is_abbrev(sarg->arg, "help") != 0u)
             {
-               act("Possible settings are:\n\r off, brief, extensive, all.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+               act("Possible settings are:\n\r off, brief, extensive, all.", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
                return SFR_BLOCK;
             }
             else
@@ -468,11 +495,11 @@ int log_object(struct spec_arg *sarg)
                    : c == 'b' ? "brief"
                    : c == 'a' ? "all"
                               : "extensive",
-                   0, TO_CHAR);
+                   nullptr, TO_CHAR);
                return SFR_BLOCK;
             }
 
-            act("You will now see the $2t log.", A_ALWAYS, ch, c == 'b' ? "brief" : c == 'a' ? "entire" : "extensive", 0, TO_CHAR);
+            act("You will now see the $2t log.", A_ALWAYS, ch, c == 'b' ? "brief" : c == 'a' ? "entire" : "extensive", nullptr, TO_CHAR);
             OBJ_VALUE(sarg->owner, 0) = c;
             return SFR_BLOCK;
          }
@@ -482,10 +509,10 @@ int log_object(struct spec_arg *sarg)
 }
 
 /* Return TRUE if ok, FALSE if not */
-int system_check(struct unit_data *pc, char *buf)
+auto system_check(struct unit_data *pc, char *buf) -> int
 {
    /* Check for `` and ; in system-string */
-   if(strchr(buf, '`') || strchr(buf, ';'))
+   if((strchr(buf, '`') != nullptr) || (strchr(buf, ';') != nullptr))
    {
       send_to_char("You can not use the ' and ; characters\n\r", pc);
       slog(LOG_ALL, 0, "%s may have tried to break security with %s", UNIT_NAME(pc), buf);
@@ -501,7 +528,7 @@ void execute_append(struct unit_data *pc, char *str)
 
    f = fopen(str_cc(libdir, EXECUTE_FILE), "ab+");
 
-   if(f == NULL)
+   if(f == nullptr)
    {
       slog(LOG_ALL, 0, "Error appending to execute file.");
       return;
@@ -514,7 +541,7 @@ void execute_append(struct unit_data *pc, char *str)
    fclose(f);
 }
 
-int admin_obj(struct spec_arg *sarg)
+auto admin_obj(struct spec_arg *sarg) -> int
 {
    char                     buf[512];
    int                      zonelist;
@@ -522,10 +549,14 @@ int admin_obj(struct spec_arg *sarg)
    struct extra_descr_data *exdp;
 
    if(sarg->cmd->no != CMD_AUTO_UNKNOWN)
+   {
       return SFR_SHARE;
+   }
 
    if(!IS_PC(sarg->activator))
+   {
       return SFR_SHARE;
+   }
 
    if(str_ccmp(sarg->cmd->cmd_str, "email") == 0)
    {
@@ -541,30 +572,34 @@ int admin_obj(struct spec_arg *sarg)
       zonelist = TRUE;
    }
    else
+   {
       return SFR_SHARE;
+   }
 
-   if((exdp = PC_INFO(sarg->activator)->find_raw("$email")) == NULL)
+   if((exdp = PC_INFO(sarg->activator)->find_raw("$email")) == nullptr)
    {
       send_to_char("You do not have an email address registered.\n\r", sarg->activator);
       return SFR_BLOCK;
    }
 
-   if(str_is_empty(exdp->descr.String()))
+   if(str_is_empty(exdp->descr.String()) != 0u)
    {
       send_to_char("Your email is incorrectly registered.\n\r", sarg->activator);
       return SFR_BLOCK;
    }
 
-   if(zonelist)
+   if(zonelist != 0)
+   {
       sprintf(buf, "mail zone zonelist %s", exdp->descr.String());
-   else if((zone = unit_zone(sarg->activator)) == NULL)
+   }
+   else if((zone = unit_zone(sarg->activator)) == nullptr)
    {
       send_to_char("You are inside no zone?", sarg->activator);
       return SFR_BLOCK;
    }
    else
    {
-      if((!zone->creators.IsName(UNIT_NAME(sarg->activator))) && (!IS_OVERSEER(sarg->activator)))
+      if((zone->creators.IsName(UNIT_NAME(sarg->activator)) == nullptr) && (!IS_OVERSEER(sarg->activator)))
       {
          send_to_char("Only overseers can use this function.\n\r", sarg->activator);
          return SFR_BLOCK;
@@ -572,8 +607,10 @@ int admin_obj(struct spec_arg *sarg)
       sprintf(buf, "mail zone %s %s", zone->filename, exdp->descr.String());
    }
 
-   if(!system_check(sarg->activator, buf))
+   if(system_check(sarg->activator, buf) == 0)
+   {
       return SFR_BLOCK;
+   }
 
    execute_append(sarg->activator, buf);
 

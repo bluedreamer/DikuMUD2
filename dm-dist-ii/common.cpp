@@ -22,9 +22,9 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <math.h> /* floor and pow */
-#include <stdio.h>
-#include <stdlib.h>
+#include <cmath> /* floor and pow */
+#include <cstdio>
+#include <cstdlib>
 
 #include "common.h"
 #include "db.h"
@@ -35,15 +35,15 @@
 
 char libdir[64] = DFLT_DIR;
 
-const char *fillwords[] = {"a", "an", "at", "from", "in", "on", "of", "the", "to", "with", "into", NULL};
+const char *fillwords[] = {"a", "an", "at", "from", "in", "on", "of", "the", "to", "with", "into", nullptr};
 
 /* Used for converting general direction in dmc! */
-const char *dirs[] = {"north", "east", "south", "west", "up", "down", NULL};
+const char *dirs[] = {"north", "east", "south", "west", "up", "down", nullptr};
 
 /* Used for sanity check in dmc! */
 const char *drinks[LIQ_MAX + 2] = {
-   "water",  "beer",  "wine",       "ale",  "dark ale", "whisky", "lemonade", "firebreather", "local speciality", "slime", "milk", "tea",
-   "coffee", "blood", "salt water", "coke", "vodka",    "brandy", NULL};
+   "water", "beer",   "wine",  "ale",        "dark ale", "whisky", "lemonade", "firebreather", "local speciality", "slime", "milk",
+   "tea",   "coffee", "blood", "salt water", "coke",     "vodka",  "brandy",   nullptr};
 
 struct shi_info_type shi_info[] = {
    /* %age Chance of blocking an attack if ready to block */
@@ -59,12 +59,12 @@ struct shi_info_type shi_info[] = {
 /* Example: A character is about to raise from level 2 to 3. Add       */
 /*          ability_point_gain(3) to his ability points                */
 
-int ability_point_gain(void)
+auto ability_point_gain() -> int
 {
    return AVERAGE_SKILL_COST * ABILITY_POINT_FACTOR;
 }
 
-int skill_point_gain(void)
+auto skill_point_gain() -> int
 {
    return AVERAGE_SKILL_COST * SKILL_POINT_FACTOR;
 }
@@ -74,12 +74,12 @@ int skill_point_gain(void)
 /* particular level.                                                   */
 /* The formula is total up to the current level                        */
 
-int ability_point_total(int level)
+auto ability_point_total(int level) -> int
 {
    return (1 + level) * ability_point_gain();
 }
 
-int skill_point_total(int level)
+auto skill_point_total(int level) -> int
 {
    return (1 + level) * skill_point_gain();
 }
@@ -91,7 +91,7 @@ int skill_point_total(int level)
 /* for the given amount of points (skill-buy-points)                   */
 /*                                                                     */
 
-int buy_points(int points, int level, int *error)
+auto buy_points(int points, int level, int *error) -> int
 {
    int skill;
    int cost;
@@ -113,22 +113,30 @@ int buy_points(int points, int level, int *error)
    }
 
    if(points < 0)
+   {
       skill--;
+   }
 
-   if(error)
+   if(error != nullptr)
+   {
       *error = 0;
+   }
 
    if(skill > SKILL_MAX)
    {
-      if(error)
+      if(error != nullptr)
+      {
          *error = skill;
+      }
 
       return SKILL_MAX;
    }
    if(skill < 0)
    {
-      if(error)
+      if(error != nullptr)
+      {
          *error = skill;
+      }
 
       return 0;
    }
@@ -142,9 +150,11 @@ int buy_points(int points, int level, int *error)
 /* must add up to 100%.                                                */
 /* Returns true if error */
 
-int distribute_points(ubit8 *skills, int max, int points, int level)
+auto distribute_points(ubit8 *skills, int max, int points, int level) -> int
 {
-   int i, error, sumerror;
+   int i;
+   int error;
+   int sumerror;
 
    sumerror = 0;
 
@@ -152,34 +162,38 @@ int distribute_points(ubit8 *skills, int max, int points, int level)
    {
       skills[i] = buy_points((int)((double)skills[i] * points / 100.0), level, &error);
       if(error > sumerror)
+      {
          sumerror = error;
+      }
    }
 
    return sumerror;
 }
 
 /* Apply quality to a number (ac, dam or other) */
-int apply_quality(int num, int quality)
+auto apply_quality(int num, int quality) -> int
 {
    /* if ((quality < 0) || (quality > 200))
         slog(LOG_ALL, "ERROR: Quality is %d.", quality); */
 
    if(quality >= 100)
+   {
       return (quality * num) / 100;
-   else
-      return (MAX(1, 50 + quality / 2) * num) / 100;
+   }
+   return (MAX(1, 50 + quality / 2) * num) / 100;
 }
 
 /* Given a level, it returns how much XP is required to reach the  */
 /* next level. For example, given level 1, it returns that it      */
 /* takes 310.000 xp to reach level 2.                              */
 
-int level_xp(int level)
+auto level_xp(int level) -> int
 {
    if(level <= MORTAL_MAX_LEVEL)
+   {
       return 1650 + level * 300;
-   else
-      return level_xp(MORTAL_MAX_LEVEL);
+   }
+   return level_xp(MORTAL_MAX_LEVEL);
 }
 
 /* Given a level, it returns the total amount of experience-points */
@@ -187,12 +201,13 @@ int level_xp(int level)
 /* required_xp(1) = 150,000 since it requires 150,000 xp to be     */
 /* level one.                                                      */
 
-int required_xp(int level)
+auto required_xp(int level) -> int
 {
    if(level <= MORTAL_MAX_LEVEL)
+   {
       return 1500 * level + level * level * (300 / 2);
-   else
-      return required_xp(MORTAL_MAX_LEVEL) + level_xp(MORTAL_MAX_LEVEL) * (level - MORTAL_MAX_LEVEL);
+   }
+   return required_xp(MORTAL_MAX_LEVEL) + level_xp(MORTAL_MAX_LEVEL) * (level - MORTAL_MAX_LEVEL);
 }
 
 /* Primarily used for shields, armours and weapons */
@@ -203,9 +218,13 @@ void set_hits(struct unit_data *obj, int craftsmanship)
       /* Hits are in [100..6000] based on craft, default == 1000 */
 
       if(craftsmanship >= 0)
+      {
          UNIT_MAX_HIT(obj) = 1000 + (1000 * craftsmanship) / 5;
+      }
       else
+      {
          UNIT_MAX_HIT(obj) = 1000 - (175 * -craftsmanship) / 5;
+      }
 
       UNIT_HIT(obj) = UNIT_MAX_HIT(obj);
    }
@@ -213,9 +232,9 @@ void set_hits(struct unit_data *obj, int craftsmanship)
 
 /* ----------------------------------------------------------------- */
 
-int is_in(int a, int from, int to)
+auto is_in(int a, int from, int to) -> int
 {
-   return ((a >= from) && (a <= to));
+   return static_cast<int>((a >= from) && (a <= to));
 }
 
 /* WEAPONS                               */

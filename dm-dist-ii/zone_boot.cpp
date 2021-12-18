@@ -23,9 +23,9 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-void zone_boot(void)
+void zone_boot()
 {
-   void basis_boot(void);
+   void basis_boot();
 
    basis_boot();
 }

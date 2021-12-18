@@ -22,32 +22,32 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "constants.h"
-#include "limits.h"
 #include "protocol.h"
 #include "skills.h"
 #include "structs.h"
 #include "utils.h"
 #include "values.h"
+#include <climits>
 
 /* ---------------------------------------------------------------------- */
 /*                         M O V E M E N T                                */
 /* ---------------------------------------------------------------------- */
 
 const char *char_pos[] = {"dead R.I.P.", "mortally-wounded", "incapacitated", "stunned",  "sleeping",
-                          "resting",     "sitting",          "fighting",      "standing", NULL};
+                          "resting",     "sitting",          "fighting",      "standing", nullptr};
 
 /* Moved to common.c: const char *dirs[] = */
 
-const char *enter_dirs[] = {"the north", "the east", "the south", "the west", "above", "below", NULL};
+const char *enter_dirs[] = {"the north", "the east", "the south", "the west", "above", "below", nullptr};
 
 const int rev_dir[] = {2, 3, 0, 1, 5, 4};
 
 const char *room_landscape[] = {"inside",     "city",       "field",       "forest", "hills", "mountain", "desert", "swamp",
 
-                                "water-swim", "water-sail", "under-water", "snow",   "slush", "ice",      NULL};
+                                "water-swim", "water-sail", "under-water", "snow",   "slush", "ice",      nullptr};
 
 const int movement_loss[] = {
    1,  /* Inside     */
@@ -102,7 +102,7 @@ const sbit8 time_light[SUN_SET + 1] = {
 /* char *drinks moved to common.c! */
 
 const char *color_liquid[LIQ_MAX + 2] = {"clear", "brown", "clear", "brown", "dark",  "golden", "red",   "green",  "clear", "light green",
-                                         "white", "brown", "black", "red",   "clear", "black",  "clear", "golden", NULL};
+                                         "white", "brown", "black", "red",   "clear", "black",  "clear", "golden", nullptr};
 
 const int drink_aff[LIQ_MAX + 2][3] = {
    {0, 1, 10}, /* Water    */
@@ -133,14 +133,14 @@ const char *fullness[] = {
 /*                         I N F O R M A T I V E                          */
 /* ---------------------------------------------------------------------- */
 
-const char *arm_text[ARM_PLATE + 1 + 1] = {"clothes base", "leather base", "hardened leather base", "chain base", "plate base", NULL};
+const char *arm_text[ARM_PLATE + 1 + 1] = {"clothes base", "leather base", "hardened leather base", "chain base", "plate base", nullptr};
 
-const char *shi_text[SHIELD_LARGE + 2] = {"small shield", "medium shield", "large shield", NULL};
+const char *shi_text[SHIELD_LARGE + 2] = {"small shield", "medium shield", "large shield", nullptr};
 
 const char *bodyparts[] = {"arms",       "left arm",  "right arm", "legs",      "left leg",   "right leg", "head", "feet",
                            "right foot", "left foot", "toes",      "hands",     "right hand", "left hand", "face", "hair",
                            "neck",       "butt",      "eyes",      "right eye", "left eye",   "mouth",     "ears", "right ear",
-                           "left ear",   "teeth",     "tounge",    "nose",      "nostrils",   NULL};
+                           "left ear",   "teeth",     "tounge",    "nose",      "nostrils",   nullptr};
 
 const ubit8 bodyparts_cover[31][5] = {
    {WEAR_ARMS, WEAR_UNUSED},                                    /* arms */
@@ -181,13 +181,13 @@ const char *where[] = {"<ILLEGAL POSITION>   ", /* Position 0 is not a position 
                        "<worn on hands>      ", "<worn on arms>       ", "<worn as shield>     ", "<worn about body>    ",
                        "<worn about waist>   ", "<worn around wrist>  ", "<worn around wrist>  ", "<wielded>            ",
                        "<held>               ", "<worn across chest>  ", "<worn on back>       ", "<worn on left ear>   ",
-                       "<worn on right ear>  ", "<worn on ankle>      ", "<worn on ankle>      ", NULL};
+                       "<worn on right ear>  ", "<worn on ankle>      ", "<worn on ankle>      ", nullptr};
 
 /* ---------------------------------------------------------------------- */
 /*                      P O I N T   S Y S T E M                           */
 /* ---------------------------------------------------------------------- */
 
-const char *npc_class_types[] = {"Normal", "Undead", NULL};
+const char *npc_class_types[] = {"Normal", "Undead", nullptr};
 
 const struct skill_interval how_good[] = {{-20, "horrible"},
                                           {-15, "very bad"},
@@ -199,19 +199,19 @@ const struct skill_interval how_good[] = {{-20, "horrible"},
                                           {15, "good"},
                                           {20, "very good"},
                                           {25, "supreme"},
-                                          {-1, NULL}};
+                                          {-1, nullptr}};
 
 const struct skill_interval weapon_skills[] = {{0, "utterly hopeless"}, {10, "impossible"},  {25, "poor"},    {40, "good"},
                                                {50, "skilled"},         {70, "specialized"}, {90, "supreme"}, {100, "expert"},
-                                               {150, "godly"},          {-1, NULL}};
+                                               {150, "godly"},          {-1, nullptr}};
 
 const struct skill_interval skill_skills[] = {
    {0, "utterly hopeless"},  {10, "have heard about"}, {25, "have tried a little"}, {40, "have practiced"}, {50, "are good at"},
-   {70, "are an expert at"}, {90, "master"},           {100, "are expert at"},      {150, "are godly at"},  {-1, NULL}};
+   {70, "are an expert at"}, {90, "master"},           {100, "are expert at"},      {150, "are godly at"},  {-1, nullptr}};
 
 const struct skill_interval spell_skills[] = {{10, "might remember"},   {25, "can almost remember"}, {40, "can remember"},
                                               {50, "have practiced"},   {70, "have learned"},        {90, "master"},
-                                              {100, "are expert with"}, {150, "are godly with"},     {-1, NULL}};
+                                              {100, "are expert with"}, {150, "are godly with"},     {-1, nullptr}};
 
 #ifdef SUSPEKT
 const char *weapon_skills[] = {"impossible", "poor", "good", "skilled", "specialized", "supreme", "godly", NULL};
@@ -228,64 +228,48 @@ const char *spell_skills[] = {
 /* ---------------------------------------------------------------------- */
 
 const char *sfb_flags[] = {"Priority", "Time_Variation", "Normal_Cmd", "Tick", "Death", "Combat", "Message",
-                           "Save",     "Aware",          "Activate",   "PRE",  "Done",  NULL};
+                           "Save",     "Aware",          "Activate",   "PRE",  "Done",  nullptr};
 
 /* UNIT_MANIPULATE */
 const char *unit_manipulate[] = {"take",  "finger", "neck",  "body", "head",  "legs", "feet", "hands", "arms",  "shield", "about-body",
-                                 "waist", "wrist",  "wield", "hold", "enter", "ear",  "back", "chest", "ankle", NULL};
+                                 "waist", "wrist",  "wield", "hold", "enter", "ear",  "back", "chest", "ankle", nullptr};
 
-const char *unit_open_flags[] = {"open-close", "closed", "locked", "pickproof", "inside-open-close-lock-unlock", "hidden", NULL};
+const char *unit_open_flags[] = {"open-close", "closed", "locked", "pickproof", "inside-open-close-lock-unlock", "hidden", nullptr};
 
 /* UNIT_FLAGS */
 const char *unit_flags[] = {"private",     "invisible", "can-be-buried", "is-buried", "no-teleport",
                             "sacred",      "no-mobile", "no-weather",    "indoors",   "invisible-mortals",
-                            "transparant", "is-edited", "no-save",       "magic",     NULL};
+                            "transparant", "is-edited", "no-save",       "magic",     nullptr};
 
 /* OBJ_FLAGS */
-const char *obj_flags[] = {"unequip", "two-hands", "nocover", "nodual", NULL};
+const char *obj_flags[] = {"unequip", "two-hands", "nocover", "nodual", nullptr};
 
 /* ROOM_FLAGS */
 const char *room_flags[] = {"save", "unused", "no-save",
 
-                            NULL};
+                            nullptr};
 
 /* CHAR_FLAGS but ought to be CHAR_FLAGS */
-const char *char_flags[] = {"law-protected",
-                            "legal-target",
-                            "outlaw",
-                            "group",
-                            "blind",
-                            "hide",
-                            "mute",
-                            "sneak",
-                            "detect-alignments",
-                            "detect-invisible",
-                            "detect-magic",
-                            "detect-poison",
-                            "detect-undead",
-                            "detect-curse",
-                            "detect-life",
-                            "wimpy",
-                            "not-used",
-                            "self-defence",
-                            "peaceful",
-                            NULL};
+const char *char_flags[] = {
+   "law-protected",     "legal-target",     "outlaw",       "group",         "blind",         "hide",         "mute",        "sneak",
+   "detect-alignments", "detect-invisible", "detect-magic", "detect-poison", "detect-undead", "detect-curse", "detect-life", "wimpy",
+   "not-used",          "self-defence",     "peaceful",     nullptr};
 
 /* PC_FLAGS */
-const char *pc_flags[] = {"brief",     "PK relaxed", "information",   "compact",           "nowiz",      "spirit",    "expert",  "prompt",
-                          "GA Telnet", "echo-say",   "ansi-terminal", "dmserver-terminal", "noshouting", "notelling", "noshout", "notell",
-                          NULL};
+const char *pc_flags[] = {"brief",      "PK relaxed", "information", "compact",  "nowiz",         "spirit",
+                          "expert",     "prompt",     "GA Telnet",   "echo-say", "ansi-terminal", "dmserver-terminal",
+                          "noshouting", "notelling",  "noshout",     "notell",   nullptr};
 
 /* NPC FLAGS */
-const char *npc_flags[] = {"ILLEGAL-BIT", "sentinel", "scavenger", "nice-thief", "agressive", "stay-zone", NULL};
+const char *npc_flags[] = {"ILLEGAL-BIT", "sentinel", "scavenger", "nice-thief", "agressive", "stay-zone", nullptr};
 
 /* ---------------------------------------------------------------------- */
 /*                             O T H E R (stat)                           */
 /* ---------------------------------------------------------------------- */
 
-const char *unit_status[] = {"NPC", "PC", "ROOM", "OBJECT", NULL};
+const char *unit_status[] = {"NPC", "PC", "ROOM", "OBJECT", nullptr};
 
-const char *char_sex[] = {"neutral", "male", "female", NULL};
+const char *char_sex[] = {"neutral", "male", "female", nullptr};
 
 const char *obj_types[] = {"ILLEGAL OBJECT TYPE",
                            "light",
@@ -313,7 +297,7 @@ const char *obj_types[] = {"ILLEGAL OBJECT TYPE",
                            "spell-page",
                            "spell-book",
                            "shield",
-                           NULL};
+                           nullptr};
 
 const char *equip_pos[] = {"In inventory/Not equipped",
                            "ILLEGAL EQUIP POSITION - REPORT!",
@@ -334,7 +318,7 @@ const char *equip_pos[] = {"In inventory/Not equipped",
                            "Worn around left wrist",
                            "Wielded",
                            "Held",
-                           NULL};
+                           nullptr};
 
 const char *obj_pos[] = {"inventory", "ILLEGAL EQUIP POSITION - REPORT!",
                          "rfinger",   "lfinger",
@@ -348,7 +332,7 @@ const char *obj_pos[] = {"inventory", "ILLEGAL EQUIP POSITION - REPORT!",
                          "held",      "chest",
                          "back",      "ear1",
                          "ear2",      "ankle1",
-                         "ankle2",    NULL};
+                         "ankle2",    nullptr};
 
 const char *connected_types[] = {"Playing",
                                  "Get Name",
@@ -367,4 +351,4 @@ const char *connected_types[] = {"Playing",
                                  "New select Race",
                                  "New select Guild",
                                  "Confirm player deletion",
-                                 NULL};
+                                 nullptr};

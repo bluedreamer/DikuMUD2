@@ -31,11 +31,11 @@
 /* 23/08/93 jubal  : Allow imms to see hidden thingys                      */
 /* 10/02/94 gnort  : Rewrote do_who to be smaller and dynamic.             */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "affect.h"
 #include "blkfile.h"
@@ -47,7 +47,6 @@
 #include "guild.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
 #include "money.h"
 #include "movement.h"
 #include "protocol.h"
@@ -58,15 +57,15 @@
 #include "trie.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
 /* extern variables */
 
 extern struct descriptor_data *descriptor_list;
-extern struct unit_data       *unit_list;
 
 static void add_to_string(char **buf, int *size, int len, const char *str)
 {
-   if(*buf == NULL)
+   if(*buf == nullptr)
    {
       CREATE(*buf, char, *size);
       **buf = '\0';
@@ -81,12 +80,13 @@ static void add_to_string(char **buf, int *size, int len, const char *str)
 }
 
 /* also used in "corpses" wizard-command */
-char *in_string(struct unit_data *ch, struct unit_data *u)
+auto in_string(struct unit_data *ch, struct unit_data *u) -> char *
 {
    static char in_str[512];
    char       *tmp = in_str;
 
-   while((u = UNIT_IN(u)))
+   while((u = UNIT_IN(u)) != nullptr)
+   {
       if(IS_ROOM(u))
       {
          sprintf(tmp, "%s@%s", UNIT_FI_NAME(u), UNIT_FI_ZONENAME(u));
@@ -97,20 +97,22 @@ char *in_string(struct unit_data *ch, struct unit_data *u)
          sprintf(tmp, "%s/", UNIT_SEE_NAME(ch, u));
          TAIL(tmp);
       }
+   }
 
    error(HERE, "Something that is UNIT_IN, not in a room!");
-   return NULL;
+   return nullptr;
 }
 
 void do_exits(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
    int               door;
-   char              buf[MAX_STRING_LENGTH], *b;
+   char              buf[MAX_STRING_LENGTH];
+   char             *b;
    struct unit_data *room;
 
    const char *exits[] = {"North", "East ", "South", "West ", "Up   ", "Down "};
 
-   int has_found_door(struct unit_data * pc, int dir);
+   auto has_found_door(struct unit_data * pc, int dir)->int;
 
    send_to_char("Obvious exits:\n\r", ch);
 
@@ -119,61 +121,84 @@ void do_exits(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
    room = UNIT_IN(ch);
    if(!IS_ROOM(room) && UNIT_IS_TRANSPARENT(room))
+   {
       room = UNIT_IN(room);
+   }
 
-   if(room == NULL || !IS_ROOM(room))
+   if(room == nullptr || !IS_ROOM(room))
    {
       send_to_char("None.\n\r", ch);
       return;
    }
 
    for(door = 0; door <= 5; door++)
+   {
       if(ROOM_EXIT(room, door) && ROOM_EXIT(room, door)->to_room)
       {
          if(!IS_SET(ROOM_EXIT(room, door)->exit_info, EX_CLOSED))
          {
             if(UNIT_IS_DARK(ROOM_EXIT(room, door)->to_room))
+            {
                sprintf(b, "%s - Too dark to tell\n\r", exits[door]);
+            }
             else
+            {
                sprintf(b, "%s - %s\n\r", exits[door], UNIT_TITLE_STRING(ROOM_EXIT(room, door)->to_room));
+            }
             TAIL(b);
          }
-         else if(has_found_door(ch, door))
+         else if(has_found_door(ch, door) != 0)
          {
             sprintf(b, "%s - Closed %s.\n\r", exits[door], STR(ROOM_EXIT(room, door)->open_name.Name()));
             TAIL(b);
          }
       }
-   if(*buf)
+   }
+   if(*buf != 0)
+   {
       send_to_char(buf, ch);
+   }
    else
+   {
       send_to_char("None.\n\r", ch);
+   }
 }
 
 void do_purse(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *thing, *purse[MAX_MONEY + 1];
+   struct unit_data *thing;
+   struct unit_data *purse[MAX_MONEY + 1];
    ubit1             found = FALSE;
    int               i;
 
    for(i = 0; i <= MAX_MONEY; ++i)
-      purse[i] = NULL;
+   {
+      purse[i] = nullptr;
+   }
 
    send_to_char("Your purse contains:\n\r", ch);
 
-   for(thing = UNIT_CONTAINS(ch); thing; thing = thing->next)
+   for(thing = UNIT_CONTAINS(ch); thing != nullptr; thing = thing->next)
+   {
       if(CHAR_CAN_SEE(ch, thing) && IS_MONEY(thing))
+      {
          purse[MONEY_TYPE(thing)] = thing;
+      }
+   }
 
    for(i = MAX_MONEY; 0 <= i; --i)
-      if(purse[i])
+   {
+      if(purse[i] != nullptr)
       {
          found = TRUE;
-         act("  $2t", A_ALWAYS, ch, obj_money_string(purse[i], 0), 0, TO_CHAR);
+         act("  $2t", A_ALWAYS, ch, obj_money_string(purse[i], 0), nullptr, TO_CHAR);
       }
+   }
 
-   if(!found)
+   if(found == 0u)
+   {
       send_to_char("  Nothing.\n\r", ch);
+   }
 }
 
 void do_quests(struct unit_data *ch, char *arg, const struct command_info *cmd)
@@ -188,20 +213,24 @@ void do_quests(struct unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   for(exd = PC_QUEST(ch); exd; exd = exd->next)
+   for(exd = PC_QUEST(ch); exd != nullptr; exd = exd->next)
    {
-      if(!exd->names.Name())
+      if(exd->names.Name() == nullptr)
+      {
          continue;
+      }
 
       if(*(exd->names.Name()) == '$')
+      {
          continue;
+      }
 
       sprintf(buf, "%s\n\r", exd->names.Name());
       send_to_char(buf, ch);
       bOutput = TRUE;
    }
 
-   if(!bOutput)
+   if(bOutput == 0)
    {
       send_to_char("You have not completed any quests.\n\r", ch);
       return;
@@ -210,8 +239,12 @@ void do_quests(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
 static void status_spells(struct unit_data *ch, ubit8 realm)
 {
-   int  i, j, p;
-   char buf[83 * SPL_TREE_MAX + 512], tmpbuf[80], *b;
+   int   i;
+   int   j;
+   int   p;
+   char  buf[83 * SPL_TREE_MAX + 512];
+   char  tmpbuf[80];
+   char *b;
 
    b = buf;
 
@@ -219,7 +252,7 @@ static void status_spells(struct unit_data *ch, ubit8 realm)
 
    for(j = i = 0; i < SPL_TREE_MAX; i++)
    {
-      if((p = PC_SPL_SKILL(ch, i)) && TREE_ISLEAF(spl_tree, i) && spell_info[i].realm == realm)
+      if(((p = PC_SPL_SKILL(ch, i)) != 0) && TREE_ISLEAF(spl_tree, i) && spell_info[i].realm == realm)
       {
          sprintf(tmpbuf, "You %s %s", skill_text(spell_skills, p), spl_text[i]);
          sprintf(b, "%-39s", tmpbuf);
@@ -232,7 +265,7 @@ static void status_spells(struct unit_data *ch, ubit8 realm)
       }
    }
 
-   if(*buf)
+   if(*buf != 0)
    {
       if((j % 2) != 0)
       {
@@ -241,46 +274,59 @@ static void status_spells(struct unit_data *ch, ubit8 realm)
       }
 
       if(realm == ABIL_MAG)
+      {
          page_string(CHAR_DESCRIPTOR(ch), "Spells known through your essence magic mastery:\n\r");
+      }
       else
+      {
          page_string(CHAR_DESCRIPTOR(ch), "\n\rSpells known through your divine channeling powers:\n\r");
+      }
 
       page_string(CHAR_DESCRIPTOR(ch), buf);
    }
    else
    {
       if(realm == ABIL_MAG)
+      {
          send_to_char("You can not harness spells using essence magic "
                       "mastery:\n\r",
                       ch);
+      }
       else
+      {
          send_to_char("\n\rYou can not harness spells using divine channeling "
                       "powers:\n\r",
                       ch);
+      }
    }
 }
 
 void do_status(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   int                   idx, i, p, j;
-   struct time_info_data playing_time, years;
-   char                  buf[2 * MAX_STRING_LENGTH], tmpbuf[80], *b;
+   int                   idx;
+   int                   i;
+   int                   p;
+   int                   j;
+   struct time_info_data playing_time;
+   struct time_info_data years;
+   char                  buf[2 * MAX_STRING_LENGTH];
+   char                  tmpbuf[80];
+   char                 *b;
 
-   static const char *infos[] = {"weapons", "spells", "skills", NULL};
+   static const char *infos[] = {"weapons", "spells", "skills", nullptr};
 
-   extern const char *char_sex[];
-   extern const char *pc_races[];
-
-   struct time_info_data age(struct unit_data * ch);
-   struct time_info_data real_time_passed(time_t t2, time_t t1);
+   auto age(struct unit_data * ch)->struct time_info_data;
+   auto real_time_passed(time_t t2, time_t t1)->struct time_info_data;
 
    if(!IS_PC(ch))
+   {
       return;
+   }
 
    *buf = '\0';
    b    = buf;
 
-   if(!str_is_empty(arg))
+   if(str_is_empty(arg) == 0u)
    {
       arg  = one_argument(arg, buf);
       idx  = search_block(buf, infos, FALSE);
@@ -290,7 +336,8 @@ void do_status(struct unit_data *ch, char *arg, const struct command_info *cmd)
       {
          case 0: /* weapon */
             for(i = j = 0; i < WPN_TREE_MAX; i++)
-               if((p = PC_WPN_SKILL(ch, i)) && TREE_ISLEAF(wpn_tree, i))
+            {
+               if(((p = PC_WPN_SKILL(ch, i)) != 0) && TREE_ISLEAF(wpn_tree, i))
                {
                   sprintf(tmpbuf, "You are %s with a %s", skill_text(weapon_skills, p), wpn_text[i]);
                   sprintf(b, "%-39s", tmpbuf);
@@ -301,10 +348,15 @@ void do_status(struct unit_data *ch, char *arg, const struct command_info *cmd)
                      TAIL(b);
                   }
                }
-            if(*buf)
+            }
+            if(*buf != 0)
+            {
                page_string(CHAR_DESCRIPTOR(ch), buf);
+            }
             else
+            {
                send_to_char("You're no good with weapons.\n\r", ch);
+            }
             break;
 
          case 1: /* spell */
@@ -314,7 +366,8 @@ void do_status(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
          case 2: /* skill */
             for(j = i = 0; i < SKI_TREE_MAX; i++)
-               if((p = PC_SKI_SKILL(ch, i)) && TREE_ISLEAF(ski_tree, i))
+            {
+               if(((p = PC_SKI_SKILL(ch, i)) != 0) && TREE_ISLEAF(ski_tree, i))
                {
                   sprintf(tmpbuf, "You %s %s", skill_text(skill_skills, p), ski_text[i]);
                   sprintf(b, "%-39s", tmpbuf);
@@ -325,10 +378,15 @@ void do_status(struct unit_data *ch, char *arg, const struct command_info *cmd)
                      TAIL(b);
                   }
                }
-            if(*buf)
+            }
+            if(*buf != 0)
+            {
                page_string(CHAR_DESCRIPTOR(ch), buf);
+            }
             else
+            {
                send_to_char("You're no good with skills.\n\r", ch);
+            }
             break;
 
          default: /* wrong option */
@@ -371,9 +429,13 @@ void do_status(struct unit_data *ch, char *arg, const struct command_info *cmd)
    TAIL(b);
 
    if(IS_SET(CHAR_FLAGS(ch), CHAR_WIMPY))
+   {
       sprintf(b, "You are in wimpy mode.\n\r");
+   }
    else
+   {
       sprintf(b, "You are in brave mode.\n\r");
+   }
    TAIL(b);
 
    if(CHAR_LEVEL(ch) == START_LEVEL)
@@ -385,7 +447,7 @@ void do_status(struct unit_data *ch, char *arg, const struct command_info *cmd)
    send_to_char(buf, ch);
 }
 
-char *own_position(struct unit_data *ch)
+auto own_position(struct unit_data *ch) -> char *
 {
    static char buf[256];
 
@@ -421,11 +483,17 @@ char *own_position(struct unit_data *ch)
 
       case POSITION_FIGHTING:
          if(CHAR_FIGHTING(ch))
+         {
             sprintf(buf, "You are fighting %s.\n\r", UNIT_TITLE_STRING(CHAR_FIGHTING(ch)));
+         }
          else if(CHAR_COMBAT(ch))
+         {
             sprintf(buf, "You are fighting %s at a distance.\n\r", UNIT_TITLE_STRING(CHAR_COMBAT(ch)->Opponent()));
+         }
          else
+         {
             sprintf(buf, "You are fighting thin air.\n\r");
+         }
          break;
 
       case POSITION_STANDING:
@@ -442,20 +510,22 @@ char *own_position(struct unit_data *ch)
 
 void do_score(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   static char              buf[MAX_STRING_LENGTH], *b;
+   static char              buf[MAX_STRING_LENGTH];
+   static char             *b;
    struct unit_data        *vict;
    struct char_follow_type *f;
    int                      members = FALSE;
 
-   struct time_info_data age(const struct unit_data *ch);
-   struct time_info_data real_time_passed(time_t t2, time_t t1);
+   auto age(const struct unit_data *ch)->struct time_info_data;
 
    if(!IS_PC(ch))
+   {
       return;
+   }
 
    b = buf;
 
-   if(!strncmp(arg, "group", 5))
+   if(strncmp(arg, "group", 5) == 0)
    {
       if(!IS_SET(CHAR_FLAGS(ch), CHAR_GROUP))
       {
@@ -474,7 +544,8 @@ void do_score(struct unit_data *ch, char *arg, const struct command_info *cmd)
          members = TRUE;
       }
 
-      for(f = CHAR_FOLLOWERS(vict); f; f = f->next)
+      for(f = CHAR_FOLLOWERS(vict); f != nullptr; f = f->next)
+      {
          if(ch != f->follower && IS_SET(CHAR_FLAGS(f->follower), CHAR_GROUP))
          {
             sprintf(b, "%s %ld(%ld) hit, %d(%d) mana and %d(%d) endurance.\n\r", UNIT_NAME(f->follower), (signed long)UNIT_HIT(f->follower),
@@ -483,11 +554,16 @@ void do_score(struct unit_data *ch, char *arg, const struct command_info *cmd)
             TAIL(b);
             members = TRUE;
          }
+      }
 
-      if(members)
+      if(members != 0)
+      {
          send_to_char(buf, ch);
+      }
       else
+      {
          send_to_char("There are none of your group members here?\n\r", ch);
+      }
 
       return;
    }
@@ -498,20 +574,28 @@ void do_score(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
    strcpy(b, "You are");
    if(PC_COND(ch, DRUNK) > 10)
+   {
       strcat(b, " intoxicated, ");
+   }
    if(PC_COND(ch, THIRST) < 4)
+   {
       strcat(b, " thirsty, ");
+   }
    if(PC_COND(ch, FULL) < 4)
+   {
       strcat(b, " hungry, ");
+   }
 
-   if(b[7]) /* If any status were concatenated */
+   if(b[7] != 0) /* If any status were concatenated */
    {
       b[strlen(b) - 1] = '.';
       strcat(b, "\n\r");
       TAIL(b);
    }
    else
+   {
       *b = '\0';
+   }
 
    if(IS_MORTAL(ch))
    {
@@ -551,9 +635,13 @@ void do_score(struct unit_data *ch, char *arg, const struct command_info *cmd)
       strcpy(b, "You are a protected citizen");
       TAIL(b);
       if(IS_SET(CHAR_FLAGS(ch), CHAR_LEGAL_TARGET))
+      {
          strcpy(b, ", but people may kill you now!\n\r");
+      }
       else
+      {
          strcpy(b, ".\n\r");
+      }
       TAIL(b);
    }
 
@@ -563,14 +651,16 @@ void do_score(struct unit_data *ch, char *arg, const struct command_info *cmd)
       TAIL(b);
    }
 
-   if(affected_by_spell(ch, ID_REWARD))
+   if(affected_by_spell(ch, ID_REWARD) != nullptr)
    {
       strcpy(b, "There is a reward on your head.\n\r");
       TAIL(b);
    }
 
-   if(g_cServerConfig.m_bBOB && IS_SET(PC_FLAGS(ch), PC_PK_RELAXED))
+   if((g_cServerConfig.m_bBOB != 0) && IS_SET(PC_FLAGS(ch), PC_PK_RELAXED))
+   {
       strcpy(b, "You have signed the Book of Blood.\r\n");
+   }
 
    if(CHAR_LEVEL(ch) == START_LEVEL)
    {
@@ -593,10 +683,10 @@ void do_time(struct unit_data *ch, char *arg, const struct command_info *cmd)
    char                  buf[200];
    struct time_info_data game_time;
 
-   void                  mudtime_strcpy(struct time_info_data * time, char *str);
-   struct time_info_data mud_date(time_t t);
+   void mudtime_strcpy(struct time_info_data * time, char *str);
+   auto mud_date(time_t t)->struct time_info_data;
 
-   game_time = mud_date(time(0));
+   game_time = mud_date(time(nullptr));
 
    b = buf;
    strcpy(b, "It is ");
@@ -635,11 +725,11 @@ void player_where(struct unit_data *ch, char *arg)
    struct descriptor_data *d;
    int                     any = FALSE;
 
-   for(d = descriptor_list; d; d = d->next)
+   for(d = descriptor_list; d != nullptr; d = d->next)
    {
-      if(d->character && (d->character != ch) && UNIT_IN(d->character) && descriptor_is_playing(d) &&
-         (str_is_empty(arg) || !str_ccmp(arg, UNIT_NAME(d->character))) && CHAR_LEVEL(ch) >= UNIT_MINV(d->character) &&
-         d->original == NULL && CHAR_CAN_SEE(ch, d->character) && unit_zone(ch) == unit_zone(d->character))
+      if((d->character != nullptr) && (d->character != ch) && UNIT_IN(d->character) && (descriptor_is_playing(d) != 0) &&
+         ((str_is_empty(arg) != 0u) || (str_ccmp(arg, UNIT_NAME(d->character)) == 0)) && CHAR_LEVEL(ch) >= UNIT_MINV(d->character) &&
+         d->original == nullptr && CHAR_CAN_SEE(ch, d->character) && unit_zone(ch) == unit_zone(d->character))
       {
          sprintf(buf, "%-30s at %s\n\r", UNIT_NAME(d->character), TITLENAME(unit_room(d->character)));
          send_to_char(buf, ch);
@@ -647,22 +737,29 @@ void player_where(struct unit_data *ch, char *arg)
       }
    }
 
-   if(!any)
+   if(any == 0)
    {
-      if(str_is_empty(arg))
+      if(str_is_empty(arg) != 0u)
+      {
          send_to_char("No other visible players in this area.\n\r", ch);
+      }
       else
+      {
          send_to_char("No such player found in this area.\n\r", ch);
+      }
    }
 }
 
 void do_where(struct unit_data *ch, char *aaa, const struct command_info *cmd)
 {
-   char                   *buf = NULL, buf1[1024], buf2[512];
+   char                   *buf = NULL;
+   char                    buf1[1024];
+   char                    buf2[512];
    struct unit_data       *i;
    struct descriptor_data *d;
-   int                     len, cur_size = 2048;
-   char                   *arg = (char *)aaa;
+   int                     len;
+   int                     cur_size = 2048;
+   char                   *arg      = (char *)aaa;
 
    if(IS_MORTAL(ch))
    {
@@ -670,33 +767,40 @@ void do_where(struct unit_data *ch, char *aaa, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(arg))
+   if(str_is_empty(arg) != 0u)
    {
       strcpy(buf1, "Players\n\r-------\n\r");
       len = strlen(buf1);
       add_to_string(&buf, &cur_size, len, buf1);
 
-      for(d = descriptor_list; d; d = d->next)
-         if(d->character && UNIT_IN(d->character) && descriptor_is_playing(d) && CHAR_LEVEL(ch) >= UNIT_MINV(d->character) &&
-            (d->original == NULL || CHAR_LEVEL(ch) >= UNIT_MINV(d->original)))
+      for(d = descriptor_list; d != nullptr; d = d->next)
+      {
+         if((d->character != nullptr) && UNIT_IN(d->character) && (descriptor_is_playing(d) != 0) &&
+            CHAR_LEVEL(ch) >= UNIT_MINV(d->character) && (d->original == nullptr || CHAR_LEVEL(ch) >= UNIT_MINV(d->original)))
          {
-            if(d->original) /* If switched */
+            if(d->original != nullptr)
+            { /* If switched */
                sprintf(buf2, " In body of %s", UNIT_NAME(d->character));
+            }
             else
+            {
                buf2[0] = '\0';
+            }
 
             sprintf(buf1, "%-20s - %s [%s]%s\n\r", UNIT_NAME(CHAR_ORIGINAL(d->character)), UNIT_SEE_TITLE(ch, UNIT_IN(d->character)),
                     in_string(ch, d->character), buf2);
             len += strlen(buf1);
             add_to_string(&buf, &cur_size, len, buf1);
          }
+      }
    }
    else /* Arg was not empty */
    {
       len = 0;
       add_to_string(&buf, &cur_size, len, "");
 
-      for(i = unit_list; i; i = i->gnext)
+      for(i = unit_list; i != nullptr; i = i->gnext)
+      {
          if(UNIT_IN(i) && UNIT_NAMES(i).IsName(arg) && CHAR_LEVEL(ch) >= UNIT_MINV(i))
          {
             sprintf(buf1, "%-30s - %s [%s]\n\r", TITLENAME(i), UNIT_SEE_TITLE(ch, UNIT_IN(i)), in_string(ch, i));
@@ -704,35 +808,44 @@ void do_where(struct unit_data *ch, char *aaa, const struct command_info *cmd)
             len += strlen(buf1);
             add_to_string(&buf, &cur_size, len, buf1);
          }
+      }
    }
 
    if(*buf == '\0')
+   {
       send_to_char("Couldn't find any such thing.\n\r", ch);
+   }
    else
+   {
       page_string(CHAR_DESCRIPTOR(ch), buf);
+   }
 
    free(buf);
 }
 
 void do_who(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   static char *buf      = NULL;
+   static char *buf      = nullptr;
    static int   cur_size = 1024;
 
    struct descriptor_data *d;
-   char                    tmp[256], tmp2[512];
+   char                    tmp[256];
+   char                    tmp2[512];
    int                     len;
 
-   if(buf)
+   if(buf != nullptr)
+   {
       *buf = '\0';
+   }
 
    strcpy(tmp, g_cServerConfig.m_sColor.pWhoTitle);
    strcat(tmp, "\n\r");
    len = strlen(tmp);
    add_to_string(&buf, &cur_size, len, tmp);
 
-   for(d = descriptor_list; d; d = d->next)
-      if(descriptor_is_playing(d))
+   for(d = descriptor_list; d != nullptr; d = d->next)
+   {
+      if(descriptor_is_playing(d) != 0)
       {
          sprintf(tmp, g_cServerConfig.m_sColor.pWhoElem, UNIT_NAME(CHAR_ORIGINAL(d->character)),
                  *UNIT_TITLE_STRING(CHAR_ORIGINAL(d->character)) == ',' ? "" : " ", UNIT_TITLE_STRING(CHAR_ORIGINAL(d->character)),
@@ -743,13 +856,17 @@ void do_who(struct unit_data *ch, char *arg, const struct command_info *cmd)
          if(CHAR_LEVEL(ch) < 203)
          {
             if(IS_PC(d->character) && CHAR_CAN_SEE(ch, d->character))
+            {
                sprintf(tmp2, "%s\n\r", tmp);
+            }
             else
+            {
                tmp2[0] = '\0';
+            }
          }
          else if(CHAR_CAN_SEE(ch, CHAR_ORIGINAL(d->character)))
          {
-            if(d->original) /* If switched */
+            if(d->original != nullptr) /* If switched */
             {
                strcat(tmp, "SWITCHED INTO ");
                strcat(tmp, UNIT_NAME(d->character));
@@ -758,11 +875,14 @@ void do_who(struct unit_data *ch, char *arg, const struct command_info *cmd)
             sprintf(tmp2, "%s %s\n\r", tmp, UNIT_MINV(d->character) ? str_cc("WIZI ", itoa(UNIT_MINV(d->character))) : "");
          }
          else
+         {
             continue;
+         }
 
          len += strlen(tmp2);
          add_to_string(&buf, &cur_size, len, tmp2);
       }
+   }
 
    page_string(CHAR_DESCRIPTOR(ch), buf);
    free(buf);
@@ -770,30 +890,40 @@ void do_who(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
 void do_commands(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   char                       buf[MAX_STRING_LENGTH], *b;
-   int                        no, i;
+   char                       buf[MAX_STRING_LENGTH];
+   char                      *b;
+   int                        no;
+   int                        i;
    extern struct command_info cmd_info[];
 
    if(!IS_PC(ch))
+   {
       return;
+   }
 
    send_to_char("The following commands are available:\n\r\n\r", ch);
 
    *buf = '\0';
    b    = buf;
 
-   for(no = 1, i = 0; *cmd_info[i].cmd_str; i++)
+   for(no = 1, i = 0; *cmd_info[i].cmd_str != 0; i++)
+   {
       if(CHAR_LEVEL(ch) >= cmd_info[i].minimum_level && cmd_info[i].minimum_level < IMMORTAL_LEVEL)
       {
-         if(IS_MORTAL(ch) && (cmd_info[i].cmd_fptr == NULL) && (cmd_info[i].tmpl == 0))
+         if(IS_MORTAL(ch) && (cmd_info[i].cmd_fptr == nullptr) && (cmd_info[i].tmpl == nullptr))
+         {
             continue;
+         }
 
          sprintf(b, "%-15s", cmd_info[i].cmd_str);
-         if(!(no % 5))
+         if((no % 5) == 0)
+         {
             strcat(buf, "\n\r");
+         }
          no++;
          TAIL(b);
       }
+   }
 
    strcpy(b, "\n\r");
 
@@ -802,12 +932,15 @@ void do_commands(struct unit_data *ch, char *arg, const struct command_info *cmd
 
 void do_areas(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   char              buf[2 * MAX_STRING_LENGTH], *b;
+   char              buf[2 * MAX_STRING_LENGTH];
+   char             *b;
    int               no;
    struct zone_type *z;
 
    if(!IS_PC(ch))
+   {
       return;
+   }
 
    send_to_char("The following areas are available:\n\r\n\r", ch);
 
@@ -815,13 +948,15 @@ void do_areas(struct unit_data *ch, char *arg, const struct command_info *cmd)
    b    = buf;
    no   = 0;
 
-   for(z = zone_info.zone_list; z; z = z->next)
+   for(z = zone_info.zone_list; z != nullptr; z = z->next)
    {
-      if(!str_is_empty(z->title))
+      if(str_is_empty(z->title) == 0u)
       {
-         sprintf(b, "%-28s %s  ", z->title, z->payonly ? "Donation" : "        ");
-         if(!(no % 2))
+         sprintf(b, "%-28s %s  ", z->title, z->payonly != 0u ? "Donation" : "        ");
+         if((no % 2) == 0)
+         {
             strcat(b, "\n\r");
+         }
          no++;
          TAIL(b);
       }

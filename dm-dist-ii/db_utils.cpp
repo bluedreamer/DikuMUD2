@@ -26,11 +26,11 @@
                    free_unit, caused by wrongly nested if-else's           */
 /* Sun Jun 27 1993 HHS applied world status update */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "affect.h"
 #include "blkfile.h"
@@ -38,12 +38,12 @@
 #include "db.h"
 #include "db_file.h"
 #include "handler.h"
-#include "limits.h"
 #include "skills.h"
 #include "structs.h"
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
 /************************************************************************
  *  Memory Handling Procedures Below this line                          *

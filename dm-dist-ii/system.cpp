@@ -26,11 +26,11 @@
 /* Thu Jan 11 1995 Gnort: Started work on moving Amiga support out of	   *
  *			  server, and into mplex'er			   */
 
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 #include <netinet/tcp.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
 #include <unistd.h>
 
 #ifndef DOS
@@ -43,7 +43,7 @@
 #endif
 
 #include <arpa/inet.h>
-#include <errno.h>
+#include <cerrno>
 #include <fcntl.h>
 #include <netinet/in.h>
 
@@ -55,7 +55,6 @@
 #include "db_file.h"
 #include "files.h"
 #include "handler.h"
-#include "limits.h"
 #include "main.h"
 #include "protocol.h"
 #include "str_parse.h"
@@ -66,16 +65,15 @@
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
 /* extern vars */
-extern struct descriptor_data *descriptor_list;
-extern struct descriptor_data *next_to_process;
 
 class cMotherHook : public cHook
 {
 public:
-   void Input(int nFlags);
-   void Close(void);
+   void Input(int nFlags) override;
+   void Close();
 };
 
 class cMotherHook MotherHook;
@@ -96,15 +94,14 @@ void MplexSendSetup(struct descriptor_data *d)
 /* Call only once when creating a new char (guest)    */
 void init_char(struct unit_data *ch)
 {
-   int new_player_id(void);
+   auto new_player_id()->int;
 
-   int i, init_skills = 0;
+   int i;
+   int init_skills = 0;
 
    extern sbit32 player_id;
 
-   int required_xp(int level);
-
-   if(g_cServerConfig.m_bBBS)
+   if(g_cServerConfig.m_bBBS != 0)
    {
       PC_SETUP_ECHO(ch)      = TRUE;
       PC_SETUP_REDRAW(ch)    = TRUE;
@@ -128,18 +125,18 @@ void init_char(struct unit_data *ch)
 
    account_defaults(ch);
 
-   PC_INFO(ch)          = NULL;
-   PC_QUEST(ch)         = NULL;
-   UNIT_EXTRA_DESCR(ch) = NULL;
-   PC_HOME(ch)          = NULL;
-   PC_GUILD(ch)         = NULL;
+   PC_INFO(ch)          = nullptr;
+   PC_QUEST(ch)         = nullptr;
+   UNIT_EXTRA_DESCR(ch) = nullptr;
+   PC_HOME(ch)          = nullptr;
+   PC_GUILD(ch)         = nullptr;
 
    CHAR_POS(ch)   = POSITION_STANDING;
    CHAR_SPEED(ch) = SPEED_DEFAULT;
    CHAR_RACE(ch)  = RACE_HUMAN;
    CHAR_SEX(ch)   = SEX_MALE;
 
-   PC_TIME(ch).connect = PC_TIME(ch).birth = PC_TIME(ch).creation = time(0);
+   PC_TIME(ch).connect = PC_TIME(ch).birth = PC_TIME(ch).creation = time(nullptr);
    PC_TIME(ch).played                                             = 0;
    PC_LIFESPAN(ch)                                                = 100;
 
@@ -202,13 +199,15 @@ void init_char(struct unit_data *ch)
 
    CHAR_MANA(ch)      = mana_limit(ch);
    CHAR_ENDURANCE(ch) = move_limit(ch);
-   CHAR_LAST_ROOM(ch) = NULL;
+   CHAR_LAST_ROOM(ch) = nullptr;
 
    CHAR_FLAGS(ch) = 0;
    SET_BIT(CHAR_FLAGS(ch), CHAR_PROTECTED);
 
    for(i = 0; i < 3; i++)
+   {
       PC_COND(ch, i) = (CHAR_LEVEL(ch) >= 200 ? 48 : 24);
+   }
 
    PC_COND(ch, DRUNK) = 0;
 
@@ -226,7 +225,9 @@ descriptor_data::descriptor_data(cMultiHook *pe)
 
    no_connections++;
    if(no_connections > max_no_connections)
+   {
       max_no_connections = no_connections;
+   }
 
    /* init desc data */
    multi = pe;
@@ -243,14 +244,14 @@ descriptor_data::descriptor_data(cMultiHook *pe)
    nPort   = 0;
    nLine   = 255;
 
-   localstr = NULL;
-   postedit = NULL;
-   editing  = NULL;
-   editref  = NULL;
+   localstr = nullptr;
+   postedit = nullptr;
+   editing  = nullptr;
+   editref  = nullptr;
 
-   original       = 0;
-   snoop.snooping = 0;
-   snoop.snoop_by = 0;
+   original       = nullptr;
+   snoop.snooping = nullptr;
+   snoop.snoop_by = nullptr;
    replyid        = (ubit32)-1;
 
    /* Make a new PC struct */
@@ -263,7 +264,7 @@ descriptor_data::descriptor_data(cMultiHook *pe)
    descriptor_list = this;
 }
 
-void descriptor_data::RemoveBBS(void)
+void descriptor_data::RemoveBBS() const
 {
    if(nLine != 255)
    {
@@ -274,7 +275,7 @@ void descriptor_data::RemoveBBS(void)
    }
 }
 
-void descriptor_data::CreateBBS(void)
+void descriptor_data::CreateBBS()
 {
    if(nLine != 255)
    {
@@ -283,7 +284,7 @@ void descriptor_data::CreateBBS(void)
 
       sprintf(buf, BBS_DIR "%d.%d", nPort, nLine);
 
-      if(!character)
+      if(character == nullptr)
       {
          slog(LOG_ALL, 0, "No character in %s.", buf);
          return;
@@ -291,16 +292,20 @@ void descriptor_data::CreateBBS(void)
 
       f = fopen(buf, "wb");
 
-      if(!f)
+      if(f == nullptr)
       {
          slog(LOG_ALL, 0, "Could not create %s.", buf);
          return;
       }
 
-      if(account_is_overdue(this->character))
+      if(account_is_overdue(this->character) != 0)
+      {
          fprintf(f, "1\n");
+      }
       else
+      {
          fprintf(f, "0\n");
+      }
 
       fprintf(f, "%d\n", PC_ACCOUNT(this->character).total_credit);
       fprintf(f, "%s\n", PC_FILENAME(this->character));
@@ -311,7 +316,7 @@ void descriptor_data::CreateBBS(void)
    }
 }
 
-descriptor_data::~descriptor_data(void)
+descriptor_data::~descriptor_data()
 {
    RemoveBBS();
    nLine = 255;
@@ -320,7 +325,7 @@ descriptor_data::~descriptor_data(void)
 
 /* Pass the multi-fd which is to be associated with this new descriptor */
 /* Note that id zero signifies that mplex descriptor has no mplex'er    */
-struct descriptor_data *descriptor_new(class cMultiHook *pe)
+auto descriptor_new(class cMultiHook *pe) -> struct descriptor_data *
 {
    return new descriptor_data(pe);
 }
@@ -333,11 +338,10 @@ struct descriptor_data *descriptor_new(class cMultiHook *pe)
 void descriptor_close(struct descriptor_data *d, int bSendClose)
 {
    struct descriptor_data *tmp;
-   class cMultiHook       *multi = NULL;
+   class cMultiHook       *multi = nullptr;
 
    void unsnoop(struct unit_data * ch, int mode);
    void unswitchbody(struct unit_data * npc);
-   int  is_destructed(int type, void *ptr);
 
    assert(d->character);
 
@@ -353,34 +357,40 @@ void descriptor_close(struct descriptor_data *d, int bSendClose)
 
       /* Important that we set to NULL before calling extract,
          otherwise we just go to the menu... ... ... */
-      CHAR_DESCRIPTOR(d->character) = NULL;
+      CHAR_DESCRIPTOR(d->character) = nullptr;
       extract_unit(d->character);
-      d->character = NULL;
+      d->character = nullptr;
       /* Too much log slog(LOG_ALL, "Losing descriptor from menu."); */
    }
    else
    {
-      if(d->localstr)
+      if(d->localstr != nullptr)
+      {
          free(d->localstr);
+      }
 
-      d->localstr = NULL;
-      d->postedit = NULL;
-      d->editing  = NULL;
-      d->editref  = NULL;
+      d->localstr = nullptr;
+      d->postedit = nullptr;
+      d->editing  = nullptr;
+      d->editref  = nullptr;
 
       if(CHAR_IS_SNOOPING(d->character) || CHAR_IS_SNOOPED(d->character))
+      {
          unsnoop(d->character, 1);
+      }
 
       if(CHAR_IS_SWITCHED(d->character))
+      {
          unswitchbody(d->character);
+      }
 
       assert(!d->snoop.snooping && !d->snoop.snoop_by);
       assert(!d->original);
 
-      act("$1n has lost $1s link.", A_HIDEINV, d->character, 0, 0, TO_ROOM);
+      act("$1n has lost $1s link.", A_HIDEINV, d->character, nullptr, nullptr, TO_ROOM);
       slog(LOG_BRIEF, UNIT_MINV(d->character), "Closing link and making link dead: %s.", UNIT_NAME(d->character));
 
-      if(!is_destructed(DR_UNIT, d->character))
+      if(is_destructed(DR_UNIT, d->character) == 0)
       {
          void disconnect_game(struct unit_data * pc);
 
@@ -392,31 +402,41 @@ void descriptor_close(struct descriptor_data *d, int bSendClose)
             save_player(d->character); /* Save non-guests */
             save_player_contents(d->character, TRUE);
 
-            create_fptr(d->character, SFUN_LINK_DEAD, 0, SFB_CMD, NULL);
+            create_fptr(d->character, SFUN_LINK_DEAD, 0, SFB_CMD, nullptr);
          }
          else
+         {
             extract_unit(d->character); /* We extract guests */
+         }
       }
 
       /* Important we set tp null AFTER calling save - otherwise
          time played does not get updated. */
-      CHAR_DESCRIPTOR(d->character) = NULL;
-      d->character                  = NULL;
+      CHAR_DESCRIPTOR(d->character) = nullptr;
+      d->character                  = nullptr;
    }
 
-   if(bSendClose && d->multi->IsHooked())
+   if((bSendClose != 0) && (d->multi->IsHooked() != 0))
+   {
       protocol_send_close(d->multi, d->id);
+   }
 
-   if(next_to_process == d) /* to avoid crashing the process loop */
+   if(next_to_process == d)
+   { /* to avoid crashing the process loop */
       next_to_process = next_to_process->next;
+   }
 
-   if(d == descriptor_list) /* this is the head of the list */
+   if(d == descriptor_list)
+   { /* this is the head of the list */
       descriptor_list = descriptor_list->next;
+   }
    else /* This is somewhere inside the list */
    {
       /* Locate the previous element */
-      for(tmp = descriptor_list; tmp && (tmp->next != d); tmp = tmp->next)
+      for(tmp = descriptor_list; (tmp != nullptr) && (tmp->next != d); tmp = tmp->next)
+      {
          ;
+      }
       tmp->next = d->next;
    }
 
@@ -429,24 +449,24 @@ void descriptor_close(struct descriptor_data *d, int bSendClose)
 /*                                                                   */
 /* ----------------------------------------------------------------- */
 
-cMultiMaster::cMultiMaster(void)
+cMultiMaster::cMultiMaster()
 {
    nCount = 0;
 }
 
-cMultiHook::cMultiHook(void)
+cMultiHook::cMultiHook()
 {
    succ_err = 0;
 }
 
 void cMultiHook::Input(int nFlags)
 {
-   if(nFlags & SELECT_EXCEPT)
+   if((nFlags & SELECT_EXCEPT) != 0)
    {
       slog(LOG_ALL, 0, "Freaky multi!");
       Close();
    }
-   if(nFlags & SELECT_READ)
+   if((nFlags & SELECT_READ) != 0)
    {
       int n;
 
@@ -454,7 +474,9 @@ void cMultiHook::Input(int nFlags)
       {
          n = Read();
          if((n == 0) || (n == -1))
+         {
             break;
+         }
       }
 
       if(n == -1)
@@ -469,10 +491,12 @@ void cMultiHook::Input(int nFlags)
    }
 }
 
-void cMultiHook::Close(void)
+void cMultiHook::Close()
 {
-   if(!IsHooked())
+   if(IsHooked() == 0)
+   {
       return;
+   }
 
    slog(LOG_ALL, 0, "Closing connection to multi host.");
 
@@ -481,10 +505,11 @@ void cMultiHook::Close(void)
    Multi.nCount--;
 }
 
-int cMultiHook::Read(void)
+auto cMultiHook::Read() -> int
 {
-   struct descriptor_data *d = NULL;
-   int                     p, n;
+   struct descriptor_data *d = nullptr;
+   int                     p;
+   int                     n;
    ubit16                  id;
    ubit16                  len;
    char                   *data;
@@ -495,18 +520,22 @@ int cMultiHook::Read(void)
    p = protocol_parse_incoming(this, &id, &len, &data, &text_type);
 
    if(p <= 0)
+   {
       return p;
+   }
 
    if(id != 0)
    {
-      for(d = descriptor_list; d; d = d->next)
+      for(d = descriptor_list; d != nullptr; d = d->next)
+      {
          if(d->id == id)
          {
             assert(d->multi == this);
             break;
          }
+      }
 
-      if(d == NULL)
+      if(d == nullptr)
       {
          /* This could perhaps occur if a connected player issues a command
             simultaneously with the server throwing the person out.
@@ -519,13 +548,17 @@ int cMultiHook::Read(void)
          {
             Close();
             slog(LOG_ALL, 0, "Lost track of multi stream.");
-            if(data)
+            if(data != nullptr)
+            {
                free(data);
+            }
             return -1;
          }
       }
       else
+      {
          succ_err = 0;
+      }
    }
 
    switch(p)
@@ -533,10 +566,14 @@ int cMultiHook::Read(void)
       case MULTI_TERMINATE_CHAR:
          /* This is very nice, but it prevents descriptor_close to send
             a connection_close to the mplex'er */
-         if(d)
+         if(d != nullptr)
+         {
             descriptor_close(d, FALSE);
-         if(data)
+         }
+         if(data != nullptr)
+         {
             free(data);
+         }
          break;
 
       case MULTI_CONNECT_REQ_CHAR:
@@ -547,56 +584,67 @@ int cMultiHook::Read(void)
          break;
 
       case MULTI_HOST_CHAR:
-         if(d && data)
+         if((d != nullptr) && (data != nullptr))
          {
-            ubit8 *b = (ubit8 *)data;
+            auto *b = (ubit8 *)data;
 
             d->nPort = bread_ubit16(&b);
             d->nLine = bread_ubit8(&b);
             strncpy(d->host, (char *)b, sizeof(d->host));
             d->host[sizeof(d->host) - 1] = 0;
          }
-         if(data)
+         if(data != nullptr)
+         {
             free(data);
+         }
          break;
 
       case MULTI_TEXT_CHAR:
-         if(d)
+         if(d != nullptr)
+         {
             d->qInput.Append(new cQueueElem(data, FALSE));
+         }
          /* Kept in queue */
          break;
 
       default:
          slog(LOG_ALL, 0, "Illegal unexpected unique multi character.");
          Close();
-         if(data)
+         if(data != nullptr)
+         {
             free(data);
+         }
          return -1;
    }
 
    return p;
 }
 
-void multi_clear(void)
+void multi_clear()
 {
-   struct descriptor_data *nextd, *d;
+   struct descriptor_data *nextd;
+   struct descriptor_data *d;
 
-   for(d = descriptor_list; d; d = nextd)
+   for(d = descriptor_list; d != nullptr; d = nextd)
    {
       nextd = d->next;
-      if(!d->multi->IsHooked())
+      if(d->multi->IsHooked() == 0)
+      {
          descriptor_close(d);
+      }
    }
 }
 
-void multi_close_all(void)
+void multi_close_all()
 {
    int i;
 
    slog(LOG_BRIEF, 0, "Closing all multi connections.");
 
    for(i = 0; i < MAX_MULTI; i++)
+   {
       Multi.Multi[i].Close();
+   }
 
    multi_clear();
 }
@@ -609,16 +657,17 @@ void multi_close_all(void)
 
 void cMotherHook::Input(int nFlags)
 {
-   if(nFlags & SELECT_EXCEPT)
+   if((nFlags & SELECT_EXCEPT) != 0)
    {
       slog(LOG_ALL, 0, "Mother connection closed down.");
       Close();
    }
 
-   if(nFlags & SELECT_READ)
+   if((nFlags & SELECT_READ) != 0)
    {
       struct sockaddr_in isa;
-      int                i, t;
+      int                i;
+      int                t;
       socklen_t          len; // MS2020
 
       len = sizeof(isa);
@@ -629,7 +678,7 @@ void cMotherHook::Input(int nFlags)
          return;
       }
 
-      if(!g_cServerConfig.ValidMplex(&isa))
+      if(g_cServerConfig.ValidMplex(&isa) == 0)
       {
          slog(LOG_ALL, 0, "Mplex not from trusted host, terminating.");
          close(t);
@@ -639,7 +688,9 @@ void cMotherHook::Input(int nFlags)
       i = fcntl(t, F_SETFL, FNDELAY);
 
       if(i == -1)
+      {
          error(HERE, "Noblock");
+      }
 
       int n;
       n = setsockopt(t, IPPROTO_TCP, TCP_NODELAY, &i, sizeof(i));
@@ -650,10 +701,14 @@ void cMotherHook::Input(int nFlags)
       }
 
       for(i = 0; i < MAX_MULTI; i++)
-         if(!Multi.Multi[i].IsHooked())
+      {
+         if(Multi.Multi[i].IsHooked() == 0)
+         {
             break;
+         }
+      }
 
-      if((i >= MAX_MULTI) || Multi.Multi[i].IsHooked())
+      if((i >= MAX_MULTI) || (Multi.Multi[i].IsHooked() != 0))
       {
          slog(LOG_ALL, 0, "No more multi connections allowed");
          close(t);
@@ -668,7 +723,7 @@ void cMotherHook::Input(int nFlags)
    }
 }
 
-void cMotherHook::Close(void)
+void cMotherHook::Close()
 {
    multi_close_all();
 
@@ -677,7 +732,8 @@ void cMotherHook::Close(void)
 
 void init_mother(int nPort)
 {
-   int                n, fdMother;
+   int                n;
+   int                fdMother;
    struct linger      ld;
    struct sockaddr_in server_addr;
 

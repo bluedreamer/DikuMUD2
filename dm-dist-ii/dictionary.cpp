@@ -75,10 +75,10 @@ Mon Nov 14 17:19:47 MET 1994
 
 */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "comm.h"
 #include "config.h"
@@ -117,7 +117,7 @@ struct alias_t
 /* Procedure supplied to free_trie and del_trie */
 void free_alias(void *data)
 {
-   struct alias_t *al = (struct alias_t *)data;
+   auto *al = (struct alias_t *)data;
 
    free(al->key);
    free(al->value);
@@ -125,14 +125,16 @@ void free_alias(void *data)
 }
 
 /* Word is here defined as an unbroken sequence of nonspaces */
-static char *get_next_word(const char *argument, char *first_arg)
+static auto get_next_word(const char *argument, char *first_arg) -> char *
 {
    /* Find first non blank */
    argument = skip_spaces(argument);
 
    /* Copy next word and make it lower case */
-   for(; *argument && !isspace(*argument); argument++)
+   for(; (*argument != 0) && (isspace(*argument) == 0); argument++)
+   {
       *first_arg++ = tolower(*argument);
+   }
 
    *first_arg = '\0';
 
@@ -154,52 +156,68 @@ static void set_owner(struct unit_data *obj, struct alias_head *ah, struct unit_
 }
 
 /* Allocate `exd' if needed, and erase old description */
-static struct extra_descr_data *fix_extra_descr(struct unit_data *obj, class extra_descr_data *exd)
+static auto fix_extra_descr(struct unit_data *obj, class extra_descr_data *exd) -> struct extra_descr_data *
 {
-   static const char *aliaslist[] = {"$alias", NULL};
+   static const char *aliaslist[] = {"$alias", nullptr};
 
-   if(exd == NULL)
-      exd = UNIT_EXTRA_DESCR(obj) = UNIT_EXTRA_DESCR(obj)->add(aliaslist, NULL);
+   if(exd == nullptr)
+   {
+      exd = UNIT_EXTRA_DESCR(obj) = UNIT_EXTRA_DESCR(obj)->add(aliaslist, nullptr);
+   }
 
    return exd;
 }
 
 /* Parse the alias, according to the &-rule sketched out in help-page */
-static char *parse_alias(char *src, char *arg)
+static auto parse_alias(char *src, char *arg) -> char *
 {
    static char buf[2 * MAX_INPUT_LENGTH + 2];
-   char       *argv[10], *cnew = buf;
-   int         argc, i         = 0;
+   char       *argv[10];
+   char       *cnew = buf;
+   int         argc;
+   int         i = 0;
 
    for(argc = 1; argc < 10; argc++) /* store word-pointers in argv */
    {
-      while(*arg && isspace(*arg))
-         arg++;         /* skip spaces */
+      while((*arg != 0) && (isspace(*arg) != 0))
+      {
+         arg++; /* skip spaces */
+      }
       argv[argc] = arg; /* record first non-space pos. */
-      while(*arg && !isspace(*arg))
+      while((*arg != 0) && (isspace(*arg) == 0))
+      {
          arg++; /* skip non-spaces */
+      }
    }
 
-   for(argc = 1; (*cnew = *src);) /* check src for `&' substitution */
+   for(argc = 1; (*cnew = *src) != 0;) /* check src for `&' substitution */
    {
       if(*src++ == '&')
       {
-         if(isdigit(*src) && (i = *src - '0') > 0) /* Digit picks argument */
+         if((isdigit(*src) != 0) && (i = *src - '0') > 0) /* Digit picks argument */
          {
             get_next_word(argv[i], cnew);
             src++;
          }
-         else if(strchr(src, '&')) /* Current `&' isn't the last */
+         else if(strchr(src, '&') != nullptr)
+         { /* Current `&' isn't the last */
             get_next_word(argv[argc++], cnew);
-         else /* It is the last, so it takes rest of argument */
+         }
+         else
+         { /* It is the last, so it takes rest of argument */
             strcpy(cnew, argv[argc]);
+         }
          TAIL(cnew);
       }
       else
+      {
          cnew++;
+      }
 
       if(cnew - buf >= (sbit32)sizeof(buf) / 2 - 1)
-         return NULL; /* we wrote too much, so abort */
+      {
+         return nullptr; /* we wrote too much, so abort */
+      }
    }
 
    return buf;
@@ -210,16 +228,21 @@ static char *parse_alias(char *src, char *arg)
  *  check_count makes sure that the user doesn't make nasty (!) computationally
  *  heavy (!!!) aliases that will bog the mud enormously.
  */
-static int push_alias(char *s, char *arg, struct trie_type *t, struct unit_data *ch, bool first)
+static auto push_alias(char *s, char *arg, struct trie_type *t, struct unit_data *ch, bool first) -> int
 {
-   char            cmd[MAX_INPUT_LENGTH + 1], parsed[2 * MAX_INPUT_LENGTH + 2];
-   char           *par, *newarg, *c;
+   char            cmd[MAX_INPUT_LENGTH + 1];
+   char            parsed[2 * MAX_INPUT_LENGTH + 2];
+   char           *par;
+   char           *newarg;
+   char           *c;
    struct alias_t *al;
 
    static ubit8 check_count = 0;
 
    if(first)
+   {
       check_count = 0;
+   }
    else if(check_count++ > ALIAS_UPPER_BOUND)
    {
       send_to_char("Alias was too deeply nested. Aborted.\n\r", ch);
@@ -229,11 +252,13 @@ static int push_alias(char *s, char *arg, struct trie_type *t, struct unit_data 
    do
    {
       /* Cut off at semi-colons, but remember position for next iteration */
-      if((c = strchr(s, ';')))
+      if((c = strchr(s, ';')) != nullptr)
+      {
          *c = '\0';
+      }
 
       /* Parse the alias substitution */
-      if(!(par = parse_alias(s, arg)))
+      if((par = parse_alias(s, arg)) == nullptr)
       {
          send_to_char("Overflow while parsing alias. Aborted.\n\r", ch);
          return -1;
@@ -243,19 +268,25 @@ static int push_alias(char *s, char *arg, struct trie_type *t, struct unit_data 
       strcpy(parsed, par);
       newarg = (char *)get_next_word(parsed, cmd);
 
-      if((al = (struct alias_t *)search_trie(cmd, t)))
+      if((al = (struct alias_t *)search_trie(cmd, t)) != nullptr)
       {
          if(push_alias(al->value, newarg, t, ch, FALSE) < 0)
+         {
             return -1;
+         }
       }
-      else /* not a new alias, so it's probably a command */
+      else
+      { /* not a new alias, so it's probably a command */
          CHAR_DESCRIPTOR(ch)->qInput.Append(new cQueueElem(par));
+      }
 
-      if(c) /* Restore the semi-colon */
+      if(c != nullptr)
+      { /* Restore the semi-colon */
          *c = ';';
+      }
 
       s = c + 1;
-   } while(c);
+   } while(c != nullptr);
 
    return 0;
 }
@@ -266,23 +297,24 @@ static void alias_to_char(struct alias_t *al, struct unit_data *ch)
    char buf[2 * MAX_INPUT_LENGTH + 2];
 
    sprintf(buf, " %-*s%s", MAX_ALIAS_LENGTH + 5, al->key, al->value);
-   act("$2t", A_ALWAYS, ch, buf, 0, TO_CHAR);
+   act("$2t", A_ALWAYS, ch, buf, nullptr, TO_CHAR);
 }
 
 /*  Prints all defined aliases in `t' alphabetically to char by
  *  recursively walking the trie
  */
-static int print_alias(struct trie_type *t, struct unit_data *ch)
+static auto print_alias(struct trie_type *t, struct unit_data *ch) -> int
 {
    struct trie_type *t2;
    struct alias_t   *al;
-   int               i, count = 0;
+   int               i;
+   int               count = 0;
 
-   for(i = 0; t && i < t->size; i++)
+   for(i = 0; (t != nullptr) && i < t->size; i++)
    {
       t2 = t->nexts[i].t;
 
-      if((al = (struct alias_t *)t2->data))
+      if((al = (struct alias_t *)t2->data) != nullptr)
       {
          alias_to_char(al, ch);
          count++;
@@ -296,12 +328,13 @@ static int print_alias(struct trie_type *t, struct unit_data *ch)
  *  single says if we plan to add only one alias or several at `boottime'.
  *  If false, it is assumed the user sorts the trie himself
  */
-static int add_alias(struct alias_head *ah, char *key, char *val, bool single)
+static auto add_alias(struct alias_head *ah, char *key, char *val, bool single) -> int
 {
-   struct alias_t *al = NULL, *tmp_al;
+   struct alias_t *al = NULL;
+   struct alias_t *tmp_al;
 
    /* There is already an alias for key - Delete it */
-   if(single && ah->trie && (al = (struct alias_t *)search_trie(key, ah->trie)))
+   if(single && (ah->trie != nullptr) && ((al = (struct alias_t *)search_trie(key, ah->trie)) != nullptr))
    {
       free(al->value);
       al->value = str_dup(val);
@@ -315,18 +348,20 @@ static int add_alias(struct alias_head *ah, char *key, char *val, bool single)
 
    ah->trie = add_trienode(key, ah->trie);
    if(single)
+   {
       qsort_triedata(ah->trie);
+   }
    set_triedata(key, ah->trie, tmp_al, TRUE);
 
    return 1;
 }
 
 /* Delete an alias, using the free_alias procedure */
-static bool del_alias(struct alias_head *ah, char *key)
+static auto del_alias(struct alias_head *ah, char *key) -> bool
 {
-   struct alias_t *al = NULL;
+   struct alias_t *al = nullptr;
 
-   if(ah->trie && (al = (struct alias_t *)search_trie(key, ah->trie)))
+   if((ah->trie != nullptr) && ((al = (struct alias_t *)search_trie(key, ah->trie)) != nullptr))
    {
       ah->char_count -= (strlen(al->key) + strlen(al->value) + 2);
 
@@ -343,44 +378,59 @@ static bool del_alias(struct alias_head *ah, char *key)
  *  check_count makes sure that the user doesn't make nasty (!) computationally
  *  heavy (!!!) aliases that will bog the mud enormously.
  */
-static ubit8 circle_alias(char *key, char *val, struct trie_type *t, bool first)
+static auto circle_alias(char *key, char *val, struct trie_type *t, bool first) -> ubit8
 {
-   char           *tmp, *sc, comm[MAX_INPUT_LENGTH + 2];
-   struct alias_t *tmp_al      = NULL;
+   char           *tmp;
+   char           *sc;
+   char            comm[MAX_INPUT_LENGTH + 2];
+   struct alias_t *tmp_al      = nullptr;
    ubit8           res         = 0;
    static ubit8    check_count = 0;
 
    if(first)
+   {
       check_count = 0;
+   }
    else if(check_count++ > ALIAS_UPPER_BOUND)
+   {
       return 3;
+   }
 
    tmp = val;
 
    do
    {
-      if((sc = strchr(tmp, ';')))
+      if((sc = strchr(tmp, ';')) != nullptr)
+      {
          *sc = '\0';
+      }
 
       get_next_word(tmp, comm);
 
-      if(sc)
+      if(sc != nullptr)
+      {
          *sc = ';';
+      }
 
-      if(!str_ccmp(comm, key))
+      if(str_ccmp(comm, key) == 0)
+      {
          return 1;
-      else if(first && (is_abbrev(comm, "alias") || is_abbrev(comm, "unalias")))
+      }
+      if(first && (is_abbrev(comm, "alias") || is_abbrev(comm, "unalias")))
          return 2;
       else if(first && *comm == '!')
          return 4;
       else if(first && is_abbrev(comm, "shout"))
          return 5;
 
-      if(t && (tmp_al = (struct alias_t *)search_trie(comm, t)) && (res = circle_alias(key, tmp_al->value, t, FALSE)))
+      if((t != nullptr) && ((tmp_al = (struct alias_t *)search_trie(comm, t)) != nullptr) &&
+         ((res = circle_alias(key, tmp_al->value, t, FALSE)) != 0u))
+      {
          return res;
+      }
 
       tmp = sc + 1;
-   } while(sc);
+   } while(sc != nullptr);
 
    return 0;
 }
@@ -389,10 +439,10 @@ static ubit8 circle_alias(char *key, char *val, struct trie_type *t, bool first)
  *  This should all be linear, except for the recursion check,
  *  which has a fixed upper bound.
  */
-static bool alias_is_ok(struct alias_head *ah, char *key, char *val, struct unit_data *ch)
+static auto alias_is_ok(struct alias_head *ah, char *key, char *val, struct unit_data *ch) -> bool
 {
    char           *tmp;
-   struct alias_t *al = NULL;
+   struct alias_t *al = nullptr;
    int             count;
 
    extern int bModeBBS;
@@ -401,13 +451,15 @@ static bool alias_is_ok(struct alias_head *ah, char *key, char *val, struct unit
    {
       count = MAX_ALIAS_LENGTH;
 
-      act("Aliasname too long. Max $2d chars.", A_ALWAYS, ch, &count, 0, TO_CHAR);
+      act("Aliasname too long. Max $2d chars.", A_ALWAYS, ch, &count, nullptr, TO_CHAR);
       return FALSE;
    }
 
    count = strlen(key) + strlen(val) + ah->char_count + 3;
-   if(ah->trie && (al = (struct alias_t *)search_trie(key, ah->trie)))
+   if((ah->trie != nullptr) && ((al = (struct alias_t *)search_trie(key, ah->trie)) != nullptr))
+   {
       count -= strlen(al->value);
+   }
 
    if(count > MAX_ALIAS_COUNT)
    {
@@ -415,13 +467,14 @@ static bool alias_is_ok(struct alias_head *ah, char *key, char *val, struct unit
       return FALSE;
    }
 
-   if(is_abbrev(key, "alias") || is_abbrev(key, "unalias"))
+   if((is_abbrev(key, "alias") != 0u) || (is_abbrev(key, "unalias") != 0u))
    {
       send_to_char("Alas, but that is a reserved name.\n\r", ch);
       return FALSE;
    }
 
-   for(count = 0, tmp = val; *tmp; tmp++)
+   for(count = 0, tmp = val; *tmp != 0; tmp++)
+   {
       switch(*tmp)
       {
          case '~':
@@ -437,12 +490,13 @@ static bool alias_is_ok(struct alias_head *ah, char *key, char *val, struct unit
             break;
 
          case '&':
-            if(!isdigit(tmp[1]) && ++count > 9)
+            if((isdigit(tmp[1]) == 0) && ++count > 9)
             {
                send_to_char("Sorry, `&' can't be used more than 9 times.\n\r", ch);
                return FALSE;
             }
       }
+   }
 
    switch(circle_alias(key, val, ah->trie, TRUE))
    {
@@ -459,7 +513,7 @@ static bool alias_is_ok(struct alias_head *ah, char *key, char *val, struct unit
          send_to_char("You can't use '!' from within an alias.\n\r", ch);
          return FALSE;
       case 5:
-         if(!g_cServerConfig.m_bAliasShout)
+         if(g_cServerConfig.m_bAliasShout == 0)
          {
             send_to_char("Using `shout' in an alias is not very nice...\n\r", ch);
             return FALSE;
@@ -477,21 +531,23 @@ static void rec_alias_to_str(struct trie_type *t, char **bufp)
    int             i;
    struct alias_t *al;
 
-   if(t)
+   if(t != nullptr)
    {
-      if((al = (struct alias_t *)t->data))
+      if((al = (struct alias_t *)t->data) != nullptr)
       {
          sprintf(*bufp, "%s %s~", al->key, al->value);
          TAIL(*bufp);
       }
 
       for(i = 0; i < t->size; i++)
+      {
          rec_alias_to_str(t->nexts[i].t, bufp);
+      }
    }
 }
 
 /* Convert a trie to a string.  Needed for saving the aliases */
-static char *alias_to_str(struct alias_head *ah)
+static auto alias_to_str(struct alias_head *ah) -> char *
 {
    static char buf[MAX_ALIAS_COUNT + ALIAS_NAME + 2 + 500];
    char       *bufp = buf;
@@ -507,17 +563,19 @@ static char *alias_to_str(struct alias_head *ah)
 }
 
 /* Take the above constructed string and turn it into an alias-set. */
-static struct alias_head *str_to_alias(const char *str)
+static auto str_to_alias(const char *str) -> struct alias_head *
 {
    struct alias_head *ah;
-   char               cmd[MAX_ALIAS_LENGTH + 1], *tmp, *tilde;
+   char               cmd[MAX_ALIAS_LENGTH + 1];
+   char              *tmp;
+   char              *tilde;
 
    CREATE(ah, struct alias_head, 1);
    ah->char_count = 0;
-   ah->trie       = NULL;
+   ah->trie       = nullptr;
    strcpy(ah->owner, "none");
 
-   if(str)
+   if(str != nullptr)
    {
       /*  This takes the first word of the alias-string.
        *  If it's tilde-terminated, it's the name of the owner.
@@ -533,9 +591,11 @@ static struct alias_head *str_to_alias(const char *str)
          ah->owner[strlen(ah->owner) - 1] = '\0'; /* Cut of tilde */
       }
       else
+      {
          sprintf(ah->owner, "old_hat");
+      }
 
-      while(*str)
+      while(*str != 0)
       {
          tilde  = (char *)strchr(str, '~'); /* Find first tilde in string */
          *tilde = '\0';
@@ -547,8 +607,10 @@ static struct alias_head *str_to_alias(const char *str)
          str    = tilde + 1;
       }
 
-      if(ah->trie)
+      if(ah->trie != nullptr)
+      {
          qsort_triedata(ah->trie);
+      }
    }
 
    return ah;
@@ -559,16 +621,18 @@ static struct alias_head *str_to_alias(const char *str)
 static void cmd_alias(struct unit_data *ch, char *arg, struct alias_head *alias_h)
 {
    char            comm[MAX_INPUT_LENGTH + 1];
-   struct alias_t *al = NULL;
+   struct alias_t *al = nullptr;
 
-   if(str_is_empty(arg))
+   if(str_is_empty(arg) != 0u)
    {
       /* No argument lists the defined aliases */
       if(print_alias(alias_h->trie, ch) == 0)
       {
          send_to_char("No aliases defined.\n\r", ch);
          if(alias_h->char_count > 0)
+         {
             slog(LOG_BRIEF, 0, "%s: No aliases, but %d in char_count.", __FILE__, alias_h->char_count);
+         }
       }
 
       return;
@@ -577,13 +641,17 @@ static void cmd_alias(struct unit_data *ch, char *arg, struct alias_head *alias_
    /* Cut off first argument */
    arg = get_next_word(arg, comm);
 
-   if(str_is_empty(arg))
+   if(str_is_empty(arg) != 0u)
    {
       /* No further arguments lists this alias, if defined */
-      if(alias_h->trie == NULL || (al = (struct alias_t *)search_trie(comm, alias_h->trie)) == NULL)
-         act("No alias defined for `$2t'.", A_ALWAYS, ch, comm, 0, TO_CHAR);
+      if(alias_h->trie == nullptr || (al = (struct alias_t *)search_trie(comm, alias_h->trie)) == nullptr)
+      {
+         act("No alias defined for `$2t'.", A_ALWAYS, ch, comm, nullptr, TO_CHAR);
+      }
       else
+      {
          alias_to_char(al, ch);
+      }
 
       return;
    }
@@ -595,14 +663,16 @@ static void cmd_alias(struct unit_data *ch, char *arg, struct alias_head *alias_
    {
       int status = add_alias(alias_h, comm, arg, TRUE);
 
-      act("Alias for `$2t' $3t.", A_ALWAYS, ch, comm, status ? "added" : "changed", TO_CHAR);
+      act("Alias for `$2t' $3t.", A_ALWAYS, ch, comm, status != 0 ? "added" : "changed", TO_CHAR);
    }
 }
 
 static void cmd_unalias(struct unit_data *ch, char *arg, struct alias_head *alias_h)
 {
-   if(str_is_empty(arg))
-      act("Unalias what??", A_ALWAYS, ch, 0, 0, TO_CHAR);
+   if(str_is_empty(arg) != 0u)
+   {
+      act("Unalias what??", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
+   }
    else
    {
       char comm[MAX_INPUT_LENGTH + 1];
@@ -612,8 +682,8 @@ static void cmd_unalias(struct unit_data *ch, char *arg, struct alias_head *alia
       {
          arg = get_next_word(arg, comm);
 
-         act(del_alias(alias_h, comm) ? "Alias `$2t' deleted." : "No alias defined for `$2t'.", A_ALWAYS, ch, comm, 0, TO_CHAR);
-      } while(!str_is_empty(arg));
+         act(del_alias(alias_h, comm) ? "Alias `$2t' deleted." : "No alias defined for `$2t'.", A_ALWAYS, ch, comm, nullptr, TO_CHAR);
+      } while(str_is_empty(arg) == 0u);
    }
 }
 
@@ -623,45 +693,50 @@ static void cmd_claim(struct unit_data *ch, char *arg, struct unit_data *obj, st
 
    one_argument(arg, buf);
 
-   if(str_is_empty(buf) || !UNIT_NAMES(obj).IsName(buf))
-      act("You can only claim $2n.", A_ALWAYS, ch, obj, 0, TO_CHAR);
+   if((str_is_empty(buf) != 0u) || !UNIT_NAMES(obj).IsName(buf))
+   {
+      act("You can only claim $2n.", A_ALWAYS, ch, obj, nullptr, TO_CHAR);
+   }
    else
    {
-      act("You claim $2n as your property.", A_ALWAYS, ch, obj, 0, TO_CHAR);
+      act("You claim $2n as your property.", A_ALWAYS, ch, obj, nullptr, TO_CHAR);
       set_owner(obj, alias_h, ch);
    }
 }
 
 /* ********** The Dictionary Specproc ********** */
 
-static int local_dictionary(struct spec_arg *sarg)
+static auto local_dictionary(struct spec_arg *sarg) -> int
 {
-   char                    *pcomm = NULL, *cmd_array[256];
+   char                    *pcomm = NULL;
+   char                    *cmd_array[256];
    ubit8                    i;
-   struct alias_t          *al = NULL;
+   struct alias_t          *al = nullptr;
    struct alias_head       *alias_h;
    struct extra_descr_data *exd;
 
    /* specproc initialization */
-   if((alias_h = (struct alias_head *)sarg->fptr->data) == NULL)
+   if((alias_h = (struct alias_head *)sarg->fptr->data) == nullptr)
    {
       exd              = UNIT_EXTRA_DESCR(sarg->owner)->find_raw("$alias");
-      sarg->fptr->data = str_to_alias(exd ? exd->descr.String() : NULL);
+      sarg->fptr->data = str_to_alias(exd != nullptr ? exd->descr.String() : nullptr);
       alias_h          = (struct alias_head *)sarg->fptr->data;
    }
 
    /* clean up if destroyed */
    if(sarg->cmd->no == CMD_AUTO_EXTRACT)
    {
-      if(alias_h->trie)
+      if(alias_h->trie != nullptr)
+      {
          free_trie(alias_h->trie, free_alias);
+      }
       free(alias_h);
-      sarg->fptr->data = NULL;
+      sarg->fptr->data = nullptr;
       return SFR_BLOCK;
    }
 
    /* create a snapshot of alias-set if saved */
-   else if(sarg->cmd->no == CMD_AUTO_SAVE)
+   if(sarg->cmd->no == CMD_AUTO_SAVE)
    {
       char *tmp;
 
@@ -678,26 +753,33 @@ static int local_dictionary(struct spec_arg *sarg)
    }
 
    /* Not an applicaple command */
-   if(!sarg->activator || !IS_CHAR(sarg->activator) || !CHAR_DESCRIPTOR(sarg->activator) || sarg->activator != UNIT_IN(sarg->owner))
+   if((sarg->activator == nullptr) || !IS_CHAR(sarg->activator) || !CHAR_DESCRIPTOR(sarg->activator) ||
+      sarg->activator != UNIT_IN(sarg->owner))
+   {
       return SFR_SHARE;
+   }
 
    /* Check for the dictionary-commands */
 
    /* The alias command */
-   if(is_command(sarg->cmd, "alias"))
+   if(is_command(sarg->cmd, "alias") != 0u)
    {
       /* This check is needed too, so people can't wreak havoc with another
        * person's dictionary...
        */
-      if(str_ccmp(UNIT_NAME(sarg->activator), alias_h->owner))
-         act("You can't use the alias command before you type `claim $3N'.", A_ALWAYS, sarg->activator, 0, sarg->owner, TO_CHAR);
+      if(str_ccmp(UNIT_NAME(sarg->activator), alias_h->owner) != 0)
+      {
+         act("You can't use the alias command before you type `claim $3N'.", A_ALWAYS, sarg->activator, nullptr, sarg->owner, TO_CHAR);
+      }
       else
+      {
          cmd_alias(sarg->activator, (char *)sarg->arg, alias_h);
+      }
 
       return SFR_BLOCK;
    }
    /* The unalias command */
-   else if(is_command(sarg->cmd, "unalias"))
+   if(is_command(sarg->cmd, "unalias"))
    {
       cmd_unalias(sarg->activator, (char *)sarg->arg, alias_h);
       return SFR_BLOCK;
@@ -713,7 +795,8 @@ static int local_dictionary(struct spec_arg *sarg)
     *  as the user might have typed `in', which the interpreter expands
     *  to `inventory' in the cmd->cmd_str.
     */
-   if(alias_h->trie == NULL || (al = (struct alias_t *)search_trie(CHAR_DESCRIPTOR(sarg->activator)->last_cmd, alias_h->trie)) == NULL)
+   if(alias_h->trie == nullptr ||
+      (al = (struct alias_t *)search_trie(CHAR_DESCRIPTOR(sarg->activator)->last_cmd, alias_h->trie)) == nullptr)
    {
       return SFR_SHARE;
    }
@@ -721,7 +804,7 @@ static int local_dictionary(struct spec_arg *sarg)
    /* We now have an alias to parse... */
 
    /* Check if this dictionary belongs to user */
-   if(str_ccmp(UNIT_NAME(sarg->activator), alias_h->owner))
+   if(str_ccmp(UNIT_NAME(sarg->activator), alias_h->owner) != 0)
    {
       act("You can't use the alias `$2t' before you type `claim $3N'.", A_ALWAYS, sarg->activator, sarg->cmd->cmd_str, sarg->owner,
           TO_CHAR);
@@ -734,6 +817,7 @@ static int local_dictionary(struct spec_arg *sarg)
     *  command queue before we get to to process, we have to empty it...
     */
    for(i = 0; !CHAR_DESCRIPTOR(sarg->activator)->qInput.IsEmpty();)
+   {
       if(i < 256) /* 256 should certainly be enough, but check anyway */
       {
          struct cQueueElem *qe = CHAR_DESCRIPTOR(sarg->activator)->qInput.GetHead();
@@ -741,6 +825,7 @@ static int local_dictionary(struct spec_arg *sarg)
          qe->SetNull();
          delete qe;
       }
+   }
 
    /* Now do the alias trickery */
    if(push_alias(al->value, (char *)sarg->arg, alias_h->trie, sarg->activator, TRUE) == 0)
@@ -758,25 +843,29 @@ static int local_dictionary(struct spec_arg *sarg)
    }
 
    /* Put popped commands back on queue and clean up */
-   while(i--)
+   while((i--) != 0u)
    {
       CHAR_DESCRIPTOR(sarg->activator)->qInput.Append(new cQueueElem(cmd_array[i]));
    }
 
    /* Ok, now we can safely call command interpreter. */
-   if(pcomm)
+   if(pcomm != nullptr)
    {
       if(*(skip_spaces(pcomm)) == '!')
+      {
          send_to_char("Whoops, you just called an alias with '!' in it!\n\r", sarg->activator);
+      }
       else
+      {
          command_interpreter(sarg->activator, pcomm);
+      }
       free(pcomm);
    }
 
    return SFR_BLOCK;
 }
 
-int dictionary(struct spec_arg *sarg)
+auto dictionary(struct spec_arg *sarg) -> int
 {
    /* Recursive calls can occur via 'at':
 
@@ -792,9 +881,13 @@ int dictionary(struct spec_arg *sarg)
    recursive_calls++;
 
    if(recursive_calls > 100)
+   {
       send_to_char("Alias is recursive, it has been terminated!\n\r", sarg->activator);
+   }
    else
+   {
       n = local_dictionary(sarg);
+   }
 
    recursive_calls--;
 

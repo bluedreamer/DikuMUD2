@@ -29,10 +29,10 @@
 /* Aug 11 1994 gnort: got rid of do_qui & co.                               */
 /* Aug 14 1994 gnort: Inserted new social-command system                    */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "comm.h"
 #include "common.h"
@@ -41,7 +41,6 @@
 #include "dilrun.h"
 #include "files.h"
 #include "interpreter.h"
-#include "limits.h"
 #include "skills.h"
 #include "structs.h"
 #include "textutil.h"
@@ -49,14 +48,15 @@
 #include "unitfind.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
 /* external fcntls */
 extern struct unit_function_array_type unit_function_array[];
 
-bool cmd_is_a_social(char *cmd, int complete);
-bool perform_social(struct unit_data *, char *, const command_info *);
+auto cmd_is_a_social(char *cmd, int complete) -> bool;
+auto perform_social(struct unit_data *, char *, const command_info *) -> bool;
 
-struct trie_type *intr_trie = NULL;
+struct trie_type *intr_trie = nullptr;
 
 struct command_info cmd_info[] = {{0, 0, "north", CMD_NORTH, POSITION_SITTING, do_move, 0},
                                   {0, 0, "east", CMD_EAST, POSITION_SITTING, do_move, 0},
@@ -150,7 +150,7 @@ struct command_info cmd_info[] = {{0, 0, "north", CMD_NORTH, POSITION_SITTING, d
                                   {0, 1, "steal", CMD_STEAL, POSITION_STANDING, do_steal, 0},
                                   {6, 1, "bash", CMD_BASH, POSITION_FIGHTING, do_bash, 0},
                                   {12, 1, "rescue", CMD_RESCUE, POSITION_FIGHTING, do_rescue, 0},
-                                  {6, 1, "kick", CMD_KICK, POSITION_FIGHTING, NULL, 0},
+                                  {6, 1, "kick", CMD_KICK, POSITION_FIGHTING, nullptr, 0},
                                   {0, 1, "search", CMD_SEARCH, POSITION_STANDING, do_search, 0},
                                   {0, 0, "practice", CMD_PRACTICE, POSITION_STANDING, do_practice, 0},
                                   {0, 0, "info", CMD_INFO, POSITION_SLEEPING, do_info, 0},
@@ -175,13 +175,13 @@ struct command_info cmd_info[] = {{0, 0, "north", CMD_NORTH, POSITION_SITTING, d
                                   {0, 1, "dig", CMD_DIG, POSITION_STANDING, do_dig, 0},
                                   {0, 1, "bury", CMD_BURY, POSITION_STANDING, do_bury, 0},
                                   {12, 1, "turn", CMD_TURN, POSITION_FIGHTING, do_turn, 0},
-                                  {6, 1, "diagnose", CMD_DIAGNOSE, POSITION_RESTING, NULL, 0},
+                                  {6, 1, "diagnose", CMD_DIAGNOSE, POSITION_RESTING, nullptr, 0},
                                   {6, 1, "appraise", CMD_APPRAISE, POSITION_RESTING, do_appraise, 0},
                                   {0, 1, "ventriloquate", CMD_VENTRILOQUATE, POSITION_RESTING, do_ventriloquate, 0},
                                   {6, 1, "aid", CMD_AID, POSITION_RESTING, do_aid, 0},
                                   {0, 1, "climb", CMD_CLIMB, POSITION_STANDING, do_not_here, 0},
-                                  {0, 1, "trip", CMD_TRIP, POSITION_FIGHTING, NULL, 0},
-                                  {0, 1, "cuff", CMD_CUFF, POSITION_STANDING, NULL, 0},
+                                  {0, 1, "trip", CMD_TRIP, POSITION_FIGHTING, nullptr, 0},
+                                  {0, 1, "cuff", CMD_CUFF, POSITION_STANDING, nullptr, 0},
                                   {12, 1, "light", CMD_LIGHT, POSITION_RESTING, do_light, 0},
                                   {12, 1, "extinguish", CMD_EXTINGUISH, POSITION_RESTING, do_extinguish, 0},
                                   //{ 0, 0, "wimpy", CMD_WIMPY,POSITION_DEAD,do_wimpy,0},
@@ -214,9 +214,9 @@ struct command_info cmd_info[] = {{0, 0, "north", CMD_NORTH, POSITION_SITTING, d
                                   //{ 0, 0, "expert",CMD_EXPERT,POSITION_DEAD,do_expert,0},
 
                                   {0, 1, "quit", CMD_QUIT, POSITION_DEAD, do_quit, 0},
-                                  {0, 1, "resize", CMD_RESIZE, POSITION_STANDING, NULL, 0},
-                                  {0, 1, "evaluate", CMD_EVALUATE, POSITION_STANDING, NULL, 0},
-                                  {0, 1, "ditch", CMD_DITCH, POSITION_RESTING, NULL, 0},
+                                  {0, 1, "resize", CMD_RESIZE, POSITION_STANDING, nullptr, 0},
+                                  {0, 1, "evaluate", CMD_EVALUATE, POSITION_STANDING, nullptr, 0},
+                                  {0, 1, "ditch", CMD_DITCH, POSITION_RESTING, nullptr, 0},
 
                                   /* Demi Gods 200 - 219 */
                                   {0, 0, "wizhelp", CMD_WIZHELP, POSITION_SLEEPING, do_wizhelp, 200},
@@ -278,84 +278,84 @@ struct command_info cmd_info[] = {{0, 0, "north", CMD_NORTH, POSITION_SITTING, d
                                   {0, 0, "crash", CMD_CRASH, POSITION_STANDING, do_crash, 255},
                                   {0, 0, "account", CMD_ACCOUNT, POSITION_DEAD, do_account, 0},
 
-                                  {0, 0, "ski0", CMD_PEEK, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski1", CMD_FILCH, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski2", CMD_PICK_POCKET, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski3", CMD_DISARM, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski4", CMD_DONATE, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski5", CMD_ASSIST, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski6", CMD_SKIN, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski7", CMD_SKILL7, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski8", CMD_SKILL8, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL9, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL10, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL11, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL12, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL13, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL14, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL15, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL16, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL17, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL18, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL19, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL20, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL21, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL22, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL23, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL24, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL25, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL26, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL27, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL28, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL29, POSITION_DEAD, 0, 0},
-                                  {0, 0, "ski9", CMD_SKILL30, POSITION_DEAD, 0, 0},
+                                  {0, 0, "ski0", CMD_PEEK, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski1", CMD_FILCH, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski2", CMD_PICK_POCKET, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski3", CMD_DISARM, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski4", CMD_DONATE, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski5", CMD_ASSIST, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski6", CMD_SKIN, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski7", CMD_SKILL7, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski8", CMD_SKILL8, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL9, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL10, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL11, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL12, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL13, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL14, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL15, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL16, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL17, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL18, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL19, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL20, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL21, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL22, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL23, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL24, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL25, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL26, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL27, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL28, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL29, POSITION_DEAD, nullptr, 0},
+                                  {0, 0, "ski9", CMD_SKILL30, POSITION_DEAD, nullptr, 0},
 
-                                  {0, 0, "", 0, 0, 0, 0}};
+                                  {0, 0, "", 0, 0, nullptr, 0}};
 
 /* { 0, 0, "manifest",CMD_MANIFEST,POSITION_DEAD,do_manifest,200},*/
 /* { 0, 0, "verify",CMD_VERIFY,POSITION_DEAD,do_verify,250}, */
 /* { 0, 0, "kickit",CMD_KICKIT,POSITION_DEAD,do_kickit,230}, */
 
 struct command_info cmd_auto_tick = {
-   0, 0, NULL, CMD_AUTO_TICK, POSITION_DEAD, NULL, 0,
+   0, 0, nullptr, CMD_AUTO_TICK, POSITION_DEAD, nullptr, 0,
 };
 
 struct command_info cmd_auto_enter = {
-   0, 0, NULL, CMD_AUTO_ENTER, POSITION_STANDING, NULL, 0,
+   0, 0, nullptr, CMD_AUTO_ENTER, POSITION_STANDING, nullptr, 0,
 };
 
 struct command_info cmd_auto_extract = {
-   0, 0, NULL, CMD_AUTO_EXTRACT, POSITION_DEAD, NULL, 0,
+   0, 0, nullptr, CMD_AUTO_EXTRACT, POSITION_DEAD, nullptr, 0,
 };
 
 struct command_info cmd_auto_death = {
-   0, 0, NULL, CMD_AUTO_DEATH, POSITION_DEAD, NULL, 0,
+   0, 0, nullptr, CMD_AUTO_DEATH, POSITION_DEAD, nullptr, 0,
 };
 
 struct command_info cmd_auto_combat = {
-   0, 0, NULL, CMD_AUTO_COMBAT, POSITION_DEAD, NULL, 0,
+   0, 0, nullptr, CMD_AUTO_COMBAT, POSITION_DEAD, nullptr, 0,
 };
 
 struct command_info cmd_auto_unknown = {
-   0, 0, NULL, CMD_AUTO_UNKNOWN, POSITION_DEAD, NULL, 0,
+   0, 0, nullptr, CMD_AUTO_UNKNOWN, POSITION_DEAD, nullptr, 0,
 };
 
 struct command_info cmd_auto_save = {
-   0, 0, NULL, CMD_AUTO_SAVE, POSITION_DEAD, NULL, 0,
+   0, 0, nullptr, CMD_AUTO_SAVE, POSITION_DEAD, nullptr, 0,
 };
 
 struct command_info cmd_auto_msg = {
-   0, 0, NULL, CMD_AUTO_MSG, POSITION_DEAD, NULL, 0,
+   0, 0, nullptr, CMD_AUTO_MSG, POSITION_DEAD, nullptr, 0,
 };
 
 /* This is so that we can distuinguish socials and unknowns... */
 struct command_info cmd_a_social = {
-   0, 0, NULL, CMD_A_SOCIAL, POSITION_DEAD, NULL, 0,
+   0, 0, nullptr, CMD_A_SOCIAL, POSITION_DEAD, nullptr, 0,
 };
 
-struct command_info cmd_auto_damage = {0, 0, NULL, CMD_AUTO_DAMAGE, POSITION_DEAD, NULL, 0};
+struct command_info cmd_auto_damage = {0, 0, nullptr, CMD_AUTO_DAMAGE, POSITION_DEAD, nullptr, 0};
 
-struct command_info *cmd_follow = NULL;
+struct command_info *cmd_follow = nullptr;
 
 void wrong_position(struct unit_data *ch)
 {
@@ -371,7 +371,9 @@ void wrong_position(struct unit_data *ch)
    };
 
    if(CHAR_POS(ch) < POSITION_STANDING)
+   {
       send_to_char(strings[CHAR_POS(ch)], ch);
+   }
 }
 
 #ifdef DEBUG_HISTORY
@@ -381,10 +383,10 @@ void wrong_position(struct unit_data *ch)
 class command_hist
 {
 public:
-   command_hist(void)
+   command_hist()
    {
       str[0] = pcname[0] = 0;
-      fi                 = NULL;
+      fi                 = nullptr;
    }
 
    char                    str[MAX_INPUT_LENGTH + 50];
@@ -397,9 +399,13 @@ static int command_history_pos = 0;
 static void add_command_history(struct unit_data *u, char *str)
 {
    if(IS_PC(u))
+   {
       strcpy(command_history_data[command_history_pos].pcname, UNIT_NAME(u));
+   }
    else
+   {
       command_history_data[command_history_pos].pcname[0] = 0;
+   }
 
    strcpy(command_history_data[command_history_pos].str, str);
    command_history_data[command_history_pos].fi = UNIT_FILE_INDEX(u);
@@ -407,15 +413,16 @@ static void add_command_history(struct unit_data *u, char *str)
    command_history_pos = (command_history_pos + 1) % MAX_DEBUG_HISTORY;
 }
 
-static void dump_command_history(void)
+static void dump_command_history()
 {
-   int i, j;
+   int i;
+   int j;
    for(j = 0, i = command_history_pos; j < MAX_DEBUG_HISTORY; j++)
    {
       slog(LOG_ALL, 0, "CMD %s@%s [%s]",
-           command_history_data[i].pcname ? command_history_data[i].pcname : FI_NAME(command_history_data[i].fi),
+           command_history_data[i].pcname != nullptr ? command_history_data[i].pcname : FI_NAME(command_history_data[i].fi),
 
-           command_history_data[i].pcname ? "" : FI_ZONENAME(command_history_data[i].fi), command_history_data[i].str);
+           command_history_data[i].pcname != nullptr ? "" : FI_ZONENAME(command_history_data[i].fi), command_history_data[i].str);
       i = (i + 1) % MAX_DEBUG_HISTORY;
    }
 }
@@ -423,11 +430,11 @@ static void dump_command_history(void)
 class func_hist
 {
 public:
-   func_hist(void)
+   func_hist()
    {
       idx   = 0;
       flags = 0;
-      fi    = NULL;
+      fi    = nullptr;
    }
    ubit16                  idx;
    ubit16                  flags;
@@ -445,9 +452,10 @@ void add_func_history(struct unit_data *u, ubit16 idx, ubit16 flags)
    func_history_pos = (func_history_pos + 1) % MAX_DEBUG_HISTORY;
 }
 
-static void dump_func_history(void)
+static void dump_func_history()
 {
-   int  i, j;
+   int  i;
+   int  j;
    char buf2[512];
 
    for(j = 0, i = func_history_pos; j < MAX_DEBUG_HISTORY; j++)
@@ -459,7 +467,7 @@ static void dump_func_history(void)
    }
 }
 
-void dump_debug_history(void)
+void dump_debug_history()
 {
    dump_command_history();
    dump_func_history();
@@ -476,8 +484,10 @@ void command_interpreter(struct unit_data *ch, char *arg)
 
    assert(IS_CHAR(ch));
 
-   if(is_destructed(DR_UNIT, ch))
+   if(is_destructed(DR_UNIT, ch) != 0)
+   {
       return;
+   }
 
    if(strlen(arg) > MAX_INPUT_LENGTH)
    {
@@ -494,9 +504,13 @@ void command_interpreter(struct unit_data *ch, char *arg)
    if(CHAR_DESCRIPTOR(ch))
    {
       if(*arg == '!')
+      {
          arg = CHAR_DESCRIPTOR(ch)->history;
+      }
       else
+      {
          strcpy(CHAR_DESCRIPTOR(ch)->history, arg);
+      }
    }
 
 #ifdef DEBUG_HISTORY
@@ -506,57 +520,77 @@ void command_interpreter(struct unit_data *ch, char *arg)
    arg = str_next_word(arg, cmd);
 
    if(CHAR_DESCRIPTOR(ch))
+   {
       strcpy(CHAR_DESCRIPTOR(ch)->last_cmd, cmd);
+   }
 
-   if(!cmd[0])
+   if(cmd[0] == 0)
+   {
       return;
+   }
 
    strncpy(argstr, skip_blanks(arg), MAX(0, MAX_INPUT_LENGTH - 1 - strlen(cmd)));
    argstr[MAX(0, MAX_INPUT_LENGTH - 1 - strlen(cmd))] = 0;
 
    strip_trailing_spaces(argstr);
 
-   if((cmd_ptr = (struct command_info *)search_trie(cmd, intr_trie)) == NULL || (is_social = cmd_is_a_social(cmd, TRUE)))
+   if((cmd_ptr = (struct command_info *)search_trie(cmd, intr_trie)) == nullptr ||
+      ((is_social = static_cast<int>(cmd_is_a_social(cmd, TRUE))) != 0))
    {
-      struct command_info the_cmd = {0, 0, NULL, CMD_AUTO_UNKNOWN, POSITION_DEAD, NULL, 0};
+      struct command_info the_cmd = {0, 0, nullptr, CMD_AUTO_UNKNOWN, POSITION_DEAD, nullptr, 0};
 
-      if(is_social || (cmd_ptr == NULL && cmd_is_a_social(cmd, FALSE)))
+      if((is_social != 0) || (cmd_ptr == nullptr && cmd_is_a_social(cmd, FALSE)))
+      {
          the_cmd.no = CMD_A_SOCIAL;
+      }
 
       the_cmd.cmd_str = str_dup(cmd);
 
       if(send_preprocess(ch, &the_cmd, argstr) == SFR_SHARE)
+      {
          if(!perform_social(ch, argstr, &the_cmd))
-            act("$2t is not a known command.", A_ALWAYS, ch, cmd, NULL, TO_CHAR);
+         {
+            act("$2t is not a known command.", A_ALWAYS, ch, cmd, nullptr, TO_CHAR);
+         }
+      }
 
-      if(the_cmd.cmd_str)
+      if(the_cmd.cmd_str != nullptr)
+      {
          free(the_cmd.cmd_str);
+      }
       return;
    }
 
-   if(cmd_ptr->combat_buffer && CHAR_COMBAT(ch))
+   if((cmd_ptr->combat_buffer != 0u) && CHAR_COMBAT(ch))
    {
       if(CHAR_COMBAT(ch)->When() >= SPEED_DEFAULT)
       {
          CHAR_COMBAT(ch)->setCommand(orgarg);
          return;
       }
-      else
-         CHAR_COMBAT(ch)->changeSpeed(cmd_ptr->combat_speed);
+      CHAR_COMBAT(ch)->changeSpeed(cmd_ptr->combat_speed);
    }
 
    if(send_preprocess(ch, cmd_ptr, argstr) != SFR_SHARE)
+   {
       return;
+   }
 
-   if(is_destructed(DR_UNIT, ch))
+   if(is_destructed(DR_UNIT, ch) != 0)
+   {
       return;
+   }
 
    if(CHAR_LEVEL(CHAR_ORIGINAL(ch)) < cmd_ptr->minimum_level)
    {
       if(cmd_ptr->minimum_level >= 200)
+      {
          send_to_char("Arglebargle, glop-glyf!?!\n\r", ch);
+      }
       else
+      {
          send_to_char("Sorry, this command is not available at your level.\n\r", ch);
+      }
       return;
    }
 
@@ -566,39 +600,47 @@ void command_interpreter(struct unit_data *ch, char *arg)
       return;
    }
 
-   if(cmd_ptr->log_level)
+   if(cmd_ptr->log_level != 0u)
+   {
       slog(LOG_ALL, MAX(CHAR_LEVEL(ch), cmd_ptr->log_level), "CMDLOG %s: %s %s", UNIT_NAME(ch), cmd_ptr->cmd_str, argstr);
+   }
 
-   if(cmd_ptr->tmpl)
+   if(cmd_ptr->tmpl != nullptr)
    {
       struct dilprg *prg;
 
-      prg          = dil_copy_template(cmd_ptr->tmpl, ch, NULL);
+      prg          = dil_copy_template(cmd_ptr->tmpl, ch, nullptr);
       prg->waitcmd = WAITCMD_MAXINST - 1; // The usual hack, see db_file
 
       prg->sp->vars[0].val.string = str_dup(argstr);
 
       dil_activate(prg);
    }
-   else if(cmd_ptr->cmd_fptr)
+   else if(cmd_ptr->cmd_fptr != nullptr)
+   {
       ((*cmd_ptr->cmd_fptr)(ch, argstr, cmd_ptr));
+   }
    else
    {
       if(IS_MORTAL(ch))
+      {
          send_to_char("Arglebargle, glop-glyf!?!\n\r", ch);
+      }
       else
+      {
          send_to_char("Sorry, that command is not yet implemented...\n\r", ch);
+      }
    }
 }
 
-int char_is_playing(struct unit_data *u)
+auto char_is_playing(struct unit_data *u) -> int
 {
-   return UNIT_IN(u) != NULL;
+   return UNIT_IN(u) != nullptr;
 }
 
-int descriptor_is_playing(struct descriptor_data *d)
+auto descriptor_is_playing(struct descriptor_data *d) -> int
 {
-   return d && d->character && char_is_playing(d->character);
+   return (static_cast<int>(d != nullptr) && (d->character != nullptr) && (char_is_playing(d->character)) != 0);
 }
 
 void descriptor_interpreter(struct descriptor_data *d, char *arg)
@@ -608,24 +650,22 @@ void descriptor_interpreter(struct descriptor_data *d, char *arg)
 }
 
 /* Check to see if the full command was typed */
-ubit1 cmd_is_abbrev(struct unit_data *ch, const struct command_info *cmd)
+auto cmd_is_abbrev(struct unit_data *ch, const struct command_info *cmd) -> ubit1
 {
-   return CHAR_DESCRIPTOR(ch) && str_ccmp(CHAR_DESCRIPTOR(ch)->last_cmd, cmd->cmd_str);
+   return CHAR_DESCRIPTOR(ch) && (str_ccmp(CHAR_DESCRIPTOR(ch)->last_cmd, cmd->cmd_str) != 0);
 }
 
 /* To check for commands by string */
-ubit1 is_command(const struct command_info *cmd, const char *str)
+auto is_command(const struct command_info *cmd, const char *str) -> ubit1
 {
    if((cmd->no == CMD_AUTO_UNKNOWN) || (cmd->no == CMD_A_SOCIAL))
    {
-      return cmd->cmd_str && is_abbrev(cmd->cmd_str, str);
+      return (static_cast<ubit1>(cmd->cmd_str != nullptr) && (is_abbrev(cmd->cmd_str, str)) != 0u);
    }
-   else
-   {
-      struct command_info *cmd_ptr = (struct command_info *)search_trie(str, intr_trie);
 
-      return cmd_ptr && cmd->no == cmd_ptr->no;
-   }
+   struct command_info *cmd_ptr = (struct command_info *)search_trie(str, intr_trie);
+
+   return cmd_ptr && cmd->no == cmd_ptr->no;
 }
 
 void argument_interpreter(const char *argument, char *first_arg, char *second_arg)
@@ -635,7 +675,7 @@ void argument_interpreter(const char *argument, char *first_arg, char *second_ar
    one_argument(argument, second_arg);
 }
 
-int function_activate(struct unit_data *u, struct spec_arg *sarg)
+auto function_activate(struct unit_data *u, struct spec_arg *sarg) -> int
 {
    if((u != sarg->activator) || IS_SET(sarg->fptr->flags, SFB_AWARE) || IS_SET(sarg->mflags, SFB_AWARE))
    {
@@ -644,10 +684,11 @@ int function_activate(struct unit_data *u, struct spec_arg *sarg)
 #ifdef DEBUG_HISTORY
          add_func_history(u, sarg->fptr->index, sarg->mflags);
 #endif
-         if(unit_function_array[sarg->fptr->index].func)
+         if(unit_function_array[sarg->fptr->index].func != nullptr)
+         {
             return (*(unit_function_array[sarg->fptr->index].func))(sarg);
-         else
-            slog(LOG_ALL, 0, "Interpreter: Null function call!");
+         }
+         slog(LOG_ALL, 0, "Interpreter: Null function call!");
       }
    }
    return SFR_SHARE;
@@ -656,31 +697,39 @@ int function_activate(struct unit_data *u, struct spec_arg *sarg)
 /* u is the owner of the function on which the scan is performed */
 /* This function sets the 'sarg->fptr' and 'sarg->owner'         */
 
-int unit_function_scan(struct unit_data *u, struct spec_arg *sarg)
+auto unit_function_scan(struct unit_data *u, struct spec_arg *sarg) -> int
 {
    int               res      = SFR_SHARE;
    int               priority = 0;
    struct unit_fptr *next;
 
-   if(g_cServerConfig.m_bNoSpecials)
+   if(g_cServerConfig.m_bNoSpecials != 0)
+   {
       return SFR_SHARE;
+   }
 
    sarg->owner = u;
 
-   if(is_destructed(DR_UNIT, u))
+   if(is_destructed(DR_UNIT, u) != 0)
+   {
       return SFR_SHARE;
+   }
 
-   if(IS_PC(u) && !char_is_playing(u))
+   if(IS_PC(u) && (char_is_playing(u) == 0))
+   {
       return SFR_SHARE;
+   }
 
-   for(sarg->fptr = UNIT_FUNC(u); !priority && sarg->fptr; sarg->fptr = next)
+   for(sarg->fptr = UNIT_FUNC(u); (priority == 0) && (sarg->fptr != nullptr); sarg->fptr = next)
    {
       next = sarg->fptr->next; /* Next dude trick */
 
       res = function_activate(u, sarg);
 
       if(res != SFR_SHARE)
+      {
          return res;
+      }
 
       priority |= IS_SET(sarg->fptr->flags, SFB_PRIORITY);
    }
@@ -707,58 +756,75 @@ int unit_function_scan(struct unit_data *u, struct spec_arg *sarg)
    if extra_target is set, then also send message to that unit
 */
 
-int basic_special(struct unit_data *ch, struct spec_arg *sarg, ubit16 mflt, struct unit_data *extra_target)
+auto basic_special(struct unit_data *ch, struct spec_arg *sarg, ubit16 mflt, struct unit_data *extra_target) -> int
 {
-   struct unit_data *u, *uu, *next, *nextt;
+   struct unit_data *u;
+   struct unit_data *uu;
+   struct unit_data *next;
+   struct unit_data *nextt;
 
    sarg->mflags = mflt;
 
-   if(extra_target && !same_surroundings(ch, extra_target))
+   if((extra_target != nullptr) && (same_surroundings(ch, extra_target) == 0u))
+   {
       if((unit_function_scan(extra_target, sarg)) != SFR_SHARE)
+      {
          return SFR_BLOCK;
+      }
+   }
 
    /* special in room? */
    if(UNIT_FUNC(UNIT_IN(ch)))
    {
       if((unit_function_scan(UNIT_IN(ch), sarg)) != SFR_SHARE)
+      {
          return SFR_BLOCK;
+      }
    }
 
    /* special in inventory or equipment? */
-   for(u = UNIT_CONTAINS(ch); u; u = next)
+   for(u = UNIT_CONTAINS(ch); u != nullptr; u = next)
    {
       next = u->next; /* Next dude trick */
       if(UNIT_FUNC(u) && (unit_function_scan(u, sarg)) != SFR_SHARE)
+      {
          return SFR_BLOCK;
+      }
    }
 
    /* special in room present? */
-   for(u = UNIT_CONTAINS(UNIT_IN(ch)); u; u = next)
+   for(u = UNIT_CONTAINS(UNIT_IN(ch)); u != nullptr; u = next)
    {
       next = u->next; /* Next dude trick */
 
       if(UNIT_FUNC(u) && (unit_function_scan(u, sarg)) != SFR_SHARE)
+      {
          return SFR_BLOCK;
+      }
 
       if(u != ch)
       {
          if(UNIT_IS_TRANSPARENT(u))
          {
-            for(uu = UNIT_CONTAINS(u); uu; uu = nextt)
+            for(uu = UNIT_CONTAINS(u); uu != nullptr; uu = nextt)
             {
                nextt = uu->next; /* next dude double trick */
                if(UNIT_FUNC(uu) && (unit_function_scan(uu, sarg)) != SFR_SHARE)
+               {
                   return SFR_BLOCK;
+               }
             }
          }
          else if(IS_CHAR(u))
          {
             /* in equipment? */
-            for(uu = UNIT_CONTAINS(u); uu; uu = nextt)
+            for(uu = UNIT_CONTAINS(u); uu != nullptr; uu = nextt)
             {
                nextt = uu->next; /* Next dude trick */
                if(UNIT_FUNC(uu) && IS_OBJ(uu) && OBJ_EQP_POS(uu) && (unit_function_scan(uu, sarg) != SFR_SHARE))
+               {
                   return SFR_BLOCK;
+               }
             }
          }
       }
@@ -771,41 +837,51 @@ int basic_special(struct unit_data *ch, struct spec_arg *sarg, ubit16 mflt, stru
       if(UNIT_FUNC(UNIT_IN(UNIT_IN(ch))))
       {
          if(unit_function_scan(UNIT_IN(UNIT_IN(ch)), sarg) != SFR_SHARE)
+         {
             return SFR_BLOCK;
+         }
       }
 
       if(UNIT_IN(UNIT_IN(ch)))
       {
-         for(u = UNIT_CONTAINS(UNIT_IN(UNIT_IN(ch))); u; u = next)
+         for(u = UNIT_CONTAINS(UNIT_IN(UNIT_IN(ch))); u != nullptr; u = next)
          {
             next = u->next; /* Next dude trick */
 
             /* No self activation except when dying... */
             if(UNIT_FUNC(u) && (unit_function_scan(u, sarg)) != SFR_SHARE)
+            {
                return SFR_BLOCK;
+            }
 
             if(!UNIT_IN(UNIT_IN(ch)))
+            {
                break;
+            }
 
             if(u != UNIT_IN(ch))
             {
                if(UNIT_IS_TRANSPARENT(u))
                {
-                  for(uu = UNIT_CONTAINS(u); uu; uu = nextt)
+                  for(uu = UNIT_CONTAINS(u); uu != nullptr; uu = nextt)
                   {
                      nextt = uu->next; /* next dude double trick */
                      if(UNIT_FUNC(uu) && (unit_function_scan(uu, sarg)) != SFR_SHARE)
+                     {
                         return SFR_BLOCK;
+                     }
                   }
                }
                else if(IS_CHAR(u))
                {
                   /* in equipment? */
-                  for(uu = UNIT_CONTAINS(u); uu; uu = nextt)
+                  for(uu = UNIT_CONTAINS(u); uu != nullptr; uu = nextt)
                   {
                      nextt = uu->next; /* Next dude trick */
                      if(UNIT_FUNC(uu) && IS_OBJ(uu) && OBJ_EQP_POS(uu) && (unit_function_scan(uu, sarg) != SFR_SHARE))
+                     {
                         return SFR_BLOCK;
+                     }
                   }
                }
             }
@@ -817,63 +893,63 @@ int basic_special(struct unit_data *ch, struct spec_arg *sarg, ubit16 mflt, stru
 }
 
 /* Preprocessed commands */
-int send_preprocess(struct unit_data *ch, const struct command_info *cmd, char *arg)
+auto send_preprocess(struct unit_data *ch, const struct command_info *cmd, const char *arg) -> int
 {
    struct spec_arg sarg;
 
    sarg.activator = ch;
-   sarg.medium    = NULL;
-   sarg.target    = NULL;
-   sarg.pInt      = NULL;
+   sarg.medium    = nullptr;
+   sarg.target    = nullptr;
+   sarg.pInt      = nullptr;
    sarg.cmd       = (struct command_info *)cmd;
    sarg.arg       = arg;
 
    return basic_special(ch, &sarg, SFB_CMD);
 }
 
-int send_message(struct unit_data *ch, char *arg)
+auto send_message(struct unit_data *ch, const char *arg) -> int
 {
    struct spec_arg sarg;
 
    sarg.activator = ch;
-   sarg.medium    = NULL;
-   sarg.target    = NULL;
-   sarg.pInt      = NULL;
+   sarg.medium    = nullptr;
+   sarg.target    = nullptr;
+   sarg.pInt      = nullptr;
    sarg.cmd       = &cmd_auto_msg;
    sarg.arg       = arg;
 
    return basic_special(ch, &sarg, SFB_MSG);
 }
 
-int send_death(struct unit_data *ch)
+auto send_death(struct unit_data *ch) -> int
 {
    struct spec_arg sarg;
 
    sarg.activator = ch;
-   sarg.medium    = NULL;
-   sarg.target    = NULL;
-   sarg.pInt      = NULL;
+   sarg.medium    = nullptr;
+   sarg.target    = nullptr;
+   sarg.pInt      = nullptr;
    sarg.cmd       = &cmd_auto_death;
    sarg.arg       = "";
 
    return basic_special(ch, &sarg, SFB_DEAD | SFB_AWARE);
 }
 
-int send_combat(struct unit_data *ch)
+auto send_combat(struct unit_data *ch) -> int
 {
    struct spec_arg sarg;
 
    sarg.activator = ch;
-   sarg.medium    = NULL;
-   sarg.target    = NULL;
-   sarg.pInt      = NULL;
+   sarg.medium    = nullptr;
+   sarg.target    = nullptr;
+   sarg.pInt      = nullptr;
    sarg.cmd       = &cmd_auto_combat;
    sarg.arg       = "";
 
    return basic_special(ch, &sarg, SFB_COM);
 }
 
-int send_save_to(struct unit_data *from, struct unit_data *to)
+auto send_save_to(struct unit_data *from, struct unit_data *to) -> int
 {
    struct spec_arg sarg;
 
@@ -881,10 +957,10 @@ int send_save_to(struct unit_data *from, struct unit_data *to)
    assert(from);
 
    sarg.activator = from;
-   sarg.medium    = NULL;
-   sarg.target    = NULL;
-   sarg.pInt      = NULL;
-   sarg.fptr      = NULL; /* Set by unit_function_scan */
+   sarg.medium    = nullptr;
+   sarg.target    = nullptr;
+   sarg.pInt      = nullptr;
+   sarg.fptr      = nullptr; /* Set by unit_function_scan */
    sarg.cmd       = &cmd_auto_save;
    sarg.arg       = "";
    sarg.mflags    = SFB_SAVE;
@@ -892,8 +968,8 @@ int send_save_to(struct unit_data *from, struct unit_data *to)
    return unit_function_scan(to, &sarg);
 }
 
-int send_ack(struct unit_data *activator, struct unit_data *medium, struct unit_data *target, int *i, const struct command_info *cmd,
-             const char *arg, struct unit_data *extra_target)
+auto send_ack(struct unit_data *activator, struct unit_data *medium, struct unit_data *target, int *i, const struct command_info *cmd,
+              const char *arg, struct unit_data *extra_target) -> int
 {
    struct spec_arg sarg;
    int             j = 0;
@@ -902,10 +978,14 @@ int send_ack(struct unit_data *activator, struct unit_data *medium, struct unit_
    sarg.medium    = medium;
    sarg.target    = target;
 
-   if(i)
+   if(i != nullptr)
+   {
       sarg.pInt = i;
+   }
    else
+   {
       sarg.pInt = &j;
+   }
 
    sarg.cmd = (struct command_info *)cmd;
    sarg.arg = (char *)arg;
@@ -928,9 +1008,10 @@ void send_done(struct unit_data *activator, struct unit_data *medium, struct uni
    basic_special(activator, &sarg, SFB_DONE, extra_target);
 }
 
-static void read_command_file(void)
+static void read_command_file()
 {
-   char                 cmd[256], *c;
+   char                 cmd[256];
+   char                *c;
    struct command_info *cmd_ptr;
    FILE                *f;
    char                 Buf[200];
@@ -939,30 +1020,34 @@ static void read_command_file(void)
    touch_file(str_cc(DFLT_DIR, COMMAND_FILE));
 
    f = fopen(str_cc(DFLT_DIR, COMMAND_FILE), "rb");
-   if(f == NULL)
+   if(f == nullptr)
    {
       slog(LOG_ALL, 0, "Open error on file %s/%s", DFLT_DIR, COMMAND_FILE);
       exit(0);
    }
 
-   while(!feof(f))
+   while(feof(f) == 0)
    {
       char *ms2020 = fgets(Buf, sizeof(Buf) - 1, f);
 
-      if(!str_is_empty(Buf) && Buf[0] != '#')
+      if((str_is_empty(Buf) == 0u) && Buf[0] != '#')
       {
          c = Buf;
          c = str_next_word(Buf, cmd);
 
-         if((cmd_ptr = (struct command_info *)search_trie(cmd, intr_trie)))
+         if((cmd_ptr = (struct command_info *)search_trie(cmd, intr_trie)) != nullptr)
          {
             c = str_next_word(c, cmd);
             i = atoi(cmd);
 
-            if(cmd_ptr->minimum_level >= 200 && !is_in(i, 200, 255))
+            if(cmd_ptr->minimum_level >= 200 && (is_in(i, 200, 255) == 0))
+            {
                slog(LOG_ALL, 0, "Error: command %s set to non-immortals!", Buf);
+            }
             else
+            {
                cmd_ptr->minimum_level = i;
+            }
 
             c                  = str_next_word(c, cmd);
             cmd_ptr->log_level = atoi(cmd);
@@ -978,54 +1063,60 @@ static void read_command_file(void)
 }
 
 /* Build the trie here :) */
-void assign_command_pointers(void)
+void assign_command_pointers()
 {
    int i;
 
-   intr_trie = 0;
+   intr_trie = nullptr;
 
-   for(i = 0; *cmd_info[i].cmd_str; i++)
+   for(i = 0; *cmd_info[i].cmd_str != 0; i++)
+   {
       intr_trie = add_trienode(cmd_info[i].cmd_str, intr_trie);
+   }
 
    qsort_triedata(intr_trie);
 
-   for(i = 0; *cmd_info[i].cmd_str; i++)
+   for(i = 0; *cmd_info[i].cmd_str != 0; i++)
+   {
       set_triedata(cmd_info[i].cmd_str, intr_trie, &cmd_info[i], FALSE);
+   }
 
    read_command_file();
 
    cmd_follow = (struct command_info *)search_trie("follow", intr_trie);
 }
 
-void interpreter_dil_check(void)
+void interpreter_dil_check()
 {
-   for(int i = 0; *(cmd_info[i].cmd_str); i++) // MS2020 bug, missing *
+   for(int i = 0; *(cmd_info[i].cmd_str) != 0; i++) // MS2020 bug, missing *
    {
-      if(cmd_info[i].tmpl == NULL)
+      if(cmd_info[i].tmpl == nullptr)
+      {
          continue;
+      }
 
       if(cmd_info[i].tmpl->argc != 1)
       {
          slog(LOG_ALL, 0, "Interpreter DIL %s expected 1 argument.", cmd_info[i].tmpl->prgname);
-         cmd_info[i].tmpl = NULL;
+         cmd_info[i].tmpl = nullptr;
          continue;
       }
 
       if(cmd_info[i].tmpl->argt[0] != DILV_SP)
       {
          slog(LOG_ALL, 0, "Interpreter DIL %s argument 1 mismatch.", cmd_info[i].tmpl->prgname);
-         cmd_info[i].tmpl = NULL;
+         cmd_info[i].tmpl = nullptr;
          continue;
       }
    }
 }
 
-void boot_interpreter(void)
+void boot_interpreter()
 {
-   for(int i = 0; *cmd_info[i].cmd_str; i++)
+   for(int i = 0; *cmd_info[i].cmd_str != 0; i++)
    {
       /* What the heck, I'll also initialize un-initialized fields here */
-      cmd_info[i].tmpl      = NULL;
+      cmd_info[i].tmpl      = nullptr;
       cmd_info[i].log_level = 0;
    }
 }

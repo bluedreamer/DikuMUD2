@@ -22,9 +22,9 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "affect.h"
 #include "comm.h"
@@ -38,14 +38,16 @@
 #include "utility.h"
 #include "utils.h"
 
-extern struct unit_data       *unit_list;
 extern struct file_index_type *corpse_fi;
 
-struct unit_data *make_corpse(struct unit_data *ch)
+auto make_corpse(struct unit_data *ch) -> struct unit_data *
 {
-   char                      buf[MAX_INPUT_LENGTH];
-   struct unit_data         *corpse, *u, *next_dude;
-   struct unit_affected_type af, *taf1;
+   char                       buf[MAX_INPUT_LENGTH];
+   struct unit_data          *corpse;
+   struct unit_data          *u;
+   struct unit_data          *next_dude;
+   struct unit_affected_type  af;
+   struct unit_affected_type *taf1;
 
    void persist_create(struct unit_data * u);
 
@@ -55,7 +57,9 @@ struct unit_data *make_corpse(struct unit_data *ch)
    UNIT_OUT_DESCR(corpse).Reassign(buf);
 
    if(IS_PC(ch))
+   {
       UNIT_NAMES(corpse).PrependName(str_cc("corpse of ", UNIT_NAME(ch)));
+   }
 
    UNIT_WEIGHT(corpse)      = UNIT_BASE_WEIGHT(ch);
    UNIT_BASE_WEIGHT(corpse) = UNIT_WEIGHT(corpse);
@@ -66,11 +70,15 @@ struct unit_data *make_corpse(struct unit_data *ch)
 
    /* *** pointers *** */
 
-   for(u = UNIT_CONTAINS(ch); u; u = u->next)
+   for(u = UNIT_CONTAINS(ch); u != nullptr; u = u->next)
+   {
       if(UNIT_IS_EQUIPPED(u))
+      {
          unequip_object(u);
+      }
+   }
 
-   for(u = UNIT_CONTAINS(ch); u; u = next_dude)
+   for(u = UNIT_CONTAINS(ch); u != nullptr; u = next_dude)
    {
       next_dude = u->next;
 
@@ -103,10 +111,14 @@ struct unit_data *make_corpse(struct unit_data *ch)
    if(IS_PC(ch))
    {
       if(UNIT_CONTAINS(corpse))
+      {
          persist_create(corpse);
+      }
 
       if(IS_SET(PC_FLAGS(ch), PC_PK_RELAXED))
+      {
          UNIT_EXTRA_DESCR(corpse) = UNIT_EXTRA_DESCR(corpse)->add("$BOB", "");
+      }
    }
 
    return corpse;

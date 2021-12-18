@@ -22,11 +22,11 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <stdarg.h> /* va_args in slog()        */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cstdarg> /* va_args in slog()        */
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "comm.h"
 #include "db.h"
@@ -38,12 +38,12 @@
 #include "utils.h"
 
 #ifndef HPUX
-int MIN(int a, int b)
+auto MIN(int a, int b) -> int
 {
    return ((a < b) ? a : b);
 }
 
-int MAX(int a, int b)
+auto MAX(int a, int b) -> int
 {
    return ((a > b) ? a : b);
 }
@@ -77,7 +77,7 @@ long lrand48();
 #endif
 
 /* creates a random number in interval [from;to] */
-int number(int from, int to)
+auto number(int from, int to) -> int
 {
    if(from > to)
    {
@@ -93,7 +93,7 @@ int number(int from, int to)
 }
 
 /* simulates dice roll */
-int dice(int number, int size)
+auto dice(int number, int size) -> int
 {
    int r;
    int sum = 0;
@@ -101,121 +101,135 @@ int dice(int number, int size)
    assert(size >= 1);
 
    for(r = 1; r <= number; r++)
+   {
 #ifdef GENERIC_SYSV
       sum += ((lrand48() % size) + 1);
 #else
       sum += ((rand() % size) + 1);
+   }
 #endif
 
-   return sum;
-}
-
-struct log_buffer log_buf[MAXLOG];
-
-/* writes a string to the log */
-void slog(enum log_level level, ubit8 wizinv_level, const char *fmt, ...)
-{
-   static ubit8  idx      = 0;
-   static ubit32 log_size = 0;
-
-   char    buf[MAX_STRING_LENGTH], *t;
-   va_list args;
-
-   time_t now   = time(0);
-   char  *tmstr = ctime(&now);
-
-   tmstr[strlen(tmstr) - 1] = '\0';
-
-   if(wizinv_level > 0)
-      sprintf(buf, "(%d) ", wizinv_level);
-   else
-      *buf = '\0';
-
-   t = buf;
-   TAIL(t);
-
-   va_start(args, fmt);
-   vsprintf(t, fmt, args);
-   va_end(args);
-
-   /* 5 == " :: \n";  24 == tmstr (Tue Sep 20 18:41:23 1994)*/
-   log_size += strlen(buf) + 5 + 24;
-
-   if(log_size > 4000000) /* 4 meg is indeed a very big logfile! */
-   {
-      fprintf(stderr, "Log-file insanely big!  Going down.\n");
-      abort(); // Dont use error, it calls syslog!!! *grin*
+      return sum;
    }
 
-   fprintf(stderr, "%s :: %s\n", tmstr, buf);
+   struct log_buffer log_buf[MAXLOG];
 
-   if(level > LOG_OFF)
+   /* writes a string to the log */
+   void slog(enum log_level level, ubit8 wizinv_level, const char *fmt, ...)
    {
-      log_buf[idx].level        = level;
-      log_buf[idx].wizinv_level = wizinv_level;
-      strncpy(log_buf[idx].str, buf, sizeof(log_buf[idx].str) - 1);
-      log_buf[idx].str[sizeof(log_buf[idx].str) - 1] = 0;
+      static ubit8  idx      = 0;
+      static ubit32 log_size = 0;
 
-      idx++;
-      idx %= MAXLOG; /* idx = 1 .. MAXLOG-1 */
+      char    buf[MAX_STRING_LENGTH];
+      char   *t;
+      va_list args;
 
-      log_buf[idx].str[0] = 0;
-   }
-}
+      time_t now   = time(nullptr);
+      char  *tmstr = ctime(&now);
 
-/* MS: Moved szonelog to handler.c to make this module independent. */
+      tmstr[strlen(tmstr) - 1] = '\0';
 
-/*  Replacing slog/assert(FALSE)
- *  usage: error(HERE, "Bad id: %d", id);
- */
-void error(const char *file, int line, const char *fmt, ...)
-{
-   char    buf[512];
-   va_list args;
-
-   va_start(args, fmt);
-   vsprintf(buf, fmt, args);
-   va_end(args);
-
-   slog(LOG_OFF, 0, "%s:%d: %s", file, line, buf);
-
-   abort();
-}
-
-char *sprintbit(char *buf, ubit32 vektor, const char *names[])
-{
-   char *result = buf;
-   long  nr;
-
-   *result = '\0';
-
-   for(nr = 0; vektor; vektor >>= 1, nr += names[nr] ? 1 : 0)
-      if(IS_SET(1, vektor))
+      if(wizinv_level > 0)
       {
-         sprintf(result, "%s ", names[nr] ? names[nr] : "UNDEFINED");
-         TAIL(result);
+         sprintf(buf, "(%d) ", wizinv_level);
+      }
+      else
+      {
+         *buf = '\0';
       }
 
-   if(!*buf)
-      strcpy(buf, "NOBITS");
+      t = buf;
+      TAIL(t);
 
-   return buf;
-}
-/* MS2020. What a messed up function :)) Looks like noone calls with with
-           anywhting but NULL as first parameter
-*/
-const char *sprinttype(char *buf, int type, const char *names[])
-{
-   const char *str;
-   int         nr;
+      va_start(args, fmt);
+      vsprintf(t, fmt, args);
+      va_end(args);
 
-   for(nr = 0; names[nr]; nr++)
-      ;
+      /* 5 == " :: \n";  24 == tmstr (Tue Sep 20 18:41:23 1994)*/
+      log_size += strlen(buf) + 5 + 24;
 
-   str = (0 <= type && type < nr) ? (char *)names[type] : "UNDEFINED";
+      if(log_size > 4000000) /* 4 meg is indeed a very big logfile! */
+      {
+         fprintf(stderr, "Log-file insanely big!  Going down.\n");
+         abort(); // Dont use error, it calls syslog!!! *grin*
+      }
 
-   if(buf)
-      return strcpy(buf, str);
-   else
+      fprintf(stderr, "%s :: %s\n", tmstr, buf);
+
+      if(level > LOG_OFF)
+      {
+         log_buf[idx].level        = level;
+         log_buf[idx].wizinv_level = wizinv_level;
+         strncpy(log_buf[idx].str, buf, sizeof(log_buf[idx].str) - 1);
+         log_buf[idx].str[sizeof(log_buf[idx].str) - 1] = 0;
+
+         idx++;
+         idx %= MAXLOG; /* idx = 1 .. MAXLOG-1 */
+
+         log_buf[idx].str[0] = 0;
+      }
+   }
+
+   /* MS: Moved szonelog to handler.c to make this module independent. */
+
+   /*  Replacing slog/assert(FALSE)
+    *  usage: error(HERE, "Bad id: %d", id);
+    */
+   void error(const char *file, int line, const char *fmt, ...)
+   {
+      char    buf[512];
+      va_list args;
+
+      va_start(args, fmt);
+      vsprintf(buf, fmt, args);
+      va_end(args);
+
+      slog(LOG_OFF, 0, "%s:%d: %s", file, line, buf);
+
+      abort();
+   }
+
+   auto sprintbit(char *buf, ubit32 vektor, const char *names[])->char *
+   {
+      char *result = buf;
+      long  nr;
+
+      *result = '\0';
+
+      for(nr = 0; vektor != 0u; vektor >>= 1, nr += names[nr] != nullptr ? 1 : 0)
+      {
+         if(IS_SET(1, vektor))
+         {
+            sprintf(result, "%s ", names[nr] != nullptr ? names[nr] : "UNDEFINED");
+            TAIL(result);
+         }
+      }
+
+      if(*buf == 0)
+      {
+         strcpy(buf, "NOBITS");
+      }
+
+      return buf;
+   }
+   /* MS2020. What a messed up function :)) Looks like noone calls with with
+              anywhting but NULL as first parameter
+   */
+   auto sprinttype(char *buf, int type, const char *names[])->const char *
+   {
+      const char *str;
+      int         nr;
+
+      for(nr = 0; names[nr] != nullptr; nr++)
+      {
+         ;
+      }
+
+      str = (0 <= type && type < nr) ? (char *)names[type] : "UNDEFINED";
+
+      if(buf != nullptr)
+      {
+         return strcpy(buf, str);
+      }
       return str;
-}
+   }

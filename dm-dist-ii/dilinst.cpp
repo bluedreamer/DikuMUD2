@@ -23,11 +23,11 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <stdarg.h> /* For type_check */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cstdarg> /* For type_check */
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "account.h"
 #include "affect.h"
@@ -41,7 +41,6 @@
 #include "handler.h"
 #include "interpreter.h"
 #include "justice.h"
-#include "limits.h"
 #include "magic.h"
 #include "main.h"
 #include "movement.h"
@@ -52,6 +51,7 @@
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
 /* report error in instruction */
 void dil_insterr(struct dilprg *p, const char *where)
@@ -74,7 +74,7 @@ void dilfi_foe(struct dilprg *p, class dilval *v)
    class dilval v1;
    int          i;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "foreach - build");
@@ -83,30 +83,40 @@ void dilfi_foe(struct dilprg *p, class dilval *v)
 
    eval_dil_exp(p, &v1);
 
-   if(dil_type_check("foreach - build", p, 1, &v1, TYPEFAIL_NULL, 1, DILV_INT))
+   if(dil_type_check("foreach - build", p, 1, &v1, TYPEFAIL_NULL, 1, DILV_INT) != 0)
+   {
       return;
+   }
 
    /* build environment into secures with NULL labels */
 
    dil_getval(&v1);
 
-   if(v1.val.num)
+   if(v1.val.num != 0)
    {
       for(i = 0; i < p->sp->securecount; i++)
-         if(p->sp->secure[i].lab == NULL)
+      {
+         if(p->sp->secure[i].lab == nullptr)
          {
             dil_sub_secure(p->sp, p->sp->secure[i].sup, TRUE);
             i--; // Shit
          }
+      }
 
       if(UNIT_IN(p->sarg->owner))
+      {
          scan4_unit(p->sarg->owner, v1.val.num);
+      }
       else
+      {
          scan4_unit_room(p->sarg->owner, v1.val.num);
+      }
 
       for(i = 0; i < unit_vector.top; i++)
-         dil_add_secure(p, UVI(i), NULL);
-      dil_add_secure(p, p->sarg->owner, NULL);
+      {
+         dil_add_secure(p, UVI(i), nullptr);
+      }
+      dil_add_secure(p, p->sarg->owner, nullptr);
    }
 }
 
@@ -118,7 +128,7 @@ void dilfi_fon(struct dilprg *p, class dilval *v)
    ubit32            adr;
    int               i;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "foreach - next");
@@ -136,15 +146,17 @@ void dilfi_fon(struct dilprg *p, class dilval *v)
    }
 
    /* look for NULL references, remove first */
-   u = NULL;
+   u = nullptr;
    for(i = 0; i < p->sp->securecount; i++)
-      if(!p->sp->secure[i].lab)
+   {
+      if(p->sp->secure[i].lab == nullptr)
       {
          u = p->sp->secure[i].sup;
          break;
       }
+   }
 
-   if(!u)
+   if(u == nullptr)
    {
       /* no new in environment found, exit loop */
       p->sp->pc = &(p->sp->tmpl->core[adr]);
@@ -163,7 +175,7 @@ void dilfi_stor(struct dilprg *p, class dilval *v)
    class dilval v1;
    int          dif;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "store");
@@ -173,24 +185,29 @@ void dilfi_stor(struct dilprg *p, class dilval *v)
    eval_dil_exp(p, &v1);
 
    if(dil_type_check("store", p, 1, &v1, TYPEFAIL_NULL, 1, DILV_UP) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr)
+   if(v1.val.ptr != nullptr)
    {
       void store_unit(struct unit_data * u);
 
       if(!IS_ROOM((struct unit_data *)v1.val.ptr))
+      {
          store_unit((struct unit_data *)v1.val.ptr);
+      }
    }
 }
 
 /* set bright */
 void dilfi_sbt(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
    int          dif;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "setbright");
@@ -201,9 +218,11 @@ void dilfi_sbt(struct dilprg *p, class dilval *v)
    eval_dil_exp(p, &v2);
 
    if(dil_type_check("setbright", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_UP, &v2, FAIL_NULL, 1, DILV_INT) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr)
+   if(v1.val.ptr != nullptr)
    {
       dif = v2.val.num - UNIT_BRIGHT((struct unit_data *)v1.val.ptr);
 
@@ -214,9 +233,10 @@ void dilfi_sbt(struct dilprg *p, class dilval *v)
 /* acc_modify */
 void dilfi_amod(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "acc_modify");
@@ -227,9 +247,11 @@ void dilfi_amod(struct dilprg *p, class dilval *v)
    eval_dil_exp(p, &v2);
 
    if(dil_type_check("acc_modify", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_UP, &v2, FAIL_NULL, 1, DILV_INT) < 0)
+   {
       return;
+   }
 
-   if(g_cServerConfig.m_bAccounting && v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr))
+   if((g_cServerConfig.m_bAccounting != 0) && (v1.val.ptr != nullptr) && IS_PC((struct unit_data *)v1.val.ptr))
    {
       if(p->stack[0].tmpl->zone->access != 0)
       {
@@ -239,9 +261,13 @@ void dilfi_amod(struct dilprg *p, class dilval *v)
       else
       {
          if(v2.val.num > 0)
+         {
             account_insert(p->owner, (struct unit_data *)v1.val.ptr, v2.val.num);
+         }
          else if(v2.val.num < 0)
+         {
             account_withdraw(p->owner, (struct unit_data *)v1.val.ptr, -v2.val.num);
+         }
       }
    }
 }
@@ -249,10 +275,11 @@ void dilfi_amod(struct dilprg *p, class dilval *v)
 /* set weight */
 void dilfi_swt(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
    int          dif;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "setweight");
@@ -263,9 +290,11 @@ void dilfi_swt(struct dilprg *p, class dilval *v)
    eval_dil_exp(p, &v2);
 
    if(dil_type_check("setweight", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_UP, &v2, FAIL_NULL, 1, DILV_INT) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr)
+   if(v1.val.ptr != nullptr)
    {
       dif = v2.val.num - UNIT_BASE_WEIGHT((struct unit_data *)v1.val.ptr);
 
@@ -280,9 +309,10 @@ void dilfi_swt(struct dilprg *p, class dilval *v)
 /* change_speed */
 void dilfi_chas(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "change_speed");
@@ -293,18 +323,23 @@ void dilfi_chas(struct dilprg *p, class dilval *v)
    eval_dil_exp(p, &v2);
 
    if(dil_type_check("change_speed", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_UP, &v2, FAIL_NULL, 1, DILV_INT) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr) && CHAR_COMBAT((struct unit_data *)v1.val.ptr))
+   if((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr) && CHAR_COMBAT((struct unit_data *)v1.val.ptr))
+   {
       CHAR_COMBAT((struct unit_data *)v1.val.ptr)->changeSpeed(v2.val.num);
+   }
 }
 
 /* set_fighting */
 void dilfi_setf(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "set_fighting");
@@ -315,14 +350,21 @@ void dilfi_setf(struct dilprg *p, class dilval *v)
    eval_dil_exp(p, &v2);
 
    if(dil_type_check("set_fighting", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_UP, &v2, TYPEFAIL_NULL, 1, DILV_UP) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr) && v2.val.ptr && IS_CHAR((struct unit_data *)v2.val.ptr))
+   if((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr) && (v2.val.ptr != nullptr) &&
+      IS_CHAR((struct unit_data *)v2.val.ptr))
    {
       if(CHAR_FIGHTING((struct unit_data *)v1.val.ptr))
+      {
          set_fighting((struct unit_data *)v1.val.ptr, (struct unit_data *)v2.val.ptr, FALSE);
+      }
       else
+      {
          set_fighting((struct unit_data *)v1.val.ptr, (struct unit_data *)v2.val.ptr, TRUE);
+      }
    }
 }
 
@@ -331,7 +373,7 @@ void dilfi_cli(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "clear");
@@ -341,7 +383,9 @@ void dilfi_cli(struct dilprg *p, class dilval *v)
    eval_dil_exp(p, &v1);
 
    if(dil_type_check("clear", p, 1, &v1, FAIL_NULL, 1, DILV_INT) < 0)
+   {
       return;
+   }
 
    dil_intr_remove(p, v1.val.num);
 }
@@ -351,7 +395,7 @@ void dilfi_rts(struct dilprg *p, class dilval *v)
 {
    int i;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "return");
@@ -381,7 +425,7 @@ void dilfi_rtf(struct dilprg *p, class dilval *v)
    class dilval     v1;
    int              i;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "return <exp>");
@@ -444,7 +488,7 @@ void dilfi_rtf(struct dilprg *p, class dilval *v)
 
 void dil_pop_frame(struct dilprg *p)
 {
-   dilfi_rts(p, NULL); /* XXX Is this a potential memory leak rts / rtf? */
+   dilfi_rts(p, nullptr); /* XXX Is this a potential memory leak rts / rtf? */
 }
 
 /*
@@ -473,16 +517,20 @@ void dil_push_frame(struct dilprg *p, struct diltemplate *rtmpl, class dilval *a
    frm->pc          = rtmpl->core;
    frm->ret         = 0;
    frm->securecount = 0;
-   frm->secure      = NULL;
+   frm->secure      = nullptr;
 
    frm->intrcount = rtmpl->intrcount;
 
-   if(rtmpl->intrcount)
+   if(rtmpl->intrcount != 0u)
+   {
       CREATE(frm->intr, struct dilintr, rtmpl->intrcount);
+   }
    else
-      frm->intr = NULL;
+   {
+      frm->intr = nullptr;
+   }
 
-   if(rtmpl->varc)
+   if(rtmpl->varc != 0u)
    {
       CREATE(frm->vars, struct dilvar, rtmpl->varc);
 
@@ -492,16 +540,24 @@ void dil_push_frame(struct dilprg *p, struct diltemplate *rtmpl, class dilval *a
          if(i >= rtmpl->argc)
          {
             if(frm->vars[i].type == DILV_SLP)
+            {
                frm->vars[i].val.namelist = new cNamelist;
+            }
             else
-               frm->vars[i].val.string = NULL;
+            {
+               frm->vars[i].val.string = nullptr;
+            }
          }
          else
-            frm->vars[i].val.string = NULL;
+         {
+            frm->vars[i].val.string = nullptr;
+         }
       }
    }
    else
-      frm->vars = NULL;
+   {
+      frm->vars = nullptr;
+   }
 
    ubit8 tmp;
 
@@ -530,7 +586,9 @@ void dil_push_frame(struct dilprg *p, struct diltemplate *rtmpl, class dilval *a
 
          case DILV_SLP:
             if(tmp != DILV_NULL)
+            {
                frm->vars[i].val.namelist = ((cNamelist *)av[i].val.ptr)->Duplicate();
+            }
             break;
 
          case DILV_EDP:
@@ -550,12 +608,13 @@ void dil_push_frame(struct dilprg *p, struct diltemplate *rtmpl, class dilval *a
 /* Remote procedure call */
 void dilfi_rproc(struct dilprg *p, class dilval *v)
 {
-   int                 xrefi, i;
+   int                 xrefi;
+   int                 i;
    struct diltemplate *ctmpl;
    class dilval        av[255];
    ubit16              argcnt;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "remote procedure call");
@@ -572,7 +631,7 @@ void dilfi_rproc(struct dilprg *p, class dilval *v)
    xrefi  = bread_ubit16(&(p->sp->pc)); /* <funcnumber> */
    argcnt = bread_ubit16(&(p->sp->pc)); /* <argc>, ignored */
 
-   if(!ctmpl->extprg[xrefi])
+   if(ctmpl->extprg[xrefi] == nullptr)
    {
       /*
        * This function had a lost reference!
@@ -598,12 +657,13 @@ void dilfi_rproc(struct dilprg *p, class dilval *v)
 void dilfi_rsproc(struct dilprg *p, class dilval *v)
 {
    int                 i;
-   struct diltemplate *ctmpl, *ntmpl;
+   struct diltemplate *ctmpl;
+   struct diltemplate *ntmpl;
    class dilval        av[255];
    class dilval        v1;
    ubit8               argcnt;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "remote procedure call");
@@ -625,15 +685,21 @@ void dilfi_rsproc(struct dilprg *p, class dilval *v)
       eval_dil_exp(p, &av[i]);
 
    if(dil_getval(&v1) != DILV_SP)
+   {
       return; /* error finding proc name, skip */
+   }
 
    ntmpl = find_dil_template((char *)v1.val.ptr);
 
-   if(!ntmpl)
+   if(ntmpl == nullptr)
+   {
       return; /* error finding template, skip */
+   }
 
    if(ntmpl->argc != argcnt)
+   {
       return; /* wrong number of arguments */
+   }
 
    for(i = 0; i < argcnt; i++)
    {
@@ -643,25 +709,35 @@ void dilfi_rsproc(struct dilprg *p, class dilval *v)
       {
          case DILV_INT:
             if(t != DILV_INT)
+            {
                return; /* type error, expect integer */
+            }
             break;
          case DILV_SP:
             if((t != DILV_NULL) && (t != DILV_SP))
+            {
                return; /* type error, expect string */
+            }
             break;
          case DILV_UP:
             if((t != DILV_NULL) && (t != DILV_UP))
+            {
                return; /* type error, expect unitptr */
+            }
             break;
 
          case DILV_EDP:
             if((t != DILV_NULL) && (t != DILV_EDP))
+            {
                return; /* type error, expect extraptr */
+            }
             break;
 
          case DILV_SLP:
             if((t != DILV_NULL) && (t != DILV_SLP))
+            {
                return; /* type error, expect stringlist */
+            }
             break;
       }
    }
@@ -674,12 +750,14 @@ void dilfi_rsproc(struct dilprg *p, class dilval *v)
 /* Remote function call */
 void dilfi_rfunc(struct dilprg *p, class dilval *v)
 {
-   int                 xrefi, vari, i;
+   int                 xrefi;
+   int                 vari;
+   int                 i;
    struct diltemplate *ctmpl;
    class dilval        av[255];
    ubit16              argcnt;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "remote func call");
@@ -697,7 +775,7 @@ void dilfi_rfunc(struct dilprg *p, class dilval *v)
    vari   = bread_ubit16(&(p->sp->pc)); /* <var#> */
    xrefi  = bread_ubit16(&(p->sp->pc)); /* <funcnumber> */
    argcnt = bread_ubit16(&(p->sp->pc)); /* <nargs>, ignored */
-   if(!ctmpl->extprg[xrefi])
+   if(ctmpl->extprg[xrefi] == nullptr)
    {
       /*
        * This function had a lost reference!
@@ -725,13 +803,15 @@ void dilfi_rfunc(struct dilprg *p, class dilval *v)
 /* Remote symbolic function call */
 void dilfi_rsfunc(struct dilprg *p, class dilval *v)
 {
-   int                 vari, i;
-   struct diltemplate *ctmpl, *ntmpl;
+   int                 vari;
+   int                 i;
+   struct diltemplate *ctmpl;
+   struct diltemplate *ntmpl;
    class dilval        av[255];
    class dilval        v1;
    ubit8               argcnt;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "remote func call");
@@ -758,15 +838,21 @@ void dilfi_rsfunc(struct dilprg *p, class dilval *v)
    }
 
    if(dil_getval(&v1) != DILV_SP)
+   {
       return; /* error finding proc name, skip */
+   }
 
    ntmpl = find_dil_template((char *)v1.val.ptr);
 
-   if(!ntmpl)
+   if(ntmpl == nullptr)
+   {
       return; /* error finding template, skip */
+   }
 
    if(ntmpl->argc != argcnt)
+   {
       return; /* wrong number of arguments */
+   }
 
    for(i = 0; i < argcnt; i++)
    {
@@ -776,23 +862,33 @@ void dilfi_rsfunc(struct dilprg *p, class dilval *v)
       {
          case DILV_INT:
             if(t != DILV_INT)
+            {
                return; /* type error, expect integer */
+            }
             break;
          case DILV_SP:
             if((t != DILV_NULL) && (t != DILV_SP))
+            {
                return; /* type error, expect string */
+            }
             break;
          case DILV_UP:
             if((t != DILV_NULL) && (t != DILV_UP))
+            {
                return; /* type error, expect unitptr */
+            }
             break;
          case DILV_EDP:
             if((t != DILV_NULL) && (t != DILV_EDP))
+            {
                return; /* type error, expect extraptr */
+            }
             break;
          case DILV_SLP:
             if((t != DILV_NULL) && (t != DILV_SLP))
+            {
                return; /* type error, expect stringlist */
+            }
             break;
       }
    }
@@ -808,9 +904,10 @@ void dilfi_rsfunc(struct dilprg *p, class dilval *v)
 /* Assignment of value to reference */
 void dilfi_ass(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "assignment");
@@ -835,7 +932,7 @@ void dilfi_ass(struct dilprg *p, class dilval *v)
             case DILV_FAIL:
                break;
             case DILV_NULL:
-               *((void **)v1.ref) = NULL;
+               *((void **)v1.ref) = nullptr;
                break;
 
             case DILV_UP:
@@ -856,7 +953,7 @@ void dilfi_ass(struct dilprg *p, class dilval *v)
                break;
 
             case DILV_NULL:
-               ((cStringInstance *)v1.ref)->Reassign(NULL);
+               ((cStringInstance *)v1.ref)->Reassign(nullptr);
                break;
 
             case DILV_SP:
@@ -878,11 +975,15 @@ void dilfi_ass(struct dilprg *p, class dilval *v)
          /* free potential old string */
          if(v1.atyp == DILA_NORM)
          {
-            if(*((char **)v1.ref))
+            if(*((char **)v1.ref) != nullptr)
+            {
                free(*((char **)v1.ref));
+            }
          }
          else
+         {
             dil_typeerr(p, "ordinary string assignment <- hash");
+         }
 
          switch(dil_getval(&v2))
          {
@@ -890,7 +991,7 @@ void dilfi_ass(struct dilprg *p, class dilval *v)
                break;
 
             case DILV_NULL:
-               *((void **)v1.ref) = NULL;
+               *((void **)v1.ref) = nullptr;
                break;
 
             case DILV_HASHSTR:
@@ -928,8 +1029,10 @@ void dilfi_ass(struct dilprg *p, class dilval *v)
 
                ((cNamelist *)v1.ref)->Free();
 
-               if(v2.val.ptr)
+               if(v2.val.ptr != nullptr)
+               {
                   ((cNamelist *)v1.ref)->CopyList((cNamelist *)v2.val.ptr);
+               }
                break;
 
             default:
@@ -948,7 +1051,7 @@ void dilfi_ass(struct dilprg *p, class dilval *v)
 
             case DILV_NULL:
                /* assign empty list */
-               *((void **)v1.ref) = NULL;
+               *((void **)v1.ref) = nullptr;
                break;
 
             case DILV_EDP:
@@ -1068,9 +1171,10 @@ void dilfi_ass(struct dilprg *p, class dilval *v)
 /* Link unit into other unit */
 void dilfi_lnk(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "link");
@@ -1083,15 +1187,17 @@ void dilfi_lnk(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("link", p, 2, &v1, FAIL_NULL, 1, DILV_UP, &v2, FAIL_NULL, 1, DILV_UP) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr && v2.val.ptr)
+   if((v1.val.ptr != nullptr) && (v2.val.ptr != nullptr))
    {
       if(IS_OBJ((struct unit_data *)v1.val.ptr) && OBJ_EQP_POS((struct unit_data *)v1.val.ptr))
       {
          unequip_object((struct unit_data *)v1.val.ptr);
       }
-      if(!unit_recursive((struct unit_data *)v1.val.ptr, (struct unit_data *)v2.val.ptr) &&
+      if((unit_recursive((struct unit_data *)v1.val.ptr, (struct unit_data *)v2.val.ptr) == 0) &&
          (!IS_ROOM((struct unit_data *)v1.val.ptr) || IS_ROOM((struct unit_data *)v2.val.ptr)))
       {
          unit_from_unit((struct unit_data *)v1.val.ptr);
@@ -1103,9 +1209,10 @@ void dilfi_lnk(struct dilprg *p, class dilval *v)
 /* dilcopy */
 void dilfi_dlc(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "dilcopy");
@@ -1118,18 +1225,23 @@ void dilfi_dlc(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("dilcopy", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_SP, &v2, TYPEFAIL_NULL, 1, DILV_UP) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr && v2.val.ptr)
+   if((v1.val.ptr != nullptr) && (v2.val.ptr != nullptr))
+   {
       dil_copy((char *)v1.val.ptr, (struct unit_data *)v2.val.ptr);
+   }
 }
 
 /* sendtext */
 void dilfi_sete(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "sendtext");
@@ -1142,19 +1254,24 @@ void dilfi_sete(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("sendtext", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_SP, &v2, TYPEFAIL_NULL, 1, DILV_UP) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr && v2.val.ptr && IS_CHAR((struct unit_data *)v2.val.ptr))
+   if((v1.val.ptr != nullptr) && (v2.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v2.val.ptr))
+   {
       send_to_char((char *)v1.val.ptr, (struct unit_data *)v2.val.ptr);
+   }
 }
 
 /* Set one char to follow another unconditionally */
 void dilfi_folo(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
    sbit32       value = 0;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "folo");
@@ -1167,12 +1284,17 @@ void dilfi_folo(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("follow", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_UP, &v2, TYPEFAIL_NULL, 1, DILV_UP) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr && v2.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr) && IS_CHAR((struct unit_data *)v2.val.ptr))
+   if((v1.val.ptr != nullptr) && (v2.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr) &&
+      IS_CHAR((struct unit_data *)v2.val.ptr))
    {
       if(CHAR_MASTER((struct unit_data *)v1.val.ptr))
+      {
          stop_following((struct unit_data *)v1.val.ptr);
+      }
 
       start_following((struct unit_data *)v1.val.ptr, (struct unit_data *)v2.val.ptr);
    }
@@ -1181,10 +1303,12 @@ void dilfi_folo(struct dilprg *p, class dilval *v)
 /* logcrime */
 void dilfi_lcri(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2, v3;
+   class dilval v1;
+   class dilval v2;
+   class dilval v3;
    sbit32       value = 0;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "lcri");
@@ -1198,9 +1322,12 @@ void dilfi_lcri(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("logcrime", p, 3, &v1, TYPEFAIL_NULL, 1, DILV_UP, &v2, TYPEFAIL_NULL, 1, DILV_UP, &v3, TYPEFAIL_NULL, 1, DILV_INT) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr && v2.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr) && IS_CHAR((struct unit_data *)v2.val.ptr))
+   if((v1.val.ptr != nullptr) && (v2.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr) &&
+      IS_CHAR((struct unit_data *)v2.val.ptr))
    {
       log_crime((struct unit_data *)v1.val.ptr, (struct unit_data *)v2.val.ptr, v3.val.num);
    }
@@ -1209,10 +1336,11 @@ void dilfi_lcri(struct dilprg *p, class dilval *v)
 /* Assign EXP to player */
 void dilfi_exp(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
    sbit32       value = 0;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "exp");
@@ -1225,12 +1353,16 @@ void dilfi_exp(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("exp", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_INT, &v2, FAIL_NULL, 1, DILV_UP) < 0)
+   {
       return;
+   }
 
    if(dil_getval(&v1) == DILV_INT)
+   {
       value = v1.val.num;
+   }
 
-   if(v2.val.ptr && IS_PC((struct unit_data *)v2.val.ptr))
+   if((v2.val.ptr != nullptr) && IS_PC((struct unit_data *)v2.val.ptr))
    {
       value = MAX(-level_xp(CHAR_LEVEL((struct unit_data *)v2.val.ptr)), value);
 
@@ -1248,7 +1380,7 @@ void dilfi_if(struct dilprg *p, class dilval *v)
    class dilval v1;
    ubit32       coreptr;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "if");
@@ -1259,16 +1391,19 @@ void dilfi_if(struct dilprg *p, class dilval *v)
    coreptr = bread_ubit32(&(p->sp->pc)); /* else branch */
 
    p->waitcmd--;
-   if(!dil_getbool(&v1))                         /* might be pointer, but ok! */
+   if(dil_getbool(&v1) == 0)
+   {                                             /* might be pointer, but ok! */
       p->sp->pc = &(p->sp->tmpl->core[coreptr]); /* choose else branch */
+   }
 }
 
 /* Set bits in integer */
 void dilfi_set(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "set");
@@ -1281,7 +1416,9 @@ void dilfi_set(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("set", p, 1, &v2, TYPEFAIL_NULL, 1, DILV_INT) < 0)
+   {
       return;
+   }
 
    switch(v1.type)
    {
@@ -1316,9 +1453,10 @@ void dilfi_set(struct dilprg *p, class dilval *v)
 /* Unset bits in integer */
 void dilfi_uset(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "unset");
@@ -1331,7 +1469,9 @@ void dilfi_uset(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("unset", p, 1, &v2, TYPEFAIL_NULL, 1, DILV_INT) < 0)
+   {
       return;
+   }
 
    switch(v1.type)
    {
@@ -1367,9 +1507,10 @@ void dilfi_uset(struct dilprg *p, class dilval *v)
 /* Add element to string list (addstring) */
 void dilfi_adl(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "addstring");
@@ -1396,18 +1537,23 @@ void dilfi_adl(struct dilprg *p, class dilval *v)
    }
 
    if(dil_type_check("addstring", p, 1, &v2, FAIL_NULL, 1, DILV_SP) < 0)
+   {
       return;
+   }
 
-   if(v2.val.ptr)
+   if(v2.val.ptr != nullptr)
+   {
       ((cNamelist *)v1.ref)->AppendName(skip_spaces((char *)v2.val.ptr));
+   }
 }
 
 /* Substract element from stringlist */
 void dilfi_sul(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "substring");
@@ -1434,20 +1580,26 @@ void dilfi_sul(struct dilprg *p, class dilval *v)
    }
 
    if(dil_type_check("substring", p, 1, &v2, TYPEFAIL_NULL, 1, DILV_SP) < 0)
+   {
       return;
+   }
 
-   if(v2.val.ptr)
+   if(v2.val.ptr != nullptr)
+   {
       ((cNamelist *)v1.ref)->RemoveName(skip_spaces((char *)v2.val.ptr));
+   }
 }
 
 /* add element to extra description */
 void dilfi_ade(struct dilprg *p, class dilval *v)
 {
    /* add entry to extradescription */
-   class dilval v1, v2, v3;
+   class dilval v1;
+   class dilval v2;
+   class dilval v3;
 
    /* three arguments */
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "addextra");
@@ -1476,11 +1628,13 @@ void dilfi_ade(struct dilprg *p, class dilval *v)
    }
 
    if(dil_type_check("addextra", p, 2, &v2, TYPEFAIL_NULL, 1, DILV_SLP, &v3, TYPEFAIL_NULL, 1, DILV_SP) < 0)
-      return;
-
-   if(v1.ref && v2.val.ptr && v3.val.ptr)
    {
-      *((class extra_descr_data **)v1.ref) = (*((class extra_descr_data **)v1.ref))->add((char *)NULL, (char *)v3.val.ptr);
+      return;
+   }
+
+   if((v1.ref != nullptr) && (v2.val.ptr != nullptr) && (v3.val.ptr != nullptr))
+   {
+      *((class extra_descr_data **)v1.ref) = (*((class extra_descr_data **)v1.ref))->add((char *)nullptr, (char *)v3.val.ptr);
       (*((class extra_descr_data **)v1.ref))->names.CopyList((cNamelist *)v2.val.ptr);
    }
 }
@@ -1488,9 +1642,10 @@ void dilfi_ade(struct dilprg *p, class dilval *v)
 /* Substract elemnt from extra description */
 void dilfi_sue(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "subextra");
@@ -1518,10 +1673,14 @@ void dilfi_sue(struct dilprg *p, class dilval *v)
    }
 
    if(dil_type_check("subextra", p, 1, &v2, TYPEFAIL_NULL, 1, DILV_SP) < 0)
+   {
       return;
+   }
 
-   if(v2.val.ptr && v1.ref)
+   if((v2.val.ptr != nullptr) && (v1.ref != nullptr))
+   {
       *((class extra_descr_data **)v1.ref) = (*((class extra_descr_data **)v1.ref))->remove((char *)v2.val.ptr);
+   }
 }
 
 /* Destroy unit */
@@ -1529,7 +1688,7 @@ void dilfi_dst(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "destroy");
@@ -1541,9 +1700,11 @@ void dilfi_dst(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("destroy", p, 1, &v1, TYPEFAIL_NULL, 1, DILV_UP) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr && !IS_ROOM((struct unit_data *)v1.val.ptr))
+   if((v1.val.ptr != nullptr) && !IS_ROOM((struct unit_data *)v1.val.ptr))
    {
       if(v1.val.ptr == p->sarg->owner)
       {
@@ -1565,7 +1726,7 @@ void dilfi_walk(struct dilprg *p, class dilval *v)
    ubit16       i;
    ubit8       *oldpc;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "walk");
@@ -1579,9 +1740,11 @@ void dilfi_walk(struct dilprg *p, class dilval *v)
    p->waitcmd = WAITCMD_FINISH;
 
    if(dil_type_check("walkto", p, 1, &v1, FAIL_NULL, 1, DILV_UP) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr)
+   if(v1.val.ptr != nullptr)
    {
       v1.val.ptr = unit_room((struct unit_data *)v1.val.ptr);
 
@@ -1614,9 +1777,10 @@ void dilfi_walk(struct dilprg *p, class dilval *v)
 /* Execute command */
 void dilfi_exec(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "exec");
@@ -1629,9 +1793,11 @@ void dilfi_exec(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("exec", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_SP, &v2, TYPEFAIL_NULL, 1, DILV_UP) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr && v2.val.ptr && IS_CHAR((struct unit_data *)v2.val.ptr))
+   if((v1.val.ptr != nullptr) && (v2.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v2.val.ptr))
    {
       char cmd[MAX_INPUT_LENGTH + 1];
 
@@ -1653,7 +1819,7 @@ void dilfi_exec(struct dilprg *p, class dilval *v)
 
          str_next_word(cmd, buf);
 
-         if((cmd_ptr = (struct command_info *)search_trie(buf, intr_trie)))
+         if((cmd_ptr = (struct command_info *)search_trie(buf, intr_trie)) != nullptr)
          {
             if(cmd_ptr->minimum_level >= IMMORTAL_LEVEL)
             {
@@ -1685,10 +1851,11 @@ void dilfi_exec(struct dilprg *p, class dilval *v)
 /* Wait */
 void dilfi_wit(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
    ubit8       *oldpc;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "wait");
@@ -1701,7 +1868,9 @@ void dilfi_wit(struct dilprg *p, class dilval *v)
    eval_dil_exp(p, &v2); /* boolean expr */
 
    if(dil_type_check("wait", p, 1, &v1, TYPEFAIL_NULL, 1, DILV_INT) < 0)
+   {
       return;
+   }
 
    if(p->waitcmd != WAITCMD_MAXINST)
    {
@@ -1716,8 +1885,10 @@ void dilfi_wit(struct dilprg *p, class dilval *v)
    }
    else
    {
-      if(IS_SET(v1.val.num, p->sarg->mflags) && dil_getbool(&v2))
+      if(IS_SET(v1.val.num, p->sarg->mflags) && (dil_getbool(&v2) != 0))
+      {
          p->waitcmd--;
+      }
       else
       {
          p->sp->pc  = oldpc; /* rewind pc to just before command */
@@ -1731,9 +1902,14 @@ void dilfi_act(struct dilprg *p, class dilval *v)
 {
    /* Act call */
 
-   class dilval v1, v2, v3, v4, v5, v6;
+   class dilval v1;
+   class dilval v2;
+   class dilval v3;
+   class dilval v4;
+   class dilval v5;
+   class dilval v6;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "act");
@@ -1753,7 +1929,9 @@ void dilfi_act(struct dilprg *p, class dilval *v)
    if(dil_type_check("act", p, 6, &v1, TYPEFAIL_NULL, 1, DILV_SP, &v2, TYPEFAIL_NULL, 1, DILV_INT, &v3, TYPEFAIL_NULL, 3, DILV_UP, DILV_SP,
                      DILV_NULL, &v4, TYPEFAIL_NULL, 3, DILV_UP, DILV_SP, DILV_NULL, &v5, TYPEFAIL_NULL, 3, DILV_UP, DILV_SP, DILV_NULL, &v6,
                      TYPEFAIL_NULL, 1, DILV_INT) < 0)
+   {
       return;
+   }
 
    switch(v6.val.num)
    {
@@ -1762,14 +1940,18 @@ void dilfi_act(struct dilprg *p, class dilval *v)
       case TO_ALL:
       case TO_REST:
          /* these require 1st argument */
-         if(v3.val.ptr)
+         if(v3.val.ptr != nullptr)
+         {
             act((char *)v1.val.ptr, v2.val.num, v3.val.ptr, v4.val.ptr, v5.val.ptr, v6.val.num);
+         }
          break;
 
       case TO_VICT:
       case TO_NOTVICT:
-         if(v5.val.ptr)
+         if(v5.val.ptr != nullptr)
+         {
             act((char *)v1.val.ptr, v2.val.num, v3.val.ptr, v4.val.ptr, v5.val.ptr, v6.val.num);
+         }
    }
 }
 
@@ -1778,7 +1960,7 @@ void dilfi_goto(struct dilprg *p, class dilval *v)
 {
    ubit32 adr;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "goto");
@@ -1798,7 +1980,7 @@ void dilfi_on(struct dilprg *p, class dilval *v)
    ubit16       maxlab;
    ubit8       *brkptr;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "on");
@@ -1826,19 +2008,24 @@ void dilfi_on(struct dilprg *p, class dilval *v)
       p->sp->pc += sizeof(ubit32) * (v1.val.num);
       adr = bread_ubit32(&(p->sp->pc));
       if(adr == SKIP)
+      {
          p->sp->pc = brkptr;
+      }
       else
+      {
          p->sp->pc = &(p->sp->tmpl->core[adr]);
+      }
    }
 }
 
 /* Substract affect from unit */
 void dilfi_sua(struct dilprg *p, class dilval *v)
 {
-   class dilval               v1, v2;
+   class dilval               v1;
+   class dilval               v2;
    struct unit_affected_type *af;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "subaff");
@@ -1850,22 +2037,36 @@ void dilfi_sua(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("subaff", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_UP, &v2, TYPEFAIL_NULL, 1, DILV_INT) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr)
+   if(v1.val.ptr != nullptr)
    {
       af = affected_by_spell((struct unit_data *)v1.val.ptr, v2.val.num);
-      if(af)
+      if(af != nullptr)
+      {
          destroy_affect(af);
+      }
    }
 }
 
 /* Add affect */
 void dilfi_ada(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
+   class dilval v1;
+   class dilval v2;
+   class dilval v3;
+   class dilval v4;
+   class dilval v5;
+   class dilval v6;
+   class dilval v7;
+   class dilval v8;
+   class dilval v9;
+   class dilval v10;
+   class dilval v11;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "addaff");
@@ -1890,10 +2091,13 @@ void dilfi_ada(struct dilprg *p, class dilval *v)
                      TYPEFAIL_NULL, 1, DILV_INT, &v5, TYPEFAIL_NULL, 1, DILV_INT, &v6, TYPEFAIL_NULL, 1, DILV_INT, &v7, TYPEFAIL_NULL, 1,
                      DILV_INT, &v8, TYPEFAIL_NULL, 1, DILV_INT, &v9, TYPEFAIL_NULL, 1, DILV_INT, &v10, TYPEFAIL_NULL, 1, DILV_INT, &v11,
                      TYPEFAIL_NULL, 1, DILV_INT) < 0)
+   {
       return;
+   }
 
-   if((v1.val.ptr) && is_in(v2.val.num, 1, ID_TOP_IDX) && is_in(v8.val.num, TIF_NONE, TIF_MAX) && is_in(v9.val.num, TIF_NONE, TIF_MAX) &&
-      is_in(v10.val.num, TIF_NONE, TIF_MAX) && is_in(v11.val.num, APF_NONE, APF_MAX))
+   if(((v1.val.ptr) != nullptr) && (is_in(v2.val.num, 1, ID_TOP_IDX) != 0) && (is_in(v8.val.num, TIF_NONE, TIF_MAX) != 0) &&
+      (is_in(v9.val.num, TIF_NONE, TIF_MAX) != 0) && (is_in(v10.val.num, TIF_NONE, TIF_MAX) != 0) &&
+      (is_in(v11.val.num, APF_NONE, APF_MAX) != 0))
    {
       if(p->stack[0].tmpl->zone->access != 0)
       {
@@ -1924,7 +2128,7 @@ void dilfi_ada(struct dilprg *p, class dilval *v)
 /* Priority */
 void dilfi_pri(struct dilprg *p, class dilval *v)
 {
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "priority");
@@ -1938,7 +2142,7 @@ void dilfi_pri(struct dilprg *p, class dilval *v)
 /* No Priority */
 void dilfi_npr(struct dilprg *p, class dilval *v)
 {
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "nopriority");
@@ -1954,7 +2158,7 @@ void dilfi_snd(struct dilprg *p, class dilval *v)
 {
    class dilval v1; /* message */
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "send");
@@ -1966,9 +2170,11 @@ void dilfi_snd(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("send", p, 1, &v1, TYPEFAIL_NULL, 1, DILV_SP) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr)
+   if(v1.val.ptr != nullptr)
    {
       send_message(p->sarg->owner, (char *)v1.val.ptr);
       dil_test_secure(p);
@@ -1979,11 +2185,10 @@ void dilfi_snd(struct dilprg *p, class dilval *v)
 void dilfi_snt(struct dilprg *p, class dilval *v)
 {
    /* sendto (string, uptr) */
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
 
-   extern struct command_info cmd_auto_msg;
-
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "sendto");
@@ -1996,17 +2201,19 @@ void dilfi_snt(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("sendto", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_SP, &v2, FAIL_NULL, 1, DILV_UP) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr && v2.val.ptr)
+   if((v1.val.ptr != nullptr) && (v2.val.ptr != nullptr))
    {
       struct spec_arg sarg;
 
       sarg.activator = p->sarg->owner;
-      sarg.medium    = NULL;
-      sarg.target    = NULL;
-      sarg.pInt      = NULL;
-      sarg.fptr      = NULL; /* Set by unit_function_scan */
+      sarg.medium    = nullptr;
+      sarg.target    = nullptr;
+      sarg.pInt      = nullptr;
+      sarg.fptr      = nullptr; /* Set by unit_function_scan */
       sarg.cmd       = &cmd_auto_msg;
       sarg.arg       = (char *)v1.val.ptr;
       sarg.mflags    = SFB_MSG | SFB_AWARE;
@@ -2022,11 +2229,10 @@ void dilfi_snta(struct dilprg *p, class dilval *v)
    /* Send message to DIL programs in all units of type specified */
    /* sendtoall (string, string) */
 
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
 
-   extern struct command_info cmd_auto_msg;
-
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "sendtoall");
@@ -2039,33 +2245,37 @@ void dilfi_snta(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("sendtoall", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_SP, &v2, TYPEFAIL_NULL, 1, DILV_SP) < 0)
-      return;
-
-   if(v1.val.ptr && v2.val.ptr)
    {
-      extern struct unit_data *unit_list;
+      return;
+   }
 
+   if((v1.val.ptr != nullptr) && (v2.val.ptr != nullptr))
+   {
       struct unit_data       *u;
       struct file_index_type *fi;
 
-      if((fi = str_to_file_index((char *)v2.val.ptr)))
+      if((fi = str_to_file_index((char *)v2.val.ptr)) != nullptr)
       {
          struct spec_arg sarg;
 
          sarg.activator = p->sarg->owner;
          sarg.medium    = p->sarg->owner;
-         sarg.target    = NULL;
-         sarg.pInt      = NULL;
-         sarg.fptr      = NULL; /* Set by unit_function_scan */
+         sarg.target    = nullptr;
+         sarg.pInt      = nullptr;
+         sarg.fptr      = nullptr; /* Set by unit_function_scan */
 
-         sarg.fptr   = NULL;
+         sarg.fptr   = nullptr;
          sarg.cmd    = &cmd_auto_msg;
          sarg.arg    = (char *)v1.val.ptr;
          sarg.mflags = SFB_MSG;
 
-         for(u = unit_list; u; u = u->gnext)
+         for(u = unit_list; u != nullptr; u = u->gnext)
+         {
             if(UNIT_FILE_INDEX(u) == fi)
+            {
                unit_function_scan(u, &sarg);
+            }
+         }
 
          dil_test_secure(p);
       }
@@ -2077,9 +2287,10 @@ void dilfi_sntadil(struct dilprg *p, class dilval *v)
    /* Send message to DIL programs in all units of type specified */
    /* sendtoall (string<message>, string<template> ) */
 
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "sendtoalldil");
@@ -2092,36 +2303,44 @@ void dilfi_sntadil(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("sendtoalldil", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_SP, &v2, TYPEFAIL_NULL, 1, DILV_SP) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr && !str_is_empty((char *)v2.val.ptr))
+   if((v1.val.ptr != nullptr) && (str_is_empty((char *)v2.val.ptr) == 0u))
    {
       struct diltemplate *tmpl;
 
       tmpl = find_dil_template((char *)v2.val.ptr);
 
-      if(tmpl)
+      if(tmpl != nullptr)
       {
          struct dilprg *tp;
 
-         for(tp = dil_list; tp; tp = dil_list_nextdude)
+         for(tp = dil_list; tp != nullptr; tp = dil_list_nextdude)
          {
             dil_list_nextdude = tp->next;
 
-            if(tp->sp && tp->sp->tmpl == tmpl && tp != p)
+            if((tp->sp != nullptr) && tp->sp->tmpl == tmpl && tp != p)
             {
                struct unit_fptr *fptr;
 
                /* If it is destructed, then it cant be found because data
                   will be null */
 
-               for(fptr = UNIT_FUNC(tp->owner); fptr; fptr = fptr->next)
-                  if(fptr->index == SFUN_DIL_INTERNAL && fptr->data && ((struct dilprg *)fptr->data)->sp &&
+               for(fptr = UNIT_FUNC(tp->owner); fptr != nullptr; fptr = fptr->next)
+               {
+                  if(fptr->index == SFUN_DIL_INTERNAL && (fptr->data != nullptr) && (((struct dilprg *)fptr->data)->sp != nullptr) &&
                      ((struct dilprg *)fptr->data)->sp->tmpl == tmpl)
+                  {
                      break;
+                  }
+               }
 
-               if(!fptr)
+               if(fptr == nullptr)
+               {
                   continue;
+               }
 
                struct spec_arg sarg;
 
@@ -2129,7 +2348,7 @@ void dilfi_sntadil(struct dilprg *p, class dilval *v)
                sarg.activator = p->owner;
                sarg.medium    = p->owner;
                sarg.target    = tp->owner;
-               sarg.pInt      = NULL;
+               sarg.pInt      = nullptr;
                sarg.fptr      = fptr;
 
                sarg.cmd    = &cmd_auto_msg;
@@ -2150,7 +2369,7 @@ void dilfi_log(struct dilprg *p, class dilval *v)
 
    class dilval v1;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "log");
@@ -2162,10 +2381,14 @@ void dilfi_log(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("log", p, 1, &v1, TYPEFAIL_NULL, 1, DILV_SP) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr)
+   if(v1.val.ptr != nullptr)
+   {
       szonelog(UNIT_FI_ZONE(p->owner), "%s", (char *)v1.val.ptr);
+   }
 }
 
 /* Secure */
@@ -2174,7 +2397,7 @@ void dilfi_sec(struct dilprg *p, class dilval *v)
    class dilval v1;  /* unit */
    ubit32       adr; /* address */
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "secure");
@@ -2187,9 +2410,11 @@ void dilfi_sec(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("secure", p, 1, &v1, TYPEFAIL_NULL, 1, DILV_UP) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr)
+   if(v1.val.ptr != nullptr)
    {
       dil_sub_secure(p->sp, (struct unit_data *)v1.val.ptr);
       dil_add_secure(p, (struct unit_data *)v1.val.ptr, &(p->sp->tmpl->core[adr]));
@@ -2201,7 +2426,7 @@ void dilfi_use(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "unsecure");
@@ -2213,18 +2438,23 @@ void dilfi_use(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("unsecure", p, 1, &v1, TYPEFAIL_NULL, 1, DILV_UP) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr)
+   if(v1.val.ptr != nullptr)
+   {
       dil_sub_secure(p->sp, (struct unit_data *)v1.val.ptr);
+   }
 }
 
 /* Equip unit in inventory of PC/NPC */
 void dilfi_eqp(struct dilprg *p, class dilval *v)
 {
-   class dilval v1, v2;
+   class dilval v1;
+   class dilval v2;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "equip");
@@ -2237,10 +2467,12 @@ void dilfi_eqp(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("equip", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_UP, &v2, TYPEFAIL_NULL, 1, DILV_INT) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr && UNIT_IN((struct unit_data *)v1.val.ptr) && IS_CHAR(UNIT_IN((struct unit_data *)v1.val.ptr)) &&
-      IS_OBJ((struct unit_data *)v1.val.ptr) && !equipment(UNIT_IN((struct unit_data *)v1.val.ptr), v2.val.num))
+   if((v1.val.ptr != nullptr) && UNIT_IN((struct unit_data *)v1.val.ptr) && IS_CHAR(UNIT_IN((struct unit_data *)v1.val.ptr)) &&
+      IS_OBJ((struct unit_data *)v1.val.ptr) && (equipment(UNIT_IN((struct unit_data *)v1.val.ptr), v2.val.num) == nullptr))
    {
       /* Then equip char */
       equip_char(UNIT_IN((struct unit_data *)v1.val.ptr), (struct unit_data *)v1.val.ptr, v2.val.num);
@@ -2252,7 +2484,7 @@ void dilfi_ueq(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "unequip");
@@ -2264,9 +2496,11 @@ void dilfi_ueq(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("unequip", p, 1, &v1, FAIL_NULL, 1, DILV_UP) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr && IS_OBJ((struct unit_data *)v1.val.ptr) && OBJ_EQP_POS((struct unit_data *)v1.val.ptr))
+   if((v1.val.ptr != nullptr) && IS_OBJ((struct unit_data *)v1.val.ptr) && OBJ_EQP_POS((struct unit_data *)v1.val.ptr))
    {
       unequip_object((struct unit_data *)v1.val.ptr);
    }
@@ -2274,7 +2508,7 @@ void dilfi_ueq(struct dilprg *p, class dilval *v)
 
 void dilfi_quit(struct dilprg *p, class dilval *v)
 {
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "quit");
@@ -2287,7 +2521,7 @@ void dilfi_quit(struct dilprg *p, class dilval *v)
 /* Block */
 void dilfi_blk(struct dilprg *p, class dilval *v)
 {
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "block");
@@ -2302,10 +2536,9 @@ void dilfi_pup(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
 
-   void update_pos(struct unit_data * victim);
    void die(struct unit_data * ch);
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "updatepos");
@@ -2317,9 +2550,11 @@ void dilfi_pup(struct dilprg *p, class dilval *v)
    p->waitcmd--;
 
    if(dil_type_check("updatepos", p, 1, &v1, TYPEFAIL_NULL, 1, DILV_UP) < 0)
+   {
       return;
+   }
 
-   if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr))
+   if((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr))
    {
       update_pos((struct unit_data *)v1.val.ptr);
       if(CHAR_POS((struct unit_data *)v1.val.ptr) == POSITION_DEAD)
@@ -2332,11 +2567,15 @@ void dilfi_pup(struct dilprg *p, class dilval *v)
 
 void dilfi_cast(struct dilprg *p, class dilval *v)
 {
-   class dilval                  v1, v2, v3, v4;
-   struct unit_data             *caster = NULL, *medium = NULL, *target = NULL;
-   extern struct spell_info_type spell_info[SPL_TREE_MAX];
+   class dilval      v1;
+   class dilval      v2;
+   class dilval      v3;
+   class dilval      v4;
+   struct unit_data *caster = NULL;
+   struct unit_data *medium = NULL;
+   struct unit_data *target = NULL;
 
-   if(v)
+   if(v != nullptr)
    {
       v->type = DILV_ERR; /* instructions do not return values */
       dil_insterr(p, "cast");
@@ -2352,14 +2591,16 @@ void dilfi_cast(struct dilprg *p, class dilval *v)
 
    if(dil_type_check("cast", p, 4, &v1, TYPEFAIL_NULL, 1, DILV_INT, &v2, TYPEFAIL_NULL, 1, DILV_UP, &v3, TYPEFAIL_NULL, 1, DILV_UP, &v4,
                      TYPEFAIL_NULL, 1, DILV_UP) < 0)
+   {
       return;
+   }
 
    caster = (struct unit_data *)v2.val.ptr;
    medium = (struct unit_data *)v3.val.ptr;
    target = (struct unit_data *)v4.val.ptr;
 
-   if(is_in(v1.val.num, SPL_GROUP_MAX, SPL_TREE_MAX - 1) && caster && IS_CHAR(caster) && medium &&
-      (spell_info[v1.val.num].spell_pointer || spell_info[v1.val.num].tmpl))
+   if((is_in(v1.val.num, SPL_GROUP_MAX, SPL_TREE_MAX - 1) != 0) && (caster != nullptr) && IS_CHAR(caster) && (medium != nullptr) &&
+      ((spell_info[v1.val.num].spell_pointer != nullptr) || (spell_info[v1.val.num].tmpl != nullptr)))
    {
       /* cast the spell */
       char mbuf[MAX_INPUT_LENGTH] = {0};

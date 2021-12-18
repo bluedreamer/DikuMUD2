@@ -29,11 +29,11 @@
 /* 22/01/93 hhs: corrected drop bug in blow away                           */
 /* 02/08/94 gnort: Fixed a bug in force_move; added support for 2nd string */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #include "affect.h"
 #include "comm.h"
@@ -43,7 +43,6 @@
 #include "handler.h"
 #include "interpreter.h"
 #include "justice.h"
-#include "limits.h"
 #include "magic.h"
 #include "money.h"
 #include "movement.h"
@@ -56,16 +55,17 @@
 #include "trie.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
 /*   external vars  */
-extern struct unit_data       *unit_list;
+
 extern struct descriptor_data *descriptor_list;
 extern char                   *dirs[];
 
 /* extern procedures */
 
-void     modify_hit(struct unit_data *ch, int hit);
-amount_t obj_trade_price(struct unit_data *u);
+void modify_hit(struct unit_data *ch, int hit);
+auto obj_trade_price(struct unit_data *u) -> amount_t;
 
 /* ------------------------------------------------------------------------- */
 /*                        R O O M   R O U T I N E S                          */
@@ -76,19 +76,25 @@ amount_t obj_trade_price(struct unit_data *u);
 /*   "river/gentle_stream!You flow down the stream to a more gentle area." */
 /*   "haunted_house/second_floor!The floorboards break under your weight!@$1n crashes through the floor." */
 /* Ticks. */
-int force_move(struct spec_arg *sarg)
+auto force_move(struct spec_arg *sarg) -> int
 {
-   char                   *c = NULL, *c2, *s = (char *)sarg->fptr->data;
+   char                   *c = NULL;
+   char                   *c2;
+   char                   *s = (char *)sarg->fptr->data;
    struct file_index_type *fi;
-   struct unit_data       *u, *ut, *next;
+   struct unit_data       *u;
+   struct unit_data       *ut;
+   struct unit_data       *next;
 
    if(sarg->cmd->no != CMD_AUTO_TICK)
+   {
       return SFR_SHARE;
+   }
 
-   if(s == NULL || (c = strchr(s, '!')) == NULL)
+   if(s == nullptr || (c = strchr(s, '!')) == nullptr)
    {
       szonelog(UNIT_FI_ZONE(sarg->owner), "%s@%s: %s data to force move.", UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner),
-               s ? "Wrong" : "No");
+               s != nullptr ? "Wrong" : "No");
       destroy_fptr(sarg->owner, sarg->fptr);
       return SFR_SHARE;
    }
@@ -99,7 +105,7 @@ int force_move(struct spec_arg *sarg)
 
    c2 = strchr(c, '@');
 
-   if(fi == NULL || fi->room_ptr == NULL)
+   if(fi == nullptr || fi->room_ptr == nullptr)
    {
       szonelog(UNIT_FI_ZONE(sarg->owner), "%s@%s: Force move, no such room: %s", UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner),
                s);
@@ -107,51 +113,75 @@ int force_move(struct spec_arg *sarg)
       return SFR_SHARE;
    }
 
-   if((u = UNIT_CONTAINS(sarg->owner)))
+   if((u = UNIT_CONTAINS(sarg->owner)) != nullptr)
    {
-      if(c2)
+      if(c2 != nullptr)
+      {
          *c2 = '\0';
+      }
 
-      act(c + 1, A_ALWAYS, u, 0, 0, TO_ALL);
+      act(c + 1, A_ALWAYS, u, nullptr, nullptr, TO_ALL);
 
-      if(c2)
+      if(c2 != nullptr)
+      {
          *c2 = '@';
+      }
 
-      for(; u; u = next)
+      for(; u != nullptr; u = next)
       {
          next = u->next;
          if(!IS_ROOM(u))
          {
             if(IS_CHAR(u) && CHAR_COMBAT(u))
+            {
                continue;
+            }
 
             if(UNIT_CHARS(u))
             {
                struct unit_data *tu;
 
-               for(tu = UNIT_CONTAINS(u); tu; tu = tu->next)
+               for(tu = UNIT_CONTAINS(u); tu != nullptr; tu = tu->next)
+               {
                   if(IS_CHAR(tu) && CHAR_COMBAT(tu))
+                  {
                      break;
+                  }
+               }
 
-               if(tu)
+               if(tu != nullptr)
+               {
                   continue;
+               }
             }
 
-            if(c2)
-               act(c2 + 1, A_HIDEINV, u, 0, 0, TO_ROOM);
+            if(c2 != nullptr)
+            {
+               act(c2 + 1, A_HIDEINV, u, nullptr, nullptr, TO_ROOM);
+            }
 
             if(UNIT_CONTAINS(fi->room_ptr))
-               act("$2n has arrived.", A_HIDEINV, UNIT_CONTAINS(fi->room_ptr), u, 0, TO_ALL);
+            {
+               act("$2n has arrived.", A_HIDEINV, UNIT_CONTAINS(fi->room_ptr), u, nullptr, TO_ALL);
+            }
 
             unit_from_unit(u);
             unit_to_unit(u, fi->room_ptr);
             char mbuf[MAX_INPUT_LENGTH] = {0};
             if(IS_CHAR(u))
+            {
                do_look(u, mbuf, sarg->cmd);
+            }
             if(UNIT_IS_TRANSPARENT(u))
-               for(ut = UNIT_CONTAINS(u); ut; ut = ut->next)
+            {
+               for(ut = UNIT_CONTAINS(u); ut != nullptr; ut = ut->next)
+               {
                   if(IS_CHAR(ut))
+                  {
                      do_look(ut, mbuf, sarg->cmd);
+                  }
+               }
+            }
          }
       }
    }
@@ -163,9 +193,9 @@ int force_move(struct spec_arg *sarg)
 /*                     M O B I L E   R O U T I N E S                         */
 /* ------------------------------------------------------------------------- */
 
-int combat_poison_sting(struct spec_arg *sarg)
+auto combat_poison_sting(struct spec_arg *sarg) -> int
 {
-   struct unit_data *activator = NULL;
+   struct unit_data *activator = nullptr;
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -174,13 +204,13 @@ int combat_poison_sting(struct spec_arg *sarg)
       return SFR_SHARE;
    }
 
-   if(sarg->cmd->no == CMD_AUTO_COMBAT && CHAR_AWAKE(sarg->owner) && (activator = CHAR_FIGHTING(sarg->owner)) &&
-      cast_magic_now(sarg->owner, 20))
+   if(sarg->cmd->no == CMD_AUTO_COMBAT && CHAR_AWAKE(sarg->owner) && ((activator = CHAR_FIGHTING(sarg->owner)) != nullptr) &&
+      (cast_magic_now(sarg->owner, 20) != 0u))
    {
       CHAR_MANA(sarg->owner) -= 20;
 
-      act("$1n bites $3n.", A_SOMEONE, sarg->owner, 0, activator, TO_NOTVICT);
-      act("$1n bites you.", A_SOMEONE, sarg->owner, 0, activator, TO_VICT);
+      act("$1n bites $3n.", A_SOMEONE, sarg->owner, nullptr, activator, TO_NOTVICT);
+      act("$1n bites you.", A_SOMEONE, sarg->owner, nullptr, activator, TO_VICT);
 
       char mbuf[MAX_INPUT_LENGTH] = {0};
       spell_perform(SPL_POISON, MEDIA_SPELL, sarg->owner, sarg->owner, sarg->activator, mbuf);
@@ -192,7 +222,7 @@ int combat_poison_sting(struct spec_arg *sarg)
 
 /* A restricted obey proper for animals... */
 
-int obey_animal(struct spec_arg *sarg)
+auto obey_animal(struct spec_arg *sarg) -> int
 {
    char             *arg = (char *)sarg->arg;
    struct unit_data *u;
@@ -214,13 +244,13 @@ int obey_animal(struct spec_arg *sarg)
 
    if(sarg->cmd->no == CMD_TELL)
    {
-      u = find_unit(sarg->activator, &arg, 0, FIND_UNIT_SURRO | FIND_UNIT_INVEN);
+      u = find_unit(sarg->activator, &arg, nullptr, FIND_UNIT_SURRO | FIND_UNIT_INVEN);
 
       arg = skip_spaces(arg);
 
-      if(str_is_empty(arg))
+      if(str_is_empty(arg) != 0u)
       {
-         act("Command $3N to do what?", A_ALWAYS, sarg->activator, 0, sarg->owner, TO_CHAR);
+         act("Command $3N to do what?", A_ALWAYS, sarg->activator, nullptr, sarg->owner, TO_CHAR);
          return SFR_BLOCK;
       }
 
@@ -233,7 +263,7 @@ int obey_animal(struct spec_arg *sarg)
          act("$1n commands you to '$2t'", A_ALWAYS, sarg->activator, arg, sarg->owner, TO_VICT);
 
          str_next_word(arg, cmd);
-         if((cmd_ptr = (struct command_info *)search_trie(cmd, intr_trie)))
+         if((cmd_ptr = (struct command_info *)search_trie(cmd, intr_trie)) != nullptr)
          {
             switch(cmd_ptr->no)
             {
@@ -291,7 +321,7 @@ int obey_animal(struct spec_arg *sarg)
    return SFR_SHARE;
 }
 
-int obey(struct spec_arg *sarg)
+auto obey(struct spec_arg *sarg) -> int
 {
    char             *arg = (char *)sarg->arg;
    struct unit_data *u;
@@ -311,13 +341,13 @@ int obey(struct spec_arg *sarg)
 
    if(sarg->cmd->no == CMD_TELL)
    {
-      u = find_unit(sarg->activator, &arg, 0, FIND_UNIT_SURRO | FIND_UNIT_INVEN);
+      u = find_unit(sarg->activator, &arg, nullptr, FIND_UNIT_SURRO | FIND_UNIT_INVEN);
 
       arg = skip_spaces(arg);
 
-      if(str_is_empty(arg))
+      if(str_is_empty(arg) != 0u)
       {
-         act("Command $3N to do what?", A_ALWAYS, sarg->activator, 0, sarg->owner, TO_CHAR);
+         act("Command $3N to do what?", A_ALWAYS, sarg->activator, nullptr, sarg->owner, TO_CHAR);
          return SFR_BLOCK;
       }
 
@@ -333,13 +363,15 @@ int obey(struct spec_arg *sarg)
    return SFR_SHARE;
 }
 
-int random_zonemove(struct spec_arg *sarg)
+auto random_zonemove(struct spec_arg *sarg) -> int
 {
    int               door;
    struct unit_data *to_room;
 
    if(sarg->cmd->no != CMD_AUTO_TICK)
+   {
       return SFR_SHARE;
+   }
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -356,10 +388,14 @@ int random_zonemove(struct spec_arg *sarg)
          if(!IS_SET(UNIT_FLAGS(to_room), UNIT_FL_NO_MOB))
          {
             if(CHAR_LAST_ROOM(sarg->owner) != to_room && unit_zone(to_room) == unit_zone(UNIT_IN(sarg->owner)))
+            {
                command_interpreter(sarg->owner, dirs[door]);
+            }
 
-            if(is_destructed(DR_UNIT, sarg->owner))
+            if(is_destructed(DR_UNIT, sarg->owner) != 0)
+            {
                return SFR_BLOCK;
+            }
 
             CHAR_LAST_ROOM(sarg->owner) = UNIT_IN(sarg->owner);
          }
@@ -369,13 +405,15 @@ int random_zonemove(struct spec_arg *sarg)
    return SFR_SHARE;
 }
 
-int random_move(struct spec_arg *sarg)
+auto random_move(struct spec_arg *sarg) -> int
 {
    int               door;
    struct unit_data *to_room;
 
    if(sarg->cmd->no != CMD_AUTO_TICK)
+   {
       return SFR_SHARE;
+   }
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -394,10 +432,14 @@ int random_move(struct spec_arg *sarg)
          {
             /* Do this to increase probability of not walking back'n forth */
             if(CHAR_LAST_ROOM(sarg->owner) != to_room)
+            {
                command_interpreter(sarg->owner, dirs[door]);
+            }
 
-            if(is_destructed(DR_UNIT, sarg->owner))
+            if(is_destructed(DR_UNIT, sarg->owner) != 0)
+            {
                return SFR_BLOCK;
+            }
 
             CHAR_LAST_ROOM(sarg->owner) = UNIT_IN(sarg->owner);
          }
@@ -407,10 +449,11 @@ int random_move(struct spec_arg *sarg)
    return SFR_SHARE;
 }
 
-int scavenger(struct spec_arg *sarg)
+auto scavenger(struct spec_arg *sarg) -> int
 {
    int               max;
-   struct unit_data *best_obj, *obj;
+   struct unit_data *best_obj;
+   struct unit_data *obj;
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -419,18 +462,20 @@ int scavenger(struct spec_arg *sarg)
       return SFR_SHARE;
    }
 
-   if(sarg->cmd->no == CMD_AUTO_TICK && CHAR_AWAKE(sarg->owner) && !(CHAR_FIGHTING(sarg->owner)))
+   if(sarg->cmd->no == CMD_AUTO_TICK && CHAR_AWAKE(sarg->owner) && ((CHAR_FIGHTING(sarg->owner)) == nullptr))
    {
-      for(max = 50, best_obj = 0, obj = UNIT_CONTAINS(UNIT_IN(sarg->owner)); obj; obj = obj->next)
-         if(IS_OBJ(obj) && (obj_trade_price(obj) > (sbit32)max) && !UNIT_CHARS(obj) && char_can_get_unit(sarg->owner, obj))
+      for(max = 50, best_obj = nullptr, obj = UNIT_CONTAINS(UNIT_IN(sarg->owner)); obj != nullptr; obj = obj->next)
+      {
+         if(IS_OBJ(obj) && (obj_trade_price(obj) > (sbit32)max) && !UNIT_CHARS(obj) && (char_can_get_unit(sarg->owner, obj) != 0))
          {
             best_obj = obj;
             max      = obj_trade_price(obj);
          }
+      }
 
-      if(best_obj)
+      if(best_obj != nullptr)
       {
-         act("$1n gets $2n.", A_SOMEONE, sarg->owner, best_obj, 0, TO_ROOM);
+         act("$1n gets $2n.", A_SOMEONE, sarg->owner, best_obj, nullptr, TO_ROOM);
 
          unit_from_unit(best_obj);
          unit_to_unit(best_obj, sarg->owner);
@@ -442,7 +487,7 @@ int scavenger(struct spec_arg *sarg)
    return SFR_SHARE;
 }
 
-int aggressive(struct spec_arg *sarg)
+auto aggressive(struct spec_arg *sarg) -> int
 {
    int i;
 
@@ -459,14 +504,18 @@ int aggressive(struct spec_arg *sarg)
 
       for(i = 0; i < unit_vector.top; i++)
       {
-         if(CHAR_CAN_SEE(sarg->owner, UVI(i)) && IS_MORTAL(UVI(i)) && number(0, 1))
-            if(!affected_by_spell(UVI(i), ID_SANCTUARY))
+         if(CHAR_CAN_SEE(sarg->owner, UVI(i)) && IS_MORTAL(UVI(i)) && (number(0, 1) != 0))
+         {
+            if(affected_by_spell(UVI(i), ID_SANCTUARY) == nullptr)
             {
-               if(sarg->fptr->data)
-                  act((char *)sarg->fptr->data, A_SOMEONE, sarg->owner, 0, UVI(i), TO_ROOM);
+               if(sarg->fptr->data != nullptr)
+               {
+                  act((char *)sarg->fptr->data, A_SOMEONE, sarg->owner, nullptr, UVI(i), TO_ROOM);
+               }
                simple_one_hit(sarg->owner, UVI(i));
                return SFR_BLOCK;
             }
+         }
       }
    }
    return SFR_SHARE;
@@ -474,7 +523,7 @@ int aggressive(struct spec_arg *sarg)
 
 /* Will make the mob attack players with reverse alignment of its own.    */
 /* Ticks.                                                                 */
-int aggres_rev_align(struct spec_arg *sarg)
+auto aggres_rev_align(struct spec_arg *sarg) -> int
 {
    int i;
 
@@ -493,7 +542,7 @@ int aggres_rev_align(struct spec_arg *sarg)
       {
          if(CHAR_CAN_SEE(sarg->owner, UVI(i)) && IS_MORTAL(UVI(i)) && abs(UNIT_ALIGNMENT(sarg->owner) - UNIT_ALIGNMENT(UVI(i))) >= 1000)
          {
-            if(!affected_by_spell(UVI(i), ID_SANCTUARY))
+            if(affected_by_spell(UVI(i), ID_SANCTUARY) == nullptr)
             {
                simple_one_hit(sarg->owner, UVI(i));
                return SFR_BLOCK;
@@ -508,7 +557,7 @@ int aggres_rev_align(struct spec_arg *sarg)
 /* This replaces puff() and ransay()                 */
 /* When called it executes the command in fptr->data */
 /* via command_interpreter                           */
-int mob_command(struct spec_arg *sarg)
+auto mob_command(struct spec_arg *sarg) -> int
 {
    if(!IS_CHAR(sarg->owner))
    {
@@ -519,7 +568,7 @@ int mob_command(struct spec_arg *sarg)
 
    if(sarg->cmd->no == CMD_AUTO_TICK)
    {
-      if(!sarg->fptr->data)
+      if(sarg->fptr->data == nullptr)
       {
          slog(LOG_ALL, 0, "%s@%s: No data in mob command.", UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
          destroy_fptr(sarg->owner, sarg->fptr);
@@ -528,11 +577,10 @@ int mob_command(struct spec_arg *sarg)
       command_interpreter(sarg->owner, (char *)sarg->fptr->data);
       return SFR_BLOCK;
    }
-   else
-      return SFR_SHARE;
+   return SFR_SHARE;
 }
 
-int combat_magic(struct spec_arg *sarg)
+auto combat_magic(struct spec_arg *sarg) -> int
 {
    if(!IS_CHAR(sarg->owner))
    {
@@ -544,14 +592,14 @@ int combat_magic(struct spec_arg *sarg)
    if((sarg->cmd->no == CMD_AUTO_COMBAT) && CHAR_FIGHTING(sarg->owner) && CHAR_AWAKE(sarg->owner) &&
       (CHAR_FIGHTING(sarg->owner) == sarg->activator))
    {
-      if(!sarg->fptr->data)
+      if(sarg->fptr->data == nullptr)
       {
          slog(LOG_ALL, 0, "%s@%s: No data combat magic.", UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
          destroy_fptr(sarg->owner, sarg->fptr);
          return SFR_BLOCK;
       }
 
-      if(cast_magic_now(sarg->owner, 12))
+      if(cast_magic_now(sarg->owner, 12) != 0u)
       {
          command_interpreter(sarg->owner, (char *)sarg->fptr->data);
          return SFR_BLOCK;
@@ -563,7 +611,7 @@ int combat_magic(struct spec_arg *sarg)
 
 /* Monster magic which 'helps' the monster - will cast as soon as hp is */
 /* below 52%                                                            */
-int combat_magic_heal(struct spec_arg *sarg)
+auto combat_magic_heal(struct spec_arg *sarg) -> int
 {
    int left;
 
@@ -577,7 +625,7 @@ int combat_magic_heal(struct spec_arg *sarg)
    if((sarg->cmd->no == CMD_AUTO_COMBAT) && CHAR_FIGHTING(sarg->owner) && CHAR_AWAKE(sarg->owner) &&
       (CHAR_FIGHTING(sarg->owner) == sarg->activator))
    {
-      if(!sarg->fptr->data)
+      if(sarg->fptr->data == nullptr)
       {
          slog(LOG_ALL, 0, "%s@%s: No data in mob command.", UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
          destroy_fptr(sarg->owner, sarg->fptr);
@@ -603,14 +651,16 @@ int combat_magic_heal(struct spec_arg *sarg)
 /* Example: "king welmar/tim/tom"                        */
 /* Players are automatically non-excluded                */
 /* Empty list means none                                 */
-int charname_in_list(struct unit_data *ch, char *arg)
+auto charname_in_list(struct unit_data *ch, char *arg) -> int
 {
    char *c;
 
-   if(!arg || !*arg || IS_PC(ch))
+   if((arg == nullptr) || (*arg == 0) || IS_PC(ch))
+   {
       return FALSE;
+   }
 
-   while((c = strchr(arg, '/')))
+   while((c = strchr(arg, '/')) != nullptr)
    {
       *c = '\0';
       if(UNIT_NAMES(ch).IsName(arg))
@@ -622,7 +672,9 @@ int charname_in_list(struct unit_data *ch, char *arg)
       arg = ++c;
    }
    if(UNIT_NAMES(ch).IsName(arg))
+   {
       return TRUE;
+   }
 
    return FALSE;
 }
@@ -633,9 +685,13 @@ int charname_in_list(struct unit_data *ch, char *arg)
 /* <location> is the symbolic name of the room/obj the mobile must be in  */
 /* The message is sent to room, you can use $1 and $3n                    */
 
-int guard_way(struct spec_arg *sarg)
+auto guard_way(struct spec_arg *sarg) -> int
 {
-   char *str, *location, *excl = NULL, *msg1 = NULL, *msg2 = NULL;
+   char *str;
+   char *location;
+   char *excl = NULL;
+   char *msg1 = NULL;
+   char *msg2 = NULL;
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -644,16 +700,17 @@ int guard_way(struct spec_arg *sarg)
       return SFR_SHARE;
    }
 
-   if((str = (char *)sarg->fptr->data) && (sarg->cmd->no == (*str - '0')) && CHAR_IS_READY(sarg->owner))
+   if(((str = (char *)sarg->fptr->data) != nullptr) && (sarg->cmd->no == (*str - '0')) && CHAR_IS_READY(sarg->owner))
    {
-      if(!(location = str + 1) || !(excl = strchr(location, '@')) || !(msg1 = strchr(excl + 1, '@')) || !(msg2 = strchr(msg1 + 1, '@')))
+      if(((location = str + 1) == nullptr) || ((excl = strchr(location, '@')) == nullptr) || ((msg1 = strchr(excl + 1, '@')) == nullptr) ||
+         ((msg2 = strchr(msg1 + 1, '@')) == nullptr))
       {
          slog(LOG_ALL, 0, "Illegal data string in guard_way: %s", str);
          return SFR_SHARE;
       }
 
       *excl = '\0';
-      if(*location && strcmp(location, UNIT_FI_NAME(UNIT_IN(sarg->owner))))
+      if((*location != 0) && (strcmp(location, UNIT_FI_NAME(UNIT_IN(sarg->owner))) != 0))
       {
          *excl = '@';
          return SFR_SHARE;
@@ -661,7 +718,7 @@ int guard_way(struct spec_arg *sarg)
       *excl = '@';
 
       *msg1 = '\0';
-      if(charname_in_list(sarg->activator, excl + 1))
+      if(charname_in_list(sarg->activator, excl + 1) != 0)
       {
          *msg1 = '@';
          return SFR_SHARE;
@@ -669,8 +726,8 @@ int guard_way(struct spec_arg *sarg)
       *msg1 = '@';
 
       *msg2 = '\0';
-      act(msg1 + 1, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_VICT);
-      act(msg2 + 1, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_NOTVICT);
+      act(msg1 + 1, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_VICT);
+      act(msg2 + 1, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_NOTVICT);
       *msg2 = '@';
       return SFR_BLOCK;
    }
@@ -682,12 +739,18 @@ int guard_way(struct spec_arg *sarg)
 /* Fptr->data is a string containing:                                */
 /*    "[location]@<unit-name>@[exclude]@<msg1>@<msg2>"               */
 
-int guard_unit(struct spec_arg *sarg)
+auto guard_unit(struct spec_arg *sarg) -> int
 {
    char             *arg = (char *)sarg->arg;
-   char             *str = NULL, *location, *excl = NULL, *msg1 = NULL, *msg2 = NULL;
-   char             *unitname = NULL, *c;
-   struct unit_data *u1, *u2;
+   char             *str = NULL;
+   char             *location;
+   char             *excl     = NULL;
+   char             *msg1     = NULL;
+   char             *msg2     = NULL;
+   char             *unitname = NULL;
+   char             *c;
+   struct unit_data *u1;
+   struct unit_data *u2;
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -696,18 +759,19 @@ int guard_unit(struct spec_arg *sarg)
       return SFR_SHARE;
    }
 
-   if(((sarg->cmd->no == CMD_OPEN) || (sarg->cmd->no == CMD_UNLOCK) || (sarg->cmd->no == CMD_PICK)) && (str = (char *)sarg->fptr->data) &&
-      CHAR_IS_READY(sarg->owner))
+   if(((sarg->cmd->no == CMD_OPEN) || (sarg->cmd->no == CMD_UNLOCK) || (sarg->cmd->no == CMD_PICK)) &&
+      ((str = (char *)sarg->fptr->data) != nullptr) && CHAR_IS_READY(sarg->owner))
    {
-      if(!(location = str) || !(unitname = strchr(location, '@')) || !(excl = strchr(unitname + 1, '@')) ||
-         !(msg1 = strchr(excl + 1, '@')) || !(msg2 = strchr(msg1 + 1, '@')))
+      if(((location = str) == nullptr) || ((unitname = strchr(location, '@')) == nullptr) ||
+         ((excl = strchr(unitname + 1, '@')) == nullptr) || ((msg1 = strchr(excl + 1, '@')) == nullptr) ||
+         ((msg2 = strchr(msg1 + 1, '@')) == nullptr))
       {
          slog(LOG_ALL, 0, "Illegal data string in guard_way: %s", str);
          return SFR_SHARE;
       }
 
       *unitname = '\0';
-      if(*location && strcmp(location, UNIT_FI_NAME(UNIT_IN(sarg->owner))))
+      if((*location != 0) && (strcmp(location, UNIT_FI_NAME(UNIT_IN(sarg->owner))) != 0))
       {
          *unitname = '@';
          return SFR_SHARE;
@@ -716,15 +780,17 @@ int guard_unit(struct spec_arg *sarg)
 
       *excl = '\0';
       c     = unitname + 1;
-      u1    = find_unit(sarg->owner, &c, 0, FIND_UNIT_SURRO);
+      u1    = find_unit(sarg->owner, &c, nullptr, FIND_UNIT_SURRO);
       *excl = '@';
-      u2    = find_unit(sarg->activator, &arg, 0, FIND_UNIT_SURRO);
+      u2    = find_unit(sarg->activator, &arg, nullptr, FIND_UNIT_SURRO);
 
-      if(!u1 || (u1 != u2))
+      if((u1 == nullptr) || (u1 != u2))
+      {
          return SFR_SHARE;
+      }
 
       *msg1 = '\0';
-      if(charname_in_list(sarg->activator, excl + 1))
+      if(charname_in_list(sarg->activator, excl + 1) != 0)
       {
          *msg1 = '@';
          return SFR_SHARE;
@@ -732,8 +798,8 @@ int guard_unit(struct spec_arg *sarg)
       *msg1 = '@';
 
       *msg2 = '\0';
-      act(msg1 + 1, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_VICT);
-      act(msg2 + 1, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_NOTVICT);
+      act(msg1 + 1, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_VICT);
+      act(msg2 + 1, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_NOTVICT);
       *msg2 = '@';
       return SFR_BLOCK;
    }
@@ -745,12 +811,17 @@ int guard_unit(struct spec_arg *sarg)
 /* Fptr->data is a string containing:                                   */
 /*    "[location]@<door-name>@[exclude]@<message>@<message>             */
 
-int guard_door(struct spec_arg *sarg)
+auto guard_door(struct spec_arg *sarg) -> int
 {
-   char *arg = (char *)sarg->arg;
-   char *str = NULL, *excl = NULL, *msg1 = NULL, *msg2 = NULL;
-   char *location, *doorname = NULL;
-   int   i1, i2;
+   char *arg  = (char *)sarg->arg;
+   char *str  = NULL;
+   char *excl = NULL;
+   char *msg1 = NULL;
+   char *msg2 = NULL;
+   char *location;
+   char *doorname = NULL;
+   int   i1;
+   int   i2;
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -759,18 +830,19 @@ int guard_door(struct spec_arg *sarg)
       return SFR_SHARE;
    }
 
-   if(((sarg->cmd->no == CMD_OPEN) || (sarg->cmd->no == CMD_UNLOCK) || (sarg->cmd->no == CMD_PICK)) && (str = (char *)sarg->fptr->data) &&
-      CHAR_IS_READY(sarg->owner))
+   if(((sarg->cmd->no == CMD_OPEN) || (sarg->cmd->no == CMD_UNLOCK) || (sarg->cmd->no == CMD_PICK)) &&
+      ((str = (char *)sarg->fptr->data) != nullptr) && CHAR_IS_READY(sarg->owner))
    {
-      if(!(location = str) || !(doorname = strchr(location, '@')) || !(excl = strchr(doorname + 1, '@')) ||
-         !(msg1 = strchr(excl + 1, '@')) || !(msg2 = strchr(msg1 + 1, '@')))
+      if(((location = str) == nullptr) || ((doorname = strchr(location, '@')) == nullptr) ||
+         ((excl = strchr(doorname + 1, '@')) == nullptr) || ((msg1 = strchr(excl + 1, '@')) == nullptr) ||
+         ((msg2 = strchr(msg1 + 1, '@')) == nullptr))
       {
          slog(LOG_ALL, 0, "Illegal data string in guard_way: %s", str);
          return SFR_SHARE;
       }
 
       *doorname = '\0';
-      if(*location && strcmp(location, UNIT_FI_NAME(UNIT_IN(sarg->owner))))
+      if((*location != 0) && (strcmp(location, UNIT_FI_NAME(UNIT_IN(sarg->owner))) != 0))
       {
          *doorname = '@';
          return SFR_SHARE;
@@ -782,13 +854,17 @@ int guard_door(struct spec_arg *sarg)
       *excl = '@';
 
       if(i1 == -1)
+      {
          return SFR_SHARE;
+      }
 
       if(i1 != (i2 = low_find_door(sarg->activator, arg, FALSE, FALSE)))
+      {
          return SFR_SHARE;
+      }
 
       *msg1 = '\0';
-      if(charname_in_list(sarg->activator, excl + 1))
+      if(charname_in_list(sarg->activator, excl + 1) != 0)
       {
          *msg1 = '@';
          return SFR_SHARE;
@@ -796,8 +872,8 @@ int guard_door(struct spec_arg *sarg)
       *msg1 = '@';
 
       *msg2 = '\0';
-      act(msg1 + 1, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_VICT);
-      act(msg2 + 1, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_NOTVICT);
+      act(msg1 + 1, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_VICT);
+      act(msg2 + 1, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_NOTVICT);
       *msg2 = '@';
       return SFR_BLOCK;
    }
@@ -810,9 +886,14 @@ int guard_door(struct spec_arg *sarg)
 /* <location> is the symbolic name of the room/obj the mobile must be in  */
 /* The message is sent to room, you can use $1n and $3n                   */
 
-int guard_way_level(struct spec_arg *sarg)
+auto guard_way_level(struct spec_arg *sarg) -> int
 {
-   char *str, *location, *min = NULL, *max = NULL, *msg1 = NULL, *msg2 = NULL;
+   char *str;
+   char *location;
+   char *min  = NULL;
+   char *max  = NULL;
+   char *msg1 = NULL;
+   char *msg2 = NULL;
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -821,17 +902,17 @@ int guard_way_level(struct spec_arg *sarg)
       return SFR_SHARE;
    }
 
-   if((str = (char *)sarg->fptr->data) && (sarg->cmd->no == (*str - '0')) && CHAR_IS_READY(sarg->owner))
+   if(((str = (char *)sarg->fptr->data) != nullptr) && (sarg->cmd->no == (*str - '0')) && CHAR_IS_READY(sarg->owner))
    {
-      if(!(location = str + 1) || !(min = strchr(location, '@')) || !(max = strchr(min + 1, '-')) || !(msg1 = strchr(max + 1, '@')) ||
-         !(msg2 = strchr(msg1 + 1, '@')))
+      if(((location = str + 1) == nullptr) || ((min = strchr(location, '@')) == nullptr) || ((max = strchr(min + 1, '-')) == nullptr) ||
+         ((msg1 = strchr(max + 1, '@')) == nullptr) || ((msg2 = strchr(msg1 + 1, '@')) == nullptr))
       {
          slog(LOG_ALL, 0, "Illegal data string in guard_way: %s", str);
          return SFR_SHARE;
       }
 
       *min = '\0';
-      if(*location && strcmp(location, UNIT_FI_NAME(UNIT_IN(sarg->owner))))
+      if((*location != 0) && (strcmp(location, UNIT_FI_NAME(UNIT_IN(sarg->owner))) != 0))
       {
          *min = '@';
          return SFR_SHARE;
@@ -851,8 +932,8 @@ int guard_way_level(struct spec_arg *sarg)
       *msg1 = '@';
 
       *msg2 = '\0';
-      act(msg1 + 1, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_VICT);
-      act(msg2 + 1, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_NOTVICT);
+      act(msg1 + 1, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_VICT);
+      act(msg2 + 1, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_NOTVICT);
       *msg2 = '@';
       return SFR_BLOCK;
    }
@@ -861,7 +942,7 @@ int guard_way_level(struct spec_arg *sarg)
 }
 
 /* data is sting with name(s), for example "king welmar/tim/tom" */
-int rescue(struct spec_arg *sarg)
+auto rescue(struct spec_arg *sarg) -> int
 {
    void base_rescue(struct unit_data * ch, struct unit_data * victim);
 
@@ -875,7 +956,7 @@ int rescue(struct spec_arg *sarg)
    if(sarg->cmd->no == CMD_AUTO_COMBAT && CHAR_FIGHTING(sarg->activator) && (CHAR_FIGHTING(sarg->activator) != sarg->owner) &&
       CHAR_AWAKE(sarg->owner))
    {
-      if(!sarg->fptr->data)
+      if(sarg->fptr->data == nullptr)
       {
          slog(LOG_ALL, 0, "%s@%s: No data in rescue.", UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
          destroy_fptr(sarg->owner, sarg->fptr);
@@ -883,7 +964,7 @@ int rescue(struct spec_arg *sarg)
       }
 
       if(((100 * UNIT_HIT(sarg->owner)) / UNIT_MAX_HIT(sarg->owner) >= 50) &&
-         charname_in_list(CHAR_FIGHTING(sarg->activator), (char *)sarg->fptr->data))
+         (charname_in_list(CHAR_FIGHTING(sarg->activator), (char *)sarg->fptr->data) != 0))
       {
          /* If victim has less than 50% hp, and our sarg->owner has more than */
          /* half of his left, then let him rescue our victim           */
@@ -892,13 +973,16 @@ int rescue(struct spec_arg *sarg)
             /* Do NOT rescue if legal taget & protected */
             if(IS_SET(CHAR_FLAGS(CHAR_FIGHTING(sarg->activator)), CHAR_PROTECTED) &&
                IS_SET(CHAR_FLAGS(CHAR_FIGHTING(sarg->activator)), CHAR_LEGAL_TARGET))
+            {
                return SFR_SHARE;
+            }
 
             base_rescue(sarg->owner, CHAR_FIGHTING(sarg->activator));
-            if(number(0, 1))
+            if(number(0, 1) != 0)
+            {
                return SFR_SHARE;
-            else
-               return SFR_BLOCK;
+            }
+            return SFR_BLOCK;
          }
       }
    }
@@ -907,7 +991,7 @@ int rescue(struct spec_arg *sarg)
 
 /* data is sting with name(s), for example "king welmar/tim/tom" */
 /* Is usually used with rescue                                   */
-int teamwork(struct spec_arg *sarg)
+auto teamwork(struct spec_arg *sarg) -> int
 {
    if(!IS_CHAR(sarg->owner))
    {
@@ -919,21 +1003,23 @@ int teamwork(struct spec_arg *sarg)
    if(sarg->cmd->no == CMD_AUTO_COMBAT && !CHAR_FIGHTING(sarg->owner) && CHAR_AWAKE(sarg->owner) && CHAR_FIGHTING(sarg->activator) &&
       (CHAR_FIGHTING(sarg->activator) != sarg->owner))
    {
-      if(!sarg->fptr->data)
+      if(sarg->fptr->data == nullptr)
       {
          slog(LOG_ALL, 0, "%s@%s: No data in mob command.", UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
          destroy_fptr(sarg->owner, sarg->fptr);
          return SFR_BLOCK;
       }
 
-      if(charname_in_list(CHAR_FIGHTING(sarg->activator), (char *)sarg->fptr->data))
+      if(charname_in_list(CHAR_FIGHTING(sarg->activator), (char *)sarg->fptr->data) != 0)
       {
          /* The 'sarg->owner' isn't fighting, and 'sarg->activator' is fightn*/
          /* someone from his group, go kill the bastard!            */
 
          /* Do NOT attack if legal taget & protected */
          if(IS_SET(CHAR_FLAGS(sarg->activator), CHAR_PROTECTED) && IS_SET(CHAR_FLAGS(sarg->activator), CHAR_LEGAL_TARGET))
+         {
             return SFR_SHARE;
+         }
 
          simple_one_hit(sarg->owner, sarg->activator);
          return SFR_BLOCK;
@@ -942,10 +1028,12 @@ int teamwork(struct spec_arg *sarg)
    return SFR_SHARE;
 }
 
-int hideaway(struct spec_arg *sarg)
+auto hideaway(struct spec_arg *sarg) -> int
 {
    if(sarg->cmd->no == CMD_AUTO_EXTRACT)
+   {
       return SFR_SHARE;
+   }
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -956,7 +1044,9 @@ int hideaway(struct spec_arg *sarg)
    }
 
    if(sarg->cmd->no == CMD_AUTO_TICK && CHAR_AWAKE(sarg->owner) && CHAR_POS(sarg->owner) != POSITION_FIGHTING)
+   {
       SET_BIT(CHAR_FLAGS(sarg->owner), CHAR_HIDE);
+   }
 
    return SFR_SHARE;
 }
@@ -970,11 +1060,12 @@ struct mercenary_data
    struct unit_data *destination;
 };
 
-int mercenary_hire(struct spec_arg *sarg)
+auto mercenary_hire(struct spec_arg *sarg) -> int
 {
    char                    *arg = (char *)sarg->arg;
    char                     buf2[MAX_INPUT_LENGTH];
-   struct unit_data        *u, *victim;
+   struct unit_data        *u;
+   struct unit_data        *victim;
    struct mercenary_data   *md;
    struct extra_descr_data *exd;
    amount_t                 price;
@@ -993,27 +1084,27 @@ int mercenary_hire(struct spec_arg *sarg)
    {
       if(sarg->cmd->no == CMD_CONTRACT)
       {
-         act("$1n tries to make a deal with $3n.", A_SOMEONE, sarg->activator, 0, sarg->owner, TO_ROOM);
+         act("$1n tries to make a deal with $3n.", A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_ROOM);
 
-         if(!(victim = find_unit(sarg->owner, &arg, 0, FIND_UNIT_WORLD)) || !IS_CHAR(victim))
+         if(((victim = find_unit(sarg->owner, &arg, nullptr, FIND_UNIT_WORLD)) == nullptr) || !IS_CHAR(victim))
          {
-            act("$1n says, 'Never heard of him.'", A_SOMEONE, sarg->owner, 0, 0, TO_ROOM);
+            act("$1n says, 'Never heard of him.'", A_SOMEONE, sarg->owner, nullptr, nullptr, TO_ROOM);
             return SFR_BLOCK;
          }
          if(victim == sarg->owner)
          {
-            act("$1n says, 'Get lost, punk!'", A_SOMEONE, sarg->owner, 0, 0, TO_ROOM);
+            act("$1n says, 'Get lost, punk!'", A_SOMEONE, sarg->owner, nullptr, nullptr, TO_ROOM);
             return SFR_BLOCK;
          }
          price = MAX(5000, 500 * (CHAR_LEVEL(victim) + CHAR_LEVEL(sarg->owner) * CHAR_LEVEL(sarg->owner)));
 
-         if(!char_can_afford(sarg->activator, price, currency))
+         if(char_can_afford(sarg->activator, price, currency) == 0u)
          {
-            act("$1n says, 'Get me $2t'", A_SOMEONE, sarg->owner, money_string(price, currency, TRUE), 0, TO_ROOM);
+            act("$1n says, 'Get me $2t'", A_SOMEONE, sarg->owner, money_string(price, currency, TRUE), nullptr, TO_ROOM);
             return SFR_BLOCK;
          }
 
-         for(u = UNIT_CONTAINS(sarg->owner); u; u = u->next)
+         for(u = UNIT_CONTAINS(sarg->owner); u != nullptr; u = u->next)
          {
             if(IS_OBJ(u) && OBJ_TYPE(u) == ITEM_NOTE)
             {
@@ -1021,14 +1112,18 @@ int mercenary_hire(struct spec_arg *sarg)
                        money_string(price, currency, TRUE));
 
                exd = unit_find_extra(UNIT_NAME(u), u);
-               if(!exd)
-                  UNIT_EXTRA_DESCR(u) = UNIT_EXTRA_DESCR(u)->add((char *)NULL, buf2);
+               if(exd == nullptr)
+               {
+                  UNIT_EXTRA_DESCR(u) = UNIT_EXTRA_DESCR(u)->add((char *)nullptr, buf2);
+               }
                else
                {
                   char buf[MAX_STRING_LENGTH];
 
                   if(strlen(buf2) + exd->descr.Length() > sizeof(buf))
+                  {
                      strcpy(buf, buf2);
+                  }
                   else
                   {
                      strcpy(buf, STR(exd->descr.String()));
@@ -1046,7 +1141,7 @@ int mercenary_hire(struct spec_arg *sarg)
          CREATE(md, struct mercenary_data, 1);
          md->victim_name = str_dup(sarg->arg);
          md->ticks       = 0;
-         md->destination = 0;
+         md->destination = nullptr;
 
          sarg->fptr->data       = md;
          sarg->fptr->index      = SFUN_MERCENARY_HUNT;
@@ -1054,10 +1149,10 @@ int mercenary_hire(struct spec_arg *sarg)
          sarg->fptr->flags      = SFB_PRIORITY | SFB_RANTIME | SFB_TICK | SFB_DEAD;
          start_special(sarg->owner, sarg->fptr);
 
-         act("$1n says, 'Consider $2n dead.'", A_SOMEONE, sarg->owner, victim, 0, TO_ROOM);
+         act("$1n says, 'Consider $2n dead.'", A_SOMEONE, sarg->owner, victim, nullptr, TO_ROOM);
          return SFR_BLOCK;
       }
-      else if(sarg->cmd->no == CMD_OFFER)
+      if(sarg->cmd->no == CMD_OFFER)
       {
          act("$1n talks to $3n.", A_SOMEONE, sarg->activator, 0, sarg->owner, TO_ROOM);
 
@@ -1080,7 +1175,7 @@ int mercenary_hire(struct spec_arg *sarg)
    return SFR_SHARE;
 }
 
-int mercenary_hunt(struct spec_arg *sarg)
+auto mercenary_hunt(struct spec_arg *sarg) -> int
 {
    struct mercenary_data *md;
    struct unit_data      *u;
@@ -1091,7 +1186,7 @@ int mercenary_hunt(struct spec_arg *sarg)
 
    if(sarg->cmd->no == CMD_AUTO_TICK)
    {
-      if(!md)
+      if(md == nullptr)
       {
          slog(LOG_ALL, 0, "%s@%s: No data in hunt.", UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
          destroy_fptr(sarg->owner, sarg->fptr);
@@ -1104,41 +1199,50 @@ int mercenary_hunt(struct spec_arg *sarg)
       {
          c = md->victim_name;
 
-         if((md->destination = find_unit(sarg->owner, &c, 0, FIND_UNIT_WORLD)))
+         if((md->destination = find_unit(sarg->owner, &c, nullptr, FIND_UNIT_WORLD)) != nullptr)
          {
             if(IS_CHAR(md->destination))
+            {
                for(; !IS_ROOM(md->destination); md->destination = UNIT_IN(md->destination))
+               {
                   ;
+               }
+            }
             else
-               md->destination = NULL;
+            {
+               md->destination = nullptr;
+            }
          }
       }
 
-      if(!md->destination)
+      if(md->destination == nullptr)
+      {
          return SFR_BLOCK;
+      }
 
       i = npc_move(sarg->owner, md->destination);
 
-      if(i == MOVE_DEAD) /* NPC Died */
+      if(i == MOVE_DEAD)
+      { /* NPC Died */
          return SFR_BLOCK;
+      }
 
       if(i == MOVE_GOAL) /* Here... */
       {
          c = md->victim_name;
-         u = find_unit(sarg->owner, &c, 0, FIND_UNIT_SURRO);
+         u = find_unit(sarg->owner, &c, nullptr, FIND_UNIT_SURRO);
 
-         if(u)
+         if(u != nullptr)
          {
             simple_one_hit(sarg->owner, u);
             return SFR_BLOCK;
          }
-         else
-            md->destination = 0; /* The chicken has left... :) */
+         md->destination = 0; /* The chicken has left... :) */
       }
 
       return SFR_BLOCK; /* Prevent other routines from taking over */
    }
-   else if(sarg->cmd->no == CMD_AUTO_EXTRACT)
+   if(sarg->cmd->no == CMD_AUTO_EXTRACT)
    {
       free(md->victim_name);
       free(md);
@@ -1176,26 +1280,34 @@ static void tuborg_log(const char *name, int cmd)
 
    f = fopen_cache(str_cc(libdir, STATISTICS_FILE), "a+b");
    assert(f);
-   fprintf(f, "TUBORG %s %d %ld\n", name, cmd, (long)time(0));
+   fprintf(f, "TUBORG %s %d %ld\n", name, cmd, (long)time(nullptr));
 }
 
-int green_tuborg(struct spec_arg *sarg)
+auto green_tuborg(struct spec_arg *sarg) -> int
 {
    struct unit_affected_type *af;
    int                        oldval;
    char                      *c = (char *)sarg->arg;
 
    if(sarg->cmd->no != CMD_TASTE && sarg->cmd->no != CMD_SIP && sarg->cmd->no != CMD_DRINK)
+   {
       return SFR_SHARE;
+   }
 
-   if(find_unit(sarg->activator, &c, 0, FIND_UNIT_HERE) != sarg->owner)
+   if(find_unit(sarg->activator, &c, nullptr, FIND_UNIT_HERE) != sarg->owner)
+   {
       return SFR_SHARE;
+   }
 
    if(!CHAR_AWAKE(sarg->activator))
+   {
       return SFR_SHARE;
+   }
 
-   if(OBJ_VALUE(sarg->owner, 1) == 0) /* Empty */
+   if(OBJ_VALUE(sarg->owner, 1) == 0)
+   { /* Empty */
       return SFR_SHARE;
+   }
 
    oldval = OBJ_VALUE(sarg->owner, 1);
 
@@ -1203,8 +1315,8 @@ int green_tuborg(struct spec_arg *sarg)
    {
       case CMD_SIP:
       case CMD_TASTE:
-         act("$1n tastes $2n enjoying every drop.", A_HIDEINV, sarg->activator, sarg->owner, 0, TO_ROOM);
-         act("The taste of $2n is nothing less than divine.", A_HIDEINV, sarg->activator, sarg->owner, 0, TO_CHAR);
+         act("$1n tastes $2n enjoying every drop.", A_HIDEINV, sarg->activator, sarg->owner, nullptr, TO_ROOM);
+         act("The taste of $2n is nothing less than divine.", A_HIDEINV, sarg->activator, sarg->owner, nullptr, TO_CHAR);
          tuborg_log(UNIT_NAME(sarg->activator), sarg->cmd->no);
          return SFR_BLOCK;
 
@@ -1216,8 +1328,10 @@ int green_tuborg(struct spec_arg *sarg)
          }
 
          do_drink(sarg->activator, (char *)sarg->arg, sarg->cmd);
-         if(OBJ_VALUE(sarg->owner, 1) == oldval) /* No change??? Wierd... ? */
+         if(OBJ_VALUE(sarg->owner, 1) == oldval)
+         { /* No change??? Wierd... ? */
             return SFR_BLOCK;
+         }
 
          if(IS_PC(sarg->activator))
          {
@@ -1233,14 +1347,14 @@ int green_tuborg(struct spec_arg *sarg)
             }
          }
 
-         act("The $2N has made you feel more energetic!", A_HIDEINV, sarg->activator, sarg->owner, 0, TO_CHAR);
-         act("$1n drinks $2n and looks more energetic!", A_HIDEINV, sarg->activator, sarg->owner, 0, TO_ROOM);
+         act("The $2N has made you feel more energetic!", A_HIDEINV, sarg->activator, sarg->owner, nullptr, TO_CHAR);
+         act("$1n drinks $2n and looks more energetic!", A_HIDEINV, sarg->activator, sarg->owner, nullptr, TO_ROOM);
          CHAR_ENDURANCE(sarg->activator) = move_limit(sarg->activator);
          UNIT_HIT(sarg->activator)       = MIN(UNIT_MAX_HIT(sarg->activator), UNIT_HIT(sarg->activator) + 3);
-         if((af = affected_by_spell(sarg->activator, ID_SLEEP)))
+         if((af = affected_by_spell(sarg->activator, ID_SLEEP)) != nullptr)
          {
-            act("This fabulous $2N has made you feel less sleepy!", A_ALWAYS, sarg->activator, sarg->owner, 0, TO_CHAR);
-            act("$1n seems less sleepy after drinking the $2N!", A_ALWAYS, sarg->activator, sarg->owner, 0, TO_CHAR);
+            act("This fabulous $2N has made you feel less sleepy!", A_ALWAYS, sarg->activator, sarg->owner, nullptr, TO_CHAR);
+            act("$1n seems less sleepy after drinking the $2N!", A_ALWAYS, sarg->activator, sarg->owner, nullptr, TO_CHAR);
             destroy_affect(af);
          }
          tuborg_log(UNIT_NAME(sarg->activator), sarg->cmd->no);
@@ -1251,33 +1365,33 @@ int green_tuborg(struct spec_arg *sarg)
    return SFR_SHARE;
 }
 
-int obj_guild(struct spec_arg *sarg)
+auto obj_guild(struct spec_arg *sarg) -> int
 {
-   void modify_hit(struct unit_data * ch, int hit);
-
-   void modify_hit(struct unit_data * ch, int hit);
-
    char *guild = (char *)sarg->fptr->data;
 
    if(sarg->cmd->no == CMD_AUTO_EXTRACT)
+   {
       return SFR_SHARE;
+   }
 
-   if(guild == NULL)
+   if(guild == nullptr)
    {
       slog(LOG_ALL, 0, "%s@%s: No data in obj_guild.", UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
       destroy_fptr(sarg->owner, sarg->fptr);
       return SFR_BLOCK;
    }
 
-   if(sarg->activator && UNIT_IN(sarg->owner) == sarg->activator && IS_PC(sarg->activator) &&
+   if((sarg->activator != nullptr) && UNIT_IN(sarg->owner) == sarg->activator && IS_PC(sarg->activator) &&
       (!PC_GUILD(sarg->activator) || (strcmp(PC_GUILD(sarg->activator), guild) != 0)))
    {
       act("$3n burns your hands, and you must drop $3m.\n\r"
           "Being in the right guild would probably help.",
-          A_SOMEONE, sarg->activator, 0, sarg->owner, TO_CHAR);
-      act("$1n is burnt by $3n and drops $3m immediately.", A_SOMEONE, sarg->activator, 0, sarg->owner, TO_ROOM);
+          A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_CHAR);
+      act("$1n is burnt by $3n and drops $3m immediately.", A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_ROOM);
       if(IS_OBJ(sarg->owner) && OBJ_EQP_POS(sarg->owner))
+      {
          unequip_object(sarg->owner);
+      }
       unit_up(sarg->owner);
 
       return SFR_BLOCK;
@@ -1286,26 +1400,28 @@ int obj_guild(struct spec_arg *sarg)
    return SFR_SHARE;
 }
 
-int obj_quest(struct spec_arg *sarg)
+auto obj_quest(struct spec_arg *sarg) -> int
 {
-   struct extra_descr_data *find_quest(char *word, struct unit_data *unit);
-   char                    *quest = (char *)sarg->fptr->data;
+   auto  find_quest(char *word, struct unit_data *unit)->struct extra_descr_data *;
+   char *quest = (char *)sarg->fptr->data;
 
-   if(quest == NULL)
+   if(quest == nullptr)
    {
       slog(LOG_ALL, 0, "%s@%s: No data in obj_quest.", UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
       destroy_fptr(sarg->owner, sarg->fptr);
       return SFR_BLOCK;
    }
 
-   if(sarg->activator && UNIT_IN(sarg->owner) == sarg->activator && !find_quest(quest, sarg->activator))
+   if((sarg->activator != nullptr) && UNIT_IN(sarg->owner) == sarg->activator && (find_quest(quest, sarg->activator) == nullptr))
    {
       act("$3n burns your hands, and you must drop $3m.\n\r"
           "You have apparantly not completed the right quest!",
-          A_SOMEONE, sarg->activator, 0, sarg->owner, TO_CHAR);
-      act("$1n is burnt by $3n and drops $3m immediately.", A_SOMEONE, sarg->activator, 0, sarg->owner, TO_ROOM);
+          A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_CHAR);
+      act("$1n is burnt by $3n and drops $3m immediately.", A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_ROOM);
       if(IS_OBJ(sarg->owner) && OBJ_EQP_POS(sarg->owner))
+      {
          unequip_object(sarg->owner);
+      }
       unit_up(sarg->owner);
 
       return SFR_BLOCK;
@@ -1314,18 +1430,22 @@ int obj_quest(struct spec_arg *sarg)
    return SFR_SHARE;
 }
 
-int obj_good(struct spec_arg *sarg)
+auto obj_good(struct spec_arg *sarg) -> int
 {
-   if(sarg->activator && UNIT_IN(sarg->owner) == sarg->activator && !UNIT_IS_GOOD(sarg->activator))
+   if((sarg->activator != nullptr) && UNIT_IN(sarg->owner) == sarg->activator && !UNIT_IS_GOOD(sarg->activator))
    {
-      act("$3n burns your hands, and you must drop it.", A_SOMEONE, sarg->activator, 0, sarg->owner, TO_CHAR);
-      act("$1n is burnt by $3n and drops $3m immediately.", A_SOMEONE, sarg->activator, 0, sarg->owner, TO_ROOM);
+      act("$3n burns your hands, and you must drop it.", A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_CHAR);
+      act("$1n is burnt by $3n and drops $3m immediately.", A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_ROOM);
       if(IS_OBJ(sarg->owner) && OBJ_EQP_POS(sarg->owner))
+      {
          unequip_object(sarg->owner);
+      }
       unit_up(sarg->owner);
 
       if(IS_CHAR(sarg->activator))
+      {
          modify_hit(sarg->activator, -UNIT_MAX_HIT(sarg->activator) / 4);
+      }
 
       return SFR_BLOCK;
    }
@@ -1333,18 +1453,22 @@ int obj_good(struct spec_arg *sarg)
    return SFR_SHARE;
 }
 
-int obj_evil(struct spec_arg *sarg)
+auto obj_evil(struct spec_arg *sarg) -> int
 {
-   if(sarg->activator && UNIT_IN(sarg->owner) == sarg->activator && !UNIT_IS_EVIL(sarg->activator))
+   if((sarg->activator != nullptr) && UNIT_IN(sarg->owner) == sarg->activator && !UNIT_IS_EVIL(sarg->activator))
    {
-      act("$3n burns your hands, and you must drop it.", A_SOMEONE, sarg->activator, 0, sarg->owner, TO_CHAR);
-      act("$1n is burnt by $3n and drops $3m immediately.", A_SOMEONE, sarg->activator, 0, sarg->owner, TO_ROOM);
+      act("$3n burns your hands, and you must drop it.", A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_CHAR);
+      act("$1n is burnt by $3n and drops $3m immediately.", A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_ROOM);
       if(IS_OBJ(sarg->owner) && OBJ_EQP_POS(sarg->owner))
+      {
          unequip_object(sarg->owner);
+      }
       unit_up(sarg->owner);
 
       if(IS_CHAR(sarg->activator))
+      {
          modify_hit(sarg->activator, -UNIT_MAX_HIT(sarg->activator) / 4);
+      }
 
       return SFR_BLOCK;
    }
@@ -1352,16 +1476,20 @@ int obj_evil(struct spec_arg *sarg)
    return SFR_SHARE;
 }
 
-int blow_away(struct spec_arg *sarg)
+auto blow_away(struct spec_arg *sarg) -> int
 {
    if(sarg->cmd->no == CMD_AUTO_TICK)
    {
       if(IS_ROOM(UNIT_IN(sarg->owner)))
       {
-         if(sarg->fptr->data)
-            act((char *)sarg->fptr->data, A_SOMEONE, sarg->owner, 0, 0, TO_ROOM);
+         if(sarg->fptr->data != nullptr)
+         {
+            act((char *)sarg->fptr->data, A_SOMEONE, sarg->owner, nullptr, nullptr, TO_ROOM);
+         }
          else
-            act("The $1N blows away.", A_SOMEONE, sarg->owner, 0, 0, TO_ROOM);
+         {
+            act("The $1N blows away.", A_SOMEONE, sarg->owner, nullptr, nullptr, TO_ROOM);
+         }
          extract_unit(sarg->owner);
       }
       return SFR_BLOCK;
@@ -1372,12 +1500,12 @@ int blow_away(struct spec_arg *sarg)
 
 /* Will make the user of the charm lose up to 200k less exp at death! */
 /* value[3] decides how many 'charges' are in it.                     */
-int charm_of_death(struct spec_arg *sarg)
+auto charm_of_death(struct spec_arg *sarg) -> int
 {
-   void       gain_exp(struct unit_data * ch, int gain);
-   extern int lose_exp(struct unit_data *);
+   extern auto lose_exp(struct unit_data *)->int;
 
    if(sarg->cmd->no == CMD_AUTO_DEATH)
+   {
       if(UNIT_IN(sarg->owner) == sarg->activator && OBJ_EQP_POS(sarg->owner) && IS_PC(sarg->activator) &&
          CHAR_LEVEL(sarg->activator) <= MORTAL_MAX_LEVEL && OBJ_VALUE(sarg->owner, 3) > 0)
       {
@@ -1385,32 +1513,33 @@ int charm_of_death(struct spec_arg *sarg)
 
          gain_exp(sarg->activator, loss / 2);
 
-         if(!--OBJ_VALUE(sarg->owner, 3))
+         if(--OBJ_VALUE(sarg->owner, 3) == 0)
          {
-            act("$3n emits a faint blue light, then vanishes.", A_SOMEONE, sarg->activator, 0, sarg->owner, TO_ROOM);
+            act("$3n emits a faint blue light, then vanishes.", A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_ROOM);
             extract_unit(sarg->owner);
             return SFR_SHARE;
          }
       }
+   }
 
    return SFR_SHARE;
 }
 
 /* Used by "summoned" monsters when combat is over. */
-int return_to_origin(struct spec_arg *sarg)
+auto return_to_origin(struct spec_arg *sarg) -> int
 {
    if(sarg->cmd->no == CMD_AUTO_EXTRACT)
    {
-      sarg->fptr->data = NULL;
+      sarg->fptr->data = nullptr;
       return SFR_SHARE;
    }
 
    if((sarg->cmd->no == CMD_AUTO_TICK) && CHAR_IS_READY(sarg->owner))
    {
-      act("$1n disappears into a rift!", A_ALWAYS, sarg->owner, 0, 0, TO_ROOM);
+      act("$1n disappears into a rift!", A_ALWAYS, sarg->owner, nullptr, nullptr, TO_ROOM);
       unit_from_unit(sarg->owner);
       unit_to_unit(sarg->owner, (struct unit_data *)sarg->fptr->data);
-      act("$1n disappears appears though a rift!", A_ALWAYS, sarg->owner, 0, 0, TO_ROOM);
+      act("$1n disappears appears though a rift!", A_ALWAYS, sarg->owner, nullptr, nullptr, TO_ROOM);
       destroy_fptr(sarg->owner, sarg->fptr);
       return SFR_BLOCK;
    }
@@ -1419,80 +1548,101 @@ int return_to_origin(struct spec_arg *sarg)
 }
 
 /* Used by "summoned" monsters when combat is over. */
-int restrict_obj(struct spec_arg *sarg)
+auto restrict_obj(struct spec_arg *sarg) -> int
 {
    if((sarg->cmd->no == CMD_WEAR || sarg->cmd->no == CMD_WIELD || sarg->cmd->no == CMD_HOLD) && IS_OBJ(sarg->owner) &&
       UNIT_IN(sarg->owner) == sarg->activator && !OBJ_EQP_POS(sarg->owner))
    {
       char *arg = (char *)sarg->arg;
       char  pMsg[80];
-      char *pTmp, *pOrg;
-      int   i, ok, all;
+      char *pTmp;
+      char *pOrg;
+      int   i;
+      int   ok;
+      int   all;
 
       pMsg[0] = 0;
 
-      all = (str_ccmp_next_word(arg, "all") != NULL);
-      if(!all)
-         all = (str_cstr(arg, ".all") != NULL);
+      all = static_cast<int>(str_ccmp_next_word(arg, "all") != nullptr);
+      if(all == 0)
+      {
+         all = static_cast<int>(str_cstr(arg, ".all") != nullptr);
+      }
 
-      if((sarg->owner != find_unit(sarg->activator, &arg, 0, FIND_UNIT_INVEN)) && !all)
+      if((sarg->owner != find_unit(sarg->activator, &arg, nullptr, FIND_UNIT_INVEN)) && (all == 0))
+      {
          return SFR_SHARE;
+      }
 
       pTmp = pOrg = (char *)sarg->fptr->data;
       pTmp        = pOrg;
       ok          = parse_match_num(&pTmp, "Str", &i);
-      if(ok && CHAR_STR(sarg->activator) < i)
+      if((ok != 0) && CHAR_STR(sarg->activator) < i)
+      {
          sprintf(pMsg, "strong (%d strength needed)", i - CHAR_STR(sarg->activator));
+      }
 
       pTmp = pOrg;
       ok   = parse_match_num(&pTmp, "Dex", &i);
-      if(ok && CHAR_DEX(sarg->activator) < i)
+      if((ok != 0) && CHAR_DEX(sarg->activator) < i)
+      {
          sprintf(pMsg, "dexterous (%d dexterity needed)", i - CHAR_DEX(sarg->activator));
+      }
 
       pTmp = pOrg;
       ok   = parse_match_num(&pTmp, "Con", &i);
-      if(ok && CHAR_CON(sarg->activator) < i)
+      if((ok != 0) && CHAR_CON(sarg->activator) < i)
+      {
          sprintf(pMsg, "sturdy (%d constitution needed)", i - CHAR_CON(sarg->activator));
+      }
 
       pTmp = pOrg;
       ok   = parse_match_num(&pTmp, "Bra", &i);
-      if(ok && CHAR_BRA(sarg->activator) < i)
+      if((ok != 0) && CHAR_BRA(sarg->activator) < i)
+      {
          sprintf(pMsg, "smart (%d brain needed)", i - CHAR_BRA(sarg->activator));
+      }
 
       pTmp = pOrg;
       ok   = parse_match_num(&pTmp, "Mag", &i);
-      if(ok && CHAR_MAG(sarg->activator) < i)
+      if((ok != 0) && CHAR_MAG(sarg->activator) < i)
+      {
          sprintf(pMsg, "magical (%d magic needed)", i - CHAR_MAG(sarg->activator));
+      }
 
       pTmp = pOrg;
       ok   = parse_match_num(&pTmp, "Div", &i);
-      if(ok && CHAR_DIV(sarg->activator) < i)
+      if((ok != 0) && CHAR_DIV(sarg->activator) < i)
+      {
          sprintf(pMsg, "divine (%d divine needed)", i - CHAR_DIV(sarg->activator));
+      }
 
       pTmp = pOrg;
       ok   = parse_match_num(&pTmp, "Hpp", &i);
-      if(ok && CHAR_HPP(sarg->activator) < i)
+      if((ok != 0) && CHAR_HPP(sarg->activator) < i)
+      {
          sprintf(pMsg, "tough (%d strength needed)", i - CHAR_HPP(sarg->activator));
+      }
 
       pTmp = pOrg;
       ok   = parse_match_num(&pTmp, "Level", &i);
-      if(ok && CHAR_LEVEL(sarg->activator) < i)
-         sprintf(pMsg, "experienced (%d levels needed)", i - CHAR_LEVEL(sarg->activator));
-
-      if(*pMsg)
+      if((ok != 0) && CHAR_LEVEL(sarg->activator) < i)
       {
-         if(all)
+         sprintf(pMsg, "experienced (%d levels needed)", i - CHAR_LEVEL(sarg->activator));
+      }
+
+      if(*pMsg != 0)
+      {
+         if(all != 0)
          {
             act("As you attempt to use the $3N you realize that you are not "
                 "$2t enough to use it.",
                 A_ALWAYS, sarg->activator, pMsg, sarg->owner, TO_CHAR);
             return SFR_BLOCK;
          }
-         else
-         {
-            act("You are not $2t enough to use the $3N.", A_ALWAYS, sarg->activator, pMsg, sarg->owner, TO_CHAR);
-            return SFR_BLOCK;
-         }
+
+         act("You are not $2t enough to use the $3N.", A_ALWAYS, sarg->activator, pMsg, sarg->owner, TO_CHAR);
+         return SFR_BLOCK;
       }
    }
 
@@ -1503,9 +1653,9 @@ int restrict_obj(struct spec_arg *sarg)
 /* Note that he may be extracted with less than zero hitpoints if incap   */
 /* or mortally wounded                                                    */
 
-int link_dead(struct spec_arg *sarg)
+auto link_dead(struct spec_arg *sarg) -> int
 {
-   if((sarg->cmd->no >= CMD_NORTH) && sarg->activator && (sarg->activator != sarg->owner))
+   if((sarg->cmd->no >= CMD_NORTH) && (sarg->activator != nullptr) && (sarg->activator != sarg->owner))
    {
       if(CHAR_DESCRIPTOR(sarg->owner))
       {
@@ -1514,9 +1664,11 @@ int link_dead(struct spec_arg *sarg)
       }
 
       if(CHAR_FIGHTING(sarg->owner))
+      {
          return SFR_SHARE;
+      }
 
-      act("$1n is link dead and so leaves the game.", A_HIDEINV, sarg->owner, 0, 0, TO_ROOM);
+      act("$1n is link dead and so leaves the game.", A_HIDEINV, sarg->owner, nullptr, nullptr, TO_ROOM);
       extract_unit(sarg->owner);
       return SFR_SHARE;
    }

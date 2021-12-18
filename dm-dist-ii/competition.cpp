@@ -22,12 +22,12 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <ctype.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 #include <dirent.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
 
 #include "comm.h"
 #include "common.h"
@@ -41,8 +41,6 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
-
-extern char libdir[];
 
 #define MAX_TOP_TEN (11)
 
@@ -71,11 +69,11 @@ static struct competition_data
 
    struct top_ten_type top_ten;
 
-} *competition = NULL;
+} *competition = nullptr;
 
 static int competition_top = 0;
 
-struct extra_descr_data *competition_find(char *name, struct extra_descr_data *pexd)
+auto competition_find(char *name, struct extra_descr_data *pexd) -> struct extra_descr_data *
 {
    class extra_descr_data *exd;
 
@@ -83,16 +81,20 @@ struct extra_descr_data *competition_find(char *name, struct extra_descr_data *p
    {
       exd = pexd->find_raw("$competition");
 
-      if(exd == NULL)
+      if(exd == nullptr)
+      {
          break;
+      }
 
       if(exd->names.Length() >= 4 && str_ccmp(exd->names.Name(1), name) == 0)
+      {
          return exd;
+      }
 
       pexd = exd->next;
-   } while(pexd);
+   } while(pexd != nullptr);
 
-   return NULL;
+   return nullptr;
 }
 
 static void competition_save(int idx)
@@ -143,14 +145,16 @@ static void competition_load(int idx)
    }
 }
 
-int competition_compare(const void *v1, const void *v2)
+auto competition_compare(const void *v1, const void *v2) -> int
 {
    const struct competition_entry *e1 = (struct competition_entry *)v1;
    const struct competition_entry *e2 = (struct competition_entry *)v2;
 
    if(e1->points > e2->points)
+   {
       return -1;
-   else if(e1->points < e2->points)
+   }
+   if(e1->points < e2->points)
       return 1;
    else
       return 0;
@@ -164,10 +168,14 @@ static void competition_recalc(int idx, struct unit_data *pc, int xp, int secs)
    assert(competition[idx].ongoing == TRUE);
 
    if(secs > competition[idx].top_ten.max_secs)
+   {
       competition[idx].top_ten.max_secs = secs;
+   }
 
    if(competition[idx].top_ten.max_secs <= 0)
+   {
       return;
+   }
 
    strcpy(competition[idx].top_ten.entry[MAX_TOP_TEN - 1].name, UNIT_NAME(pc));
    competition[idx].top_ten.entry[MAX_TOP_TEN - 1].xp   = xp;
@@ -175,7 +183,7 @@ static void competition_recalc(int idx, struct unit_data *pc, int xp, int secs)
 
    for(i = 0; i < MAX_TOP_TEN; i++)
    {
-      if(!competition[idx].top_ten.entry[i].name[0] ||
+      if((competition[idx].top_ten.entry[i].name[0] == 0) ||
          ((i < MAX_TOP_TEN - 1) && str_ccmp(competition[idx].top_ten.entry[i].name, UNIT_NAME(pc)) == 0))
       {
          competition[idx].top_ten.entry[i].name[0] = 0;
@@ -185,9 +193,13 @@ static void competition_recalc(int idx, struct unit_data *pc, int xp, int secs)
       {
          points = (double)competition[idx].top_ten.entry[i].xp * (double)competition[idx].top_ten.entry[i].secs;
          if(competition[idx].top_ten.max_secs > 0)
+         {
             points /= (double)competition[idx].top_ten.max_secs;
+         }
          else
+         {
             points = 0;
+         }
 
          competition[idx].top_ten.entry[i].points = (int)points;
       }
@@ -198,22 +210,27 @@ static void competition_recalc(int idx, struct unit_data *pc, int xp, int secs)
    competition_save(idx);
 }
 
-static int competition_points(struct unit_data *pc, int idx)
+static auto competition_points(struct unit_data *pc, int idx) -> int
 {
    struct extra_descr_data *exd;
-   double                   xp, secs;
+   double                   xp;
+   double                   secs;
    double                   points = 0.0;
 
-   if((exd = competition_find(competition[idx].name, PC_QUEST(pc))))
+   if((exd = competition_find(competition[idx].name, PC_QUEST(pc))) != nullptr)
    {
       xp   = CHAR_EXP(pc) - atoi(exd->names.Name(2));
       secs = PC_TIME(pc).played - atoi(exd->names.Name(3));
 
       points = xp * secs;
       if(competition[idx].top_ten.max_secs > 0)
+      {
          points /= competition[idx].top_ten.max_secs;
+      }
       else
+      {
          points = 0.0;
+      }
    }
 
    return (int)points;
@@ -222,13 +239,15 @@ static int competition_points(struct unit_data *pc, int idx)
 void competition_update(struct unit_data *pc)
 {
    struct extra_descr_data *exd;
-   int                      i, xp, secs;
+   int                      i;
+   int                      xp;
+   int                      secs;
 
    for(i = 0; i < competition_top; i++)
    {
-      if(competition[i].ongoing)
+      if(competition[i].ongoing != 0)
       {
-         if((exd = competition_find(competition[i].name, PC_QUEST(pc))))
+         if((exd = competition_find(competition[i].name, PC_QUEST(pc))) != nullptr)
          {
             xp   = CHAR_EXP(pc) - atoi(exd->names.Name(2));
             secs = PC_TIME(pc).played - atoi(exd->names.Name(3));
@@ -242,18 +261,19 @@ void competition_update(struct unit_data *pc)
 void competition_enroll(struct unit_data *pc)
 {
    int                      i;
-   struct extra_descr_data *exd, *pexd;
-   const char              *names[2] = {"$competition", NULL};
+   struct extra_descr_data *exd;
+   struct extra_descr_data *pexd;
+   const char              *names[2] = {"$competition", nullptr};
 
    for(i = 0; i < competition_top; i++)
    {
-      if(competition[i].ongoing && is_in(CHAR_LEVEL(pc), competition[i].start, competition[i].stop))
+      if((competition[i].ongoing != 0) && (is_in(CHAR_LEVEL(pc), competition[i].start, competition[i].stop) != 0))
       {
-         if(competition_find(competition[i].name, PC_QUEST(pc)) == NULL)
+         if(competition_find(competition[i].name, PC_QUEST(pc)) == nullptr)
          {
             competition[i].top_ten.competitors++;
 
-            act(COLOUR_ATTN "You are enrolled in $2t." COLOUR_NORMAL, A_ALWAYS, pc, competition[i].descr, NULL, TO_CHAR);
+            act(COLOUR_ATTN "You are enrolled in $2t." COLOUR_NORMAL, A_ALWAYS, pc, competition[i].descr, nullptr, TO_CHAR);
 
             PC_QUEST(pc) = PC_QUEST(pc)->add(names, "");
 
@@ -272,32 +292,39 @@ void competition_enroll(struct unit_data *pc)
    {
       exd = pexd->find_raw("$competition");
 
-      if(!exd)
+      if(exd == nullptr)
+      {
          break;
+      }
 
       for(i = 0; i < competition_top; i++)
       {
-         if(exd->names.IsName(competition[i].name))
+         if(exd->names.IsName(competition[i].name) != nullptr)
+         {
             break;
+         }
       }
 
       pexd = exd->next;
 
-      if(i >= competition_top) /* Obsolete Competition? */
+      if(i >= competition_top)
+      { /* Obsolete Competition? */
          PC_QUEST(pc) = PC_QUEST(pc)->remove(exd);
+      }
    }
 }
 
-void competition_boot(void)
+void competition_boot()
 {
    char  Buf[MAX_STRING_LENGTH];
    char *c;
-   char *name, *descr;
-   int   i, len;
+   char *name;
+   char *descr;
+   int   i;
+   int   len;
    int  *numlist;
-   int   start_level, stop_level;
-
-   extern char libdir[];
+   int   start_level;
+   int   stop_level;
 
    slog(LOG_OFF, 0, "Booting competition system.");
 
@@ -310,11 +337,13 @@ void competition_boot(void)
    for(;; competition_top++)
    {
       name = parse_match_name(&c, "Name");
-      if(!name)
+      if(name == nullptr)
+      {
          break;
+      }
 
       descr = parse_match_name(&c, "Descr");
-      if(!descr)
+      if(descr == nullptr)
       {
          slog(LOG_ALL, 0, "Competition '%s' missing description.", name);
          break;
@@ -322,7 +351,7 @@ void competition_boot(void)
 
       numlist = parse_match_numlist(&c, "Range", &len);
 
-      if(!numlist)
+      if(numlist == nullptr)
       {
          slog(LOG_ALL, 0, "Competition '%s' missing level range.", name);
          break;
@@ -339,16 +368,20 @@ void competition_boot(void)
       stop_level  = numlist[1];
       free(numlist);
 
-      if(!parse_match_num(&c, "Ongoing", &i))
+      if(parse_match_num(&c, "Ongoing", &i) == 0)
       {
          slog(LOG_ALL, 0, "Competition '%s' missing ongoing status.", name);
          break;
       }
 
       if(competition_top == 0)
+      {
          CREATE(competition, struct competition_data, 1);
+      }
       else
+      {
          RECREATE(competition, struct competition_data, competition_top + 2);
+      }
 
       competition[competition_top].name    = name;
       competition[competition_top].descr   = descr;
@@ -367,7 +400,7 @@ static void show_competition(struct unit_data *ch, const int i)
    int  found = FALSE;
 
    sprintf(buf, COLOUR_MENU "%s%s" COLOUR_NORMAL " (Level %d to %d with %d competitors)\n\r", competition[i].descr,
-           competition[i].ongoing ? "" : " [ENDED]", competition[i].start, competition[i].stop, competition[i].top_ten.competitors);
+           competition[i].ongoing != 0 ? "" : " [ENDED]", competition[i].start, competition[i].stop, competition[i].top_ten.competitors);
 
    send_to_char(buf, ch);
 
@@ -375,7 +408,7 @@ static void show_competition(struct unit_data *ch, const int i)
 
    for(j = 0; j < MAX_TOP_TEN - 1; j++)
    {
-      if(competition[i].top_ten.entry[j].name[0])
+      if(competition[i].top_ten.entry[j].name[0] != 0)
       {
          found = TRUE;
          sprintf(buf, "   %2d. %-15s  (%8d points)\n\r", j + 1, competition[i].top_ten.entry[j].name,
@@ -384,14 +417,16 @@ static void show_competition(struct unit_data *ch, const int i)
       }
    }
 
-   if(!found)
+   if(found == 0)
+   {
       send_to_char("   No competitors yet.\n\r", ch);
+   }
 
    sprintf(buf, "You have scored %d points.\n\r", competition_points(ch, i));
    send_to_char(buf, ch);
 }
 
-static int competition_read_board(struct unit_data *ch, const char *arg)
+static auto competition_read_board(struct unit_data *ch, const char *arg) -> int
 {
    char number[MAX_INPUT_LENGTH];
    int  msg;
@@ -404,8 +439,10 @@ static int competition_read_board(struct unit_data *ch, const char *arg)
 
    one_argument(arg, number);
 
-   if(!str_is_number(number))
+   if(str_is_number(number) == 0u)
+   {
       return SFR_SHARE;
+   }
 
    msg = atoi(number);
 
@@ -428,25 +465,33 @@ static int competition_read_board(struct unit_data *ch, const char *arg)
    return SFR_BLOCK;
 }
 
-int competition_board(struct spec_arg *sarg)
+auto competition_board(struct spec_arg *sarg) -> int
 {
    int   i;
    char  buf[256];
    char *c = (char *)sarg->arg;
 
    if((sarg->cmd->no != CMD_LOOK) && (sarg->cmd->no != CMD_READ))
+   {
       return SFR_SHARE;
+   }
 
    if(sarg->cmd->no == CMD_READ)
+   {
       return competition_read_board(sarg->activator, sarg->arg);
+   }
 
    if(!IS_PC(sarg->activator))
+   {
       return SFR_SHARE;
+   }
 
-   if(find_unit(sarg->activator, &c, 0, FIND_UNIT_SURRO) != sarg->owner)
+   if(find_unit(sarg->activator, &c, nullptr, FIND_UNIT_SURRO) != sarg->owner)
+   {
       return SFR_SHARE;
+   }
 
-   act("$1n looks at $2n.", A_ALWAYS, sarg->activator, sarg->owner, 0, TO_ROOM);
+   act("$1n looks at $2n.", A_ALWAYS, sarg->activator, sarg->owner, nullptr, TO_ROOM);
 
    send_to_char("This is a competition board. Usage: READ <competition #>\n\r", sarg->activator);
 
@@ -458,7 +503,7 @@ int competition_board(struct spec_arg *sarg)
 
    for(i = 0; i < competition_top; i++)
    {
-      sprintf(buf, "%2d : %-*s %s\n\r", i + 1, 65 - 7, competition[i].descr, competition[i].ongoing ? "" : "[ENDED]");
+      sprintf(buf, "%2d : %-*s %s\n\r", i + 1, 65 - 7, competition[i].descr, competition[i].ongoing != 0 ? "" : "[ENDED]");
       send_to_char(buf, sarg->activator);
    }
 

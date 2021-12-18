@@ -27,14 +27,11 @@
 
 struct mail_file_info_type
 {
-   time_t     date;        /* Date of posting the letter      */
+   time_t     date; /* Date of posting the letter      */
    blk_handle handle;
-   int        sender;      /* PC ID */
-   int        receipient;  /* PC ID */
-   ubit8      loaded;      /* Boolean, has player got a note? */
+   int        sender;     /* PC ID */
+   int        receipient; /* PC ID */
+   ubit8      loaded;     /* Boolean, has player got a note? */
 };
 
 #endif /* _MUD_POSTOFFICE_H */
-
-
-

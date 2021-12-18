@@ -29,15 +29,14 @@
 /* 26/10/94 gnort  : Fixed a couple of money-related bugs                  */
 /* Fri May 12 17:22:23 bombman : added extra ger description to do_get     */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "comm.h"
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "limits.h"
 #include "money.h"
 #include "skills.h"
 #include "spells.h"
@@ -45,87 +44,99 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include <climits>
 
 /* Returns: 0 if the object was picked up.                               */
 /*          1 if the object was not picked up, but more may be picked up */
 /*          2 if no more objects can be picked up                        */
-int get(struct unit_data *ch, struct unit_data *obj, struct unit_data *from_obj, const struct command_info *cmd, char *arg)
+auto get(struct unit_data *ch, struct unit_data *obj, struct unit_data *from_obj, const struct command_info *cmd, char *arg) -> int
 {
-   struct unit_data *money  = NULL;
+   struct unit_data *money  = nullptr;
    amount_t          amount = 0;
    int               weight;
 
    if(UNIT_IN(ch) == obj)
    {
-      act("Pulling $3n from down under you seems quite impossible.", A_ALWAYS, ch, 0, obj, TO_CHAR);
+      act("Pulling $3n from down under you seems quite impossible.", A_ALWAYS, ch, nullptr, obj, TO_CHAR);
       return 1;
    }
 
    if(IS_OBJ(obj) && OBJ_EQP_POS(obj))
    {
-      act("The $3N is equipped, you can't take $3m.", A_SOMEONE, ch, 0, obj, TO_CHAR);
+      act("The $3N is equipped, you can't take $3m.", A_SOMEONE, ch, nullptr, obj, TO_CHAR);
       return 1;
    }
 
-   if(from_obj)
+   if(from_obj != nullptr)
    {
       /* The ENTER also flag replaces item type container */
       if(!UNIT_WEAR(from_obj, MANIPULATE_ENTER) && (!IS_OBJ(from_obj) || (OBJ_TYPE(from_obj) != ITEM_CONTAINER)))
       {
-         act("$3e is not a container.", A_SOMEONE, ch, 0, from_obj, TO_CHAR);
+         act("$3e is not a container.", A_SOMEONE, ch, nullptr, from_obj, TO_CHAR);
          return 2;
       }
       if(IS_CHAR(from_obj))
       {
-         act("$3e would probably object to that!", A_SOMEONE, ch, 0, from_obj, TO_CHAR);
+         act("$3e would probably object to that!", A_SOMEONE, ch, nullptr, from_obj, TO_CHAR);
          return 2;
       }
       if(IS_SET(UNIT_OPEN_FLAGS(from_obj), EX_CLOSED))
       {
-         act("The $2N is closed.", A_SOMEONE, ch, from_obj, 0, TO_CHAR);
+         act("The $2N is closed.", A_SOMEONE, ch, from_obj, nullptr, TO_CHAR);
          return 2;
       }
    }
 
    if(ch == obj || !CHAR_CAN_SEE(ch, obj))
-      return 1;
-
-   if(IS_ROOM(obj) || !UNIT_WEAR(obj, MANIPULATE_TAKE))
    {
-      act("$2N: You can't take that.", A_SOMEONE, ch, obj, 0, TO_CHAR);
       return 1;
    }
 
-   if(!IS_MONEY(obj) && !char_can_carry_n(ch, 1))
+   if(IS_ROOM(obj) || !UNIT_WEAR(obj, MANIPULATE_TAKE))
    {
-      act("$2n: You can not carry that many items.", A_SOMEONE, ch, obj, 0, TO_CHAR);
+      act("$2N: You can't take that.", A_SOMEONE, ch, obj, nullptr, TO_CHAR);
+      return 1;
+   }
+
+   if(!IS_MONEY(obj) && (char_can_carry_n(ch, 1) == 0))
+   {
+      act("$2n: You can not carry that many items.", A_SOMEONE, ch, obj, nullptr, TO_CHAR);
       return 2;
    }
 
    /*  Calculate how much this item will weigh extra for char
     *  Money is piled, so we have to calculate the two money-objects weightsum
     */
-   if(IS_MONEY(obj) && (money = unit_has_money_type(ch, MONEY_TYPE(obj))))
+   if(IS_MONEY(obj) && ((money = unit_has_money_type(ch, MONEY_TYPE(obj))) != nullptr))
+   {
       weight = MONEY_WEIGHT_SUM(money, obj);
+   }
    else
+   {
       weight = UNIT_WEIGHT(obj);
+   }
 
    /*  Check if object will make a difference to what ch is carrying
     *    (i.e. isn't taken from within ch)
     *  If it will, check if ch can carry the extra weight
     *  If ch can't, and it's money, calculate how much of it ch CAN carry
     */
-   if(from_obj == NULL || UNIT_IN(from_obj) != ch)
-      if(!char_can_carry_w(ch, weight))
+   if(from_obj == nullptr || UNIT_IN(from_obj) != ch)
+   {
+      if(char_can_carry_w(ch, weight) == 0)
+      {
          if(!IS_MONEY(obj) || ((amount = char_can_carry_amount(ch, obj)) <= 0))
          {
-            act("$2n: You can't carry that much weight.", A_SOMEONE, ch, obj, 0, TO_CHAR);
+            act("$2n: You can't carry that much weight.", A_SOMEONE, ch, obj, nullptr, TO_CHAR);
             return 1;
          }
+      }
+   }
 
    if(IS_MONEY(obj))
    {
-      char        tmp[256], buf1[256];
+      char        tmp[256];
+      char        buf1[256];
       const char *buf2;
 
       /*  Amount is set above to how much ch CAN carry, or still 0
@@ -133,16 +144,20 @@ int get(struct unit_data *ch, struct unit_data *obj, struct unit_data *from_obj,
        */
 
       if(amount > 0 && amount < (amount_t)MONEY_AMOUNT(obj))
+      {
          sprintf(tmp,
                  "You manage to take %s%%s.\n\rAnything more would "
                  "break your back!",
                  obj_money_string(obj, amount));
+      }
       else
       {
          amount = MONEY_AMOUNT(obj);
 
          if(amount > 0)
+         {
             strcpy(tmp, "You get $2t%s.");
+         }
          else
          {
             strcpy(tmp, "You get $2t%s but discover that they are fake!");
@@ -150,7 +165,7 @@ int get(struct unit_data *ch, struct unit_data *obj, struct unit_data *from_obj,
          }
       }
 
-      if(from_obj)
+      if(from_obj != nullptr)
       {
          sprintf(buf1, tmp, " from $3n");
          buf2 = UNIT_IN(from_obj) == ch ? "$1n gets some $2t from $1s $3N." : "$1n gets some $2t from $3n.";
@@ -170,12 +185,12 @@ int get(struct unit_data *ch, struct unit_data *obj, struct unit_data *from_obj,
          /* Dont send done... it is destoryed... ?! */
          return 0; /* Object was "picked up" */
       }
-      else if(amount < (amount_t)MONEY_AMOUNT(obj))
+      if(amount < (amount_t)MONEY_AMOUNT(obj))
          obj = split_money(obj, amount);
    }
    else
    {
-      if(from_obj)
+      if(from_obj != nullptr)
       {
          act("You get $2n from $3n.", A_SOMEONE, ch, obj, from_obj, TO_CHAR);
          act(UNIT_IN(from_obj) == ch ? "$1n gets $2n from $1s $3N." : "$1n gets $2n from $3n.", A_HIDEINV, ch, obj, from_obj, TO_ROOM);
@@ -198,28 +213,36 @@ int get(struct unit_data *ch, struct unit_data *obj, struct unit_data *from_obj,
    should be extended to run through
    all visible units.
 */
-int extra_get(struct unit_data *ch, char *argument)
+auto extra_get(struct unit_data *ch, char *argument) -> int
 {
    struct extra_descr_data *p;
    struct unit_data        *room = UNIT_IN(ch);
 
    if(!IS_ROOM(room) && UNIT_IS_TRANSPARENT(room))
+   {
       room = UNIT_IN(room);
+   }
 
-   if(!room)
+   if(room == nullptr)
+   {
       return 0;
+   }
 
    if(!IS_ROOM(room))
+   {
       return 0;
+   }
 
    if(UNIT_IS_DARK(room))
-      return 0;
-
-   for(p = UNIT_EXTRA_DESCR(room); p; p = p->next)
    {
-      if(p->names.Length() >= 2 && !strcmp("$get", p->names.Name(0)) && p->names.IsName(argument)) // XXX
+      return 0;
+   }
+
+   for(p = UNIT_EXTRA_DESCR(room); p != nullptr; p = p->next)
+   {
+      if(p->names.Length() >= 2 && (strcmp("$get", p->names.Name(0)) == 0) && (p->names.IsName(argument) != nullptr)) // XXX
       {
-         act(p->descr.String(), A_ALWAYS, ch, 0, 0, TO_CHAR);
+         act(p->descr.String(), A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
          return 1;
       }
    }
@@ -229,53 +252,61 @@ int extra_get(struct unit_data *ch, char *argument)
 
 void do_get(struct unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *from_unit = NULL, *thing;
-   char              arg1[MAX_INPUT_LENGTH], *arg2, *oarg = argument;
+   struct unit_data *from_unit = NULL;
+   struct unit_data *thing;
+   char              arg1[MAX_INPUT_LENGTH];
+   char             *arg2;
+   char             *oarg = argument;
 
-   if(str_is_empty(argument))
+   if(str_is_empty(argument) != 0u)
    {
       send_to_char("Get what?\n\r", ch);
       return;
    }
 
    /* See if it is "from bag" or the like */
-   if((arg2 = str_cstr(argument, " from ")))
+   if((arg2 = str_cstr(argument, " from ")) != nullptr)
    {
       strncpy(arg1, argument, arg2 - argument); /* isolate 1st argument too */
       arg1[arg2 - argument] = '\0';
 
       arg2 += 6; /* Point past from */
 
-      from_unit = find_unit(ch, &arg2, 0, FIND_UNIT_HERE);
+      from_unit = find_unit(ch, &arg2, nullptr, FIND_UNIT_HERE);
 
-      if(from_unit == NULL)
+      if(from_unit == nullptr)
       {
-         act("No such thing here to get things from.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+         act("No such thing here to get things from.", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
          return;
       }
-      else if(IS_CHAR(from_unit))
+      if(IS_CHAR(from_unit))
       {
          act("$3e would probably object to that!", A_ALWAYS, ch, 0, from_unit, TO_CHAR);
          return;
       }
    }
    else
+   {
       strcpy(arg1, argument);
+   }
 
-   if(str_ccmp_next_word(arg1, "all"))
+   if(str_ccmp_next_word(arg1, "all") != nullptr)
    {
       struct unit_data *next_unit;
-      bool              ok = TRUE, pick = FALSE;
+      bool              ok   = TRUE;
+      bool              pick = FALSE;
 
-      thing = from_unit ? UNIT_CONTAINS(from_unit) : UNIT_CONTAINS(UNIT_IN(ch));
+      thing = from_unit != nullptr ? UNIT_CONTAINS(from_unit) : UNIT_CONTAINS(UNIT_IN(ch));
 
-      for(; ok && thing; thing = next_unit)
+      for(; ok && (thing != nullptr); thing = next_unit)
       {
          next_unit = thing->next;
 
          /* To avoid endless "can't take that" messages */
          if(UNIT_MINV(thing) > CHAR_LEVEL(ch))
+         {
             continue;
+         }
 
          if(UNIT_WEAR(thing, MANIPULATE_TAKE))
          {
@@ -286,16 +317,19 @@ void do_get(struct unit_data *ch, char *argument, const struct command_info *cmd
       }
 
       if(!pick)
+      {
          send_to_char("Nothing to get.\n\r", ch);
+      }
    }
-   else if(str_ccmp_next_word(arg1, "money"))
+   else if(str_ccmp_next_word(arg1, "money") != nullptr)
    {
       struct unit_data *next_unit;
-      bool              ok = TRUE, pick = FALSE;
+      bool              ok   = TRUE;
+      bool              pick = FALSE;
 
-      thing = from_unit ? UNIT_CONTAINS(from_unit) : UNIT_CONTAINS(UNIT_IN(ch));
+      thing = from_unit != nullptr ? UNIT_CONTAINS(from_unit) : UNIT_CONTAINS(UNIT_IN(ch));
 
-      for(; ok && thing; thing = next_unit)
+      for(; ok && (thing != nullptr); thing = next_unit)
       {
          next_unit = thing->next;
 
@@ -308,14 +342,17 @@ void do_get(struct unit_data *ch, char *argument, const struct command_info *cmd
       }
 
       if(!pick)
+      {
          send_to_char("No money to get.\n\r", ch);
+      }
    }
    else /* Single object */
    {
-      char    *tmp    = arg1, arg[MAX_INPUT_LENGTH];
+      char    *tmp = arg1;
+      char     arg[MAX_INPUT_LENGTH];
       amount_t amount = 0;
 
-      if(next_word_is_number(arg1))
+      if(next_word_is_number(arg1) != 0u)
       {
          tmp = str_next_word(arg1, arg);
          if((amount = (amount_t)atoi(arg)) < 1)
@@ -325,17 +362,19 @@ void do_get(struct unit_data *ch, char *argument, const struct command_info *cmd
          }
       }
 
-      thing = from_unit ? find_unit(ch, &tmp, UNIT_CONTAINS(from_unit), 0) : find_unit(ch, &tmp, 0, FIND_UNIT_SURRO);
+      thing = from_unit != nullptr ? find_unit(ch, &tmp, UNIT_CONTAINS(from_unit), 0) : find_unit(ch, &tmp, nullptr, FIND_UNIT_SURRO);
 
-      if(thing)
+      if(thing != nullptr)
       {
          if(IS_MONEY(thing))
          {
-            if(amount == 0) /* No number was specified: Take all */
+            if(amount == 0)
+            { /* No number was specified: Take all */
                amount = MONEY_AMOUNT(thing);
+            }
             else if((amount_t)MONEY_AMOUNT(thing) < amount)
             {
-               act("There aren't that many $3t!", A_ALWAYS, ch, 0, money_pluralis(thing), TO_CHAR);
+               act("There aren't that many $3t!", A_ALWAYS, ch, nullptr, money_pluralis(thing), TO_CHAR);
                return;
             }
             thing = split_money(thing, amount);
@@ -348,74 +387,86 @@ void do_get(struct unit_data *ch, char *argument, const struct command_info *cmd
          get(ch, thing, from_unit, cmd, oarg);
 
          /* To catch get-aborts, or remaining money */
-         if(!is_destructed(DR_UNIT, thing))
+         if(is_destructed(DR_UNIT, thing) == 0)
+         {
             if(IS_MONEY(thing))
+            {
                pile_money(thing);
+            }
+         }
       }
-      else if(!extra_get(ch, tmp))
-         act("No such thing here.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+      else if(extra_get(ch, tmp) == 0)
+      {
+         act("No such thing here.", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
+      }
    }
 }
 
-int drop(struct unit_data *ch, struct unit_data *unit, const struct command_info *cmd, char *arg)
+auto drop(struct unit_data *ch, struct unit_data *unit, const struct command_info *cmd, char *arg) -> int
 {
    if(!(IS_OBJ(unit) && OBJ_EQP_POS(unit)))
    {
       if(IS_MONEY(unit))
       {
-         act("You drop $2t.", A_SOMEONE, ch, obj_money_string(unit, 0), 0, TO_CHAR);
-         act("$1n drops some $2t.", A_SOMEONE, ch, money_pluralis(unit), 0, TO_ROOM);
+         act("You drop $2t.", A_SOMEONE, ch, obj_money_string(unit, 0), nullptr, TO_CHAR);
+         act("$1n drops some $2t.", A_SOMEONE, ch, money_pluralis(unit), nullptr, TO_ROOM);
       }
       else
+      {
          unit_messg(ch, unit, "$drop", "You drop $2n.", "$1n drops $2n.");
+      }
 
       unit_up(unit);
-      send_done(ch, unit, NULL, 0, cmd, arg);
+      send_done(ch, unit, nullptr, 0, cmd, arg);
       return TRUE;
    }
-   else
-      return FALSE;
+   return FALSE;
 }
 
 void do_drop(struct unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *thing, *next_obj;
+   struct unit_data *thing;
+   struct unit_data *next_obj;
    char              arg[MAX_INPUT_LENGTH];
    amount_t          amount = 0;
    char             *oarg   = argument;
 
-   if(str_is_empty(argument))
+   if(str_is_empty(argument) != 0u)
    {
       send_to_char("Drop what?\n\r", ch);
       return;
    }
 
-   if(str_ccmp_next_word(argument, "all")) /* Drop All */
+   if(str_ccmp_next_word(argument, "all") != nullptr) /* Drop All */
    {
       int anything = FALSE;
 
-      for(thing = UNIT_CONTAINS(ch); thing; thing = next_obj)
+      for(thing = UNIT_CONTAINS(ch); thing != nullptr; thing = next_obj)
       {
          next_obj = thing->next;
 
          if(CHAR_LEVEL(ch) < UNIT_MINV(thing))
+         {
             continue;
+         }
 
          if(!IS_MONEY(thing))
+         {
             anything |= drop(ch, thing, cmd, oarg);
+         }
       }
 
-      if(!anything)
+      if(anything == 0)
       {
          send_to_char("You are not carrying anything.\n\r", ch);
          return;
       }
    }
-   else if(str_ccmp_next_word(argument, "money")) /* Drop money */
+   else if(str_ccmp_next_word(argument, "money") != nullptr) /* Drop money */
    {
       bool got_any = FALSE;
 
-      for(thing = UNIT_CONTAINS(ch); thing; thing = next_obj)
+      for(thing = UNIT_CONTAINS(ch); thing != nullptr; thing = next_obj)
       {
          next_obj = thing->next;
          if(IS_MONEY(thing))
@@ -426,11 +477,13 @@ void do_drop(struct unit_data *ch, char *argument, const struct command_info *cm
       }
 
       if(!got_any)
+      {
          send_to_char("You are not carrying any money.\n\r", ch);
+      }
    }
    else /* Drop Single Object */
    {
-      if(next_word_is_number(argument))
+      if(next_word_is_number(argument) != 0u)
       {
          argument = str_next_word(argument, arg);
          if((amount = atoi(arg)) < 1)
@@ -440,15 +493,17 @@ void do_drop(struct unit_data *ch, char *argument, const struct command_info *cm
          }
       }
 
-      if((thing = find_unit(ch, &argument, 0, FIND_UNIT_INVEN)))
+      if((thing = find_unit(ch, &argument, nullptr, FIND_UNIT_INVEN)) != nullptr)
       {
          if(IS_MONEY(thing))
          {
-            if(amount == 0) /* No number was specified: Drop all */
+            if(amount == 0)
+            { /* No number was specified: Drop all */
                amount = MONEY_AMOUNT(thing);
+            }
             else if((amount_t)MONEY_AMOUNT(thing) < amount)
             {
-               act("You haven't got that many $3t!", A_ALWAYS, ch, 0, money_pluralis(thing), TO_CHAR);
+               act("You haven't got that many $3t!", A_ALWAYS, ch, nullptr, money_pluralis(thing), TO_CHAR);
                return;
             }
             thing = split_money(thing, amount);
@@ -461,14 +516,16 @@ void do_drop(struct unit_data *ch, char *argument, const struct command_info *cm
          drop(ch, thing, cmd, oarg);
       }
       else
+      {
          send_to_char("You are not carrying anything like that.\n\r", ch);
+      }
    }
 }
 
 /* Returns FALSE if there was an "error" putting the stuff */
-int put(struct unit_data *ch, struct unit_data *unit, struct unit_data *tounit, const struct command_info *cmd, char *arg)
+auto put(struct unit_data *ch, struct unit_data *unit, struct unit_data *tounit, const struct command_info *cmd, char *arg) -> int
 {
-   struct unit_data *money = NULL;
+   struct unit_data *money = nullptr;
    int               weight;
    sbit32            amt = 0;
 
@@ -476,48 +533,62 @@ int put(struct unit_data *ch, struct unit_data *unit, struct unit_data *tounit, 
 
    if(!IS_SET(UNIT_MANIPULATE(tounit), MANIPULATE_ENTER))
    {
-      act("You can't put anything in the $2N.", A_ALWAYS, ch, tounit, NULL, TO_CHAR);
+      act("You can't put anything in the $2N.", A_ALWAYS, ch, tounit, nullptr, TO_CHAR);
       return FALSE;
    }
 
    if(unit == tounit)
    {
-      act("You attempt to fold the $2N into $2mself, but fail.", A_ALWAYS, ch, tounit, NULL, TO_CHAR);
+      act("You attempt to fold the $2N into $2mself, but fail.", A_ALWAYS, ch, tounit, nullptr, TO_CHAR);
       return FALSE;
    }
 
    if(IS_SET(UNIT_OPEN_FLAGS(tounit), EX_CLOSED))
    {
-      act("The $2N is closed.", A_ALWAYS, ch, tounit, NULL, TO_CHAR);
+      act("The $2N is closed.", A_ALWAYS, ch, tounit, nullptr, TO_CHAR);
       return FALSE;
    }
 
-   if(IS_MONEY(unit) && (money = unit_has_money_type(tounit, MONEY_TYPE(unit))))
+   if(IS_MONEY(unit) && ((money = unit_has_money_type(tounit, MONEY_TYPE(unit))) != nullptr))
+   {
       weight = MONEY_WEIGHT_SUM(money, unit);
+   }
    else
+   {
       weight = UNIT_WEIGHT(unit);
+   }
 
    if(UNIT_CONTAINING_W(tounit) + weight > UNIT_CAPACITY(tounit))
    {
       if(IS_MONEY(unit) && (amt = unit_can_hold_amount(tounit, unit)) > 0)
+      {
          unit = split_money(unit, amt);
+      }
       else
       {
-         act("The $2N can not contain any more.", A_ALWAYS, ch, tounit, NULL, TO_CHAR);
+         act("The $2N can not contain any more.", A_ALWAYS, ch, tounit, nullptr, TO_CHAR);
          return FALSE;
       }
    }
 
    if(amt > 0)
+   {
       act("You manage to squeeze $2t into the $3N.", A_SOMEONE, ch, obj_money_string(unit, 0), tounit, TO_CHAR);
+   }
    else
+   {
       act("You put $3n into the $2N.", A_ALWAYS, ch, tounit, unit, TO_CHAR);
+   }
 
    if(IS_MONEY(unit))
+   {
       act(UNIT_IN(tounit) == ch ? "$1n puts some $2t into $1s $3N." : "$1n puts some $2t into the $3N.", A_HIDEINV, ch,
           money_pluralis(unit), tounit, TO_ROOM);
+   }
    else
+   {
       act(UNIT_IN(tounit) == ch ? "$1n puts $2n into $1s $3N." : "$1n puts $2n into the $3N.", A_HIDEINV, ch, unit, tounit, TO_ROOM);
+   }
 
    unit_from_unit(unit);
    unit_to_unit(unit, tounit);
@@ -529,21 +600,23 @@ int put(struct unit_data *ch, struct unit_data *unit, struct unit_data *tounit, 
 
 void do_put(struct unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *tounit, *thing;
-   char             *arg2, arg1[MAX_INPUT_LENGTH];
+   struct unit_data *tounit;
+   struct unit_data *thing;
+   char             *arg2;
+   char              arg1[MAX_INPUT_LENGTH];
    char              buf[MAX_INPUT_LENGTH];
    amount_t          amount = 0;
    int               all;
    char             *oarg = argument;
 
-   if(str_is_empty(argument))
+   if(str_is_empty(argument) != 0u)
    {
       send_to_char("Put what in what?\n\r", ch);
       return;
    }
 
    /* See if it is "in bag" or the like */
-   if((arg2 = str_cstr(argument, " in ")) == NULL)
+   if((arg2 = str_cstr(argument, " in ")) == nullptr)
    {
       send_to_char("Put 'in' what?\n\r", ch);
       return;
@@ -554,20 +627,20 @@ void do_put(struct unit_data *ch, char *argument, const struct command_info *cmd
 
    arg2 += 4; /* Point past " in " */
 
-   tounit = find_unit(ch, &arg2, 0, FIND_UNIT_HERE);
+   tounit = find_unit(ch, &arg2, nullptr, FIND_UNIT_HERE);
 
-   if(tounit == NULL)
+   if(tounit == nullptr)
    {
       send_to_char("No such thing to put stuff in here.\n\r", ch);
       return;
    }
-   else if(IS_CHAR(tounit))
+   if(IS_CHAR(tounit))
    {
       act("$2e would probably object to that!", A_SOMEONE, ch, tounit, 0, TO_CHAR);
       return;
    }
 
-   if(next_word_is_number(argument))
+   if(next_word_is_number(argument) != 0u)
    {
       argument = str_next_word(argument, buf);
       if((amount = (amount_t)atoi(buf)) < 1)
@@ -577,29 +650,35 @@ void do_put(struct unit_data *ch, char *argument, const struct command_info *cmd
       }
    }
 
-   all = str_ccmp_next_word(argument, "all") != NULL;
+   all = static_cast<int>(str_ccmp_next_word(argument, "all") != nullptr);
 
-   if(all)
+   if(all != 0)
    {
       struct unit_data *nextu;
 
-      for(thing = UNIT_CONTAINS(ch); thing; thing = nextu)
+      for(thing = UNIT_CONTAINS(ch); thing != nullptr; thing = nextu)
       {
          nextu = thing->next;
          if((thing != tounit) && !IS_MONEY(thing) && !UNIT_IS_EQUIPPED(thing) && (UNIT_MINV(thing) <= UNIT_MINV(ch)))
-            if(!put(ch, thing, tounit, cmd, oarg))
+         {
+            if(put(ch, thing, tounit, cmd, oarg) == 0)
+            {
                break;
+            }
+         }
       }
    }
-   else if((thing = find_unit(ch, &argument, 0, FIND_UNIT_INVEN)))
+   else if((thing = find_unit(ch, &argument, nullptr, FIND_UNIT_INVEN)) != nullptr)
    {
       if(IS_MONEY(thing))
       {
          if(amount == 0)
+         {
             amount = MONEY_AMOUNT(thing);
+         }
          else if((amount_t)MONEY_AMOUNT(thing) < amount)
          {
-            act("You haven't got that many $3t!", A_ALWAYS, ch, 0, money_pluralis(thing), TO_CHAR);
+            act("You haven't got that many $3t!", A_ALWAYS, ch, nullptr, money_pluralis(thing), TO_CHAR);
             return;
          }
          thing = split_money(thing, amount);
@@ -613,17 +692,23 @@ void do_put(struct unit_data *ch, char *argument, const struct command_info *cmd
       put(ch, thing, tounit, cmd, oarg);
 
       /* To catch put-aborts, or remaining money */
-      if(!is_destructed(DR_UNIT, thing))
+      if(is_destructed(DR_UNIT, thing) == 0)
+      {
          if(IS_MONEY(thing))
+         {
             pile_money(thing);
+         }
+      }
    }
    else
+   {
       send_to_char("No such thing to put here.\n\r", ch);
+   }
 }
 
 void give(struct unit_data *ch, struct unit_data *thing, struct unit_data *vict, const struct command_info *cmd, char *arg)
 {
-   struct unit_data *money = NULL;
+   struct unit_data *money = nullptr;
    int               weight;
 
    if(!IS_CHAR(vict))
@@ -634,20 +719,24 @@ void give(struct unit_data *ch, struct unit_data *thing, struct unit_data *vict,
 
    /* NB! Curse Check? */
 
-   if(!IS_MONEY(thing) && !char_can_carry_n(vict, 1))
+   if(!IS_MONEY(thing) && (char_can_carry_n(vict, 1) == 0))
    {
-      act("$3e seems to have $3s hands full.", A_SOMEONE, ch, 0, vict, TO_CHAR);
+      act("$3e seems to have $3s hands full.", A_SOMEONE, ch, nullptr, vict, TO_CHAR);
       return;
    }
 
-   if(IS_MONEY(thing) && (money = unit_has_money_type(vict, MONEY_TYPE(thing))))
-      weight = MONEY_WEIGHT_SUM(money, thing);
-   else
-      weight = UNIT_WEIGHT(thing);
-
-   if(!char_can_carry_w(vict, weight))
+   if(IS_MONEY(thing) && ((money = unit_has_money_type(vict, MONEY_TYPE(thing))) != nullptr))
    {
-      act("$3e can't carry that much weight.", A_SOMEONE, ch, 0, vict, TO_CHAR);
+      weight = MONEY_WEIGHT_SUM(money, thing);
+   }
+   else
+   {
+      weight = UNIT_WEIGHT(thing);
+   }
+
+   if(char_can_carry_w(vict, weight) == 0)
+   {
+      act("$3e can't carry that much weight.", A_SOMEONE, ch, nullptr, vict, TO_CHAR);
       return;
    }
 
@@ -673,18 +762,19 @@ void give(struct unit_data *ch, struct unit_data *thing, struct unit_data *vict,
 
 void do_give(struct unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *victim, *thing;
+   struct unit_data *victim;
+   struct unit_data *thing;
    char              buf[MAX_INPUT_LENGTH];
    amount_t          amount = 0;
    char             *oarg   = argument;
 
-   if(str_is_empty(argument))
+   if(str_is_empty(argument) != 0u)
    {
       send_to_char("Give? Just give? Give what to whom?\n\r", ch);
       return;
    }
 
-   if(next_word_is_number(argument))
+   if(next_word_is_number(argument) != 0u)
    {
       argument = str_next_word(argument, buf);
       if((amount = (amount_t)atoi(buf)) < 1)
@@ -694,25 +784,27 @@ void do_give(struct unit_data *ch, char *argument, const struct command_info *cm
       }
    }
 
-   if((thing = find_unit(ch, &argument, 0, FIND_UNIT_INVEN)) == NULL)
+   if((thing = find_unit(ch, &argument, nullptr, FIND_UNIT_INVEN)) == nullptr)
    {
       send_to_char("You don't seem to have any such thing.\n\r", ch);
       return;
    }
 
-   if((victim = find_unit(ch, &argument, 0, FIND_UNIT_SURRO)) == NULL)
+   if((victim = find_unit(ch, &argument, nullptr, FIND_UNIT_SURRO)) == nullptr)
    {
-      act("No such person '$2t' here.", A_ALWAYS, ch, argument, 0, TO_CHAR);
+      act("No such person '$2t' here.", A_ALWAYS, ch, argument, nullptr, TO_CHAR);
       return;
    }
 
    if(IS_MONEY(thing))
    {
       if(amount == 0)
+      {
          amount = MONEY_AMOUNT(thing);
+      }
       else if((amount_t)MONEY_AMOUNT(thing) < amount)
       {
-         act("You haven't got that many $3t!", A_ALWAYS, ch, 0, money_pluralis(thing), TO_CHAR);
+         act("You haven't got that many $3t!", A_ALWAYS, ch, nullptr, money_pluralis(thing), TO_CHAR);
          return;
       }
 
@@ -727,7 +819,11 @@ void do_give(struct unit_data *ch, char *argument, const struct command_info *cm
    give(ch, thing, victim, cmd, oarg);
 
    /* To catch give-aborts, or remaining money */
-   if(!is_destructed(DR_UNIT, thing))
+   if(is_destructed(DR_UNIT, thing) == 0)
+   {
       if(IS_MONEY(thing))
+      {
          pile_money(thing);
+      }
+   }
 }

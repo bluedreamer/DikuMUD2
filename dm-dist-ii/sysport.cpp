@@ -42,9 +42,9 @@
  * + #endif
  */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
 
 #include "comm.h"
 #include "handler.h"

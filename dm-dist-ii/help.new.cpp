@@ -22,9 +22,9 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
 
 #include "comm.h"
 #include "db.h"
@@ -43,16 +43,18 @@
 
 #define HELP_INCREMENT 100
 
-help_index_type::help_index_type(void)
+help_index_type::help_index_type()
 {
    pos     = 0;
-   keyword = NULL;
+   keyword = nullptr;
 }
 
-help_index_type::~help_index_type(void)
+help_index_type::~help_index_type()
 {
-   if(keyword)
+   if(keyword != nullptr)
+   {
       free(keyword);
+   }
 }
 
 help_file_type::help_file_type(void)
@@ -73,18 +75,20 @@ static class help_file_type help_file[3];
 
 extern char libdir[]; /* from dikumud.c        */
 
-int search_help_cmp(const void *keyval, const void *datum)
+auto search_help_cmp(const void *keyval, const void *datum) -> int
 {
-   if(is_abbrev((char *)keyval, ((struct help_index_type *)datum)->keyword))
+   if(is_abbrev((char *)keyval, ((struct help_index_type *)datum)->keyword) != 0u)
+   {
       return 0;
-   else
-      return str_ccmp((char *)keyval, ((struct help_index_type *)datum)->keyword);
+   }
+   return str_ccmp((char *)keyval, ((struct help_index_type *)datum)->keyword);
 }
 
 /* Returns TRUE if help was presented */
-static int help(struct help_file_type *hlp, struct descriptor_data *d, char *arg)
+static auto help(struct help_file_type *hlp, struct descriptor_data *d, char *arg) -> int
 {
-   char                    buf[MAX_STRING_LENGTH], line[256];
+   char                    buf[MAX_STRING_LENGTH];
+   char                    line[256];
    char                    buf2[MAX_STRING_LENGTH];
    struct help_index_type *tmp;
    FILE                   *help_fl;
@@ -117,7 +121,9 @@ static int help(struct help_file_type *hlp, struct descriptor_data *d, char *arg
       {
          fgets(line, sizeof(line), help_fl);
          if(*line == '#')
+         {
             break;
+         }
          strcat(buf, line);
       }
 
@@ -131,7 +137,7 @@ static int help(struct help_file_type *hlp, struct descriptor_data *d, char *arg
 
 /* Returns TRUE if help was found and displayed */
 
-int help_base(struct descriptor_data *d, char *arg)
+auto help_base(struct descriptor_data *d, char *arg) -> int
 {
    ubit8 bHelp = FALSE;
 
@@ -150,9 +156,11 @@ int help_base(struct descriptor_data *d, char *arg)
 void do_help(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
    if(!IS_PC(ch) || !CHAR_DESCRIPTOR(ch))
+   {
       return;
+   }
 
-   if(str_is_empty(arg))
+   if(str_is_empty(arg) != 0u)
    {
       struct zone_type *zone = unit_zone(ch);
 
@@ -160,8 +168,10 @@ void do_help(struct unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   if(!help_base(CHAR_DESCRIPTOR(ch), arg))
-      act("There is no help available on the subject '$2t'.", A_ALWAYS, ch, arg, 0, TO_CHAR);
+   if(help_base(CHAR_DESCRIPTOR(ch), arg) == 0)
+   {
+      act("There is no help available on the subject '$2t'.", A_ALWAYS, ch, arg, nullptr, TO_CHAR);
+   }
 }
 
 /* BOOT stuff below */
@@ -169,7 +179,7 @@ void do_help(struct unit_data *ch, char *arg, const struct command_info *cmd)
 /*  one_word is like one_argument, except that words in quotes "" are
  *  regarded as ONE word
  */
-char *one_word(char *arg, char *first_arg)
+auto one_word(char *arg, char *first_arg) -> char *
 {
    do
    {
@@ -180,23 +190,31 @@ char *one_word(char *arg, char *first_arg)
       if(*arg == '\"') /* is it a quote " */
       {
          for(arg++; arg[look_at] >= ' ' && arg[look_at] != '\"'; ++look_at)
+         {
             first_arg[look_at] = tolower(arg[look_at]);
+         }
 
-         if(arg[look_at] == '\"') /* " (damn dumb emacs syntax colouring) */
+         if(arg[look_at] == '\"')
+         { /* " (damn dumb emacs syntax colouring) */
             arg++;
+         }
       }
       else
+      {
          for(look_at = 0; ' ' < arg[look_at]; look_at++)
+         {
             first_arg[look_at] = tolower(arg[look_at]);
+         }
+      }
 
       first_arg[look_at] = '\0';
       arg += look_at;
-   } while(fill_word(first_arg));
+   } while(fill_word(first_arg) != 0);
 
    return arg;
 }
 
-int build_help_cmp(const void *keyval, const void *datum)
+auto build_help_cmp(const void *keyval, const void *datum) -> int
 {
    return str_ccmp(((struct help_index_type *)keyval)->keyword, ((struct help_index_type *)datum)->keyword);
 }
@@ -264,7 +282,7 @@ void help_file_type::generate_help_idx(char *name)
    qsort(help_idx, elements + 1, sizeof(class help_index_type), build_help_cmp);
 }
 
-void boot_help(void)
+void boot_help()
 {
    help_file[0].generate_help_idx(HELP_FILE);
    help_file[1].generate_help_idx(HELP_FILE_LOCAL);

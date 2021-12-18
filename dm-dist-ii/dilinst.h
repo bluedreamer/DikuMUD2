@@ -80,5 +80,3 @@ void dilfi_fon(struct dilprg *, struct dilval *);
 void dilfi_sntadil(struct dilprg *, struct dilval *);
 
 #endif
-
-

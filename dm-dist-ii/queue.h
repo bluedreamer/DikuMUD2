@@ -27,40 +27,45 @@
 
 #include "essential.h"
 
-
 // To use, inherit this type into your data structure.
 class cQueueElem
 {
    friend class cQueue;
 
-  public:
+public:
    cQueueElem(char *c, int bCopy = TRUE);
    cQueueElem(ubit8 *d, ubit32 n, int bCopy = TRUE);
-   ~cQueueElem(void)              { if (pData) free(pData); }
+   ~cQueueElem(void)
+   {
+      if(pData)
+         free(pData);
+   }
 
    ubit32 Bytes(void) { return nSize; }
-   ubit8  *Data(void) { return pData; }
-   void   SetNull(void) { pData = NULL; nSize = 0; }
+   ubit8 *Data(void) { return pData; }
+   void   SetNull(void)
+   {
+      pData = NULL;
+      nSize = 0;
+   }
 
    cQueueElem *PeekNext(void) { return pNext; }
 
-  private:
-   ubit8  *pData;
-   ubit32 nSize;  // Optional number of bytes
+private:
+   ubit8      *pData;
+   ubit32      nSize; // Optional number of bytes
    cQueueElem *pNext;
 };
 
-
-
 class cQueue
 {
-  public: 
+public:
    cQueue();
    ~cQueue();
 
-   int IsEmpty(void);
-   ubit32 Size(void);
-   ubit32 Bytes(void);
+   int    IsEmpty(void) const;
+   ubit32 Size(void) const;
+   ubit32 Bytes(void) const;
 
    void Copy(ubit8 *data, ubit32 nLen);
    void CutCopy(ubit8 *data, ubit32 nLen);
@@ -75,8 +80,8 @@ class cQueue
    const cQueueElem *PeekTail(void);
 
    void Flush(void);
-   
-  private:
+
+private:
    cQueueElem *pHead;
    cQueueElem *pTail;
    cQueueElem *pPreTail;
@@ -84,6 +89,5 @@ class cQueue
    ubit32 nEntries;
    ubit32 nBytes;
 };
-
 
 #endif
