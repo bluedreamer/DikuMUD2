@@ -24,7 +24,9 @@
 	
 #ifndef _MUD_DILPAR_H
 #define _MUD_DILPAR_H
-	
+
+#include "essential.h"
+
 #define DIL_VERSION "v3.30"
 
 #define SYMSIZE 40

@@ -57,7 +57,7 @@
 extern struct command_info   cmd_auto_unknown;
 extern struct zone_info_type zone_info;
 
-extern int memory_total_alloc;
+extern ubit32 memory_total_alloc;
 extern int memory_dijkstra_alloc;
 
 struct dir_array

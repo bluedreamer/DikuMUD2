@@ -64,7 +64,7 @@ struct zone_info_type zone_info = {0, 0, 0, 0};
 
 extern char libdir[];
 extern char zondir[];
-extern int  memory_total_alloc;
+extern ubit32 memory_total_alloc;
 
 struct room_direction_data *create_direction_data(void);
 

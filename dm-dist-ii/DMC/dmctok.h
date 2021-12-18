@@ -25,8 +25,6 @@
 #ifndef _MUD_DMCTOK_H
 #define _MUD_DMCTOK_H
 
-#include "tmp_dmcpar.h"
-
 struct symbols
 {
    const char *nam;
