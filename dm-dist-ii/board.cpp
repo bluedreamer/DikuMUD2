@@ -100,11 +100,11 @@ struct board_info *board_list = nullptr; /* Linked list of boards           */
 
 /* local fncts */
 
-auto show_board(const struct unit_data * /*ch*/, struct unit_data * /*board*/, struct board_info * /*tb*/, char * /*arg*/) -> int;
-void write_board(struct unit_data * /*ch*/, struct board_info * /*tb*/, char * /*arg*/, struct unit_data * /*board*/);
-auto read_board(struct unit_data * /*ch*/, struct board_info * /*tb*/, char * /*arg*/) -> int;
-auto reply_board(struct unit_data * /*ch*/, struct board_info * /*tb*/, char * /*arg*/, struct unit_data *board) -> int;
-auto remove_msg(struct unit_data * /*ch*/, struct board_info * /*tb*/, char * /*arg*/) -> int;
+auto show_board(const unit_data * /*ch*/, unit_data * /*board*/, struct board_info * /*tb*/, char * /*arg*/) -> int;
+void write_board(unit_data * /*ch*/, struct board_info * /*tb*/, char * /*arg*/, unit_data * /*board*/);
+auto read_board(unit_data * /*ch*/, struct board_info * /*tb*/, char * /*arg*/) -> int;
+auto reply_board(unit_data * /*ch*/, struct board_info * /*tb*/, char * /*arg*/, unit_data *board) -> int;
+auto remove_msg(unit_data * /*ch*/, struct board_info * /*tb*/, char * /*arg*/) -> int;
 void save_board_msg(struct board_info * /*tb*/, int /*index*/, char * /*text*/);
 void load_board_msg(struct board_info * /*tb*/, int /*index*/, bool /*text*/);
 auto init_board(char * /*file_name*/) -> struct board_info *;
@@ -112,7 +112,7 @@ auto get_board(struct unit_fptr * /*fptr*/) -> struct board_info *;
 
 auto board(struct spec_arg *sarg) -> int
 {
-   struct unit_data  *u;
+   unit_data         *u;
    struct board_info *tb;
    char              *arg = (char *)sarg->arg;
 
@@ -169,7 +169,7 @@ auto board(struct spec_arg *sarg) -> int
    }
 }
 
-auto show_board(const struct unit_data *ch, struct unit_data *board, struct board_info *tb, char *arg) -> int
+auto show_board(const unit_data *ch, unit_data *board, struct board_info *tb, char *arg) -> int
 {
    char  tmp[MAX_INPUT_LENGTH];
    char  buf[10000]; /* Enough with 50 messages */
@@ -308,7 +308,7 @@ void compact_board(struct board_info *tb)
    }
 }
 
-void write_board(struct unit_data *ch, struct board_info *tb, char *arg, struct unit_data *board)
+void write_board(unit_data *ch, struct board_info *tb, char *arg, unit_data *board)
 {
    int                     i;
    struct descriptor_data *d;
@@ -390,7 +390,7 @@ void write_board(struct unit_data *ch, struct board_info *tb, char *arg, struct 
    set_descriptor_fptr(CHAR_DESCRIPTOR(ch), interpreter_string_add, TRUE);
 }
 
-auto reply_board(struct unit_data *ch, struct board_info *tb, char *arg, struct unit_data *board) -> int
+auto reply_board(unit_data *ch, struct board_info *tb, char *arg, unit_data *board) -> int
 {
    char number[MAX_INPUT_LENGTH];
    char head[80];
@@ -433,7 +433,7 @@ auto reply_board(struct unit_data *ch, struct board_info *tb, char *arg, struct 
    return SFR_BLOCK;
 }
 
-auto read_board(struct unit_data *ch, struct board_info *tb, char *arg) -> int
+auto read_board(unit_data *ch, struct board_info *tb, char *arg) -> int
 {
    char number[MAX_INPUT_LENGTH];
    char buf[MAX_STRING_LENGTH];
@@ -477,7 +477,7 @@ auto read_board(struct unit_data *ch, struct board_info *tb, char *arg) -> int
    return SFR_BLOCK;
 }
 
-auto remove_msg(struct unit_data *ch, struct board_info *tb, char *arg) -> int
+auto remove_msg(unit_data *ch, struct board_info *tb, char *arg) -> int
 {
    int  msg;
    int  index;
@@ -714,9 +714,9 @@ auto get_board(struct unit_fptr *fptr) -> struct board_info *
    return tb;
 }
 
-void do_boards(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_boards(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data  *u;
+   unit_data         *u;
    struct unit_fptr  *f = nullptr;
    struct board_info *b;
    char               buf[256];

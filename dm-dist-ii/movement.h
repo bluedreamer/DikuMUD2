@@ -28,9 +28,9 @@
 
 #define ROOM_DOOR_NAME(room, dir) (ROOM_EXIT((room), (dir))->open_name.Name() ? ROOM_EXIT((room), (dir))->open_name.Name() : "UNDEFINED")
 
-void backdoor(struct unit_data *ch, char *arg, const struct command_info *cmd);
+void backdoor(unit_data *ch, char *arg, const struct command_info *cmd);
 
-auto low_find_door(struct unit_data *ch, char *doorstr, int err_msg, int check_hidden) -> int;
+auto low_find_door(unit_data *ch, char *doorstr, int err_msg, int check_hidden) -> int;
 
 #define MOVE_GOAL   0 /* The NPC is now at it's destination         */
 #define MOVE_CLOSER 1 /* The NPC was moved closer to destination    */
@@ -43,9 +43,9 @@ auto low_find_door(struct unit_data *ch, char *doorstr, int err_msg, int check_h
 
 struct door_data
 {
-   struct unit_data       *thing;
-   struct unit_data       *room;
-   struct unit_data       *reverse; /* Reverse Room or Inside thing */
+   unit_data              *thing;
+   unit_data              *room;
+   unit_data              *reverse; /* Reverse Room or Inside thing */
    struct file_index_type *key;
    uint8_t                 direction; /* For rooms, which direction was picked? */
    uint8_t                *flags;
@@ -55,22 +55,22 @@ struct door_data
 
 struct visit_data
 {
-   int               state;
-   struct unit_data *go_to;
+   int        state;
+   unit_data *go_to;
 
-   struct unit_data *start_room;
-   struct unit_data *dest_room;
+   unit_data *start_room;
+   unit_data *dest_room;
 
    /* Return DESTROY_ME to destroy moving function        */
    /*        SFR_SHARE to allow lower functions to handle */
    /*        SFR_SUPREME to not allow lower functions     */
-   int (*what_now)(const struct unit_data *, struct visit_data *);
+   int (*what_now)(const unit_data *, struct visit_data *);
 
    void *data;
    int   non_tick_return; /* What to return upon non-ticks (SFR_...) */
 };
 
-void npc_set_visit(struct unit_data *npc, struct unit_data *dest_room, int what_now(const struct unit_data *, struct visit_data *),
-                   void *data, int non_tick_return);
+void npc_set_visit(unit_data *npc, unit_data *dest_room, int what_now(const unit_data *, struct visit_data *), void *data,
+                   int non_tick_return);
 
-auto do_advanced_move(struct unit_data *ch, int direction, int following = FALSE) -> int;
+auto do_advanced_move(unit_data *ch, int direction, int following = FALSE) -> int;

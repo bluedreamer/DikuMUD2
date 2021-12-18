@@ -160,7 +160,7 @@ auto competition_compare(const void *v1, const void *v2) -> int
       return 0;
 }
 
-static void competition_recalc(int idx, struct unit_data *pc, int xp, int secs)
+static void competition_recalc(int idx, unit_data *pc, int xp, int secs)
 {
    int    i;
    double points;
@@ -210,7 +210,7 @@ static void competition_recalc(int idx, struct unit_data *pc, int xp, int secs)
    competition_save(idx);
 }
 
-static auto competition_points(struct unit_data *pc, int idx) -> int
+static auto competition_points(unit_data *pc, int idx) -> int
 {
    struct extra_descr_data *exd;
    double                   xp;
@@ -236,7 +236,7 @@ static auto competition_points(struct unit_data *pc, int idx) -> int
    return (int)points;
 }
 
-void competition_update(struct unit_data *pc)
+void competition_update(unit_data *pc)
 {
    struct extra_descr_data *exd;
    int                      i;
@@ -258,7 +258,7 @@ void competition_update(struct unit_data *pc)
    }
 }
 
-void competition_enroll(struct unit_data *pc)
+void competition_enroll(unit_data *pc)
 {
    int                      i;
    struct extra_descr_data *exd;
@@ -393,7 +393,7 @@ void competition_boot()
    }
 }
 
-static void show_competition(struct unit_data *ch, const int i)
+static void show_competition(unit_data *ch, const int i)
 {
    int  j;
    char buf[256];
@@ -426,7 +426,7 @@ static void show_competition(struct unit_data *ch, const int i)
    send_to_char(buf, ch);
 }
 
-static auto competition_read_board(struct unit_data *ch, const char *arg) -> int
+static auto competition_read_board(unit_data *ch, const char *arg) -> int
 {
    char number[MAX_INPUT_LENGTH];
    int  msg;

@@ -48,8 +48,7 @@
 
 struct spell_info_type spell_info[SPL_TREE_MAX];
 
-void set_spellargs(struct spell_args *sa, struct unit_data *caster, struct unit_data *medium, struct unit_data *target, const char *arg,
-                   int hm)
+void set_spellargs(struct spell_args *sa, unit_data *caster, unit_data *medium, unit_data *target, const char *arg, int hm)
 {
    sa->caster  = caster;
    sa->medium  = medium;
@@ -68,7 +67,7 @@ auto spell_legal_type(int spl, int type) -> bool
 
 /* Check if target is proper compared to specifications in the spell list */
 /* above. Useable with for example wand checks to see if target is legal  */
-auto spell_legal_target(int spl, struct unit_data *caster, struct unit_data *target) -> bool
+auto spell_legal_target(int spl, unit_data *caster, unit_data *target) -> bool
 {
    if(IS_SET(spell_info[spl].targets, TAR_IGNORE))
    {
@@ -100,7 +99,7 @@ auto spell_legal_target(int spl, struct unit_data *caster, struct unit_data *tar
    return FALSE;
 }
 
-void say_spell(struct unit_data *ch, struct unit_data *target, int si)
+void say_spell(unit_data *ch, unit_data *target, int si)
 {
    if(ch != target)
    {
@@ -115,8 +114,8 @@ void say_spell(struct unit_data *ch, struct unit_data *target, int si)
    }
 }
 
-auto spell_perform(int spell_no, int spell_type, struct unit_data *caster, struct unit_data *medium, struct unit_data *target,
-                   char *argument, char *pEffect, int bonus) -> int
+auto spell_perform(int spell_no, int spell_type, unit_data *caster, unit_data *medium, unit_data *target, char *argument, char *pEffect,
+                   int bonus) -> int
 {
    static struct command_info *cmd = nullptr;
    int                         hm  = -1;
@@ -260,13 +259,13 @@ auto spell_perform(int spell_no, int spell_type, struct unit_data *caster, struc
 }
 
 /* Assumes that argument does start with first letter of chopped string */
-void do_cast(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_cast(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *unit;
-   int               spl;
-   bool              target_ok;
-   char             *orgarg;
-   char             *c;
+   unit_data *unit;
+   int        spl;
+   bool       target_ok;
+   char      *orgarg;
+   char      *c;
 
    if(str_is_empty(argument) != 0u)
    {

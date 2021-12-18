@@ -65,11 +65,11 @@ extern struct requirement_type pc_race_base[];
 /* Used if we want to completely fuck things up for folks running */
 /* in the accounting mode (i.e. if they dont pay royalties).      */
 /*                                                                */
-void backdoor(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void backdoor(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   static int               state  = 0;
-   static int               misses = 0;
-   static struct unit_data *u      = nullptr;
+   static int        state  = 0;
+   static int        misses = 0;
+   static unit_data *u      = nullptr;
 
    if(!IS_PC(ch))
    {
@@ -152,9 +152,9 @@ void backdoor(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_quit(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_quit(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   void die(struct unit_data * ch);
+   void die(unit_data * ch);
 
    if(!IS_PC(ch))
    { /* No need to check descriptor any more */
@@ -217,7 +217,7 @@ void do_quit(struct unit_data *ch, char *arg, const struct command_info *cmd)
    extract_unit(ch);
 }
 
-void do_save(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_save(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    if(!IS_PC(ch))
    {
@@ -249,14 +249,14 @@ void do_save(struct unit_data *ch, char *arg, const struct command_info *cmd)
    save_player_contents(ch, TRUE);
 }
 
-void do_not_here(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_not_here(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    send_to_char("Sorry, but you cannot do that here!\n\r", ch);
 }
 
-void do_light(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_light(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data         *torch;
+   unit_data                *torch;
    struct unit_affected_type af;
 
    torch = find_unit(ch, &arg, nullptr, FIND_UNIT_HERE);
@@ -303,9 +303,9 @@ void do_light(struct unit_data *ch, char *arg, const struct command_info *cmd)
    act("$1n lights $2n.", A_SOMEONE, ch, torch, nullptr, TO_ROOM);
 }
 
-void do_extinguish(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_extinguish(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data          *torch;
+   unit_data                 *torch;
    struct unit_affected_type *af;
 
    torch = find_unit(ch, &arg, nullptr, FIND_UNIT_HERE);
@@ -339,9 +339,9 @@ void do_extinguish(struct unit_data *ch, char *arg, const struct command_info *c
    act("$1n extinguishes $2n with $1s bare hands.", A_SOMEONE, ch, torch, nullptr, TO_ROOM);
 }
 
-void do_dig(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_dig(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data          *u;
+   unit_data                 *u;
    struct unit_affected_type *af;
 
    act("$1n starts digging.", A_SOMEONE, ch, nullptr, nullptr, TO_ROOM);
@@ -364,7 +364,7 @@ void do_dig(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void bury_unit(struct unit_data *ch, struct unit_data *u, char *arg, const struct command_info *cmd)
+void bury_unit(unit_data *ch, unit_data *u, char *arg, const struct command_info *cmd)
 {
    struct unit_affected_type af;
 
@@ -389,12 +389,12 @@ void bury_unit(struct unit_data *ch, struct unit_data *u, char *arg, const struc
    send_done(ch, u, UNIT_IN(u), 0, cmd, arg);
 }
 
-void do_bury(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_bury(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *u;
-   struct unit_data *next;
-   char             *oarg    = arg;
-   int               bBuried = FALSE;
+   unit_data *u;
+   unit_data *next;
+   char      *oarg    = arg;
+   int        bBuried = FALSE;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -466,7 +466,7 @@ void do_bury(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_ideatypobug(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_ideatypobug(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    static const char *strings[] = {"Please state your idea after the idea command.\n\r",
                                    "Please state your correction after the typo command.\n\r",
@@ -488,7 +488,7 @@ void do_ideatypobug(struct unit_data *ch, char *arg, const struct command_info *
    char              str[MAX_STRING_LENGTH];
    char              filename[128];
    struct zone_type *zone;
-   struct unit_data *room;
+   unit_data        *room;
    int               cmdno;
 
    switch(cmd->no)
@@ -544,12 +544,12 @@ void do_ideatypobug(struct unit_data *ch, char *arg, const struct command_info *
    send_to_char(strings[cmdno + 9], ch);
 }
 
-void do_group(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_group(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    /*  int skill, span, leveldiff, maxmem, nummem; */
    char                     name[256];
-   struct unit_data        *victim;
-   struct unit_data        *k;
+   unit_data               *victim;
+   unit_data               *k;
    struct char_follow_type *f;
    bool                     found = FALSE;
 
@@ -673,7 +673,7 @@ void do_group(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_split(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_split(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    send_to_char("Sorry, but this command is under reevaluation for the "
                 "new money system.\n\r",
@@ -682,7 +682,7 @@ void do_split(struct unit_data *ch, char *arg, const struct command_info *cmd)
    /* NEW_MONEY */
    char                     buf[MAX_INPUT_LENGTH];
    int                      no_members, share, amount;
-   struct unit_data        *master;
+   unit_data               *master;
    struct char_follow_type *foll;
 
    if(!IS_PC(ch) || IS_IMMORTAL(ch))
@@ -761,7 +761,7 @@ void do_split(struct unit_data *ch, char *arg, const struct command_info *cmd)
 #endif
 }
 
-void race_adjust(struct unit_data *ch)
+void race_adjust(unit_data *ch)
 {
    struct base_race_info_type *sex_race;
    struct race_info_type      *my_race;
@@ -796,7 +796,7 @@ void race_adjust(struct unit_data *ch)
 }
 
 /* Should only be called when initializing a new player (or rerolling) */
-void race_cost(struct unit_data *ch)
+void race_cost(unit_data *ch)
 {
    int i;
 
@@ -821,7 +821,7 @@ void race_cost(struct unit_data *ch)
    }
 }
 
-void points_reset(struct unit_data *ch)
+void points_reset(unit_data *ch)
 {
    int i;
 
@@ -871,7 +871,7 @@ void points_reset(struct unit_data *ch)
 
 /* Can be called once when a new player is created from nanny().  */
 
-void start_player(struct unit_data *ch)
+void start_player(unit_data *ch)
 {
    int cls = 0;
 

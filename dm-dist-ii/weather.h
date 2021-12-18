@@ -33,7 +33,7 @@ auto timetodate(time_t t) -> char *;
 auto real_time_passed(time_t t2, time_t t1) -> struct time_info_data;
 auto mud_date(time_t t) -> struct time_info_data;
 auto mud_time_passed(time_t t2, time_t t1) -> struct time_info_data;
-auto age(struct unit_data *ch) -> struct time_info_data;
+auto age(unit_data *ch) -> struct time_info_data;
 void weather_change(struct time_info_data time_data);
 void mudtime_strcpy(struct time_info_data *time, char *str);
 

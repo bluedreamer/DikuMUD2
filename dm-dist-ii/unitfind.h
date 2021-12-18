@@ -23,29 +23,30 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "unit_data.h"
+
 #define UVI(i) (unit_vector.units[i])
 #define UVITOP (unit_vector.top)
 
 struct unit_vector_data
 {
-   struct unit_data **units;
-   int                size;
-   int                top;
+   unit_data **units;
+   int         size;
+   int         top;
 };
 
 extern struct unit_vector_data unit_vector;
 
-auto same_surroundings(struct unit_data *u1, struct unit_data *u2) -> bool;
-void scan4_unit_room(struct unit_data *room, uint8_t type);
-void scan4_unit(struct unit_data *ch, uint8_t type);
-auto scan4_ref(struct unit_data *ch, struct unit_data *fu) -> struct unit_data *;
+auto same_surroundings(unit_data *u1, unit_data *u2) -> bool;
+void scan4_unit_room(unit_data *room, uint8_t type);
+void scan4_unit(unit_data *ch, uint8_t type);
+auto scan4_ref(unit_data *ch, unit_data *fu) -> unit_data *;
 
-auto random_direction(struct unit_data *ch) -> int;
-auto find_unit(const struct unit_data *ch, char **arg, const struct unit_data *list, uint32_t bitvector) -> struct unit_data *;
-auto find_unit_general(const struct unit_data *viewer, const struct unit_data *ch, char **arg, const struct unit_data *list,
-                       uint32_t bitvector) -> struct unit_data *;
+auto random_direction(unit_data *ch) -> int;
+auto find_unit(const unit_data *ch, char **arg, const unit_data *list, uint32_t bitvector) -> unit_data *;
+auto find_unit_general(const unit_data *viewer, const unit_data *ch, char **arg, const unit_data *list, uint32_t bitvector) -> unit_data *;
 
-auto find_symbolic_instance(struct file_index_type *fi) -> struct unit_data *;
-auto find_symbolic(char *zone, char *name) -> struct unit_data *;
-auto find_symbolic_instance_ref(struct unit_data *ref, struct file_index_type *fi, uint16_t bitvector) -> struct unit_data *;
-auto random_unit(struct unit_data *ref, int sflags, int tflags) -> struct unit_data *;
+auto find_symbolic_instance(struct file_index_type *fi) -> unit_data *;
+auto find_symbolic(char *zone, char *name) -> unit_data *;
+auto find_symbolic_instance_ref(unit_data *ref, struct file_index_type *fi, uint16_t bitvector) -> unit_data *;
+auto random_unit(unit_data *ref, int sflags, int tflags) -> unit_data *;

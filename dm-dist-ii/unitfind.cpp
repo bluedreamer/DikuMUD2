@@ -34,7 +34,7 @@
 #include "utils.h"
 
 /* Assumes UNIT_IN(room) == NULL */
-static auto same_surroundings_room(struct unit_data *room, struct unit_data *u2) -> bool
+static auto same_surroundings_room(unit_data *room, unit_data *u2) -> bool
 {
    if(!UNIT_IN(u2))
    {
@@ -54,7 +54,7 @@ static auto same_surroundings_room(struct unit_data *room, struct unit_data *u2)
    return FALSE;
 }
 
-auto same_surroundings(struct unit_data *u1, struct unit_data *u2) -> bool
+auto same_surroundings(unit_data *u1, unit_data *u2) -> bool
 {
    if(!UNIT_IN(u1))
    {
@@ -113,7 +113,7 @@ auto same_surroundings(struct unit_data *u1, struct unit_data *u2) -> bool
 */
 
 /* returns if PC is pay/no pay !0/0 */
-static inline auto pcpay(struct unit_data *u) -> int
+static inline auto pcpay(unit_data *u) -> int
 {
    return static_cast<int>((PC_ACCOUNT(u).credit > 0.0) || (PC_ACCOUNT(u).discount == 100) ||
                            (PC_ACCOUNT(u).flatrate > (uint32_t)time(nullptr)) ||
@@ -121,13 +121,13 @@ static inline auto pcpay(struct unit_data *u) -> int
 }
 
 /* returns if ROOM is pay/no pay !0/0 */
-static inline auto roompay(struct unit_data *u) -> int
+static inline auto roompay(unit_data *u) -> int
 {
    return (UNIT_FI_ZONE(u)->payonly);
 }
 
 /* These functions determine if the units are candidates in find */
-static inline auto findcheck(struct unit_data *u, int pset, int tflags) -> int
+static inline auto findcheck(unit_data *u, int pset, int tflags) -> int
 {
    if(IS_SET(UNIT_TYPE(u), tflags))
    {
@@ -162,12 +162,12 @@ static inline auto findcheck(struct unit_data *u, int pset, int tflags) -> int
    return 0;
 }
 
-auto random_unit(struct unit_data *ref, int sflags, int tflags) -> struct unit_data *
+auto random_unit(unit_data *ref, int sflags, int tflags) -> unit_data *
 {
-   struct unit_data *u;
-   struct unit_data *selected = NULL;
-   int               count    = 0;
-   int               pset     = 0;
+   unit_data *u;
+   unit_data *selected = NULL;
+   int        count    = 0;
+   int        pset     = 0;
 
    pset = sflags & (FIND_UNIT_NOPAY | FIND_UNIT_PAY);
    sflags &= FIND_UNIT_LOCATION_MASK;
@@ -260,22 +260,22 @@ auto random_unit(struct unit_data *ref, int sflags, int tflags) -> struct unit_d
 /* As find_unit below, except visibility is relative to
    viewer with respect to CHAR_CAN_SEE */
 
-auto find_unit_general(const struct unit_data *viewer, const struct unit_data *ch, char **arg, const struct unit_data *list,
-                       const uint32_t bitvector) -> struct unit_data *
+auto find_unit_general(const unit_data *viewer, const unit_data *ch, char **arg, const unit_data *list, const uint32_t bitvector)
+   -> unit_data *
 {
-   struct unit_data *best     = nullptr;
-   int               best_len = 0;
-   uint32_t          bitvectorm;
+   unit_data *best     = nullptr;
+   int        best_len = 0;
+   uint32_t   bitvectorm;
 
-   int               i;
-   int               number;
-   int               original_number;
-   const char       *ct = nullptr;
-   char              name[256];
-   char             *c;
-   bool              is_fillword = TRUE;
-   struct unit_data *u;
-   struct unit_data *uu;
+   int         i;
+   int         number;
+   int         original_number;
+   const char *ct = nullptr;
+   char        name[256];
+   char       *c;
+   bool        is_fillword = TRUE;
+   unit_data  *u;
+   unit_data  *uu;
 
    /* Eliminate the 'pay' bits */
    bitvectorm = bitvector & FIND_UNIT_LOCATION_MASK;
@@ -385,7 +385,7 @@ auto find_unit_general(const struct unit_data *viewer, const struct unit_data *c
          if((ct = is_name_raw(c, tmp_self)) != nullptr)
          {
             *arg = (char *)ct;
-            return (struct unit_data *)ch;
+            return (unit_data *)ch;
          }
 
          /* MS: Removed !IS_ROOM(UNIT_IN(ch)) because you must be able to
@@ -538,7 +538,7 @@ auto find_unit_general(const struct unit_data *viewer, const struct unit_data *c
 
    for(; list != nullptr; list = list->next)
    {
-      if(((ct = UNIT_NAMES((struct unit_data *)list).IsNameRaw(c)) != nullptr) && (ct - c >= best_len))
+      if(((ct = UNIT_NAMES((unit_data *)list).IsNameRaw(c)) != nullptr) && (ct - c >= best_len))
       {
          if(ct - c > best_len)
          {
@@ -548,7 +548,7 @@ auto find_unit_general(const struct unit_data *viewer, const struct unit_data *c
 
          if(--number == 0)
          {
-            best = (struct unit_data *)list;
+            best = (unit_data *)list;
          }
       }
    }
@@ -592,15 +592,15 @@ auto find_unit_general(const struct unit_data *viewer, const struct unit_data *c
 
   */
 
-auto find_unit(const struct unit_data *ch, char **arg, const struct unit_data *list, const uint32_t bitvector) -> struct unit_data *
+auto find_unit(const unit_data *ch, char **arg, const unit_data *list, const uint32_t bitvector) -> unit_data *
 {
    return find_unit_general(ch, ch, arg, list, bitvector);
 }
 
-auto find_symbolic_instance_ref(struct unit_data *ref, struct file_index_type *fi, uint16_t bitvector) -> struct unit_data *
+auto find_symbolic_instance_ref(unit_data *ref, struct file_index_type *fi, uint16_t bitvector) -> unit_data *
 {
-   struct unit_data *u;
-   struct unit_data *uu;
+   unit_data *u;
+   unit_data *uu;
 
    if((fi == nullptr) || (ref == nullptr))
    {
@@ -710,9 +710,9 @@ auto find_symbolic_instance_ref(struct unit_data *ref, struct file_index_type *f
    return nullptr;
 }
 
-auto find_symbolic_instance(struct file_index_type *fi) -> struct unit_data *
+auto find_symbolic_instance(struct file_index_type *fi) -> unit_data *
 {
-   struct unit_data *u;
+   unit_data *u;
 
    if(fi == nullptr)
    {
@@ -730,7 +730,7 @@ auto find_symbolic_instance(struct file_index_type *fi) -> struct unit_data *
    return nullptr;
 }
 
-auto find_symbolic(char *zone, char *name) -> struct unit_data *
+auto find_symbolic(char *zone, char *name) -> unit_data *
 {
    return find_symbolic_instance(find_file_index(zone, name));
 }
@@ -742,7 +742,7 @@ static void init_unit_vector()
 {
    unit_vector.size = 10;
 
-   CREATE(unit_vector.units, struct unit_data *, unit_vector.size);
+   CREATE(unit_vector.units, unit_data *, unit_vector.size);
 }
 
 /* If things get too cramped, double size of unit_vector */
@@ -750,17 +750,17 @@ static void double_unit_vector()
 {
    unit_vector.size *= 2;
 
-   RECREATE(unit_vector.units, struct unit_data *, unit_vector.size);
+   RECREATE(unit_vector.units, unit_data *, unit_vector.size);
 }
 
 /* Scan the chars surroundings and all transparent surroundings for all  */
 /* units of types which match 'flags' in the 'room' specified.           */
 /* Difference to scan4_unit is that a room is searched for contents,     */
 /* but not outside room.                                                 */
-void scan4_unit_room(struct unit_data *room, uint8_t type)
+void scan4_unit_room(unit_data *room, uint8_t type)
 {
-   struct unit_data *u;
-   struct unit_data *uu;
+   unit_data *u;
+   unit_data *uu;
 
    unit_vector.top = 0;
 
@@ -804,10 +804,10 @@ void scan4_unit_room(struct unit_data *room, uint8_t type)
 /* Scan the chars surroundings and all transparent surroundsings for all */
 /* units of types which match 'flags'. Updates the 'unit_vector' for     */
 /* use in local routines.                                                */
-void scan4_unit(struct unit_data *ch, uint8_t type)
+void scan4_unit(unit_data *ch, uint8_t type)
 {
-   struct unit_data *u;
-   struct unit_data *uu;
+   unit_data *u;
+   unit_data *uu;
 
    if(!UNIT_IN(ch))
    {
@@ -883,10 +883,10 @@ void scan4_unit(struct unit_data *ch, uint8_t type)
    }
 }
 
-static auto scan4_ref_room(struct unit_data *room, struct unit_data *fu) -> struct unit_data *
+static auto scan4_ref_room(unit_data *room, unit_data *fu) -> unit_data *
 {
-   struct unit_data *u;
-   struct unit_data *uu;
+   unit_data *u;
+   unit_data *uu;
 
    for(u = UNIT_CONTAINS(room); u != nullptr; u = u->next)
    {
@@ -917,10 +917,10 @@ static auto scan4_ref_room(struct unit_data *room, struct unit_data *fu) -> stru
 /* you know that *fu exists, then a much simpler test is possible using   */
 /* the 'same_surroundings()' function.                                     */
 /* No checks for invisibility and the like                                */
-auto scan4_ref(struct unit_data *ch, struct unit_data *fu) -> struct unit_data *
+auto scan4_ref(unit_data *ch, unit_data *fu) -> unit_data *
 {
-   struct unit_data *u;
-   struct unit_data *uu;
+   unit_data *u;
+   unit_data *uu;
 
    if(!UNIT_IN(ch))
    {
@@ -989,7 +989,7 @@ auto scan4_ref(struct unit_data *ch, struct unit_data *fu) -> struct unit_data *
 /* Return a random direction that 'unit' can go or -1 */
 /* Tests for death rooms and water                    */
 /* No longer tests for death rooms.                   */
-auto random_direction(struct unit_data *ch) -> int
+auto random_direction(unit_data *ch) -> int
 {
    int i;
    int dirs[6];

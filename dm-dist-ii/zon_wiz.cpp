@@ -46,13 +46,13 @@ auto ball(struct spec_arg *sarg) -> int
 {
 #define TOP_MAX 10
 
-   char             *arg = (char *)sarg->arg;
-   char              buf[128];
-   struct unit_data *u;
-   struct unit_data *top[TOP_MAX];
-   int               v1;
-   int               v2;
-   int               i;
+   char      *arg = (char *)sarg->arg;
+   char       buf[128];
+   unit_data *u;
+   unit_data *top[TOP_MAX];
+   int        v1;
+   int        v2;
+   int        i;
 
    if(sarg->cmd->no == CMD_USE)
    {

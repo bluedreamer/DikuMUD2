@@ -282,7 +282,7 @@ auto search_block_set(char *arg, const char **list, bool exact) -> int
    : (c) == AT_DIRDES ? "<direction> (enter description)"                                                                                  \
                       : "Not usable"
 
-void show_fields(struct unit_data *ch)
+void show_fields(unit_data *ch)
 {
    char  string[MAX_STRING_LENGTH];
    char *c;
@@ -300,7 +300,7 @@ void show_fields(struct unit_data *ch)
 #undef GET_FIELDT_UT
 #undef GET_FIELD_AT
 
-void show_structure(const char *structure[], struct unit_data *ch)
+void show_structure(const char *structure[], unit_data *ch)
 {
    char **c;
    char  *cc;
@@ -357,7 +357,7 @@ auto get_type(char *typdef, const char *structure[]) -> int
 }
 
 /* modification of anything in units */
-void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    char arg[MAX_STRING_LENGTH];
    char buf[MAX_STRING_LENGTH];
@@ -370,7 +370,7 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
 
    struct file_index_type    *untarg = nullptr;
    struct extra_descr_data   *ed;
-   struct unit_data          *unt;
+   unit_data                 *unt;
    struct unit_affected_type *aff;
 
    if(!CHAR_DESCRIPTOR(ch))
@@ -1288,14 +1288,14 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
 
 static const char *skill_field_names[] = {"skill", "spell", "weapon", nullptr};
 
-void do_setskill(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_setskill(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   int               type;
-   int               skillarg;
-   int               valarg = 0;
-   char              buf[MAX_STRING_LENGTH];
-   char              arg[MAX_STRING_LENGTH];
-   struct unit_data *unt;
+   int        type;
+   int        skillarg;
+   int        valarg = 0;
+   char       buf[MAX_STRING_LENGTH];
+   char       arg[MAX_STRING_LENGTH];
+   unit_data *unt;
 
    if(!CHAR_DESCRIPTOR(ch))
    {

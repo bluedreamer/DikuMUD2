@@ -1,4 +1,4 @@
 #pragma once
 
-extern struct unit_data *seq_room;
-extern struct unit_data *destroy_room;
+extern unit_data *seq_room;
+extern unit_data *destroy_room;

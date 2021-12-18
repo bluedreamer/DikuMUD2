@@ -46,7 +46,7 @@
 #include "utility.h"
 #include "utils.h"
 
-auto write_unit_string(uint8_t *b, struct unit_data *u) -> int;
+auto write_unit_string(uint8_t *b, unit_data *u) -> int;
 
 /* *************************************************************************
  * Routines for calculating rent                                           *
@@ -54,7 +54,7 @@ auto write_unit_string(uint8_t *b, struct unit_data *u) -> int;
 
 static int rent_info;
 
-static void show_items(struct unit_data *ch, struct unit_data *item, uint32_t price)
+static void show_items(unit_data *ch, unit_data *item, uint32_t price)
 {
    if(price > 0)
    {
@@ -67,7 +67,7 @@ static void show_items(struct unit_data *ch, struct unit_data *item, uint32_t pr
 
 /* ----------------------------------------------------------------- */
 
-static void subtract_rent(struct unit_data *ch, struct unit_data *item, uint32_t price)
+static void subtract_rent(unit_data *ch, unit_data *item, uint32_t price)
 {
    if(price > 0)
    {
@@ -85,8 +85,8 @@ static void subtract_rent(struct unit_data *ch, struct unit_data *item, uint32_t
 
 /* ----------------------------------------------------------------- */
 
-static auto subtract_recurse(struct unit_data *ch, struct unit_data *item, uint32_t seconds,
-                             void (*fptr)(struct unit_data *ch, struct unit_data *obj, uint32_t price)) -> uint32_t
+static auto subtract_recurse(unit_data *ch, unit_data *item, uint32_t seconds, void (*fptr)(unit_data *ch, unit_data *obj, uint32_t price))
+   -> uint32_t
 {
    uint32_t sum = 0;
 
@@ -131,7 +131,7 @@ static auto subtract_recurse(struct unit_data *ch, struct unit_data *item, uint3
 
 /* ----------------------------------------------------------------- */
 
-auto rent_calc(struct unit_data *ch, time_t savetime) -> uint32_t
+auto rent_calc(unit_data *ch, time_t savetime) -> uint32_t
 {
    uint32_t sum = 0;
 
@@ -160,7 +160,7 @@ auto rent_calc(struct unit_data *ch, time_t savetime) -> uint32_t
    return sum;
 }
 
-void do_rent(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_rent(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    uint32_t sum;
 
@@ -217,7 +217,7 @@ static int membuflen = 0, mempos;
 struct file_index_type *slime_fi = nullptr;
 
 /* save object */
-void enlist(CByteBuffer *pBuf, struct unit_data *unit, int level, int fast)
+void enlist(CByteBuffer *pBuf, unit_data *unit, int level, int fast)
 {
    int              len;
    int              diflen;
@@ -284,10 +284,10 @@ void enlist(CByteBuffer *pBuf, struct unit_data *unit, int level, int fast)
 /*    level  - 0 for contents only, 1 for contents & container   */
 /*    fast   - TRUE for compression, FALSE for no compression.   */
 
-void add_units(CByteBuffer *pBuf, struct unit_data *parent, struct unit_data *unit, int level, int fast)
+void add_units(CByteBuffer *pBuf, unit_data *parent, unit_data *unit, int level, int fast)
 {
-   int               tmp_i = 0;
-   struct unit_data *tmp_u;
+   int        tmp_i = 0;
+   unit_data *tmp_u;
 
    if(IS_ROOM(unit))
    {
@@ -327,9 +327,9 @@ void add_units(CByteBuffer *pBuf, struct unit_data *parent, struct unit_data *un
       }
 }
 
-void send_saves(struct unit_data *parent, struct unit_data *unit)
+void send_saves(unit_data *parent, unit_data *unit)
 {
-   struct unit_data *tmp_u;
+   unit_data *tmp_u;
 
    if(unit == nullptr)
    {
@@ -360,7 +360,7 @@ auto ContentsFileName(const char *pName) -> char *
 /* if fast == 1 or compressed if fast == 0. Only OBJ's and NPC's will */
 /* be saved!                                                          */
 /* Container = 1 if container should be saved also                    */
-void basic_save_contents(const char *pFileName, struct unit_data *unit, int fast, int bContainer)
+void basic_save_contents(const char *pFileName, unit_data *unit, int fast, int bContainer)
 {
    struct descriptor_data *tmp_descr = nullptr;
    FILE                   *pFile;
@@ -412,7 +412,7 @@ void basic_save_contents(const char *pFileName, struct unit_data *unit, int fast
 /* if fast == 1 or compressed if fast == 0. Only OBJ's and NPC's will */
 /* be saved!                                                          */
 /* Container = 1 if container should be saved also                    */
-auto save_contents(const char *pFileName, struct unit_data *unit, int fast, int bContainer) -> int
+auto save_contents(const char *pFileName, unit_data *unit, int fast, int bContainer) -> int
 {
    char name[MAX_INPUT_LENGTH + 1];
 
@@ -436,12 +436,12 @@ auto save_contents(const char *pFileName, struct unit_data *unit, int fast, int 
 /* and place them inside 'unit' by unit_to_unit and possibly equip */
 /* Return the top level unit loaded                                */
 
-auto base_load_contents(const char *pFileName, const struct unit_data *unit) -> struct unit_data *
+auto base_load_contents(const char *pFileName, const unit_data *unit) -> unit_data *
 {
    struct objheader        h;
    struct file_index_type *fi;
-   struct unit_data       *pnew;
-   struct unit_data       *pstack[25];
+   unit_data              *pnew;
+   unit_data              *pstack[25];
    int                     len;
    int                     init;
    int                     frame;
@@ -450,12 +450,12 @@ auto base_load_contents(const char *pFileName, const struct unit_data *unit) -> 
    struct descriptor_data *tmp_descr = nullptr;
    int                     equip_ok;
    FILE                   *pFile;
-   struct unit_data       *topu = nullptr;
+   unit_data              *topu = nullptr;
 
    CByteBuffer InvBuf;
    InvBuf.Clear();
 
-   extern struct unit_data *void_room;
+   extern unit_data *void_room;
 
    auto is_slimed(struct file_index_type * sp)->int;
    auto patch(char *ref, uint32_t reflen, char *dif, int diflen, char *res, int reslen, uint32_t crc)->int;
@@ -486,7 +486,7 @@ auto base_load_contents(const char *pFileName, const struct unit_data *unit) -> 
    }
 
    frame         = 0;
-   pstack[frame] = (struct unit_data *)unit;
+   pstack[frame] = (unit_data *)unit;
 
    if((unit != nullptr) && IS_CHAR(unit))
    {
@@ -625,7 +625,7 @@ auto base_load_contents(const char *pFileName, const struct unit_data *unit) -> 
 /* From the block_file 'bf' at index 'blk_idx' load the objects    */
 /* and place them inside 'unit' by unit_to_unit and possibly equip */
 /* Return the daily cost                                           */
-void load_contents(const char *pFileName, struct unit_data *unit)
+void load_contents(const char *pFileName, unit_data *unit)
 {
    base_load_contents(ContentsFileName(pFileName), unit);
 }
@@ -741,7 +741,7 @@ auto patch(char *ref, uint32_t reflen, char *dif, int diflen, char *res, int res
 
 /* ========================= DIL STORE / RESTORE ======================= */
 
-void store_unit(struct unit_data *u)
+void store_unit(unit_data *u)
 {
    if(!UNIT_FILE_INDEX(u))
    {
@@ -775,7 +775,7 @@ void store_unit(struct unit_data *u)
    fclose(f);
 }
 
-auto restore_unit(char *zonename, char *unitname) -> struct unit_data *
+auto restore_unit(char *zonename, char *unitname) -> unit_data *
 {
    struct file_index_type *fi   = find_file_index(zonename, unitname);
    CByteBuffer            *pBuf = &g_FileBuffer;
@@ -817,7 +817,7 @@ auto restore_unit(char *zonename, char *unitname) -> struct unit_data *
 
    char mbuf[MAX_INPUT_LENGTH];
    strcpy(mbuf, "RESTORE");
-   struct unit_data *u = read_unit_string(pBuf, nType, len - 1, TRUE, mbuf);
+   unit_data *u = read_unit_string(pBuf, nType, len - 1, TRUE, mbuf);
 
    if(u == nullptr)
    {

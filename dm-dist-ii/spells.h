@@ -27,20 +27,20 @@
 
 #include "spelldef.h"
 
-auto spell_perform(int spell_no, int spell_type, struct unit_data *caster, struct unit_data *medium, struct unit_data *target,
-                   char *argument, char *pEffect = NULL, int bonus = 0) -> int;
+auto spell_perform(int spell_no, int spell_type, unit_data *caster, unit_data *medium, unit_data *target, char *argument,
+                   char *pEffect = NULL, int bonus = 0) -> int;
 
 #include "dil.h"
 
 auto spell_legal_type(int spl, int type) -> bool;
-auto spell_legal_target(int spl, struct unit_data *c, struct unit_data *t) -> bool;
+auto spell_legal_target(int spl, unit_data *c, unit_data *t) -> bool;
 
 struct spell_args
 {
-   class unit_data *caster, *medium, *target;
-   const char      *arg;
-   int              hm;
-   const char      *pEffect;
+   unit_data  *caster, *medium, *target;
+   const char *arg;
+   int         hm;
+   const char *pEffect;
 };
 
 struct spell_info_type
@@ -77,7 +77,6 @@ extern struct requirement_type spl_requirement[];
 
 #define SPL_POW_REQ(spell) MIN(SPL_MAG_REQ(spell), SPL_DIV_REQ(spell))
 
-void set_spellargs(struct spell_args *sa, struct unit_data *caster, struct unit_data *medium, struct unit_data *target, const char *arg,
-                   int hm);
+void set_spellargs(struct spell_args *sa, unit_data *caster, unit_data *medium, unit_data *target, const char *arg, int hm);
 
 #endif /* _MUD_SPELLS_H */

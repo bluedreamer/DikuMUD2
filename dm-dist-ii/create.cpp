@@ -40,16 +40,16 @@
 
 extern struct file_index_type *corpse_fi;
 
-auto make_corpse(struct unit_data *ch) -> struct unit_data *
+auto make_corpse(unit_data *ch) -> unit_data *
 {
    char                       buf[MAX_INPUT_LENGTH];
-   struct unit_data          *corpse;
-   struct unit_data          *u;
-   struct unit_data          *next_dude;
+   unit_data                 *corpse;
+   unit_data                 *u;
+   unit_data                 *next_dude;
    struct unit_affected_type  af;
    struct unit_affected_type *taf1;
 
-   void persist_create(struct unit_data * u);
+   void persist_create(unit_data * u);
 
    corpse = read_unit(corpse_fi);
 

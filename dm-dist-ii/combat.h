@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : combat.h                                  Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -22,10 +23,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_COMBAT_H
-#define _MUD_COMBAT_H
-
-#ifdef __cplusplus
+#include "unit_data.h"
 
 class cCombatList
 {
@@ -35,7 +33,7 @@ public:
    void PerformViolence();
    void add(class cCombat *pc);
    void sub(class cCombat *pc);
-   void status(const struct unit_data *ch) const;
+   void status(const unit_data *ch) const;
 
 private:
    void Sort();
@@ -51,45 +49,41 @@ class cCombat
    friend class cCombatList;
 
 public:
-   cCombat(struct unit_data *owner, int bMelee = FALSE);
+   cCombat(unit_data *owner, int bMelee = FALSE);
    ~cCombat();
 
-   auto Opponent(int i = 0) -> struct unit_data *;
-   auto FindOpponent(struct unit_data *tmp) -> struct unit_data *;
+   auto Opponent(int i = 0) -> unit_data *;
+   auto FindOpponent(unit_data *tmp) -> unit_data *;
 
-   inline auto Owner() -> struct unit_data * { return pOwner; }
-   inline auto Melee() -> struct unit_data * { return pMelee; }
-   inline auto When() -> int const { return nWhen; }
-   inline auto NoOpponents() -> int const { return nNoOpponents; }
+   inline auto Owner() -> unit_data * { return pOwner; }
+   inline auto Melee() -> unit_data * { return pMelee; }
+   inline auto When() const -> int { return nWhen; }
+   inline auto NoOpponents() const -> int { return nNoOpponents; }
 
    void changeSpeed(int delta);
-   void setMelee(struct unit_data *victim);
+   void setMelee(unit_data *victim);
    void setCommand(char *arg);
 
-   void addOpponent(struct unit_data *victim, int bMelee);
-   void subOpponent(struct unit_data *victim);
-   void status(const struct unit_data *ch);
+   void addOpponent(unit_data *victim, int bMelee);
+   void subOpponent(unit_data *victim);
+   void status(const unit_data *ch);
 
 private:
-   void add(struct unit_data *victim);
+   void add(unit_data *victim);
    void sub(int idx);
-   auto findOpponentIdx(struct unit_data *tmp) -> int;
+   auto findOpponentIdx(unit_data *tmp) -> int;
 
-   int                nWhen;                     // What tick to attack / command at
-   struct unit_data  *pOwner;                    // The owning unit
-   struct unit_data  *pMelee;                    // The melee or kill pointer
-   struct unit_data **pOpponents;                // Array of opponents (given damage)
-   int                nNoOpponents;              // Number of opponents
-   char               cmd[MAX_INPUT_LENGTH + 1]; // A combat command
+   int         nWhen;                     // What tick to attack / command at
+   unit_data  *pOwner;                    // The owning unit
+   unit_data  *pMelee;                    // The melee or kill pointer
+   unit_data **pOpponents;                // Array of opponents (given damage)
+   int         nNoOpponents;              // Number of opponents
+   char        cmd[MAX_INPUT_LENGTH + 1]; // A combat command
 };
 
 extern class cCombatList CombatList;
 
-void set_fighting(struct unit_data *ch, struct unit_data *vict, int bMelee = FALSE);
-void stop_fighting(struct unit_data *ch, struct unit_data *victim = NULL);
+void set_fighting(unit_data *ch, unit_data *vict, int bMelee = FALSE);
+void stop_fighting(unit_data *ch, unit_data *victim = NULL);
 
-void stat_combat(const struct unit_data *ch, struct unit_data *u);
-
-#endif
-
-#endif
+void stat_combat(const unit_data *ch, unit_data *u);

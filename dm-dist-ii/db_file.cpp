@@ -103,7 +103,7 @@ auto bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra) -> int
    return 0;
 }
 
-auto bread_swap(CByteBuffer *pBuf, struct unit_data *u) -> int
+auto bread_swap(CByteBuffer *pBuf, unit_data *u) -> int
 {
    char *c;
 
@@ -409,7 +409,7 @@ void bwrite_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
  *   lookup and typecheck of loaded template.
  *
  */
-auto bread_dil(CByteBuffer *pBuf, struct unit_data *owner, uint8_t version, struct unit_fptr *fptr) -> void *
+auto bread_dil(CByteBuffer *pBuf, unit_data *owner, uint8_t version, struct unit_fptr *fptr) -> void *
 {
    struct dilprg      *prg;
    struct diltemplate *tmpl     = nullptr;
@@ -645,7 +645,7 @@ auto bread_dil(CByteBuffer *pBuf, struct unit_data *owner, uint8_t version, stru
    return prg;
 }
 
-auto bread_func(CByteBuffer *pBuf, uint8_t version, struct unit_data *owner) -> struct unit_fptr *
+auto bread_func(CByteBuffer *pBuf, uint8_t version, unit_data *owner) -> struct unit_fptr *
 {
    struct unit_fptr *fptr;
    struct unit_fptr *head;
@@ -770,7 +770,7 @@ void bread_block(FILE *datafile, long file_pos, int length, void *buffer)
    }
 }
 
-void bwrite_swap(CByteBuffer *pBuf, struct unit_data *u)
+void bwrite_swap(CByteBuffer *pBuf, unit_data *u)
 {
    pBuf->AppendString(UNIT_TITLE_STRING(u));
    pBuf->AppendString(UNIT_OUT_DESCR_STRING(u));
@@ -1085,7 +1085,7 @@ void bwrite_block(FILE *datafile, int length, void *buffer)
 }
 
 /* Write unit to string. */
-auto write_unit_string(CByteBuffer *pBuf, struct unit_data *u) -> int
+auto write_unit_string(CByteBuffer *pBuf, unit_data *u) -> int
 {
    int     i;
    uint8_t nVersion;
@@ -1129,7 +1129,7 @@ auto write_unit_string(CByteBuffer *pBuf, struct unit_data *u) -> int
    }
    else
    {
-      struct unit_data *inu = nullptr;
+      unit_data *inu = nullptr;
 
       if(IS_PC(u))
       {
@@ -1354,14 +1354,14 @@ auto write_unit_string(CByteBuffer *pBuf, struct unit_data *u) -> int
 
 #ifndef DMSERVER
 // TODO Find out why there is this stub version
-// void swap_in(struct unit_data *u)
+// void swap_in(unit_data *u)
 //{
 //}
 #endif
 
 /* Appends unit 'u' to file 'f'. Name is the unique name */
 /* Used only by dmc.                                     */
-void write_unit(FILE *f, struct unit_data *u, char *fname)
+void write_unit(FILE *f, unit_data *u, char *fname)
 {
    CByteBuffer *pBuf;
    uint32_t     nSizeStart;

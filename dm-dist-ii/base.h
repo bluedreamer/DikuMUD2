@@ -25,8 +25,6 @@
  * written consent of Valhalla.                                            *
  * *********************************************************************** */
 
-
-
 #define BASE_GOLEM(MLVL, GENDER)                                                                                                           \
    race RACE_GOLEM sex GENDER level MLVL height 250 weight 700 alignment 0 NATURAL_DEF(WPN_FIST, ARM_PLATE)                                \
       MSET_ABILITY(30, 20, 20, 30, 0, 0, 0, 0) MSET_WEAPON(10, 30, 10, 10, 10, 10) MSET_SPELL(0, 0, 5, 5, 5, 5, 0, 0, 0, 0, 0)

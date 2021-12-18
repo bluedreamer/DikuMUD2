@@ -119,7 +119,7 @@ auto mud_time_passed(time_t t2, time_t t1) -> struct time_info_data
    return now;
 }
 
-auto age(struct unit_data *ch) -> struct time_info_data
+auto age(unit_data *ch) -> struct time_info_data
 {
    static struct time_info_data player_age;
 

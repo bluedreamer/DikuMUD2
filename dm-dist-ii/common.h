@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : common.h                                  Part of Valhalla MUD *
  * Version: 0.00                                                           *
@@ -22,9 +23,8 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_COMMON_H
-#define _MUD_COMMON_H
 #include "essential.h"
+#include "unit_data.h"
 
 extern const char *fillwords[];
 
@@ -39,7 +39,7 @@ auto required_xp(int level) -> int;
 auto level_xp(int level) -> int;
 
 auto is_in(int a, int from, int to) -> int;
-void set_hits(struct unit_data *obj, int craftsmanship);
+void set_hits(unit_data *obj, int craftsmanship);
 
 auto skill_point_gain() -> int;
 auto ability_point_gain() -> int;
@@ -54,9 +54,9 @@ auto apply_quality(int num, int quality) -> int;
 
 auto hitpoint_total(int hpp) -> int;
 
-void set_weapon(struct unit_data *);
-void set_shield(struct unit_data *);
-void set_armour(struct unit_data *);
+void set_weapon(unit_data *);
+void set_shield(unit_data *);
+void set_armour(unit_data *);
 
 /* ..................................................................... */
 /*                           A B I L I T I E S                           */
@@ -83,5 +83,3 @@ struct arm_info_type
    int bludgeon;
    int pierce;
 };
-
-#endif /* _MUD_COMMON_H */

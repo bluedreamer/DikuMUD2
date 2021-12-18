@@ -49,10 +49,10 @@
 /*        1 = One hand used                      */
 /*        2 = Two hands used                     */
 /*        2+ = Uhm???                            */
-auto hands_used(struct unit_data *ch) -> int
+auto hands_used(unit_data *ch) -> int
 {
-   struct unit_data *i;
-   int               hands = 0;
+   unit_data *i;
+   int        hands = 0;
 
    /* This is faster than calling the equipment() function */
    for(i = UNIT_CONTAINS(ch); i != nullptr; i = i->next)
@@ -78,7 +78,7 @@ auto hands_used(struct unit_data *ch) -> int
 }
 
 #ifdef SUSPEKT
-static char *wear_weight(struct unit_data *ch, struct unit_data *obj)
+static char *wear_weight(unit_data *ch, unit_data *obj)
 {
    int str_diff;
 
@@ -122,7 +122,7 @@ static char *wear_weight(struct unit_data *ch, struct unit_data *obj)
 /* MS: I allowed the wear command to be used with weapons to make it
    easier for new players to learn all the different commands. */
 
-static auto getkeyword(struct unit_data *obj) -> int
+static auto getkeyword(unit_data *obj) -> int
 {
    int keyword = -2;
 
@@ -199,7 +199,7 @@ static auto getkeyword(struct unit_data *obj) -> int
 }
 
 /* Return NULL if unit fits, pointer to string otherwise */
-static auto wear_size(struct unit_data *ch, struct unit_data *obj, int var) -> const char *
+static auto wear_size(unit_data *ch, unit_data *obj, int var) -> const char *
 {
    if(UNIT_SIZE(ch) == 0)
    {
@@ -231,7 +231,7 @@ static auto wear_size(struct unit_data *ch, struct unit_data *obj, int var) -> c
    return nullptr;
 }
 
-auto obj_wear_size(struct unit_data *ch, struct unit_data *obj, int keyword) -> const char *
+auto obj_wear_size(unit_data *ch, unit_data *obj, int keyword) -> const char *
 {
    if(keyword == -1)
    {
@@ -310,7 +310,7 @@ auto obj_wear_size(struct unit_data *ch, struct unit_data *obj, int keyword) -> 
    return nullptr;
 }
 
-auto wear(struct unit_data *ch, struct unit_data *obj, int keyword, bool err, const struct command_info *cmd, char *arg) -> bool
+auto wear(unit_data *ch, unit_data *obj, int keyword, bool err, const struct command_info *cmd, char *arg) -> bool
 {
    const char *errstr = nullptr;
    const char *c;
@@ -845,7 +845,7 @@ auto wear(struct unit_data *ch, struct unit_data *obj, int keyword, bool err, co
    return FALSE;
 }
 
-void do_wear(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wear(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    static const char *keywords[] = {"finger", "neck",  "body",   "head",  "legs", "feet", "hands", "arms", "about",
                                     "waist",  "wrist", "shield", "chest", "back", "ear",  "ankle", nullptr};
@@ -853,8 +853,8 @@ void do_wear(struct unit_data *ch, char *arg, const struct command_info *cmd)
    static int keytrans[] = {WEAR_FINGER_L, WEAR_NECK_1, WEAR_BODY,    WEAR_HEAD,   WEAR_LEGS,  WEAR_FEET, WEAR_HANDS, WEAR_ARMS,
                             WEAR_ABOUT,    WEAR_WAIST,  WEAR_WRIST_L, WEAR_SHIELD, WEAR_CHEST, WEAR_BACK, WEAR_EAR_L, WEAR_ANKLE_L};
 
-   struct unit_data *obj;
-   char             *oarg = arg;
+   unit_data *obj;
+   char      *oarg = arg;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -868,8 +868,8 @@ void do_wear(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
       if(strcmp(buf, "all") == 0)
       {
-         struct unit_data *next;
-         bool              worn = FALSE;
+         unit_data *next;
+         bool       worn = FALSE;
 
          for(obj = UNIT_CONTAINS(ch); obj != nullptr; obj = next)
          {
@@ -924,10 +924,10 @@ void do_wear(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_wield(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wield(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *obj;
-   char             *oarg = arg;
+   unit_data *obj;
+   char      *oarg = arg;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -966,10 +966,10 @@ void do_wield(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_grab(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_grab(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *obj;
-   char             *oarg = arg;
+   unit_data *obj;
+   char      *oarg = arg;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -989,7 +989,7 @@ void do_grab(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-auto remove_equip(struct unit_data *ch, struct unit_data *obj, const struct command_info *cmd, char *arg) -> bool
+auto remove_equip(unit_data *ch, unit_data *obj, const struct command_info *cmd, char *arg) -> bool
 {
    if(IS_SET(OBJ_FLAGS(obj), OBJ_NO_UNEQUIP))
    {
@@ -1007,10 +1007,10 @@ auto remove_equip(struct unit_data *ch, struct unit_data *obj, const struct comm
    return TRUE;
 }
 
-void do_remove(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_remove(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *obj;
-   char             *oarg = arg;
+   unit_data *obj;
+   char      *oarg = arg;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -1024,8 +1024,8 @@ void do_remove(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
       if(strcmp(buf, "all") == 0)
       {
-         struct unit_data *next;
-         bool              removed = FALSE;
+         unit_data *next;
+         bool       removed = FALSE;
 
          for(obj = UNIT_CONTAINS(ch); obj != nullptr; obj = next)
          {

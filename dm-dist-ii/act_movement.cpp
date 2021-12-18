@@ -65,11 +65,11 @@ extern struct command_info cmd_info[];
 
 /* external functs */
 
-auto get_obj_in_list_vis(struct unit_data *ch, char *name, struct unit_data *list) -> struct unit_data *;
+auto get_obj_in_list_vis(unit_data *ch, char *name, unit_data *list) -> unit_data *;
 
 /* Has 'pc' found the door at 'dir'? If direction exits and it is closed  */
 /* and hidden then the door is found if it has been searched for.         */
-auto has_found_door(struct unit_data *pc, int dir) -> int
+auto has_found_door(unit_data *pc, int dir) -> int
 {
    struct unit_affected_type *af;
 
@@ -107,7 +107,7 @@ auto has_found_door(struct unit_data *pc, int dir) -> int
    return TRUE;
 }
 
-auto pay_point_charlie(struct unit_data *ch, struct unit_data *to) -> int
+auto pay_point_charlie(unit_data *ch, unit_data *to) -> int
 {
    if(IS_PC(ch) && (g_cServerConfig.m_bAccounting != 0) && IS_MORTAL(ch))
    {
@@ -143,7 +143,7 @@ auto pay_point_charlie(struct unit_data *ch, struct unit_data *to) -> int
 }
 
 /* For sailing in boats! */
-auto do_simple_sail(struct unit_data *boat, struct unit_data *captain, int direction) -> int
+auto do_simple_sail(unit_data *boat, unit_data *captain, int direction) -> int
 
 /* Asserts:
 
@@ -157,10 +157,10 @@ auto do_simple_sail(struct unit_data *boat, struct unit_data *captain, int direc
        -1 : If destroyed!
        */
 {
-   int               res;
-   struct unit_data *u;
-   struct unit_data *was_in;
-   struct unit_data *to;
+   int        res;
+   unit_data *u;
+   unit_data *was_in;
+   unit_data *to;
 
    assert(UNIT_IN(boat) && IS_OBJ(boat));
    assert(IS_ROOM(UNIT_IN(boat)));
@@ -224,7 +224,7 @@ auto do_simple_sail(struct unit_data *boat, struct unit_data *captain, int direc
 }
 
 /* For riding mounts! */
-auto do_simple_ride(struct unit_data *beast, struct unit_data *master, int direction) -> int
+auto do_simple_ride(unit_data *beast, unit_data *master, int direction) -> int
 
 /* Asserts:
 
@@ -238,11 +238,11 @@ auto do_simple_ride(struct unit_data *beast, struct unit_data *master, int direc
        -1 : If destroyed!
        */
 {
-   int               res;
-   int               need_movement;
-   struct unit_data *u;
-   struct unit_data *was_in;
-   struct unit_data *to;
+   int        res;
+   int        need_movement;
+   unit_data *u;
+   unit_data *was_in;
+   unit_data *to;
 
    assert(UNIT_IN(beast) && IS_NPC(beast));
    assert(IS_ROOM(UNIT_IN(beast)));
@@ -320,7 +320,7 @@ auto do_simple_ride(struct unit_data *beast, struct unit_data *master, int direc
 
 #define ALAS_NOWAY "Alas, you cannot go that way...\n\r"
 
-auto do_simple_move(struct unit_data *ch, int direction, int following) -> int
+auto do_simple_move(unit_data *ch, int direction, int following) -> int
 /* Asserts:
    0. ch is in a room, going in a direction n,e,s,w,u or d
    1. Does not assert anything about position.
@@ -336,13 +336,13 @@ auto do_simple_move(struct unit_data *ch, int direction, int following) -> int
    -1 : If dead.
    */
 {
-   int               need_movement;
-   int               res;
-   struct unit_data *was_in;
-   struct unit_data *to;
-   struct unit_data *u;
-   const char       *c;
-   char              dirbuf[2] = "c";
+   int         need_movement;
+   int         res;
+   unit_data  *was_in;
+   unit_data  *to;
+   unit_data  *u;
+   const char *c;
+   char        dirbuf[2] = "c";
 
    assert(UNIT_IN(ch));
    assert(IS_ROOM(UNIT_IN(ch)));
@@ -477,7 +477,7 @@ auto do_simple_move(struct unit_data *ch, int direction, int following) -> int
 
 /* Following defaults to false. If it is set to TRUE, then it will generate
    the special to check if the move is allowed. */
-auto do_advanced_move(struct unit_data *ch, int direction, int following) -> int
+auto do_advanced_move(unit_data *ch, int direction, int following) -> int
 /*
   Returns :
   1 : If succes.
@@ -485,7 +485,7 @@ auto do_advanced_move(struct unit_data *ch, int direction, int following) -> int
   -1 : If dead.
   */
 {
-   struct unit_data        *was_in;
+   unit_data               *was_in;
    struct char_follow_type *k;
 
    if(!IS_ROOM(UNIT_IN(ch)) || !ROOM_EXIT(UNIT_IN(ch), direction))
@@ -541,12 +541,12 @@ auto do_advanced_move(struct unit_data *ch, int direction, int following) -> int
    return res;
 }
 
-void do_drag(struct unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_drag(unit_data *ch, char *aaa, const struct command_info *cmd)
 {
-   char             *argument = (char *)aaa;
-   struct unit_data *thing;
-   char              arg[255];
-   int               direction;
+   char      *argument = (char *)aaa;
+   unit_data *thing;
+   char       arg[255];
+   int        direction;
 
    /* find unit to drag */
    if(str_is_empty(argument) != 0u)
@@ -612,7 +612,7 @@ void do_drag(struct unit_data *ch, char *aaa, const struct command_info *cmd)
    }
 }
 
-void do_ride(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_ride(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    /*
      To be expanded:
@@ -620,11 +620,11 @@ void do_ride(struct unit_data *ch, char *arg, const struct command_info *cmd)
      Endurance of mount
    */
 
-   int               direction;
-   struct unit_data *beast;
-   struct unit_data *room;
-   struct unit_data *to_room;
-   char              buf[MAX_INPUT_LENGTH];
+   int        direction;
+   unit_data *beast;
+   unit_data *room;
+   unit_data *to_room;
+   char       buf[MAX_INPUT_LENGTH];
 
    beast = UNIT_IN(ch);
 
@@ -640,7 +640,7 @@ void do_ride(struct unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   for(struct unit_data *u = UNIT_CONTAINS(UNIT_IN(ch)); u != nullptr; u = u->next)
+   for(unit_data *u = UNIT_CONTAINS(UNIT_IN(ch)); u != nullptr; u = u->next)
    {
       if(IS_CHAR(u) && CHAR_FIGHTING(u))
       {
@@ -697,14 +697,14 @@ void do_ride(struct unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* Expects 'north'..'down' as argument */
-void do_sail(struct unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_sail(unit_data *ch, char *aaa, const struct command_info *cmd)
 {
-   char             *arg = (char *)aaa;
-   int               direction;
-   char              buf[MAX_INPUT_LENGTH];
-   struct unit_data *boat;
-   struct unit_data *room;
-   struct unit_data *u;
+   char      *arg = (char *)aaa;
+   int        direction;
+   char       buf[MAX_INPUT_LENGTH];
+   unit_data *boat;
+   unit_data *room;
+   unit_data *u;
 
    one_argument(arg, buf);
 
@@ -772,7 +772,7 @@ void do_sail(struct unit_data *ch, char *aaa, const struct command_info *cmd)
    do_simple_sail(boat, ch, direction);
 }
 
-void do_move(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_move(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    /* NOTICE! It uses cmd->no for efficiency, thus cmd->no MUST */
    /* be one of CMD_NORTH..CMD_DOWN which again MUST BE 0..5    */
@@ -814,7 +814,7 @@ void do_move(struct unit_data *ch, char *argument, const struct command_info *cm
 /*               hidden doors will be considered.                    */
 /* err_msg:      if TRUE, error messages will be shown.              */
 
-auto low_find_door(struct unit_data *ch, char *doorstr, int err_msg, int check_hidden) -> int
+auto low_find_door(unit_data *ch, char *doorstr, int err_msg, int check_hidden) -> int
 {
    char  buf[256];
    char  dir[256];
@@ -897,11 +897,11 @@ auto low_find_door(struct unit_data *ch, char *doorstr, int err_msg, int check_h
    return -1;
 }
 
-auto locate_lock(struct unit_data *ch, char *arg) -> struct door_data *
+auto locate_lock(unit_data *ch, char *arg) -> struct door_data *
 {
-   struct unit_data       *thing;
-   struct unit_data       *other_room;
-   struct unit_data       *back = NULL;
+   unit_data              *thing;
+   unit_data              *other_room;
+   unit_data              *back = NULL;
    static struct door_data a_door;
    int                     door;
 
@@ -909,7 +909,7 @@ auto locate_lock(struct unit_data *ch, char *arg) -> struct door_data *
    /* Check if person is inside something he is trying to open */
    if(IS_SET(UNIT_OPEN_FLAGS(UNIT_IN(ch)), EX_INSIDE_OPEN) && UNIT_NAMES(UNIT_IN(ch)).IsName(arg))
    {
-      struct unit_data *u = UNIT_IN(ch);
+      unit_data *u = UNIT_IN(ch);
 
       while(u && u != thing)
          u = UNIT_IN(u);
@@ -934,7 +934,7 @@ auto locate_lock(struct unit_data *ch, char *arg) -> struct door_data *
 
    if((thing = find_unit(ch, &arg, nullptr, FIND_UNIT_HERE)) != nullptr)
    {
-      struct unit_data *u = UNIT_IN(ch);
+      unit_data *u = UNIT_IN(ch);
 
       a_door.thing     = thing;
       a_door.room      = nullptr;
@@ -992,7 +992,7 @@ auto locate_lock(struct unit_data *ch, char *arg) -> struct door_data *
    return nullptr;
 }
 
-void do_knock(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_knock(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    struct door_data *a_door;
 
@@ -1051,7 +1051,7 @@ void do_knock(struct unit_data *ch, char *argument, const struct command_info *c
    }
 }
 
-void do_open(struct unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_open(unit_data *ch, char *aaa, const struct command_info *cmd)
 {
    char             *argument = (char *)aaa;
    struct door_data *a_door;
@@ -1122,7 +1122,7 @@ void do_open(struct unit_data *ch, char *aaa, const struct command_info *cmd)
    }
 }
 
-void do_close(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_close(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    struct door_data *a_door;
 
@@ -1188,9 +1188,9 @@ void do_close(struct unit_data *ch, char *argument, const struct command_info *c
    }
 }
 
-auto has_key(struct unit_data *ch, struct file_index_type *key) -> int
+auto has_key(unit_data *ch, struct file_index_type *key) -> int
 {
-   struct unit_data *o;
+   unit_data *o;
 
    /* Check all equipment and inventory */
    for(o = UNIT_CONTAINS(ch); o != nullptr; o = o->next)
@@ -1204,7 +1204,7 @@ auto has_key(struct unit_data *ch, struct file_index_type *key) -> int
    return FALSE;
 }
 
-void do_lock(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_lock(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    struct door_data *a_door;
 
@@ -1284,7 +1284,7 @@ void do_lock(struct unit_data *ch, char *argument, const struct command_info *cm
    }
 }
 
-void do_unlock(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_unlock(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    struct door_data *a_door;
 
@@ -1364,11 +1364,11 @@ void do_unlock(struct unit_data *ch, char *argument, const struct command_info *
    }
 }
 
-void do_enter(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_enter(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   int               door;
-   struct unit_data *thing;
-   char             *oarg = arg;
+   int        door;
+   unit_data *thing;
+   char      *oarg = arg;
 
    const char *mnt_ent = (cmd->no == CMD_MOUNT ? "mount" : "enter");
 
@@ -1468,11 +1468,11 @@ void do_enter(struct unit_data *ch, char *arg, const struct command_info *cmd)
    /* Otherwise low_find_door has sent an error message to character */
 }
 
-void do_exit(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_exit(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *to_unit;
-   struct unit_data *from_unit;
-   char             *oarg = arg;
+   unit_data *to_unit;
+   unit_data *from_unit;
+   char      *oarg = arg;
 
    /* Is it meaningfull to exit */
    if(!UNIT_IN(ch))
@@ -1585,7 +1585,7 @@ void do_exit(struct unit_data *ch, char *arg, const struct command_info *cmd)
    send_done(ch, nullptr, from_unit, 0, cmd, oarg);
 }
 
-void do_leave(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_leave(unit_data *ch, char *arg, const struct command_info *cmd)
 {
 #ifdef SUSPEKT
 
@@ -1609,7 +1609,7 @@ void do_leave(struct unit_data *ch, char *arg, const struct command_info *cmd)
 #endif
 }
 
-void do_stand(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_stand(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    /* not on a 'horse' type char */
    if(IS_CHAR(UNIT_IN(ch)))
@@ -1646,7 +1646,7 @@ void do_stand(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_sit(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_sit(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    switch(CHAR_POS(ch))
    {
@@ -1677,7 +1677,7 @@ void do_sit(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_rest(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_rest(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    switch(CHAR_POS(ch))
    {
@@ -1708,7 +1708,7 @@ void do_rest(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_sleep(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_sleep(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    switch(CHAR_POS(ch))
    {
@@ -1733,9 +1733,9 @@ void do_sleep(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_wake(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wake(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *tmp_char;
+   unit_data *tmp_char;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -1792,12 +1792,12 @@ void do_wake(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_follow(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_follow(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *leader = nullptr;
+   unit_data *leader = nullptr;
 
-   void stop_follower(struct unit_data * ch);
-   void add_follower(struct unit_data * ch, struct unit_data * leader);
+   void stop_follower(unit_data * ch);
+   void add_follower(unit_data * ch, unit_data * leader);
 
    if((str_is_empty(arg) != 0u) || ((leader = find_unit(ch, &arg, nullptr, FIND_UNIT_SURRO)) == ch))
    {

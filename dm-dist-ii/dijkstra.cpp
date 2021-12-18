@@ -66,8 +66,8 @@ struct dir_array
 
 struct izone_type
 {
-   struct unit_data *room;
-   uint8_t           dir;
+   unit_data *room;
+   uint8_t    dir;
 };
 
 struct izone_type **iz = nullptr; /* Global for ease of use :)
@@ -77,7 +77,7 @@ static struct dir_array d_array[MAX_EXITS];
 
 struct graph_vertice
 {
-   struct unit_data     *room;      /* Pointer to direction/edge info */
+   unit_data            *room;      /* Pointer to direction/edge info */
    struct graph_vertice *parent;    /* Path info for shortest path    */
    int32_t               dist;      /* Current Distance found         */
    uint8_t               direction; /* Path direction found           */
@@ -262,7 +262,7 @@ static auto flag_weight(int flags) -> int
    return weight;
 }
 
-void add_exit(struct graph *g, struct graph_vertice *v, struct unit_data *to, int *idx, int dir, int weight)
+void add_exit(struct graph *g, struct graph_vertice *v, unit_data *to, int *idx, int dir, int weight)
 {
    int j;
 
@@ -292,11 +292,11 @@ void add_exit(struct graph *g, struct graph_vertice *v, struct unit_data *to, in
 
 static void outedges(struct graph *g, struct graph_vertice *v)
 {
-   struct unit_data *u;
-   int               i;
-   int               idx;
-   int               weight;
-   int               flags;
+   unit_data *u;
+   int        i;
+   int        idx;
+   int        weight;
+   int        flags;
 
    idx = 0;
 
@@ -462,7 +462,7 @@ auto create_graph(struct zone_type *zone) -> uint8_t **
    return spi;
 }
 
-void stat_dijkstraa(struct unit_data *ch, struct zone_type *z)
+void stat_dijkstraa(unit_data *ch, struct zone_type *z)
 {
    int               i;
    int               j;
@@ -594,7 +594,7 @@ void create_dijkstra()
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* Primitive move generator, returns direction */
-auto move_to(const struct unit_data *from, const struct unit_data *to) -> int
+auto move_to(const unit_data *from, const unit_data *to) -> int
 {
    int i;
    int j;
@@ -630,7 +630,7 @@ auto move_to(const struct unit_data *from, const struct unit_data *to) -> int
 }
 
 /* This function is used with 'npc_move'  */
-auto npc_stand(const struct unit_data *npc) -> int
+auto npc_stand(const unit_data *npc) -> int
 {
    if((CHAR_POS(npc) < POSITION_SLEEPING) || (CHAR_POS(npc) == POSITION_FIGHTING))
    {
@@ -639,18 +639,18 @@ auto npc_stand(const struct unit_data *npc) -> int
    if(CHAR_POS(npc) == POSITION_SLEEPING)
    {
       char mbuf[MAX_INPUT_LENGTH] = {0};
-      do_wake((struct unit_data *)npc, mbuf, &cmd_auto_unknown);
+      do_wake((unit_data *)npc, mbuf, &cmd_auto_unknown);
       return MOVE_BUSY; /* Still busy, NPC is now sitting */
    }
    else
    {
       char mbuf[MAX_INPUT_LENGTH] = {0};
-      do_stand((struct unit_data *)npc, mbuf, &cmd_auto_unknown);
+      do_stand((unit_data *)npc, mbuf, &cmd_auto_unknown);
       return MOVE_BUSY;
    }
 }
 
-auto open_door(const struct unit_data *npc, int dir) -> int
+auto open_door(const unit_data *npc, int dir) -> int
 {
    char buf[80];
 
@@ -664,7 +664,7 @@ auto open_door(const struct unit_data *npc, int dir) -> int
       /* The door is closed and can be opened */
       if(IS_SET(ROOM_EXIT(UNIT_IN(npc), dir)->exit_info, EX_LOCKED))
       {
-         do_unlock((struct unit_data *)npc, buf, &cmd_auto_unknown);
+         do_unlock((unit_data *)npc, buf, &cmd_auto_unknown);
          if(IS_SET(ROOM_EXIT(UNIT_IN(npc), dir)->exit_info, EX_LOCKED))
          {
             return MOVE_FAILED;
@@ -673,7 +673,7 @@ auto open_door(const struct unit_data *npc, int dir) -> int
       }
       else
       {
-         do_open((struct unit_data *)npc, buf, &cmd_auto_unknown);
+         do_open((unit_data *)npc, buf, &cmd_auto_unknown);
          if(IS_SET(ROOM_EXIT(UNIT_IN(npc), dir)->exit_info, EX_CLOSED))
          {
             return MOVE_FAILED;
@@ -685,7 +685,7 @@ auto open_door(const struct unit_data *npc, int dir) -> int
    return MOVE_FAILED;
 }
 
-auto enter_open(const struct unit_data *npc, const struct unit_data *enter) -> int
+auto enter_open(const unit_data *npc, const unit_data *enter) -> int
 {
    char buf[80];
 
@@ -693,12 +693,12 @@ auto enter_open(const struct unit_data *npc, const struct unit_data *enter) -> i
 
    if(IS_SET(UNIT_OPEN_FLAGS(enter), EX_OPEN_CLOSE) && IS_SET(UNIT_OPEN_FLAGS(enter), EX_CLOSED))
    {
-      sprintf(buf, "%s", UNIT_NAME((struct unit_data *)enter));
+      sprintf(buf, "%s", UNIT_NAME((unit_data *)enter));
 
       /* The door is closed and can be opened */
       if(IS_SET(UNIT_OPEN_FLAGS(enter), EX_LOCKED))
       {
-         do_unlock((struct unit_data *)npc, buf, &cmd_auto_unknown);
+         do_unlock((unit_data *)npc, buf, &cmd_auto_unknown);
          if(IS_SET(UNIT_OPEN_FLAGS(enter), EX_LOCKED))
          {
             return MOVE_FAILED;
@@ -707,7 +707,7 @@ auto enter_open(const struct unit_data *npc, const struct unit_data *enter) -> i
       }
       else
       {
-         do_open((struct unit_data *)npc, buf, &cmd_auto_unknown);
+         do_open((unit_data *)npc, buf, &cmd_auto_unknown);
          if(IS_SET(UNIT_OPEN_FLAGS(enter), EX_CLOSED))
          {
             return MOVE_FAILED;
@@ -719,10 +719,10 @@ auto enter_open(const struct unit_data *npc, const struct unit_data *enter) -> i
    return MOVE_FAILED;
 }
 
-auto exit_open(const struct unit_data *npc) -> int
+auto exit_open(const unit_data *npc) -> int
 {
-   char              buf[80];
-   struct unit_data *enter;
+   char       buf[80];
+   unit_data *enter;
 
    enter = UNIT_IN(npc);
 
@@ -734,7 +734,7 @@ auto exit_open(const struct unit_data *npc) -> int
       /* The door is closed and can be opened */
       if(IS_SET(UNIT_OPEN_FLAGS(enter), EX_LOCKED))
       {
-         do_unlock((struct unit_data *)npc, buf, &cmd_auto_unknown);
+         do_unlock((unit_data *)npc, buf, &cmd_auto_unknown);
          if(IS_SET(UNIT_OPEN_FLAGS(enter), EX_LOCKED))
          {
             return MOVE_FAILED;
@@ -743,7 +743,7 @@ auto exit_open(const struct unit_data *npc) -> int
       }
       else
       {
-         do_open((struct unit_data *)npc, buf, &cmd_auto_unknown);
+         do_open((unit_data *)npc, buf, &cmd_auto_unknown);
          if(IS_SET(UNIT_OPEN_FLAGS(enter), EX_CLOSED))
          {
             return MOVE_FAILED;
@@ -755,12 +755,12 @@ auto exit_open(const struct unit_data *npc) -> int
    return MOVE_FAILED;
 }
 
-auto npc_move(const struct unit_data *npc, const struct unit_data *to) -> int
+auto npc_move(const unit_data *npc, const unit_data *to) -> int
 {
-   int               i;
-   int               dir;
-   struct unit_data *in;
-   struct unit_data *u;
+   int        i;
+   int        dir;
+   unit_data *in;
+   unit_data *u;
 
    /*    Returns: 1=succes, 0=fail, -1=dead.    */
 
@@ -782,7 +782,7 @@ auto npc_move(const struct unit_data *npc, const struct unit_data *to) -> int
    if(!IS_ROOM(in = UNIT_IN(npc)))
    {
       char mbuf[MAX_INPUT_LENGTH] = {0};
-      do_exit((struct unit_data *)npc, mbuf, &cmd_auto_unknown);
+      do_exit((unit_data *)npc, mbuf, &cmd_auto_unknown);
       if(in == UNIT_IN(npc))
       { /* NPC couldn't leave */
          return exit_open(npc);
@@ -802,7 +802,7 @@ auto npc_move(const struct unit_data *npc, const struct unit_data *to) -> int
          return open_door(npc, dir);
       }
 
-      i = do_advanced_move((struct unit_data *)npc, dir, TRUE);
+      i = do_advanced_move((unit_data *)npc, dir, TRUE);
       if(i == -1)
          return MOVE_DEAD; /* NPC died */
       else if(i == 1)
@@ -817,13 +817,13 @@ auto npc_move(const struct unit_data *npc, const struct unit_data *to) -> int
       {
          if(IS_ROOM(u) && IS_SET(UNIT_MANIPULATE(u), MANIPULATE_ENTER))
          {
-            if(move_to((struct unit_data *)u, to) != DIR_EXIT)
+            if(move_to((unit_data *)u, to) != DIR_EXIT)
             {
                if(IS_SET(UNIT_OPEN_FLAGS(u), EX_CLOSED))
                {
                   return enter_open(npc, u);
                }
-               do_enter((struct unit_data *)npc, (char *)UNIT_NAME(u), &cmd_auto_unknown);
+               do_enter((unit_data *)npc, (char *)UNIT_NAME(u), &cmd_auto_unknown);
                if(in == UNIT_IN(npc))
                   return MOVE_FAILED;
                else
@@ -843,7 +843,7 @@ auto npc_move(const struct unit_data *npc, const struct unit_data *to) -> int
             return exit_open(npc);
          }
          char mbuf[MAX_INPUT_LENGTH] = {0};
-         do_exit((struct unit_data *)npc, mbuf, &cmd_auto_unknown);
+         do_exit((unit_data *)npc, mbuf, &cmd_auto_unknown);
          if(in == UNIT_IN(npc))
             return MOVE_FAILED;
          else

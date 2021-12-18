@@ -77,7 +77,7 @@ auto player_exists(const char *pName) -> int
    return file_exists(PlayerFileName(pName));
 }
 
-auto find_player(char *name) -> struct unit_data *
+auto find_player(char *name) -> unit_data *
 {
    struct descriptor_data *d;
 
@@ -225,13 +225,13 @@ void save_player_disk(const char *pName, char *pPassword, int id, int nPlyLen, c
 }
 
 /* Save the player 'pc' (no inventory) */
-void save_player_file(struct unit_data *pc)
+void save_player_file(unit_data *pc)
 {
    static bool             locked = FALSE;
    blk_length              nPlyLen;
    int                     tmp_i;
-   struct unit_data       *tmp_u;
-   struct unit_data       *list = NULL;
+   unit_data              *tmp_u;
+   unit_data              *list = NULL;
    struct descriptor_data *tmp_descr;
    CByteBuffer            *pBuf = &g_FileBuffer;
 
@@ -318,7 +318,7 @@ void save_player_file(struct unit_data *pc)
 }
 
 /* If 'fast' is false compression is used for inventory.       */
-void save_player_contents(struct unit_data *pc, int fast)
+void save_player_contents(unit_data *pc, int fast)
 {
    static bool locked = FALSE;
    time_t      t0;
@@ -326,7 +326,7 @@ void save_player_contents(struct unit_data *pc, int fast)
    amount_t    daily_cost;
    currency_t  cur = local_currency(pc);
 
-   auto save_contents(const char *pFileName, struct unit_data *unit, int fast, int bContainer)->int;
+   auto save_contents(const char *pFileName, unit_data *unit, int fast, int bContainer)->int;
 
    assert(IS_PC(pc));
 
@@ -389,7 +389,7 @@ void save_player_contents(struct unit_data *pc, int fast)
 }
 
 /* Save the player 'pc'. Update logon and playing time.        */
-void save_player(struct unit_data *pc)
+void save_player(unit_data *pc)
 {
    if(CHAR_DESCRIPTOR(pc))
    {
@@ -433,13 +433,13 @@ void save_player(struct unit_data *pc)
 
 /* Read player from file, starting at index "index" */
 /* String is allocated                              */
-auto load_player_file(FILE *pFile) -> struct unit_data *
+auto load_player_file(FILE *pFile) -> unit_data *
 {
-   struct unit_data *pc;
-   int               nPlyLen;
-   int               n;
-   int               id;
-   CByteBuffer      *pBuf;
+   unit_data   *pc;
+   int          nPlyLen;
+   int          n;
+   int          id;
+   CByteBuffer *pBuf;
 
    assert(pFile);
 
@@ -483,12 +483,12 @@ auto load_player_file(FILE *pFile) -> struct unit_data *
 /* Read player from file, starting at index "index"   */
 /* String is allocated                                */
 /* Is neither inserted in unit_list not into anything */
-auto load_player(const char *pName) -> struct unit_data *
+auto load_player(const char *pName) -> unit_data *
 {
-   FILE             *pFile;
-   struct unit_data *pc;
+   FILE      *pFile;
+   unit_data *pc;
 
-   void stop_all_special(struct unit_data * u);
+   void stop_all_special(unit_data * u);
 
    if(str_is_empty(pName) != 0u)
    {

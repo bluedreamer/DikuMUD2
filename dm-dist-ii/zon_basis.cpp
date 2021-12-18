@@ -65,12 +65,12 @@
 #define PC_DEATHOBJ_NAME "death_seq"
 #define DESTROY_ROOM     "destroy_room"
 
-struct unit_data *void_room    = nullptr;
-struct unit_data *destroy_room = nullptr;
-struct unit_data *heaven_room  = nullptr;
-struct unit_data *seq_room     = nullptr;
-struct unit_data *time_room    = nullptr;
-struct unit_data *entry_room   = nullptr;
+unit_data *void_room    = nullptr;
+unit_data *destroy_room = nullptr;
+unit_data *heaven_room  = nullptr;
+unit_data *seq_room     = nullptr;
+unit_data *time_room    = nullptr;
+unit_data *entry_room   = nullptr;
 
 struct file_index_type *demigod_fi    = nullptr; /* Default demigod shape */
 struct file_index_type *zombie_fi     = nullptr;
@@ -129,7 +129,7 @@ void basis_boot()
 /* These events happen rarely (daemon is every 30 minutes) */
 void random_event_world()
 {
-   struct unit_data *u;
+   unit_data *u;
 
    for(u = unit_list; u != nullptr; u = u->gnext)
    {
@@ -142,10 +142,10 @@ void random_event_world()
 }
 
 /* These events happen rarely (daemon is every 30 minutes) */
-void random_event_player(struct unit_data *u, struct unit_data *daemon)
+void random_event_player(unit_data *u, unit_data *daemon)
 {
-   int               i;
-   struct unit_data *tmpu;
+   int        i;
+   unit_data *tmpu;
 
    if(u == nullptr)
    {
@@ -341,8 +341,8 @@ auto recep_daemon(struct spec_arg *sarg) -> int
 
 auto chaos_daemon(struct spec_arg *sarg) -> int
 {
-   char             *arg = (char *)sarg->arg;
-   struct unit_data *u;
+   char      *arg = (char *)sarg->arg;
+   unit_data *u;
 
    if(sarg->cmd->no == CMD_AUTO_TICK || ((is_command(sarg->cmd, "tickle") != 0u) && IS_ULTIMATE(sarg->activator) &&
                                          sarg->owner == find_unit(sarg->activator, &arg, nullptr, FIND_UNIT_SURRO)))
@@ -403,10 +403,10 @@ extern struct log_buffer log_buf[];
 
 auto log_object(struct spec_arg *sarg) -> int
 {
-   uint8_t          *ip;
-   enum log_level    lev = LOG_OFF;
-   char              c;
-   struct unit_data *ch = UNIT_IN(sarg->owner);
+   uint8_t       *ip;
+   enum log_level lev = LOG_OFF;
+   char           c;
+   unit_data     *ch = UNIT_IN(sarg->owner);
 
    if(sarg->fptr->data == nullptr)
    {
@@ -509,7 +509,7 @@ auto log_object(struct spec_arg *sarg) -> int
 }
 
 /* Return TRUE if ok, FALSE if not */
-auto system_check(struct unit_data *pc, char *buf) -> int
+auto system_check(unit_data *pc, char *buf) -> int
 {
    /* Check for `` and ; in system-string */
    if((strchr(buf, '`') != nullptr) || (strchr(buf, ';') != nullptr))
@@ -522,7 +522,7 @@ auto system_check(struct unit_data *pc, char *buf) -> int
    return TRUE;
 }
 
-void execute_append(struct unit_data *pc, char *str)
+void execute_append(unit_data *pc, char *str)
 {
    FILE *f;
 

@@ -80,7 +80,7 @@
 */
 
 /* May only be called by clear_destuct! */
-void destruct_unit(struct unit_data *unit)
+void destruct_unit(unit_data *unit)
 {
    struct descriptor_data *d;
    int                     in_menu = FALSE;
@@ -247,7 +247,7 @@ void clear_destructed()
 
    for(i = 0; i < destructed_idx[DR_UNIT]; i++)
    {
-      destruct_unit((struct unit_data *)destructed[DR_UNIT][i]);
+      destruct_unit((unit_data *)destructed[DR_UNIT][i]);
    }
    destructed_idx[DR_UNIT] = 0;
 }

@@ -54,7 +54,7 @@
 extern struct unit_function_array_type unit_function_array[];
 
 auto cmd_is_a_social(char *cmd, int complete) -> bool;
-auto perform_social(struct unit_data *, char *, const command_info *) -> bool;
+auto perform_social(unit_data *, char *, const command_info *) -> bool;
 
 struct trie_type *intr_trie = nullptr;
 
@@ -357,7 +357,7 @@ struct command_info cmd_auto_damage = {0, 0, nullptr, CMD_AUTO_DAMAGE, POSITION_
 
 struct command_info *cmd_follow = nullptr;
 
-void wrong_position(struct unit_data *ch)
+void wrong_position(unit_data *ch)
 {
    static const char *strings[] = {
       "Lie still; you are DEAD!!! :-( \n\r",                               /* Dead     */
@@ -396,7 +396,7 @@ public:
 
 static int command_history_pos = 0;
 
-static void add_command_history(struct unit_data *u, char *str)
+static void add_command_history(unit_data *u, char *str)
 {
    if(IS_PC(u))
    {
@@ -443,7 +443,7 @@ public:
 
 static int func_history_pos = 0;
 
-void add_func_history(struct unit_data *u, uint16_t idx, uint16_t flags)
+void add_func_history(unit_data *u, uint16_t idx, uint16_t flags)
 {
    func_history_data[func_history_pos].idx   = idx;
    func_history_data[func_history_pos].flags = flags;
@@ -474,7 +474,7 @@ void dump_debug_history()
 }
 #endif
 
-void command_interpreter(struct unit_data *ch, const char *arg)
+void command_interpreter(unit_data *ch, const char *arg)
 {
    char                 cmd[MAX_INPUT_LENGTH + 10];
    char                 argstr[MAX_INPUT_LENGTH + 10];
@@ -633,7 +633,7 @@ void command_interpreter(struct unit_data *ch, const char *arg)
    }
 }
 
-auto char_is_playing(struct unit_data *u) -> int
+auto char_is_playing(unit_data *u) -> int
 {
    return UNIT_IN(u) != nullptr;
 }
@@ -650,7 +650,7 @@ void descriptor_interpreter(struct descriptor_data *d, const char *arg)
 }
 
 /* Check to see if the full command was typed */
-auto cmd_is_abbrev(struct unit_data *ch, const struct command_info *cmd) -> bool
+auto cmd_is_abbrev(unit_data *ch, const struct command_info *cmd) -> bool
 {
    return CHAR_DESCRIPTOR(ch) && (str_ccmp(CHAR_DESCRIPTOR(ch)->last_cmd, cmd->cmd_str) != 0);
 }
@@ -675,7 +675,7 @@ void argument_interpreter(const char *argument, char *first_arg, char *second_ar
    one_argument(argument, second_arg);
 }
 
-auto function_activate(struct unit_data *u, struct spec_arg *sarg) -> int
+auto function_activate(unit_data *u, struct spec_arg *sarg) -> int
 {
    if((u != sarg->activator) || IS_SET(sarg->fptr->flags, SFB_AWARE) || IS_SET(sarg->mflags, SFB_AWARE))
    {
@@ -697,7 +697,7 @@ auto function_activate(struct unit_data *u, struct spec_arg *sarg) -> int
 /* u is the owner of the function on which the scan is performed */
 /* This function sets the 'sarg->fptr' and 'sarg->owner'         */
 
-auto unit_function_scan(struct unit_data *u, struct spec_arg *sarg) -> int
+auto unit_function_scan(unit_data *u, struct spec_arg *sarg) -> int
 {
    int               res      = SFR_SHARE;
    int               priority = 0;
@@ -756,12 +756,12 @@ auto unit_function_scan(struct unit_data *u, struct spec_arg *sarg) -> int
    if extra_target is set, then also send message to that unit
 */
 
-auto basic_special(struct unit_data *ch, struct spec_arg *sarg, uint16_t mflt, struct unit_data *extra_target) -> int
+auto basic_special(unit_data *ch, struct spec_arg *sarg, uint16_t mflt, unit_data *extra_target) -> int
 {
-   struct unit_data *u;
-   struct unit_data *uu;
-   struct unit_data *next;
-   struct unit_data *nextt;
+   unit_data *u;
+   unit_data *uu;
+   unit_data *next;
+   unit_data *nextt;
 
    sarg->mflags = mflt;
 
@@ -893,7 +893,7 @@ auto basic_special(struct unit_data *ch, struct spec_arg *sarg, uint16_t mflt, s
 }
 
 /* Preprocessed commands */
-auto send_preprocess(struct unit_data *ch, const struct command_info *cmd, const char *arg) -> int
+auto send_preprocess(unit_data *ch, const struct command_info *cmd, const char *arg) -> int
 {
    struct spec_arg sarg;
 
@@ -907,7 +907,7 @@ auto send_preprocess(struct unit_data *ch, const struct command_info *cmd, const
    return basic_special(ch, &sarg, SFB_CMD);
 }
 
-auto send_message(struct unit_data *ch, const char *arg) -> int
+auto send_message(unit_data *ch, const char *arg) -> int
 {
    struct spec_arg sarg;
 
@@ -921,7 +921,7 @@ auto send_message(struct unit_data *ch, const char *arg) -> int
    return basic_special(ch, &sarg, SFB_MSG);
 }
 
-auto send_death(struct unit_data *ch) -> int
+auto send_death(unit_data *ch) -> int
 {
    struct spec_arg sarg;
 
@@ -935,7 +935,7 @@ auto send_death(struct unit_data *ch) -> int
    return basic_special(ch, &sarg, SFB_DEAD | SFB_AWARE);
 }
 
-auto send_combat(struct unit_data *ch) -> int
+auto send_combat(unit_data *ch) -> int
 {
    struct spec_arg sarg;
 
@@ -949,7 +949,7 @@ auto send_combat(struct unit_data *ch) -> int
    return basic_special(ch, &sarg, SFB_COM);
 }
 
-auto send_save_to(struct unit_data *from, struct unit_data *to) -> int
+auto send_save_to(unit_data *from, unit_data *to) -> int
 {
    struct spec_arg sarg;
 
@@ -968,8 +968,8 @@ auto send_save_to(struct unit_data *from, struct unit_data *to) -> int
    return unit_function_scan(to, &sarg);
 }
 
-auto send_ack(struct unit_data *activator, struct unit_data *medium, struct unit_data *target, int *i, const struct command_info *cmd,
-              const char *arg, struct unit_data *extra_target) -> int
+auto send_ack(unit_data *activator, unit_data *medium, unit_data *target, int *i, const struct command_info *cmd, const char *arg,
+              unit_data *extra_target) -> int
 {
    struct spec_arg sarg;
    int             j = 0;
@@ -993,8 +993,8 @@ auto send_ack(struct unit_data *activator, struct unit_data *medium, struct unit
    return basic_special(activator, &sarg, SFB_PRE, extra_target);
 }
 
-void send_done(struct unit_data *activator, struct unit_data *medium, struct unit_data *target, int i, const struct command_info *cmd,
-               const char *arg, struct unit_data *extra_target)
+void send_done(unit_data *activator, unit_data *medium, unit_data *target, int i, const struct command_info *cmd, const char *arg,
+               unit_data *extra_target)
 {
    struct spec_arg sarg;
 

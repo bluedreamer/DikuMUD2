@@ -93,7 +93,7 @@ struct wpn_info_type     wpn_info[WPN_TREE_MAX];
 
 /* ===================================================================== */
 
-void roll_description(struct unit_data *att, const char *text, int roll)
+void roll_description(unit_data *att, const char *text, int roll)
 {
    if(roll >= 200)
    {
@@ -181,14 +181,14 @@ auto weight_size(int lbs) -> int
       return SIZ_HUGE;
 }
 
-auto weapon_fumble(struct unit_data *weapon, int roll) -> int
+auto weapon_fumble(unit_data *weapon, int roll) -> int
 {
    assert(IS_OBJ(weapon) && (OBJ_TYPE(weapon) == ITEM_WEAPON));
 
    return static_cast<int>(roll <= weapon_chart[OBJ_VALUE(weapon, 0)].fumble);
 }
 
-auto object_two_handed(struct unit_data *obj) -> int
+auto object_two_handed(unit_data *obj) -> int
 {
    if(OBJ_TYPE(obj) == ITEM_WEAPON)
    {
@@ -291,7 +291,7 @@ auto natural_damage(int roll, int weapon_type, int armour_type, int lbs) -> int
 }
 
 /* Return [0..200] for skill when defending with a weapon */
-auto weapon_defense_skill(struct unit_data *ch, int skill) -> int
+auto weapon_defense_skill(unit_data *ch, int skill) -> int
 {
    int max;
 
@@ -339,7 +339,7 @@ auto weapon_defense_skill(struct unit_data *ch, int skill) -> int
 }
 
 /* Return [0..200] for skill when attacking with a weapon */
-auto weapon_attack_skill(struct unit_data *ch, int skill) -> int
+auto weapon_attack_skill(unit_data *ch, int skill) -> int
 {
    if(IS_PC(ch))
    {
@@ -353,7 +353,7 @@ auto weapon_attack_skill(struct unit_data *ch, int skill) -> int
 }
 
 /* Return the armour position of where one person hits another */
-auto hit_location(struct unit_data *att, struct unit_data *def) -> int
+auto hit_location(unit_data *att, unit_data *def) -> int
 {
    /* Maybe do height reductions later */
 
@@ -363,7 +363,7 @@ auto hit_location(struct unit_data *att, struct unit_data *def) -> int
 /* Return the effective dex of a person in armour ...             */
 /* Later we will redo this function - as of now it doesn't matter */
 /* what armour you wear                                           */
-auto effective_dex(struct unit_data *ch) -> int
+auto effective_dex(unit_data *ch) -> int
 {
    return CHAR_DEX(ch);
 }

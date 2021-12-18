@@ -142,7 +142,7 @@ static auto get_next_word(const char *argument, char *first_arg) -> char *
 }
 
 /* Setup owner-ship of dictionary. */
-static void set_owner(struct unit_data *obj, struct alias_head *ah, struct unit_data *ch)
+static void set_owner(unit_data *obj, struct alias_head *ah, unit_data *ch)
 {
    char buf[256];
 
@@ -156,7 +156,7 @@ static void set_owner(struct unit_data *obj, struct alias_head *ah, struct unit_
 }
 
 /* Allocate `exd' if needed, and erase old description */
-static auto fix_extra_descr(struct unit_data *obj, class extra_descr_data *exd) -> struct extra_descr_data *
+static auto fix_extra_descr(unit_data *obj, class extra_descr_data *exd) -> struct extra_descr_data *
 {
    static const char *aliaslist[] = {"$alias", nullptr};
 
@@ -228,7 +228,7 @@ static auto parse_alias(char *src, char *arg) -> char *
  *  check_count makes sure that the user doesn't make nasty (!) computationally
  *  heavy (!!!) aliases that will bog the mud enormously.
  */
-static auto push_alias(char *s, char *arg, struct trie_type *t, struct unit_data *ch, bool first) -> int
+static auto push_alias(char *s, char *arg, struct trie_type *t, unit_data *ch, bool first) -> int
 {
    char            cmd[MAX_INPUT_LENGTH + 1];
    char            parsed[2 * MAX_INPUT_LENGTH + 2];
@@ -292,7 +292,7 @@ static auto push_alias(char *s, char *arg, struct trie_type *t, struct unit_data
 }
 
 /* Merely prints a formatted alias-definition out to the char */
-static void alias_to_char(struct alias_t *al, struct unit_data *ch)
+static void alias_to_char(struct alias_t *al, unit_data *ch)
 {
    char buf[2 * MAX_INPUT_LENGTH + 2];
 
@@ -303,7 +303,7 @@ static void alias_to_char(struct alias_t *al, struct unit_data *ch)
 /*  Prints all defined aliases in `t' alphabetically to char by
  *  recursively walking the trie
  */
-static auto print_alias(struct trie_type *t, struct unit_data *ch) -> int
+static auto print_alias(struct trie_type *t, unit_data *ch) -> int
 {
    struct trie_type *t2;
    struct alias_t   *al;
@@ -439,7 +439,7 @@ static auto circle_alias(char *key, char *val, struct trie_type *t, bool first) 
  *  This should all be linear, except for the recursion check,
  *  which has a fixed upper bound.
  */
-static auto alias_is_ok(struct alias_head *ah, char *key, char *val, struct unit_data *ch) -> bool
+static auto alias_is_ok(struct alias_head *ah, char *key, char *val, unit_data *ch) -> bool
 {
    char           *tmp;
    struct alias_t *al = nullptr;
@@ -618,7 +618,7 @@ static auto str_to_alias(const char *str) -> struct alias_head *
 
 /* ********** The Alias Commands ********** */
 
-static void cmd_alias(struct unit_data *ch, char *arg, struct alias_head *alias_h)
+static void cmd_alias(unit_data *ch, char *arg, struct alias_head *alias_h)
 {
    char            comm[MAX_INPUT_LENGTH + 1];
    struct alias_t *al = nullptr;
@@ -667,7 +667,7 @@ static void cmd_alias(struct unit_data *ch, char *arg, struct alias_head *alias_
    }
 }
 
-static void cmd_unalias(struct unit_data *ch, char *arg, struct alias_head *alias_h)
+static void cmd_unalias(unit_data *ch, char *arg, struct alias_head *alias_h)
 {
    if(str_is_empty(arg) != 0u)
    {
@@ -687,7 +687,7 @@ static void cmd_unalias(struct unit_data *ch, char *arg, struct alias_head *alia
    }
 }
 
-static void cmd_claim(struct unit_data *ch, char *arg, struct unit_data *obj, struct alias_head *alias_h)
+static void cmd_claim(unit_data *ch, char *arg, unit_data *obj, struct alias_head *alias_h)
 {
    char buf[MAX_INPUT_LENGTH + 1];
 

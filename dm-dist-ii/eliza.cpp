@@ -46,13 +46,13 @@
 
 struct oracle_data
 {
-   int              *nextrep;
-   struct unit_data *patient;
-   struct unit_data *doctor;
-   int               oldkeywd[MAX_HISTORY];     /* queue of indices of most recent keywds */
-   char              own_name[FI_MAX_UNITNAME]; /* Lowercase name of Doc.                */
-   char              laststr[MAX_INPUT_LENGTH]; /* Don't reply to same string twice      */
-   char              lastrep[MAX_INPUT_LENGTH]; /* Don't make same reply twice!          */
+   int       *nextrep;
+   unit_data *patient;
+   unit_data *doctor;
+   int        oldkeywd[MAX_HISTORY];     /* queue of indices of most recent keywds */
+   char       own_name[FI_MAX_UNITNAME]; /* Lowercase name of Doc.                */
+   char       laststr[MAX_INPUT_LENGTH]; /* Don't reply to same string twice      */
+   char       lastrep[MAX_INPUT_LENGTH]; /* Don't make same reply twice!          */
 };
 
 struct subject_type
@@ -557,14 +557,14 @@ auto eliza_process(struct oracle_data *od, char *s) -> char *
 
 void delayed_action(void *p1, void *p2)
 {
-   auto *npc = (struct unit_data *)p1;
+   auto *npc = (unit_data *)p1;
    char *str = (char *)p2;
 
    command_interpreter(npc, str);
    free(str);
 }
 
-void set_delayed_action(struct unit_data *npc, char *str)
+void set_delayed_action(unit_data *npc, char *str)
 {
    int   when;
    char *cp;
@@ -586,7 +586,7 @@ void set_delayed_action(struct unit_data *npc, char *str)
 
 #define MAX_ELIBUF 50
 
-void eliza_log(struct unit_data *who, const char *str, int comms)
+void eliza_log(unit_data *who, const char *str, int comms)
 {
    static int   idx = -1;
    static char *buf[MAX_ELIBUF];
@@ -761,8 +761,8 @@ auto oracle(struct spec_arg *sarg) -> int
 
    if((sarg->cmd->no == CMD_TELL) || (sarg->cmd->no == CMD_ASK) || (sarg->cmd->no == CMD_WHISPER))
    {
-      struct unit_data *u;
-      char             *c = (char *)sarg->arg;
+      unit_data *u;
+      char      *c = (char *)sarg->arg;
 
       u = find_unit(sarg->activator, &c, nullptr, FIND_UNIT_SURRO);
       if(u != sarg->owner)

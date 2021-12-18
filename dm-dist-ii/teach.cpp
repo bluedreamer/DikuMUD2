@@ -152,7 +152,7 @@ auto actual_cost(int cost, int8_t modifier) -> int
    return cost;
 }
 
-void clear_training_level(struct unit_data *ch)
+void clear_training_level(unit_data *ch)
 {
    int i;
 
@@ -194,7 +194,7 @@ auto teaches_index(struct skill_teach_type *teaches_skills, int node) -> int
    return -1;
 }
 
-void info_show_one(struct unit_data *teacher, struct unit_data *pupil, uint8_t current_points, uint8_t max_level, int next_point, int gold,
+void info_show_one(unit_data *teacher, unit_data *pupil, uint8_t current_points, uint8_t max_level, int next_point, int gold,
                    const char *text, int indent, uint8_t isleaf, uint8_t level_type, int min_level)
 {
    char buf[256];
@@ -247,7 +247,7 @@ void info_show_one(struct unit_data *teacher, struct unit_data *pupil, uint8_t c
    send_to_char(buf, pupil);
 }
 
-void info_show_roots(struct unit_data *teacher, struct unit_data *pupil, struct skill_teach_type *teaches_skills, struct tree_type *tree,
+void info_show_roots(unit_data *teacher, unit_data *pupil, struct skill_teach_type *teaches_skills, struct tree_type *tree,
                      const char *text[], uint8_t level_type, uint8_t pc_values[], uint8_t pc_lvl[], int8_t pc_cost[])
 {
    int i;
@@ -270,7 +270,7 @@ void info_show_roots(struct unit_data *teacher, struct unit_data *pupil, struct 
    }
 }
 
-void info_one_skill(struct unit_data *teacher, struct unit_data *pupil, struct skill_teach_type *teaches_skills, struct tree_type *tree,
+void info_one_skill(unit_data *teacher, unit_data *pupil, struct skill_teach_type *teaches_skills, struct tree_type *tree,
                     const char *text[], uint8_t pc_values[], uint8_t pc_lvl[], int8_t pc_cost[], int teach_index, uint8_t level_type,
                     struct teacher_msg *msgs)
 
@@ -343,7 +343,7 @@ void info_one_skill(struct unit_data *teacher, struct unit_data *pupil, struct s
    }
 }
 
-auto pupil_magic(struct unit_data *pupil) -> int
+auto pupil_magic(unit_data *pupil) -> int
 {
    struct unit_affected_type *af;
 
@@ -1069,7 +1069,7 @@ auto teach_init(struct spec_arg *sarg) -> int
    return teaching(sarg);
 }
 
-void do_practice(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_practice(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    send_to_char("You can only practice at a teacher.\n\r", ch);
 }

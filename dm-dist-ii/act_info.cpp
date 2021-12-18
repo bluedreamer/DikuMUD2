@@ -80,7 +80,7 @@ static void add_to_string(char **buf, int *size, int len, const char *str)
 }
 
 /* also used in "corpses" wizard-command */
-auto in_string(struct unit_data *ch, struct unit_data *u) -> char *
+auto in_string(unit_data *ch, unit_data *u) -> char *
 {
    static char in_str[512];
    char       *tmp = in_str;
@@ -103,16 +103,16 @@ auto in_string(struct unit_data *ch, struct unit_data *u) -> char *
    return nullptr;
 }
 
-void do_exits(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_exits(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   int               door;
-   char              buf[MAX_STRING_LENGTH];
-   char             *b;
-   struct unit_data *room;
+   int        door;
+   char       buf[MAX_STRING_LENGTH];
+   char      *b;
+   unit_data *room;
 
    const char *exits[] = {"North", "East ", "South", "West ", "Up   ", "Down "};
 
-   auto has_found_door(struct unit_data * pc, int dir)->int;
+   auto has_found_door(unit_data * pc, int dir)->int;
 
    send_to_char("Obvious exits:\n\r", ch);
 
@@ -164,12 +164,12 @@ void do_exits(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_purse(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_purse(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *thing;
-   struct unit_data *purse[MAX_MONEY + 1];
-   bool              found = FALSE;
-   int               i;
+   unit_data *thing;
+   unit_data *purse[MAX_MONEY + 1];
+   bool       found = FALSE;
+   int        i;
 
    for(i = 0; i <= MAX_MONEY; ++i)
    {
@@ -201,7 +201,7 @@ void do_purse(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_quests(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_quests(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    int                      bOutput = FALSE;
    char                     buf[256];
@@ -237,7 +237,7 @@ void do_quests(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-static void status_spells(struct unit_data *ch, uint8_t realm)
+static void status_spells(unit_data *ch, uint8_t realm)
 {
    int   i;
    int   j;
@@ -301,7 +301,7 @@ static void status_spells(struct unit_data *ch, uint8_t realm)
    }
 }
 
-void do_status(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_status(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    int                   idx;
    int                   i;
@@ -315,7 +315,7 @@ void do_status(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
    static const char *infos[] = {"weapons", "spells", "skills", nullptr};
 
-   auto age(struct unit_data * ch)->struct time_info_data;
+   auto age(unit_data * ch)->struct time_info_data;
    auto real_time_passed(time_t t2, time_t t1)->struct time_info_data;
 
    if(!IS_PC(ch))
@@ -447,7 +447,7 @@ void do_status(struct unit_data *ch, char *arg, const struct command_info *cmd)
    send_to_char(buf, ch);
 }
 
-auto own_position(struct unit_data *ch) -> char *
+auto own_position(unit_data *ch) -> char *
 {
    static char buf[256];
 
@@ -508,15 +508,15 @@ auto own_position(struct unit_data *ch) -> char *
    return buf;
 }
 
-void do_score(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_score(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    static char              buf[MAX_STRING_LENGTH];
    static char             *b;
-   struct unit_data        *vict;
+   unit_data               *vict;
    struct char_follow_type *f;
    int                      members = FALSE;
 
-   auto age(const struct unit_data *ch)->struct time_info_data;
+   auto age(const unit_data *ch)->struct time_info_data;
 
    if(!IS_PC(ch))
    {
@@ -677,7 +677,7 @@ void do_score(struct unit_data *ch, char *arg, const struct command_info *cmd)
    send_to_char(buf, ch);
 }
 
-void do_time(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_time(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    char                 *b;
    char                  buf[200];
@@ -697,29 +697,29 @@ void do_time(struct unit_data *ch, char *arg, const struct command_info *cmd)
    send_to_char(buf, ch);
 }
 
-void do_credits(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_credits(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    page_string(CHAR_DESCRIPTOR(ch), g_cServerConfig.m_pCredits);
 }
 
-void do_news(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_news(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    page_string(CHAR_DESCRIPTOR(ch), g_cServerConfig.m_pNews);
 }
 
-void do_info(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_info(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    send_to_char("You can't do that here (find a teacher, try `status' or"
                 " `help info'\n\r",
                 ch);
 }
 
-void do_wizlist(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wizlist(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    page_string(CHAR_DESCRIPTOR(ch), g_cServerConfig.m_pWizlist);
 }
 
-void player_where(struct unit_data *ch, char *arg)
+void player_where(unit_data *ch, char *arg)
 {
    char                    buf[160];
    struct descriptor_data *d;
@@ -750,12 +750,12 @@ void player_where(struct unit_data *ch, char *arg)
    }
 }
 
-void do_where(struct unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_where(unit_data *ch, char *aaa, const struct command_info *cmd)
 {
    char                   *buf = NULL;
    char                    buf1[1024];
    char                    buf2[512];
-   struct unit_data       *i;
+   unit_data              *i;
    struct descriptor_data *d;
    int                     len;
    int                     cur_size = 2048;
@@ -823,7 +823,7 @@ void do_where(struct unit_data *ch, char *aaa, const struct command_info *cmd)
    free(buf);
 }
 
-void do_who(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_who(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    static char *buf      = nullptr;
    static int   cur_size = 1024;
@@ -888,7 +888,7 @@ void do_who(struct unit_data *ch, char *arg, const struct command_info *cmd)
    free(buf);
 }
 
-void do_commands(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_commands(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    char                       buf[MAX_STRING_LENGTH];
    char                      *b;
@@ -930,7 +930,7 @@ void do_commands(struct unit_data *ch, char *arg, const struct command_info *cmd
    page_string(CHAR_DESCRIPTOR(ch), buf);
 }
 
-void do_areas(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_areas(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    char              buf[2 * MAX_STRING_LENGTH];
    char             *b;

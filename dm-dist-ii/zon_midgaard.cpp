@@ -49,7 +49,7 @@
 extern struct descriptor_data *descriptor_list;
 
 /* extern procedures */
-auto obj_trade_price(struct unit_data *u) -> amount_t;
+auto obj_trade_price(unit_data *u) -> amount_t;
 
 /* ------------------------------------------------------------------------- */
 /*                     M O B I L E   R O U T I N E S                         */
@@ -57,9 +57,9 @@ auto obj_trade_price(struct unit_data *u) -> amount_t;
 
 auto fido(struct spec_arg *sarg) -> int
 {
-   struct unit_data *i;
-   struct unit_data *temp;
-   struct unit_data *next_obj;
+   unit_data *i;
+   unit_data *temp;
+   unit_data *next_obj;
 
    if(sarg->cmd->no != CMD_AUTO_TICK || !CHAR_IS_READY(sarg->owner))
    {
@@ -112,7 +112,7 @@ auto fido(struct spec_arg *sarg) -> int
 
 auto janitor(struct spec_arg *sarg) -> int
 {
-   struct unit_data *i;
+   unit_data *i;
 
    if(sarg->cmd->no != CMD_AUTO_TICK || !CHAR_IS_READY(sarg->owner))
    {
@@ -135,13 +135,13 @@ auto janitor(struct spec_arg *sarg) -> int
 
 auto evaluate(struct spec_arg *sarg) -> int
 {
-   char             *arg = (char *)sarg->arg;
-   struct unit_data *u1;
-   char              buf[MAX_STRING_LENGTH];
-   amount_t          cost;
-   currency_t        currency;
-   int               craft;
-   int               category;
+   char      *arg = (char *)sarg->arg;
+   unit_data *u1;
+   char       buf[MAX_STRING_LENGTH];
+   amount_t   cost;
+   currency_t currency;
+   int        craft;
+   int        category;
 
    if(sarg->cmd->no != CMD_AUTO_UNKNOWN || (is_abbrev(sarg->cmd->cmd_str, "evaluate") == 0u))
    {

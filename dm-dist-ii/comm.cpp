@@ -95,7 +95,7 @@ void page_string(struct descriptor_data *d, const char *messg)
    }
 }
 
-void send_to_char(const char *messg, const struct unit_data *ch)
+void send_to_char(const char *messg, const unit_data *ch)
 {
    if(IS_CHAR(ch))
    {
@@ -155,9 +155,9 @@ void send_to_outdoor(const char *messg)
    }
 }
 
-void send_to_room(const char *messg, struct unit_data *room)
+void send_to_room(const char *messg, unit_data *room)
 {
-   struct unit_data *i;
+   unit_data *i;
 
    if(messg != nullptr)
    {
@@ -171,8 +171,7 @@ void send_to_room(const char *messg, struct unit_data *room)
    }
 }
 
-void act_generate(char *buf, const char *str, int show_type, const void *arg1, const void *arg2, const void *arg3, int type,
-                  class unit_data *to)
+void act_generate(char *buf, const char *str, int show_type, const void *arg1, const void *arg2, const void *arg3, int type, unit_data *to)
 {
    const char *strp;
    char       *point;
@@ -180,10 +179,10 @@ void act_generate(char *buf, const char *str, int show_type, const void *arg1, c
 
    union
    {
-      const void      *vo;
-      class unit_data *un;
-      const char      *str;
-      const int       *num;
+      const void *vo;
+      unit_data  *un;
+      const char *str;
+      const int  *num;
    } sub;
 
    int uppercase = FALSE;
@@ -195,22 +194,22 @@ void act_generate(char *buf, const char *str, int show_type, const void *arg1, c
       return;
    }
 
-   if(to == (class unit_data *)arg1 && (type == TO_ROOM || type == TO_NOTVICT || type == TO_REST))
+   if(to == (unit_data *)arg1 && (type == TO_ROOM || type == TO_NOTVICT || type == TO_REST))
    {
       return;
    }
 
-   if(to == (class unit_data *)arg3 && type == TO_NOTVICT)
+   if(to == (unit_data *)arg3 && type == TO_NOTVICT)
    {
       return;
    }
 
-   if(UNIT_IN(to) == (class unit_data *)arg1 && type == TO_REST)
+   if(UNIT_IN(to) == (unit_data *)arg1 && type == TO_REST)
    {
       return;
    }
 
-   if((show_type == A_HIDEINV && !CHAR_CAN_SEE(to, (class unit_data *)arg1)) || (show_type != A_ALWAYS && !CHAR_AWAKE(to)))
+   if((show_type == A_HIDEINV && !CHAR_CAN_SEE(to, (unit_data *)arg1)) || (show_type != A_ALWAYS && !CHAR_AWAKE(to)))
    {
       return;
    }
@@ -348,9 +347,9 @@ void act_generate(char *buf, const char *str, int show_type, const void *arg1, c
 
 void act(const char *str, int show_type, const void *arg1, const void *arg2, const void *arg3, int type)
 {
-   struct unit_data *to;
-   struct unit_data *u;
-   char              buf[MAX_STRING_LENGTH];
+   unit_data *to;
+   unit_data *u;
+   char       buf[MAX_STRING_LENGTH];
 
    /* This to catch old-style FALSE/TRUE calls...  */
    assert(show_type == A_SOMEONE || show_type == A_HIDEINV || show_type == A_ALWAYS);
@@ -362,19 +361,19 @@ void act(const char *str, int show_type, const void *arg1, const void *arg2, con
 
    if(type == TO_VICT)
    {
-      to = (struct unit_data *)arg3;
+      to = (unit_data *)arg3;
    }
    else if(type == TO_CHAR)
    {
-      to = (struct unit_data *)arg1;
+      to = (unit_data *)arg1;
    }
-   else if(arg1 == nullptr || UNIT_IN((struct unit_data *)arg1) == nullptr)
+   else if(arg1 == nullptr || UNIT_IN((unit_data *)arg1) == nullptr)
    {
       return;
    }
    else
    {
-      to = UNIT_CONTAINS(UNIT_IN((struct unit_data *)arg1));
+      to = UNIT_CONTAINS(UNIT_IN((unit_data *)arg1));
    }
 
    /* same unit or to person */
@@ -404,7 +403,7 @@ void act(const char *str, int show_type, const void *arg1, const void *arg2, con
    }
 
    /* other units outside transparent unit */
-   if(((to = UNIT_IN(UNIT_IN((struct unit_data *)arg1))) != nullptr) && UNIT_IS_TRANSPARENT(UNIT_IN((struct unit_data *)arg1)))
+   if(((to = UNIT_IN(UNIT_IN((unit_data *)arg1))) != nullptr) && UNIT_IS_TRANSPARENT(UNIT_IN((unit_data *)arg1)))
    {
       for(to = UNIT_CONTAINS(to); to != nullptr; to = to->next)
       {
@@ -414,7 +413,7 @@ void act(const char *str, int show_type, const void *arg1, const void *arg2, con
             send_to_descriptor(buf, CHAR_DESCRIPTOR(to));
          }
 
-         if(UNIT_CHARS(to) && UNIT_IS_TRANSPARENT(to) && to != UNIT_IN((struct unit_data *)arg1))
+         if(UNIT_CHARS(to) && UNIT_IS_TRANSPARENT(to) && to != UNIT_IN((unit_data *)arg1))
          {
             for(u = UNIT_CONTAINS(to); u != nullptr; u = u->next)
             {

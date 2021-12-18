@@ -57,16 +57,16 @@
 #include <climits>
 
 /* The TURN_UNDEAD skill */
-void do_turn(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_turn(unit_data *ch, char *arg, const struct command_info *cmd)
 /*
  * coded: Thu Jun 11 18:48:17 MET DST 1992 [HH]
  * tested: No
  */
 {
-   int               skilla;
-   int               skilld;
-   int               hm;
-   struct unit_data *vict;
+   int        skilla;
+   int        skilld;
+   int        hm;
+   unit_data *vict;
 
    if(IS_PC(ch) && PC_SKI_SKILL(ch, SKI_TURN_UNDEAD) == 0)
    {
@@ -111,10 +111,10 @@ void do_turn(struct unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* Not a skill, but closely related to scroll & wand code */
-void do_quaff(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_quaff(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *potion;
-   int               i;
+   unit_data *potion;
+   int        i;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -160,18 +160,18 @@ void do_quaff(struct unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* The SCROLL_USE skill */
-void do_recite(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_recite(unit_data *ch, char *arg, const struct command_info *cmd)
 /*
  * coded: Thu Jun 11 19:10:52 MET DST 1992 [HH]
  * tested: No
  */
 {
-   struct unit_data *scroll;
-   struct unit_data *target;
-   int               i;
-   int               skilla;
-   int               abila;
-   int               hm;
+   unit_data *scroll;
+   unit_data *target;
+   int        i;
+   int        skilla;
+   int        abila;
+   int        hm;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -258,18 +258,18 @@ void do_recite(struct unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* The Wand/Staff use skill */
-void do_use(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_use(unit_data *ch, char *arg, const struct command_info *cmd)
 /*
  * coded: Thu Jun 11 19:17:11 MET DST 1992
  * tested: No
  */
 {
-   struct unit_data *stick  = NULL;
-   struct unit_data *target = NULL;
-   int               skilla;
-   int               abila;
-   int               i;
-   int               hm;
+   unit_data *stick  = NULL;
+   unit_data *target = NULL;
+   int        skilla;
+   int        abila;
+   int        i;
+   int        hm;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -408,12 +408,12 @@ void do_use(struct unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* The APPRAISAL skill */
-void do_appraise(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_appraise(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *item;
-   int               skilla;
-   int               hm;
-   int               val;
+   unit_data *item;
+   int        skilla;
+   int        hm;
+   int        val;
 
    if(IS_PC(ch) && PC_SKI_SKILL(ch, SKI_APPRAISAL) == 0)
    {
@@ -442,7 +442,7 @@ void do_appraise(struct unit_data *ch, char *arg, const struct command_info *cmd
    skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_APPRAISAL) : CHAR_BRA(ch);
    hm     = resistance_skill_check(CHAR_BRA(ch), 50, skilla, 0);
 
-   auto obj_trade_price(struct unit_data * u)->amount_t;
+   auto obj_trade_price(unit_data * u)->amount_t;
 
    val = obj_trade_price(item);
 
@@ -466,18 +466,18 @@ void do_appraise(struct unit_data *ch, char *arg, const struct command_info *cmd
 }
 
 /* The VENTRILOQUATE skill */
-void do_ventriloquate(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_ventriloquate(unit_data *ch, char *arg, const struct command_info *cmd)
 /*
  * coded: 18/6/92 1:30:23 MET DST 1992
  * tested: No
  */
 {
-   struct unit_data *vict;
-   int               skilla;
-   int               skillb;
-   int               abila;
-   int               abilb;
-   int               hm;
+   unit_data *vict;
+   int        skilla;
+   int        skillb;
+   int        abila;
+   int        abilb;
+   int        hm;
 
    if(IS_PC(ch) && PC_SKI_SKILL(ch, SKI_VENTRILOQUATE) == 0)
    {
@@ -524,7 +524,7 @@ void do_ventriloquate(struct unit_data *ch, char *arg, const struct command_info
 }
 
 /* The WEATHER_WATCHING skill */
-void do_weather(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_weather(unit_data *ch, char *arg, const struct command_info *cmd)
 /*
  * coded: Tue Jul  7 17:33:28 MET DST 1992 [HH]
  * tested: No
@@ -568,18 +568,18 @@ void do_weather(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_flee(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_flee(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   int               legal;
-   int               attempt;
-   int               die;
-   int               hm;
-   int               opos;
-   struct unit_data *predator;
-   struct unit_data *u;
+   int        legal;
+   int        attempt;
+   int        die;
+   int        hm;
+   int        opos;
+   unit_data *predator;
+   unit_data *u;
 
-   void set_hunting(struct unit_data * p, struct unit_data * v, int legal);
-   auto do_simple_move(struct unit_data * ch, int direction, int following)->int;
+   void set_hunting(unit_data * p, unit_data * v, int legal);
+   auto do_simple_move(unit_data * ch, int direction, int following)->int;
 
    if(CHAR_POS(ch) < POSITION_FIGHTING)
    {
@@ -667,7 +667,7 @@ void do_flee(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_sneak(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_sneak(unit_data *ch, char *arg, const struct command_info *cmd)
 /*
  * coded: Fri. 19 Jun 1992 22.27.57
  * tested: No
@@ -720,7 +720,7 @@ void do_sneak(struct unit_data *ch, char *arg, const struct command_info *cmd)
    create_affect(ch, &af);
 }
 
-void do_backstab(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_backstab(unit_data *ch, char *arg, const struct command_info *cmd)
 /*
  * coded: Mon Jun 22 00:22:44 MET DST 1992 [HH]
  * tested: No
@@ -728,8 +728,8 @@ void do_backstab(struct unit_data *ch, char *arg, const struct command_info *cmd
 {
    struct unit_affected_type  af;
    struct unit_affected_type *paf = NULL;
-   struct unit_data          *vict;
-   struct unit_data          *stabber;
+   unit_data                 *vict;
+   unit_data                 *stabber;
    int                        skilla;
    int                        skillb;
    int                        hm;
@@ -850,7 +850,7 @@ void do_backstab(struct unit_data *ch, char *arg, const struct command_info *cmd
    }
 }
 
-void do_hide(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_hide(unit_data *ch, char *arg, const struct command_info *cmd)
 /*
  * coded: Mon Jun 22 02:09:04 MET DST 1992 [HH]
  * tested: No
@@ -916,13 +916,13 @@ void do_hide(struct unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* The FIRST AID skill */
-void do_aid(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_aid(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *vict;
-   int               skilla;
-   int               hm;
+   unit_data *vict;
+   int        skilla;
+   int        hm;
 
-   void modify_hit(struct unit_data * ch, int hit);
+   void modify_hit(unit_data * ch, int hit);
 
    skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_FIRST_AID) : (CHAR_BRA(ch) + CHAR_DIV(ch)) / 2;
    if(skilla == 0)
@@ -979,7 +979,7 @@ void do_aid(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_pick(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_pick(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    int               skilla;
    int               hm;
@@ -987,7 +987,7 @@ void do_pick(struct unit_data *ch, char *arg, const struct command_info *cmd)
    struct door_data *a_door;
    char             *oarg = arg;
 
-   auto locate_lock(struct unit_data * ch, char *arg)->struct door_data *;
+   auto locate_lock(unit_data * ch, char *arg)->struct door_data *;
 
    skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_PICK_LOCK) : (CHAR_DEX(ch) + CHAR_BRA(ch)) / 2;
 
@@ -1063,21 +1063,21 @@ void do_pick(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_steal(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_steal(unit_data *ch, char *arg, const struct command_info *cmd)
 /*
  * coded:Tue Jul  7 21:10:25 MET DST 1992 [HH]
  * tested: Yup
  */
 {
-   struct unit_data *vict;
-   struct unit_data *obj;
-   char             *split;
-   char             *oarg = arg;
-   int               hm;
-   int               skilla;
-   int               skillb;
+   unit_data *vict;
+   unit_data *obj;
+   char      *split;
+   char      *oarg = arg;
+   int        hm;
+   int        skilla;
+   int        skillb;
 
-   auto hands_used(struct unit_data * ch)->int;
+   auto hands_used(unit_data * ch)->int;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -1295,12 +1295,12 @@ void do_steal(struct unit_data *ch, char *arg, const struct command_info *cmd)
    send_done(ch, obj, vict, hm, cmd, oarg);
 }
 
-void base_rescue(struct unit_data *ch, struct unit_data *vict)
+void base_rescue(unit_data *ch, unit_data *vict)
 {
-   struct unit_data *tmp_ch;
-   int               hm;
-   int               skilla;
-   int               skillb;
+   unit_data *tmp_ch;
+   int        hm;
+   int        skilla;
+   int        skillb;
 
    if(vict == ch)
    {
@@ -1382,13 +1382,13 @@ void base_rescue(struct unit_data *ch, struct unit_data *vict)
    }
 }
 
-void do_rescue(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_rescue(unit_data *ch, char *arg, const struct command_info *cmd)
 /*
  * coded: Wed Jul  8 00:21:38 MET DST 1992
  * tested: No
  */
 {
-   struct unit_data *vict;
+   unit_data *vict;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -1406,18 +1406,18 @@ void do_rescue(struct unit_data *ch, char *arg, const struct command_info *cmd)
    base_rescue(ch, vict);
 }
 
-void do_bash(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_bash(unit_data *ch, char *arg, const struct command_info *cmd)
 /*
  * coded:Wed Jul  8 00:23:59 MET DST 1992 [HH]
  * tested: No
  */
 {
-   struct unit_data *vict;
-   struct unit_data *shield;
-   int               hm;
-   int               att_skill;
-   int               def_skill;
-   char             *oarg = arg;
+   unit_data *vict;
+   unit_data *shield;
+   int        hm;
+   int        att_skill;
+   int        def_skill;
+   char      *oarg = arg;
 
    att_skill = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_BASH) : CHAR_STR(ch);
 
@@ -1495,7 +1495,7 @@ void do_bash(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_search(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_search(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    int                        dir;
    int                        skill;

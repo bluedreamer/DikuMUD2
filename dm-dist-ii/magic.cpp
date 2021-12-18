@@ -50,7 +50,7 @@
 #include <climits>
 
 /* Extern structures */
-extern struct unit_data *unit_list;
+extern unit_data *unit_list;
 
 /* Returns TRUE when effect is shown by DIL */
 
@@ -129,7 +129,7 @@ auto dil_effect(const char *pStr, struct spell_args *sa) -> int
 /* This procedure uses mana from a medium */
 /* returns TRUE if ok, and FALSE if there was not enough mana.  */
 /* wands and staffs uses one charge, no matter what 'mana' is. --HHS */
-auto use_mana(struct unit_data *medium, int mana) -> bool
+auto use_mana(unit_data *medium, int mana) -> bool
 {
    if(IS_CHAR(medium))
    {
@@ -164,7 +164,7 @@ auto use_mana(struct unit_data *medium, int mana) -> bool
 }
 
 /* Determines if healing combat mana should be cast?? */
-auto cast_magic_now(struct unit_data *ch, int mana) -> bool
+auto cast_magic_now(unit_data *ch, int mana) -> bool
 {
    int hleft;
    int sleft;
@@ -214,7 +214,7 @@ auto variation(int num, int d, int u) -> int
 
 /* See if unit is allowed to be transferred away from its surroundings */
 /* i.e. if a player is allowed to transfer out of jail, etc.           */
-auto may_teleport_away(struct unit_data *unit) -> bool
+auto may_teleport_away(unit_data *unit) -> bool
 {
    if(IS_SET(UNIT_FLAGS(unit), UNIT_FL_NO_TELEPORT))
    {
@@ -233,7 +233,7 @@ auto may_teleport_away(struct unit_data *unit) -> bool
 }
 
 /* See if unit is allowed to be transferred to 'dest' */
-auto may_teleport_to(struct unit_data *unit, struct unit_data *dest) -> bool
+auto may_teleport_to(unit_data *unit, unit_data *dest) -> bool
 {
    if(unit == dest || IS_SET(UNIT_FLAGS(dest), UNIT_FL_NO_TELEPORT) || (unit_recursive(unit, dest) != 0) ||
       UNIT_WEIGHT(unit) + UNIT_WEIGHT(dest) > UNIT_CAPACITY(dest))
@@ -253,14 +253,14 @@ auto may_teleport_to(struct unit_data *unit, struct unit_data *dest) -> bool
 }
 
 /* See if unit is allowed to be transferred to 'dest' */
-auto may_teleport(struct unit_data *unit, struct unit_data *dest) -> bool
+auto may_teleport(unit_data *unit, unit_data *dest) -> bool
 {
    return (static_cast<bool>(may_teleport_away(unit) != 0u) && (may_teleport_to(unit, dest)) != 0u);
 }
 
 /* ===================================================================== */
 
-auto object_power(struct unit_data *unit) -> int
+auto object_power(unit_data *unit) -> int
 {
    if(IS_OBJ(unit))
    {
@@ -276,7 +276,7 @@ auto object_power(struct unit_data *unit) -> int
    }
 }
 
-auto room_power(struct unit_data *unit) -> int
+auto room_power(unit_data *unit) -> int
 {
    if(IS_ROOM(unit))
    {
@@ -288,7 +288,7 @@ auto room_power(struct unit_data *unit) -> int
 /* Return how well a unit defends itself against a spell, by using */
 /* its skill (not its power) - That is the group (or attack).      */
 /*                                                                 */
-auto spell_defense_skill(struct unit_data *unit, int spell) -> int
+auto spell_defense_skill(unit_data *unit, int spell) -> int
 {
    int max;
 
@@ -355,7 +355,7 @@ auto spell_defense_skill(struct unit_data *unit, int spell) -> int
 /* Return how well a unit attacks with a spell, by using its skill */
 /* (not its power).                                                */
 /*                                                                 */
-auto spell_attack_skill(struct unit_data *unit, int spell) -> int
+auto spell_attack_skill(unit_data *unit, int spell) -> int
 {
    if(IS_PC(unit))
    {
@@ -381,7 +381,7 @@ auto spell_attack_skill(struct unit_data *unit, int spell) -> int
 
 /* Return the power in a unit for a given spell type     */
 /* For CHAR's determine if Divine or Magic power is used */
-auto spell_attack_ability(struct unit_data *medium, int spell) -> int
+auto spell_attack_ability(unit_data *medium, int spell) -> int
 {
    if(IS_CHAR(medium))
    {
@@ -394,7 +394,7 @@ auto spell_attack_ability(struct unit_data *medium, int spell) -> int
    return spell_attack_skill(medium, spell);
 }
 
-auto spell_ability(struct unit_data *u, int ability, int spell) -> int
+auto spell_ability(unit_data *u, int ability, int spell) -> int
 {
    if(IS_CHAR(u))
    {
@@ -409,7 +409,7 @@ auto spell_ability(struct unit_data *u, int ability, int spell) -> int
 /* else. These are typically aggressive spells like 'sleep' etc. where */
 /* the defender is entiteled a saving throw.                           */
 /*                                                                     */
-auto spell_resistance(struct unit_data *att, struct unit_data *def, int spell) -> int
+auto spell_resistance(unit_data *att, unit_data *def, int spell) -> int
 {
    if(IS_CHAR(att) && IS_CHAR(def))
    {
@@ -424,7 +424,7 @@ auto spell_resistance(struct unit_data *att, struct unit_data *def, int spell) -
 /* skill/ability when casting a spell. For example healing spells */
 /* create food etc.                                               */
 /* Returns how well it went "100" is perfect > better.            */
-auto spell_cast_check(struct unit_data *att, int spell) -> int
+auto spell_cast_check(unit_data *att, int spell) -> int
 {
    return resistance_skill_check(spell_attack_ability(att, spell), 0, spell_attack_skill(att, spell), 0);
 }
@@ -437,17 +437,17 @@ auto spell_cast_check(struct unit_data *att, int spell) -> int
 /* of each spell                                             */
 auto spell_offensive(struct spell_args *sa, int spell_number, int bonus) -> int
 {
-   int               def_shield_bonus;
-   int               armour_type;
-   int               hit_loc;
-   int               roll;
-   int               bEffect;
-   struct unit_data *def_shield;
+   int        def_shield_bonus;
+   int        armour_type;
+   int        hit_loc;
+   int        roll;
+   int        bEffect;
+   unit_data *def_shield;
 
-   auto spell_bonus(struct unit_data * att, struct unit_data * medium, struct unit_data * def, int hit_loc, int spell_number,
-                    int *pDef_armour_type, struct unit_data **pDef_armour)
+   auto spell_bonus(unit_data * att, unit_data * medium, unit_data * def, int hit_loc, int spell_number, int *pDef_armour_type,
+                    unit_data **pDef_armour)
       ->int;
-   void damage_object(struct unit_data * ch, struct unit_data * obj, int dam);
+   void damage_object(unit_data * ch, unit_data * obj, int dam);
 
    /* Does the spell perhaps only hit head / body? All?? Right now I
       do it randomly */

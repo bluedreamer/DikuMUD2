@@ -57,9 +57,9 @@
    target is optional intended target.
    spl is the originating spell. */
 
-auto random_room() -> struct unit_data *
+auto random_room() -> unit_data *
 {
-   struct unit_data       *room = nullptr;
+   unit_data              *room = nullptr;
    struct zone_type       *zone;
    struct file_index_type *fi;
    int                     no;
@@ -92,10 +92,10 @@ auto random_room() -> struct unit_data *
    return nullptr;
 }
 
-auto random_npc() -> struct unit_data *
+auto random_npc() -> unit_data *
 {
-   struct unit_data *u;
-   int               i;
+   unit_data *u;
+   int        i;
 
    extern int world_nochars;
 
@@ -112,19 +112,19 @@ auto random_npc() -> struct unit_data *
    return nullptr;
 }
 
-auto random_pc() -> struct unit_data *
+auto random_pc() -> unit_data *
 {
    return nullptr;
 }
 
-auto random_char() -> struct unit_data *
+auto random_char() -> unit_data *
 {
    return nullptr;
 }
 
-void summon_attack_npc(struct unit_data *caster, int n)
+void summon_attack_npc(unit_data *caster, int n)
 {
-   struct unit_data *u;
+   unit_data *u;
 
    for(; n > 0; n--)
    {
@@ -144,13 +144,13 @@ void summon_attack_npc(struct unit_data *caster, int n)
    }
 }
 
-void rift_failure(struct unit_data *caster, struct unit_data *target)
+void rift_failure(unit_data *caster, unit_data *target)
 {
    struct spell_args sa;
 
    int i = number(1, 100);
 
-   extern struct unit_data *void_room;
+   extern unit_data *void_room;
 
    act("You cause a great disturbance in the powers of magic.", A_ALWAYS, caster, nullptr, nullptr, TO_CHAR);
    act("$1n causes a great disturbance in the powers of magic.", A_ALWAYS, caster, nullptr, nullptr, TO_ROOM);
@@ -209,7 +209,7 @@ void rift_failure(struct unit_data *caster, struct unit_data *target)
 
 void spell_clear_skies(struct spell_args *sa)
 {
-   struct unit_data *room = unit_room(sa->caster);
+   unit_data *room = unit_room(sa->caster);
 
    if((sa->hm / 20 <= 0) || ((IS_SET(UNIT_FLAGS(room), UNIT_FL_NO_WEATHER | UNIT_FL_INDOORS)) != 0))
    {
@@ -225,7 +225,7 @@ void spell_clear_skies(struct spell_args *sa)
 
 void spell_storm_call(struct spell_args *sa)
 {
-   struct unit_data *room = unit_room(sa->caster);
+   unit_data *room = unit_room(sa->caster);
 
    if((sa->hm / 20 <= 0) || ((IS_SET(UNIT_FLAGS(room), UNIT_FL_NO_WEATHER | UNIT_FL_INDOORS)) != 0))
    {
@@ -241,7 +241,7 @@ void spell_storm_call(struct spell_args *sa)
 
 void spell_random_teleport(struct spell_args *sa)
 {
-   struct unit_data *room;
+   unit_data *room;
 
    if((room = random_room()) == nullptr)
    {
@@ -300,7 +300,7 @@ void spell_random_teleport(struct spell_args *sa)
 void spell_transport(struct spell_args *sa)
 {
    /* This spell is alot harder to get off successfull */
-   struct unit_data *room;
+   unit_data *room;
 
    room = unit_room(sa->caster);
    assert(room);
@@ -365,7 +365,7 @@ void spell_transport(struct spell_args *sa)
 void spell_control_teleport(struct spell_args *sa)
 {
    /* This spell is alot harder to get off successfull */
-   struct unit_data *room;
+   unit_data *room;
 
    room = unit_room(sa->caster);
    assert(room);
@@ -420,8 +420,8 @@ void spell_control_teleport(struct spell_args *sa)
 void spell_undead_door(struct spell_args *sa)
 {
    /* This spell is alot harder to get off successfull */
-   struct unit_data *roomf;
-   struct unit_data *roomt;
+   unit_data *roomf;
+   unit_data *roomt;
 
    roomf = unit_room(sa->caster);
    roomt = unit_room(sa->target);
@@ -475,7 +475,7 @@ void spell_undead_door(struct spell_args *sa)
 
 void spell_summon_char_1(struct spell_args *sa)
 {
-   struct unit_data *room;
+   unit_data *room;
 
    if(CHAR_LEVEL(sa->target) > CHAR_LEVEL(sa->caster))
    {
@@ -551,7 +551,7 @@ void spell_summon_char_1(struct spell_args *sa)
 
 void spell_summon_char_2(struct spell_args *sa)
 {
-   struct unit_data *room;
+   unit_data *room;
 
    if(sa->hm < 0)
    {
@@ -623,8 +623,8 @@ void spell_summon_char_2(struct spell_args *sa)
 void spell_animate_dead(struct spell_args *sa)
 {
    extern struct file_index_type *zombie_fi;
-   struct unit_data              *u;
-   struct unit_data              *zombie;
+   unit_data                     *u;
+   unit_data                     *zombie;
    char                           buf[1024];
 
    if(OBJ_TYPE(sa->target) != ITEM_CONTAINER || (affected_by_spell(sa->target, ID_CORPSE) == nullptr))
@@ -732,8 +732,8 @@ void spell_invisibility(struct spell_args *sa)
 
 void spell_wizard_eye(struct spell_args *sa)
 {
-   struct unit_data *pOrgUnit;
-   struct unit_data *pTo;
+   unit_data *pOrgUnit;
+   unit_data *pTo;
 
    if(!UNIT_IN(sa->target))
    {
@@ -810,7 +810,7 @@ void spell_confusion(struct spell_args *sa)
 
 void spell_xray_vision(struct spell_args *sa)
 {
-   struct unit_data *u;
+   unit_data *u;
 
    if(sa->hm < 0)
    {

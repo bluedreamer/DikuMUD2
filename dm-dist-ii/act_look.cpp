@@ -84,7 +84,7 @@ struct look_msg
    int   cnt;
 };
 
-void show_char_to_char_trans_cont(char *b, struct unit_data *i, struct unit_data *ch);
+void show_char_to_char_trans_cont(char *b, unit_data *i, unit_data *ch);
 
 /* To free, call with NULL msg. */
 auto add_to_look_list(struct looklist_type *list, char *msg) -> struct looklist_type *
@@ -151,7 +151,7 @@ auto add_to_look_list(struct looklist_type *list, char *msg) -> struct looklist_
    return list;
 }
 
-void send_looklist(struct looklist_type *list, struct unit_data *ch)
+void send_looklist(struct looklist_type *list, unit_data *ch)
 {
    int  i;
    char buf[20];
@@ -167,7 +167,7 @@ void send_looklist(struct looklist_type *list, struct unit_data *ch)
    }
 }
 
-auto single_unit_messg(struct unit_data *unit, const char *type, const char *pSubStr, const char *mesg) -> const char *
+auto single_unit_messg(unit_data *unit, const char *type, const char *pSubStr, const char *mesg) -> const char *
 {
    struct extra_descr_data *exd = UNIT_EXTRA_DESCR(unit);
 
@@ -196,7 +196,7 @@ auto single_unit_messg(struct unit_data *unit, const char *type, const char *pSu
    return mesg;
 }
 
-void unit_messg(struct unit_data *ch, struct unit_data *unit, const char *type, const char *mesg_s, const char *mesg_o)
+void unit_messg(unit_data *ch, unit_data *unit, const char *type, const char *mesg_s, const char *mesg_o)
 {
    struct extra_descr_data *exd = nullptr;
    const char              *c;
@@ -217,7 +217,7 @@ void unit_messg(struct unit_data *ch, struct unit_data *unit, const char *type, 
 }
 
 /* Assume unit is a char */
-void cat_char_effects(struct unit_data *ch, struct unit_data *unit, char *buf)
+void cat_char_effects(unit_data *ch, unit_data *unit, char *buf)
 {
    assert(IS_CHAR(unit));
 
@@ -236,7 +236,7 @@ void cat_char_effects(struct unit_data *ch, struct unit_data *unit, char *buf)
    /* Detect Life is elsewhere */
 }
 
-void cat_obj_effects(struct unit_data *ch, struct unit_data *unit, char *buf)
+void cat_obj_effects(unit_data *ch, unit_data *unit, char *buf)
 {
    assert(IS_OBJ(unit));
 
@@ -247,7 +247,7 @@ void cat_obj_effects(struct unit_data *ch, struct unit_data *unit, char *buf)
    }
 }
 
-void cat_unit_effects(struct unit_data *ch, struct unit_data *unit, char *buf)
+void cat_unit_effects(unit_data *ch, unit_data *unit, char *buf)
 {
    if(IS_SET(CHAR_FLAGS(ch), CHAR_DETECT_ALIGN))
    {
@@ -296,7 +296,7 @@ void cat_unit_effects(struct unit_data *ch, struct unit_data *unit, char *buf)
 
 /* This is called from locations when doing inventory, looking, walking */
 /* etc. to see obvious effects (a torch is lit, etc.)                   */
-void cat_passing_effects(struct unit_data *ch, struct unit_data *unit, char *buf)
+void cat_passing_effects(unit_data *ch, unit_data *unit, char *buf)
 {
    if(UNIT_MINV(unit))
    {
@@ -312,7 +312,7 @@ void cat_passing_effects(struct unit_data *ch, struct unit_data *unit, char *buf
    }
 }
 
-void show_examine_aura(struct unit_data *ch, struct unit_data *unit)
+void show_examine_aura(unit_data *ch, unit_data *unit)
 {
    char buf[1024];
 
@@ -335,7 +335,7 @@ void show_examine_aura(struct unit_data *ch, struct unit_data *unit)
    }
 }
 
-void show_obj_to_char_lookat(struct unit_data *obj, struct unit_data *ch, int extra)
+void show_obj_to_char_lookat(unit_data *obj, unit_data *ch, int extra)
 {
    if(affected_by_spell(obj, ID_REWARD) != nullptr)
    {
@@ -352,10 +352,10 @@ void show_obj_to_char_lookat(struct unit_data *obj, struct unit_data *ch, int ex
    }
 }
 
-void show_obj_to_char_trans_cont(char *b, struct unit_data *obj, struct unit_data *ch)
+void show_obj_to_char_trans_cont(char *b, unit_data *obj, unit_data *ch)
 {
-   int               anything = FALSE;
-   struct unit_data *c;
+   int        anything = FALSE;
+   unit_data *c;
 
    assert(IS_OBJ(obj));
 
@@ -394,7 +394,7 @@ void show_obj_to_char_trans_cont(char *b, struct unit_data *obj, struct unit_dat
    }
 }
 
-void show_obj_to_char_blank(char *buffer, struct unit_data *obj, struct unit_data *ch)
+void show_obj_to_char_blank(char *buffer, unit_data *obj, unit_data *ch)
 {
    *buffer = 0;
 
@@ -410,7 +410,7 @@ void show_obj_to_char_blank(char *buffer, struct unit_data *obj, struct unit_dat
    show_obj_to_char_trans_cont(buffer, obj, ch);
 }
 
-void show_obj_to_char_inv(char *buffer, struct unit_data *obj, struct unit_data *ch)
+void show_obj_to_char_inv(char *buffer, unit_data *obj, unit_data *ch)
 {
    assert(IS_OBJ(obj));
 
@@ -435,7 +435,7 @@ void show_obj_to_char_inv(char *buffer, struct unit_data *obj, struct unit_data 
 }
 
 /* When passing <char> in a room      */
-void show_char_to_char_blank(char *buffer, struct unit_data *i, struct unit_data *ch)
+void show_char_to_char_blank(char *buffer, unit_data *i, unit_data *ch)
 {
    *buffer = 0;
 
@@ -580,10 +580,10 @@ void show_char_to_char_blank(char *buffer, struct unit_data *i, struct unit_data
    }
 }
 
-void show_char_to_char_trans_cont(char *b, struct unit_data *i, struct unit_data *ch)
+void show_char_to_char_trans_cont(char *b, unit_data *i, unit_data *ch)
 {
-   struct unit_data *c;
-   int               anything = FALSE;
+   unit_data *c;
+   int        anything = FALSE;
 
    assert(IS_CHAR(i));
 
@@ -626,7 +626,7 @@ void show_char_to_char_trans_cont(char *b, struct unit_data *i, struct unit_data
 
 /* When with a char in something not a room                */
 /* ch looks at "i" */
-void show_char_to_char_trans(char *buffer, struct unit_data *i, struct unit_data *ch)
+void show_char_to_char_trans(char *buffer, unit_data *i, unit_data *ch)
 {
    if(ch == i || (!CHAR_HAS_FLAG(ch, CHAR_DETECT_LIFE) && !CHAR_CAN_SEE(ch, i)))
    {
@@ -644,7 +644,7 @@ void show_char_to_char_trans(char *buffer, struct unit_data *i, struct unit_data
 }
 
 /* When in inventory                                       */
-void show_char_to_char_inv(char *buffer, struct unit_data *i, struct unit_data *ch)
+void show_char_to_char_inv(char *buffer, unit_data *i, unit_data *ch)
 {
    if(ch == i || (!CHAR_HAS_FLAG(ch, CHAR_DETECT_LIFE) && !CHAR_CAN_SEE(ch, i)))
    {
@@ -658,10 +658,10 @@ void show_char_to_char_inv(char *buffer, struct unit_data *i, struct unit_data *
 }
 
 /* When 'look at <char>'                                   */
-void show_char_to_char_lookat(struct unit_data *i, struct unit_data *ch)
+void show_char_to_char_lookat(unit_data *i, unit_data *ch)
 {
-   char              buffer[MAX_STRING_LENGTH];
-   struct unit_data *unit;
+   char       buffer[MAX_STRING_LENGTH];
+   unit_data *unit;
 
    if(ch == i || (!CHAR_HAS_FLAG(ch, CHAR_DETECT_LIFE) && !CHAR_CAN_SEE(ch, i)))
    {
@@ -692,7 +692,7 @@ void show_char_to_char_lookat(struct unit_data *i, struct unit_data *ch)
    }
 }
 
-auto list_obj_to_char(struct unit_data *i, struct unit_data *ch, bool show) -> int
+auto list_obj_to_char(unit_data *i, unit_data *ch, bool show) -> int
 {
    char                  buf[MAX_STRING_LENGTH];
    struct looklist_type *list = nullptr;
@@ -719,7 +719,7 @@ auto list_obj_to_char(struct unit_data *i, struct unit_data *ch, bool show) -> i
    return static_cast<int>(list != nullptr);
 }
 
-auto list_char_to_char(struct unit_data *i, struct unit_data *ch) -> int
+auto list_char_to_char(unit_data *i, unit_data *ch) -> int
 {
    char                  buffer[MAX_STRING_LENGTH];
    struct looklist_type *list = nullptr;
@@ -745,10 +745,10 @@ auto list_char_to_char(struct unit_data *i, struct unit_data *ch) -> int
    return static_cast<int>(list != nullptr);
 }
 
-auto list_room_to_char(struct unit_data *list, struct unit_data *ch) -> int
+auto list_room_to_char(unit_data *list, unit_data *ch) -> int
 {
-   struct unit_data *i;
-   int               found = FALSE;
+   unit_data *i;
+   int        found = FALSE;
 
    for(i = list; i != nullptr; i = i->next)
    {
@@ -763,10 +763,10 @@ auto list_room_to_char(struct unit_data *list, struct unit_data *ch) -> int
    return found;
 }
 
-void list_contents(struct unit_data *ch, struct unit_data *unit, int show)
+void list_contents(unit_data *ch, unit_data *unit, int show)
 {
    char                  buffer[MAX_STRING_LENGTH];
-   struct unit_data     *i;
+   unit_data            *i;
    struct looklist_type *list = nullptr;
 
    for(i = unit; i != nullptr; i = i->next)
@@ -797,12 +797,12 @@ void list_contents(struct unit_data *ch, struct unit_data *unit, int show)
    }
 }
 
-static void look_dir(struct unit_data *ch, int keyword_no)
+static void look_dir(unit_data *ch, int keyword_no)
 {
-   struct unit_data        *room = UNIT_IN(ch);
+   unit_data               *room = UNIT_IN(ch);
    struct extra_descr_data *pExd;
 
-   auto has_found_door(struct unit_data * pc, int dir)->int;
+   auto has_found_door(unit_data * pc, int dir)->int;
 
    if(!IS_ROOM(room))
    {
@@ -844,9 +844,9 @@ static void look_dir(struct unit_data *ch, int keyword_no)
    }
 }
 
-static void look_in(struct unit_data *ch, char *arg, const struct command_info *cmd)
+static void look_in(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *unit;
+   unit_data *unit;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -949,9 +949,9 @@ static void look_in(struct unit_data *ch, char *arg, const struct command_info *
    }
 }
 
-static void look_at(struct unit_data *ch, char *arg, const struct command_info *cmd)
+static void look_at(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data        *unit;
+   unit_data               *unit;
    struct extra_descr_data *ed;
    char                    *b = arg;
    char                    *c;
@@ -977,8 +977,8 @@ static void look_at(struct unit_data *ch, char *arg, const struct command_info *
       {
          if(IS_CHAR(unit))
          {
-            struct unit_data *target = nullptr;
-            target                   = find_unit_general(ch, unit, &b, nullptr, FIND_UNIT_EQUIP);
+            unit_data *target = nullptr;
+            target            = find_unit_general(ch, unit, &b, nullptr, FIND_UNIT_EQUIP);
             if(target != nullptr)
             {
                /* describe the object in the unit */
@@ -1006,7 +1006,7 @@ static void look_at(struct unit_data *ch, char *arg, const struct command_info *
          /* locate extra descr. */
          if((ed = unit_find_extra(b, unit)) != nullptr)
          {
-            struct unit_data *eq = nullptr;
+            unit_data *eq = nullptr;
 
             /* now generate relevant equip descr. */
             fnd = 0;
@@ -1107,7 +1107,7 @@ static void look_at(struct unit_data *ch, char *arg, const struct command_info *
       unit = find_unit(ch, &b, nullptr, FIND_UNIT_HERE);
    }
 
-   struct unit_data *target;
+   unit_data *target;
 
    /* If there are no units with the given name, we must */
    /* assume that the look was upon an extra description */
@@ -1259,7 +1259,7 @@ static void look_at(struct unit_data *ch, char *arg, const struct command_info *
    }
 }
 
-static void look_exits(struct unit_data *ch)
+static void look_exits(unit_data *ch)
 {
    if(!IS_PC(ch))
    {
@@ -1271,11 +1271,11 @@ static void look_exits(struct unit_data *ch)
       return;
    }
 
-   int               door;
-   int               found                  = FALSE;
-   char              buf[MAX_STRING_LENGTH] = "";
-   char             *b                      = buf;
-   struct unit_data *room;
+   int        door;
+   int        found                  = FALSE;
+   char       buf[MAX_STRING_LENGTH] = "";
+   char      *b                      = buf;
+   unit_data *room;
 
    const char *exits[] = {"North", "East", "South", "West", "Up", "Down"};
 
@@ -1332,7 +1332,7 @@ static void look_exits(struct unit_data *ch)
    send_to_char(buf, ch);
 }
 
-static void look_blank(struct unit_data *ch, const struct command_info *cmd)
+static void look_blank(unit_data *ch, const struct command_info *cmd)
 {
    char buffer[MAX_STRING_LENGTH];
 
@@ -1390,7 +1390,7 @@ static void look_blank(struct unit_data *ch, const struct command_info *cmd)
       /* show unit, the surrounding unit is in */
       if(UNIT_IS_TRANSPARENT(UNIT_IN(ch)))
       {
-         struct unit_data *room = UNIT_IN(UNIT_IN(ch));
+         unit_data *room = UNIT_IN(UNIT_IN(ch));
 
          send_to_char("\n\r", ch);
 
@@ -1436,7 +1436,7 @@ static void look_blank(struct unit_data *ch, const struct command_info *cmd)
    send_done(ch, nullptr, nullptr, 0, cmd, "");
 }
 
-void do_look(struct unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_look(unit_data *ch, char *aaa, const struct command_info *cmd)
 {
    char *arg = (char *)aaa;
    if(!CHAR_DESCRIPTOR(ch))
@@ -1530,7 +1530,7 @@ void do_look(struct unit_data *ch, char *aaa, const struct command_info *cmd)
 }
 /* end of look */
 
-void do_read(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_read(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    if(str_is_empty(arg) != 0u)
    {
@@ -1569,11 +1569,11 @@ void do_read(struct unit_data *ch, char *arg, const struct command_info *cmd)
 #endif
 }
 
-void do_examine(struct unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_examine(unit_data *ch, char *aaa, const struct command_info *cmd)
 {
-   char             *arg = (char *)aaa;
-   char             *b;
-   struct unit_data *unit;
+   char      *arg = (char *)aaa;
+   char      *b;
+   unit_data *unit;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -1602,10 +1602,10 @@ void do_examine(struct unit_data *ch, char *aaa, const struct command_info *cmd)
    }
 }
 
-void do_inventory(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_inventory(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    char                  buffer[MAX_STRING_LENGTH];
-   struct unit_data     *thing;
+   unit_data            *thing;
    struct looklist_type *list = nullptr;
 
    send_to_char("You are carrying:\n\r", ch);
@@ -1645,11 +1645,11 @@ void do_inventory(struct unit_data *ch, char *arg, const struct command_info *cm
    }
 }
 
-void do_equipment(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_equipment(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   char              buf[MAX_STRING_LENGTH];
-   struct unit_data *thing;
-   bool              found;
+   char       buf[MAX_STRING_LENGTH];
+   unit_data *thing;
+   bool       found;
 
    send_to_char("You are using:\n\r", ch);
    found = FALSE;

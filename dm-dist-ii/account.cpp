@@ -51,9 +51,9 @@ static int32_t day_charge[7][TIME_GRANULARITY];
 
 static int next_crc = 0;
 
- CAccountConfig g_cAccountConfig;
+CAccountConfig g_cAccountConfig;
 
-void account_cclog( unit_data *ch, int amount)
+void account_cclog(unit_data *ch, int amount)
 {
    FILE *f;
 
@@ -64,7 +64,7 @@ void account_cclog( unit_data *ch, int amount)
    fclose(f);
 }
 
-static void account_log(char action,  unit_data *god,  unit_data *pc, int amount)
+static void account_log(char action, unit_data *god, unit_data *pc, int amount)
 {
    time_t   now = time(nullptr);
    char    *c;
@@ -139,7 +139,7 @@ auto time_to_index(uint8_t hours, uint8_t minutes) -> int
    return ((hours * 60) + minutes) / MINUTE_GRANULARITY;
 }
 
-void account_local_stat(const unit_data *ch,  unit_data *u)
+void account_local_stat(const unit_data *ch, unit_data *u)
 {
    if(g_cServerConfig.m_bAccounting == 0)
    {
@@ -187,7 +187,7 @@ void account_local_stat(const unit_data *ch,  unit_data *u)
    send_to_char(buf, ch);
 }
 
-void account_global_stat(const  unit_data *ch)
+void account_global_stat(const unit_data *ch)
 {
    char  buf[100 * TIME_GRANULARITY];
    char *b;
@@ -237,7 +237,7 @@ void account_global_stat(const  unit_data *ch)
    page_string(CHAR_DESCRIPTOR(ch), buf);
 }
 
-void account_overdue(const  unit_data *ch)
+void account_overdue(const unit_data *ch)
 {
    int i;
    int j;
@@ -273,12 +273,12 @@ void account_overdue(const  unit_data *ch)
    }
 }
 
-void account_paypoint( unit_data *ch)
+void account_paypoint(unit_data *ch)
 {
    send_to_char(g_cAccountConfig.m_pPaypointMessage, ch);
 }
 
-void account_closed( unit_data *ch)
+void account_closed(unit_data *ch)
 {
    if(g_cServerConfig.m_bAccounting != 0)
    {
@@ -299,7 +299,7 @@ static auto seconds_used(uint8_t bhr, uint8_t bmi, uint8_t bse, uint8_t ehr, uin
    return secs;
 }
 
-static auto tm_less_than( tm *b,  tm *e) -> int
+static auto tm_less_than(tm *b, tm *e) -> int
 {
    if(b->tm_wday != e->tm_wday)
    {
@@ -329,12 +329,12 @@ static auto tm_less_than( tm *b,  tm *e) -> int
    return TRUE;
 }
 
-static void account_calc( unit_data *pc,  tm *b,  tm *e)
+static void account_calc(unit_data *pc, tm *b, tm *e)
 {
-   int       bidx;
-   int       eidx;
-    tm t;
-   uint32_t  secs;
+   int      bidx;
+   int      eidx;
+   tm       t;
+   uint32_t secs;
 
    if(PC_ACCOUNT(pc).flatrate > (uint32_t)time(nullptr))
    {
@@ -410,7 +410,7 @@ static void account_calc( unit_data *pc,  tm *b,  tm *e)
    }
 }
 
-void account_subtract( unit_data *pc, time_t from, time_t to)
+void account_subtract(unit_data *pc, time_t from, time_t to)
 {
    struct tm bt;
    struct tm et;
@@ -439,7 +439,7 @@ void account_subtract( unit_data *pc, time_t from, time_t to)
    account_calc(pc, &bt, &et);
 }
 
-auto account_is_overdue(const  unit_data *ch) -> int
+auto account_is_overdue(const unit_data *ch) -> int
 {
    if((g_cServerConfig.m_bAccounting != 0) && (CHAR_LEVEL(ch) < g_cAccountConfig.m_nFreeFromLevel))
    {
@@ -454,7 +454,7 @@ auto account_is_overdue(const  unit_data *ch) -> int
    return FALSE;
 }
 
-static void account_status(const  unit_data *ch)
+static void account_status(const unit_data *ch)
 {
    char     Buf[256];
    int      j;
@@ -534,7 +534,7 @@ static void account_status(const  unit_data *ch)
    }
 }
 
-auto account_is_closed( unit_data *ch) -> int
+auto account_is_closed(unit_data *ch) -> int
 {
    int i;
    int j;
@@ -555,7 +555,7 @@ auto account_is_closed( unit_data *ch) -> int
    return FALSE;
 }
 
-void account_insert( unit_data *god,  unit_data *whom, uint32_t amount)
+void account_insert(unit_data *god, unit_data *whom, uint32_t amount)
 {
    PC_ACCOUNT(whom).credit += (float)amount;
    PC_ACCOUNT(whom).total_credit += amount;
@@ -564,7 +564,7 @@ void account_insert( unit_data *god,  unit_data *whom, uint32_t amount)
    account_log('I', god, whom, amount);
 }
 
-void account_withdraw(struct unit_data *god, struct unit_data *whom, uint32_t amount)
+void account_withdraw(unit_data *god, unit_data *whom, uint32_t amount)
 {
    PC_ACCOUNT(whom).credit -= (float)amount;
    if((uint32_t)amount > PC_ACCOUNT(whom).total_credit)
@@ -581,7 +581,7 @@ void account_withdraw(struct unit_data *god, struct unit_data *whom, uint32_t am
    account_log('W', god, whom, amount);
 }
 
-void account_flatrate_change( unit_data *god,  unit_data *whom, int32_t days)
+void account_flatrate_change(unit_data *god, unit_data *whom, int32_t days)
 {
    char    Buf[256];
    int32_t add = days * SECS_PER_REAL_DAY;
@@ -622,13 +622,13 @@ void account_flatrate_change( unit_data *god,  unit_data *whom, int32_t days)
    send_to_char(Buf, god);
 }
 
-void do_account( unit_data *ch, char *arg, const  command_info *cmd)
+void do_account(unit_data *ch, char *arg, const command_info *cmd)
 {
-   char              Buf[256];
-   char              word[MAX_INPUT_LENGTH];
-   struct unit_data *u;
-   struct unit_data *note;
-   char             *c = (char *)arg;
+   char       Buf[256];
+   char       word[MAX_INPUT_LENGTH];
+   unit_data *u;
+   unit_data *note;
+   char      *c = (char *)arg;
 
    const char *operations[] = {"insert", "withdraw", "limit", "discount", "flatrate", nullptr};
    int         i;
@@ -818,7 +818,7 @@ void do_account( unit_data *ch, char *arg, const  command_info *cmd)
    }
 }
 
-void account_defaults( unit_data *pc)
+void account_defaults(unit_data *pc)
 {
    PC_ACCOUNT(pc).credit       = g_cAccountConfig.m_nAccountFree;
    PC_ACCOUNT(pc).credit_limit = (int)g_cAccountConfig.m_nAccountLimit;

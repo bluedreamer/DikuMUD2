@@ -79,7 +79,7 @@ struct char_crime_data
 
 struct char_crime_data *crime_list = nullptr;
 
-void offend_legal_state(class unit_data *ch, class unit_data *victim)
+void offend_legal_state(unit_data *ch, unit_data *victim)
 {
    if(!IS_SET(CHAR_FLAGS(ch), CHAR_SELF_DEFENCE))
    {
@@ -163,10 +163,10 @@ auto npc_visit_room(struct spec_arg *sarg) -> int
 /* return to its original room                                      */
 /* The *data may be any datapointer which what_now can use          */
 /*                                                                  */
-void npc_set_visit(struct unit_data *npc, struct unit_data *dest_room, int what_now(const struct unit_data *, struct visit_data *),
-                   void *data, int non_tick_return)
+void npc_set_visit(unit_data *npc, unit_data *dest_room, int what_now(const unit_data *, struct visit_data *), void *data,
+                   int non_tick_return)
 {
-   struct unit_data  *u;
+   unit_data         *u;
    struct visit_data *vd;
    struct unit_fptr  *fp1;
    struct unit_fptr  *fp2;
@@ -252,14 +252,14 @@ auto new_crime_serial_no() -> int
    return crime_serial_no;
 }
 
-void set_reward_char(struct unit_data *ch, int crimes)
+void set_reward_char(unit_data *ch, int crimes)
 {
    struct unit_affected_type *paf;
    struct unit_affected_type  af;
    int                        xp   = 0;
    int                        gold = 0;
 
-   auto lose_exp(struct unit_data * ch)->int;
+   auto lose_exp(unit_data * ch)->int;
 
    /* Just to make sure in case anyone gets randomly rewarded */
    REMOVE_BIT(CHAR_FLAGS(ch), CHAR_PROTECTED);
@@ -297,11 +297,11 @@ void set_reward_char(struct unit_data *ch, int crimes)
    create_affect(ch, &af);
 }
 
-void set_witness(struct unit_data *criminal, struct unit_data *witness, int no, int type, int show = TRUE)
+void set_witness(unit_data *criminal, unit_data *witness, int no, int type, int show = TRUE)
 {
    struct unit_affected_type af;
 
-   void activate_accuse(struct unit_data * npc, uint8_t crime_type, const char *cname);
+   void activate_accuse(unit_data * npc, uint8_t crime_type, const char *cname);
 
    if(!IS_PC(criminal))
    {
@@ -346,7 +346,7 @@ void set_witness(struct unit_data *criminal, struct unit_data *witness, int no, 
    }
 }
 
-void add_crime(struct unit_data *criminal, struct unit_data *victim, int type)
+void add_crime(unit_data *criminal, unit_data *victim, int type)
 {
    struct char_crime_data *crime;
 
@@ -393,7 +393,7 @@ auto crime_victim_name(int crime_no, int id) -> const char *
    return "";
 }
 
-void log_crime(struct unit_data *criminal, struct unit_data *victim, uint8_t crime_type, int active)
+void log_crime(unit_data *criminal, unit_data *victim, uint8_t crime_type, int active)
 {
    int i;
    int j;
@@ -449,7 +449,7 @@ void log_crime(struct unit_data *criminal, struct unit_data *victim, uint8_t cri
 
 /* Got to have this loaded somewhere */
 
-void save_accusation(struct char_crime_data *crime, const struct unit_data *accuser)
+void save_accusation(struct char_crime_data *crime, const unit_data *accuser)
 {
    FILE *file;
 
@@ -462,12 +462,12 @@ void save_accusation(struct char_crime_data *crime, const struct unit_data *accu
    time_t t = time(nullptr);
 
    fprintf(file, "%5u  %4d  %4d %1d [%s]  [%s]   %12lu %s", crime->crime_nr, crime->id, crime->crime_type, crime->reported,
-           UNIT_NAME((struct unit_data *)accuser), crime->victim, t, ctime(&t));
+           UNIT_NAME((unit_data *)accuser), crime->victim, t, ctime(&t));
    fflush(file);
    /* Was fclose(file) */
 }
 
-static void crime_counter(struct unit_data *criminal, int incr, int first_accuse)
+static void crime_counter(unit_data *criminal, int incr, int first_accuse)
 {
    if((PC_CRIMES(criminal) + incr) / CRIME_NONPRO > PC_CRIMES(criminal) / CRIME_NONPRO)
    {
@@ -498,13 +498,13 @@ static void crime_counter(struct unit_data *criminal, int incr, int first_accuse
    }
 }
 
-static void update_criminal(const struct unit_data *deputy, const char *pPlyName, int pidx, struct char_crime_data *crime, int first_accuse)
+static void update_criminal(const unit_data *deputy, const char *pPlyName, int pidx, struct char_crime_data *crime, int first_accuse)
 {
-   struct unit_data *criminal = nullptr;
-   int               loaded   = FALSE;
-   int               incr;
+   unit_data *criminal = nullptr;
+   int        loaded   = FALSE;
+   int        incr;
 
-   void save_player_file(struct unit_data * pc);
+   void save_player_file(unit_data * pc);
 
    /* Modified find_descriptor */
    for(criminal = unit_list; criminal != nullptr; criminal = criminal->gnext)
@@ -709,7 +709,7 @@ struct npc_accuse_data
 /* For use with the walk.c system. When at captain accuse the criminal */
 /* and then return to previous duties                                  */
 /*                                                                     */
-auto npc_accuse(const struct unit_data *npc, struct visit_data *vd) -> int
+auto npc_accuse(const unit_data *npc, struct visit_data *vd) -> int
 {
    char                       str[80];
    struct unit_affected_type *af;
@@ -747,7 +747,7 @@ auto npc_accuse(const struct unit_data *npc, struct visit_data *vd) -> int
          {
             strcat(str, " stealing");
          }
-         command_interpreter((struct unit_data *)npc, str);
+         command_interpreter((unit_data *)npc, str);
          return SFR_BLOCK;
 
       case 1:
@@ -763,10 +763,10 @@ auto npc_accuse(const struct unit_data *npc, struct visit_data *vd) -> int
    return DESTROY_ME;
 }
 
-void activate_accuse(struct unit_data *npc, uint8_t crime_type, const char *cname)
+void activate_accuse(unit_data *npc, uint8_t crime_type, const char *cname)
 {
    struct npc_accuse_data *nad;
-   struct unit_data       *prison;
+   unit_data              *prison;
    struct unit_fptr       *fptr;
    struct visit_data      *vd;
 
@@ -813,7 +813,7 @@ void activate_accuse(struct unit_data *npc, uint8_t crime_type, const char *cnam
 /*                      A R R E S T   F U N C T I O N S                   */
 /* ---------------------------------------------------------------------- */
 
-static auto crime_in_progress(struct unit_data *att, struct unit_data *def) -> int
+static auto crime_in_progress(unit_data *att, unit_data *def) -> int
 {
    if((att != nullptr) && (def != nullptr))
    {
@@ -833,14 +833,14 @@ static auto crime_in_progress(struct unit_data *att, struct unit_data *def) -> i
 
 /* Help another friendly guard! :-) */
 /*                                  */
-auto guard_assist(const struct unit_data *npc, struct visit_data *vd) -> int
+auto guard_assist(const unit_data *npc, struct visit_data *vd) -> int
 {
    char mbuf[MAX_INPUT_LENGTH] = {0};
    switch(vd->state++)
    {
       case 0:
          strcpy(mbuf, "peer");
-         command_interpreter((struct unit_data *)npc, mbuf);
+         command_interpreter((unit_data *)npc, mbuf);
          return SFR_BLOCK;
 
       case 1: /* Just wait a little while... */
@@ -862,11 +862,11 @@ auto guard_assist(const struct unit_data *npc, struct visit_data *vd) -> int
 
 /* 'Guard' needs help. Call his friends... :-)   */
 /*                                               */
-void call_guards(struct unit_data *guard)
+void call_guards(unit_data *guard)
 {
    struct zone_type *zone;
    struct unit_fptr *fptr;
-   struct unit_data *u;
+   unit_data        *u;
    int               ok;
 
    if(!IS_ROOM(UNIT_IN(guard)))
@@ -977,7 +977,7 @@ auto whistle(struct spec_arg *sarg) -> int
 
    if(sarg->fptr->data != nullptr)
    {
-      if(scan4_ref(sarg->owner, (struct unit_data *)sarg->fptr->data) == nullptr)
+      if(scan4_ref(sarg->owner, (unit_data *)sarg->fptr->data) == nullptr)
       {
          sarg->fptr->data = nullptr;
       }
@@ -1008,9 +1008,9 @@ auto whistle(struct spec_arg *sarg) -> int
 
 auto reward_give(struct spec_arg *sarg) -> int
 {
-   void gain_exp(struct unit_data * ch, int gain);
+   void gain_exp(unit_data * ch, int gain);
 
-   struct unit_data          *u;
+   unit_data                 *u;
    struct unit_affected_type *paf;
    currency_t                 cur;
 
@@ -1052,7 +1052,7 @@ auto reward_give(struct spec_arg *sarg) -> int
 
 auto reward_board(struct spec_arg *sarg) -> int
 {
-   struct unit_data          *u;
+   unit_data                 *u;
    struct unit_affected_type *af    = nullptr;
    int                        found = FALSE;
    char                       buf[256];
@@ -1107,7 +1107,7 @@ auto reward_board(struct spec_arg *sarg) -> int
    return SFR_BLOCK;
 }
 
-void tif_reward_on(struct unit_affected_type *af, struct unit_data *unit)
+void tif_reward_on(struct unit_affected_type *af, unit_data *unit)
 {
    if(IS_CHAR(unit))
    {
@@ -1126,7 +1126,7 @@ void tif_reward_on(struct unit_affected_type *af, struct unit_data *unit)
    }
 }
 
-void tif_reward_off(struct unit_affected_type *af, struct unit_data *unit)
+void tif_reward_off(struct unit_affected_type *af, unit_data *unit)
 {
    if(IS_CHAR(unit))
    {

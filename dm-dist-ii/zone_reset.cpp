@@ -52,20 +52,20 @@ void event_enq(int when, void (*func)(), void *arg1, void *arg2);
 struct zone_type *boot_zone = nullptr; /* Points to the zone currently booted */
 
 /* No Operation */
-auto zone_nop(struct unit_data *u, struct zone_reset_cmd *cmd) -> struct unit_data *
+auto zone_nop(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
 {
    /* Return TRUE - NOP always succeedes */
 
-   return (struct unit_data *)boot_zone; /* dummy */
+   return (unit_data *)boot_zone; /* dummy */
 }
 
 /* Random */
-auto zone_random(struct unit_data *u, struct zone_reset_cmd *cmd) -> struct unit_data *
+auto zone_random(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
 {
    /* Return TRUE if random 0-99 less than given percent  */
    if(number(0, 99) < cmd->num[0])
    {
-      return (struct unit_data *)boot_zone; /* dummy */
+      return (unit_data *)boot_zone; /* dummy */
    }
    return NULL;
 }
@@ -73,7 +73,7 @@ auto zone_random(struct unit_data *u, struct zone_reset_cmd *cmd) -> struct unit
 /* Count ->no_in_zone for current 'boot_zone' (above) */
 void zone_update_no_in_zone()
 {
-   struct unit_data       *u;
+   unit_data              *u;
    struct file_index_type *fi;
    struct zone_type       *tmp_zone;
 
@@ -96,7 +96,7 @@ void zone_update_no_in_zone()
 }
 
 /* After loading a unit, call this function to update no_in_zone */
-void zone_loaded_a_unit(struct unit_data *u)
+void zone_loaded_a_unit(unit_data *u)
 {
    if(unit_zone(u) == boot_zone)
    {
@@ -108,10 +108,10 @@ void zone_loaded_a_unit(struct unit_data *u)
 /* num[1] is the max allowed existing in zone.              */
 /* num[2] is the max allowed existing in room (object)      */
 /* Return TRUE if conditions are met, FALSE otherwise       */
-auto zone_limit(struct unit_data *u, struct file_index_type *fi, struct zone_reset_cmd *cmd) -> bool
+auto zone_limit(unit_data *u, struct file_index_type *fi, struct zone_reset_cmd *cmd) -> bool
 {
-   struct unit_data *tmp;
-   int16_t           i;
+   unit_data *tmp;
+   int16_t    i;
 
    if(fi->type == UNIT_ST_NPC)
    {
@@ -166,9 +166,9 @@ auto zone_limit(struct unit_data *u, struct file_index_type *fi, struct zone_res
 /* fi[1] is room to place loaded unit in or 0 if a PUT command    */
 /* num[0] is the max allowed existing number (0 ignores) in world */
 /* num[1] is the max allowed locally existing number              */
-auto zone_load(struct unit_data *u, struct zone_reset_cmd *cmd) -> struct unit_data *
+auto zone_load(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
 {
-   struct unit_data *loaded = nullptr;
+   unit_data *loaded = nullptr;
 
    /* Destination */
    if((cmd->fi[1] != nullptr) && (cmd->fi[1]->room_ptr != nullptr))
@@ -210,9 +210,9 @@ auto zone_load(struct unit_data *u, struct zone_reset_cmd *cmd) -> struct unit_d
 /* fi[0] is unit to be loaded and equipped on parent unit.  */
 /* num[0] is the max allowed existing number (0 ignores)    */
 /* num[1] is equipment position                             */
-auto zone_equip(struct unit_data *u, struct zone_reset_cmd *cmd) -> struct unit_data *
+auto zone_equip(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
 {
-   struct unit_data *loaded = nullptr;
+   unit_data *loaded = nullptr;
 
    /* Does the destination unit exist */
    if(u == nullptr)
@@ -266,7 +266,7 @@ auto zone_equip(struct unit_data *u, struct zone_reset_cmd *cmd) -> struct unit_
 /* fi[0] is room in which the door is located.              */
 /* num[0] is the exit number (0..5)                         */
 /* num[1] is the new state                                  */
-auto zone_door(struct unit_data *u, struct zone_reset_cmd *cmd) -> struct unit_data *
+auto zone_door(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
 {
    if((cmd->fi == nullptr) || (cmd->fi[0]->room_ptr == nullptr))
    {
@@ -285,9 +285,9 @@ auto zone_door(struct unit_data *u, struct zone_reset_cmd *cmd) -> struct unit_d
 }
 
 /* fi[0] is the room to be purged.                          */
-auto zone_purge(struct unit_data *u, struct zone_reset_cmd *cmd) -> struct unit_data *
+auto zone_purge(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
 {
-   struct unit_data *next;
+   unit_data *next;
 
    if(cmd->fi[0]->room_ptr == nullptr)
    {
@@ -310,9 +310,9 @@ auto zone_purge(struct unit_data *u, struct zone_reset_cmd *cmd) -> struct unit_
 
 /* fi[0] is the thing(s) to be removed.                          */
 /* fi[1] is the room to remove from.                             */
-auto zone_remove(struct unit_data *u, struct zone_reset_cmd *cmd) -> struct unit_data *
+auto zone_remove(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
 {
-   struct unit_data *next;
+   unit_data *next;
 
    if(cmd->fi[1]->room_ptr == nullptr)
    {
@@ -338,9 +338,9 @@ auto zone_remove(struct unit_data *u, struct zone_reset_cmd *cmd) -> struct unit
 /* fi[1] -                                                        */
 /* num[0] is the max allowed existing number (0 ignores) in world */
 /* num[1] is the max allowed locally existing number              */
-auto zone_follow(struct unit_data *u, struct zone_reset_cmd *cmd) -> struct unit_data *
+auto zone_follow(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
 {
-   struct unit_data *loaded = nullptr;
+   unit_data *loaded = nullptr;
 
    /* Does the master exist */
    if(u == nullptr)
@@ -369,13 +369,13 @@ auto zone_follow(struct unit_data *u, struct zone_reset_cmd *cmd) -> struct unit
    return loaded;
 }
 
-struct unit_data *(*exec_zone_cmd[])(struct unit_data *, struct zone_reset_cmd *) = {zone_nop,   zone_load,   zone_equip,  zone_door,
-                                                                                     zone_purge, zone_remove, zone_follow, zone_random};
+unit_data *(*exec_zone_cmd[])(unit_data *, struct zone_reset_cmd *) = {zone_nop,   zone_load,   zone_equip,  zone_door,
+                                                                       zone_purge, zone_remove, zone_follow, zone_random};
 
-auto low_reset_zone(struct unit_data *u, struct zone_reset_cmd *cmd) -> bool
+auto low_reset_zone(unit_data *u, struct zone_reset_cmd *cmd) -> bool
 {
-   struct unit_data *success;
-   bool              ok = TRUE;
+   unit_data *success;
+   bool       ok = TRUE;
 
    for(; cmd != nullptr; cmd = cmd->next)
    {

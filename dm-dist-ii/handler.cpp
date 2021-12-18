@@ -63,13 +63,13 @@
 #include "utility.h"
 #include "utils.h"
 
-extern struct unit_data *combat_list;
+extern unit_data *combat_list;
 
 /* External procedures */
 
-void stop_special(struct unit_data *u, struct unit_fptr *fptr);
+void stop_special(unit_data *u, struct unit_fptr *fptr);
 
-auto unit_is_edited(struct unit_data *u) -> struct descriptor_data *
+auto unit_is_edited(unit_data *u) -> struct descriptor_data *
 {
    struct descriptor_data *d;
 
@@ -85,9 +85,9 @@ auto unit_is_edited(struct unit_data *u) -> struct descriptor_data *
 }
 
 /* By using this, we can easily sort the list if ever needed */
-void insert_in_unit_list(struct unit_data *u)
+void insert_in_unit_list(unit_data *u)
 {
-   struct unit_data *tmp_u;
+   unit_data *tmp_u;
 
    tmp_u = unit_list;
 
@@ -119,7 +119,7 @@ void insert_in_unit_list(struct unit_data *u)
 }
 
 /* Remove a unit from the unit_list */
-void remove_from_unit_list(struct unit_data *unit)
+void remove_from_unit_list(unit_data *unit)
 {
    assert(unit->gprevious || unit->gnext || (unit_list == unit));
 
@@ -140,7 +140,7 @@ void remove_from_unit_list(struct unit_data *unit)
    unit->gnext = unit->gprevious = nullptr;
 }
 
-auto find_fptr(struct unit_data *u, uint16_t idx) -> struct unit_fptr *
+auto find_fptr(unit_data *u, uint16_t idx) -> struct unit_fptr *
 {
    struct unit_fptr *tf;
 
@@ -155,11 +155,11 @@ auto find_fptr(struct unit_data *u, uint16_t idx) -> struct unit_fptr *
    return nullptr;
 }
 
-auto create_fptr(struct unit_data *u, uint16_t index, uint16_t beat, uint16_t flags, void *data) -> struct unit_fptr *
+auto create_fptr(unit_data *u, uint16_t index, uint16_t beat, uint16_t flags, void *data) -> struct unit_fptr *
 {
    struct unit_fptr *f;
 
-   void start_special(struct unit_data * u, struct unit_fptr * fptr);
+   void start_special(unit_data * u, struct unit_fptr * fptr);
 
    CREATE(f, struct unit_fptr, 1);
    assert(f);
@@ -179,7 +179,7 @@ auto create_fptr(struct unit_data *u, uint16_t index, uint16_t beat, uint16_t fl
 }
 
 /* Does not free 'f' - it is done by clear_destruct by comm.c */
-void destroy_fptr(struct unit_data *u, struct unit_fptr *f)
+void destroy_fptr(unit_data *u, struct unit_fptr *f)
 {
    struct unit_fptr *tf;
    struct spec_arg   sarg;
@@ -187,7 +187,7 @@ void destroy_fptr(struct unit_data *u, struct unit_fptr *f)
    extern struct unit_function_array_type unit_function_array[];
 
    void register_destruct(int i, void *ptr);
-   void add_func_history(struct unit_data * u, uint16_t, uint16_t);
+   void add_func_history(unit_data * u, uint16_t, uint16_t);
 
    assert(f);
    assert(!is_destructed(DR_FUNC, f));
@@ -198,7 +198,7 @@ void destroy_fptr(struct unit_data *u, struct unit_fptr *f)
    add_func_history(u, f->index, 0);
 #endif
 
-   sarg.owner     = (struct unit_data *)u;
+   sarg.owner     = (unit_data *)u;
    sarg.activator = nullptr;
    sarg.medium    = nullptr;
    sarg.target    = nullptr;
@@ -212,7 +212,7 @@ void destroy_fptr(struct unit_data *u, struct unit_fptr *f)
 
    /* Data is free'ed in destruct() if it is not NULL now */
 
-   stop_special((struct unit_data *)u, f);
+   stop_special((unit_data *)u, f);
 
    /* Only unlink function, do not free it! */
    if(UNIT_FUNC(u) == f)
@@ -235,7 +235,7 @@ void destroy_fptr(struct unit_data *u, struct unit_fptr *f)
 
 /* Stop the 'ch' from following his master    */
 /* Call die_follower if a person dies         */
-void stop_following(struct unit_data *ch)
+void stop_following(unit_data *ch)
 {
    struct char_follow_type *j;
    struct char_follow_type *k;
@@ -267,7 +267,7 @@ void stop_following(struct unit_data *ch)
 }
 
 /* Set 'ch' to follow leader. Circles allowed. */
-void start_following(struct unit_data *ch, struct unit_data *leader)
+void start_following(unit_data *ch, unit_data *leader)
 {
    struct char_follow_type *k;
 
@@ -289,7 +289,7 @@ void start_following(struct unit_data *ch, struct unit_data *leader)
 }
 
 /* Called by extract_unit when a character that follows/is followed dies */
-void die_follower(struct unit_data *ch)
+void die_follower(unit_data *ch)
 {
    struct char_follow_type *j;
    struct char_follow_type *k;
@@ -308,10 +308,10 @@ void die_follower(struct unit_data *ch)
 
 /* Call this routine if you modify the brightness of a unit */
 /* in order to correctly update the environment of the unit */
-void modify_bright(struct unit_data *unit, int bright)
+void modify_bright(unit_data *unit, int bright)
 {
-   struct unit_data *ext;
-   struct unit_data *in;
+   unit_data *ext;
+   unit_data *in;
 
    UNIT_BRIGHT(unit) += bright;
 
@@ -340,10 +340,10 @@ void modify_bright(struct unit_data *unit, int bright)
    }
 }
 
-void trans_set(struct unit_data *u)
+void trans_set(unit_data *u)
 {
-   struct unit_data *u2;
-   int               sum = 0;
+   unit_data *u2;
+   int        sum = 0;
 
    for(u2 = UNIT_CONTAINS(u); u2 != nullptr; u2 = u2->next)
    {
@@ -359,7 +359,7 @@ void trans_set(struct unit_data *u)
    }
 }
 
-void trans_unset(struct unit_data *u)
+void trans_unset(unit_data *u)
 {
    UNIT_BRIGHT(u) -= UNIT_ILLUM(u);
 
@@ -372,9 +372,9 @@ void trans_unset(struct unit_data *u)
 }
 
 /*
-void recalc_dex_red(struct unit_data *ch)
+void recalc_dex_red(unit_data *ch)
 {
-   struct unit_data *eq;
+   unit_data *eq;
    int reduction;
 
    reduction = 0;
@@ -392,9 +392,9 @@ void recalc_dex_red(struct unit_data *ch)
 }
 */
 
-auto equipment(struct unit_data *ch, uint8_t pos) -> struct unit_data *
+auto equipment(unit_data *ch, uint8_t pos) -> unit_data *
 {
-   struct unit_data *u;
+   unit_data *u;
 
    assert(IS_CHAR(ch));
 
@@ -411,9 +411,9 @@ auto equipment(struct unit_data *ch, uint8_t pos) -> struct unit_data *
 
 /* The following functions find armor / weapons on a person with     */
 /* type checks (i.e. trash does not protect!).                       */
-auto equipment_type(struct unit_data *ch, int pos, uint8_t type) -> struct unit_data *
+auto equipment_type(unit_data *ch, int pos, uint8_t type) -> unit_data *
 {
-   struct unit_data *obj;
+   unit_data *obj;
 
    obj = equipment(ch, pos);
 
@@ -424,7 +424,7 @@ auto equipment_type(struct unit_data *ch, int pos, uint8_t type) -> struct unit_
    return NULL;
 }
 
-void equip_char(struct unit_data *ch, struct unit_data *obj, uint8_t pos)
+void equip_char(unit_data *ch, unit_data *obj, uint8_t pos)
 {
    struct unit_affected_type *af;
    struct unit_affected_type  newaf;
@@ -451,9 +451,9 @@ void equip_char(struct unit_data *ch, struct unit_data *obj, uint8_t pos)
    }
 }
 
-auto unequip_object(struct unit_data *obj) -> struct unit_data *
+auto unequip_object(unit_data *obj) -> unit_data *
 {
-   struct unit_data          *ch;
+   unit_data                 *ch;
    struct unit_affected_type *af;
    struct unit_affected_type *caf;
 
@@ -489,9 +489,9 @@ auto unequip_object(struct unit_data *obj) -> struct unit_data *
    return obj;
 }
 
-auto unequip_char(struct unit_data *ch, uint8_t pos) -> struct unit_data *
+auto unequip_char(unit_data *ch, uint8_t pos) -> unit_data *
 {
-   struct unit_data *obj;
+   unit_data *obj;
 
    obj = equipment(ch, pos);
    assert(obj);
@@ -505,9 +505,9 @@ auto unequip_char(struct unit_data *ch, uint8_t pos) -> struct unit_data *
 /* through itself. For example if Papi carries a coffin and God is   */
 /* inside the coffin, when God types trans Papi this function will   */
 /* return TRUE                                                       */
-auto unit_recursive(struct unit_data *from, struct unit_data *to) -> int
+auto unit_recursive(unit_data *from, unit_data *to) -> int
 {
-   struct unit_data *u;
+   unit_data *u;
 
    for(u = to; u != nullptr; u = UNIT_IN(u))
    {
@@ -520,9 +520,9 @@ auto unit_recursive(struct unit_data *from, struct unit_data *to) -> int
    return FALSE;
 }
 
-auto unit_zone(const struct unit_data *unit) -> struct zone_type *
+auto unit_zone(const unit_data *unit) -> struct zone_type *
 {
-   auto *org = (struct unit_data *)unit;
+   auto *org = (unit_data *)unit;
 
    for(; unit != nullptr; unit = UNIT_IN(unit))
    {
@@ -537,9 +537,9 @@ auto unit_zone(const struct unit_data *unit) -> struct zone_type *
    return nullptr;
 }
 
-auto unit_room(struct unit_data *unit) -> struct unit_data *
+auto unit_room(unit_data *unit) -> unit_data *
 {
-   struct unit_data *org = unit;
+   unit_data *org = unit;
 
    for(; unit != nullptr; unit = UNIT_IN(unit))
    {
@@ -553,14 +553,14 @@ auto unit_room(struct unit_data *unit) -> struct unit_data *
    return nullptr;
 }
 
-void intern_unit_up(struct unit_data *unit, bool pile)
+void intern_unit_up(unit_data *unit, bool pile)
 {
-   struct unit_data *u;
-   struct unit_data *in;
-   struct unit_data *toin;
-   struct unit_data *extin;
-   int8_t            bright;
-   int8_t            selfb;
+   unit_data *u;
+   unit_data *in;
+   unit_data *toin;
+   unit_data *extin;
+   int8_t     bright;
+   int8_t     selfb;
 
    assert(UNIT_IN(unit));
 
@@ -630,12 +630,12 @@ void intern_unit_up(struct unit_data *unit, bool pile)
    }
 }
 
-void unit_up(struct unit_data *unit)
+void unit_up(unit_data *unit)
 {
    intern_unit_up(unit, TRUE);
 }
 
-void unit_from_unit(struct unit_data *unit)
+void unit_from_unit(unit_data *unit)
 {
    while(UNIT_IN(unit))
    {
@@ -643,13 +643,13 @@ void unit_from_unit(struct unit_data *unit)
    }
 }
 
-void intern_unit_down(struct unit_data *unit, struct unit_data *to, bool pile)
+void intern_unit_down(unit_data *unit, unit_data *to, bool pile)
 {
-   struct unit_data *u;
-   struct unit_data *in;
-   struct unit_data *extin;
-   int8_t            bright;
-   int8_t            selfb;
+   unit_data *u;
+   unit_data *in;
+   unit_data *extin;
+   int8_t     bright;
+   int8_t     selfb;
 
    assert(UNIT_IN(unit) == UNIT_IN(to));
    assert(unit != to);
@@ -717,12 +717,12 @@ void intern_unit_down(struct unit_data *unit, struct unit_data *to, bool pile)
    }
 }
 
-void unit_down(struct unit_data *unit, struct unit_data *to)
+void unit_down(unit_data *unit, unit_data *to)
 {
    intern_unit_down(unit, to, TRUE);
 }
 
-void intern_unit_to_unit(struct unit_data *unit, struct unit_data *to, bool pile)
+void intern_unit_to_unit(unit_data *unit, unit_data *to, bool pile)
 {
    assert(to);
 
@@ -739,12 +739,12 @@ void intern_unit_to_unit(struct unit_data *unit, struct unit_data *to, bool pile
    }
 }
 
-void unit_to_unit(struct unit_data *unit, struct unit_data *to)
+void unit_to_unit(unit_data *unit, unit_data *to)
 {
    intern_unit_to_unit(unit, to, TRUE);
 }
 
-void snoop(struct unit_data *ch, struct unit_data *victim)
+void snoop(unit_data *ch, unit_data *victim)
 {
    assert(!is_destructed(DR_UNIT, victim));
    assert(!is_destructed(DR_UNIT, ch));
@@ -762,7 +762,7 @@ void snoop(struct unit_data *ch, struct unit_data *victim)
 
 /* Mode 0: Stop ch from snooping a person       */
 /* Mode 1: Mode 0 + stop any person snooping ch */
-void unsnoop(struct unit_data *ch, int mode)
+void unsnoop(unit_data *ch, int mode)
 {
    assert(CHAR_DESCRIPTOR(ch));
    assert(CHAR_IS_SNOOPING(ch) || CHAR_IS_SNOOPED(ch));
@@ -782,7 +782,7 @@ void unsnoop(struct unit_data *ch, int mode)
    }
 }
 
-void switchbody(struct unit_data *ch, struct unit_data *vict)
+void switchbody(unit_data *ch, unit_data *vict)
 {
    assert(CHAR_DESCRIPTOR(ch) && IS_NPC(vict));
    assert(!CHAR_DESCRIPTOR(vict));
@@ -811,7 +811,7 @@ void switchbody(struct unit_data *ch, struct unit_data *vict)
    CHAR_LAST_ROOM(vict)  = nullptr;
 }
 
-void unswitchbody(struct unit_data *npc)
+void unswitchbody(unit_data *npc)
 {
    assert(IS_NPC(npc) && CHAR_DESCRIPTOR(npc));
    assert(CHAR_IS_SWITCHED(npc));
@@ -839,14 +839,14 @@ void unswitchbody(struct unit_data *npc)
 
 /* Used when a unit is to be extracted from the game */
 /* Extracts recursively                              */
-void extract_unit(struct unit_data *unit)
+void extract_unit(unit_data *unit)
 {
    struct descriptor_data *d;
 
-   extern struct unit_data *destroy_room;
+   extern unit_data *destroy_room;
 
    void nanny_menu(struct descriptor_data * d, char *arg);
-   void stop_all_special(struct unit_data * u);
+   void stop_all_special(unit_data * u);
 
    /* Prevent recursive calling on extracted units. */
    /* This happens on for example corpses. When the */
@@ -917,7 +917,7 @@ void extract_unit(struct unit_data *unit)
 
          if(CHAR_DESCRIPTOR(unit))
          {
-            void disconnect_game(struct unit_data * pc);
+            void disconnect_game(unit_data * pc);
 
             disconnect_game(unit);
          }
@@ -954,7 +954,7 @@ void extract_unit(struct unit_data *unit)
 
 /* Add weight to the unit and change everything it is in */
 /* (It will not change the -basic- weight of a player)   */
-void weight_change_unit(struct unit_data *unit, int weight)
+void weight_change_unit(unit_data *unit, int weight)
 {
    for(; unit != nullptr; unit = UNIT_IN(unit))
    {
@@ -962,7 +962,7 @@ void weight_change_unit(struct unit_data *unit, int weight)
    }
 }
 
-auto quest_add(struct unit_data *ch, const char *name, char *descr) -> struct extra_descr_data *
+auto quest_add(unit_data *ch, const char *name, char *descr) -> struct extra_descr_data *
 {
    const char *namelist[2];
 

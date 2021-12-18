@@ -46,7 +46,7 @@ void clear_destruct(int i);
 void affect_beat(void * /*p1*/, void * /*p2*/);
 
 /* Link an affected structure into the units affected structure */
-void link_affect(struct unit_data *unit, struct unit_affected_type *af)
+void link_affect(unit_data *unit, struct unit_affected_type *af)
 {
    /*if (af->id > ID_TOP_IDX)
      error(HERE, "%s@%s (%s) linked affect ID %d > max value.",
@@ -72,7 +72,7 @@ void link_affect(struct unit_data *unit, struct unit_affected_type *af)
    af->owner           = unit;
 }
 
-auto link_alloc_affect(struct unit_data *unit, struct unit_affected_type *orgaf) -> struct unit_affected_type *
+auto link_alloc_affect(unit_data *unit, struct unit_affected_type *orgaf) -> struct unit_affected_type *
 {
    struct unit_affected_type *af;
 
@@ -90,7 +90,7 @@ auto link_alloc_affect(struct unit_data *unit, struct unit_affected_type *orgaf)
 /* If the apf function returns TRUE then the tif - function */
 /* is *not* called - but the structure is still alloced and */
 /* linked.                                                  */
-void create_affect(struct unit_data *unit, struct unit_affected_type *af)
+void create_affect(unit_data *unit, struct unit_affected_type *af)
 {
    if(is_destructed(DR_UNIT, unit) == 0)
    {
@@ -129,7 +129,7 @@ void create_affect(struct unit_data *unit, struct unit_affected_type *af)
 /* It is freed by 'clear_destruct' automatically */
 /* MS2020 added unit data as parameter. Shouldnt be necessary */
 /* But I need it for sanity in DMC where there is an odd bug */
-void unlink_affect(struct unit_data *u, struct unit_affected_type *af)
+void unlink_affect(unit_data *u, struct unit_affected_type *af)
 {
    struct unit_affected_type *i;
 
@@ -213,7 +213,7 @@ void destroy_affect(struct unit_affected_type *af)
 }
 
 /* Attempts to clear a unit entirely of affects */
-void affect_clear_unit(struct unit_data *unit)
+void affect_clear_unit(unit_data *unit)
 {
    int                        i;
    struct unit_affected_type *taf1;
@@ -236,7 +236,7 @@ void affect_clear_unit(struct unit_data *unit)
    }
 }
 
-auto affected_by_spell(const struct unit_data *unit, int16_t id) -> struct unit_affected_type *
+auto affected_by_spell(const unit_data *unit, int16_t id) -> struct unit_affected_type *
 {
    struct unit_affected_type *af;
 
@@ -294,7 +294,7 @@ void affect_beat(void *p1, void *p2)
 
 /* ONLY USED WHEN LOADING UNITS                          */
 /* If 'apply' is TRUE then apply function will be called */
-void apply_affect(struct unit_data *unit)
+void apply_affect(unit_data *unit)
 {
    struct unit_affected_type *af;
 
@@ -311,7 +311,7 @@ void apply_affect(struct unit_data *unit)
    }
 }
 
-void start_affect(struct unit_data *unit)
+void start_affect(unit_data *unit)
 {
    struct unit_affected_type *af;
 
@@ -325,7 +325,7 @@ void start_affect(struct unit_data *unit)
    }
 }
 
-void stop_affect(struct unit_data *unit)
+void stop_affect(unit_data *unit)
 {
    struct unit_affected_type *af;
 

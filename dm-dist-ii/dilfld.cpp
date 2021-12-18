@@ -122,13 +122,13 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_INT;
-                  if(IS_PC((struct unit_data *)v1.val.ptr))
+                  if(IS_PC((unit_data *)v1.val.ptr))
                   {
-                     v->val.num = (int64_t)PC_ID((struct unit_data *)v1.val.ptr);
+                     v->val.num = (int64_t)PC_ID((unit_data *)v1.val.ptr);
                   }
                   else
                   {
-                     v->val.num = (int64_t)UNIT_FILE_INDEX((struct unit_data *)v1.val.ptr);
+                     v->val.num = (int64_t)UNIT_FILE_INDEX((unit_data *)v1.val.ptr);
                   }
                }
                else
@@ -152,11 +152,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr)))
+               if(((v1.val.ptr != nullptr) && IS_CHAR((unit_data *)v1.val.ptr)))
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_INT;
-                  v->val.num = CHAR_SPEED((struct unit_data *)v1.val.ptr);
+                  v->val.num = CHAR_SPEED((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -179,13 +179,13 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(((v1.val.ptr != nullptr) && IS_PC((struct unit_data *)v1.val.ptr)))
+               if(((v1.val.ptr != nullptr) && IS_PC((unit_data *)v1.val.ptr)))
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_INT;
                   if(g_cServerConfig.m_bAccounting != 0)
                   {
-                     v->val.num = PC_ACCOUNT((struct unit_data *)v1.val.ptr).total_credit;
+                     v->val.num = PC_ACCOUNT((unit_data *)v1.val.ptr).total_credit;
                   }
                   else
                   {
@@ -213,13 +213,13 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(((v1.val.ptr != nullptr) && IS_PC((struct unit_data *)v1.val.ptr)))
+               if(((v1.val.ptr != nullptr) && IS_PC((unit_data *)v1.val.ptr)))
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_INT;
                   if(g_cServerConfig.m_bAccounting != 0)
                   {
-                     v->val.num = (int)PC_ACCOUNT((struct unit_data *)v1.val.ptr).credit;
+                     v->val.num = (int)PC_ACCOUNT((unit_data *)v1.val.ptr).credit;
                   }
                   else
                   {
@@ -251,7 +251,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_SP;
-                  v->val.ptr = (void *)UNIT_FI_ZONENAME((struct unit_data *)v1.val.ptr);
+                  v->val.ptr = (void *)UNIT_FI_ZONENAME((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -278,7 +278,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_SP;
-                  v->val.ptr = (void *)UNIT_FI_NAME((struct unit_data *)v1.val.ptr);
+                  v->val.ptr = (void *)UNIT_FI_NAME((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -305,7 +305,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = UNIT_TYPE((struct unit_data *)v1.val.ptr);
+                  v->val.num = UNIT_TYPE((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -344,7 +344,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_UP;
-                  v->val.ptr = ((struct unit_data *)v1.val.ptr)->next;
+                  v->val.ptr = ((unit_data *)v1.val.ptr)->next;
                }
                else
                {
@@ -383,7 +383,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_SLPR;
-                  v->ref  = &UNIT_NAMES((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_NAMES((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -424,7 +424,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_SP;
-                  v->val.ptr = (void *)IF_STR(UNIT_NAME((struct unit_data *)v1.val.ptr));
+                  v->val.ptr = (void *)IF_STR(UNIT_NAME((unit_data *)v1.val.ptr));
                }
                else
                {
@@ -482,7 +482,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp = DILA_NONE; // Dont dealloc!
                   v->type = DILV_HASHSTR;
-                  v->ref  = &UNIT_OUT_DESCR((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_OUT_DESCR((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -511,7 +511,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp = DILA_NONE; // Dont dealloc!
                   v->type = DILV_HASHSTR;
-                  v->ref  = &UNIT_IN_DESCR((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_IN_DESCR((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -539,7 +539,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp = DILA_NONE; // Dont dealloc!
                   v->type = DILV_HASHSTR;
-                  v->ref  = &UNIT_TITLE((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_TITLE((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -562,11 +562,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_PC((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_PC((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_SPR;
-                  v->ref  = &PC_HOME((struct unit_data *)v1.val.ptr);
+                  v->ref  = &PC_HOME((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -593,7 +593,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_EDPR;
-                  v->ref  = &UNIT_EXTRA_DESCR((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_EXTRA_DESCR((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -620,7 +620,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_UP;
-                  v->val.ptr = UNIT_IN((struct unit_data *)v1.val.ptr);
+                  v->val.ptr = UNIT_IN((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -647,7 +647,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_UP;
-                  v->val.ptr = UNIT_CONTAINS((struct unit_data *)v1.val.ptr);
+                  v->val.ptr = UNIT_CONTAINS((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -674,7 +674,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_UP;
-                  v->val.ptr = ((struct unit_data *)v1.val.ptr)->gnext;
+                  v->val.ptr = ((unit_data *)v1.val.ptr)->gnext;
                }
                else
                {
@@ -700,10 +700,9 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
             case DILV_UP:
                if(v1.val.ptr != nullptr)
                {
-                  v->atyp = DILA_NORM;
-                  v->type = DILV_INT;
-                  v->val.num =
-                     UNIT_FILE_INDEX((struct unit_data *)v1.val.ptr) ? UNIT_FILE_INDEX((struct unit_data *)v1.val.ptr)->no_in_mem : 1;
+                  v->atyp    = DILA_NORM;
+                  v->type    = DILV_INT;
+                  v->val.num = UNIT_FILE_INDEX((unit_data *)v1.val.ptr) ? UNIT_FILE_INDEX((unit_data *)v1.val.ptr)->no_in_mem : 1;
                }
                else
                {
@@ -731,7 +730,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_UP;
-                  v->val.ptr = ((struct unit_data *)v1.val.ptr)->gprevious;
+                  v->val.ptr = ((unit_data *)v1.val.ptr)->gprevious;
                }
                else
                {
@@ -759,7 +758,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = UNIT_LIGHTS((struct unit_data *)v1.val.ptr);
+                  v->val.num = UNIT_LIGHTS((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -787,7 +786,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = UNIT_BRIGHT((struct unit_data *)v1.val.ptr);
+                  v->val.num = UNIT_BRIGHT((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -814,7 +813,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = UNIT_ILLUM((struct unit_data *)v1.val.ptr);
+                  v->val.num = UNIT_ILLUM((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -842,7 +841,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                   /* uint16_t flags; */
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT2R;
-                  v->ref  = &UNIT_FLAGS((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_FLAGS((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -869,7 +868,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT4R;
-                  v->ref  = &UNIT_MANIPULATE((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_MANIPULATE((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -897,7 +896,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                   /* uint8_t openflags */
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &UNIT_OPEN_FLAGS((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_OPEN_FLAGS((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -920,19 +919,19 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_PC((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_PC((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
 
                   if(p->stack[0].tmpl->zone->access != 0)
                   {
                      v->type    = DILV_INT;
-                     v->val.num = PC_LIFESPAN((struct unit_data *)v1.val.ptr);
+                     v->val.num = PC_LIFESPAN((unit_data *)v1.val.ptr);
                   }
                   else
                   {
                      v->type = DILV_UINT2R;
-                     v->ref  = &PC_LIFESPAN((struct unit_data *)v1.val.ptr);
+                     v->ref  = &PC_LIFESPAN((unit_data *)v1.val.ptr);
                   }
                }
                else
@@ -956,11 +955,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_CHAR((unit_data *)v1.val.ptr))
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = mana_limit((struct unit_data *)v1.val.ptr);
+                  v->val.num = mana_limit((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -983,11 +982,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_CHAR((unit_data *)v1.val.ptr))
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = move_limit((struct unit_data *)v1.val.ptr);
+                  v->val.num = move_limit((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1014,15 +1013,15 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp = DILA_NONE;
 
-                  if(IS_PC((struct unit_data *)v1.val.ptr))
+                  if(IS_PC((unit_data *)v1.val.ptr))
                   {
                      v->type    = DILV_INT;
-                     v->val.num = UNIT_MAX_HIT((struct unit_data *)v1.val.ptr);
+                     v->val.num = UNIT_MAX_HIT((unit_data *)v1.val.ptr);
                   }
                   else
                   {
                      v->type = DILV_SINT4R;
-                     v->ref  = &UNIT_MAX_HIT((struct unit_data *)v1.val.ptr);
+                     v->ref  = &UNIT_MAX_HIT((unit_data *)v1.val.ptr);
                   }
                }
                else
@@ -1051,7 +1050,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                   /* int32_t hp; */
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT4R;
-                  v->ref  = &UNIT_HIT((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_HIT((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1078,7 +1077,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = UNIT_BASE_WEIGHT((struct unit_data *)v1.val.ptr);
+                  v->val.num = UNIT_BASE_WEIGHT((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1105,7 +1104,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = UNIT_WEIGHT((struct unit_data *)v1.val.ptr);
+                  v->val.num = UNIT_WEIGHT((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1133,7 +1132,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                   /* int16_t capacity */
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT2R;
-                  v->ref  = &UNIT_CAPACITY((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_CAPACITY((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1161,7 +1160,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                   /* int16_t capacity */
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT2R;
-                  v->ref  = &UNIT_ALIGNMENT((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_ALIGNMENT((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1211,18 +1210,18 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
          {
             if(v1.val.ptr != nullptr)
             {
-               switch(UNIT_TYPE((struct unit_data *)v1.val.ptr))
+               switch(UNIT_TYPE((unit_data *)v1.val.ptr))
                {
                   case UNIT_ST_ROOM:
                      v->atyp = DILA_NONE;
                      v->type = DILV_UINT1R;
-                     v->ref  = &ROOM_RESISTANCE((struct unit_data *)v1.val.ptr);
+                     v->ref  = &ROOM_RESISTANCE((unit_data *)v1.val.ptr);
                      break;
 
                   case UNIT_ST_OBJ:
                      v->atyp = DILA_NONE;
                      v->type = DILV_UINT1R;
-                     v->ref  = &OBJ_RESISTANCE((struct unit_data *)v1.val.ptr);
+                     v->ref  = &OBJ_RESISTANCE((unit_data *)v1.val.ptr);
                      break;
 
                   case UNIT_ST_NPC:
@@ -1230,7 +1229,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                      {
                         v->atyp = DILA_NONE;
                         v->type = DILV_UINT1R;
-                        v->ref  = &NPC_SPL_SKILL((struct unit_data *)v1.val.ptr, v2.val.num);
+                        v->ref  = &NPC_SPL_SKILL((unit_data *)v1.val.ptr, v2.val.num);
                      }
                      else
                      {
@@ -1245,13 +1244,13 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                         {
                            v->atyp = DILA_NONE;
                            v->type = DILV_UINT1R;
-                           v->ref  = &PC_SPL_SKILL((struct unit_data *)v1.val.ptr, v2.val.num);
+                           v->ref  = &PC_SPL_SKILL((unit_data *)v1.val.ptr, v2.val.num);
                         }
                         else
                         {
                            v->atyp    = DILA_NONE;
                            v->type    = DILV_INT;
-                           v->val.num = PC_SPL_SKILL((struct unit_data *)v1.val.ptr, v2.val.num);
+                           v->val.num = PC_SPL_SKILL((unit_data *)v1.val.ptr, v2.val.num);
                         }
                      }
                      else
@@ -1285,7 +1284,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = static_cast<int64_t>(UNIT_FUNC((struct unit_data *)v1.val.ptr) != nullptr);
+                  v->val.num = static_cast<int64_t>(UNIT_FUNC((unit_data *)v1.val.ptr) != nullptr);
                }
                else
                {
@@ -1312,7 +1311,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_SP;
-                  v->val.ptr = unit_zone((struct unit_data *)v1.val.ptr)->name;
+                  v->val.ptr = unit_zone((unit_data *)v1.val.ptr)->name;
                }
                else
                {
@@ -1335,11 +1334,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_OBJ((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_OBJ((unit_data *)v1.val.ptr))
                {
                   v->type = DILV_UINT1R;
                   v->atyp = DILA_NONE;
-                  v->ref  = &OBJ_TYPE((struct unit_data *)v1.val.ptr);
+                  v->ref  = &OBJ_TYPE((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1388,10 +1387,10 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
 
          if(v->type == DILV_UINT4R)
          {
-            if(((v1.val.ptr) != nullptr) && IS_OBJ((struct unit_data *)v1.val.ptr) && (v2.val.num >= 0) && (v2.val.num < 5))
+            if(((v1.val.ptr) != nullptr) && IS_OBJ((unit_data *)v1.val.ptr) && (v2.val.num >= 0) && (v2.val.num < 5))
             {
                v->atyp = DILA_NONE;
-               v->ref  = &OBJ_VALUE((struct unit_data *)v1.val.ptr, v2.val.num);
+               v->ref  = &OBJ_VALUE((unit_data *)v1.val.ptr, v2.val.num);
             }
             else
             {
@@ -1410,11 +1409,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_OBJ((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_OBJ((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &OBJ_FLAGS((struct unit_data *)v1.val.ptr);
+                  v->ref  = &OBJ_FLAGS((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1437,11 +1436,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_OBJ((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_OBJ((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT4R;
-                  v->ref  = &OBJ_PRICE((struct unit_data *)v1.val.ptr);
+                  v->ref  = &OBJ_PRICE((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1464,11 +1463,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_OBJ((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_OBJ((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT4R;
-                  v->ref  = &OBJ_PRICE_DAY((struct unit_data *)v1.val.ptr);
+                  v->ref  = &OBJ_PRICE_DAY((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1491,11 +1490,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_OBJ((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_OBJ((unit_data *)v1.val.ptr))
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = OBJ_EQP_POS((struct unit_data *)v1.val.ptr);
+                  v->val.num = OBJ_EQP_POS((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1544,11 +1543,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
 
          if(v->type == DILV_SLPR)
          {
-            if((v1.val.ptr != nullptr) && IS_ROOM((struct unit_data *)v1.val.ptr) && (is_in(v2.val.num, 0, 5) != 0) &&
-               ROOM_EXIT((struct unit_data *)v1.val.ptr, v2.val.num))
+            if((v1.val.ptr != nullptr) && IS_ROOM((unit_data *)v1.val.ptr) && (is_in(v2.val.num, 0, 5) != 0) &&
+               ROOM_EXIT((unit_data *)v1.val.ptr, v2.val.num))
             {
                v->atyp = DILA_NORM;
-               v->ref  = &(ROOM_EXIT((struct unit_data *)v1.val.ptr, v2.val.num)->open_name);
+               v->ref  = &(ROOM_EXIT((unit_data *)v1.val.ptr, v2.val.num)->open_name);
             }
             else
             {
@@ -1593,11 +1592,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
 
          if(v->type == DILV_UINT1R)
          {
-            if((v1.val.ptr != nullptr) && IS_ROOM((struct unit_data *)v1.val.ptr) && (is_in(v2.val.num, 0, 5) != 0) &&
-               ROOM_EXIT((struct unit_data *)v1.val.ptr, v2.val.num))
+            if((v1.val.ptr != nullptr) && IS_ROOM((unit_data *)v1.val.ptr) && (is_in(v2.val.num, 0, 5) != 0) &&
+               ROOM_EXIT((unit_data *)v1.val.ptr, v2.val.num))
             {
                v->atyp = DILA_NONE;
-               v->ref  = &(ROOM_EXIT((struct unit_data *)v1.val.ptr, v2.val.num)->exit_info);
+               v->ref  = &(ROOM_EXIT((unit_data *)v1.val.ptr, v2.val.num)->exit_info);
             }
             else
             {
@@ -1640,11 +1639,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
 
          if(v->type == DILV_UP)
          {
-            if((v1.val.ptr != nullptr) && IS_ROOM((struct unit_data *)v1.val.ptr) && (is_in(v2.val.num, 0, 5) != 0) &&
-               ROOM_EXIT((struct unit_data *)v1.val.ptr, v2.val.num))
+            if((v1.val.ptr != nullptr) && IS_ROOM((unit_data *)v1.val.ptr) && (is_in(v2.val.num, 0, 5) != 0) &&
+               ROOM_EXIT((unit_data *)v1.val.ptr, v2.val.num))
             {
                v->atyp    = DILA_NORM;
-               v->val.ptr = ROOM_EXIT((struct unit_data *)v1.val.ptr, v2.val.num)->to_room;
+               v->val.ptr = ROOM_EXIT((unit_data *)v1.val.ptr, v2.val.num)->to_room;
             }
             else
             {
@@ -1663,11 +1662,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_ROOM((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_ROOM((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &ROOM_FLAGS((struct unit_data *)v1.val.ptr);
+                  v->ref  = &ROOM_FLAGS((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1691,11 +1690,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_ROOM((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_ROOM((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &ROOM_LANDSCAPE((struct unit_data *)v1.val.ptr);
+                  v->ref  = &ROOM_LANDSCAPE((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1719,11 +1718,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_CHAR((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT1R;
-                  v->ref  = &CHAR_SEX((struct unit_data *)v1.val.ptr);
+                  v->ref  = &CHAR_SEX((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1747,11 +1746,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_CHAR((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT2R;
-                  v->ref  = &CHAR_RACE((struct unit_data *)v1.val.ptr);
+                  v->ref  = &CHAR_RACE((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1802,28 +1801,28 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
 
          if(v->type == DILV_INT)
          {
-            if((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr) && (is_in(v2.val.num, 0, ABIL_TREE_MAX - 1) != 0))
+            if((v1.val.ptr != nullptr) && IS_CHAR((unit_data *)v1.val.ptr) && (is_in(v2.val.num, 0, ABIL_TREE_MAX - 1) != 0))
             {
-               if(IS_PC((struct unit_data *)v1.val.ptr))
+               if(IS_PC((unit_data *)v1.val.ptr))
                {
                   if(p->stack[0].tmpl->zone->access == 0)
                   {
                      v->atyp = DILA_NONE;
                      v->type = DILV_UINT1R;
-                     v->ref  = &CHAR_ABILITY((struct unit_data *)v1.val.ptr, v2.val.num);
+                     v->ref  = &CHAR_ABILITY((unit_data *)v1.val.ptr, v2.val.num);
                   }
                   else
                   {
                      v->atyp    = DILA_NONE;
                      v->type    = DILV_INT;
-                     v->val.num = CHAR_ABILITY((struct unit_data *)v1.val.ptr, v2.val.num);
+                     v->val.num = CHAR_ABILITY((unit_data *)v1.val.ptr, v2.val.num);
                   }
                }
                else
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &CHAR_ABILITY((struct unit_data *)v1.val.ptr, v2.val.num);
+                  v->ref  = &CHAR_ABILITY((unit_data *)v1.val.ptr, v2.val.num);
                }
             }
             else
@@ -1843,11 +1842,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_CHAR((unit_data *)v1.val.ptr))
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = CHAR_EXP((struct unit_data *)v1.val.ptr);
+                  v->val.num = CHAR_EXP((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1871,11 +1870,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_CHAR((unit_data *)v1.val.ptr))
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = CHAR_LEVEL((struct unit_data *)v1.val.ptr);
+                  v->val.num = CHAR_LEVEL((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1903,7 +1902,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT2R;
-                  v->ref  = &UNIT_SIZE((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_SIZE((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1928,11 +1927,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                break;
 
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_CHAR((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT1R;
-                  v->ref  = &CHAR_POS((struct unit_data *)v1.val.ptr);
+                  v->ref  = &CHAR_POS((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1956,11 +1955,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_CHAR((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &CHAR_ATTACK_TYPE((struct unit_data *)v1.val.ptr);
+                  v->ref  = &CHAR_ATTACK_TYPE((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -1984,11 +1983,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_CHAR((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT2R;
-                  v->ref  = &CHAR_MANA((struct unit_data *)v1.val.ptr);
+                  v->ref  = &CHAR_MANA((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -2012,11 +2011,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_CHAR((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT2R;
-                  v->ref  = &CHAR_ENDURANCE((struct unit_data *)v1.val.ptr);
+                  v->ref  = &CHAR_ENDURANCE((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -2040,11 +2039,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_CHAR((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT4R;
-                  v->ref  = &CHAR_FLAGS((struct unit_data *)v1.val.ptr);
+                  v->ref  = &CHAR_FLAGS((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -2068,11 +2067,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_CHAR((unit_data *)v1.val.ptr))
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_UP;
-                  v->val.ptr = CHAR_FIGHTING((struct unit_data *)v1.val.ptr);
+                  v->val.ptr = CHAR_FIGHTING((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -2123,14 +2122,14 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
          {
             if(v1.val.ptr != nullptr)
             {
-               switch(UNIT_TYPE((struct unit_data *)v1.val.ptr))
+               switch(UNIT_TYPE((unit_data *)v1.val.ptr))
                {
                   case UNIT_ST_NPC:
                      if(is_in(v2.val.num, 0, WPN_GROUP_MAX - 1) != 0)
                      {
                         v->atyp = DILA_NONE;
                         v->type = DILV_UINT1R;
-                        v->ref  = &NPC_WPN_SKILL((struct unit_data *)v1.val.ptr, v2.val.num);
+                        v->ref  = &NPC_WPN_SKILL((unit_data *)v1.val.ptr, v2.val.num);
                      }
                      else
                      {
@@ -2144,13 +2143,13 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                         {
                            v->atyp = DILA_NONE;
                            v->type = DILV_UINT1R;
-                           v->ref  = &PC_WPN_SKILL((struct unit_data *)v1.val.ptr, v2.val.num);
+                           v->ref  = &PC_WPN_SKILL((unit_data *)v1.val.ptr, v2.val.num);
                         }
                         else
                         {
                            v->atyp    = DILA_NONE;
                            v->type    = DILV_INT;
-                           v->val.num = PC_WPN_SKILL((struct unit_data *)v1.val.ptr, v2.val.num);
+                           v->val.num = PC_WPN_SKILL((unit_data *)v1.val.ptr, v2.val.num);
                         }
                      }
                      else
@@ -2181,11 +2180,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_NPC((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_NPC((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &NPC_DEFAULT((struct unit_data *)v1.val.ptr);
+                  v->ref  = &NPC_DEFAULT((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -2209,11 +2208,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_NPC((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_NPC((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &NPC_FLAGS((struct unit_data *)v1.val.ptr);
+                  v->ref  = &NPC_FLAGS((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -2237,11 +2236,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_PC((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_PC((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT2R;
-                  v->ref  = &PC_FLAGS((struct unit_data *)v1.val.ptr);
+                  v->ref  = &PC_FLAGS((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -2265,11 +2264,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_PC((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_PC((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT4R;
-                  v->ref  = &PC_TIME((struct unit_data *)v1.val.ptr).birth;
+                  v->ref  = &PC_TIME((unit_data *)v1.val.ptr).birth;
                }
                else
                {
@@ -2293,11 +2292,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_PC((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_PC((unit_data *)v1.val.ptr))
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = PC_TIME((struct unit_data *)v1.val.ptr).played;
+                  v->val.num = PC_TIME((unit_data *)v1.val.ptr).played;
                }
                else
                {
@@ -2321,11 +2320,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_PC((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_PC((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT1R;
-                  v->ref  = &PC_COND((struct unit_data *)v1.val.ptr, FULL);
+                  v->ref  = &PC_COND((unit_data *)v1.val.ptr, FULL);
                }
                else
                {
@@ -2349,11 +2348,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_PC((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_PC((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT1R;
-                  v->ref  = &PC_COND((struct unit_data *)v1.val.ptr, THIRST);
+                  v->ref  = &PC_COND((unit_data *)v1.val.ptr, THIRST);
                }
                else
                {
@@ -2377,11 +2376,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_PC((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_PC((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT1R;
-                  v->ref  = &PC_COND((struct unit_data *)v1.val.ptr, DRUNK);
+                  v->ref  = &PC_COND((unit_data *)v1.val.ptr, DRUNK);
                }
                else
                {
@@ -2404,11 +2403,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_PC((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_PC((unit_data *)v1.val.ptr))
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = PC_SKILL_POINTS((struct unit_data *)v1.val.ptr);
+                  v->val.num = PC_SKILL_POINTS((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -2431,11 +2430,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_PC((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_PC((unit_data *)v1.val.ptr))
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = PC_ABILITY_POINTS((struct unit_data *)v1.val.ptr);
+                  v->val.num = PC_ABILITY_POINTS((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -2458,11 +2457,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_PC((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_PC((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_SPR;
-                  v->ref  = &PC_GUILD((struct unit_data *)v1.val.ptr);
+                  v->ref  = &PC_GUILD((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -2485,11 +2484,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_PC((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_PC((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT2R;
-                  v->ref  = &PC_CRIMES((struct unit_data *)v1.val.ptr);
+                  v->ref  = &PC_CRIMES((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -2513,11 +2512,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_PC((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_PC((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_EDPR;
-                  v->ref  = &PC_QUEST((struct unit_data *)v1.val.ptr);
+                  v->ref  = &PC_QUEST((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -2540,11 +2539,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_PC((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_PC((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_EDPR;
-                  v->ref  = &PC_INFO((struct unit_data *)v1.val.ptr);
+                  v->ref  = &PC_INFO((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -2592,19 +2591,19 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
 
          if(v->type == DILV_INT)
          {
-            if((v1.val.ptr != nullptr) && IS_PC((struct unit_data *)v1.val.ptr) && (is_in(v2.val.num, 0, SKI_TREE_MAX - 1) != 0))
+            if((v1.val.ptr != nullptr) && IS_PC((unit_data *)v1.val.ptr) && (is_in(v2.val.num, 0, SKI_TREE_MAX - 1) != 0))
             {
                if(p->stack[0].tmpl->zone->access == 0)
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &PC_SKI_SKILL((struct unit_data *)v1.val.ptr, v2.val.num);
+                  v->ref  = &PC_SKI_SKILL((unit_data *)v1.val.ptr, v2.val.num);
                }
                else
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = PC_SKI_SKILL((struct unit_data *)v1.val.ptr, v2.val.num);
+                  v->val.num = PC_SKI_SKILL((unit_data *)v1.val.ptr, v2.val.num);
                }
             }
             else
@@ -2624,11 +2623,11 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_CHAR((unit_data *)v1.val.ptr))
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_UPR;
-                  v->ref  = &CHAR_MASTER((struct unit_data *)v1.val.ptr);
+                  v->ref  = &CHAR_MASTER((unit_data *)v1.val.ptr);
                }
                else
                {
@@ -2652,13 +2651,13 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr != nullptr) && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if((v1.val.ptr != nullptr) && IS_CHAR((unit_data *)v1.val.ptr))
                {
-                  if(CHAR_FOLLOWERS((struct unit_data *)v1.val.ptr))
+                  if(CHAR_FOLLOWERS((unit_data *)v1.val.ptr))
                   {
                      v->atyp = DILA_NORM;
                      v->type = DILV_UPR;
-                     v->ref  = &CHAR_FOLLOWERS((struct unit_data *)v1.val.ptr)->follower;
+                     v->ref  = &CHAR_FOLLOWERS((unit_data *)v1.val.ptr)->follower;
                   }
                   else
                   {
@@ -2693,7 +2692,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &UNIT_MINV((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_MINV((unit_data *)v1.val.ptr);
                }
                else
                {

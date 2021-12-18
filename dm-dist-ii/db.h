@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : db.h                                      Part of Valhalla MUD *
  * Version: 1.05                                                           *
@@ -21,9 +22,6 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
-
-#ifndef _MUD_DB_H
-#define _MUD_DB_H
 
 #include "bytestring.h"
 #include "config.h"
@@ -100,20 +98,18 @@ struct zone_info_type
    void                  **spmatrix;    /* Inter zone shortest paths   */
 };
 
-auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom) -> struct unit_data *;
+auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom) -> unit_data *;
 void read_unit_file(struct file_index_type *org_fi, CByteBuffer *pBuf);
-auto read_unit(struct file_index_type *fi) -> struct unit_data *;
-void free_unit(struct unit_data *ch);
+auto read_unit(struct file_index_type *fi) -> unit_data *;
+void free_unit(unit_data *ch);
 void free_extra_descr(struct extra_descr_data *ex);
 void free_extra_descr_list(struct extra_descr_data *ex);
 
 auto create_extra_descr() -> struct extra_descr_data *;
-auto create_unit(uint8_t type) -> struct unit_data *;
+auto create_unit(uint8_t type) -> unit_data *;
 
 /* --- The globals of db.c --- */
 
 extern int                   room_number;
-extern struct unit_data     *unit_list;
+extern unit_data            *unit_list;
 extern struct zone_info_type zone_info;
-
-#endif /* _MUD_DB_H */

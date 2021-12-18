@@ -46,16 +46,16 @@
 #include "utils.h"
 #include <climits>
 
-extern struct unit_data *unit_list;
+extern unit_data *unit_list;
 
 /* External procedures */
 
 /* common.c   */
 /* in fight.c */
-auto age(struct unit_data *ch) -> struct time_info_data;
+auto age(unit_data *ch) -> struct time_info_data;
 
 /* Count the number of items a unit contains */
-auto char_carry_n(struct unit_data *unit) -> int
+auto char_carry_n(unit_data *unit) -> int
 {
    int i;
 
@@ -70,42 +70,42 @@ auto char_carry_n(struct unit_data *unit) -> int
    return i;
 }
 
-auto char_carry_n_limit(struct unit_data *ch) -> int
+auto char_carry_n_limit(unit_data *ch) -> int
 {
    return 10 + (CHAR_DEX(ch) / 10);
 }
 
-auto char_can_carry_n(struct unit_data *ch, int n) -> int
+auto char_can_carry_n(unit_data *ch, int n) -> int
 {
    return static_cast<int>(char_carry_n_limit(ch) >= (char_carry_n(ch) + n));
 }
 
-auto char_carry_w_limit(struct unit_data *ch) -> int
+auto char_carry_w_limit(unit_data *ch) -> int
 {
    return 50 + MAX(50, UNIT_BASE_WEIGHT(ch) / 2) + CHAR_STR(ch) * 2;
 }
 
-auto char_can_carry_w(struct unit_data *ch, int weight) -> int
+auto char_can_carry_w(unit_data *ch, int weight) -> int
 {
    return static_cast<int>(char_carry_w_limit(ch) >= (UNIT_CONTAINING_W(ch) + weight));
 }
 
-auto char_can_carry_unit(struct unit_data *ch, struct unit_data *unit) -> int
+auto char_can_carry_unit(unit_data *ch, unit_data *unit) -> int
 {
    return static_cast<int>((char_can_carry_w(ch, UNIT_WEIGHT(unit)) != 0) && (char_can_carry_n(ch, 1) != 0));
 }
 
-auto char_can_get_unit(struct unit_data *ch, struct unit_data *unit) -> int
+auto char_can_get_unit(unit_data *ch, unit_data *unit) -> int
 {
    return UNIT_WEAR((unit), MANIPULATE_TAKE) && CHAR_CAN_SEE(ch, unit) && (char_can_carry_unit(ch, unit) != 0);
 }
 
-auto char_drag_w_limit(struct unit_data *ch) -> int
+auto char_drag_w_limit(unit_data *ch) -> int
 {
    return (3 * char_carry_w_limit(ch));
 }
 
-auto char_can_drag_w(struct unit_data *ch, int weight) -> int
+auto char_can_drag_w(unit_data *ch, int weight) -> int
 {
    return static_cast<int>(char_drag_w_limit(ch) >= weight);
 }
@@ -148,7 +148,7 @@ auto age_graph(int age, int lifespan, int p0, int p1, int p2, int p3, int p4, in
 
 /* This function is copied into basis.zon - remember to update accordingly!! */
 
-static auto hit_limit_number(struct unit_data *ch, int point) -> int
+static auto hit_limit_number(unit_data *ch, int point) -> int
 {
    if(IS_PC(ch))
    {
@@ -167,13 +167,13 @@ static auto hit_limit_number(struct unit_data *ch, int point) -> int
    return 3 * point + 10;
 }
 
-auto hit_limit(struct unit_data *ch) -> int
+auto hit_limit(unit_data *ch) -> int
 {
    return hit_limit_number(ch, CHAR_HPP(ch));
 }
 
 /* Hitpoint gain pr. game hour */
-auto hit_gain(struct unit_data *ch) -> int
+auto hit_gain(unit_data *ch) -> int
 {
    int gain;
 
@@ -201,7 +201,7 @@ auto hit_gain(struct unit_data *ch) -> int
          break;
    }
 
-   struct unit_data *u = ch;
+   unit_data *u = ch;
 
    while(u != nullptr)
    {
@@ -225,7 +225,7 @@ auto hit_gain(struct unit_data *ch) -> int
    return gain;
 }
 
-auto move_limit(struct unit_data *ch) -> int
+auto move_limit(unit_data *ch) -> int
 {
    int ml = CHAR_CON(ch) * 2 + 150;
 
@@ -246,7 +246,7 @@ auto move_limit(struct unit_data *ch) -> int
 }
 
 /* move gain pr. game hour */
-auto move_gain(struct unit_data *ch) -> int
+auto move_gain(unit_data *ch) -> int
 {
    int gain;
 
@@ -274,7 +274,7 @@ auto move_gain(struct unit_data *ch) -> int
          break;
    }
 
-   struct unit_data *u = ch;
+   unit_data *u = ch;
 
    while(u != nullptr)
    {
@@ -298,7 +298,7 @@ auto move_gain(struct unit_data *ch) -> int
    return gain;
 }
 
-auto mana_limit(struct unit_data *ch) -> int
+auto mana_limit(unit_data *ch) -> int
 {
    assert(IS_CHAR(ch));
 
@@ -321,7 +321,7 @@ auto mana_limit(struct unit_data *ch) -> int
 }
 
 /* manapoint gain pr. game hour */
-auto mana_gain(struct unit_data *ch) -> int
+auto mana_gain(unit_data *ch) -> int
 {
    int gain;
 
@@ -350,7 +350,7 @@ auto mana_gain(struct unit_data *ch) -> int
          break;
    }
 
-   struct unit_data *u = ch;
+   unit_data *u = ch;
 
    while(u != nullptr)
    {
@@ -374,9 +374,9 @@ auto mana_gain(struct unit_data *ch) -> int
 }
 
 /* Gain maximum in various points */
-void advance_level(struct unit_data *ch)
+void advance_level(unit_data *ch)
 {
-   void clear_training_level(struct unit_data * ch);
+   void clear_training_level(unit_data * ch);
 
    assert(IS_PC(ch));
 
@@ -412,7 +412,7 @@ void advance_level(struct unit_data *ch)
 #endif
 }
 
-void gain_condition(struct unit_data *ch, int condition, int value)
+void gain_condition(unit_data *ch, int condition, int value)
 {
    bool intoxicated;
 
@@ -490,9 +490,9 @@ void gain_condition(struct unit_data *ch, int condition, int value)
 /* Update both PC's & NPC's */
 void point_update()
 {
-   struct unit_data *u;
-   struct unit_data *next_dude;
-   int               hgain;
+   unit_data *u;
+   unit_data *next_dude;
+   int        hgain;
 
    /* characters */
    for(u = unit_list; u != nullptr; u = next_dude)
@@ -538,8 +538,8 @@ void point_update()
 
 void food_update()
 {
-   struct unit_data *u;
-   struct unit_data *next_dude;
+   unit_data *u;
+   unit_data *next_dude;
 
    /* characters */
    for(u = unit_list; u != nullptr; u = next_dude)
@@ -548,7 +548,7 @@ void food_update()
 
       if(IS_PC(u) && CHAR_DESCRIPTOR(u))
       {
-         struct unit_data *tu = u;
+         unit_data *tu = u;
 
          while(tu != nullptr)
          {
@@ -580,7 +580,7 @@ void food_update()
    }
 }
 
-void set_title(struct unit_data *ch)
+void set_title(unit_data *ch)
 {
    char buf[256];
 
@@ -602,7 +602,7 @@ void set_title(struct unit_data *ch)
    }
 }
 
-void gain_exp_regardless(struct unit_data *ch, int gain)
+void gain_exp_regardless(unit_data *ch, int gain)
 {
    int j;
 
@@ -637,7 +637,7 @@ void gain_exp_regardless(struct unit_data *ch, int gain)
    }
 }
 
-void gain_exp(struct unit_data *ch, int gain)
+void gain_exp(unit_data *ch, int gain)
 {
    if(IS_MORTAL(ch))
    {
@@ -645,7 +645,7 @@ void gain_exp(struct unit_data *ch, int gain)
    }
 }
 
-void do_level(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_level(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    int now;
 

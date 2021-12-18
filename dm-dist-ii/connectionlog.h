@@ -28,7 +28,7 @@
 #include "structs.h"
 
 void ConnectionBoot();
-void ConnectionBegin(class unit_data *pc);
-void ConnectionLog(class unit_data *pc);
+void ConnectionBegin(unit_data *pc);
+void ConnectionLog(unit_data *pc);
 
 #endif // _MUD_CONNECTIONLOG_H

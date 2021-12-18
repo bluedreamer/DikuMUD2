@@ -449,7 +449,7 @@ auto dil_getval(class dilval *v) -> int
 }
 
 /* adds exp node to exp, returns node number */
-void dil_add_secure(struct dilprg *prg, struct unit_data *sup, uint8_t *lab)
+void dil_add_secure(struct dilprg *prg, unit_data *sup, uint8_t *lab)
 {
    if(sup == nullptr)
    {
@@ -472,7 +472,7 @@ void dil_add_secure(struct dilprg *prg, struct unit_data *sup, uint8_t *lab)
 }
 
 /* adds exp node to exp, returns node number */
-void dil_sub_secure(struct dilframe *frm, struct unit_data *sup, int bForeach)
+void dil_sub_secure(struct dilframe *frm, unit_data *sup, int bForeach)
 {
    int i;
 
@@ -825,7 +825,7 @@ static auto check_interrupt(struct dilprg *prg) -> int
 /* Running a DIL-program */
 /* ************************************************************************ */
 
-void ActivateDil(struct unit_data *pc)
+void ActivateDil(unit_data *pc)
 {
    struct unit_fptr *fptr;
    struct dilprg    *prg;
@@ -840,7 +840,7 @@ void ActivateDil(struct unit_data *pc)
    }
 }
 
-void DeactivateDil(struct unit_data *pc)
+void DeactivateDil(unit_data *pc)
 {
    struct unit_fptr *fptr;
    struct dilprg    *prg;
@@ -1007,7 +1007,7 @@ auto run_dil(struct spec_arg *sarg) -> int
       Therefore, I am unfortunately forced to do the follow dequeue and
       enqueue.
       */
-   void ResetFptrTimer(struct unit_data * u, struct unit_fptr * fptr);
+   void ResetFptrTimer(unit_data * u, struct unit_fptr * fptr);
 
    sarg->fptr->heart_beat = MAX(PULSE_SEC * 1, sarg->fptr->heart_beat);
 
@@ -1153,7 +1153,7 @@ auto dil_direct_init(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-auto dil_destroy(char *name, struct unit_data *u) -> int
+auto dil_destroy(char *name, unit_data *u) -> int
 {
    struct unit_fptr *fptr;
    struct dilprg    *prg;
@@ -1190,7 +1190,7 @@ void dil_init_vars(int varc, struct dilframe *frm)
    }
 }
 
-auto dil_copy_template(struct diltemplate *tmpl, struct unit_data *u, struct unit_fptr **pfptr) -> struct dilprg *
+auto dil_copy_template(struct diltemplate *tmpl, unit_data *u, struct unit_fptr **pfptr) -> struct dilprg *
 {
    struct dilprg    *prg;
    struct dilframe  *frm;
@@ -1280,7 +1280,7 @@ void dil_activate(struct dilprg *prg)
    assert(fptr);
 
 #ifdef DEBUG_HISTORY
-   void add_func_history(struct unit_data * u, uint16_t, uint16_t);
+   void add_func_history(unit_data * u, uint16_t, uint16_t);
    add_func_history(prg->owner, SFUN_DIL_INTERNAL, SFB_TICK);
 #endif
 
@@ -1297,7 +1297,7 @@ void dil_activate(struct dilprg *prg)
    run_dil(&sarg);
 }
 
-void dil_loadtime_activate(struct unit_data *u)
+void dil_loadtime_activate(unit_data *u)
 {
    struct unit_fptr *f;
    struct unit_fptr *fnext;
@@ -1313,7 +1313,7 @@ void dil_loadtime_activate(struct unit_data *u)
    }
 }
 
-auto dil_copy(char *name, struct unit_data *u) -> struct dilprg *
+auto dil_copy(char *name, unit_data *u) -> struct dilprg *
 {
    char                buf[MAX_STRING_LENGTH];
    struct dilprg      *prg;
@@ -1437,7 +1437,7 @@ auto dil_copy(char *name, struct unit_data *u) -> struct dilprg *
    return prg;
 }
 
-auto dil_find(const char *name, struct unit_data *u) -> struct unit_fptr *
+auto dil_find(const char *name, unit_data *u) -> struct unit_fptr *
 {
    struct unit_fptr   *fptr;
    struct diltemplate *tmpl;

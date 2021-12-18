@@ -54,9 +54,9 @@ struct persist_type
 
 cNamelist persist_namelist;
 
-void persist_save(struct unit_data *u, struct persist_type *pt)
+void persist_save(unit_data *u, struct persist_type *pt)
 {
-   void basic_save_contents(const char *pFileName, struct unit_data *unit, int fast, int bContainer);
+   void basic_save_contents(const char *pFileName, unit_data *unit, int fast, int bContainer);
 
    basic_save_contents(pt->name, u, FALSE, TRUE);
 
@@ -64,12 +64,12 @@ void persist_save(struct unit_data *u, struct persist_type *pt)
    pt->in     = UNIT_FILE_INDEX(UNIT_IN(u));
 }
 
-void persist_remove(struct unit_data *u, struct persist_type *pt)
+void persist_remove(unit_data *u, struct persist_type *pt)
 {
    remove(pt->name);
 }
 
-void persist_create(struct unit_data *u)
+void persist_create(unit_data *u)
 {
    char                *c;
    struct persist_type *pt;
@@ -101,7 +101,7 @@ void persist_create(struct unit_data *u)
    persist_save(u, pt);
 }
 
-void persist_recreate(struct unit_data *u, char *name)
+void persist_recreate(unit_data *u, char *name)
 {
    struct persist_type *pt;
 
@@ -151,10 +151,10 @@ auto persist_intern(struct spec_arg *sarg) -> int
 
 void persist_boot()
 {
-   char              name[50];
-   struct unit_data *u;
+   char       name[50];
+   unit_data *u;
 
-   auto base_load_contents(const char *pFileName, const struct unit_data *unit)->struct unit_data *;
+   auto base_load_contents(const char *pFileName, const unit_data *unit)->unit_data *;
 
    for(uint32_t i = 0; i < persist_namelist.Length(); i++)
    {

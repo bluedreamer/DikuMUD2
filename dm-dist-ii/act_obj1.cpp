@@ -49,11 +49,11 @@
 /* Returns: 0 if the object was picked up.                               */
 /*          1 if the object was not picked up, but more may be picked up */
 /*          2 if no more objects can be picked up                        */
-auto get(struct unit_data *ch, struct unit_data *obj, struct unit_data *from_obj, const struct command_info *cmd, char *arg) -> int
+auto get(unit_data *ch, unit_data *obj, unit_data *from_obj, const struct command_info *cmd, char *arg) -> int
 {
-   struct unit_data *money  = nullptr;
-   amount_t          amount = 0;
-   int               weight;
+   unit_data *money  = nullptr;
+   amount_t   amount = 0;
+   int        weight;
 
    if(UNIT_IN(ch) == obj)
    {
@@ -213,10 +213,10 @@ auto get(struct unit_data *ch, struct unit_data *obj, struct unit_data *from_obj
    should be extended to run through
    all visible units.
 */
-auto extra_get(struct unit_data *ch, char *argument) -> int
+auto extra_get(unit_data *ch, char *argument) -> int
 {
    struct extra_descr_data *p;
-   struct unit_data        *room = UNIT_IN(ch);
+   unit_data               *room = UNIT_IN(ch);
 
    if(!IS_ROOM(room) && UNIT_IS_TRANSPARENT(room))
    {
@@ -250,13 +250,13 @@ auto extra_get(struct unit_data *ch, char *argument) -> int
    return 0; /* not found */
 }
 
-void do_get(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_get(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *from_unit = NULL;
-   struct unit_data *thing;
-   char              arg1[MAX_INPUT_LENGTH];
-   char             *arg2;
-   char             *oarg = argument;
+   unit_data *from_unit = NULL;
+   unit_data *thing;
+   char       arg1[MAX_INPUT_LENGTH];
+   char      *arg2;
+   char      *oarg = argument;
 
    if(str_is_empty(argument) != 0u)
    {
@@ -292,9 +292,9 @@ void do_get(struct unit_data *ch, char *argument, const struct command_info *cmd
 
    if(str_ccmp_next_word(arg1, "all") != nullptr)
    {
-      struct unit_data *next_unit;
-      bool              ok   = TRUE;
-      bool              pick = FALSE;
+      unit_data *next_unit;
+      bool       ok   = TRUE;
+      bool       pick = FALSE;
 
       thing = from_unit != nullptr ? UNIT_CONTAINS(from_unit) : UNIT_CONTAINS(UNIT_IN(ch));
 
@@ -323,9 +323,9 @@ void do_get(struct unit_data *ch, char *argument, const struct command_info *cmd
    }
    else if(str_ccmp_next_word(arg1, "money") != nullptr)
    {
-      struct unit_data *next_unit;
-      bool              ok   = TRUE;
-      bool              pick = FALSE;
+      unit_data *next_unit;
+      bool       ok   = TRUE;
+      bool       pick = FALSE;
 
       thing = from_unit != nullptr ? UNIT_CONTAINS(from_unit) : UNIT_CONTAINS(UNIT_IN(ch));
 
@@ -402,7 +402,7 @@ void do_get(struct unit_data *ch, char *argument, const struct command_info *cmd
    }
 }
 
-auto drop(struct unit_data *ch, struct unit_data *unit, const struct command_info *cmd, char *arg) -> int
+auto drop(unit_data *ch, unit_data *unit, const struct command_info *cmd, char *arg) -> int
 {
    if(!(IS_OBJ(unit) && OBJ_EQP_POS(unit)))
    {
@@ -423,13 +423,13 @@ auto drop(struct unit_data *ch, struct unit_data *unit, const struct command_inf
    return FALSE;
 }
 
-void do_drop(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_drop(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *thing;
-   struct unit_data *next_obj;
-   char              arg[MAX_INPUT_LENGTH];
-   amount_t          amount = 0;
-   char             *oarg   = argument;
+   unit_data *thing;
+   unit_data *next_obj;
+   char       arg[MAX_INPUT_LENGTH];
+   amount_t   amount = 0;
+   char      *oarg   = argument;
 
    if(str_is_empty(argument) != 0u)
    {
@@ -523,11 +523,11 @@ void do_drop(struct unit_data *ch, char *argument, const struct command_info *cm
 }
 
 /* Returns FALSE if there was an "error" putting the stuff */
-auto put(struct unit_data *ch, struct unit_data *unit, struct unit_data *tounit, const struct command_info *cmd, char *arg) -> int
+auto put(unit_data *ch, unit_data *unit, unit_data *tounit, const struct command_info *cmd, char *arg) -> int
 {
-   struct unit_data *money = nullptr;
-   int               weight;
-   int32_t           amt = 0;
+   unit_data *money = nullptr;
+   int        weight;
+   int32_t    amt = 0;
 
    /* Curse check if carrying? */
 
@@ -598,16 +598,16 @@ auto put(struct unit_data *ch, struct unit_data *unit, struct unit_data *tounit,
    return TRUE;
 }
 
-void do_put(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_put(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *tounit;
-   struct unit_data *thing;
-   char             *arg2;
-   char              arg1[MAX_INPUT_LENGTH];
-   char              buf[MAX_INPUT_LENGTH];
-   amount_t          amount = 0;
-   int               all;
-   char             *oarg = argument;
+   unit_data *tounit;
+   unit_data *thing;
+   char      *arg2;
+   char       arg1[MAX_INPUT_LENGTH];
+   char       buf[MAX_INPUT_LENGTH];
+   amount_t   amount = 0;
+   int        all;
+   char      *oarg = argument;
 
    if(str_is_empty(argument) != 0u)
    {
@@ -654,7 +654,7 @@ void do_put(struct unit_data *ch, char *argument, const struct command_info *cmd
 
    if(all != 0)
    {
-      struct unit_data *nextu;
+      unit_data *nextu;
 
       for(thing = UNIT_CONTAINS(ch); thing != nullptr; thing = nextu)
       {
@@ -706,10 +706,10 @@ void do_put(struct unit_data *ch, char *argument, const struct command_info *cmd
    }
 }
 
-void give(struct unit_data *ch, struct unit_data *thing, struct unit_data *vict, const struct command_info *cmd, char *arg)
+void give(unit_data *ch, unit_data *thing, unit_data *vict, const struct command_info *cmd, char *arg)
 {
-   struct unit_data *money = nullptr;
-   int               weight;
+   unit_data *money = nullptr;
+   int        weight;
 
    if(!IS_CHAR(vict))
    {
@@ -760,13 +760,13 @@ void give(struct unit_data *ch, struct unit_data *thing, struct unit_data *vict,
    send_done(ch, thing, vict, 0, cmd, arg);
 }
 
-void do_give(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_give(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *victim;
-   struct unit_data *thing;
-   char              buf[MAX_INPUT_LENGTH];
-   amount_t          amount = 0;
-   char             *oarg   = argument;
+   unit_data *victim;
+   unit_data *thing;
+   char       buf[MAX_INPUT_LENGTH];
+   amount_t   amount = 0;
+   char      *oarg   = argument;
 
    if(str_is_empty(argument) != 0u)
    {

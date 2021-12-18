@@ -42,7 +42,7 @@ void event_deenq(void (*func)(), void *arg1, void *arg2);
 extern struct zone_type               *boot_zone;
 extern struct unit_function_array_type unit_function_array[];
 
-void SetFptrTimer(struct unit_data *u, struct unit_fptr *fptr)
+void SetFptrTimer(unit_data *u, struct unit_fptr *fptr)
 {
    uint32_t ticks;
 
@@ -63,7 +63,7 @@ void SetFptrTimer(struct unit_data *u, struct unit_fptr *fptr)
    }
 }
 
-void ResetFptrTimer(struct unit_data *u, struct unit_fptr *fptr)
+void ResetFptrTimer(unit_data *u, struct unit_fptr *fptr)
 {
    event_deenq(special_event, u, fptr);
    SetFptrTimer(u, fptr);
@@ -71,7 +71,7 @@ void ResetFptrTimer(struct unit_data *u, struct unit_fptr *fptr)
 
 void special_event(void *p1, void *p2)
 {
-   auto *u    = (struct unit_data *)p1;
+   auto *u    = (unit_data *)p1;
    auto *fptr = (struct unit_fptr *)p2;
 
    uint32_t          ret = SFR_SHARE;
@@ -79,7 +79,7 @@ void special_event(void *p1, void *p2)
    struct unit_fptr *ftmp;
    struct spec_arg   sarg;
 
-   void add_func_history(struct unit_data * u, uint16_t, uint16_t);
+   void add_func_history(unit_data * u, uint16_t, uint16_t);
 
    if(g_cServerConfig.m_bNoSpecials != 0)
    {
@@ -141,12 +141,12 @@ void special_event(void *p1, void *p2)
 }
 
 /* Return TRUE while stopping events */
-void stop_special(struct unit_data *u, struct unit_fptr *fptr)
+void stop_special(unit_data *u, struct unit_fptr *fptr)
 {
    event_deenq(special_event, u, fptr);
 }
 
-void start_special(struct unit_data *u, struct unit_fptr *fptr)
+void start_special(unit_data *u, struct unit_fptr *fptr)
 {
    if(IS_SET(fptr->flags, SFB_TICK) || fptr->index == SFUN_DIL_INTERNAL)
    {
@@ -171,7 +171,7 @@ void start_special(struct unit_data *u, struct unit_fptr *fptr)
    }
 }
 
-void start_all_special(struct unit_data *u)
+void start_all_special(unit_data *u)
 {
    struct unit_fptr *fptr;
 
@@ -181,7 +181,7 @@ void start_all_special(struct unit_data *u)
    }
 }
 
-void stop_all_special(struct unit_data *u)
+void stop_all_special(unit_data *u)
 {
    struct unit_fptr *fptr;
 

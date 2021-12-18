@@ -93,7 +93,7 @@ void MplexSendSetup(struct descriptor_data *d)
 /* ----------------------------------------------------------------- */
 
 /* Call only once when creating a new char (guest)    */
-void init_char(struct unit_data *ch)
+void init_char(unit_data *ch)
 {
    int i;
    int init_skills = 0;
@@ -254,7 +254,7 @@ descriptor_data::descriptor_data(cMultiHook *pe)
    replyid        = (uint32_t)-1;
 
    /* Make a new PC struct */
-   character = new(class unit_data)(UNIT_ST_PC);
+   character = new(unit_data)(UNIT_ST_PC);
    init_char(character);
    CHAR_DESCRIPTOR(character) = this;
 
@@ -339,8 +339,8 @@ void descriptor_close(struct descriptor_data *d, int bSendClose)
    struct descriptor_data *tmp;
    class cMultiHook       *multi = nullptr;
 
-   void unsnoop(struct unit_data * ch, int mode);
-   void unswitchbody(struct unit_data * npc);
+   void unsnoop(unit_data * ch, int mode);
+   void unswitchbody(unit_data * npc);
 
    assert(d->character);
 
@@ -391,7 +391,7 @@ void descriptor_close(struct descriptor_data *d, int bSendClose)
 
       if(is_destructed(DR_UNIT, d->character) == 0)
       {
-         void disconnect_game(struct unit_data * pc);
+         void disconnect_game(unit_data * pc);
 
          disconnect_game(d->character);
 
@@ -808,7 +808,7 @@ void init_mother(int nPort)
 
 /* Returns how much memory is in use by system. This may help spotting
    possible fragmentation of memory. */
-void system_memory(struct unit_data *ch)
+void system_memory(unit_data *ch)
 {
 #ifdef LINUX
    struct rusage rusage_data;

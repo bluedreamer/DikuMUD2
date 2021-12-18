@@ -50,11 +50,11 @@
 #include "utils.h"
 #include "zon_basis.h"
 
-auto save_contents(const char *pFileName, struct unit_data *unit, int fast, int bContainer) -> int;
+auto save_contents(const char *pFileName, unit_data *unit, int fast, int bContainer) -> int;
 auto player_exists(const char *pName) -> int;
 auto delete_player(const char *pName) -> int;
 auto delete_inventory(const char *pName) -> int;
-void save_player_file(struct unit_data *pc);
+void save_player_file(unit_data *pc);
 
 char   **player_name_list = nullptr;
 int      max_id           = -1;
@@ -63,7 +63,7 @@ uint8_t *ids              = nullptr; /* For checking duplicate players... */
 
 #define OUTPUT_DIR "lib/"
 
-void convert_free_unit(struct unit_data *u)
+void convert_free_unit(unit_data *u)
 {
    while(UNIT_CONTAINS(u))
    {
@@ -79,10 +79,10 @@ void convert_free_unit(struct unit_data *u)
    delete u;
 }
 
-void free_inventory(struct unit_data *u)
+void free_inventory(unit_data *u)
 {
-   struct unit_data *tmp;
-   struct unit_data *nxt;
+   unit_data *tmp;
+   unit_data *nxt;
 
    for(tmp = u; tmp != nullptr; tmp = nxt)
    {
@@ -96,9 +96,9 @@ auto days_old(time_t last_logon) -> int
    return (int)(difftime(time(nullptr), last_logon) / SECS_PER_REAL_DAY);
 }
 
-auto convert_item(struct unit_data *u, struct unit_data *pc, int bList) -> struct unit_data *
+auto convert_item(unit_data *u, unit_data *pc, int bList) -> unit_data *
 {
-   struct unit_data *nu = u;
+   unit_data *nu = u;
 
    if(bList != 0)
    {
@@ -140,7 +140,7 @@ auto convert_item(struct unit_data *u, struct unit_data *pc, int bList) -> struc
    /* This code replaces all DIL items... */
    if(find_fptr(u, SFUN_DIL_INTERNAL))
    {
-      struct unit_data *nu;
+      unit_data *nu;
 
       if(UNIT_FILE_INDEX(u))
       {
@@ -166,9 +166,9 @@ auto convert_item(struct unit_data *u, struct unit_data *pc, int bList) -> struc
 #endif
 }
 
-void convert_inventory(struct unit_data *u, struct unit_data *pc, int bList = FALSE)
+void convert_inventory(unit_data *u, unit_data *pc, int bList = FALSE)
 {
-   struct unit_data *bla;
+   unit_data *bla;
 
    if(u == nullptr)
    {
@@ -185,7 +185,7 @@ void convert_inventory(struct unit_data *u, struct unit_data *pc, int bList = FA
 
    if(bla != u)
    {
-      struct unit_data *tmpu;
+      unit_data *tmpu;
 
       assert(UNIT_IN(u));
 
@@ -203,7 +203,7 @@ void convert_inventory(struct unit_data *u, struct unit_data *pc, int bList = FA
    }
 
 #ifdef SUSPEKT
-   struct unit_data *tmp, *nxt, *bla;
+   unit_data *tmp, *nxt, *bla;
 
    for(tmp = u; tmp; tmp = nxt)
    {
@@ -224,15 +224,15 @@ void convert_inventory(struct unit_data *u, struct unit_data *pc, int bList = FA
 
 /* This procedure makes any conversion you might want on every player in   *
  * the playerfile, including affects and inventory                         */
-void convert_player(struct unit_data *pc)
+void convert_player(unit_data *pc)
 {
    struct extra_descr_data *exd;
    struct extra_descr_data *nextexd;
 
    int lvl;
 
-   void race_cost(struct unit_data * ch);
-   void reroll(struct unit_data * victim);
+   void race_cost(unit_data * ch);
+   void reroll(unit_data * victim);
 
    assert(IS_PC(pc));
 
@@ -256,9 +256,9 @@ void convert_player(struct unit_data *pc)
 }
 
 /* Return TRUE if Ok. */
-auto sanity_check(struct unit_data *u) -> int
+auto sanity_check(unit_data *u) -> int
 {
-   void race_adjust(struct unit_data * ch);
+   void race_adjust(unit_data * ch);
 
    if(g_nCorrupt == TRUE)
    {
@@ -317,7 +317,7 @@ auto sanity_check(struct unit_data *u) -> int
    return TRUE;
 }
 
-auto shall_delete(struct unit_data *pc) -> int
+auto shall_delete(unit_data *pc) -> int
 {
    int days;
 
@@ -382,10 +382,10 @@ auto shall_exclude(const char *name) -> int
    return FALSE;
 }
 
-auto convert_load_player(char *name) -> struct unit_data *
+auto convert_load_player(char *name) -> unit_data *
 {
-   struct unit_data        *ch;
-   extern struct unit_data *destroy_room;
+   unit_data        *ch;
+   extern unit_data *destroy_room;
 
    if(player_exists(name) == 0)
    {
@@ -439,12 +439,12 @@ auto convert_load_player(char *name) -> struct unit_data *
 
 void list()
 {
-   long              total_time = 0;
-   int               i;
-   int               years;
-   int               days;
-   struct unit_data *pc;
-   auto             *void_char = new(class unit_data)(UNIT_ST_NPC);
+   long       total_time = 0;
+   int        i;
+   int        years;
+   int        days;
+   unit_data *pc;
+   auto      *void_char = new(unit_data)(UNIT_ST_NPC);
 
    for(i = 0; player_name_list[i] != nullptr; i++)
    {
@@ -515,9 +515,9 @@ void list()
 
 void convert_file()
 {
-   int               i;
-   struct unit_data *pc;
-   auto             *void_char = new(class unit_data)(UNIT_ST_NPC);
+   int        i;
+   unit_data *pc;
+   auto      *void_char = new(unit_data)(UNIT_ST_NPC);
 
    for(i = 0; player_name_list[i] != nullptr; i++)
    {
@@ -588,9 +588,9 @@ void convert_file()
 
 void cleanup()
 {
-   int               i;
-   struct unit_data *pc;
-   auto             *void_char = new(class unit_data)(UNIT_ST_NPC);
+   int        i;
+   unit_data *pc;
+   auto      *void_char = new(unit_data)(UNIT_ST_NPC);
 
    for(i = 0; player_name_list[i] != nullptr; i++)
    {
@@ -646,7 +646,7 @@ void cleanup_playerfile(int argc, char *argv[])
 {
    char c;
 
-   extern struct unit_data *entry_room;
+   extern unit_data *entry_room;
 
    top_id = read_player_id();
    CREATE(ids, uint8_t, top_id + 1);
@@ -654,8 +654,8 @@ void cleanup_playerfile(int argc, char *argv[])
    memset(ids, 0, top_id);
    printf("\n\n\n");
 
-   entry_room   = new(class unit_data)(UNIT_ST_ROOM);
-   destroy_room = new(class unit_data)(UNIT_ST_ROOM);
+   entry_room   = new(unit_data)(UNIT_ST_ROOM);
+   destroy_room = new(unit_data)(UNIT_ST_ROOM);
 
    printf("   Z) Convert players (do not use unless you are told to)\n"
           "   L)ist (integrity check & preview cleanup)\n"

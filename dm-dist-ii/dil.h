@@ -26,6 +26,7 @@
 /* Wed Jan 22 14:57:30 PST 1997   HHS added paycheck dilfun DILE_PCK */
 
 #include "essential.h"
+#include "unit_data.h"
 
 #ifndef L_tmpnam
    #define L_tmpnam 1024 /* Oh thank you Marcel! */
@@ -352,7 +353,7 @@ struct dilvar
    uint8_t type; /* variable type */
    union
    {
-      struct unit_data        *unitptr;
+      unit_data               *unitptr;
       int32_t                  integer;
       struct extra_descr_data *extraptr;
       char                    *string;
@@ -386,8 +387,8 @@ public:
 /* structure for securing unit pointers */
 struct dilsecure
 {
-   struct unit_data *sup; /* A direct reference to the variabel! */
-   uint8_t          *lab; /* address to jump to, NULL=foreach */
+   unit_data *sup; /* A direct reference to the variabel! */
+   uint8_t   *lab; /* address to jump to, NULL=foreach */
 };
 
 /*
@@ -481,8 +482,8 @@ struct dilprg
    struct dilframe *sp;      /* stack and pointer */
    struct dilframe *stack;   /* stack frames, #0 saved */
 
-   struct spec_arg  *sarg;
-   struct unit_data *owner;
+   struct spec_arg *sarg;
+   unit_data       *owner;
 
    int16_t waitcmd; /* Command countdown */
 

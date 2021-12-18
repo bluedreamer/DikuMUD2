@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : utility.h                                 Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -22,8 +23,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_UTILITY_H
-#define _MUD_UTILITY_H
+#include "unit_data.h"
 
 #ifdef MIN
    #undef MIN
@@ -51,7 +51,7 @@ auto sprinttype(char *buf, int type, const char *names[]) -> const char *;
 /* Use like this:  error(HERE, "Something went wrong: %s", buf); */
 void error(const char *file, int line, const char *fmt, ...);
 
-auto hometown_unit(char *str) -> struct unit_data *;
+auto hometown_unit(char *str) -> unit_data *;
 
 class log_buffer
 {
@@ -72,6 +72,4 @@ struct obj_type_t
    uint8_t     v[5];
 };
 
-auto stat_obj_data(struct unit_data *u, struct obj_type_t *obj_data) -> char *;
-
-#endif
+auto stat_obj_data(unit_data *u, struct obj_type_t *obj_data) -> char *;

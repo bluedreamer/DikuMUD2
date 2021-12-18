@@ -58,8 +58,8 @@
 #include "weather.h"
 #include <climits>
 
-int               room_number;         /* For counting numbers in rooms */
-struct unit_data *unit_list = nullptr; /* The global unit_list          */
+int        room_number;         /* For counting numbers in rooms */
+unit_data *unit_list = nullptr; /* The global unit_list          */
 
 /* Global permanent element of zone info */
 struct zone_info_type zone_info = {0, nullptr, nullptr, nullptr};
@@ -563,14 +563,14 @@ void generate_zone_indexes()
  *  other units. If the affect should also have an actual effect, then it
  *  must be followed by the function call 'apply_affects'.
  */
-auto bread_affect(CByteBuffer *pBuf, struct unit_data *u, uint8_t nVersion) -> int
+auto bread_affect(CByteBuffer *pBuf, unit_data *u, uint8_t nVersion) -> int
 {
    struct unit_affected_type af;
    int                       i;
    uint8_t                   t8;
    uint16_t                  t16;
 
-   auto link_alloc_affect(struct unit_data * unit, struct unit_affected_type * orgaf)->struct unit_affected_type *;
+   auto link_alloc_affect(unit_data * unit, struct unit_affected_type * orgaf)->struct unit_affected_type *;
 
    if(nVersion <= 56)
    {
@@ -669,10 +669,10 @@ extern int memory_room_alloc;
  * whom is an error message to be printed when something goes wrong.
  * bSwapin is TRUE if the swap information should be read.
  */
-auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom) -> struct unit_data *
+auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom) -> unit_data *
 {
    void                   *ptr;
-   struct unit_data       *u;
+   unit_data              *u;
    struct file_index_type *fi;
    char                    zone[FI_MAX_ZONENAME + 1];
    char                    name[FI_MAX_UNITNAME + 1];
@@ -689,7 +689,7 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
    int memory_start;
 #endif
 
-   void start_all_special(struct unit_data * u);
+   void start_all_special(unit_data * u);
 
    g_nCorrupt = 0;
 
@@ -703,7 +703,7 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
       return nullptr;
    }
 
-   u = new(class unit_data)(type);
+   u = new(unit_data)(type);
 
    nStart = pBuf->GetReadPosition();
    g_nCorrupt += pBuf->Read8(&unit_version);
@@ -794,7 +794,7 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
       {
          if(UNIT_TYPE(u) == UNIT_ST_ROOM)
          {
-            UNIT_IN(u) = (struct unit_data *)tmpfi; /* To be normalized! */
+            UNIT_IN(u) = (unit_data *)tmpfi; /* To be normalized! */
          }
          else
          {
@@ -1026,7 +1026,7 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
 
             if(unit_version < 44)
             {
-               void race_adjust(struct unit_data *);
+               void race_adjust(unit_data *);
                race_adjust(u);
             }
 
@@ -1178,7 +1178,7 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
             g_nCorrupt += pBuf->ReadStringCopy(name, sizeof(name));
             if((fi = find_file_index(zone, name)) != nullptr)
             {
-               UNIT_IN(u) = (struct unit_data *)fi; /* A file index */
+               UNIT_IN(u) = (unit_data *)fi; /* A file index */
             }
             else
             {
@@ -1209,7 +1209,7 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
                   ROOM_EXIT(u, i)->key = find_file_index(zone, name);
 
                   /* NOT fi->room_ptr! Done later */
-                  ROOM_EXIT(u, i)->to_room = (struct unit_data *)fi;
+                  ROOM_EXIT(u, i)->to_room = (unit_data *)fi;
                }
                else
                { /* Exit not existing, skip the junk info! */
@@ -1330,11 +1330,11 @@ void read_unit_file(struct file_index_type *org_fi, CByteBuffer *pBuf)
 /*  Room directions points to file_indexes instead of units
  *  after a room has been read, due to initialization considerations
  */
-auto read_unit(struct file_index_type *org_fi) -> struct unit_data *
+auto read_unit(struct file_index_type *org_fi) -> unit_data *
 {
    auto is_slimed(struct file_index_type * sp)->int;
 
-   struct unit_data *u;
+   unit_data *u;
 
    if(org_fi == nullptr)
    {
@@ -1372,7 +1372,7 @@ auto read_unit(struct file_index_type *org_fi) -> struct unit_data *
 
    apply_affect(u); /* Set all affects that modify      */
 
-   /* void dil_loadtime_activate(struct unit_data *u);
+   /* void dil_loadtime_activate(unit_data *u);
 
    dil_loadtime_activate(u); */
 
@@ -1406,8 +1406,8 @@ void read_all_rooms()
 void normalize_world()
 {
    struct file_index_type *fi;
-   struct unit_data       *u;
-   struct unit_data       *tmpu;
+   unit_data              *u;
+   unit_data              *tmpu;
    int                     i;
 
    for(u = unit_list; u != nullptr; u = u->gnext)
@@ -1811,8 +1811,8 @@ void db_shutdown()
 {
    return;
 
-   class unit_data *u;
-   class unit_data *tmpu;
+   unit_data *u;
+   unit_data *tmpu;
 
    slog(LOG_OFF, 0, "Destroying unit list.");
 
@@ -1826,7 +1826,7 @@ void db_shutdown()
       clear_destructed();
    }
 
-   void stop_all_special(struct unit_data * u);
+   void stop_all_special(unit_data * u);
 
    while((tmpu = unit_list) != nullptr)
    {

@@ -40,15 +40,15 @@
 
 /* ----- FUNCTIONS ----- */
 
-auto hometown_unit(char *str) -> struct unit_data *
+auto hometown_unit(char *str) -> unit_data *
 {
-   extern struct unit_data *entry_room;
+   extern unit_data *entry_room;
 
    if(str != nullptr)
    {
-      char              name[80];
-      char              zone[80];
-      struct unit_data *u;
+      char       name[80];
+      char       zone[80];
+      unit_data *u;
 
       split_fi_ref(str, zone, name);
       if((u = world_room(zone, name)) != nullptr)

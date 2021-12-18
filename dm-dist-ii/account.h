@@ -27,6 +27,7 @@
 #define MAX_FLATRATE 2
 #include "essential.h"
 #include "structs.h"
+#include "unit_data.h"
 
 struct flatrate_type
 {

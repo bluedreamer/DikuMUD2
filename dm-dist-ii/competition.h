@@ -25,7 +25,7 @@
 #ifndef _MUD_COMPETITION_H
 #define _MUD_COMPETITION_H
 
-void competition_enroll(struct unit_data *pc);
-void competition_update(struct unit_data *pc);
+void competition_enroll(unit_data *pc);
+void competition_update(unit_data *pc);
 
 #endif

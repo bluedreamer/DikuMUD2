@@ -275,7 +275,7 @@ auto cmd_is_a_social(char *cmd, int complete) -> bool
    return search_trie(cmd, soc_trie) != NULL;
 }
 
-auto perform_social(struct unit_data *ch, char *arg, const command_info *cmd) -> bool
+auto perform_social(unit_data *ch, char *arg, const command_info *cmd) -> bool
 {
    struct social_msg *action;
    char              *oarg = arg;
@@ -296,7 +296,7 @@ auto perform_social(struct unit_data *ch, char *arg, const command_info *cmd) ->
    }
    else
    {
-      struct unit_data *vict = find_unit(ch, &arg, 0, FIND_UNIT_SURRO);
+      unit_data *vict = find_unit(ch, &arg, 0, FIND_UNIT_SURRO);
 
       if(vict == NULL || !IS_CHAR(vict))
          act(action->not_found, A_SOMEONE, ch, 0, 0, TO_CHAR);
@@ -364,7 +364,7 @@ static auto sprint_social(char *b, struct trie_type *t, int *no, char *cur, int 
    return count;
 }
 
-void do_socials(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_socials(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    char buf[MAX_STRING_LENGTH];
    char cur[50];
@@ -388,10 +388,10 @@ void do_socials(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_insult(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_insult(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   const char       *insult;
-   struct unit_data *victim;
+   const char *insult;
+   unit_data  *victim;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -502,7 +502,7 @@ void boot_pose_messages()
    fclose(fl);
 }
 
-void do_pose(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_pose(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    send_to_char("Sorry Buggy command.\n\r", ch);
 

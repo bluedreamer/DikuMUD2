@@ -68,7 +68,7 @@ struct shop_data
    int                      currencycount; /* Number of currencies.                */
 };
 
-auto obj_trade_price(struct unit_data *u) -> amount_t
+auto obj_trade_price(unit_data *u) -> amount_t
 {
    double d;
    double f;
@@ -88,7 +88,7 @@ auto obj_trade_price(struct unit_data *u) -> amount_t
    return (amount_t)d;
 }
 
-static auto is_ok(struct unit_data *keeper, struct unit_data *ch, struct shop_data *sd) -> bool
+static auto is_ok(unit_data *keeper, unit_data *ch, struct shop_data *sd) -> bool
 {
    char                  buf[512];
    struct time_info_data time_info;
@@ -123,7 +123,7 @@ static auto is_ok(struct unit_data *keeper, struct unit_data *ch, struct shop_da
    return TRUE;
 }
 
-static auto trade_with(struct unit_data *item, struct shop_data *sd) -> bool
+static auto trade_with(unit_data *item, struct shop_data *sd) -> bool
 {
    int i;
 
@@ -148,7 +148,7 @@ static auto trade_with(struct unit_data *item, struct shop_data *sd) -> bool
    return FALSE;
 }
 
-static auto shop_producing(struct unit_data *item, struct shop_data *sd) -> bool
+static auto shop_producing(unit_data *item, struct shop_data *sd) -> bool
 {
    int counter = 0;
 
@@ -170,15 +170,15 @@ static auto shop_producing(struct unit_data *item, struct shop_data *sd) -> bool
    return FALSE;
 }
 
-static void shopping_buy(char *arg, struct unit_data *ch, struct unit_data *keeper, struct shop_data *sd)
+static void shopping_buy(char *arg, unit_data *ch, unit_data *keeper, struct shop_data *sd)
 {
-   char              buf[MAX_STRING_LENGTH];
-   struct unit_data *temp1;
-   currency_t        currency = 0;
-   amount_t          price    = 0;
-   bool              can_pay  = FALSE;
-   int               i        = 0;
-   int               refit    = FALSE;
+   char       buf[MAX_STRING_LENGTH];
+   unit_data *temp1;
+   currency_t currency = 0;
+   amount_t   price    = 0;
+   bool       can_pay  = FALSE;
+   int        i        = 0;
+   int        refit    = FALSE;
 
    if(!is_ok(keeper, ch, sd))
    {
@@ -278,15 +278,15 @@ static void shopping_buy(char *arg, struct unit_data *ch, struct unit_data *keep
    }
 }
 
-static void shopping_sell(char *arg, struct unit_data *ch, struct unit_data *keeper, struct shop_data *sd)
+static void shopping_sell(char *arg, unit_data *ch, unit_data *keeper, struct shop_data *sd)
 {
-   currency_t        currency = 0;
-   amount_t          price    = 0;
-   bool              can_pay  = FALSE;
-   int               i        = 0;
-   char              buf[MAX_STRING_LENGTH];
-   char             *tmparg;
-   struct unit_data *temp1;
+   currency_t currency = 0;
+   amount_t   price    = 0;
+   bool       can_pay  = FALSE;
+   int        i        = 0;
+   char       buf[MAX_STRING_LENGTH];
+   char      *tmparg;
+   unit_data *temp1;
 
    if(!is_ok(keeper, ch, sd))
    {
@@ -353,15 +353,15 @@ static void shopping_sell(char *arg, struct unit_data *ch, struct unit_data *kee
    }
 }
 
-static void shopping_value(char *arg, struct unit_data *ch, struct unit_data *keeper, struct shop_data *sd)
+static void shopping_value(char *arg, unit_data *ch, unit_data *keeper, struct shop_data *sd)
 {
-   char              buf[MAX_STRING_LENGTH];
-   struct unit_data *temp1;
-   char             *fmt;
-   currency_t        currency = 0;
-   amount_t          price    = 0;
-   bool              can_pay  = FALSE;
-   int               i        = 0;
+   char       buf[MAX_STRING_LENGTH];
+   unit_data *temp1;
+   char      *fmt;
+   currency_t currency = 0;
+   amount_t   price    = 0;
+   bool       can_pay  = FALSE;
+   int        i        = 0;
 
    if(!is_ok(keeper, ch, sd))
    {
@@ -417,16 +417,16 @@ static void shopping_value(char *arg, struct unit_data *ch, struct unit_data *ke
    act(buf, A_SOMEONE, keeper, temp1, ch, TO_ROOM);
 }
 
-static void shopping_list(char *arg, struct unit_data *ch, struct unit_data *keeper, struct shop_data *sd)
+static void shopping_list(char *arg, unit_data *ch, unit_data *keeper, struct shop_data *sd)
 {
-   char              buf[MAX_STRING_LENGTH];
-   char              buf2[100];
-   char             *b = buf;
-   struct unit_data *temp1;
-   bool              found_obj = FALSE;
-   amount_t          price;
-   currency_t        currency;
-   const char       *diff_buf;
+   char        buf[MAX_STRING_LENGTH];
+   char        buf2[100];
+   char       *b = buf;
+   unit_data  *temp1;
+   bool        found_obj = FALSE;
+   amount_t    price;
+   currency_t  currency;
+   const char *diff_buf;
 
    if(!is_ok(keeper, ch, sd))
    {
@@ -489,15 +489,15 @@ static void shopping_list(char *arg, struct unit_data *ch, struct unit_data *kee
    send_to_char(buf, ch);
 }
 
-static void shopping_price(char *arg, struct unit_data *ch, struct unit_data *keeper, struct shop_data *sd)
+static void shopping_price(char *arg, unit_data *ch, unit_data *keeper, struct shop_data *sd)
 {
-   struct unit_data *temp1;
-   bool              destruct = FALSE;
-   bool              can_pay  = FALSE;
-   char              buf[256];
-   currency_t        currency = 0;
-   amount_t          price    = 0;
-   int               i        = 0;
+   unit_data *temp1;
+   bool       destruct = FALSE;
+   bool       can_pay  = FALSE;
+   char       buf[256];
+   currency_t currency = 0;
+   amount_t   price    = 0;
+   int        i        = 0;
 
    if(!is_ok(keeper, ch, sd))
    {
@@ -645,7 +645,7 @@ auto shop_keeper(struct spec_arg *sarg) -> int
    return SFR_BLOCK;
 }
 
-static auto parse_shop(struct unit_data *keeper, char *data) -> struct shop_data *
+static auto parse_shop(unit_data *keeper, char *data) -> struct shop_data *
 {
    int               i;
    struct shop_data *sd;

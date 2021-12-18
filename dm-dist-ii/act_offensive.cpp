@@ -42,10 +42,10 @@
 
 /* extern variables */
 
-void do_decapitate(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_decapitate(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data          *corpse;
-   struct unit_data          *head;
+   unit_data                 *corpse;
+   unit_data                 *head;
    struct unit_affected_type *af;
    struct unit_affected_type  naf;
    char                      *c;
@@ -124,9 +124,9 @@ void do_decapitate(struct unit_data *ch, char *argument, const struct command_in
    }
 }
 
-void do_hit(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_hit(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *victim;
+   unit_data *victim;
 
    if(str_is_empty(argument) != 0u)
    {
@@ -172,9 +172,9 @@ void do_hit(struct unit_data *ch, char *argument, const struct command_info *cmd
    }
 }
 
-void do_kill(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_kill(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *victim;
+   unit_data *victim;
 
    if(str_is_empty(argument) != 0u)
    {
@@ -210,14 +210,14 @@ void do_kill(struct unit_data *ch, char *argument, const struct command_info *cm
    }
 }
 
-void do_order(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_order(unit_data *ch, char *argument, const struct command_info *cmd)
 {
 #ifdef SUSPEKT
    char                name[100], message[256];
    char                buf[256];
    bool                found = FALSE;
    int                 org_room;
-   struct unit_data   *victim;
+   unit_data          *victim;
    struct follow_type *k;
 
    half_chop(argument, name, message);

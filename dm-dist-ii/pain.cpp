@@ -322,7 +322,7 @@ struct pain_type
 
 struct pain_cmd_type
 {
-   int (*func)(struct unit_data *npc, struct pain_type *pain);
+   int (*func)(unit_data *npc, struct pain_type *pain);
 
    int32_t gotoline;
    int32_t data[2];
@@ -330,7 +330,7 @@ struct pain_cmd_type
 };
 
 /* Intended to be used for error-reports */
-static struct unit_data *p_error_unit = nullptr;
+static unit_data *p_error_unit = nullptr;
 
 /* ---------------------------------------------------------------------- */
 /*                      P A I N   F U N C T I O N S                       */
@@ -374,7 +374,7 @@ void pain_gotoline(struct pain_type *pain)
 /* . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . */
 
 /* 'A' command */
-auto pain_act(struct unit_data *npc, struct pain_type *pain) -> int
+auto pain_act(unit_data *npc, struct pain_type *pain) -> int
 {
    act((char *)pain->cmds[pain->idx].ptr[0], A_SOMEONE, npc, nullptr, nullptr, TO_ROOM);
    pain_next_cmd(pain);
@@ -382,7 +382,7 @@ auto pain_act(struct unit_data *npc, struct pain_type *pain) -> int
 }
 
 /* 'C' command */
-auto pain_command(struct unit_data *npc, struct pain_type *pain) -> int
+auto pain_command(unit_data *npc, struct pain_type *pain) -> int
 {
    command_interpreter(npc, (char *)pain->cmds[pain->idx].ptr[0]);
    pain_next_cmd(pain);
@@ -390,7 +390,7 @@ auto pain_command(struct unit_data *npc, struct pain_type *pain) -> int
 }
 
 /* 'D' Command */
-auto pain_closed(struct unit_data *npc, struct pain_type *pain) -> int
+auto pain_closed(unit_data *npc, struct pain_type *pain) -> int
 {
    int i;
 
@@ -410,10 +410,10 @@ auto pain_closed(struct unit_data *npc, struct pain_type *pain) -> int
 }
 
 /* 'd' command */
-auto pain_charcmd(struct unit_data *npc, struct pain_type *pain) -> int
+auto pain_charcmd(unit_data *npc, struct pain_type *pain) -> int
 {
-   struct unit_data *u;
-   char              buf[MAX_INPUT_LENGTH];
+   unit_data *u;
+   char       buf[MAX_INPUT_LENGTH];
 
    if(pain->vars[0] == nullptr) /* Is there a PC target? */
    {
@@ -444,7 +444,7 @@ auto pain_charcmd(struct unit_data *npc, struct pain_type *pain) -> int
 }
 
 /* 'G' command */
-auto pain_goto(struct unit_data *npc, struct pain_type *pain) -> int
+auto pain_goto(unit_data *npc, struct pain_type *pain) -> int
 {
    struct file_index_type *fi;
    int                     res;
@@ -471,7 +471,7 @@ auto pain_goto(struct unit_data *npc, struct pain_type *pain) -> int
 }
 
 /* 'H' command */
-auto pain_has(struct unit_data *npc, struct pain_type *pain) -> int
+auto pain_has(unit_data *npc, struct pain_type *pain) -> int
 {
    char *c;
 
@@ -489,11 +489,11 @@ auto pain_has(struct unit_data *npc, struct pain_type *pain) -> int
 }
 
 /* 'I' command */
-auto pain_in_room(struct unit_data *npc, struct pain_type *pain) -> int
+auto pain_in_room(unit_data *npc, struct pain_type *pain) -> int
 {
-   struct unit_data *u;
-   char             *c;
-   char              buf[256];
+   unit_data *u;
+   char      *c;
+   char       buf[256];
 
    c = (char *)pain->cmds[pain->idx].ptr[0];
 
@@ -520,7 +520,7 @@ auto pain_in_room(struct unit_data *npc, struct pain_type *pain) -> int
 }
 
 /* 'i' command */
-auto pain_intercept(struct unit_data *npc, struct pain_type *pain) -> int
+auto pain_intercept(unit_data *npc, struct pain_type *pain) -> int
 {
    pain_next_cmd(pain);
 
@@ -528,14 +528,14 @@ auto pain_intercept(struct unit_data *npc, struct pain_type *pain) -> int
 }
 
 /* 'J' command */
-auto pain_jump(struct unit_data *npc, struct pain_type *pain) -> int
+auto pain_jump(unit_data *npc, struct pain_type *pain) -> int
 {
    pain_gotoline(pain);
    return FALSE; /* Command loop will stall one tick */
 }
 
 /* 'L' command */
-auto pain_locked(struct unit_data *npc, struct pain_type *pain) -> int
+auto pain_locked(unit_data *npc, struct pain_type *pain) -> int
 {
    int i;
 
@@ -557,9 +557,9 @@ auto pain_locked(struct unit_data *npc, struct pain_type *pain) -> int
 }
 
 /* 'l' command */
-auto pain_load(struct unit_data *npc, struct pain_type *pain) -> int
+auto pain_load(unit_data *npc, struct pain_type *pain) -> int
 {
-   struct unit_data *u;
+   unit_data *u;
 
    u = read_unit((struct file_index_type *)pain->cmds[pain->idx].ptr[0]);
    unit_to_unit(u, npc);
@@ -568,18 +568,18 @@ auto pain_load(struct unit_data *npc, struct pain_type *pain) -> int
 }
 
 /* 'r' command */
-auto pain_remote_load(struct unit_data *npc, struct pain_type *pain) -> int
+auto pain_remote_load(unit_data *npc, struct pain_type *pain) -> int
 {
-   struct unit_data *u;
+   unit_data *u;
 
    u = read_unit((struct file_index_type *)pain->cmds[pain->idx].ptr[0]);
-   unit_to_unit(u, (struct unit_data *)pain->cmds[pain->idx].ptr[1]);
+   unit_to_unit(u, (unit_data *)pain->cmds[pain->idx].ptr[1]);
    pain_next_cmd(pain);
    return TRUE; /* Continue command loop immediately */
 }
 
 /* 'R' command */
-auto pain_random(struct unit_data *npc, struct pain_type *pain) -> int
+auto pain_random(unit_data *npc, struct pain_type *pain) -> int
 {
    if(number(1, 100) <= pain->cmds[pain->idx].data[0])
    {
@@ -594,7 +594,7 @@ auto pain_random(struct unit_data *npc, struct pain_type *pain) -> int
 }
 
 /* 'S' command */
-auto pain_scan_pc(struct unit_data *npc, struct pain_type *pain) -> int
+auto pain_scan_pc(unit_data *npc, struct pain_type *pain) -> int
 {
    scan4_unit(npc, UNIT_ST_PC);
 
@@ -612,11 +612,11 @@ auto pain_scan_pc(struct unit_data *npc, struct pain_type *pain) -> int
 }
 
 /* 'T' command */
-auto pain_trash(struct unit_data *npc, struct pain_type *pain) -> int
+auto pain_trash(unit_data *npc, struct pain_type *pain) -> int
 {
-   struct unit_data *u;
+   unit_data *u;
 
-   auto obj_trade_price(struct unit_data * u)->amount_t;
+   auto obj_trade_price(unit_data * u)->amount_t;
 
    for(u = UNIT_CONTAINS(UNIT_IN(npc)); u != nullptr; u = u->next)
    {
@@ -636,7 +636,7 @@ auto pain_trash(struct unit_data *npc, struct pain_type *pain) -> int
 }
 
 /* 'W' command */
-auto pain_wait(struct unit_data *npc, struct pain_type *pain) -> int
+auto pain_wait(unit_data *npc, struct pain_type *pain) -> int
 {
    auto                  mud_date(time_t t)->struct time_info_data;
    struct time_info_data time_info;
@@ -654,7 +654,7 @@ auto pain_wait(struct unit_data *npc, struct pain_type *pain) -> int
 }
 
 /* 'M' command */
-auto pain_waitmsg(struct unit_data *npc, struct pain_type *pain) -> int
+auto pain_waitmsg(unit_data *npc, struct pain_type *pain) -> int
 {
    if(pain->cmds[pain->idx].data[0] != 0)
    {
@@ -852,7 +852,7 @@ auto translate_line(int top, int sym, struct line_no_convert *line_numbers) -> i
    return -1;
 }
 
-auto pain_doinit(struct unit_data *npc, char *text) -> struct pain_type *
+auto pain_doinit(unit_data *npc, char *text) -> struct pain_type *
 {
    int               i;
    int               j;

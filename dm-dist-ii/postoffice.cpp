@@ -151,7 +151,7 @@ auto read_mail(int16_t index) -> char *
 }
 
 /* Save the letter pointed to by str in the mail file */
-void mail_mail(int receipient, char *rcv_name, struct unit_data *sender, const char *str)
+void mail_mail(int receipient, char *rcv_name, unit_data *sender, const char *str)
 {
    FILE                 *f;
    int16_t               index;
@@ -199,7 +199,7 @@ void mail_mail(int receipient, char *rcv_name, struct unit_data *sender, const c
 }
 
 /* Return index to the next letter of a player */
-auto player_next_mail(struct unit_data *ch, int16_t index) -> int16_t
+auto player_next_mail(unit_data *ch, int16_t index) -> int16_t
 {
    int i;
 
@@ -217,7 +217,7 @@ auto player_next_mail(struct unit_data *ch, int16_t index) -> int16_t
 }
 
 /* Return index to the first letter of the player */
-auto player_has_mail(struct unit_data *ch) -> uint8_t
+auto player_has_mail(unit_data *ch) -> uint8_t
 {
    return static_cast<uint8_t>(player_next_mail(ch, 0) != -1);
 }
@@ -277,9 +277,9 @@ void mail_boot()
 
 auto eat_and_delete(struct spec_arg *sarg) -> int
 {
-   int16_t           index;
-   struct unit_data *u;
-   char             *arg = (char *)sarg->arg;
+   int16_t    index;
+   unit_data *u;
+   char      *arg = (char *)sarg->arg;
 
    if(sarg->cmd->no == CMD_EAT)
    {
@@ -311,7 +311,7 @@ auto postman(struct spec_arg *sarg) -> int
    char                    *arg = (char *)sarg->arg;
    struct extra_descr_data *exd;
    struct descriptor_data  *d;
-   struct unit_data        *letter;
+   unit_data               *letter;
    char                     tmpname[MAX_INPUT_LENGTH];
    int16_t                  index;
    int16_t                 *tmp;

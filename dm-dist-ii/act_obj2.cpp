@@ -47,7 +47,7 @@
 #include "utils.h"
 
 /* Remove the last name from the drink container */
-void name_from_drinkcon(struct unit_data *obj)
+void name_from_drinkcon(unit_data *obj)
 {
    assert(OBJ_TYPE(obj) == ITEM_DRINKCON);
 
@@ -61,7 +61,7 @@ void name_from_drinkcon(struct unit_data *obj)
 }
 
 /* Add a name to the end of a namelist */
-void name_to_drinkcon(struct unit_data *obj, int type)
+void name_to_drinkcon(unit_data *obj, int type)
 {
    /*  Notice:
     *  New name must be added in END of namelist to be properly removed
@@ -70,7 +70,7 @@ void name_to_drinkcon(struct unit_data *obj, int type)
    UNIT_NAMES(obj).AppendName((char *)drinks[type]);
 }
 
-static void apply_poison(struct unit_data *ch, int poison, int amount)
+static void apply_poison(unit_data *ch, int poison, int amount)
 {
    struct unit_affected_type af;
 
@@ -85,12 +85,12 @@ static void apply_poison(struct unit_data *ch, int poison, int amount)
 }
 
 /* Return TRUE if something was eaten/drunk */
-auto drink_eat(struct unit_data *ch, struct unit_data *obj, int amount, const struct command_info *cmd, char *arg) -> bool
+auto drink_eat(unit_data *ch, unit_data *obj, int amount, const struct command_info *cmd, char *arg) -> bool
 {
    int extract = FALSE;
    int poison  = 0; /* No poison */
 
-   void gain_condition(struct unit_data * ch, int condition, int value);
+   void gain_condition(unit_data * ch, int condition, int value);
 
    assert(IS_OBJ(obj));
    assert(OBJ_TYPE(obj) == ITEM_DRINKCON || OBJ_TYPE(obj) == ITEM_FOOD);
@@ -213,10 +213,10 @@ auto drink_eat(struct unit_data *ch, struct unit_data *obj, int amount, const st
    return TRUE;
 }
 
-void do_drink(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_drink(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *drink;
-   char             *oarg = arg;
+   unit_data *drink;
+   char      *oarg = arg;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -252,10 +252,10 @@ void do_drink(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_eat(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_eat(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *food;
-   char             *oarg = arg;
+   unit_data *food;
+   char      *oarg = arg;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -281,10 +281,10 @@ void do_eat(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_sip(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_sip(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *drink;
-   char             *oarg = arg;
+   unit_data *drink;
+   char      *oarg = arg;
 
    if(str_is_empty(arg) != 0u)
    { /* No arguments */
@@ -309,10 +309,10 @@ void do_sip(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_taste(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_taste(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *drink;
-   char             *oarg = arg;
+   unit_data *drink;
+   char      *oarg = arg;
 
    if(str_is_empty(arg) != 0u)
    { /* No arguments */
@@ -343,12 +343,12 @@ void do_taste(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_pour(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_pour(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *from_obj;
-   struct unit_data *to_obj;
-   int               amount;
-   char             *oarg = arg;
+   unit_data *from_obj;
+   unit_data *to_obj;
+   int        amount;
+   char      *oarg = arg;
 
    if(str_is_empty(arg) != 0u)
    { /* No arguments */

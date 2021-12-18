@@ -22,5 +22,5 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 #pragma once
-
-auto obj_wear_size(struct unit_data *ch, struct unit_data *obj, int keyword = -1) -> const char *;
+#include "unit_data.h"
+auto obj_wear_size(unit_data *ch, unit_data *obj, int keyword = -1) -> const char *;

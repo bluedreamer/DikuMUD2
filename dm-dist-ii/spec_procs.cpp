@@ -64,8 +64,8 @@ extern char                   *dirs[];
 
 /* extern procedures */
 
-void modify_hit(struct unit_data *ch, int hit);
-auto obj_trade_price(struct unit_data *u) -> amount_t;
+void modify_hit(unit_data *ch, int hit);
+auto obj_trade_price(unit_data *u) -> amount_t;
 
 /* ------------------------------------------------------------------------- */
 /*                        R O O M   R O U T I N E S                          */
@@ -82,9 +82,9 @@ auto force_move(struct spec_arg *sarg) -> int
    char                   *c2;
    char                   *s = (char *)sarg->fptr->data;
    struct file_index_type *fi;
-   struct unit_data       *u;
-   struct unit_data       *ut;
-   struct unit_data       *next;
+   unit_data              *u;
+   unit_data              *ut;
+   unit_data              *next;
 
    if(sarg->cmd->no != CMD_AUTO_TICK)
    {
@@ -139,7 +139,7 @@ auto force_move(struct spec_arg *sarg) -> int
 
             if(UNIT_CHARS(u))
             {
-               struct unit_data *tu;
+               unit_data *tu;
 
                for(tu = UNIT_CONTAINS(u); tu != nullptr; tu = tu->next)
                {
@@ -195,7 +195,7 @@ auto force_move(struct spec_arg *sarg) -> int
 
 auto combat_poison_sting(struct spec_arg *sarg) -> int
 {
-   struct unit_data *activator = nullptr;
+   unit_data *activator = nullptr;
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -224,8 +224,8 @@ auto combat_poison_sting(struct spec_arg *sarg) -> int
 
 auto obey_animal(struct spec_arg *sarg) -> int
 {
-   char             *arg = (char *)sarg->arg;
-   struct unit_data *u;
+   char      *arg = (char *)sarg->arg;
+   unit_data *u;
 
    extern struct trie_type *intr_trie;
 
@@ -323,8 +323,8 @@ auto obey_animal(struct spec_arg *sarg) -> int
 
 auto obey(struct spec_arg *sarg) -> int
 {
-   char             *arg = (char *)sarg->arg;
-   struct unit_data *u;
+   char      *arg = (char *)sarg->arg;
+   unit_data *u;
 
    if(sarg->cmd->no == CMD_AUTO_TICK)
    {
@@ -365,8 +365,8 @@ auto obey(struct spec_arg *sarg) -> int
 
 auto random_zonemove(struct spec_arg *sarg) -> int
 {
-   int               door;
-   struct unit_data *to_room;
+   int        door;
+   unit_data *to_room;
 
    if(sarg->cmd->no != CMD_AUTO_TICK)
    {
@@ -407,8 +407,8 @@ auto random_zonemove(struct spec_arg *sarg) -> int
 
 auto random_move(struct spec_arg *sarg) -> int
 {
-   int               door;
-   struct unit_data *to_room;
+   int        door;
+   unit_data *to_room;
 
    if(sarg->cmd->no != CMD_AUTO_TICK)
    {
@@ -451,9 +451,9 @@ auto random_move(struct spec_arg *sarg) -> int
 
 auto scavenger(struct spec_arg *sarg) -> int
 {
-   int               max;
-   struct unit_data *best_obj;
-   struct unit_data *obj;
+   int        max;
+   unit_data *best_obj;
+   unit_data *obj;
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -651,7 +651,7 @@ auto combat_magic_heal(struct spec_arg *sarg) -> int
 /* Example: "king welmar/tim/tom"                        */
 /* Players are automatically non-excluded                */
 /* Empty list means none                                 */
-auto charname_in_list(struct unit_data *ch, char *arg) -> int
+auto charname_in_list(unit_data *ch, char *arg) -> int
 {
    char *c;
 
@@ -741,16 +741,16 @@ auto guard_way(struct spec_arg *sarg) -> int
 
 auto guard_unit(struct spec_arg *sarg) -> int
 {
-   char             *arg = (char *)sarg->arg;
-   char             *str = NULL;
-   char             *location;
-   char             *excl     = NULL;
-   char             *msg1     = NULL;
-   char             *msg2     = NULL;
-   char             *unitname = NULL;
-   char             *c;
-   struct unit_data *u1;
-   struct unit_data *u2;
+   char      *arg = (char *)sarg->arg;
+   char      *str = NULL;
+   char      *location;
+   char      *excl     = NULL;
+   char      *msg1     = NULL;
+   char      *msg2     = NULL;
+   char      *unitname = NULL;
+   char      *c;
+   unit_data *u1;
+   unit_data *u2;
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -944,7 +944,7 @@ auto guard_way_level(struct spec_arg *sarg) -> int
 /* data is sting with name(s), for example "king welmar/tim/tom" */
 auto rescue(struct spec_arg *sarg) -> int
 {
-   void base_rescue(struct unit_data * ch, struct unit_data * victim);
+   void base_rescue(unit_data * ch, unit_data * victim);
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -1055,23 +1055,23 @@ auto hideaway(struct spec_arg *sarg) -> int
 
 struct mercenary_data
 {
-   int               ticks;
-   char             *victim_name;
-   struct unit_data *destination;
+   int        ticks;
+   char      *victim_name;
+   unit_data *destination;
 };
 
 auto mercenary_hire(struct spec_arg *sarg) -> int
 {
    char                    *arg = (char *)sarg->arg;
    char                     buf2[MAX_INPUT_LENGTH];
-   struct unit_data        *u;
-   struct unit_data        *victim;
+   unit_data               *u;
+   unit_data               *victim;
    struct mercenary_data   *md;
    struct extra_descr_data *exd;
    amount_t                 price;
    currency_t               currency = local_currency(sarg->owner);
 
-   void start_special(struct unit_data * u, struct unit_fptr * fptr);
+   void start_special(unit_data * u, struct unit_fptr * fptr);
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -1178,7 +1178,7 @@ auto mercenary_hire(struct spec_arg *sarg) -> int
 auto mercenary_hunt(struct spec_arg *sarg) -> int
 {
    struct mercenary_data *md;
-   struct unit_data      *u;
+   unit_data             *u;
    char                  *c;
    int                    i;
 
@@ -1402,7 +1402,7 @@ auto obj_guild(struct spec_arg *sarg) -> int
 
 auto obj_quest(struct spec_arg *sarg) -> int
 {
-   auto  find_quest(char *word, struct unit_data *unit)->struct extra_descr_data *;
+   auto  find_quest(char *word, unit_data *unit)->struct extra_descr_data *;
    char *quest = (char *)sarg->fptr->data;
 
    if(quest == nullptr)
@@ -1502,7 +1502,7 @@ auto blow_away(struct spec_arg *sarg) -> int
 /* value[3] decides how many 'charges' are in it.                     */
 auto charm_of_death(struct spec_arg *sarg) -> int
 {
-   extern auto lose_exp(struct unit_data *)->int;
+   extern auto lose_exp(unit_data *)->int;
 
    if(sarg->cmd->no == CMD_AUTO_DEATH)
    {
@@ -1538,7 +1538,7 @@ auto return_to_origin(struct spec_arg *sarg) -> int
    {
       act("$1n disappears into a rift!", A_ALWAYS, sarg->owner, nullptr, nullptr, TO_ROOM);
       unit_from_unit(sarg->owner);
-      unit_to_unit(sarg->owner, (struct unit_data *)sarg->fptr->data);
+      unit_to_unit(sarg->owner, (unit_data *)sarg->fptr->data);
       act("$1n disappears appears though a rift!", A_ALWAYS, sarg->owner, nullptr, nullptr, TO_ROOM);
       destroy_fptr(sarg->owner, sarg->fptr);
       return SFR_BLOCK;

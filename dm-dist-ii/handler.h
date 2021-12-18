@@ -27,59 +27,59 @@
 #include "essential.h"
 #include "unitfind.h"
 
-auto unit_is_edited(struct unit_data *u) -> struct descriptor_data *;
+auto unit_is_edited(unit_data *u) -> struct descriptor_data *;
 
-void unit_messg(struct unit_data *ch, struct unit_data *unit, const char *type, const char *mesg_s, const char *mesg_o);
+void unit_messg(unit_data *ch, unit_data *unit, const char *type, const char *mesg_s, const char *mesg_o);
 
-auto single_unit_messg(struct unit_data *unit, const char *type, const char *pSubStr, const char *mesg) -> const char *;
+auto single_unit_messg(unit_data *unit, const char *type, const char *pSubStr, const char *mesg) -> const char *;
 
 void szonelog(struct zone_type *zone, const char *fmt, ...);
 
 /* From pcsave.c - I'm just tired of specifying them everywhere */
-void save_player(struct unit_data *pc);
-auto load_player(const char *pName) -> struct unit_data *;
-void load_contents(const char *pFileName, struct unit_data *unit);
-void save_player_contents(struct unit_data *pc, int fast);
+void save_player(unit_data *pc);
+auto load_player(const char *pName) -> unit_data *;
+void load_contents(const char *pFileName, unit_data *unit);
+void save_player_contents(unit_data *pc, int fast);
 
 /* handler.c */
-auto quest_add(struct unit_data *ch, const char *name, char *descr) -> struct extra_descr_data *;
+auto quest_add(unit_data *ch, const char *name, char *descr) -> struct extra_descr_data *;
 
-void insert_in_unit_list(struct unit_data *u);
-void remove_from_unit_list(struct unit_data *unit);
+void insert_in_unit_list(unit_data *u);
+void remove_from_unit_list(unit_data *unit);
 
-auto find_fptr(struct unit_data *u, uint16_t index) -> struct unit_fptr *;
-auto create_fptr(struct unit_data *u, uint16_t index, uint16_t beat, uint16_t flags, void *data) -> struct unit_fptr *;
-void destroy_fptr(struct unit_data *u, struct unit_fptr *f);
+auto find_fptr(unit_data *u, uint16_t index) -> struct unit_fptr *;
+auto create_fptr(unit_data *u, uint16_t index, uint16_t beat, uint16_t flags, void *data) -> struct unit_fptr *;
+void destroy_fptr(unit_data *u, struct unit_fptr *f);
 
-void stop_following(struct unit_data *ch);
-void start_following(struct unit_data *ch, struct unit_data *leader);
+void stop_following(unit_data *ch);
+void start_following(unit_data *ch, unit_data *leader);
 
-void modify_bright(struct unit_data *unit, int bright);
-void trans_set(struct unit_data *u);
-void trans_unset(struct unit_data *u);
+void modify_bright(unit_data *unit, int bright);
+void trans_set(unit_data *u);
+void trans_unset(unit_data *u);
 
-auto equipment(struct unit_data *ch, uint8_t pos) -> struct unit_data *;
-auto equipment_type(struct unit_data *ch, int pos, uint8_t type) -> struct unit_data *;
-void equip_char(struct unit_data *ch, struct unit_data *obj, uint8_t pos);
-auto unequip_char(struct unit_data *ch, uint8_t pos) -> struct unit_data *;
-auto unequip_object(struct unit_data *obj) -> struct unit_data *;
-void recalc_dex_red(struct unit_data *ch);
+auto equipment(unit_data *ch, uint8_t pos) -> unit_data *;
+auto equipment_type(unit_data *ch, int pos, uint8_t type) -> unit_data *;
+void equip_char(unit_data *ch, unit_data *obj, uint8_t pos);
+auto unequip_char(unit_data *ch, uint8_t pos) -> unit_data *;
+auto unequip_object(unit_data *obj) -> unit_data *;
+void recalc_dex_red(unit_data *ch);
 
-auto unit_recursive(struct unit_data *from, struct unit_data *to) -> int;
-auto unit_zone(const struct unit_data *unit) -> struct zone_type *;
-auto unit_room(struct unit_data *unit) -> struct unit_data *;
+auto unit_recursive(unit_data *from, unit_data *to) -> int;
+auto unit_zone(const unit_data *unit) -> struct zone_type *;
+auto unit_room(unit_data *unit) -> unit_data *;
 
 /* If the transfered unit MIGHT be money, remember to pile_money() it!!!!! */
-void unit_up(struct unit_data *unit);
-void unit_from_unit(struct unit_data *unit);
-void unit_down(struct unit_data *unit, struct unit_data *to);
-void unit_to_unit(struct unit_data *unit, struct unit_data *to);
+void unit_up(unit_data *unit);
+void unit_from_unit(unit_data *unit);
+void unit_down(unit_data *unit, unit_data *to);
+void unit_to_unit(unit_data *unit, unit_data *to);
 
-void extract_unit(struct unit_data *unit);
+void extract_unit(unit_data *unit);
 
-void weight_change_unit(struct unit_data *unit, int weight);
+void weight_change_unit(unit_data *unit, int weight);
 
-auto find_unit_in_list_num(int num, struct unit_data *list) -> struct unit_data *;
-auto find_unit_num(int num) -> struct unit_data *;
+auto find_unit_in_list_num(int num, unit_data *list) -> unit_data *;
+auto find_unit_num(int num) -> unit_data *;
 
 #endif /* _MUD_HANDLER_H */

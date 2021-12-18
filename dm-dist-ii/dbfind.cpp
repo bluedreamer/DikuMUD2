@@ -177,7 +177,7 @@ auto find_dil_template(const char *name) -> struct diltemplate *
 /*  Find a room in the world based on zone name and name e.g.
  *  "midgaard", "prison" and return a pointer to the room
  */
-auto world_room(const char *zone, const char *name) -> struct unit_data *
+auto world_room(const char *zone, const char *name) -> unit_data *
 {
    struct file_index_type *fi;
 
@@ -200,7 +200,7 @@ auto str_to_file_index(const char *str) -> struct file_index_type *
 /*  As str_to_file_index, except that if no zone is given, the
  *  zone of the 'ch' is assumed
  */
-auto pc_str_to_file_index(const struct unit_data *ch, const char *str) -> struct file_index_type *
+auto pc_str_to_file_index(const unit_data *ch, const char *str) -> struct file_index_type *
 {
    char name[MAX_INPUT_LENGTH + 1];
    char zone[MAX_INPUT_LENGTH + 1];

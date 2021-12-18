@@ -85,7 +85,7 @@ static auto adjust_money(amount_t amt, currency_t currency) -> amount_t
    return 0;
 }
 
-auto local_currency(struct unit_data *unit) -> currency_t
+auto local_currency(unit_data *unit) -> currency_t
 {
    /*  Well, I dunno...
     *  Any ideas?
@@ -200,7 +200,7 @@ static auto calc_money(amount_t v1, char op, amount_t v2) -> amount_t
 }
 
 /* Set all the values on money correctly according to amount - return money */
-auto set_money(struct unit_data *money, amount_t amt) -> struct unit_data *
+auto set_money(unit_data *money, amount_t amt) -> unit_data *
 {
    char     tmp[256];
    uint32_t i;
@@ -286,11 +286,11 @@ auto set_money(struct unit_data *money, amount_t amt) -> struct unit_data *
    return money;
 }
 
-static auto make_money(struct file_index_type *fi, amount_t amt) -> struct unit_data *
+static auto make_money(struct file_index_type *fi, amount_t amt) -> unit_data *
 {
-   struct unit_data *money = read_unit(fi);
-   char              buf[512];
-   const char       *namelist[] = {nullptr};
+   unit_data  *money = read_unit(fi);
+   char        buf[512];
+   const char *namelist[] = {nullptr};
 
    assert(IS_OBJ(money));
 
@@ -315,7 +315,7 @@ static auto make_money(struct file_index_type *fi, amount_t amt) -> struct unit_
  *  I wanted this one to make shops as simple and intuitive as they were in
  *  DikuI, despite the complexity of the system.
  */
-void money_transfer(struct unit_data *from, struct unit_data *to, amount_t amt, currency_t currency)
+void money_transfer(unit_data *from, unit_data *to, amount_t amt, currency_t currency)
 {
    amt = adjust_money(amt, currency);
 
@@ -325,16 +325,16 @@ void money_transfer(struct unit_data *from, struct unit_data *to, amount_t amt, 
 
       struct
       {
-         amount_t          take, have, value;
-         currency_t        cur;
-         struct unit_data *unit;
+         amount_t   take, have, value;
+         currency_t cur;
+         unit_data *unit;
       } mon_array[MAX_MONEY + 1];
 
-      struct unit_data *tmp;
-      int               i;
-      int               last;
-      amount_t          temp;
-      amount_t          calc = amt;
+      unit_data *tmp;
+      int        i;
+      int        last;
+      amount_t   temp;
+      amount_t   calc = amt;
 
       /* Initialize computation */
       for(i = 0; i <= MAX_MONEY; i++)
@@ -461,7 +461,7 @@ void money_transfer(struct unit_data *from, struct unit_data *to, amount_t amt, 
    else if(to != nullptr)
    { /* Create the money according to arguments and give to `to' */
       struct money_type *money_tmp[MAX_MONEY + 1];
-      struct unit_data  *tmp;
+      unit_data         *tmp;
       int                i;
       int                nr;
       amount_t           times;
@@ -498,7 +498,7 @@ void money_transfer(struct unit_data *from, struct unit_data *to, amount_t amt, 
    }
 }
 
-void coins_to_unit(struct unit_data *unit, amount_t amt, int type)
+void coins_to_unit(unit_data *unit, amount_t amt, int type)
 {
    if(type == -1)
    {
@@ -507,7 +507,7 @@ void coins_to_unit(struct unit_data *unit, amount_t amt, int type)
    }
    else
    {
-      struct unit_data *tmp = make_money(money_types[type].fi, amt);
+      unit_data *tmp = make_money(money_types[type].fi, amt);
       unit_to_unit(tmp, unit);
    }
 }
@@ -516,11 +516,11 @@ void coins_to_unit(struct unit_data *unit, amount_t amt, int type)
  *  inventory.
  *  Use ANY_CURRENCY as currency-type to count up ALL money...
  */
-auto unit_holds_total(struct unit_data *u, currency_t currency) -> amount_t
+auto unit_holds_total(unit_data *u, currency_t currency) -> amount_t
 {
-   struct unit_data *tmp;
-   amount_t          amt = 0;
-   amount_t          rec;
+   unit_data *tmp;
+   amount_t   amt = 0;
+   amount_t   rec;
 
    if(IS_ROOM(u) || IS_CHAR(u) || (IS_OBJ(u) && OBJ_TYPE(u) == ITEM_CONTAINER))
    {
@@ -549,10 +549,10 @@ auto unit_holds_total(struct unit_data *u, currency_t currency) -> amount_t
 /*  Counts up what amount of a given currency char holds in inventory.
  *  Use ANY_CURRENCY as currency-type to count up ALL money...
  */
-auto char_holds_amount(struct unit_data *ch, currency_t currency) -> amount_t
+auto char_holds_amount(unit_data *ch, currency_t currency) -> amount_t
 {
-   struct unit_data *tmp;
-   amount_t          amt = 0;
+   unit_data *tmp;
+   amount_t   amt = 0;
 
    assert(IS_CHAR(ch));
 
@@ -573,9 +573,9 @@ auto char_holds_amount(struct unit_data *ch, currency_t currency) -> amount_t
 /*  Checks if the character is able to pay the amount with the currency
  *  (Currently) based on what money he has in inventory.
  */
-auto char_can_afford(struct unit_data *ch, amount_t amt, currency_t currency) -> bool
+auto char_can_afford(unit_data *ch, amount_t amt, currency_t currency) -> bool
 {
-   struct unit_data *tmp;
+   unit_data *tmp;
 
    assert(IS_CHAR(ch));
 
@@ -597,9 +597,9 @@ auto char_can_afford(struct unit_data *ch, amount_t amt, currency_t currency) ->
 }
 
 /* Check if there is some money of `type' in unit. (For piling purposes.) */
-auto unit_has_money_type(struct unit_data *unit, uint8_t type) -> struct unit_data *
+auto unit_has_money_type(unit_data *unit, uint8_t type) -> unit_data *
 {
-   struct unit_data *tmp;
+   unit_data *tmp;
 
    for(tmp = UNIT_CONTAINS(unit); tmp != nullptr; tmp = tmp->next)
    {
@@ -617,7 +617,7 @@ auto unit_has_money_type(struct unit_data *unit, uint8_t type) -> struct unit_da
  *  (which is why you must ALWAYS make sure the new object is either piled,
  *  or moved!)
  */
-auto split_money(struct unit_data *money, amount_t amt) -> struct unit_data *
+auto split_money(unit_data *money, amount_t amt) -> unit_data *
 {
    assert(IS_MONEY(money));
 
@@ -630,9 +630,9 @@ auto split_money(struct unit_data *money, amount_t amt) -> struct unit_data *
    if((amount_t)MONEY_AMOUNT(money) > amt)
    {
       /* Not very pretty to use this, but I really can't find an alternative */
-      void intern_unit_to_unit(struct unit_data *, struct unit_data *, bool);
+      void intern_unit_to_unit(unit_data *, unit_data *, bool);
 
-      struct unit_data *pnew = make_money(money_types[MONEY_TYPE(money)].fi, amt);
+      unit_data *pnew = make_money(money_types[MONEY_TYPE(money)].fi, amt);
       set_money(money, calc_money(MONEY_AMOUNT(money), '-', amt));
 
       if(UNIT_IN(money))
@@ -650,10 +650,10 @@ auto split_money(struct unit_data *money, amount_t amt) -> struct unit_data *
 /*  Make sure that _if_ there is another money-object of `money's type in
  *  the same object, that they're fused
  */
-void pile_money(struct unit_data *money)
+void pile_money(unit_data *money)
 {
-   struct unit_data *tmp;
-   struct unit_data *unit = UNIT_IN(money);
+   unit_data *tmp;
+   unit_data *unit = UNIT_IN(money);
 
    assert(IS_MONEY(money) && unit);
 
@@ -715,7 +715,7 @@ auto money_round(bool up, amount_t amt, currency_t currency, int types) -> amoun
 }
 
 /* Print out representation of supplied money-object with the amount amt */
-auto obj_money_string(struct unit_data *obj, amount_t amt) -> char *
+auto obj_money_string(unit_data *obj, amount_t amt) -> char *
 {
    static char        buf[128];
    struct money_type *money_tmp;
@@ -741,14 +741,14 @@ auto obj_money_string(struct unit_data *obj, amount_t amt) -> char *
    return buf;
 }
 
-auto char_can_carry_amount(struct unit_data *ch, struct unit_data *money) -> amount_t
+auto char_can_carry_amount(unit_data *ch, unit_data *money) -> amount_t
 {
    int d_wgt = char_carry_w_limit(ch) - UNIT_CONTAINING_W(ch);
 
    return MIN((amount_t)(d_wgt * MONEY_WEIGHT(money)), MONEY_AMOUNT(money));
 }
 
-auto unit_can_hold_amount(struct unit_data *unit, struct unit_data *money) -> amount_t
+auto unit_can_hold_amount(unit_data *unit, unit_data *money) -> amount_t
 {
    int d_wgt = UNIT_CAPACITY(unit) - UNIT_CONTAINING_W(unit);
 
@@ -759,7 +759,7 @@ auto unit_can_hold_amount(struct unit_data *unit, struct unit_data *money) -> am
    #include "comm.h"
    #include "interpreter.h"
 
-void do_makemoney(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_makemoney(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    currency_t cur;
    amount_t   amt = 0;

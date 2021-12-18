@@ -212,7 +212,7 @@ auto extra_descr_data::remove(const char *name) -> class extra_descr_data *
 /*  We don't want people to be able to see $-prefixed extras
  *  so check for that...
  */
-auto unit_find_extra(const char *word, class unit_data *unit) -> class extra_descr_data *
+auto unit_find_extra(const char *word, unit_data *unit) -> class extra_descr_data *
 {
    word = skip_spaces(word);
 
@@ -246,7 +246,7 @@ auto unit_find_extra(const char *word, class unit_data *unit) -> class extra_des
    return nullptr;
 }
 
-auto char_unit_find_extra(class unit_data *ch, class unit_data **target, char *word, class unit_data *list) -> class extra_descr_data *
+auto char_unit_find_extra(unit_data *ch, unit_data **target, char *word, unit_data *list) -> class extra_descr_data *
 {
    class extra_descr_data *exd = nullptr;
 
@@ -270,7 +270,7 @@ auto char_unit_find_extra(class unit_data *ch, class unit_data **target, char *w
    return nullptr;
 }
 
-auto unit_find_extra_string(class unit_data *ch, char *word, class unit_data *list) -> const char *
+auto unit_find_extra_string(unit_data *ch, char *word, unit_data *list) -> const char *
 {
    class extra_descr_data *exd = char_unit_find_extra(ch, nullptr, word, list);
 

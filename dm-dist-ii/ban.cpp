@@ -132,7 +132,7 @@ auto ban_timer(char *arg) -> time_t
    return now;
 }
 
-void add_ban(struct unit_data *ch, char *site, char type, time_t *until, char *textfile)
+void add_ban(unit_data *ch, char *site, char type, time_t *until, char *textfile)
 {
    struct ban_t *entry;
    char          d[50];
@@ -217,7 +217,7 @@ void kill_entry(struct ban_t *entry)
    save_ban();
 }
 
-void del_ban(struct unit_data *ch, char *site)
+void del_ban(unit_data *ch, char *site)
 {
    struct ban_t *entry;
 
@@ -240,7 +240,7 @@ void del_ban(struct unit_data *ch, char *site)
    }
 }
 
-void show_site(struct unit_data *ch, struct ban_t *entry)
+void show_site(unit_data *ch, struct ban_t *entry)
 {
    char buf[200];
    char d[40];
@@ -257,7 +257,7 @@ void show_site(struct unit_data *ch, struct ban_t *entry)
    send_to_char(buf, ch);
 }
 
-void do_ban(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_ban(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    struct ban_t *tmp;
    char          site[MAX_INPUT_LENGTH];

@@ -106,13 +106,13 @@ struct combat_msg_list fight_messages[COM_MAX_MSGS];
 
 /* External procedures */
 
-void stop_follower(struct unit_data *ch);
+void stop_follower(unit_data *ch);
 
 /* Returns TRUE if combat is not allowed, and FALSE if combat is allowed */
 /* Also used for steal, etc.                                             */
 /* If message is true, then a message is sent to the 'att'               */
 
-auto pk_test(struct unit_data *att, struct unit_data *def, int message) -> int
+auto pk_test(unit_data *att, unit_data *def, int message) -> int
 {
    if(IS_PC(att) && IS_PC(def) && att != def)
    {
@@ -166,14 +166,14 @@ auto pk_test(struct unit_data *att, struct unit_data *def, int message) -> int
    return FALSE;
 }
 
-auto char_dual_wield(struct unit_data *ch) -> int
+auto char_dual_wield(unit_data *ch) -> int
 {
    return (static_cast<int>(equipment_type(ch, WEAR_WIELD, ITEM_WEAPON) != nullptr) &&
            (equipment_type(ch, WEAR_HOLD, ITEM_WEAPON)) != nullptr);
 }
 
 /* Given an amount of experience, what is the 'virtual' level of the char? */
-auto virtual_level(struct unit_data *ch) -> int
+auto virtual_level(unit_data *ch) -> int
 {
    if(IS_NPC(ch))
    {
@@ -464,8 +464,8 @@ auto sub_damage(char *str, char *col, int damage, int max_hp) -> char *
    return buf;
 }
 
-static void combat_send(struct SFightColorSet *sColors, struct combat_single_msg *msg, struct unit_data *arg1, struct unit_data *arg2,
-                        struct unit_data *arg3, int dam)
+static void combat_send(struct SFightColorSet *sColors, struct combat_single_msg *msg, unit_data *arg1, unit_data *arg2, unit_data *arg3,
+                        int dam)
 {
    if(msg->to_char != nullptr)
    {
@@ -491,8 +491,7 @@ static void combat_send(struct SFightColorSet *sColors, struct combat_single_msg
 /* Use COM_MSG_MISS when a complete miss                  */
 /* Use COM_MSG_NODAM when a hit but no damage is given    */
 
-void combat_message(struct unit_data *att, struct unit_data *def, struct unit_data *medium, int damage, int msg_group, int msg_number,
-                    int hit_location)
+void combat_message(unit_data *att, unit_data *def, unit_data *medium, int damage, int msg_group, int msg_number, int hit_location)
 {
    struct combat_msg_packet *msg;
    int                       i;
@@ -575,7 +574,7 @@ void combat_message(struct unit_data *att, struct unit_data *def, struct unit_da
 
 /* -------------------------------------------------------------------- */
 
-void update_pos(struct unit_data *victim)
+void update_pos(unit_data *victim)
 {
    if((UNIT_HIT(victim) > 0) && (CHAR_POS(victim) > POSITION_STUNNED))
    {
@@ -596,7 +595,7 @@ void update_pos(struct unit_data *victim)
 /* -------------------------------------------------------------------- */
 
 /* When ch kills victim */
-static void change_alignment(struct unit_data *slayer, struct unit_data *victim)
+static void change_alignment(unit_data *slayer, unit_data *victim)
 {
    int adjust = 0;
    int diff   = 0;
@@ -668,7 +667,7 @@ static void change_alignment(struct unit_data *slayer, struct unit_data *victim)
 
 /* Do all the gain stuff for CH where no is the number of players */
 /* which are to share the "share" of experience                   */
-static void person_gain(struct unit_data *ch, struct unit_data *dead, int share, int grouped, int maxlevel)
+static void person_gain(unit_data *ch, unit_data *dead, int share, int grouped, int maxlevel)
 {
    if(share > 0)
    {
@@ -720,7 +719,7 @@ static void person_gain(struct unit_data *ch, struct unit_data *dead, int share,
 /* This takes 100% care of victim and attackers change in experience */
 /* and alignments. Do not fiddle with these values anywhere else     */
 /* when a kill has been made                                         */
-static void exp_align_gain(struct unit_data *ch, struct unit_data *victim)
+static void exp_align_gain(unit_data *ch, unit_data *victim)
 {
    int                      rellevel;
    int                      sumlevel;
@@ -728,10 +727,10 @@ static void exp_align_gain(struct unit_data *ch, struct unit_data *victim)
    int                      minlevel;
    int                      no_members = 1;
    int                      share;
-   struct unit_data        *head;
+   unit_data               *head;
    struct char_follow_type *f;
 
-   auto experience_modification(struct unit_data * att, struct unit_data * def)->int;
+   auto experience_modification(unit_data * att, unit_data * def)->int;
 
    maxlevel = CHAR_LEVEL(ch);
 
@@ -843,7 +842,7 @@ static void exp_align_gain(struct unit_data *ch, struct unit_data *victim)
 
 /* -------------------------------------------------------------------- */
 
-static void death_cry(struct unit_data *ch)
+static void death_cry(unit_data *ch)
 {
    int door;
 
@@ -862,7 +861,7 @@ static void death_cry(struct unit_data *ch)
    }
 }
 
-void RemoveReward(class unit_data *ch)
+void RemoveReward(unit_data *ch)
 {
    struct unit_affected_type *taf1;
    struct unit_affected_type *taf2;
@@ -891,15 +890,15 @@ void RemoveReward(class unit_data *ch)
    }
 }
 
-auto raw_kill(struct unit_data *ch) -> class unit_data *
+auto raw_kill(unit_data *ch) -> unit_data *
 {
-   struct unit_data *death_obj;
-   struct unit_data *corpse = NULL;
+   unit_data *death_obj;
+   unit_data *corpse = NULL;
 
-   extern struct unit_data       *seq_room;
+   extern unit_data              *seq_room;
    extern struct file_index_type *deathobj_fi;
 
-   auto make_corpse(struct unit_data * ch)->struct unit_data *;
+   auto make_corpse(unit_data * ch)->unit_data *;
 
 #ifdef DEMIGOD
    if(CHAR_ORIGINAL(ch) && IS_DEMIGOD(CHAR_ORIGINAL(ch)))
@@ -987,7 +986,7 @@ auto raw_kill(struct unit_data *ch) -> class unit_data *
    return corpse;
 }
 
-auto lose_exp(struct unit_data *ch) -> int
+auto lose_exp(unit_data *ch) -> int
 {
    int loss;
    int i;
@@ -1024,7 +1023,7 @@ auto lose_exp(struct unit_data *ch) -> int
 /* Die is only called when a PC or NPC is killed for real, causing XP loss
    and transfer of rewards */
 
-void die(struct unit_data *ch)
+void die(unit_data *ch)
 {
    if(IS_PC(ch))
    {
@@ -1053,7 +1052,7 @@ void die(struct unit_data *ch)
       }
    }
 
-   struct unit_data *corpse = raw_kill(ch);
+   unit_data *corpse = raw_kill(ch);
 
    if(corpse != nullptr)
    {
@@ -1071,7 +1070,7 @@ void die(struct unit_data *ch)
 /* -------------------------------------------------------------------- */
 
 /* Returns TRUE if combat is started or is already in progress */
-auto provoked_attack(class unit_data *victim, class unit_data *ch) -> int
+auto provoked_attack(unit_data *victim, unit_data *ch) -> int
 {
    if(!IS_CHAR(victim) || !IS_CHAR(ch))
    {
@@ -1107,7 +1106,7 @@ auto provoked_attack(class unit_data *victim, class unit_data *ch) -> int
 /* -------------------------------------------------------------------- */
 
 /* Call when adding or subtracting hitpoints to/from a character */
-void modify_hit(struct unit_data *ch, int hit)
+void modify_hit(unit_data *ch, int hit)
 {
    if(CHAR_POS(ch) > POSITION_DEAD)
    {
@@ -1123,8 +1122,8 @@ void modify_hit(struct unit_data *ch, int hit)
    }
 }
 
-void damage(struct unit_data *ch, struct unit_data *victim, struct unit_data *medium, int dam, int attack_group, int attack_number,
-            int hit_location, int bDisplay)
+void damage(unit_data *ch, unit_data *victim, unit_data *medium, int dam, int attack_group, int attack_number, int hit_location,
+            int bDisplay)
 {
    int                        max_hit;
    struct unit_affected_type *paf;
@@ -1399,7 +1398,7 @@ void damage(struct unit_data *ch, struct unit_data *victim, struct unit_data *me
    }
 }
 
-void break_object(struct unit_data *obj)
+void break_object(unit_data *obj)
 {
    char tmp[256];
 
@@ -1426,7 +1425,7 @@ void break_object(struct unit_data *obj)
 }
 
 /* 'ch' is optional, and will receive a message if 'obj' breaks */
-void damage_object(struct unit_data *ch, struct unit_data *obj, int dam)
+void damage_object(unit_data *ch, unit_data *obj, int dam)
 {
    if(obj == nullptr)
    {
@@ -1481,7 +1480,7 @@ void damage_object(struct unit_data *ch, struct unit_data *obj, int dam)
 
 /* -1 if fails, >= 0 amount of damage */
 
-auto one_hit(struct unit_data *att, struct unit_data *def, int bonus, int att_weapon_type, int primary) -> int
+auto one_hit(unit_data *att, unit_data *def, int bonus, int att_weapon_type, int primary) -> int
 {
    int dam;
    int hm;
@@ -1491,9 +1490,9 @@ auto one_hit(struct unit_data *att, struct unit_data *def, int bonus, int att_we
    int def_armour_type;
    int def_shield_bonus;
 
-   struct unit_data *att_weapon;
-   struct unit_data *def_armour;
-   struct unit_data *def_shield;
+   unit_data *att_weapon;
+   unit_data *def_armour;
+   unit_data *def_shield;
 
    assert(IS_CHAR(att) && IS_CHAR(def));
 
@@ -1624,13 +1623,13 @@ auto one_hit(struct unit_data *att, struct unit_data *def, int bonus, int att_we
    return dam;
 }
 
-auto simple_one_hit(struct unit_data *att, struct unit_data *def) -> int
+auto simple_one_hit(unit_data *att, unit_data *def) -> int
 {
    return one_hit(att, def, 0, WPN_ROOT, TRUE);
 }
 
 /* Returns TRUE if ok */
-static auto check_combat(struct unit_data *ch) -> int
+static auto check_combat(unit_data *ch) -> int
 {
    if(is_destructed(DR_UNIT, ch) != 0)
    {
@@ -1661,7 +1660,7 @@ static auto check_combat(struct unit_data *ch) -> int
 }
 
 /* control the fights going on */
-void melee_violence(struct unit_data *ch, int primary)
+void melee_violence(unit_data *ch, int primary)
 {
    if(check_combat(ch) == 0)
    {
@@ -1693,9 +1692,9 @@ void melee_violence(struct unit_data *ch, int primary)
 
 struct hunt_data
 {
-   int               no;
-   int               was_legal;
-   struct unit_data *victim;
+   int        no;
+   int        was_legal;
+   unit_data *victim;
 };
 
 /* The hunting routine will prefer to hit anyone hunted to those */
@@ -1709,7 +1708,7 @@ struct hunt_data
 auto hunting(struct spec_arg *sarg) -> int
 {
    struct hunt_data *h;
-   struct unit_data *victim;
+   unit_data        *victim;
 
    if(sarg->cmd->no != CMD_AUTO_TICK)
    {
@@ -1770,7 +1769,7 @@ auto hunting(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-void set_hunting(struct unit_data *predator, struct unit_data *victim, int legal)
+void set_hunting(unit_data *predator, unit_data *victim, int legal)
 {
    struct hunt_data *h;
 

@@ -73,7 +73,7 @@ extern BLK_FILE *inven_bf;
 
 /* external functs */
 
-auto age(struct unit_data *ch) -> struct time_info_data;
+auto age(unit_data *ch) -> struct time_info_data;
 auto real_time_passed(time_t t2, time_t t1) -> struct time_info_data;
 
 static int WIZ_CMD_LEVEL = 210; /* No need to change this, it is also set
@@ -82,12 +82,12 @@ static int WIZ_CMD_LEVEL = 210; /* No need to change this, it is also set
 auto player_exists(const char *pName) -> int;
 auto delete_player(const char *name) -> int;
 
-void do_path(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_path(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   int               i;
-   struct unit_data *thing;
-   char              buf[MAX_INPUT_LENGTH];
-   char              zone[MAX_INPUT_LENGTH];
+   int        i;
+   unit_data *thing;
+   char       buf[MAX_INPUT_LENGTH];
+   char       zone[MAX_INPUT_LENGTH];
 
    if(str_is_empty(argument) != 0u)
    {
@@ -113,7 +113,7 @@ void do_path(struct unit_data *ch, char *argument, const struct command_info *cm
    send_to_char(buf, ch);
 }
 
-void do_users(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_users(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    static char *buf      = nullptr;
    static int   cur_size = 1024;
@@ -168,7 +168,7 @@ void do_users(struct unit_data *ch, char *argument, const struct command_info *c
 }
 
 /* Reset the zone in which the char is in! */
-void do_reset(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_reset(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    struct zone_type *zone;
 
@@ -190,7 +190,7 @@ void do_reset(struct unit_data *ch, char *arg, const struct command_info *cmd)
    zone_reset(zone);
 }
 
-void do_echo(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_echo(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    if(str_is_empty(arg) != 0u)
    {
@@ -223,9 +223,9 @@ auto frozen(struct spec_arg *sarg) -> int
    return SFR_BLOCK;
 }
 
-void do_freeze(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_freeze(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *unit;
+   unit_data        *unit;
    struct unit_fptr *fptr;
 
    if(str_is_empty(arg) != 0u)
@@ -260,9 +260,9 @@ void do_freeze(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_noshout(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_noshout(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *victim;
+   unit_data *victim;
 
    if(!IS_PC(ch))
    {
@@ -296,9 +296,9 @@ void do_noshout(struct unit_data *ch, char *argument, const struct command_info 
    TOGGLE_BIT(PC_FLAGS(victim), PC_NOSHOUTING);
 }
 
-void do_notell(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_notell(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *victim;
+   unit_data *victim;
 
    if(!IS_PC(ch))
    {
@@ -333,10 +333,10 @@ void do_notell(struct unit_data *ch, char *argument, const struct command_info *
    TOGGLE_BIT(PC_FLAGS(victim), PC_NOTELLING);
 }
 
-void do_wizinv(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wizinv(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *unit;
-   int               level = GOD_LEVEL - 1;
+   unit_data *unit;
+   int        level = GOD_LEVEL - 1;
 
    arg = skip_spaces(arg);
 
@@ -399,7 +399,7 @@ void do_wizinv(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void base_trans(struct unit_data *ch, struct unit_data *victim)
+void base_trans(unit_data *ch, unit_data *victim)
 {
    assert(ch && victim);
 
@@ -431,10 +431,10 @@ void base_trans(struct unit_data *ch, struct unit_data *victim)
    }
 }
 
-void do_trans(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_trans(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    struct descriptor_data *i;
-   struct unit_data       *victim;
+   unit_data              *victim;
 
    if(!IS_PC(ch))
    {
@@ -474,11 +474,11 @@ void do_trans(struct unit_data *ch, char *arg, const struct command_info *cmd)
    send_to_char("Ok.\n\r", ch);
 }
 
-void do_at(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_at(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    char                    buf[MAX_INPUT_LENGTH];
-   struct unit_data       *target;
-   struct unit_data       *original_loc;
+   unit_data              *target;
+   unit_data              *original_loc;
    struct file_index_type *fi;
 
    if(!IS_PC(ch))
@@ -533,10 +533,10 @@ void do_at(struct unit_data *ch, char *argument, const struct command_info *cmd)
    }
 }
 
-void do_goto(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_goto(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data       *target;
-   struct unit_data       *pers;
+   unit_data              *target;
+   unit_data              *pers;
    struct file_index_type *fi;
    struct zone_type       *zone;
    int                     i;
@@ -623,7 +623,7 @@ void do_goto(struct unit_data *ch, char *argument, const struct command_info *cm
    do_look(ch, mbuf, cmd);
 }
 
-void do_crash(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_crash(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    if(cmd_is_abbrev(ch, cmd) != 0u)
    {
@@ -641,10 +641,10 @@ void do_crash(struct unit_data *ch, char *argument, const struct command_info *c
    }
 }
 
-void do_execute(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_execute(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   auto system_check(struct unit_data * pc, char *buf)->int;
-   void execute_append(struct unit_data * pc, char *str);
+   auto system_check(unit_data * pc, char *buf)->int;
+   void execute_append(unit_data * pc, char *str);
 
    argument = skip_spaces(argument);
 
@@ -657,7 +657,7 @@ void do_execute(struct unit_data *ch, char *argument, const struct command_info 
    act("Executing $2t.\n\r", A_ALWAYS, ch, argument, nullptr, TO_CHAR);
 }
 
-void do_shutdown(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_shutdown(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    char       buf[100];
    extern int mud_shutdown, mud_reboot;
@@ -678,7 +678,7 @@ void do_shutdown(struct unit_data *ch, char *argument, const struct command_info
    mud_shutdown = 1;
 }
 
-void do_reboot(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_reboot(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    char       buf[100];
    char       arg[MAX_INPUT_LENGTH];
@@ -713,12 +713,12 @@ void do_reboot(struct unit_data *ch, char *argument, const struct command_info *
    mud_shutdown = mud_reboot = 1;
 }
 
-void do_snoop(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_snoop(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *victim;
+   unit_data *victim;
 
-   void unsnoop(struct unit_data * ch, int mode);
-   void snoop(struct unit_data * ch, struct unit_data * victim);
+   void unsnoop(unit_data * ch, int mode);
+   void snoop(unit_data * ch, unit_data * victim);
 
    if(!CHAR_DESCRIPTOR(ch))
    {
@@ -789,12 +789,12 @@ void do_snoop(struct unit_data *ch, char *argument, const struct command_info *c
 
 /* return -> switch <no_arg> */
 
-void do_switch(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_switch(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *victim;
+   unit_data *victim;
 
-   void switchbody(struct unit_data * ch, struct unit_data * victim);
-   void unswitchbody(struct unit_data * npc);
+   void switchbody(unit_data * ch, unit_data * victim);
+   void unswitchbody(unit_data * npc);
 
    if(!CHAR_DESCRIPTOR(ch))
    {
@@ -839,7 +839,7 @@ void do_switch(struct unit_data *ch, char *argument, const struct command_info *
    }
 }
 
-void base_force(struct unit_data *ch, struct unit_data *victim, char *arg)
+void base_force(unit_data *ch, unit_data *victim, char *arg)
 {
    if(CHAR_LEVEL(ch) < CHAR_LEVEL(victim) && CHAR_CAN_SEE(ch, victim))
    {
@@ -852,10 +852,10 @@ void base_force(struct unit_data *ch, struct unit_data *victim, char *arg)
    }
 }
 
-void do_force(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_force(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    struct descriptor_data *i;
-   struct unit_data       *victim;
+   unit_data              *victim;
 
    if(!IS_PC(ch))
    {
@@ -905,13 +905,13 @@ void do_force(struct unit_data *ch, char *argument, const struct command_info *c
    }
 }
 
-void do_finger(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_finger(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    char buf[MAX_INPUT_LENGTH];
 
-   void reset_char(struct unit_data * ch);
+   void reset_char(unit_data * ch);
    auto player_exists(char *pName)->int;
-   void enter_game(struct unit_data * ch);
+   void enter_game(unit_data * ch);
 
    if(str_is_empty(arg) != 0u)
    {
@@ -932,12 +932,12 @@ void do_finger(struct unit_data *ch, char *arg, const struct command_info *cmd)
                 ch);
 }
 
-void do_load(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_load(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    char                    buf[MAX_INPUT_LENGTH];
    struct file_index_type *fi;
-   struct unit_data       *u;
-   struct unit_data       *tmp;
+   unit_data              *u;
+   unit_data              *tmp;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -1038,10 +1038,10 @@ void do_load(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_delete(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_delete(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   char              buf[MAX_INPUT_LENGTH];
-   struct unit_data *tmp;
+   char       buf[MAX_INPUT_LENGTH];
+   unit_data *tmp;
 
    if(cmd_is_abbrev(ch, cmd) != 0u)
    {
@@ -1083,11 +1083,11 @@ void do_delete(struct unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* clean a room of all mobiles and objects */
-void do_purge(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_purge(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    char                    buf[MAX_INPUT_LENGTH];
-   struct unit_data       *thing;
-   struct unit_data       *next_thing;
+   unit_data              *thing;
+   unit_data              *next_thing;
    struct descriptor_data *d;
 
    void close_socket(struct descriptor_data * d);
@@ -1182,12 +1182,12 @@ void do_purge(struct unit_data *ch, char *argument, const struct command_info *c
    }
 }
 
-void do_advance(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_advance(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *victim;
-   char              name[100];
-   char              level[100];
-   int               newlevel;
+   unit_data *victim;
+   char       name[100];
+   char       level[100];
+   int        newlevel;
 
    if(!IS_PC(ch))
    {
@@ -1284,14 +1284,14 @@ void do_advance(struct unit_data *ch, char *argument, const struct command_info 
    }
 }
 
-void do_verify(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_verify(unit_data *ch, char *arg, const struct command_info *cmd)
 {
 #ifdef SUSPEKT
-   struct unit_data *pc, *obj;
-   int               i, j;
-   float             asum, ssum;
-   float             atot, stot;
-   char              buf[256];
+   unit_data *pc, *obj;
+   int        i, j;
+   float      asum, ssum;
+   float      atot, stot;
+   char       buf[256];
 
    extern struct requirement_type pc_race_base[];
 
@@ -1382,17 +1382,17 @@ void do_verify(struct unit_data *ch, char *arg, const struct command_info *cmd)
 #endif
 }
 
-void reroll(struct unit_data *victim)
+void reroll(unit_data *victim)
 {
    struct extra_descr_data *exd;
    struct extra_descr_data *nextexd;
-   struct unit_data        *obj;
+   unit_data               *obj;
    int                      i;
 
-   void race_cost(struct unit_data * ch);
-   void points_reset(struct unit_data * ch);
+   void race_cost(unit_data * ch);
+   void points_reset(unit_data * ch);
 
-   void clear_training_level(struct unit_data * ch);
+   void clear_training_level(unit_data * ch);
 
    if(IS_IMMORTAL(victim))
    {
@@ -1447,9 +1447,9 @@ void reroll(struct unit_data *victim)
    }
 }
 
-void do_reroll(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_reroll(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *victim;
+   unit_data *victim;
 
    if(!IS_PC(ch))
    {
@@ -1484,10 +1484,10 @@ void do_reroll(struct unit_data *ch, char *arg, const struct command_info *cmd)
    send_to_char("Rerolled.\n\r", ch);
 }
 
-void do_restore(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_restore(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   int               i;
-   struct unit_data *victim;
+   int        i;
+   unit_data *victim;
 
    if(!IS_PC(ch))
    {
@@ -1580,7 +1580,7 @@ static auto file_install(char *file, bool bNew) -> bool
    return TRUE;
 }
 
-void do_file(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_file(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    char        buf[MAX_INPUT_LENGTH];
    const char *str = "$2t installed.";
@@ -1645,9 +1645,9 @@ void do_file(struct unit_data *ch, char *argument, const struct command_info *cm
 
 /* end file */
 
-void do_message(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_message(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *vict;
+   unit_data *vict;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -1672,7 +1672,7 @@ void do_message(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_broadcast(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_broadcast(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    struct descriptor_data *d;
 
@@ -1692,7 +1692,7 @@ void do_broadcast(struct unit_data *ch, char *arg, const struct command_info *cm
    }
 }
 
-void list_wizards(struct unit_data *ch, bool value)
+void list_wizards(unit_data *ch, bool value)
 {
    struct descriptor_data *d;
    bool                    any = FALSE;
@@ -1726,7 +1726,7 @@ void list_wizards(struct unit_data *ch, bool value)
    }
 }
 
-void do_wiz(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wiz(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    struct descriptor_data *d;
    char                    tmp[MAX_INPUT_LENGTH];
@@ -1838,10 +1838,10 @@ void do_wiz(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_title(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_title(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *u;
-   char             *oldarg = arg;
+   unit_data *u;
+   char      *oldarg = arg;
 
    if(!IS_PC(ch) || (str_is_empty(arg) != 0u))
    {
@@ -1883,7 +1883,7 @@ void do_title(struct unit_data *ch, char *arg, const struct command_info *cmd)
 /*  0: free access
  * >0: locked for below this level
  */
-void do_wizlock(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wizlock(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    int  lvl;
    char buf[128];
@@ -1921,7 +1921,7 @@ void do_wizlock(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_wizhelp(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wizhelp(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    char                       buf[MAX_STRING_LENGTH];
    char                      *b;
@@ -1958,20 +1958,20 @@ void do_wizhelp(struct unit_data *ch, char *arg, const struct command_info *cmd)
    page_string(CHAR_DESCRIPTOR(ch), buf);
 }
 
-void do_kickit(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_kickit(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    send_to_char("No compiler in this version, I guess.\n\r", ch);
 }
 
-void do_corpses(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_corpses(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   extern auto in_string(struct unit_data * ch, struct unit_data * u)->char *;
+   extern auto in_string(unit_data * ch, unit_data * u)->char *;
 
-   struct unit_data *c;
-   bool              found = FALSE;
-   char             *c1;
-   char             *c2;
-   char              buf[512];
+   unit_data *c;
+   bool       found = FALSE;
+   char      *c1;
+   char      *c2;
+   char       buf[512];
 
    send_to_char("The following player corpses were found:\n\r", ch);
 

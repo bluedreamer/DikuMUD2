@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : hashstring.h                              Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -22,12 +23,10 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_STRING_H
-#define _MUD_STRING_H
-
 #include "essential.h"
+class unit_data;
 
-void string_statistics(struct unit_data *ch);
+void string_statistics(unit_data *ch);
 
 class cStringConstant
 {
@@ -65,5 +64,3 @@ private:
    void                   Make(const char *str);
    class cStringConstant *pConst;
 };
-
-#endif

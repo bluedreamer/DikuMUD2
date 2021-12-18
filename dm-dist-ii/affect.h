@@ -25,6 +25,7 @@
 
 #include "essential.h"
 #include "structs.h"
+#include "unit_data.h"
 
 void apply_affect(unit_data *unit);
 void start_affect(unit_data *unit);

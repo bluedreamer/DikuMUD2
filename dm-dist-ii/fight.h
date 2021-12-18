@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : fight.h                                   Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -22,8 +23,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_FIGHT_H
-#define _MUD_FIGHT_H
+#include "unit_data.h"
 
 #include "essential.h"
 
@@ -34,21 +34,20 @@ struct SFightColorSet
    char *pOthers;
 };
 
-auto raw_kill(struct unit_data *ch) -> class unit_data *;
+auto raw_kill(unit_data *ch) -> unit_data *;
 
-auto provoked_attack(class unit_data *victim, class unit_data *ch) -> int;
+auto provoked_attack(unit_data *victim, unit_data *ch) -> int;
 
-void update_pos(struct unit_data *victim);
+void update_pos(unit_data *victim);
 
-void damage(struct unit_data *ch, struct unit_data *victim, struct unit_data *medium, int damage, int attackcat, int weapontype, int hitloc,
+void damage(unit_data *ch, unit_data *victim, unit_data *medium, int damage, int attackcat, int weapontype, int hitloc,
             int bDisplay = TRUE);
 
-auto pk_test(struct unit_data *att, struct unit_data *def, int message) -> int;
-auto one_hit(struct unit_data *att, struct unit_data *def, int bonus, int wpn_type, int primary = TRUE) -> int;
-auto simple_one_hit(struct unit_data *att, struct unit_data *def) -> int;
-auto char_dual_wield(struct unit_data *ch) -> int;
-void melee_violence(struct unit_data *ch, int primary);
-auto melee_bonus(struct unit_data *att, struct unit_data *def, int hit_loc, int *pAtt_weapon_type, struct unit_data **pAtt_weapon,
-                 int *pDef_armour_type, struct unit_data **pDef_armour, int primary = TRUE) -> int;
-auto shield_bonus(struct unit_data *att, struct unit_data *def, struct unit_data **pDef_shield) -> int;
-#endif
+auto pk_test(unit_data *att, unit_data *def, int message) -> int;
+auto one_hit(unit_data *att, unit_data *def, int bonus, int wpn_type, int primary = TRUE) -> int;
+auto simple_one_hit(unit_data *att, unit_data *def) -> int;
+auto char_dual_wield(unit_data *ch) -> int;
+void melee_violence(unit_data *ch, int primary);
+auto melee_bonus(unit_data *att, unit_data *def, int hit_loc, int *pAtt_weapon_type, unit_data **pAtt_weapon, int *pDef_armour_type,
+                 unit_data **pDef_armour, int primary = TRUE) -> int;
+auto shield_bonus(unit_data *att, unit_data *def, unit_data **pDef_shield) -> int;

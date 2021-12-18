@@ -55,12 +55,12 @@ static void ConnectionWrite(uint32_t nId, uint32_t nLogon, uint32_t nLogoff, uin
    fflush(f);
 }
 
-void ConnectionBegin(class unit_data *pc)
+void ConnectionBegin(unit_data *pc)
 {
    ConnectionWrite(PC_ID(pc), CHAR_DESCRIPTOR(pc)->logon, 0, 0);
 }
 
-void ConnectionLog(class unit_data *pc)
+void ConnectionLog(unit_data *pc)
 {
    time_t t0 = time(nullptr);
 

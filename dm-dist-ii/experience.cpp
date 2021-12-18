@@ -73,10 +73,10 @@ auto kludge_bonus(int level, int points) -> int
 /* Returns 0 or less if unsuccessful, or 1..100 for the blocking    */
 /* chance                                                           */
 
-auto shield_bonus(struct unit_data *att, struct unit_data *def, struct unit_data **pDef_shield) -> int
+auto shield_bonus(unit_data *att, unit_data *def, unit_data **pDef_shield) -> int
 {
-   struct unit_data *def_shield;
-   int               def_shield_bonus = 0;
+   unit_data *def_shield;
+   int        def_shield_bonus = 0;
 
    int att_dex;
    int def_dex;
@@ -130,16 +130,16 @@ auto shield_bonus(struct unit_data *att, struct unit_data *def, struct unit_data
    return def_shield_bonus;
 }
 
-auto spell_bonus(struct unit_data *att, struct unit_data *medium, struct unit_data *def, int hit_loc, int spell_number,
-                 int *pDef_armour_type, struct unit_data **pDef_armour) -> int
+auto spell_bonus(unit_data *att, unit_data *medium, unit_data *def, int hit_loc, int spell_number, int *pDef_armour_type,
+                 unit_data **pDef_armour) -> int
 {
-   int               att_spl_knowledge;
-   int               def_spl_knowledge;
-   int               att_bonus;
-   int               def_bonus;
-   int               def_armour_type;
-   struct unit_data *def_armour;
-   int               hm;
+   int        att_spl_knowledge;
+   int        def_spl_knowledge;
+   int        att_bonus;
+   int        def_bonus;
+   int        def_armour_type;
+   unit_data *def_armour;
+   int        hm;
 
    att_bonus = CHAR_OFFENSIVE(att);
    def_bonus = CHAR_DEFENSIVE(def);
@@ -209,8 +209,8 @@ auto spell_bonus(struct unit_data *att, struct unit_data *medium, struct unit_da
 /* to anything, then it will be set to the defenders armour_type  */
 /* which should be used upon lookup                               */
 
-auto melee_bonus(struct unit_data *att, struct unit_data *def, int hit_loc, int *pAtt_weapon_type, struct unit_data **pAtt_weapon,
-                 int *pDef_armour_type, struct unit_data **pDef_armour, int primary) -> int
+auto melee_bonus(unit_data *att, unit_data *def, int hit_loc, int *pAtt_weapon_type, unit_data **pAtt_weapon, int *pDef_armour_type,
+                 unit_data **pDef_armour, int primary) -> int
 {
    int att_dex;
    int att_bonus;
@@ -219,11 +219,11 @@ auto melee_bonus(struct unit_data *att, struct unit_data *def, int hit_loc, int 
    int def_bonus;
    int def_wpn_knowledge;
 
-   struct unit_data *att_wpn;
-   int               att_wpn_type;
+   unit_data *att_wpn;
+   int        att_wpn_type;
 
-   int               def_armour_type;
-   struct unit_data *def_armour;
+   int        def_armour_type;
+   unit_data *def_armour;
 
    int hm;
 
@@ -374,11 +374,11 @@ auto melee_bonus(struct unit_data *att, struct unit_data *def, int hit_loc, int 
    return MAX(-50, hm);
 }
 
-auto base_melee(struct unit_data *att, struct unit_data *def, int hit_loc) -> int
+auto base_melee(unit_data *att, unit_data *def, int hit_loc) -> int
 {
-   int               ocp;
-   int               bonus;
-   struct unit_data *ocf;
+   int        ocp;
+   int        bonus;
+   unit_data *ocf;
 
    assert(CHAR_COMBAT(def));
 
@@ -399,14 +399,14 @@ auto base_melee(struct unit_data *att, struct unit_data *def, int hit_loc) -> in
 /* danger involved in combat (i.e. how fast would you die in worst case)    */
 /* Returns number of rounds it takes att to kill def                        */
 
-auto base_consider(struct unit_data *att, struct unit_data *def) -> int
+auto base_consider(unit_data *att, unit_data *def) -> int
 {
-   int               ocp;
-   int               bonus;
-   struct unit_data *ocf;
-   int               att_wpn_type;
-   int               def_arm_type;
-   int               dam;
+   int        ocp;
+   int        bonus;
+   unit_data *ocf;
+   int        att_wpn_type;
+   int        def_arm_type;
+   int        dam;
 
    ocp           = CHAR_POS(def);
    ocf           = CHAR_FIGHTING(def);
@@ -427,11 +427,11 @@ auto base_consider(struct unit_data *att, struct unit_data *def) -> int
    return UNIT_MAX_HIT(def) / dam; /* Rounds to die.... */
 }
 
-void do_consider(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_consider(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *vict;
-   int               rtd;
-   char             *oarg = arg;
+   unit_data *vict;
+   int        rtd;
+   char      *oarg = arg;
 
    if(IS_PC(ch) && PC_SKI_SKILL(ch, SKI_CONSIDER) == 0)
    {
@@ -515,7 +515,7 @@ void do_consider(struct unit_data *ch, char *arg, const struct command_info *cmd
 
 /* Return the quality modifier for the given monster. Modifier depends on */
 /* the hand or weapon quality and armour or toughness quality.            */
-auto experience_modification(struct unit_data *att, struct unit_data *def) -> int
+auto experience_modification(unit_data *att, unit_data *def) -> int
 {
    return base_melee(def, att, WEAR_BODY) - base_melee(att, def, WEAR_BODY);
 }

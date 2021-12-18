@@ -45,7 +45,7 @@ static int nSwapOut    = 0;
 static int nSwapIn     = 0;
 static int nSwapSumLen = 0;
 
-void swap_in(struct unit_data *u)
+void swap_in(unit_data *u)
 {
    /*
 CByteBuffer Buf;
@@ -110,7 +110,7 @@ nSwapIn++;
 */
 }
 
-void swap_out(struct unit_data *u)
+void swap_out(unit_data *u)
 {
    /*
     CByteBuffer *pBuf = &g_FileBuffer;
@@ -148,7 +148,7 @@ void swap_out(struct unit_data *u)
  */
 }
 
-void swap_status(struct unit_data *ch)
+void swap_status(unit_data *ch)
 {
    /*
   char Buf[1024];
@@ -169,7 +169,7 @@ void swap_status(struct unit_data *ch)
 void swap_check(void *p1, void *p2)
 {
    /*
-  struct unit_data *u;
+  unit_data *u;
 
 #ifdef SUSPEKT
   static int nOldSwapIn = 0;

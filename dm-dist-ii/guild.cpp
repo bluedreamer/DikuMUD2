@@ -60,7 +60,7 @@ struct guild_type
    char **ppExcludeQuest;
 };
 
-auto find_quest(char *word, struct unit_data *unit) -> struct extra_descr_data *
+auto find_quest(char *word, unit_data *unit) -> struct extra_descr_data *
 {
    if(!IS_PC(unit) || (word == nullptr))
    {
@@ -70,7 +70,7 @@ auto find_quest(char *word, struct unit_data *unit) -> struct extra_descr_data *
    return PC_QUEST(unit)->find_raw(word);
 }
 
-auto char_guild_level(struct unit_data *ch) -> int
+auto char_guild_level(unit_data *ch) -> int
 {
    uint32_t                 i;
    struct extra_descr_data *exd;
@@ -101,7 +101,7 @@ auto char_guild_level(struct unit_data *ch) -> int
    return CHAR_LEVEL(ch);
 }
 
-void advance_guild_level(struct unit_data *ch)
+void advance_guild_level(unit_data *ch)
 {
    struct extra_descr_data *exd;
 
@@ -157,7 +157,7 @@ static void free_guild_data(struct guild_type *pGt)
    free(pGt);
 }
 
-static auto parse_guild_data(struct unit_data *npc, char *pStr) -> struct guild_type *
+static auto parse_guild_data(unit_data *npc, char *pStr) -> struct guild_type *
 {
    char              *pTmp1;
    struct guild_type *pG;
@@ -210,7 +210,7 @@ auto guild_master_init(struct spec_arg *sarg) -> int
 /* 'guild'. Uses the act() function to send string with $1 as 'member' */
 /* $2 as 'nonmember' and $3 as character                               */
 /* Message will never be sent to 'nonmember'                           */
-void act_to_guild(const char *msg, char *guild, struct unit_data *member, struct unit_data *nonmember)
+void act_to_guild(const char *msg, char *guild, unit_data *member, unit_data *nonmember)
 {
    struct descriptor_data *d;
 
@@ -291,7 +291,7 @@ auto guard_guild_way(struct spec_arg *sarg) -> int
    char *guild_no;
    int   guild_cmp;
 
-   auto charname_in_list(struct unit_data * ch, char *arg)->int;
+   auto charname_in_list(unit_data * ch, char *arg)->int;
 
    if(((str = (char *)sarg->fptr->data) != nullptr) && (sarg->cmd->no == (*str - '0')) && CHAR_IS_READY(sarg->owner))
    {
@@ -352,7 +352,7 @@ auto guard_guild_way(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-void leave_guild(struct unit_data *player)
+void leave_guild(unit_data *player)
 {
    struct extra_descr_data *exd;
 
@@ -387,7 +387,7 @@ void leave_guild(struct unit_data *player)
    PC_GUILD_TIME(player) = PC_TIME(player).played;
 }
 
-void guild_banish_player(struct unit_data *ch)
+void guild_banish_player(unit_data *ch)
 {
    char                    *c;
    struct extra_descr_data *pExd;
@@ -413,7 +413,7 @@ void guild_banish_player(struct unit_data *ch)
    }
 }
 
-auto can_leave_guild(struct guild_type *pG, struct unit_data *master, struct unit_data *ch) -> int
+auto can_leave_guild(struct guild_type *pG, unit_data *master, unit_data *ch) -> int
 {
    char     **p;
    currency_t currency = local_currency(master);
@@ -454,7 +454,7 @@ auto can_leave_guild(struct guild_type *pG, struct unit_data *master, struct uni
    return TRUE;
 }
 
-void join_guild(struct unit_data *ch, char *guild_name)
+void join_guild(unit_data *ch, char *guild_name)
 {
    struct extra_descr_data *exd;
 
@@ -473,7 +473,7 @@ void join_guild(struct unit_data *ch, char *guild_name)
    exd->names.AppendName("$guild");
 }
 
-auto can_join_guild(struct guild_type *pG, struct unit_data *master, struct unit_data *ch) -> int
+auto can_join_guild(struct guild_type *pG, unit_data *master, unit_data *ch) -> int
 {
    currency_t currency = local_currency(master);
    char     **p;
@@ -630,8 +630,8 @@ auto guild_master(struct spec_arg *sarg) -> int
 /* sarg->fptr->data contains guild name.                                         */
 auto guild_basis(struct spec_arg *sarg) -> int
 {
-   int               i;
-   struct unit_data *u;
+   int        i;
+   unit_data *u;
 
    if(sarg->cmd->no == CMD_AUTO_DEATH && sarg->owner == sarg->activator)
    {
@@ -741,7 +741,7 @@ auto guild_title(struct spec_arg *sarg) -> int
    return SFR_BLOCK;
 }
 
-void do_guild(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_guild(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    char                     buf[MAX_STRING_LENGTH];
    int                      found = FALSE;

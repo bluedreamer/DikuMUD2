@@ -186,7 +186,7 @@ void cCombatList::PerformViolence()
    nIdx = -1;
 }
 
-void cCombatList::status(const struct unit_data *ch) const
+void cCombatList::status(const unit_data *ch) const
 {
    char buf[MAX_STRING_LENGTH];
 
@@ -200,7 +200,7 @@ void cCombatList::status(const struct unit_data *ch) const
 /*                                                                         */
 /* ======================================================================= */
 
-cCombat::cCombat(struct unit_data *owner, int bMelee)
+cCombat::cCombat(unit_data *owner, int bMelee)
 {
    assert(owner);
 
@@ -250,7 +250,7 @@ void cCombat::changeSpeed(int delta)
    nWhen += delta;
 }
 
-auto cCombat::findOpponentIdx(struct unit_data *target) -> int
+auto cCombat::findOpponentIdx(unit_data *target) -> int
 {
    for(int i = 0; i < nNoOpponents; i++)
    {
@@ -263,7 +263,7 @@ auto cCombat::findOpponentIdx(struct unit_data *target) -> int
    return -1;
 }
 
-auto cCombat::FindOpponent(struct unit_data *victim) -> struct unit_data *
+auto cCombat::FindOpponent(unit_data *victim) -> unit_data *
 {
    int i = findOpponentIdx(victim);
 
@@ -274,7 +274,7 @@ auto cCombat::FindOpponent(struct unit_data *victim) -> struct unit_data *
    return pOpponents[i];
 }
 
-void cCombat::add(struct unit_data *victim)
+void cCombat::add(unit_data *victim)
 {
    assert(victim);
 
@@ -282,11 +282,11 @@ void cCombat::add(struct unit_data *victim)
 
    if(nNoOpponents == 1)
    {
-      CREATE(pOpponents, struct unit_data *, 1);
+      CREATE(pOpponents, unit_data *, 1);
    }
    else
    {
-      RECREATE(pOpponents, struct unit_data *, nNoOpponents);
+      RECREATE(pOpponents, unit_data *, nNoOpponents);
    }
 
    pOpponents[nNoOpponents - 1] = victim;
@@ -315,7 +315,7 @@ void cCombat::sub(int idx)
 
    if(nNoOpponents - idx > 1)
    {
-      memmove(&pOpponents[idx], &pOpponents[idx + 1], sizeof(struct unit_data *) * (nNoOpponents - idx - 1));
+      memmove(&pOpponents[idx], &pOpponents[idx + 1], sizeof(unit_data *) * (nNoOpponents - idx - 1));
    }
 
    pOpponents[nNoOpponents - 1] = nullptr;
@@ -333,7 +333,7 @@ void cCombat::sub(int idx)
    }
 }
 
-void cCombat::setMelee(struct unit_data *victim)
+void cCombat::setMelee(unit_data *victim)
 {
    pMelee = victim;
 }
@@ -341,7 +341,7 @@ void cCombat::setMelee(struct unit_data *victim)
 // Add another opponent. A very important feature is, that opponents
 // always exists as pairs and if one is removed so is the other.
 //
-void cCombat::addOpponent(struct unit_data *victim, int bMelee = FALSE)
+void cCombat::addOpponent(unit_data *victim, int bMelee = FALSE)
 {
    // This if is needed since we call recursively for the victim
 
@@ -363,7 +363,7 @@ void cCombat::addOpponent(struct unit_data *victim, int bMelee = FALSE)
    }
 }
 
-void cCombat::subOpponent(struct unit_data *victim)
+void cCombat::subOpponent(unit_data *victim)
 {
    if(nNoOpponents < 1)
    {
@@ -381,7 +381,7 @@ void cCombat::subOpponent(struct unit_data *victim)
    sub(i);
 }
 
-auto cCombat::Opponent(int i) -> struct unit_data *
+auto cCombat::Opponent(int i) -> unit_data *
 {
    if(i >= nNoOpponents)
    {
@@ -390,7 +390,7 @@ auto cCombat::Opponent(int i) -> struct unit_data *
    return pOpponents[i];
 }
 
-void cCombat::status(const struct unit_data *ch)
+void cCombat::status(const unit_data *ch)
 {
    char buf[MAX_STRING_LENGTH];
    int  i;
@@ -419,7 +419,7 @@ void cCombat::status(const struct unit_data *ch)
 /* ======================================================================= */
 
 /* start one char fighting another (yes, it is horrible, I know... )  */
-void set_fighting(struct unit_data *ch, struct unit_data *vict, int bMelee)
+void set_fighting(unit_data *ch, unit_data *vict, int bMelee)
 {
    if(ch == vict)
    {
@@ -444,7 +444,7 @@ void set_fighting(struct unit_data *ch, struct unit_data *vict, int bMelee)
 }
 
 /* remove a char from the list of fighting chars */
-void stop_fighting(struct unit_data *ch, struct unit_data *victim)
+void stop_fighting(unit_data *ch, unit_data *victim)
 {
    if(victim == nullptr) // Stop all combat...
    {
@@ -472,7 +472,7 @@ void stop_fighting(struct unit_data *ch, struct unit_data *victim)
 /*                                                                         */
 /* ======================================================================= */
 
-void stat_combat(const struct unit_data *ch, struct unit_data *u)
+void stat_combat(const unit_data *ch, unit_data *u)
 {
    if(!IS_CHAR(u))
    {

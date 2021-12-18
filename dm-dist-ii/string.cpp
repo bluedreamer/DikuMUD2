@@ -293,7 +293,7 @@ cStringInstance::~cStringInstance()
 
 #ifdef DMSERVER
 
-void string_statistics(struct unit_data *ch)
+void string_statistics(unit_data *ch)
 {
    uint32_t depth;
    uint32_t slots;

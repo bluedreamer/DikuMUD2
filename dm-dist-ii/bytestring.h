@@ -23,8 +23,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-
-
 #include "essential.h"
 
 class CByteBuffer
@@ -34,10 +32,10 @@ public:
    virtual ~CByteBuffer();
 
    // Informative functions
-   [[nodiscard]] inline auto GetLength() const -> uint32_t  { return m_nLength; }
-   [[nodiscard]] inline auto GetAllocated() const -> uint32_t  { return m_nAllocated; }
-   [[nodiscard]] inline auto GetReadPosition() const -> uint32_t  { return m_nReadPos; }
-   inline auto GetData() -> const uint8_t * { return m_pData; }
+   [[nodiscard]] inline auto GetLength() const -> uint32_t { return m_nLength; }
+   [[nodiscard]] inline auto GetAllocated() const -> uint32_t { return m_nAllocated; }
+   [[nodiscard]] inline auto GetReadPosition() const -> uint32_t { return m_nReadPos; }
+   inline auto               GetData() -> const uint8_t               *{ return m_pData; }
 
    void SetReadPosition(uint32_t nReadPosition);
    void SetLength(uint32_t nLen);
