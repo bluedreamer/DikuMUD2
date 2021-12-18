@@ -67,7 +67,7 @@
    #pragma optimize("l", off) /* Disable loop optimizations */
 #endif                        /* MSC_OPT */
 
-char *docall(struct symtab *p, char *internal, char *internal_limit)
+auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *
 {
    static char mbomsg[]       = "Macro body overflow";
    static char toggle_token[] = {(char)TOGGLE_EXPAND, '\0'};
@@ -92,10 +92,10 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
    /*
     *	Crack the formal parameters for the macro.
     */
-   formals  = NULL; /* No parameter instantiations yet */
+   formals  = nullptr; /* No parameter instantiations yet */
    maclevel = 0;
 
-   if((pp = p->s_params) != NULL)
+   if((pp = p->s_params) != nullptr)
    {
       /* This macro has parameters: see if present on this call */
       had_ws = FALSE;
@@ -106,16 +106,24 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
       while(((t = gettoken(GT_STR)) == '\n') || istype(t, C_W) || (t == TOGGLE_EXPAND) || (t == END_MACRO))
       {
          if(t == '\n')
+         {
             ++nl_count;
+         }
          else if(t == TOGGLE_EXPAND)
-            expand = !expand;
+         {
+            expand = static_cast<int>(expand) == 0;
+         }
          else if(t == END_MACRO)
+         {
             ++maclevel;
+         }
          else
+         {
             had_ws = TRUE;
+         }
       }
 
-      if(expand && (t == '('))
+      if((expand != 0) && (t == '('))
       {
          /* A left parenthesis -- parameters follow */
          printed = done = FALSE;
@@ -124,16 +132,18 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
 
          /* Special <null> parameter? */
          if(pp->p_name[0] == '\0')
+         {
             pp = pp->p_link; /* Skip over it */
+         }
 
-         while(!done)
+         while(done == 0)
          {
             addit = TRUE; /* Assume to add to string */
 
             switch(gettoken(GT_STR))
             {
                case '"':
-                  if((pp != NULL) && ((pp->p_flags & PF_RQUOTES) != 0))
+                  if((pp != nullptr) && ((pp->p_flags & PF_RQUOTES) != 0))
                   {
                      /* Remove surrounding quotes */
                      memmov(Token + 1, Token, (unsigned)strlen(Token));
@@ -142,7 +152,7 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
                   break;
 
                case '\n':
-                  if((pp != NULL) && ((pp->p_flags & PF_PNLINES) == 0))
+                  if((pp != nullptr) && ((pp->p_flags & PF_PNLINES) == 0))
                   {
                      /* Remove parameter newlines */
                      Token[0] = ' ';
@@ -155,8 +165,10 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
                   break;
 
                case ')':
-                  if(--pcount != 0) /* Count down '()' */
-                     break;         /* Continue if not level 0 */
+                  if(--pcount != 0)
+                  {         /* Count down '()' */
+                     break; /* Continue if not level 0 */
+                  }
 
                   pcount = 1;    /* Wrap -- make comma fake */
                   done   = TRUE; /* We are finished */
@@ -167,9 +179,9 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
                   if(pcount == 1)
                   {
                      addit = FALSE; /* Do not add */
-                     if(pp == NULL)
+                     if(pp == nullptr)
                      {
-                        if(((!done) || (cp != t_token)) && (!printed))
+                        if(((done == 0) || (cp != t_token)) && (printed == 0))
                         {
                            warning("Too many arguments for: ", p->s_name);
                            printed = TRUE;
@@ -179,14 +191,14 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
                      {
                         *cp = '\0';
                         fbind(&formals, pp->p_name, t_token);
-                        if((cp == t_token) && (!printed))
+                        if((cp == t_token) && (printed == 0))
                         {
                            warning("Missing argument for: ", p->s_name);
                            printed = TRUE;
                         }
                         cp = t_token;
                         pp = pp->p_link;
-                        if((!done) && (pp == NULL) && (!printed))
+                        if((done == 0) && (pp == nullptr) && (printed == 0))
                         {
                            warning("Too many arguments for: ", p->s_name);
                            printed = TRUE;
@@ -202,7 +214,7 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
                   break;
             }
 
-            if(addit)
+            if(addit != 0)
             {
                cp = addstr(cp, &t_token[TOKENSIZE - 1], "Parameter buffer overflow", Token);
             }
@@ -210,11 +222,13 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
          /*
           *	Null bindings for the rest of the parameters, and complain.
           */
-         if(pp != NULL)
+         if(pp != nullptr)
          {
             warning("Too few arguments for: ", p->s_name);
-            for(/* Empty */; pp != NULL; pp = pp->p_link)
+            for(/* Empty */; pp != nullptr; pp = pp->p_link)
+            {
                fbind(&formals, pp->p_name, "");
+            }
          }
       }
       else
@@ -226,20 +240,28 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
           */
          pbstr(Token); /* Put it back */
 
-         while(nl_count-- > 0) /* Dump linefeeds through */
+         while(nl_count-- > 0)
+         { /* Dump linefeeds through */
             pushback('\n');
+         }
 
          while(maclevel-- != 0)
+         {
             pushback(END_MACRO); /* Keep call lvl OK */
+         }
 
-         if(!expand)
+         if(expand == 0)
+         {
             pushback(TOGGLE_EXPAND);
+         }
 
-         if(internal == NULL)
+         if(internal == nullptr)
          {
             puttoken(p->s_name);
-            if(had_ws)
+            if(had_ws != 0)
+            {
                puttoken(" ");
+            }
          }
          else
          {
@@ -252,7 +274,7 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
             internal = addstr(internal, internal_limit, mbomsg, toggle_token);
             internal = addstr(internal, internal_limit, mbomsg, p->s_name);
             internal = addstr(internal, internal_limit, mbomsg, toggle_token);
-            if(had_ws)
+            if(had_ws != 0)
             {
                internal = addstr(internal, internal_limit, mbomsg, " ");
             }
@@ -261,7 +283,9 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
       }
    }
    while(maclevel-- != 0)
+   {
       pushback(END_MACRO); /* Keep call level correct */
+   }
    /*
     *	Now open the macro body for input and read while processing formal
     *	parameters.
@@ -270,10 +294,12 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
    pbcstr(p->s_body);
 
    /* Allocate a place for the macro replacement */
-   if((body = (char *)malloc((unsigned)MACROSIZE)) == NULL)
+   if((body = (char *)malloc((unsigned)MACROSIZE)) == nullptr)
+   {
       out_of_memory();
+   }
 
-   flags  = (A_astring ? (0) : (GT_STR));
+   flags  = (A_astring != 0 ? (0) : (GT_STR));
    had_ws = FALSE;
    expand = TRUE;
    bodyp  = body; /* Point at start of body */
@@ -295,7 +321,9 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
    while((t = gettoken(flags)) != END_MACRO)
    {
       if(t == EOF)
+      {
          end_of_file();
+      }
       /*
        *	Keep track of EXPAND_TOKEN and whitespace occurring before the current
        *	token.
@@ -307,7 +335,7 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
       }
       if(t == TOGGLE_EXPAND)
       {
-         expand = !expand;
+         expand = static_cast<int>(expand) == 0;
          continue;
       }
       /*
@@ -320,17 +348,19 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
             while(istype((t = gettoken(flags)), C_W) || (t == TOGGLE_EXPAND))
             {
                if(t == TOGGLE_EXPAND)
-                  /* Skip toggle tokens */ expand = !expand;
+               {
+                  /* Skip toggle tokens */ expand = static_cast<int>(expand) == 0;
+               }
             }
             if(t == END_MACRO)
             {
                pushback(END_MACRO);
-               if(had_ws)
+               if(had_ws != 0)
                {
                   had_ws = FALSE;
                   bodyp  = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, " ");
                }
-               if(!expand)
+               if(expand == 0)
                {
                   expand = TRUE;
                   bodyp  = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, toggle_token);
@@ -339,14 +369,16 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
                continue;
             }
             had_ws = FALSE; /* Ignore whitespace */
-            if((t == LETTER) && ((cp = flookup(formals, Token)) != NULL))
+            if((t == LETTER) && ((cp = flookup(formals, Token)) != nullptr))
             {
                pushback(END_MACRO);
                pbcstr(cp);
                while(istype((t = gettoken(flags)), C_W) || (t == TOGGLE_EXPAND))
                {
                   if(t == TOGGLE_EXPAND)
-                     /* Skip toggle tokens */ expand = !expand;
+                  {
+                     /* Skip toggle tokens */ expand = static_cast<int>(expand) == 0;
+                  }
                }
                if(expand != TRUE)
                {
@@ -357,7 +389,9 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
                while((t = gettoken(flags)) != END_MACRO)
                {
                   if(t == EOF)
+                  {
                      end_of_file();
+                  }
                   if(istype(t, C_W))
                   {
                      had_ws = TRUE;
@@ -365,15 +399,15 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
                   }
                   if(t == TOGGLE_EXPAND)
                   {
-                     expand = !expand;
+                     expand = static_cast<int>(expand) == 0;
                      continue;
                   }
-                  if(had_ws)
+                  if(had_ws != 0)
                   {
                      had_ws = FALSE;
                      bodyp  = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, " ");
                   }
-                  if(!expand)
+                  if(expand == 0)
                   {
                      expand = TRUE;
                      bodyp  = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, toggle_token);
@@ -388,23 +422,21 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
 
             continue;
          }
-         else /* Was # operator, look at in a bit */
-         {
-            pbstr(Token);
-            strcpy(Token, "#");
-            t = '#';
-         }
+         /* Was # operator, look at in a bit */
+         pbstr(Token);
+         strcpy(Token, "#");
+         t = '#';
       }
       /*
        *	All other token types need to have the "had_ws" and "expand" flags
        *	flushed prior to being examined.
        */
-      if(had_ws)
+      if(had_ws != 0)
       {
          had_ws = FALSE;
          bodyp  = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, " ");
       }
-      if(!expand)
+      if(expand == 0)
       {
          expand = TRUE;
          bodyp  = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, toggle_token);
@@ -417,15 +449,19 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
          while(istype((t = gettoken(flags)), C_W) || (t == TOGGLE_EXPAND))
          {
             if(istype(t, C_W))
+            {
                had_ws = TRUE; /* Skip whitespace */
+            }
             else if(t == TOGGLE_EXPAND)
-               /* Skip toggle tokens */ expand = !expand;
+            {
+               /* Skip toggle tokens */ expand = static_cast<int>(expand) == 0;
+            }
          }
-         if((t == LETTER) && ((cp = flookup(formals, Token)) != NULL))
+         if((t == LETTER) && ((cp = flookup(formals, Token)) != nullptr))
          {
             had_ws = FALSE;
             bodyp  = strize(bodyp, &body[MACROSIZE - 1], mbomsg, cp);
-            if(!expand)
+            if(expand == 0)
             {
                expand = TRUE;
                bodyp  = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, toggle_token);
@@ -434,12 +470,12 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
          else /* Wasn't formal send # through */
          {
             bodyp = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, "#");
-            if(had_ws)
+            if(had_ws != 0)
             {
                had_ws = FALSE;
                bodyp  = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, " ");
             }
-            if(!expand)
+            if(expand == 0)
             {
                expand = TRUE;
                bodyp  = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, toggle_token);
@@ -453,14 +489,18 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
        *	the next operator is ## in order to know whether to perform macro
        *	expansion on the parameter value or not.
        */
-      if((t == LETTER) && ((cp = flookup(formals, Token)) != NULL))
+      if((t == LETTER) && ((cp = flookup(formals, Token)) != nullptr))
       {
          while(istype((t = gettoken(flags)), C_W) || (t == TOGGLE_EXPAND))
          {
             if(istype(t, C_W))
+            {
                had_ws = TRUE; /* Skip whitespace */
+            }
             else if(t == TOGGLE_EXPAND)
-               /* Skip toggle tokens */ expand = !expand;
+            {
+               /* Skip toggle tokens */ expand = static_cast<int>(expand) == 0;
+            }
          }
          /*
           *	See in what form we are going to need the parameter.
@@ -479,7 +519,9 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
                while((t = gettoken(flags)) != END_MACRO)
                {
                   if(t == EOF)
+                  {
                      end_of_file();
+                  }
                   if(istype(t, C_W))
                   {
                      had_ws = TRUE;
@@ -487,15 +529,15 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
                   }
                   if(t == TOGGLE_EXPAND)
                   {
-                     expand = !expand;
+                     expand = static_cast<int>(expand) == 0;
                      continue;
                   }
-                  if(had_ws)
+                  if(had_ws != 0)
                   {
                      had_ws = FALSE;
                      bodyp  = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, " ");
                   }
-                  if(!expand)
+                  if(expand == 0)
                   {
                      expand = TRUE;
                      bodyp  = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, toggle_token);
@@ -505,23 +547,21 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
                pbstr("##"); /* Refetch again */
                continue;
             }
-            else
-            {
-               /*
-                *	Was single #, pushback # for later.
-                */
-               pbstr(Token);
-               strcpy(Token, "#");
-            }
+
+            /*
+             *	Was single #, pushback # for later.
+             */
+            pbstr(Token);
+            strcpy(Token, "#");
          }
          pbstr(Token); /* Refetch the last non # token */
 
-         if(had_ws)
+         if(had_ws != 0)
          {
             had_ws = FALSE;
             pushback(' ');
          }
-         if(!expand)
+         if(expand == 0)
          {
             expand = TRUE;
             pushback(TOGGLE_EXPAND);
@@ -535,7 +575,9 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
          while((t = gettoken(flags)) != END_ARG)
          {
             if(t == EOF)
+            {
                end_of_file();
+            }
             if(istype(t, C_W))
             {
                had_ws = TRUE;
@@ -543,15 +585,15 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
             }
             if(t == TOGGLE_EXPAND)
             {
-               expand = !expand;
+               expand = static_cast<int>(expand) == 0;
                continue;
             }
-            if(had_ws)
+            if(had_ws != 0)
             {
                had_ws = FALSE;
                bodyp  = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, " ");
             }
-            if(!expand)
+            if(expand == 0)
             {
                expand = TRUE;
                bodyp  = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, toggle_token);
@@ -560,7 +602,7 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
              *	Process an individual token in the replacement string for the formal
              *	parameter.
              */
-            if((t == LETTER) && ((sy = lookup(Token, NULL)) != NULL) && (!sy->disable))
+            if((t == LETTER) && ((sy = lookup(Token, nullptr)) != nullptr) && (sy->disable == 0))
             {
                *docall(sy, t_token, &t_token[TOKENSIZE - 1]) = '\0';
                pushback(END_MACRO);
@@ -570,13 +612,15 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
                while((t = gettoken(flags)) != END_MACRO)
                {
                   if(t == EOF)
+                  {
                      end_of_file();
+                  }
                   if(istype(t, C_W))
                   {
                      had_ws = TRUE;
                      continue;
                   }
-                  if(had_ws)
+                  if(had_ws != 0)
                   {
                      had_ws = FALSE;
                      bodyp  = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, " ");
@@ -595,17 +639,19 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
        *	Handle all other tokens.
        */
       else
+      {
          bodyp = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, Token);
+      }
    }
    /*
     *	Flush any remaining whitespace or disable tokens.
     */
-   if(had_ws)
+   if(had_ws != 0)
    {
       had_ws = FALSE;
       bodyp  = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, " ");
    }
-   if(!expand)
+   if(expand == 0)
    {
       expand = TRUE;
       bodyp  = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, toggle_token);
@@ -635,13 +681,17 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
          continue;
       }
       if(t == EOF)
-         end_of_file();
-      if(t == TOGGLE_EXPAND)
-         expand = !expand;
-      else if((t == LETTER) && expand && ((bodyp > body) ? (body[0] != '#') : TRUE) && ((sy = lookup(Token, NULL)) != NULL) &&
-              (!sy->disable))
       {
-         if(had_ws)
+         end_of_file();
+      }
+      if(t == TOGGLE_EXPAND)
+      {
+         expand = static_cast<int>(expand) == 0;
+      }
+      else if((t == LETTER) && (expand != 0) && (((bodyp > body) ? static_cast<int>(body[0] != '#') : TRUE) != 0) &&
+              ((sy = lookup(Token, nullptr)) != nullptr) && (sy->disable == 0))
+      {
+         if(had_ws != 0)
          {
             had_ws = FALSE;
             bodyp  = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, " ");
@@ -659,8 +709,10 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
       else
       {
          if((t == '#') && (bodyp == body))
+         {
             had_ws = FALSE;
-         if(had_ws)
+         }
+         if(had_ws != 0)
          {
             had_ws = FALSE;
             bodyp  = addstr(bodyp, &body[MACROSIZE - 1], mbomsg, " ");
@@ -694,7 +746,7 @@ char *docall(struct symtab *p, char *internal, char *internal_limit)
 /*									*/
 /************************************************************************/
 
-char *_docall(char *line, char *internal, char *internal_limit)
+auto _docall(char *line, char *internal, char *internal_limit) -> char *
 {
    static char mbomsg[] = "Macro body overflow";
 
@@ -708,55 +760,73 @@ char *_docall(char *line, char *internal, char *internal_limit)
    Lastnl = TRUE;
    while((t = gettoken(GT_STR)) != END_MACRO)
    {
-      if(Lastnl && (t == DIRECTIVE_CHAR)) /* Process directive */
+      if((Lastnl != 0) && (t == DIRECTIVE_CHAR)) /* Process directive */
       {
          had_ws = FALSE;
          while(((t = gettoken(GT_STR)) != END_MACRO) && (t != EOF) && istype(t, C_W))
          {
             had_ws = TRUE;
          }
-         if((t == LETTER) && ((d = predef(Token, pptab)) != NULL) && ((d->pp_func == dopragma) || A_rescan))
+         if((t == LETTER) && ((d = predef(Token, pptab)) != nullptr) && ((d->pp_func == dopragma) || (A_rescan != 0)))
          {
-            if(d->pp_ifif || (Ifstate == IFTRUE))
-               (void)(*(d->pp_func))(d->pp_arg, 0, 0);
+            if((d->pp_ifif != 0) || (Ifstate == IFTRUE))
+            {
+               (void)(*(d->pp_func))(d->pp_arg, 0, nullptr);
+            }
             Lastnl = TRUE;
          }
          else
          {
-            if(internal == NULL)
+            if(internal == nullptr)
+            {
                puttoken("#");
+            }
             else
             {
                internal = addstr(internal, internal_limit, mbomsg, "#");
             }
             pbstr(Token);
-            if(had_ws)
+            if(had_ws != 0)
+            {
                pushback(' ');
+            }
             Lastnl = FALSE;
          }
       }
       else if(Ifstate == IFTRUE) /* Normal token, just output */
       {
-         if(internal == NULL)
+         if(internal == nullptr)
+         {
             puttoken(Token);
+         }
          else
          {
             internal = addstr(internal, internal_limit, mbomsg, Token);
          }
          if(!istype(t, C_W))
+         {
             Lastnl = FALSE;
+         }
       }
       else /* Toss up to EOL */
       {
          while((t != '\n') && (t != EOF) && (t != END_MACRO))
+         {
             t = gettoken(GT_STR);
+         }
       }
       if(t == EOF)
+      {
          end_of_file();
+      }
       else if(t == '\n')
+      {
          Lastnl = TRUE;
+      }
       else if(t == END_MACRO)
+      {
          break;
+      }
    }
    return (internal);
 }
@@ -812,29 +882,37 @@ void dodefine(int mactype, int ixzy, const char *ixzz)
 #endif /* PPDEBUG */
 
       if(gettoken(GT_STR) == '(')
+      {
          pp = getparams(); /* Get list of param protos */
+      }
       else
       {
-         pp = NULL;    /* No parameters to check for */
+         pp = nullptr; /* No parameters to check for */
          pbstr(Token); /* Will see it again */
       }
 
       while(istype(t = gettoken(GT_STR), C_W))
       {
          if(t == EOF)
+         {
             end_of_file(); /* Unexpected EOF */
+         }
       }
       pbstr(Token); /* Push it back */
 
-      if(mactype)
+      if(mactype != 0)
+      {
          scaneol(); /* Scan to eol but leave eol */
+      }
 
       for(macctr = 0, bodyp = body, lasttok = '\n'; ((t = gettoken(GT_STR)) != 0);)
       {
-         if(mactype)
+         if(mactype != 0)
          {
             if((lasttok == '\n') && (t == '#'))
+            {
                lasttok = '#';
+            }
             else if((lasttok == '#') && (t == LETTER))
             {
                if(strcmp(Token, "pragma") == EQUAL)
@@ -856,7 +934,9 @@ void dodefine(int mactype, int ixzy, const char *ixzz)
                         }
                      }
                      /* Nesting? */ else if(strcmp(Token, "macro") == EQUAL)
+                     {
                         macctr++;
+                     }
                   }
 
                   pbstr(Token);
@@ -866,13 +946,19 @@ void dodefine(int mactype, int ixzy, const char *ixzz)
                }
             }
             else if(!istype(t, C_W))
+            {
                /* Don't count whitespace */ lasttok = t;
+            }
          }
          else if(t == '\n')
+         {
             break; /* Give up on eol if #define */
+         }
 
          if(t == EOF)
+         {
             end_of_file(); /* Unexpected eof */
+         }
          else
          {
             bodyp = addstr(bodyp, &body[MACROSIZE - 1], mtlmsg, Token);
@@ -880,15 +966,19 @@ void dodefine(int mactype, int ixzy, const char *ixzz)
       }
       pushback('\n');
 
-      if(mactype)
+      if(mactype != 0)
       {
          while(istype(*--bodyp & 0xFF, C_W))
+         {
             ; /* Nuke trailing whitespace */
+         }
       }
       else
       {
          while((bodyp > body) && istype(*(bodyp - 1) & 0xFF, C_W))
+         {
             bodyp--; /* Nuke trailing whitespace */
+         }
       }
       /*
        *	Because of how the preceeding searches are done the following string
@@ -897,9 +987,9 @@ void dodefine(int mactype, int ixzy, const char *ixzz)
        */
       *bodyp = '\0';
 
-      if((sy = lookup(name, NULL)) != NULL)
+      if((sy = lookup(name, nullptr)) != nullptr)
       {
-         if(!A_stack)
+         if(A_stack == 0)
          {
             if(strcmp(sy->s_body, body) != EQUAL)
             {
@@ -910,15 +1000,21 @@ void dodefine(int mactype, int ixzy, const char *ixzz)
          else
          {
             if(strcmp(sy->s_body, body) != EQUAL)
+            {
                warning("Redefining symbol: ", name);
+            }
             sbind(name, body, pp);
          }
       }
       else
+      {
          sbind(name, body, pp); /* Bind new symbol */
+      }
    }
    else
+   {
       illegal_symbol();
+   }
 }
 
 /************************************************************************/
@@ -937,13 +1033,15 @@ void doerror(int aaa, int bbb, const char *ccc)
 
    cptr1 = readline(msgbuf, MESSAGEBUFSIZE, GT_STR);
 
-   if((*cptr1 == '"') && ((cptr2 = strrchr(++cptr1, '"')) != NULL))
+   if((*cptr1 == '"') && ((cptr2 = strrchr(++cptr1, '"')) != nullptr))
    {
       *cptr2 = '\0'; /* Terminate for display */
       non_fatal(cptr1, "");
    }
    else
+   {
       non_fatal("Bad parameter to \"#error\"", "");
+   }
 }
 
 /************************************************************************/
@@ -958,11 +1056,15 @@ void doundef(int aaa, int bbb, const char *ccc)
 {
    if(getnstoken(GT_STR) == LETTER)
    {
-      if(lookup(Token, NULL) != NULL) /* OK if symbol not defined */
-         unsbind(Token);              /* Remove symbol from table */
+      if(lookup(Token, nullptr) != nullptr)
+      {                  /* OK if symbol not defined */
+         unsbind(Token); /* Remove symbol from table */
+      }
    }
    else
+   {
       illegal_symbol();
+   }
 }
 
 /************************************************************************/
@@ -973,12 +1075,16 @@ void doundef(int aaa, int bbb, const char *ccc)
 /*									*/
 /************************************************************************/
 
-char *esc_str(char *old, int c, char *limit)
+auto esc_str(char *old, int c, const char *limit) -> char *
 {
    if(((c == '"') || (c == '\\')) && (old < limit))
+   {
       *old++ = '\\';
+   }
    if(old < limit)
+   {
       *old++ = c;
+   }
    return (old);
 }
 
@@ -994,7 +1100,7 @@ void fbind(struct symtab **formals, char *name, const char *value)
 {
    struct symtab *temp;
 
-   if((temp = (struct symtab *)malloc(sizeof(struct symtab) + (unsigned)strlen(name))) == NULL)
+   if((temp = (struct symtab *)malloc(sizeof(struct symtab) + (unsigned)strlen(name))) == nullptr)
    {
       out_of_memory();
    }
@@ -1002,8 +1108,10 @@ void fbind(struct symtab **formals, char *name, const char *value)
    *formals     = temp;
    strcpy(temp->s_name, name);
 
-   if((temp->s_body = (char *)malloc(strlen(value) + 1)) == NULL)
+   if((temp->s_body = (char *)malloc(strlen(value) + 1)) == nullptr)
+   {
       out_of_memory();
+   }
 
    strcpy(temp->s_body, value);
 }
@@ -1016,15 +1124,17 @@ void fbind(struct symtab **formals, char *name, const char *value)
 /*									*/
 /************************************************************************/
 
-char *flookup(struct symtab *formals, char *name)
+auto flookup(struct symtab *formals, char *name) -> char *
 {
-   while(formals != NULL)
+   while(formals != nullptr)
    {
       if(strcmp(formals->s_name, name) == EQUAL)
+      {
          return (formals->s_body);
+      }
       formals = formals->s_link;
    }
-   return (NULL);
+   return (nullptr);
 }
 
 /************************************************************************/
@@ -1045,7 +1155,7 @@ char *flookup(struct symtab *formals, char *name)
 /*									*/
 /************************************************************************/
 
-struct param *getparams()
+auto getparams() -> struct param *
 {
    static const char *iffmsg = "Invalid formal parameter flag: ";
 
@@ -1056,8 +1166,8 @@ struct param *getparams()
    char          pname[TOKENSIZE];
    int           t;
 
-   lh = NULL;
-   lt = NULL; /* For lint */
+   lh = nullptr;
+   lt = nullptr; /* For lint */
 
    for(;;)
    {
@@ -1065,7 +1175,7 @@ struct param *getparams()
       {
          if(getnstoken(GT_STR) != LETTER)
          {
-            p = NULL; /* For lint */
+            p = nullptr; /* For lint */
             non_fatal("Invalid formal parameter", "");
          }
          else
@@ -1076,17 +1186,23 @@ struct param *getparams()
             for(t = getnstoken(GT_STR); t != ']'; t = getnstoken(GT_STR))
             {
                if(t == EOF)
+               {
                   end_of_file();
+               }
                /*
                 *	Ignore commas and whitespace.
                 */
                if((t == ',') || istype(t, C_W))
+               {
                   continue;
+               }
 
                if(t == LETTER)
                {
                   if(strcmp(Token, "RQ") == EQUAL)
+                  {
                      flags |= PF_RQUOTES;
+                  }
                   else if(strcmp(Token, "PN") == EQUAL)
                   {
                      flags |= PF_PNLINES;
@@ -1097,21 +1213,27 @@ struct param *getparams()
                   }
                }
                else
+               {
                   non_fatal(iffmsg, Token);
+               }
             }
             p = makeparam(pname, flags);
          }
       }
       else if(t == LETTER)
+      {
          p = makeparam(Token, 0);
+      }
       else
       {
-         p = NULL; /* For lint */
+         p = nullptr; /* For lint */
          break;
       }
 
-      if(lh == NULL)
+      if(lh == nullptr)
+      {
          lh = lt = p; /* Head and tail of list */
+      }
       else
       {
          lt->p_link = p; /* New tail of list */
@@ -1119,14 +1241,20 @@ struct param *getparams()
       }
 
       if((t = getnstoken(GT_STR)) != ',')
+      {
          break;
+      }
    }
 
    if(t != ')')
+   {
       non_fatal("Illegal or out of place token: ", Token);
+   }
 
-   if(lh == NULL)
+   if(lh == nullptr)
+   {
       lh = makeparam("", 0); /* Make a null parameter */
+   }
 
    return (lh); /* Return the list */
 }
@@ -1144,13 +1272,15 @@ struct param *getparams()
 /*									*/
 /************************************************************************/
 
-unsigned int pphash(const char *sym)
+auto pphash(const char *sym) -> unsigned int
 {
    unsigned int s;
    const char  *str;
 
    for(str = sym, s = 0; *str != '\0'; s += *str++)
+   {
       ; /* Compute sum of chars */
+   }
 
    return (s);
 }
@@ -1163,7 +1293,7 @@ unsigned int pphash(const char *sym)
 /*									*/
 /************************************************************************/
 
-struct symtab *lookup(char *name, struct symtab **pe)
+auto lookup(char *name, struct symtab **pe) -> struct symtab *
 {
    struct symtab *c;
    struct symtab *p;
@@ -1175,7 +1305,7 @@ struct symtab *lookup(char *name, struct symtab **pe)
    p = (struct symtab *)&Macros[pphash(name) & (NUMBUCKETS - 1)];
    c = p->s_link;
 
-   while(c != NULL)
+   while(c != nullptr)
    {
       if(strcmp(c->s_name, name) == EQUAL)
       {
@@ -1183,8 +1313,10 @@ struct symtab *lookup(char *name, struct symtab **pe)
          if(PPDEBUG)
             printf("found!\n");
 #endif /* PPDEBUG */
-         if(pe != NULL)
+         if(pe != nullptr)
+         {
             *pe = p;
+         }
          return (c);
       }
       p = c;
@@ -1195,7 +1327,7 @@ struct symtab *lookup(char *name, struct symtab **pe)
       printf("NOT found.\n");
 #endif /* PPDEBUG */
 
-   return (NULL); /* Didn't find it */
+   return (nullptr); /* Didn't find it */
 }
 
 /************************************************************************/
@@ -1206,17 +1338,19 @@ struct symtab *lookup(char *name, struct symtab **pe)
 /*									*/
 /************************************************************************/
 
-struct param *makeparam(const char *s, int f)
+auto makeparam(const char *s, int f) -> struct param *
 {
    struct param *p;
 
    p = (struct param *)malloc(sizeof(struct param) + strlen(s));
 
-   if(p == NULL)
+   if(p == nullptr)
+   {
       out_of_memory();
+   }
 
    strcpy(p->p_name, s); /* Copy name to parameter cell	*/
-   p->p_link  = NULL;    /* End of list so far		*/
+   p->p_link  = nullptr; /* End of list so far		*/
    p->p_flags = f;       /* Set flags			*/
    return (p);
 }
@@ -1230,12 +1364,12 @@ struct param *makeparam(const char *s, int f)
 /*									*/
 /************************************************************************/
 
-struct ppdir *predef(char *n, struct ppdir *table)
+auto predef(char *n, struct ppdir *table) -> struct ppdir *
 {
    char         *name;
    struct ppdir *p;
 
-   for(name = n, p = table; p->pp_name != NULL; p++)
+   for(name = n, p = table; p->pp_name != nullptr; p++)
    {
 #if PPDEBUG
       if(PPDEBUG)
@@ -1254,7 +1388,7 @@ struct ppdir *predef(char *n, struct ppdir *table)
    if(PPDEBUG)
       printf("predef: not found.\n");
 #endif /* PPDEBUG */
-   return (NULL);
+   return (nullptr);
 }
 
 /************************************************************************/
@@ -1277,7 +1411,7 @@ void sbind(const char *sym, const char *defn, struct param *params)
 
    p = (struct symtab *)malloc(sizeof(struct symtab) + (unsigned)strlen(sym));
 
-   if((p == NULL) || ((p->s_body = (char *)malloc((unsigned)strlen(defn) + 1)) == NULL))
+   if((p == nullptr) || ((p->s_body = (char *)malloc((unsigned)strlen(defn) + 1)) == nullptr))
    {
       out_of_memory();
    }
@@ -1295,7 +1429,9 @@ void sbind(const char *sym, const char *defn, struct param *params)
    Macros[i] = p; /* Link in to list */
 
    if(++Nsyms > Maxsyms)
+   {
       Maxsyms = Nsyms; /* One more symbol counted */
+   }
 }
 
 /************************************************************************/
@@ -1306,7 +1442,7 @@ void sbind(const char *sym, const char *defn, struct param *params)
 /*									*/
 /************************************************************************/
 
-char *strize(char *result, char *limit, char *msg, char *snew)
+auto strize(char *result, char *limit, char *msg, char *snew) -> char *
 {
    int c;
    int had_ws;
@@ -1314,10 +1450,14 @@ char *strize(char *result, char *limit, char *msg, char *snew)
    while(TRUE) /* Skip whitespace */
    {
       if((c = *snew) == EOF)
+      {
          end_of_file();
+      }
       c &= 0xFF;
       if(!(istype(c, C_W) || (c == '\n')))
+      {
          break;
+      }
       snew++;
    }
 
@@ -1327,15 +1467,21 @@ char *strize(char *result, char *limit, char *msg, char *snew)
    while((c = *snew++) != '\0')
    {
       if(c == EOF)
+      {
          end_of_file();
+      }
       c &= 0xFF;
-      if(c == TOGGLE_EXPAND) /* Ignore scoping flags */
+      if(c == TOGGLE_EXPAND)
+      { /* Ignore scoping flags */
          continue;
-      if(istype(c, C_W) || (c == '\n')) /* Skip inner ws */
+      }
+      if(istype(c, C_W) || (c == '\n'))
+      { /* Skip inner ws */
          had_ws = TRUE;
+      }
       else if((c == '"') || (c == '\'')) /* Str/char const? */
       {
-         if(had_ws)
+         if(had_ws != 0)
          {
             had_ws = FALSE;
             result = esc_str(result, ' ', limit);
@@ -1344,33 +1490,49 @@ char *strize(char *result, char *limit, char *msg, char *snew)
          while((*snew != '\0') && (*snew != c))
          {
             if((*snew & 0xFF) == TOGGLE_EXPAND)
+            {
                continue;
+            }
             if(*snew == EOF)
+            {
                end_of_file();
+            }
             if(*snew == '\\')
+            {
                result = esc_str(result, *snew++, limit);
+            }
             if(*snew != '\0')
+            {
                result = esc_str(result, *snew++, limit);
+            }
          }
          if(*snew != '\0')
+         {
             snew++;
+         }
          result = esc_str(result, c, limit);
       }
       else /* Everything else ... */
       {
-         if(had_ws)
+         if(had_ws != 0)
          {
             had_ws = FALSE;
             result = esc_str(result, ' ', limit);
          }
          if(result < limit)
+         {
             *result++ = c;
+         }
       }
    }
    if(result < limit)
+   {
       *result++ = '"';
+   }
    else
+   {
       non_fatal(msg, "");
+   }
 
    return (result);
 }
@@ -1387,7 +1549,7 @@ void unfbind(struct symtab *formals)
 {
    struct symtab *temp;
 
-   while(formals != NULL)
+   while(formals != nullptr)
    {
       free(formals->s_body);  /* Free up parameter instantiation */
       temp = formals->s_link; /* Point at next paramter */
@@ -1408,7 +1570,7 @@ void unparam(struct param *pp)
 {
    struct param *npp;
 
-   for(; pp != NULL; pp = npp)
+   for(; pp != nullptr; pp = npp)
    {
       npp = pp->p_link; /* Save next address */
       free((char *)pp); /* Free this memory */
@@ -1433,12 +1595,16 @@ void unsbind(char *sym)
       printf("unsbind: %s\n", sym);
 #endif /* PPDEBUG */
 
-   if((s = lookup(sym, &p)) == NULL)
+   if((s = lookup(sym, &p)) == nullptr)
+   {
       non_fatal("Symbol not defined: ", sym);
+   }
    else
    {
-      if(s->s_body != NULL)
-         free(s->s_body);    /* Free macro body */
+      if(s->s_body != nullptr)
+      {
+         free(s->s_body); /* Free macro body */
+      }
       unparam(s->s_params);  /* Free parameter cells */
       p->s_link = s->s_link; /* Remove item from list */
       free((char *)s);       /* Free the symbol table entry */

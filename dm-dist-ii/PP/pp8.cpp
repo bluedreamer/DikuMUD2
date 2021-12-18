@@ -66,8 +66,7 @@
 /*									*/
 /************************************************************************/
 
-EVALINT
-eval()
+auto eval() -> EVALINT
 {
    char    buf[TOKENSIZE];
    EVALINT val;
@@ -85,7 +84,9 @@ eval()
             non_fatal("Expression: Invalid operator: ", Token);
          }
          else
+         {
             pushback('\n'); /* Put eol back out */
+         }
          break;
       }
    }
@@ -100,26 +101,27 @@ eval()
 /*									*/
 /************************************************************************/
 
-EVALINT
-evaltern()
+auto evaltern() -> EVALINT
 {
    EVALINT val;
    EVALINT val_f;
    EVALINT val_t;
 
    val = evallor(); /* Look for expression */
-   if(!test("?"))   /* ? part of ?: */
+   if(test("?") == 0)
+   { /* ? part of ?: */
       return (val);
+   }
 
    val_t = eval(); /* Get true-side expression */
-   if(!test(":"))
+   if(test(":") == 0)
    {
       non_fatal("Expression: ':' expected", "");
       return ((EVALINT)0);
    }
    val_f = eval(); /* Get false-side expression */
 
-   return (val ? val_t : val_f); /* Use it or loose it */
+   return (val != 0 ? val_t : val_f); /* Use it or loose it */
 }
 
 /************************************************************************/
@@ -128,15 +130,16 @@ evaltern()
 /*									*/
 /************************************************************************/
 
-EVALINT
-evallor()
+auto evallor() -> EVALINT
 {
    EVALINT val;
 
-   for(val = evalland(); test("||");)
+   for(val = evalland(); test("||") != 0;)
    {
       if(evalland() != 0)
+      {
          val = TRUE;
+      }
    }
    return (val);
 }
@@ -147,17 +150,18 @@ evallor()
 /*									*/
 /************************************************************************/
 
-EVALINT
-evalland()
+auto evalland() -> EVALINT
 {
    EVALINT val;
 
-   for(val = evalbor(); test("&&");)
+   for(val = evalbor(); test("&&") != 0;)
    {
       /*lint -e503 lint doesn't like boolean arguments to relationals */
-      if(!evalbor() != 0)
+      if(static_cast<int>(evalbor()) == 0 != 0)
+      {
          /*lint +e503 lint doesn't like boolean arguments to relationals */
          val = FALSE;
+      }
    }
    return (val);
 }
@@ -168,13 +172,14 @@ evalland()
 /*									*/
 /************************************************************************/
 
-EVALINT
-evalbor()
+auto evalbor() -> EVALINT
 {
    EVALINT val;
 
-   for(val = evalbxor(); !look("||") && test("|");)
+   for(val = evalbxor(); (look("||") == 0) && (test("|") != 0);)
+   {
       val = val | evalbxor();
+   }
 
    return (val);
 }
@@ -185,13 +190,14 @@ evalbor()
 /*									*/
 /************************************************************************/
 
-EVALINT
-evalbxor()
+auto evalbxor() -> EVALINT
 {
    EVALINT val;
 
-   for(val = evalband(); test("^");)
+   for(val = evalband(); test("^") != 0;)
+   {
       val = val ^ evalband();
+   }
 
    return (val);
 }
@@ -202,13 +208,14 @@ evalbxor()
 /*									*/
 /************************************************************************/
 
-EVALINT
-evalband()
+auto evalband() -> EVALINT
 {
    EVALINT val;
 
-   for(val = evaleq(); !look("&&") && test("&");)
+   for(val = evaleq(); (look("&&") == 0) && (test("&") != 0);)
+   {
       val = val & evaleq();
+   }
 
    return (val);
 }
@@ -219,19 +226,24 @@ evalband()
 /*									*/
 /************************************************************************/
 
-EVALINT
-evaleq()
+auto evaleq() -> EVALINT
 {
    EVALINT val;
 
    for(val = evalrel();;)
    {
-      if(test("=="))
-         val = val == evalrel();
-      else if(test("!="))
-         val = val != evalrel();
+      if(test("==") != 0)
+      {
+         val = static_cast<long>(val == evalrel());
+      }
+      else if(test("!=") != 0)
+      {
+         val = static_cast<long>(val != evalrel());
+      }
       else
+      {
          break;
+      }
    }
    return (val);
 }
@@ -242,23 +254,32 @@ evaleq()
 /*									*/
 /************************************************************************/
 
-EVALINT
-evalrel()
+auto evalrel() -> EVALINT
 {
    EVALINT val;
 
    for(val = evalsh();;)
    {
-      if(test("<="))
-         val = val <= evalsh();
-      else if(test(">="))
-         val = val >= evalsh();
-      else if(test("<"))
-         val = val < evalsh();
-      else if(test(">"))
-         val = val > evalsh();
+      if(test("<=") != 0)
+      {
+         val = static_cast<long>(val <= evalsh());
+      }
+      else if(test(">=") != 0)
+      {
+         val = static_cast<long>(val >= evalsh());
+      }
+      else if(test("<") != 0)
+      {
+         val = static_cast<long>(val < evalsh());
+      }
+      else if(test(">") != 0)
+      {
+         val = static_cast<long>(val > evalsh());
+      }
       else
+      {
          break;
+      }
    }
    return (val);
 }
@@ -269,19 +290,24 @@ evalrel()
 /*									*/
 /************************************************************************/
 
-EVALINT
-evalsh()
+auto evalsh() -> EVALINT
 {
    EVALINT val;
 
    for(val = evalsum();;)
    {
-      if(test("<<"))
+      if(test("<<") != 0)
+      {
          val = val << evalsum();
-      else if(test(">>"))
+      }
+      else if(test(">>") != 0)
+      {
          val = val >> evalsum();
+      }
       else
+      {
          break;
+      }
    }
    return (val);
 }
@@ -292,19 +318,24 @@ evalsh()
 /*									*/
 /************************************************************************/
 
-EVALINT
-evalsum()
+auto evalsum() -> EVALINT
 {
    EVALINT val;
 
    for(val = evalmdr();;)
    {
-      if(test("+"))
+      if(test("+") != 0)
+      {
          val = val + evalmdr();
-      else if(test("-"))
+      }
+      else if(test("-") != 0)
+      {
          val = val - evalmdr();
+      }
       else
+      {
          break;
+      }
    }
    return (val);
 }
@@ -315,28 +346,18 @@ evalsum()
 /*									*/
 /************************************************************************/
 
-EVALINT
-evalmdr()
+auto evalmdr() -> EVALINT
 {
    EVALINT temp;
    EVALINT val;
 
    for(val = evalfuns();;)
    {
-      if(test("*"))
+      if(test("*") != 0)
+      {
          val = val * evalfuns();
-      else if(test("/"))
-      {
-         temp = evalfuns();
-         if(temp == 0)
-         {
-            non_fatal("Expression: Division by zero", "");
-            val = 0;
-         }
-         else
-            val = val / temp;
       }
-      else if(test("%"))
+      else if(test("/") != 0)
       {
          temp = evalfuns();
          if(temp == 0)
@@ -345,10 +366,27 @@ evalmdr()
             val = 0;
          }
          else
+         {
+            val = val / temp;
+         }
+      }
+      else if(test("%") != 0)
+      {
+         temp = evalfuns();
+         if(temp == 0)
+         {
+            non_fatal("Expression: Division by zero", "");
+            val = 0;
+         }
+         else
+         {
             val = val % temp;
+         }
       }
       else
+      {
          break;
+      }
    }
    return (val);
 }
@@ -374,8 +412,7 @@ evalmdr()
 /*									*/
 /************************************************************************/
 
-EVALINT
-evalfuns()
+auto evalfuns() -> EVALINT
 {
    int   count;
    int   pflag;
@@ -383,22 +420,24 @@ evalfuns()
    char *str;
    int   t;
 
-   if(test("sizeof"))
+   if(test("sizeof") != 0)
    {
       non_fatal("Expression: sizeof() not allowed", "");
 
       while(((t = getnstoken(GT_STR)) != ')') && (t != '\n') && (t != EOF))
+      {
          ;
+      }
       return ((EVALINT)0);
    }
-   else if(test("defined"))
+   if(test("defined"))
    {
       if(!(pflag = (getnstoken(GT_STR) == '('))) /* Latch '(' */
          pbstr(Token);                           /* Put it back if not */
 
       if((t = getnstoken(GT_STR)) == LETTER) /* Get an Id */
       {
-         rv = (int)(lookup(Token, NULL) != NULL);
+         rv = (int)(lookup(Token, nullptr) != nullptr);
 
          if(pflag && (getnstoken(GT_STR) != ')'))
          {
@@ -544,15 +583,15 @@ evalfuns()
 /*									*/
 /************************************************************************/
 
-EVALINT
-evalucom()
+auto evalucom() -> EVALINT
 {
-   if(test("~"))
+   if(test("~") != 0)
+   {
       /*lint -e502 lint doesn't like complementing signed integral types */
       return (~evalfuns());
-   /*lint +e502 lint doesn't like complementing signed integral types */
-   else
-      return (evalunot());
+      /*lint +e502 lint doesn't like complementing signed integral types */
+   }
+   return (evalunot());
 }
 
 /************************************************************************/
@@ -561,13 +600,13 @@ evalucom()
 /*									*/
 /************************************************************************/
 
-EVALINT
-evalunot()
+auto evalunot() -> EVALINT
 {
-   if(test("!"))
-      return ((EVALINT)!evalfuns());
-   else
-      return (evalumin());
+   if(test("!") != 0)
+   {
+      return ((EVALINT)evalfuns() == 0);
+   }
+   return (evalumin());
 }
 
 /************************************************************************/
@@ -576,12 +615,13 @@ evalunot()
 /*									*/
 /************************************************************************/
 
-EVALINT
-evalumin()
+auto evalumin() -> EVALINT
 {
-   if(test("+"))
+   if(test("+") != 0)
+   {
       return ((EVALINT)evalfuns());
-   else if(test("-"))
+   }
+   if(test("-"))
       return ((EVALINT)-evalfuns());
    else
       return (evalval());
@@ -593,20 +633,21 @@ evalumin()
 /*									*/
 /************************************************************************/
 
-EVALINT
-evalval()
+auto evalval() -> EVALINT
 {
    int     c;
    char   *p;
    EVALINT val;
 
-   if(test("("))
+   if(test("(") != 0)
    {
       val = evaltern(); /* Get deeper expression */
-      if(!test(")"))
+      if(test(")") == 0)
+      {
          non_fatal("Expression: Mismatched \"()\"", "");
+      }
    }
-   else if(test("'")) /* Quoted character constant ? */
+   else if(test("'") != 0) /* Quoted character constant ? */
    {
       val = getchn(); /* Get next character char */
       if(val == '\\') /* Special test for escaped chars */
@@ -665,7 +706,7 @@ evalval()
                      non_fatal("Expression: EOL in '' constant", "");
                      break;
                   }
-                  else if(c == EOF)
+                  if(c == EOF)
                      end_of_file();
                   else if(isoct(c))
                      val = val * 8 + c - '0'; /* Add in */
@@ -689,7 +730,7 @@ evalval()
                      non_fatal("Expression: EOL in '' constant", "");
                      break;
                   }
-                  else if(c == EOF)
+                  if(c == EOF)
                      end_of_file();
                   else if(ishex(c))
                      val = val * 16 + hexbin(c);
@@ -706,15 +747,17 @@ evalval()
                break;
          }
       }
-      if(!test("'"))
+      if(test("'") == 0)
+      {
          non_fatal("Expression: Mismatched apostrophes", "");
+      }
    }
    else
    {
       /* Pack a number */
-      if(item(getnstoken, GT_STR))
+      if(item(getnstoken, GT_STR) != 0)
       {
-         if(isdigit(Token[0]))
+         if(isdigit(Token[0]) != 0)
          {
             val = 0;
             p   = Token;
@@ -724,7 +767,7 @@ evalval()
                if(*++p == 'x' || *p == 'X')
                {
                   /* Hex number */
-                  for(++p; ishex(*p); ++p)
+                  for(++p; ishex(*p) != 0; ++p)
                   {
                      val = val * 16 + hexbin(*p);
                   }
@@ -732,7 +775,7 @@ evalval()
                else
                {
                   /* Octal number */
-                  for(; isoct(*p); ++p)
+                  for(; isoct(*p) != 0; ++p)
                   {
                      val = val * 8 + *p - '0';
                   }
@@ -741,8 +784,10 @@ evalval()
             else
             {
                /* Decimal number */
-               for(; isdigit(*p); ++p)
+               for(; isdigit(*p) != 0; ++p)
+               {
                   val = val * 10 + *p - '0';
+               }
             }
             if(*p != '\0')
             {
@@ -776,13 +821,13 @@ evalval()
 /*									*/
 /************************************************************************/
 
-EVALINT
-hexbin(char ch)
+auto hexbin(char ch) -> EVALINT
 {
-   if(isdigit(ch))
+   if(isdigit(ch) != 0)
+   {
       return ((EVALINT)(ch - '0'));
-   else
-      return ((EVALINT)((isupper(ch) ? tolower(ch) : ch) - 'a' + 10));
+   }
+   return ((EVALINT)((isupper(ch) ? tolower(ch) : ch) - 'a' + 10));
 }
 
 /************************************************************************/
@@ -793,9 +838,9 @@ hexbin(char ch)
 /*									*/
 /************************************************************************/
 
-int ishex(char ch)
+auto ishex(char ch) -> int
 {
-   return (isdigit(ch) || ((ch >= 'a') && (ch <= 'f')) || ((ch >= 'A') && (ch <= 'F')));
+   return static_cast<int>((isdigit(ch) != 0) || ((ch >= 'a') && (ch <= 'f')) || ((ch >= 'A') && (ch <= 'F')));
 }
 
 /************************************************************************/
@@ -806,9 +851,9 @@ int ishex(char ch)
 /*									*/
 /************************************************************************/
 
-int isoct(char ch)
+auto isoct(char ch) -> int
 {
-   return ((ch >= '0') && (ch <= '7'));
+   return static_cast<int>((ch >= '0') && (ch <= '7'));
 }
 
 /************************************************************************/
@@ -821,14 +866,16 @@ int isoct(char ch)
 /*									*/
 /************************************************************************/
 
-int item(int(fun)(int), int f)
+auto item(int(fun)(int), int f) -> int
 {
    int t;
 
    while((t = (*fun)(f)) != '\n')
    {
       if(t == EOF)
+      {
          end_of_file(); /* Abort on end of file */
+      }
       return (TRUE);
    }
    pushback('\n'); /* Unfetch the newline */
@@ -845,7 +892,7 @@ int item(int(fun)(int), int f)
 /*									*/
 /************************************************************************/
 
-int look(const char *str)
+auto look(const char *str) -> int
 {
    int  rc;
    char tokenbuf[TOKENSIZE];
@@ -866,7 +913,7 @@ int look(const char *str)
 /*									*/
 /************************************************************************/
 
-int match(char *tbuf, const char *str)
+auto match(char *tbuf, const char *str) -> int
 {
    int (*fun)(int);
    const char *s;
@@ -876,7 +923,7 @@ int match(char *tbuf, const char *str)
    t   = tbuf;       /* Token packing buffer */
    s   = str;        /* String to match */
 
-   while((*s != '\0') && item(fun, 0))
+   while((*s != '\0') && (item(fun, 0) != 0))
    {
       if(strncmp(Token, s, strlen(Token)) == EQUAL)
       {
@@ -885,7 +932,9 @@ int match(char *tbuf, const char *str)
 
          s += strlen(Token); /* Move past matched part */
          if(*s == '\0')
+         {
             break; /* Exit if end of string */
+         }
       }
       else
       {
@@ -897,7 +946,7 @@ int match(char *tbuf, const char *str)
 
    *t = '\0'; /* End of token here */
 
-   return (*s == '\0'); /* Return TRUE if end of string	*/
+   return static_cast<int>(*s == '\0'); /* Return TRUE if end of string	*/
 }
 
 /************************************************************************/
@@ -909,7 +958,7 @@ int match(char *tbuf, const char *str)
 /*									*/
 /************************************************************************/
 
-char *readexpline(char *buf, int bufsize)
+auto readexpline(char *buf, int bufsize) -> char *
 {
    static char rbo[] = "Read buffer overflow";
 
@@ -923,31 +972,41 @@ char *readexpline(char *buf, int bufsize)
    for(bufp = buf; (t = gettoken(GT_STR)) != '\n';)
    {
       if(t == EOF)
+      {
          end_of_file();
+      }
       if(t == LETTER)
       {
-         if((!is_func) && ((sy = lookup(Token, NULL)) != NULL) && (sy->disable != TRUE))
+         if((is_func == 0) && ((sy = lookup(Token, nullptr)) != nullptr) && (sy->disable != TRUE))
          {
             bufp = docall(sy, bufp, &buf[bufsize - 1]);
          }
          else
          {
             bufp = addstr(bufp, &buf[bufsize - 1], rbo, Token);
-            if(is_func)
+            if(is_func != 0)
+            {
                is_func = FALSE;
+            }
             else if(strcmp(Token, "defined") == EQUAL)
+            {
                is_func = TRUE;
+            }
          }
       }
       else
+      {
          bufp = addstr(bufp, &buf[bufsize - 1], rbo, Token);
+      }
    }
 
    pushback('\n');
    *bufp = '\0';
 
    for(bufp = buf; istype(*bufp & 0xFF, C_W); ++bufp)
+   {
       ; /* Skip leading blanks */
+   }
 
    return (bufp);
 }
@@ -963,15 +1022,14 @@ char *readexpline(char *buf, int bufsize)
 /*									*/
 /************************************************************************/
 
-int test(const char *str)
+auto test(const char *str) -> int
 {
    char tokenbuf[TOKENSIZE];
 
-   if(match(tokenbuf, str))
-      return (TRUE);
-   else
+   if(match(tokenbuf, str) != 0)
    {
-      pbstr(tokenbuf); /* Lets look at it again later */
-      return (FALSE);
+      return (TRUE);
    }
+   pbstr(tokenbuf); /* Lets look at it again later */
+   return (FALSE);
 }

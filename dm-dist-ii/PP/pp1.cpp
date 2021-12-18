@@ -19,13 +19,14 @@ extern unsigned _stklen = 32767;
    #pragma optimize("g", off) /* Disable global common subs */
    #pragma optimize("l", off) /* Disable loop optimizations */
 #endif                        /* MSC_OPT */
-int pp_main(const char *filename)
+auto pp_main(const char *filename) -> int
 {
    //	static	char		*one_string = "1";
 
-   int            t;              /* General holder for token	*/
-   struct symtab *p = 0, *p1 = 0; /* Ptr into symbol table	*/
-   struct ppdir  *sp;             /* Ptr to predefined symbol	*/
+   int            t; /* General holder for token	*/
+   struct symtab *p  = nullptr;
+   struct symtab *p1 = nullptr; /* Ptr into symbol table	*/
+   struct ppdir  *sp;           /* Ptr to predefined symbol	*/
    int            ifile;
    int            ofile;
    int            i;
@@ -37,45 +38,47 @@ int pp_main(const char *filename)
       Ipath[Ipcnt++] = (char *)malloc(1000);
       strcpy(Ipath[Ipcnt - 1], ".");
    }
-   ifile = FALSE;          /* No input file specified	*/
-   ofile = TRUE;           /* No output file specified	*/
-   if(!inc_open(filename)) /* Open input file */
+   ifile = FALSE;              /* No input file specified	*/
+   ofile = TRUE;               /* No output file specified	*/
+   if(inc_open(filename) == 0) /* Open input file */
    {
       fatal("Unable to open input file");
    }
    ifile = TRUE; /* Got an input file */
 
    Output = stdout;
-   Nextch = A_trigraph ? trigraph : gchbuf; /* Next char source */
+   Nextch = A_trigraph != 0 ? trigraph : gchbuf; /* Next char source */
 
    Do_name = TRUE; /* Force name output on #line */
    if(iInit == 0)
    {
-      init_path();         /* Initialize search path */
-      Ipath[Ipcnt] = NULL; /* Terminate last include path */
+      init_path();            /* Initialize search path */
+      Ipath[Ipcnt] = nullptr; /* Terminate last include path */
    }
    for(Lastnl = TRUE, t = gettoken(GT_STR); t != EOF; t = gettoken(GT_STR))
    {
       if((Ifstate != IFTRUE) && (t != '\n') && istype(t, C_W))
       {
       }
-      else if(Lastnl && (t == DIRECTIVE_CHAR))
+      else if((Lastnl != 0) && (t == DIRECTIVE_CHAR))
       {
          t = getnstoken(GT_STR);
          if(t == LETTER)
          {
-            if((sp = predef(Token, pptab)) != NULL)
+            if((sp = predef(Token, pptab)) != nullptr)
             {
                /*
                 *	If unconditionally do it or if emitting code...
                 */
-               if(sp->pp_ifif || (Ifstate == IFTRUE))
+               if((sp->pp_ifif != 0) || (Ifstate == IFTRUE))
                {
-                  /* Do #func */ (void)(*(sp->pp_func))(sp->pp_arg, 0, 0);
+                  /* Do #func */ (void)(*(sp->pp_func))(sp->pp_arg, 0, nullptr);
                }
             }
             else if(Ifstate == IFTRUE)
+            {
                non_fatal("Illegal directive", "");
+            }
 
             scaneol(); /* Suck till EOL ('\n' next) */
          }
@@ -85,7 +88,9 @@ int pp_main(const char *filename)
             scaneol();
          }
          else
+         {
             pushback('\n'); /* Leave for fetch to get */
+         }
       }
       else if((t != EOF) && (Ifstate == IFTRUE))
       {
@@ -95,20 +100,26 @@ int pp_main(const char *filename)
          if(t == LETTER)
 #endif /* (TARGET == T_QC) OR (TARGET == T_QCX) OR (TARGET == T_TCX) */
          {
-            if((p = lookup(Token, NULL)) != NULL)
+            if((p = lookup(Token, nullptr)) != nullptr)
             {
-               /* Call macro */ (void)docall(p, NULL, NULL);
+               /* Call macro */ (void)docall(p, nullptr, nullptr);
             }
             else
+            {
                /* Just output token if nothing */ puttoken(Token);
+            }
          }
          else
          {
             puttoken(Token);
             if(t == '\n')
+            {
                Lastnl = TRUE; /* Turn on if '\n' */
+            }
             else if(!istype(t, C_W))
+            {
                Lastnl = FALSE; /* Turn off if !ws */
+            }
          }
       }
       else
@@ -130,22 +141,28 @@ int pp_main(const char *filename)
 
    for(i = 0; i < NUMBUCKETS; i++)
    {
-      for(p = Macros[i], (p && (p1 = p->s_link)); p; p && (p1 = p->s_link))
+      for(p = Macros[i], ((p != nullptr) && ((p1 = p->s_link) != nullptr)); p != nullptr; (p != nullptr) && ((p1 = p->s_link) != nullptr))
       {
-         if(p->s_body != NULL)
-            free(p->s_body);   /* Free macro body */
+         if(p->s_body != nullptr)
+         {
+            free(p->s_body); /* Free macro body */
+         }
          unparam(p->s_params); /* Free parameter cells */
-         if(p)
+         if(p != nullptr)
+         {
             free((char *)p); /* Free the symbol table entry */
-         p         = 0;
+         }
+         p         = nullptr;
          p         = p1; /* Remove item from list */
          Macros[i] = p1;
          Nsyms--; /* One less symbol */
       }
    }
    if((Output != stdout) && (fclose(Output) == EOF))
+   {
       fatal("Unable to close output file: ", Outfile);
-   if(pponly)
+   }
+   if(pponly != 0)
    {
       if(Errors > 0)
       {
@@ -158,7 +175,7 @@ int pp_main(const char *filename)
    }
    iInit = 1;
 
-   return (Eflag ? 0 : Errors);
+   return (Eflag != 0 ? 0 : Errors);
 }
 
 /************************************************************************/
@@ -173,7 +190,7 @@ int pp_main(const char *filename)
 /*	character is a '-' and the <swvalid> parameter is NO.		*/
 /*									*/
 /************************************************************************/
-char *getnext(char *cp, int *argc, char ***argv, int swvalid)
+auto getnext(char *cp, int *argc, char ***argv, int swvalid) -> char *
 {
    if(*++cp == '\0')
    {
@@ -184,11 +201,15 @@ char *getnext(char *cp, int *argc, char ***argv, int swvalid)
          cp = *++*argv; /* Return its address */
       }
       else
+      {
          usage(TRUE); /* Otherwise give usage error */
+      }
    }
 
-   if(!swvalid && (*cp == '-'))
+   if((swvalid == 0) && (*cp == '-'))
+   {
       usage(TRUE); /* Complain if switch starts w/'-' */
+   }
 
    return (cp);
 }
@@ -204,9 +225,11 @@ char *getnext(char *cp, int *argc, char ***argv, int swvalid)
 void init()
 {
    static const char *one_string = "1";
-   if(sOutput)
+   if(sOutput != nullptr)
+   {
       free(sOutput);
-   sOutput     = 0;
+   }
+   sOutput     = nullptr;
    sOutput_len = 0;
    const char *fromptr;
    int         i;
@@ -235,10 +258,14 @@ void init()
 
    Filelevel = -1; /* Current file level */
    if(iInit == 0)
+   {
       Pbbuf = Pbbufp = (struct pbbuf *)malloc(sizeof(struct pbbuf) * PUSHBACKSIZE);
+   }
 
-   if(Pbbufp == NULL)
+   if(Pbbufp == nullptr)
+   {
       out_of_memory();
+   }
 
    Pbbufp->pb_type = PB_TOS; /* Top of stack marker */
 
@@ -331,14 +358,14 @@ void init()
 
    /*	Bind macro symbols for the configuration setting variables	*/
 
-   for(i = 0; pragtab[i].pp_name != NULL; i++)
+   for(i = 0; pragtab[i].pp_name != nullptr; i++)
    {
       if((void *)pragtab[i].pp_func == (void *)pragopt)
       {
          strcpy(str, "__");
-         for(toptr = &str[2], fromptr = pragtab[i].pp_name; *fromptr; fromptr++)
+         for(toptr = &str[2], fromptr = pragtab[i].pp_name; *fromptr != 0; fromptr++)
          {
-            *toptr++ = (islower(*fromptr) ? toupper(*fromptr) : *fromptr);
+            *toptr++ = (islower(*fromptr) != 0 ? toupper(*fromptr) : *fromptr);
          }
          *toptr = '\0';
          strcat(str, "__");

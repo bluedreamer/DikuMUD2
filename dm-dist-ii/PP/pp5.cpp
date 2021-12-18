@@ -49,18 +49,22 @@ void doelse(int elif, int abcd, const char *dcba)
    if(PPDEBUG)
       printf("doelse: %d\n", Iflevel);
 #endif /* PPDEBUG */
-   if(Iflevel)
+   if(Iflevel != 0)
    {
       /* We are processing an if */
-      if(Ifstack[Iflevel].i_else)
+      if(Ifstack[Iflevel].i_else != 0)
+      {
          non_fatal("\"#else\" already encountered", "");
+      }
       else
       {
          if(Ifstate == IFTRUE)
+         {
             Ifstate = Ifstack[Iflevel].i_state = IFNEVER;
+         }
          else if(Ifstate == IFFALSE)
          {
-            if(elif)
+            if(elif != 0)
             {
                /*
                 *	Note that we first need to pretend that we are in a TRUE branch so
@@ -68,7 +72,7 @@ void doelse(int elif, int abcd, const char *dcba)
                 *	the "elif" expression (in particular "_docall").
                 */
                Ifstate = Ifstack[Iflevel].i_state = IFTRUE;
-               Ifstate = Ifstack[Iflevel].i_state = eval() ? IFTRUE : IFFALSE;
+               Ifstate = Ifstack[Iflevel].i_state = eval() != 0 ? IFTRUE : IFFALSE;
             }
             else
             {
@@ -76,15 +80,19 @@ void doelse(int elif, int abcd, const char *dcba)
             }
          }
          /* If have seen an #else */
-         Ifstack[Iflevel].i_else = !elif;
+         Ifstack[Iflevel].i_else = static_cast<char>(elif) == 0;
       }
    }
    else
    {
-      if(elif)
-         non_fatal("\"#elif\" outside of \"#if\"", "");
+      if(elif != 0)
+      {
+         non_fatal(R"("#elif" outside of "#if")", "");
+      }
       else
-         non_fatal("\"#else\" outside of \"#if\"", "");
+      {
+         non_fatal(R"("#else" outside of "#if")", "");
+      }
    }
 }
 
@@ -102,10 +110,14 @@ void doendif(int aaa, int bbb, const char *ccc)
    if(PPDEBUG)
       printf("doendif: %d\n", Iflevel);
 #endif /* PPDEBUG */
-   if(Iflevel)
+   if(Iflevel != 0)
+   {
       Ifstate = Ifstack[--Iflevel].i_state; /* Pop stack */
+   }
    else
-      non_fatal("\"#endif\" outside of \"#if\"", "");
+   {
+      non_fatal(R"("#endif" outside of "#if")", "");
+   }
 }
 
 /************************************************************************/
@@ -119,12 +131,14 @@ void doendif(int aaa, int bbb, const char *ccc)
 void doif(int aaa, int bbb, const char *ccc)
 {
    if(Iflevel >= IFSTACKSIZE)
+   {
       non_fatal("\"#if\" stack overflow", "");
+   }
    else
    {
       if(Ifstate == IFTRUE)
       {
-         Ifstate = Ifstack[++Iflevel].i_state = eval() ? IFTRUE : IFFALSE;
+         Ifstate = Ifstack[++Iflevel].i_state = eval() != 0 ? IFTRUE : IFFALSE;
       }
       else
       {
@@ -159,7 +173,7 @@ void doifs(int t, int bbb, const char *ccc)
          if(PPDEBUG)
             printf("doifs: %d %s", t, Token);
 #endif /* PPDEBUG */
-         iftype = (lookup(Token, NULL) ? TRUE : FALSE) ^ (t ? FALSE : TRUE) ? IFTRUE : IFFALSE;
+         iftype = ((lookup(Token, nullptr) != nullptr ? TRUE : FALSE) ^ (t != 0 ? FALSE : TRUE)) != 0 ? IFTRUE : IFFALSE;
       }
       else
       {
@@ -168,10 +182,14 @@ void doifs(int t, int bbb, const char *ccc)
       }
    }
    else
+   {
       iftype = IFNEVER; /* Inside false #if -- No #else */
+   }
 
    if(Iflevel >= IFSTACKSIZE)
+   {
       non_fatal("\"#if\" stack overflow", "");
+   }
    else
    {
       Ifstate = Ifstack[++Iflevel].i_state = iftype;

@@ -5,7 +5,7 @@
 // MS copied in from the original project. But doesn't seem to work...
 //
 
-int original_main(int argc, char *argv[])
+auto original_main(int argc, char *argv[]) -> int
 {
    static const char *one_string = "1";
 #if C99_WCHAR
@@ -40,7 +40,7 @@ int original_main(int argc, char *argv[])
       if(s[0] == '-')
       {
          skip = FALSE;
-         while((!skip) && (*++s != '\0'))
+         while((skip == 0) && (*++s != '\0'))
          {
             switch((int)*s)
             {
@@ -117,19 +117,25 @@ int original_main(int argc, char *argv[])
                case 'd':
                   s  = getnext(s, &argc, &argv, NO);
                   s2 = strchr(s, '='); /* Location of val */
-                  if(s2)
+                  if(s2 != nullptr)
                   {
                      // MS2020 Hack bad code.
                      *((char *)s2) = '\0';
                      s2++;
                   }
                   else
+                  {
                      s2 = one_string; /* Default */
+                  }
 
-                  if(lookup(s, NULL) != NULL)
+                  if(lookup(s, nullptr) != nullptr)
+                  {
                      warning("Symbol already defined: ", s);
+                  }
                   else
+                  {
                      sbind(s, s2, NO_PARAMS);
+                  }
 
                   skip = TRUE; /* Skip to next param */
                   break;
@@ -144,7 +150,9 @@ int original_main(int argc, char *argv[])
                case 'I':
                case 'i':
                   if(Ipcnt > NIPATHS)
+                  {
                      fatal("Too many pathnames", "");
+                  }
                   Ipath[Ipcnt++] = getnext(s, &argc, &argv, NO);
                   skip           = TRUE; /* Skip to next param */
                   break;
@@ -214,10 +222,14 @@ int original_main(int argc, char *argv[])
 
                   for(; *s2 != '\0'; s2++)
                   {
-                     if(i)
+                     if(i != 0)
+                     {
                         typetab[*s2 + 1] |= C_L;
+                     }
                      else
+                     {
                         typetab[*s2 + 1] &= ~C_L;
+                     }
                   }
 
                   skip = TRUE; /* Skip to next param */
@@ -228,17 +240,21 @@ int original_main(int argc, char *argv[])
                case 'u':
                   s = getnext(s, &argc, &argv, NO);
 
-                  if(lookup(s, NULL) == NULL)
+                  if(lookup(s, nullptr) == nullptr)
+                  {
                      warning("Symbol not defined: ", s);
+                  }
                   else
+                  {
                      unsbind(s);
+                  }
                   skip = TRUE; /* Skip to next param */
                   break;
 
                /* -[v] verbose mode toggle */
                case 'V':
                case 'v':
-                  Verbose = !Verbose;
+                  Verbose = static_cast<int>(Verbose) == 0;
                   break;
 
 #if DEBUG
@@ -258,13 +274,13 @@ int original_main(int argc, char *argv[])
             }
          }
       }
-      else if(!ifile)
+      else if(ifile == 0)
       {
          /* Try to get input file */
 #if HOST == H_CPM
          if(!inc_open(s, -1, 0)) /* Open file here */
 #else                            /* !H_CPM */
-         if(!inc_open(s)) /* Open input file */
+         if(inc_open(s) == 0) /* Open input file */
 #endif                           /* H_CPM */
          {
             fatal("Unable to open input file: ", s);
@@ -286,26 +302,32 @@ int original_main(int argc, char *argv[])
 
    Nextch = gchbuf; /* Next char source */
 
-   if(!ifile)
+   if(ifile == 0)
    {
       /* Must have at least an input file name */
       usage(TRUE);
    }
 
-   if(!ofile)
+   if(ofile == 0)
    {
       /* No output name given; use input name and modify it */
       strcpy(Outfile, Filestack[0]->f_name);
       /* terminate the file name before any extension */
-      if((s = strrchr(Outfile, '.')) != NULL)
+      if((s = strrchr(Outfile, '.')) != nullptr)
+      {
          *s = '\0';
+      }
       strcat(Outfile, ".pp");
    }
 
    if(strcmp(Outfile, Filestack[0]->f_name) == EQUAL)
+   {
       fatal("Input and output filenames are the same: ", Outfile);
-   else if((Output = fopen(Outfile, "w")) == NULL)
+   }
+   else if((Output = fopen(Outfile, "w")) == nullptr)
+   {
       fatal("Unable to create output file: ", Outfile);
+   }
 
 #if HOST == H_CPM
    /* Create a bigger than average buffer */
@@ -315,7 +337,7 @@ int original_main(int argc, char *argv[])
    setbsize(Output, OUTBUFSIZE);
 #endif /* H_CPM */
 
-   if(Verbose)
+   if(Verbose != 0)
    {
       printf("%s%s\n\n", "PP Preprocessor, ", PP_VERSION);
       printf("Output will be on <%s>\n", Outfile);
@@ -324,14 +346,14 @@ int original_main(int argc, char *argv[])
 
    Do_name = TRUE; /* Force name output on #line */
 
-   init_path();         /* Initialize search path */
-   Ipath[Ipcnt] = NULL; /* Terminate last include path */
-                        /*
-                         *	If we are in C99 mode then we need to prepend a definition for the
-                         *	"_pragma" macro definition.  We also need to enable \uxxxx and
-                         *	\Uxxxxxxxx "universal characters".
-                         */
-   if(A_c99)
+   init_path();            /* Initialize search path */
+   Ipath[Ipcnt] = nullptr; /* Terminate last include path */
+                           /*
+                            *	If we are in C99 mode then we need to prepend a definition for the
+                            *	"_pragma" macro definition.  We also need to enable \uxxxx and
+                            *	\Uxxxxxxxx "universal characters".
+                            */
+   if(A_c99 != 0)
    {
       pbstr("#define _Pragma([line,RQ]) #pragma line\n");
       typetab['\\' + 1] |= C_L;
@@ -343,34 +365,42 @@ int original_main(int argc, char *argv[])
    Lastnl = TRUE; /* We are at the file beginning */
    while((t = gettoken(GT_STR)) != EOF)
    {
-      if((t == DIRECTIVE_CHAR) && Lastnl)
+      if((t == DIRECTIVE_CHAR) && (Lastnl != 0))
       {
          t = getnstoken(GT_STR);
          if(t == LETTER)
          {
-            if((sp = predef(Token, pptab)) != NULL)
+            if((sp = predef(Token, pptab)) != nullptr)
             {
                /*
                 *	If unconditionally do it or if emitting code...
                 */
-               if(sp->pp_ifif || (Ifstate == IFTRUE))
+               if((sp->pp_ifif != 0) || (Ifstate == IFTRUE))
                {
                   /* Do #func */ (void)(*(sp->pp_func))(sp->pp_arg, 0, ""); // MS2020 add missing params??? Totally odd.
                }
             }
             else if(Ifstate == IFTRUE)
+            {
                non_fatal("Illegal directive", "");
+            }
          }
          else if(t != '\n')
+         {
             non_fatal("Bad directive", "");
+         }
          /*
           *	After processing directive toss the remainder of the input
           *	line and just output the linefeed.
           */
          while((t != '\n') && (t != EOF))
+         {
             t = gettoken(GT_STR);
+         }
          if(t == '\n')
+         {
             puttoken(Token);
+         }
          Lastnl = TRUE;
       }
       else if(Ifstate == IFTRUE)
@@ -384,8 +414,10 @@ int original_main(int argc, char *argv[])
          if(t == LETTER)
 #endif /* EMBEDDED_EXT */
          {
-            if((p = lookup(Token, NULL)) != NULL)
-               /* Call macro */ (void)docall(p, NULL, NULL);
+            if((p = lookup(Token, nullptr)) != nullptr)
+            {
+               /* Call macro */ (void)docall(p, nullptr, nullptr);
+            }
             else
             {
                /* Not a macro, just output */ puttoken(Token);
@@ -396,9 +428,13 @@ int original_main(int argc, char *argv[])
          {
             puttoken(Token);
             if(t == '\n')
+            {
                Lastnl = TRUE; /* Turn on if '\n' */
+            }
             else if(t != SPACE)
+            {
                Lastnl = FALSE; /* Turn off if !ws */
+            }
          }
       }
       else
@@ -411,7 +447,9 @@ int original_main(int argc, char *argv[])
          if(t != SPACE) /* Generic whitespace? */
          {
             while((t != '\n') && (t != EOF))
+            {
                t = gettoken(GT_STR);
+            }
             Lastnl = TRUE;
          }
       }
@@ -427,7 +465,7 @@ int original_main(int argc, char *argv[])
       non_fatal("Unterminated conditional", "");
    }
 
-   if(Verbose)
+   if(Verbose != 0)
    {
       printf("\nActive symbols at end:\t%d\tMaximum symbols used:\t%d\n", Nsyms, Maxsyms);
 #if HOST == H_CPM
@@ -435,12 +473,16 @@ int original_main(int argc, char *argv[])
 #endif /* H_CPM */
    }
 
-   if(Verbose || Errors)
+   if((Verbose != 0) || (Errors != 0))
    {
-      if(Errors)
+      if(Errors != 0)
+      {
          printf("\n%d errors detected\n", Errors);
+      }
       else
+      {
          printf("\nNo errors detected\n");
+      }
    }
 
 #if DEBUG
@@ -476,9 +518,11 @@ int original_main(int argc, char *argv[])
    // Before it just closed the output file
 
    if((Output != stdout) && (fclose(Output) == EOF))
+   {
       fatal("Unable to close output file: ", Outfile);
+   }
 
-   exit(Eflag ? 0 : Errors);
+   exit(Eflag != 0 ? 0 : Errors);
 }
 
 #ifdef MSC_OPT
@@ -487,7 +531,7 @@ int original_main(int argc, char *argv[])
    #pragma optimize("l", on) /* Enable loop optimizing */
 #endif                       /* MSC_OPT */
 
-int main(int argc, char *argv[])
+auto main(int argc, char *argv[]) -> int
 {
    return original_main(argc, argv);
 

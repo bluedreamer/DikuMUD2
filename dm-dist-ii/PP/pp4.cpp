@@ -62,9 +62,9 @@
 /*									*/
 /************************************************************************/
 
-char *addstr(char *old, char *limit, const char *msg, const char *snew)
+auto addstr(char *old, const char *limit, const char *msg, const char *snew) -> char *
 {
-   static const char *origmsg = 0;
+   static const char *origmsg = nullptr;
 
    char       *o;
    const char *n;
@@ -80,15 +80,13 @@ char *addstr(char *old, char *limit, const char *msg, const char *snew)
       origmsg = msg;
       return (old);
    }
-   else
-   {
-      origmsg = NULL; /* Clear the error condition */
-      o       = old;
-      n       = snew;
-      while((*o++ = *n++) != '\0')
-         ;            /* Copy strings */
-      return (o - 1); /* Next char pos in output string */
-   }
+
+   origmsg = nullptr; /* Clear the error condition */
+   o       = old;
+   n       = snew;
+   while((*o++ = *n++) != '\0')
+      ;            /* Copy strings */
+   return (o - 1); /* Next char pos in output string */
 }
 
 /************************************************************************/
@@ -99,11 +97,13 @@ char *addstr(char *old, char *limit, const char *msg, const char *snew)
 /*									*/
 /************************************************************************/
 
-int getnstoken(int f)
+auto getnstoken(int f) -> int
 {
-    int t;
+   int t;
    while(istype(t = gettoken(f), C_W) && (t != '\n'))
-      ;        /* Skip space tokens but ! newlines */
+   {
+      ; /* Skip space tokens but ! newlines */
+   }
    return (t); /* Last token read */
 }
 
@@ -121,7 +121,7 @@ int getnstoken(int f)
    #pragma optimize("l", off) /* Disable loop optimizations */
 #endif                        /* MSC_OPT */
 
-int gettoken(int f)
+auto gettoken(int f) -> int
 {
    char  ch;
    int   comment_level;
@@ -161,7 +161,9 @@ int gettoken(int f)
             t  = nextch();
             *p = t;
             if(!istype(t, C_L | C_D))
+            {
                break;
+            }
          }
       }
       else if(istype(t, C_D))
@@ -173,18 +175,26 @@ int gettoken(int f)
             *++p = t;        /* Store into token buffer */
 
             if((t == 'x') || (t == 'X'))
+            {
                tmask = C_X; /* Only hex digits */
+            }
             else if(istype(t, C_D))
+            {
                /* 0..9 (8 & 9 are "octal" digits) */ tmask = C_D;
+            }
             else
+            {
                tmask = 0; /* Not part of #'s */
+            }
 
             while((p < &Token[TOKENSIZE]) && (tmask != 0))
             {
                t    = nextch();
                *++p = t;
                if(!istype(t, tmask))
+               {
                   tmask = 0;
+               }
             }
 
             if((t == 'l') || (t == 'L') || (t == 'u') || (t == 'U'))
@@ -200,7 +210,7 @@ int gettoken(int f)
          {
             numstate = F_INTPART;
             fail     = FALSE;
-            for(p = &Token[1]; p < &Token[TOKENSIZE] && (!fail); /*none*/)
+            for(p = &Token[1]; p < &Token[TOKENSIZE] && (fail == 0); /*none*/)
             {
                t  = nextch();
                *p = t;
@@ -208,7 +218,9 @@ int gettoken(int f)
                {
                   case F_INTPART:
                      if(istype(t, C_D))
+                     {
                         break;
+                     }
                      else if(t == '.')
                      {
                         numstate = F_FRAC;
@@ -220,7 +232,9 @@ int gettoken(int f)
 
                   case F_FRAC:
                      if(istype(t, C_D))
+                     {
                         /* Fraction ok so far */ break;
+                     }
                      else if((t == 'e') || (t == 'E'))
                      {
                         /* Test sign */ numstate = F_EXPSIGN;
@@ -246,7 +260,9 @@ int gettoken(int f)
 
                   case F_EXP:
                      if(istype(t, C_D))
+                     {
                         break; /* Digits ok */
+                     }
 
                      if((t == 'f') || (t == 'F'))
                      {
@@ -268,7 +284,9 @@ int gettoken(int f)
       {
          /* Must be some type of whitespace */
          while(istype((t = nextch()), C_W))
+         {
             ;
+         }
          if(t == '\n')
          {
             /* Just forget we saw any of the above space */
@@ -296,7 +314,7 @@ int gettoken(int f)
          pushback(t);
          t = '\\'; /* Return an escape char */
       }
-      else if(((t == '"') || (t == '\'')) && (f & GT_STR))
+      else if(((t == '"') || (t == '\'')) && ((f & GT_STR) != 0))
       {
          strline = LLine;
 #if PPDEBUG
@@ -319,7 +337,9 @@ int gettoken(int f)
                                                    if (*p=='\n') *p=' ';
                */
                if(*p == t)
+               {
                   break;
+               }
 
                /*
                 *	BUG: if a closing " or ' is missing from the string, the termination
@@ -333,7 +353,9 @@ int gettoken(int f)
                 *	Fetched a '\\', see if next char is newline, and ignore both if it is.
                 */
                if((ch = nextch()) != '\n')
+               {
                   *++p = ch;
+               }
                else
                {
                   /* Unrecord the saved '\\' */
@@ -342,7 +364,9 @@ int gettoken(int f)
             }
          }
          if(p >= &Token[TOKENSIZE])
+         {
             non_fatal("Token too long", "");
+         }
 
          p[1] = '\0';
          return (t);
@@ -358,10 +382,14 @@ int gettoken(int f)
          {
             *p = nextch();
             if((*p == '>') || (*p == '\n'))
+            {
                break;
+            }
          }
          if(p >= &Token[TOKENSIZE])
+         {
             non_fatal("Token too long", "");
+         }
 
          p[1] = '\0';
          return (t);
@@ -393,7 +421,7 @@ int gettoken(int f)
                   nt = nextch();
                   if((t == '/') && (nt == '*'))
                   {
-                     if(!A_crecurse)
+                     if(A_crecurse == 0)
                      {
                         warning("\"/*\" found in comment", "");
                      }
@@ -403,13 +431,17 @@ int gettoken(int f)
                      }
                   }
                   if((t == '*') && (nt == '/'))
+                  {
                      comment_level--;
+                  }
                   if(comment_level > 0)
+                  {
                      t = nt;
+                  }
                } while(comment_level > 0);
                t = Token[0];
             }
-            /* Optional C++ comments */ else if(A_eolcomment && (nt == '/'))
+            /* Optional C++ comments */ else if((A_eolcomment != 0) && (nt == '/'))
             {
                t        = ' ';
                Token[0] = t;
@@ -418,20 +450,23 @@ int gettoken(int f)
                   printf(" in eol comment");
 #endif /* PPDEBUG */
                while((t != '\n') && (t != EOF))
+               {
                   t = nextch();
+               }
                if(t == EOF)
                {
                   non_fatal("EOF in comment", "");
 
                   return (EOF);
                }
-               else
-                  pushback(t);
+               pushback(t);
 
                t = Token[0];
             }
             else
+            {
                pushback(nt);
+            }
          }
       }
       if(istype(t, C_M))
@@ -477,7 +512,9 @@ int gettoken(int f)
    }
 
    if(p >= &Token[TOKENSIZE])
+   {
       non_fatal("Token too long", "");
+   }
 
    if(p > Token)
    {
@@ -489,7 +526,9 @@ int gettoken(int f)
    p[1] = '\0'; /* Null terminated */
 #ifdef PPDEBUG
    if(PPDEBUG)
+   {
       printf(" returning: <%s> type: %c\n", Token, t);
+   }
 #endif
    return (t);
 }
@@ -529,8 +568,10 @@ int istype(int c, int v)
 
 void memmov(char *f, char *t, unsigned l)
 {
-   while(l--)
+   while((l--) != 0u)
+   {
       *t++ = *f++;
+   }
 }
 #endif /* memmov */
 
@@ -551,17 +592,23 @@ void pbcstr(char *s)
    char        *cp;
    unsigned int length;
 
-   if((cp = (char *)malloc((unsigned)(length = (strlen(s) + 1)))) == NULL)
+   if((cp = (char *)malloc((unsigned)(length = (strlen(s) + 1)))) == nullptr)
+   {
       out_of_memory();
+   }
    memmov(s, cp, length); /* Make a copy of memory */
 
    if(Pbbufp++ >= &Pbbuf[PUSHBACKSIZE - 1])
+   {
       fatal("Pushback buffer overflow", "");
+   }
    Pbbufp->pb_type       = PB_STRING;
    Pbbufp->pb_val.pb_str = cp;
 
    if(Pbbufp++ >= &Pbbuf[PUSHBACKSIZE - 1])
+   {
       fatal("Pushback buffer overflow", "");
+   }
    Pbbufp->pb_type       = PB_STRING;
    Pbbufp->pb_val.pb_str = cp;
 
@@ -578,10 +625,12 @@ void pbcstr(char *s)
 
 void pbstr(const char *in)
 {
-    int i;
+   int i;
 
    for(i = strlen(in) - 1; i >= 0; i--)
+   {
       pushback(in[i] & 0xFF);
+   }
 }
 
 /************************************************************************/
@@ -595,7 +644,9 @@ void pbstr(const char *in)
 void pushback(int c)
 {
    if(Pbbufp++ >= &Pbbuf[PUSHBACKSIZE - 1])
+   {
       fatal("Pushback buffer overflow", "");
+   }
 
    Pbbufp->pb_type        = PB_CHAR;
    Pbbufp->pb_val.pb_char = c;
@@ -613,9 +664,9 @@ void pushback(int c)
 
 void puttoken(const char s[])
 {
-    int         ch;
-    const char *str;
-   static int           lastoutc = '\n'; /* Last char written */
+   int         ch;
+   const char *str;
+   static int  lastoutc = '\n'; /* Last char written */
 
    str = s;
 
@@ -624,21 +675,23 @@ void puttoken(const char s[])
       printf("puttoken: <%s>\n", str);
 #endif /* PPDEBUG */
 
-   if(istype(*str & 0xFF, C_N)) /* Ignore null tokens */
+   if(istype(*str & 0xFF, C_N))
+   { /* Ignore null tokens */
       return;
+   }
 
-   if(Lineopt)
+   if(Lineopt != 0)
    {
       /* Get line numbers in sync before emitting token */
 
 #if(TARGET == T_QC) OR(TARGET == T_QCX)
       if(!Do_asm && (((*str != '\n') && (Outline != LLine)) || Do_name))
 #else  /* !((TARGET == T_QC) OR (TARGET == T_QCX)) */
-      if(((*str != '\n') && (Outline != LLine)) || Do_name)
+      if(((*str != '\n') && (Outline != LLine)) || (Do_name != 0))
 #endif /* (TARGET == T_QC) OR (TARGET == T_QCX) */
       {
-         do_line(lastoutc == '\n'); /* True if at BOL */
-         lastoutc = '\n';           /* We're at BOL now... */
+         do_line(static_cast<char>(lastoutc == '\n')); /* True if at BOL */
+         lastoutc = '\n';                              /* We're at BOL now... */
       }
 
       while((ch = *str++) != '\0')
@@ -647,29 +700,43 @@ void puttoken(const char s[])
          {
             /* MS2020 if(lastoutc != '\n')
                { We do need multiple newlines (in quoted text)*/
-            if(A_outstr)
+            if(A_outstr != 0)
+            {
                output_addc(lastoutc = '\n');
+            }
             else
+            {
                putc(lastoutc = '\n', Output);
+            }
             Outline++;
             /* } MS2020 */
             /*
              *	No character written if lastoutc WAS a newline.
              */
          }
-         else if(A_outstr)
+         else if(A_outstr != 0)
+         {
             output_addc(lastoutc = ch);
+         }
          else
+         {
             putc(lastoutc = ch, Output);
+         }
       }
    }
    else
    {
       while((ch = *str++) != '\0')
-         if(A_outstr)
+      {
+         if(A_outstr != 0)
+         {
             output_addc(lastoutc = ch);
+         }
          else
+         {
             putc(ch, Output); /* if!line mode output token */
+         }
+      }
    }
 }
 
@@ -681,11 +748,13 @@ void puttoken(const char s[])
 /*									*/
 /************************************************************************/
 
-int type(int c)
+auto type(int c) -> int
 {
    if(istype(c, C_L))
+   {
       return (LETTER);
-   else if(istype(c, C_D))
+   }
+   if(istype(c, C_D))
       return (NUMBER);
    else
       return (c);
