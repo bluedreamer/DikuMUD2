@@ -25,9 +25,9 @@
 #ifndef _MUD_UTILS_H
 #define _MUD_UTILS_H
 
-#include <assert.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cassert>
+#include <cstdlib>
+#include <cstring>
 
 #include "essential.h"
 #include "structs.h"

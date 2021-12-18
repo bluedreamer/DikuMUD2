@@ -28,8 +28,8 @@
 class help_index_type
 {
 public:
-   help_index_type(void);
-   ~help_index_type(void);
+   help_index_type();
+   ~help_index_type();
 
    char *keyword;
    long  pos;
@@ -38,8 +38,8 @@ public:
 class help_file_type
 {
 public:
-   help_file_type(void);
-   ~help_file_type(void);
+   help_file_type();
+   ~help_file_type();
 
    void generate_help_idx(const char *filename);
 

@@ -28,8 +28,8 @@
 /* #define MAGIC_POWER(ch)  \
    MAX(CHAR_MAG(ch), CHAR_DIV(ch)) */
 
-int   dil_effect(const char *pStr, struct spell_args *sa);
-int   object_power(struct unit_data *unit);
+auto  dil_effect(const char *pStr, struct spell_args *sa) -> int;
+auto  object_power(struct unit_data *unit) -> int;
 ubit1 use_mana(struct unit_data *medium, int mana);
 ubit1 cast_magic_now(struct unit_data *ch, int mana);
 
@@ -37,16 +37,16 @@ ubit1 may_teleport_away(struct unit_data *unit);
 ubit1 may_teleport_to(struct unit_data *unit, struct unit_data *dest);
 ubit1 may_teleport(struct unit_data *unit, struct unit_data *dest);
 
-int spell_cast_check(struct unit_data *att, int spell);
-int spell_resistance(struct unit_data *att, struct unit_data *def, int spell);
-int spell_ability(struct unit_data *u, int ability, int spell);
-int spell_attack_ability(struct unit_data *medium, int spell);
-int spell_attack_skill(struct unit_data *unit, int spell);
-int spell_defense_skill(struct unit_data *unit, int spell);
+auto spell_cast_check(struct unit_data *att, int spell) -> int;
+auto spell_resistance(struct unit_data *att, struct unit_data *def, int spell) -> int;
+auto spell_ability(struct unit_data *u, int ability, int spell) -> int;
+auto spell_attack_ability(struct unit_data *medium, int spell) -> int;
+auto spell_attack_skill(struct unit_data *unit, int spell) -> int;
+auto spell_defense_skill(struct unit_data *unit, int spell) -> int;
 
-int spell_offensive(struct spell_args *sa, int spell_number, int bonus = 0);
+auto spell_offensive(struct spell_args *sa, int spell_number, int bonus = 0) -> int;
 
-int variation(int n, int d, int u);
+auto variation(int n, int d, int u) -> int;
 
 /* These are all the spell definitions... */
 

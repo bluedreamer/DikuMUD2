@@ -29,8 +29,8 @@
 
 extern int bPipeSignal;
 
-int PipeRead(int fd, char *buf, size_t count);
-int PipeWrite(int fd, char *buf, size_t count);
+auto PipeRead(int fd, char *buf, size_t count) -> int;
+auto PipeWrite(int fd, char *buf, size_t count) -> int;
 
 #define SELECT_READ   0x01
 #define SELECT_WRITE  0x02
@@ -43,19 +43,19 @@ class cHook
    friend cCaptainHook;
 
 public:
-   cHook(void);
-   virtual ~cHook(void);
+   cHook();
+   virtual ~cHook();
 
-   int  tfd(void) const;
-   int  IsHooked(void) const;
-   void Write(ubit8 *pData, ubit32 nLen, int bCopy = TRUE);
+   [[nodiscard]] auto tfd() const -> int;
+   [[nodiscard]] auto IsHooked() const -> int;
+   void               Write(ubit8 *pData, ubit32 nLen, int bCopy = TRUE);
 
    cQueue qRX;
 
-   void Unhook(void);
+   void Unhook();
 
 protected:
-   void PushWrite(void);
+   void PushWrite();
 
    virtual void Input(int nFlags) = 0;
 
@@ -71,12 +71,12 @@ class cCaptainHook
    friend cHook;
 
 public:
-   cCaptainHook(void);
-   ~cCaptainHook(void);
+   cCaptainHook();
+   ~cCaptainHook();
 
-   void Close(void);
+   void Close();
    void Hook(int nHandle, cHook *hook);
-   int  Wait(struct timeval *timeout);
+   auto Wait(struct timeval *timeout) -> int;
 
 private:
    void Unhook(cHook *hook);

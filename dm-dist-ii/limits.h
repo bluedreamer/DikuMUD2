@@ -27,26 +27,26 @@
 
 #include "structs.h"
 
-int char_can_carry_unit(struct unit_data *ch, struct unit_data *unit);
-int char_can_get_unit(struct unit_data *ch, struct unit_data *unit);
+auto char_can_carry_unit(struct unit_data *ch, struct unit_data *unit) -> int;
+auto char_can_get_unit(struct unit_data *ch, struct unit_data *unit) -> int;
 
-int char_carry_n(struct unit_data *unit);
-int char_carry_n_limit(struct unit_data *ch);
-int char_can_carry_n(struct unit_data *ch, int n = 1);
+auto char_carry_n(struct unit_data *unit) -> int;
+auto char_carry_n_limit(struct unit_data *ch) -> int;
+auto char_can_carry_n(struct unit_data *ch, int n = 1) -> int;
 
-int char_carry_w_limit(struct unit_data *ch);
-int char_can_carry_w(struct unit_data *ch, int weight);
-int char_drag_w_limit(struct unit_data *ch);
-int char_can_drag_w(struct unit_data *ch, int weight);
+auto char_carry_w_limit(struct unit_data *ch) -> int;
+auto char_can_carry_w(struct unit_data *ch, int weight) -> int;
+auto char_drag_w_limit(struct unit_data *ch) -> int;
+auto char_can_drag_w(struct unit_data *ch, int weight) -> int;
 
-int mana_limit(struct unit_data *ch);
-int hit_limit_number(int);
-int hit_limit(struct unit_data *ch);
-int move_limit(struct unit_data *ch);
+auto mana_limit(struct unit_data *ch) -> int;
+auto hit_limit_number(int) -> int;
+auto hit_limit(struct unit_data *ch) -> int;
+auto move_limit(struct unit_data *ch) -> int;
 
-int mana_gain(struct unit_data *ch);
-int hit_gain(struct unit_data *ch);
-int move_gain(struct unit_data *ch);
+auto mana_gain(struct unit_data *ch) -> int;
+auto hit_gain(struct unit_data *ch) -> int;
+auto move_gain(struct unit_data *ch) -> int;
 
 void set_title(struct unit_data *ch);
 

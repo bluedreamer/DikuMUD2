@@ -54,13 +54,13 @@ public:
    cCombat(struct unit_data *owner, int bMelee = FALSE);
    ~cCombat();
 
-   struct unit_data *Opponent(int i = 0);
-   struct unit_data *FindOpponent(struct unit_data *tmp);
+   auto Opponent(int i = 0) -> struct unit_data *;
+   auto FindOpponent(struct unit_data *tmp) -> struct unit_data *;
 
-   inline struct unit_data *Owner(void) { return pOwner; }
-   inline struct unit_data *Melee(void) { return pMelee; }
-   inline int               When() { return nWhen; }
-   inline int               NoOpponents(void) { return nNoOpponents; }
+   inline auto Owner() -> struct unit_data * { return pOwner; }
+   inline auto Melee() -> struct unit_data * { return pMelee; }
+   inline auto When() -> int const { return nWhen; }
+   inline auto NoOpponents() -> int const { return nNoOpponents; }
 
    void changeSpeed(int delta);
    void setMelee(struct unit_data *victim);
@@ -73,7 +73,7 @@ public:
 private:
    void add(struct unit_data *victim);
    void sub(int idx);
-   int  findOpponentIdx(struct unit_data *tmp);
+   auto findOpponentIdx(struct unit_data *tmp) -> int;
 
    int                nWhen;                     // What tick to attack / command at
    struct unit_data  *pOwner;                    // The owning unit

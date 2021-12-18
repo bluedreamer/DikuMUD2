@@ -33,12 +33,12 @@ void ShowUsage(const char *c);
 class CServerConfiguration
 {
 public:
-   CServerConfiguration(void);
+   CServerConfiguration();
 
-   void Boot(void);
+   void Boot();
 
-   int         FromLAN(char *pFromHost) const;
-   int         ValidMplex(struct sockaddr_in *isa);
+   auto        FromLAN(char *pFromHost) const -> int;
+   auto        ValidMplex(struct sockaddr_in *isa) -> int;
    static void TripleColorFormat(struct SFightColorSet *pSet, char **ppList);
 
    int m_nMotherPort;

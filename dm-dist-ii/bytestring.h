@@ -31,21 +31,21 @@ class CByteBuffer
 {
 public:
    CByteBuffer(ubit32 nSize = 1024);
-   virtual ~CByteBuffer(void);
+   virtual ~CByteBuffer();
 
    // Informative functions
 
-   inline ubit32       GetLength(void) { return m_nLength; }
-   inline ubit32       GetAllocated(void) { return m_nAllocated; }
-   inline ubit32       GetReadPosition(void) { return m_nReadPos; }
-   inline const ubit8 *GetData(void) { return m_pData; }
+   inline auto GetLength() -> ubit32 const { return m_nLength; }
+   inline auto GetAllocated() -> ubit32 const { return m_nAllocated; }
+   inline auto GetReadPosition() -> ubit32 const { return m_nReadPos; }
+   inline auto GetData() -> const ubit8 * { return m_pData; }
 
    void SetReadPosition(ubit32 nReadPosition);
    void SetLength(ubit32 nLen);
    void SetData(ubit8 *pData, ubit32 nLength);
 
-   inline void Rewind(void) { m_nReadPos = 0; }
-   inline void Clear(void)
+   inline void Rewind() { m_nReadPos = 0; }
+   inline void Clear()
    {
       m_nReadPos = 0;
       m_nLength  = 0;
@@ -53,34 +53,34 @@ public:
 
    // Public
    //
-   int FileRead(FILE *f, ubit32 nLength);
-   int FileRead(FILE *f, long offset, ubit32 length);
-   int FileWrite(FILE *f);
+   auto FileRead(FILE *f, ubit32 nLength) -> int;
+   auto FileRead(FILE *f, long offset, ubit32 length) -> int;
+   auto FileWrite(FILE *f) -> int;
 
    // Public functions to read from a buffer
    //
-   int Read(ubit8 *pBuf, ubit32 nLen);
+   auto Read(ubit8 *pBuf, ubit32 nLen) -> int;
 
-   int ReadBlock(ubit8 **pData, ubit32 *nLen);
+   auto ReadBlock(ubit8 **pData, ubit32 *nLen) -> int;
 
-   int Read8(ubit8 *pNum);
-   int Read16(ubit16 *pNum);
-   int Read32(ubit32 *pNum);
-   int Read8(sbit8 *pNum);
-   int Read16(sbit16 *pNum);
-   int Read32(sbit32 *pNum);
-   int ReadFloat(float *pFloat);
-   int ReadStringAlloc(char **pStr);
-   int ReadStringCopy(char *pStr, ubit32 nSize);
-   int ReadNames(char ***pppNames);
+   auto Read8(ubit8 *pNum) -> int;
+   auto Read16(ubit16 *pNum) -> int;
+   auto Read32(ubit32 *pNum) -> int;
+   auto Read8(sbit8 *pNum) -> int;
+   auto Read16(sbit16 *pNum) -> int;
+   auto Read32(sbit32 *pNum) -> int;
+   auto ReadFloat(float *pFloat) -> int;
+   auto ReadStringAlloc(char **pStr) -> int;
+   auto ReadStringCopy(char *pStr, ubit32 nSize) -> int;
+   auto ReadNames(char ***pppNames) -> int;
 
-   int Skip(int n);
-   int Skip8(void);
-   int Skip16(void);
-   int Skip32(void);
-   int SkipFloat(void);
-   int SkipString(char **ppStr = NULL);
-   int SkipNames(void);
+   auto Skip(int n) -> int;
+   auto Skip8() -> int;
+   auto Skip16() -> int;
+   auto Skip32() -> int;
+   auto SkipFloat() -> int;
+   auto SkipString(char **ppStr = nullptr) -> int;
+   auto SkipNames() -> int;
 
    // Public functions to write to a buffer
    //
@@ -109,16 +109,16 @@ private:
    ubit8 *m_pData;
 };
 
-ubit8  bread_ubit8(ubit8 **buf);
-ubit16 bread_ubit16(ubit8 **buf);
-ubit32 bread_ubit32(ubit8 **buf);
-float  bread_float(ubit8 **buf);
-ubit8 *bread_data(ubit8 **b, ubit32 *len);
-void   bwrite_data(ubit8 **b, ubit8 *data, ubit32 len);
-void   bread_strcpy(ubit8 **b, char *str);
-char  *bread_str_alloc(ubit8 **buf);
-char  *bread_str_skip(ubit8 **b);
-char **bread_nameblock(ubit8 **b);
+auto bread_ubit8(ubit8 **buf) -> ubit8;
+auto bread_ubit16(ubit8 **buf) -> ubit16;
+auto bread_ubit32(ubit8 **buf) -> ubit32;
+auto bread_float(ubit8 **buf) -> float;
+auto bread_data(ubit8 **b, ubit32 *len) -> ubit8 *;
+void bwrite_data(ubit8 **b, ubit8 *data, ubit32 len);
+void bread_strcpy(ubit8 **b, char *str);
+auto bread_str_alloc(ubit8 **buf) -> char *;
+auto bread_str_skip(ubit8 **b) -> char *;
+auto bread_nameblock(ubit8 **b) -> char **;
 
 void bwrite_ubit8(ubit8 **b, ubit8 i);
 void bwrite_ubit16(ubit8 **b, ubit16 i);

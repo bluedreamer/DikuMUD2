@@ -25,10 +25,10 @@
 #ifndef _MUD_ESSENTIAL_H
 #define _MUD_ESSENTIAL_H
 
-#include <assert.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cassert>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 #include <sys/types.h>
 
 enum log_level
@@ -121,34 +121,34 @@ enum log_level
 #define isascii(ch) ((ch >= 32) && (ch <= 126))
 
 #ifndef HPUX
-typedef signed char        sbit8;
-typedef unsigned char      ubit8;
-typedef signed short int   sbit16;
-typedef unsigned short int ubit16;
+using sbit8  = signed char;
+using ubit8  = unsigned char;
+using sbit16 = short;
+using ubit16 = unsigned short;
 
    #ifdef DOS
 typedef signed long   sbit32;
 typedef unsigned long ubit32;
    #else
-typedef signed int        sbit32;
-typedef unsigned int      ubit32;
-typedef signed long int   sbit64;
-typedef unsigned long int ubit64;
+using sbit32 = int;
+using ubit32 = unsigned int;
+using sbit64 = long;
+using ubit64 = unsigned long;
    #endif
 
 #endif /* HPUX */
 
-typedef ubit8 ubit1; /* Boolean */
+using ubit1 = ubit8; /* Boolean */
 
 void slog(enum log_level, ubit8, const char *, ...);
 
 #ifdef MEMORY_DEBUG
    #define strdup xxx
 
-void  safe_free(void *p);
-void *safe_malloc(size_t size);
-void *safe_calloc(size_t nobj, size_t size);
-void *safe_realloc(void *p, size_t size);
+void safe_free(void *p);
+auto safe_malloc(size_t size) -> void *;
+auto safe_calloc(size_t nobj, size_t size) -> void *;
+auto safe_realloc(void *p, size_t size) -> void *;
 
    #define free(p) (safe_free((void *)p), (p = 0))
    #ifdef malloc

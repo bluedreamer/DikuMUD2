@@ -35,9 +35,10 @@ $1n tells you, 'I do not know how to teach this ability.';
 $1n tells you, 'You haven't got %s for me.';
 $1n tells you, 'You haven't got %d ability points.';
 $1n tells you, 'I can not teach you any more';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you.'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you.'; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 70;
 Strength;
 9;
@@ -99,9 +100,10 @@ $1n tells you, 'I do not know how to teach this skill.';
 $1n tells you, 'You haven't got %s for me.';
 $1n tells you, 'You haven't got %d skill points.';
 $1n tells you, 'I can not teach you any more';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 50;
 backstab;
 9;
@@ -273,9 +275,10 @@ $1n tells you, 'I do not know how to teach that weapon.';
 $1n tells you, 'You haven't got %s for me.';
 $1n tells you, 'You haven't got %d skill points.';
 $1n tells you, 'I can not teach you any more.';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 80;
 dagger;
 4;
@@ -381,9 +384,10 @@ $1n tells you, 'I do not know how to teach this ability.';
 $1n tells you, 'You havn't got %s for me.';
 $1n tells you, 'You havn't got %d ability points.';
 $1n tells you, 'I can not teach you any more';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you.'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you.'; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 100;
 Strength;
 4;
@@ -438,9 +442,10 @@ $1n tells you, 'I do not know how to teach this skill.';
 $1n tells you, 'You havn't got %s for me.';
 $1n tells you, 'You havn't got %d skill points.';
 $1n tells you, 'I can not teach you any more';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 100;
 consider;
 14;
@@ -509,9 +514,10 @@ $1n tells you, 'I do not know how to teach that weapon.';
 $1n tells you, 'You havn't got %s for me.';
 $1n tells you, 'You havn't got %d skill points.';
 $1n tells you, 'I can not teach you any more.';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 100;
 fist;
 9;
@@ -695,9 +701,10 @@ $1n tells you, 'I do not know how to teach this ability.';
 $1n tells you, 'You haven't got %s for me.';
 $1n tells you, 'You haven't got %d ability points.';
 $1n tells you, 'I can not teach you any more';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you.'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you.'; $1n tells you, ' Remove all equipment,
+   please.';
 
-2;
+   2;
 50;
 Strength;
 23;
@@ -758,9 +765,10 @@ $1n tells you, 'I do not know how to teach this skill.';
 $1n tells you, 'You haven't got %s for me.';
 $1n tells you, 'You haven't got %d skill points.';
 $1n tells you, 'I can not teach you any more';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 80;
 consider;
 4;
@@ -807,9 +815,10 @@ $1n tells you, 'I do not know how to teach that weapon.';
 $1n tells you, 'You haven't got %s for me.';
 $1n tells you, 'You haven't got %d skill points.';
 $1n tells you, 'I can not teach you any more.';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 80;
 dagger;
 23;
@@ -847,9 +856,10 @@ $1n tells you, 'I do not know how to teach this kind of magic.';
 $1n tells you, 'You have not got %s for me.';
 $1n tells you, 'You have not got %d skill points.';
 $1n tells you, 'I can not teach you any more, find a better teacher!';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 100;
 detect magic;
 4;
@@ -1178,9 +1188,10 @@ $1n tells you, 'I do not know how to teach this ability.';
 $1n tells you, 'You haven't got %s for me.';
 $1n tells you, 'You haven't got %d ability points.';
 $1n tells you, 'I can not teach you any more';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you.'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you.'; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 50;
 Strength;
 14;
@@ -1242,9 +1253,10 @@ $1n tells you, 'I do not know how to teach this skill.';
 $1n tells you, 'You haven't got %s for me.';
 $1n tells you, 'You haven't got %d skill points.';
 $1n tells you, 'I can not teach you any more';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 100;
 diagnostics;
 4;
@@ -1305,9 +1317,10 @@ $1n tells you, 'I do not know how to teach that weapon.';
 $1n tells you, 'You haven't got %s for me.';
 $1n tells you, 'You haven't got %d skill points.';
 $1n tells you, 'I can not teach you any more.';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 70;
 war hammer;
 14;
@@ -1353,9 +1366,10 @@ $1n tells you, 'I do not know how to teach this kind of magic.';
 $1n tells you, 'You have not got %s for me.';
 $1n tells you, 'You have not got %d skill points.';
 $1n tells you, 'I can not teach you any more, find a better teacher!';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 100;
 cure light wounds;
 4;
@@ -1711,9 +1725,10 @@ $1n tells you, 'I do not know how to teach this ability.';
 $1n tells you, 'You haven't got %s for me.';
 $1n tells you, 'You haven't got %d ability points.';
 $1n tells you, 'I can not teach you any more';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you.'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you.'; $1n tells you, ' Remove all equipment,
+   please.';
 
-1;
+   1;
 50;
 Strength;
 23;
@@ -1774,9 +1789,10 @@ $1n tells you, 'I do not know how to teach this skill.';
 $1n tells you, 'You haven't got %s for me.';
 $1n tells you, 'You haven't got %d ability points.';
 $1n tells you, 'I can not teach you any more';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 60;
 fleeing;
 14;
@@ -1823,9 +1839,10 @@ $1n tells you, 'I do not know how to teach that weapon.';
 $1n tells you, 'You haven't got %s for me.';
 $1n tells you, 'You haven't got %d ability points.';
 $1n tells you, 'I can not teach you any more.';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 80;
 dagger;
 14;
@@ -1871,9 +1888,10 @@ $1n tells you, 'I do not know how to teach this kind of magic.';
 $1n tells you, 'You have not got %s for me.';
 $1n tells you, 'You have not got %d skill points.';
 $1n tells you, 'I can not teach you any more, find a better teacher!';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 100;
 raise divine;
 9;
@@ -2209,9 +2227,10 @@ $1n tells you, 'I do not know how to teach this skill.';
 $1n tells you, 'You havn't got %s for the tithe.';
 $1n tells you, 'You havn't got %d skill points.';
 $1n tells you, 'I can not teach you any more';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 100;
 shield;
 9;
@@ -2280,9 +2299,10 @@ $1n tells you, 'I do not know how to teach that weapon.';
 $1n tells you, 'You havn't enough money to tithe for that training.';
 $1n tells you, 'You havn't got %d skill points.';
 $1n tells you, 'I can not teach you any more.';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 70;
 fist;
 14;
@@ -2356,9 +2376,10 @@ $1n tells you, 'I do not know how to teach this kind of magic.';
 $1n tells you, 'You have not got %s for the tithe.';
 $1n tells you, 'You have not got %d skill points.';
 $1n tells you, 'I can not teach you any more, find a better teacher!';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove all equipment, please.';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove all equipment,
+   please.';
 
-0;
+   0;
 50;
 detect alignment;
 14;
@@ -3003,9 +3024,10 @@ $1n tells you, 'I do not know how to teach this ability.';
 $1n tells you, 'You haven't got the %s for me.';
 $1n tells you, 'You haven't got %d ability points.';
 $1n tells you, 'I can not teach you any more';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you.'; $1n tells you, 'Remove it all, then we proceed!';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you.'; $1n tells you, ' Remove it all,
+   then we proceed !';
 
-0;
+   0;
 50;
 Strength;
 18;
@@ -3067,9 +3089,10 @@ $1n tells you, 'I do not know how to teach this skill.';
 $1n tells you, 'You haven't got the %s for me.';
 $1n tells you, 'You haven't got %d skill points.';
 $1n tells you, 'I can not teach you any more';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove all, then we proceed!';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove all,
+   then we proceed !';
 
-0;
+   0;
 60;
 fleeing;
 14;
@@ -3124,9 +3147,10 @@ $1n tells you, 'I do not know how to teach that weapon.';
 $1n tells you, 'You haven't got the %s for me.';
 $1n tells you, 'You haven't got %d skill points.';
 $1n tells you, 'I can not teach you any more.';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove it all, then we proceed!';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove it all,
+   then we proceed !';
 
-0;
+   0;
 70;
 dagger;
 15;
@@ -3164,9 +3188,10 @@ $1n tells you, 'I do not know how to teach this kind of sorcery.';
 $1n tells you, 'You have not got the %s for me.';
 $1n tells you, 'You have not got %d skill points.';
 $1n tells you, 'I can not teach you any more, find a better teacher!';
-$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you'; $1n tells you, 'Remove it all, then we proceed!';
+$1n tells you, 'You must be unaffected by magic, otherwise I can' t teach you '; $1n tells you, ' Remove it all,
+   then we proceed !';
 
-0;
+   0;
 100;
 detect magic;
 14;
@@ -3898,6 +3923,7 @@ hand cuffing;
 
 #else
 
-ERROR NO GUILD TYPE DEFINED
+ERROR      NO;
+GUILD TYPE DEFINED
 
 #endif

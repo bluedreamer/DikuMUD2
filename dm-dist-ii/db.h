@@ -100,15 +100,15 @@ struct zone_info_type
    void                  **spmatrix;    /* Inter zone shortest paths   */
 };
 
-struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom);
-void              read_unit_file(struct file_index_type *org_fi, CByteBuffer *pBuf);
-struct unit_data *read_unit(struct file_index_type *fi);
-void              free_unit(struct unit_data *ch);
-void              free_extra_descr(struct extra_descr_data *ex);
-void              free_extra_descr_list(struct extra_descr_data *ex);
+auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom) -> struct unit_data *;
+void read_unit_file(struct file_index_type *org_fi, CByteBuffer *pBuf);
+auto read_unit(struct file_index_type *fi) -> struct unit_data *;
+void free_unit(struct unit_data *ch);
+void free_extra_descr(struct extra_descr_data *ex);
+void free_extra_descr_list(struct extra_descr_data *ex);
 
-struct extra_descr_data *create_extra_descr(void);
-struct unit_data        *create_unit(ubit8 type);
+auto create_extra_descr() -> struct extra_descr_data *;
+auto create_unit(ubit8 type) -> struct unit_data *;
 
 /* --- The globals of db.c --- */
 

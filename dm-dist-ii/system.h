@@ -33,11 +33,11 @@
 class cMultiHook : public cHook
 {
 public:
-   cMultiHook(void);
-   void Input(int nFlags);
+   cMultiHook();
+   void Input(int nFlags) override;
 
-   void Close(void);
-   int  Read(void);
+   void Close();
+   auto Read() -> int;
 
    int succ_err; /* Number of successive errors */
 };
@@ -45,7 +45,7 @@ public:
 class cMultiMaster
 {
 public:
-   cMultiMaster(void);
+   cMultiMaster();
 
    int        nCount;
    cMultiHook Multi[MAX_MULTI];
@@ -63,19 +63,19 @@ void MplexSendSetup(struct descriptor_data *d);
 void bzero(char *b, int length);
 #endif
 
-int  any_event(int port, struct multi_type *m);
-int  multi_any_connect(int port); /* test for event on socket port */
-int  multi_any_freaky(struct multi_type *m);
-int  multi_new(int mother, struct multi_type *m);
-void multi_close_all(void);
+auto any_event(int port, struct multi_type *m) -> int;
+auto multi_any_connect(int port) -> int; /* test for event on socket port */
+auto multi_any_freaky(struct multi_type *m) -> int;
+auto multi_new(int mother, struct multi_type *m) -> int;
+void multi_close_all();
 
-int any_input(int fd);  /* test for input         */
-int any_output(int fd); /* test for output        */
+auto any_input(int fd) -> int;  /* test for input         */
+auto any_output(int fd) -> int; /* test for output        */
 
-int multi_process_input(struct multi_element *pm);
+auto multi_process_input(struct multi_element *pm) -> int;
 
-int write_to_descriptor(int desc, char *txt);
-int read_from_descriptor(int desc, char *txt);
+auto write_to_descriptor(int desc, char *txt) -> int;
+auto read_from_descriptor(int desc, char *txt) -> int;
 
 #define SNOOP_PROMPT "% " /* probably not very nice to have here, but hey! */
 

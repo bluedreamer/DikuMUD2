@@ -33,14 +33,14 @@
    #undef MAX
 #endif
 
-int MIN(int a, int b);
-int MAX(int a, int b);
+auto MIN(int a, int b) -> int;
+auto MAX(int a, int b) -> int;
 
-int number(int from, int to);
-int dice(int number, int size);
+auto number(int from, int to) -> int;
+auto dice(int number, int size) -> int;
 
-char       *sprintbit(char *buf, ubit32 vektor, const char *names[]);
-const char *sprinttype(char *buf, int type, const char *names[]);
+auto sprintbit(char *buf, ubit32 vektor, const char *names[]) -> char *;
+auto sprinttype(char *buf, int type, const char *names[]) -> const char *;
 
 /* in game log stuff below */
 
@@ -51,12 +51,12 @@ const char *sprinttype(char *buf, int type, const char *names[]);
 /* Use like this:  error(HERE, "Something went wrong: %s", buf); */
 void error(const char *file, int line, const char *fmt, ...);
 
-struct unit_data *hometown_unit(char *str);
+auto hometown_unit(char *str) -> struct unit_data *;
 
 class log_buffer
 {
 public:
-   log_buffer(void) { str[0] = 0; }
+   log_buffer() { str[0] = 0; }
 
    char           str[MAX_INPUT_LENGTH + 50];
    enum log_level level;
@@ -72,6 +72,6 @@ struct obj_type_t
    ubit8       v[5];
 };
 
-char *stat_obj_data(struct unit_data *u, struct obj_type_t *obj_data);
+auto stat_obj_data(struct unit_data *u, struct obj_type_t *obj_data) -> char *;
 
 #endif

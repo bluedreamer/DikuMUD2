@@ -32,16 +32,16 @@
 extern CByteBuffer g_FileBuffer; /* Defined in db_file.c */
 extern int         g_nCorrupt;   /*          "           */
 
-void *bread_dil(CByteBuffer *pBuf, struct unit_data *, ubit8 version, struct unit_fptr *fptr);
+auto bread_dil(CByteBuffer *pBuf, struct unit_data *, ubit8 version, struct unit_fptr *fptr) -> void *;
 
-struct diltemplate *bread_diltemplate(CByteBuffer *pBuf);
-int                 bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra);
+auto bread_diltemplate(CByteBuffer *pBuf) -> struct diltemplate *;
+auto bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra) -> int;
 
-int bread_swap(CByteBuffer *pBuf, struct unit_data *u);
-int bread_swap_skip(CByteBuffer *pBuf);
-int bread_affect(CByteBuffer *pBuf, struct unit_data *u, ubit8 nVersion);
+auto bread_swap(CByteBuffer *pBuf, struct unit_data *u) -> int;
+auto bread_swap_skip(CByteBuffer *pBuf) -> int;
+auto bread_affect(CByteBuffer *pBuf, struct unit_data *u, ubit8 nVersion) -> int;
 
-struct unit_fptr *bread_func(CByteBuffer *pBuf, ubit8 version, struct unit_data *owner);
+auto bread_func(CByteBuffer *pBuf, ubit8 version, struct unit_data *owner) -> struct unit_fptr *;
 
 void bread_block(FILE *datafile, long file_pos, int length, void *buffer);
 
@@ -55,6 +55,6 @@ void bwrite_diltemplate(CByteBuffer *pBuf, struct diltemplate *tmpl);
 
 void write_unit(FILE *f, struct unit_data *u, char *fname);
 void write_diltemplate(FILE *f, struct diltemplate *tmpl);
-int  write_unit_string(CByteBuffer *pBuf, struct unit_data *u);
+auto write_unit_string(CByteBuffer *pBuf, struct unit_data *u) -> int;
 
 #endif /* _MUD_DB_FILE_H */

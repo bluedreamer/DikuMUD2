@@ -22,24 +22,20 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_FILES_H
-#define _MUD_FILES_H
-
+#pragma once
 #include "bytestring.h"
 
 #define FCACHE_MAX 100
 
-void  fstrcpy(CByteBuffer *pBuf, FILE *f);
-char *fread_line_commented(FILE *fl, char *buf, int max);
-long  fsize(FILE *f);
-void  touch_file(char *name);
-char *fread_string(FILE *fl);
-char *fread_string_copy(FILE *fl, char *buf, int max);
-int   file_to_string(char *name, char *buf, int max_len);
-int   config_file_to_string(char *name, char *buf, int max_len);
-long  fread_num(FILE *fl);
-FILE *fopen_cache(char *name, const char *mode);
-void  fclose_cache(void);
-ubit1 file_exists(const char *name);
-
-#endif
+void fstrcpy(CByteBuffer *pBuf, FILE *f);
+auto fread_line_commented(FILE *fl, char *buf, int max) -> char *;
+auto fsize(FILE *f) -> long;
+void touch_file(char *name);
+auto fread_string(FILE *fl) -> char *;
+auto fread_string_copy(FILE *fl, char *buf, int max) -> char *;
+auto file_to_string(char *name, char *buf, int max_len) -> int;
+auto config_file_to_string(char *name, char *buf, int max_len) -> int;
+auto fread_num(FILE *fl) -> long;
+auto fopen_cache(char *name, const char *mode) -> FILE *;
+void fclose_cache();
+auto file_exists(const char *name) -> ubit1;

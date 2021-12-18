@@ -50,8 +50,8 @@ extern struct dil_func_type dilfe_func[];
 void DeactivateDil(struct unit_data *pc);
 void ActivateDil(struct unit_data *pc);
 
-int dil_direct_init(struct spec_arg *sarg);
-int dil_init(struct spec_arg *sarg);
+auto dil_direct_init(struct spec_arg *sarg) -> int;
+auto dil_init(struct spec_arg *sarg) -> int;
 
 void dil_activate(struct dilprg *prg);
 void dil_init_vars(int varc, struct dilframe *frm);
@@ -59,34 +59,34 @@ void dil_free_var(struct dilvar *var);
 
 void dil_free_frame(struct dilframe *frame);
 
-char dil_getbool(struct dilval *v);
-int  dil_getval(struct dilval *v);
+auto dil_getbool(struct dilval *v) -> char;
+auto dil_getval(struct dilval *v) -> int;
 void dil_add_secure(struct dilprg *prg, struct unit_data *sup, ubit8 *lab);
 #ifdef __cplusplus
 void dil_sub_secure(struct dilframe *frm, struct unit_data *sup, int bForeach = FALSE);
 #endif
-int  same_environment(struct unit_data *u1, struct unit_data *u2);
+auto same_environment(struct unit_data *u1, struct unit_data *u2) -> int;
 void unhash_str(char **s);
 void dil_clear_non_secured(struct dilprg *prg);
 void dil_clear_lost_reference(struct dilframe *frm, void *ptr);
 void dil_test_secure(struct dilprg *prg);
-int  dil_destroy(char *name, struct unit_data *u);
+auto dil_destroy(char *name, struct unit_data *u) -> int;
 
 /* NULL fptr creates one...  */
-struct dilprg *dil_copy_template(struct diltemplate *tmpl, struct unit_data *u, struct unit_fptr **pfptr);
-struct dilprg *dil_copy(char *name, struct unit_data *u);
+auto dil_copy_template(struct diltemplate *tmpl, struct unit_data *u, struct unit_fptr **pfptr) -> struct dilprg *;
+auto dil_copy(char *name, struct unit_data *u) -> struct dilprg *;
 
-struct unit_fptr *dil_find(const char *name, struct unit_data *u);
+auto dil_find(const char *name, struct unit_data *u) -> struct unit_fptr *;
 
 void dil_typeerr(struct dilprg *p, const char *where);
 
 #define FAIL_NULL     1
 #define TYPEFAIL_NULL 2
 
-int  dil_type_check(const char *f, struct dilprg *p, int tot, ...);
+auto dil_type_check(const char *f, struct dilprg *p, int tot, ...) -> int;
 void dil_free_prg(struct dilprg *prg);
 
 void dil_intr_remove(struct dilprg *p, int idx);
-int  dil_intr_insert(struct dilprg *p, ubit8 *lab, ubit16 flags);
+auto dil_intr_insert(struct dilprg *p, ubit8 *lab, ubit16 flags) -> int;
 
 #endif

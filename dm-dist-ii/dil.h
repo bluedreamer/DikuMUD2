@@ -372,8 +372,8 @@ struct dilvar
 class dilval
 {
 public:
-   dilval(void) { type = DILV_FAIL; }
-   ~dilval(void);
+   dilval() { type = DILV_FAIL; }
+   ~dilval();
 
    ubit8 type; /* result type     */
    ubit8 atyp; /* allocation type */

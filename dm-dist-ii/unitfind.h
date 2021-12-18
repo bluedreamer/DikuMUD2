@@ -37,19 +37,19 @@ struct unit_vector_data
 
 extern struct unit_vector_data unit_vector;
 
-ubit1             same_surroundings(struct unit_data *u1, struct unit_data *u2);
-void              scan4_unit_room(struct unit_data *room, ubit8 type);
-void              scan4_unit(struct unit_data *ch, ubit8 type);
-struct unit_data *scan4_ref(struct unit_data *ch, struct unit_data *fu);
+ubit1 same_surroundings(struct unit_data *u1, struct unit_data *u2);
+void  scan4_unit_room(struct unit_data *room, ubit8 type);
+void  scan4_unit(struct unit_data *ch, ubit8 type);
+auto  scan4_ref(struct unit_data *ch, struct unit_data *fu) -> struct unit_data *;
 
-int               random_direction(struct unit_data *ch);
-struct unit_data *find_unit(const struct unit_data *ch, char **arg, const struct unit_data *list, const ubit32 bitvector);
-struct unit_data *find_unit_general(const struct unit_data *viewer, const struct unit_data *ch, char **arg, const struct unit_data *list,
-                                    const ubit32 bitvector);
+auto random_direction(struct unit_data *ch) -> int;
+auto find_unit(const struct unit_data *ch, char **arg, const struct unit_data *list, ubit32 bitvector) -> struct unit_data *;
+auto find_unit_general(const struct unit_data *viewer, const struct unit_data *ch, char **arg, const struct unit_data *list,
+                       ubit32 bitvector) -> struct unit_data *;
 
-struct unit_data *find_symbolic_instance(struct file_index_type *fi);
-struct unit_data *find_symbolic(char *zone, char *name);
-struct unit_data *find_symbolic_instance_ref(struct unit_data *ref, struct file_index_type *fi, ubit16 bitvector);
-struct unit_data *random_unit(struct unit_data *ref, int sflags, int tflags);
+auto find_symbolic_instance(struct file_index_type *fi) -> struct unit_data *;
+auto find_symbolic(char *zone, char *name) -> struct unit_data *;
+auto find_symbolic_instance_ref(struct unit_data *ref, struct file_index_type *fi, ubit16 bitvector) -> struct unit_data *;
+auto random_unit(struct unit_data *ref, int sflags, int tflags) -> struct unit_data *;
 
 #endif

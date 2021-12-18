@@ -29,15 +29,15 @@ extern int sunlight;
 
 extern const time_t beginning_of_time;
 
-char                 *timetodate(time_t t);
-struct time_info_data real_time_passed(time_t t2, time_t t1);
-struct time_info_data mud_date(time_t t);
-struct time_info_data mud_time_passed(time_t t2, time_t t1);
-struct time_info_data age(struct unit_data *ch);
-void                  weather_change(struct time_info_data time_data);
-void                  mudtime_strcpy(struct time_info_data *time, char *str);
+auto timetodate(time_t t) -> char *;
+auto real_time_passed(time_t t2, time_t t1) -> struct time_info_data;
+auto mud_date(time_t t) -> struct time_info_data;
+auto mud_time_passed(time_t t2, time_t t1) -> struct time_info_data;
+auto age(struct unit_data *ch) -> struct time_info_data;
+void weather_change(struct time_info_data time_data);
+void mudtime_strcpy(struct time_info_data *time, char *str);
 
-void update_time_and_weather(void);
-void boot_time_and_weather(void);
+void update_time_and_weather();
+void boot_time_and_weather();
 
 #endif

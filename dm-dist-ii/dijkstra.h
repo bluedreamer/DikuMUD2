@@ -25,7 +25,7 @@
 #ifndef _MUD_DIJKSTRA_H
 #define _MUD_DIJKSTRA_H
 
-int npc_move(const struct unit_data *npc, const struct unit_data *to);
-int move_to(const struct unit_data *from, const struct unit_data *to);
+auto npc_move(const struct unit_data *npc, const struct unit_data *to) -> int;
+auto move_to(const struct unit_data *from, const struct unit_data *to) -> int;
 
 #endif

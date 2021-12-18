@@ -41,8 +41,8 @@ void act(const char *str, int hide_invisible, const void *arg1, const void *arg2
 void act_generate(char *buf, const char *str, int show_type, const void *arg1, const void *arg2, const void *arg3, int type,
                   struct unit_data *to);
 
-int process_output(struct descriptor_data *t);
-int process_input(struct descriptor_data *t);
+auto process_output(struct descriptor_data *t) -> int;
+auto process_input(struct descriptor_data *t) -> int;
 
 #define PROMPT_SENT   0
 #define PROMPT_EXPECT 1

@@ -62,8 +62,8 @@ struct bin_search_type
 class file_index_type
 {
 public:
-   file_index_type(void);
-   ~file_index_type(void);
+   file_index_type();
+   ~file_index_type();
 
    char                   *name;     /* Unique within this list          */
    class zone_type        *zone;     /* Pointer to owner of structure    */
@@ -97,8 +97,8 @@ struct zone_reset_cmd
 class zone_type
 {
 public:
-   zone_type(void);
-   ~zone_type(void);
+   zone_type();
+   ~zone_type();
 
    class cNamelist creators; /* List of creators of zone         */
    char           *name;     /* Unique in list                   */
@@ -160,10 +160,10 @@ class descriptor_data
 {
 public:
    descriptor_data(cMultiHook *pe);
-   ~descriptor_data(void);
+   ~descriptor_data();
 
-   void CreateBBS(void);
-   void RemoveBBS(void) const;
+   void CreateBBS();
+   void RemoveBBS() const;
 
    time_t      logon; /* Time of last connect              */
    cMultiHook *multi; /* Multi element pointer             */
@@ -201,8 +201,8 @@ public:
 class room_direction_data
 {
 public:
-   room_direction_data(void);
-   ~room_direction_data(void);
+   room_direction_data();
+   ~room_direction_data();
 
    class cNamelist open_name; /* For Open & Enter                  */
 
@@ -215,8 +215,8 @@ public:
 class room_data
 {
 public:
-   room_data(void);
-   ~room_data(void);
+   room_data();
+   ~room_data();
 
    class room_direction_data *dir_option[6]; /* Her?? */
 
@@ -230,8 +230,8 @@ public:
 class obj_data
 {
 public:
-   obj_data(void);
-   ~obj_data(void);
+   obj_data();
+   ~obj_data();
 
    sbit32 value[5];     /* Values of the item (see list)       */
    ubit32 cost;         /* Value when sold (gp.)               */
@@ -266,8 +266,8 @@ struct pc_account_data
 class pc_data
 {
 public:
-   pc_data(void);
-   ~pc_data(void);
+   pc_data();
+   ~pc_data();
 
    struct terminal_setup_type setup;
 
@@ -324,8 +324,8 @@ public:
 class npc_data
 {
 public:
-   npc_data(void);
-   ~npc_data(void);
+   npc_data();
+   ~npc_data();
 
    ubit8 weapons[WPN_GROUP_MAX];
    ubit8 spells[SPL_GROUP_MAX];
@@ -368,8 +368,8 @@ struct char_follow_type
 class char_data
 {
 public:
-   char_data(void);
-   ~char_data(void);
+   char_data();
+   ~char_data();
 
    union
    {
@@ -425,7 +425,7 @@ class unit_data
 {
 public:
    unit_data(ubit8 type);
-   ~unit_data(void);
+   ~unit_data();
 
    class cNamelist names; /* Name Keyword list for get, enter, etc.      */
 
@@ -496,6 +496,6 @@ public:
 #define DR_AFFECT 1
 #define DR_FUNC   2
 
-int is_destructed(int i, void *ptr);
+auto is_destructed(int i, void *ptr) -> int;
 
 #endif /* _MUD_STRUCTS_H */

@@ -25,14 +25,14 @@
 #ifndef _MUD_DBFIND_H
 #define _MUD_DBFIND_H
 
-struct descriptor_data *find_descriptor(const char *name, struct descriptor_data *except);
-struct zone_type       *find_zone(const char *zonename);
-struct file_index_type *find_file_index(const char *zonename, const char *name);
-struct diltemplate     *find_dil_index(char *zonename, char *name);
-struct unit_data       *world_room(const char *zone, const char *name);
-struct diltemplate     *find_dil_template(const char *name);
+auto find_descriptor(const char *name, struct descriptor_data *except) -> struct descriptor_data *;
+auto find_zone(const char *zonename) -> struct zone_type *;
+auto find_file_index(const char *zonename, const char *name) -> struct file_index_type *;
+auto find_dil_index(char *zonename, char *name) -> struct diltemplate *;
+auto world_room(const char *zone, const char *name) -> struct unit_data *;
+auto find_dil_template(const char *name) -> struct diltemplate *;
 
-struct file_index_type *str_to_file_index(const char *str);
-struct file_index_type *pc_str_to_file_index(const struct unit_data *ch, const char *str);
+auto str_to_file_index(const char *str) -> struct file_index_type *;
+auto pc_str_to_file_index(const struct unit_data *ch, const char *str) -> struct file_index_type *;
 
 #endif

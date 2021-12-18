@@ -35,24 +35,24 @@ extern const char *dirs[];
 
 extern char libdir[64];
 
-int required_xp(int level);
-int level_xp(int level);
+auto required_xp(int level) -> int;
+auto level_xp(int level) -> int;
 
-int  is_in(int a, int from, int to);
+auto is_in(int a, int from, int to) -> int;
 void set_hits(struct unit_data *obj, int craftsmanship);
 
-int    skill_point_gain(void);
-int    ability_point_gain(void);
-int    ability_point_total(int level);
-int    skill_point_total(int level);
-double damage_str(int strength);
+auto skill_point_gain() -> int;
+auto ability_point_gain() -> int;
+auto ability_point_total(int level) -> int;
+auto skill_point_total(int level) -> int;
+auto damage_str(int strength) -> double;
 
-int distribute_points(ubit8 *skills, int max, int points, int level);
-int buy_points(int points, int level, int *error);
+auto distribute_points(ubit8 *skills, int max, int points, int level) -> int;
+auto buy_points(int points, int level, int *error) -> int;
 
-int apply_quality(int num, int quality);
+auto apply_quality(int num, int quality) -> int;
 
-int hitpoint_total(int hpp);
+auto hitpoint_total(int hpp) -> int;
 
 void set_weapon(struct unit_data *);
 void set_shield(struct unit_data *);

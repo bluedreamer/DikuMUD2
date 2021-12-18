@@ -39,9 +39,9 @@ class cStringConstant
 
 private:
    cStringConstant(const char *c, ubit32 len, ubit32 h);
-   ~cStringConstant(void);
-   inline const char      *String(void) { return pStr; }
-   inline cStringConstant *Next(void) { return pNext; }
+   ~cStringConstant();
+   inline auto String() -> const char * { return pStr; }
+   inline auto Next() -> cStringConstant * { return pNext; }
 
    char                  *pStr;
    ubit32                 nReferences;
@@ -53,13 +53,13 @@ private:
 class cStringInstance
 {
 public:
-   cStringInstance(void);
+   cStringInstance();
    cStringInstance(const char *str);
-   ~cStringInstance(void);
-   inline const char  *StringPtr(void) { return pConst ? pConst->pStr : 0; }
-   inline const char  *String(void) { return pConst ? pConst->pStr : ""; }
-   void                Reassign(const char *c);
-   inline const ubit32 Length(void) { return pConst ? pConst->nStrLen : 0; }
+   ~cStringInstance();
+   inline auto StringPtr() -> const char * { return pConst != nullptr ? pConst->pStr : nullptr; }
+   inline auto String() -> const char * { return pConst != nullptr ? pConst->pStr : ""; }
+   void        Reassign(const char *c);
+   inline auto Length() -> const ubit32 { return pConst != nullptr ? pConst->nStrLen : 0; }
 
 private:
    void                   Make(const char *str);

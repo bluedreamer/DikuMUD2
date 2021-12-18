@@ -27,13 +27,13 @@
 #define _MUD_BLKFILE_H
 
 #include "essential.h"
-#include <stdio.h>
+#include <cstdio>
 
 #define BLK_NULL -3 /* Use this constant to locally mark when a handle */
                     /* is free                                         */
 
-typedef sbit16 blk_handle;
-typedef sbit32 blk_length;
+using blk_handle = sbit16;
+using blk_length = sbit32;
 
 struct blk_file_type
 {
@@ -47,14 +47,14 @@ struct blk_file_type
    blk_length  bsize;   /* The size of each block in the file        */
 };
 
-typedef struct blk_file_type BLK_FILE;
+using BLK_FILE = struct blk_file_type;
 
-void       blk_delete(BLK_FILE *bf, blk_handle index);
-void      *blk_read(BLK_FILE *bf, blk_handle index, blk_length *blen);
-void      *blk_read_reserved(BLK_FILE *bf, blk_length *blen);
-blk_handle blk_write(BLK_FILE *bf, const void *data, blk_length len);
-void       blk_write_reserved(BLK_FILE *bf, const void *data, blk_length len);
-BLK_FILE  *blk_open(const char *name, blk_length block_size);
-void       blk_close(BLK_FILE *bf);
+void blk_delete(BLK_FILE *bf, blk_handle index);
+auto blk_read(BLK_FILE *bf, blk_handle index, blk_length *blen) -> void *;
+auto blk_read_reserved(BLK_FILE *bf, blk_length *blen) -> void *;
+auto blk_write(BLK_FILE *bf, const void *data, blk_length len) -> blk_handle;
+void blk_write_reserved(BLK_FILE *bf, const void *data, blk_length len);
+auto blk_open(const char *name, blk_length block_size) -> BLK_FILE *;
+void blk_close(BLK_FILE *bf);
 
 #endif /* _MUD_BLKFILE_H */

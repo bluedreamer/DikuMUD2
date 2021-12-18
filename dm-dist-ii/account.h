@@ -39,9 +39,9 @@ struct flatrate_type
 class CAccountConfig
 {
 public:
-   CAccountConfig(void);
+   CAccountConfig();
 
-   void Boot(void);
+   void Boot();
 
    char *m_pCoinName;
    char *m_pOverdueMessage;
@@ -74,11 +74,11 @@ void account_defaults(struct unit_data *pc);
 
 void account_subtract(struct unit_data *pc, time_t from, time_t to);
 
-int  account_is_overdue(const struct unit_data *ch);
+auto account_is_overdue(const struct unit_data *ch) -> int;
 void account_overdue(const struct unit_data *ch);
 
 void account_paypoint(struct unit_data *ch);
 void account_closed(struct unit_data *ch);
-int  account_is_closed(struct unit_data *ch);
+auto account_is_closed(struct unit_data *ch) -> int;
 
 #endif

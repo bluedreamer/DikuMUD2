@@ -32,7 +32,7 @@
 
 void backdoor(struct unit_data *ch, char *arg, const struct command_info *cmd);
 
-int low_find_door(struct unit_data *ch, char *doorstr, int err_msg, int check_hidden);
+auto low_find_door(struct unit_data *ch, char *doorstr, int err_msg, int check_hidden) -> int;
 
 #define MOVE_GOAL   0 /* The NPC is now at it's destination         */
 #define MOVE_CLOSER 1 /* The NPC was moved closer to destination    */
@@ -75,6 +75,6 @@ struct visit_data
 void npc_set_visit(struct unit_data *npc, struct unit_data *dest_room, int what_now(const struct unit_data *, struct visit_data *),
                    void *data, int non_tick_return);
 
-int do_advanced_move(struct unit_data *ch, int direction, int following = FALSE);
+auto do_advanced_move(struct unit_data *ch, int direction, int following = FALSE) -> int;
 
 #endif /* _MUD_MOVEMENT_H */

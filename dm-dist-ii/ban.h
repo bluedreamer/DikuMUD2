@@ -25,7 +25,7 @@
 #ifndef _MUD_BAN_H
 #define _MUD_BAN_H
 
-char site_banned(char *cur_site);
+auto site_banned(char *cur_site) -> char;
 void show_ban_text(char *site, struct descriptor_data *d);
 
 #define NO_BAN        '0'

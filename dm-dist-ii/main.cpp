@@ -428,8 +428,8 @@ void run_the_game()
 
 static void event_process()
 {
-   struct eventq_elem  tmp_event;
-   struct eventq_elem  tmp;
+   struct eventq_elem  tmp_event{};
+   struct eventq_elem  tmp{};
    struct eventq_elem *newtop;
    struct eventq_elem *child;
    int                 child_index;
@@ -475,8 +475,8 @@ static void event_process()
 
 void game_loop()
 {
-   struct timeval now;
-   struct timeval old;
+   struct timeval now{};
+   struct timeval old{};
    long           delay;
 
    void clear_destructed();
@@ -630,7 +630,7 @@ void event_enq(int when, void (*func)(void *, void *), void *arg1, void *arg2)
 {
    struct eventq_elem *end;
    struct eventq_elem *parent;
-   struct eventq_elem  tmp;
+   struct eventq_elem  tmp{};
    int                 parent_index;
 
    if(when <= 0)
@@ -682,9 +682,7 @@ void event_enq(int when, void (*func)(void *, void *), void *arg1, void *arg2)
 /* deallocate event and remove from queue */
 void event_deenq(void (*func)(void *, void *), void *arg1, void *arg2)
 {
-   int i;
-
-   for(i = 0; i < events; i++)
+   for(int i = 0; i < events; i++)
    {
       if(event_heap[i].func == func && event_heap[i].arg1 == arg1 && event_heap[i].arg2 == arg2)
       {
@@ -697,9 +695,7 @@ void event_deenq(void (*func)(void *, void *), void *arg1, void *arg2)
 /* By MS. NULL is considered a match... use with care. */
 void event_deenq_relaxed(void (*func)(void *, void *), void *arg1, void *arg2)
 {
-   int i;
-
-   for(i = 0; i < events; i++)
+   for(int i = 0; i < events; i++)
    {
       if((event_heap[i].func == func) && ((arg1 == nullptr) || (event_heap[i].arg1 == arg1)) &&
          ((arg2 == nullptr) || (event_heap[i].arg2 == arg2)))
@@ -752,7 +748,7 @@ void check_reboot_event(void *p1, void *p2)
 /* utility procedure */
 auto timediff(struct timeval *a, struct timeval *b) -> struct timeval
 {
-   struct timeval rslt;
+   struct timeval rslt{};
    struct timeval tmp;
 
    tmp = *a;

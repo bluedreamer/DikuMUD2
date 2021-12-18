@@ -33,7 +33,7 @@ struct skill_interval
    const char *descr;
 };
 
-const char *skill_text(const struct skill_interval *si, int skill);
+auto skill_text(const struct skill_interval *si, int skill) -> const char *;
 
 /* ---------------- COMBAT MESSAGE SYSTEM -------------------- */
 
@@ -121,42 +121,42 @@ struct wpn_info_type
 
 #define DEMIGOD_LEVEL_XP (40000000)
 
-int        object_two_handed(struct unit_data *obj);
-void       roll_description(struct unit_data *att, const char *text, int roll);
-int        open_ended_roll(int size, int end);
-inline int open100(void)
+auto        object_two_handed(struct unit_data *obj) -> int;
+void        roll_description(struct unit_data *att, const char *text, int roll);
+auto        open_ended_roll(int size, int end) -> int;
+inline auto open100() -> int
 {
    return open_ended_roll(100, 5);
 }
 
-int resistance_skill_check(int att_skill1, int def_skill1, int att_skill2, int def_skill2);
-int resistance_level_check(int att_level, int def_level, int att_skill, int def_skill);
-int skill_duration(int howmuch);
+auto resistance_skill_check(int att_skill1, int def_skill1, int att_skill2, int def_skill2) -> int;
+auto resistance_level_check(int att_level, int def_level, int att_skill, int def_skill) -> int;
+auto skill_duration(int howmuch) -> int;
 
-int weapon_fumble(struct unit_data *weapon, int roll);
-int chart_damage(int roll, struct damage_chart_element_type *element);
-int chart_size_damage(int roll, struct damage_chart_element_type *element, int lbs);
-int weapon_damage(int roll, int weapon_type, int armour_type);
-int natural_damage(int roll, int weapon_type, int armour_type, int lbs);
+auto weapon_fumble(struct unit_data *weapon, int roll) -> int;
+auto chart_damage(int roll, struct damage_chart_element_type *element) -> int;
+auto chart_size_damage(int roll, struct damage_chart_element_type *element, int lbs) -> int;
+auto weapon_damage(int roll, int weapon_type, int armour_type) -> int;
+auto natural_damage(int roll, int weapon_type, int armour_type, int lbs) -> int;
 
-int basic_char_tgh_absorb(struct unit_data *ch);
-int basic_armor_absorb(struct unit_data *armour, int att_type);
-int basic_char_absorb(struct unit_data *ch, struct unit_data *armor, int att_type);
+auto basic_char_tgh_absorb(struct unit_data *ch) -> int;
+auto basic_armor_absorb(struct unit_data *armour, int att_type) -> int;
+auto basic_char_absorb(struct unit_data *ch, struct unit_data *armor, int att_type) -> int;
 
-int basic_char_weapon_dam(struct unit_data *ch, struct unit_data *weapon);
-int basic_char_hand_dam(struct unit_data *ch);
-int char_weapon_dam(struct unit_data *ch, struct unit_data *weapon);
-int char_hand_dam(struct unit_data *ch);
+auto basic_char_weapon_dam(struct unit_data *ch, struct unit_data *weapon) -> int;
+auto basic_char_hand_dam(struct unit_data *ch) -> int;
+auto char_weapon_dam(struct unit_data *ch, struct unit_data *weapon) -> int;
+auto char_hand_dam(struct unit_data *ch) -> int;
 
-int relative_level(int l1, int l2);
-int weapon_defense_skill(struct unit_data *ch, int skill);
-int weapon_attack_skill(struct unit_data *ch, int skill);
-int hit_location(struct unit_data *att, struct unit_data *def);
-int effective_dex(struct unit_data *ch);
+auto relative_level(int l1, int l2) -> int;
+auto weapon_defense_skill(struct unit_data *ch, int skill) -> int;
+auto weapon_attack_skill(struct unit_data *ch, int skill) -> int;
+auto hit_location(struct unit_data *att, struct unit_data *def) -> int;
+auto effective_dex(struct unit_data *ch) -> int;
 
-int  av_value(int abila, int abilb, int skilla, int skillb);
-int  av_howmuch(int av);
-int  av_makes(int av);
+auto av_value(int abila, int abilb, int skilla, int skillb) -> int;
+auto av_howmuch(int av) -> int;
+auto av_makes(int av) -> int;
 void check_fitting(struct unit_data *u);
 
 extern struct race_info_type race_info[PC_RACE_MAX];

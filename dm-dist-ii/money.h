@@ -27,8 +27,8 @@
 
 #include "structs.h"
 
-typedef sbit16 currency_t;
-typedef sbit32 amount_t;
+using currency_t = sbit16;
+using amount_t   = sbit32;
 
 struct money_type
 {
@@ -65,31 +65,31 @@ void money_transfer(struct unit_data *from, struct unit_data *to, amount_t amt, 
  *  inventory.
  *  Use ANY_CURRENCY as currency-type to count up ALL money...
  */
-amount_t unit_holds_total(struct unit_data *u, currency_t currency);
+auto unit_holds_total(struct unit_data *u, currency_t currency) -> amount_t;
 
 /*  Counts up what amount of a given currency char holds in inventory.
  *  Use ANY_CURRENCY as currency-type to count up ALL money...
  */
-amount_t char_holds_amount(struct unit_data *ch, currency_t currency);
+auto char_holds_amount(struct unit_data *ch, currency_t currency) -> amount_t;
 
 /* Can char afford amt in currency?
  *
  * Impossible amounts are converted automagically
  */
-ubit1 char_can_afford(struct unit_data *ch, amount_t amt, currency_t currency);
+auto char_can_afford(struct unit_data *ch, amount_t amt, currency_t currency) -> ubit1;
 
 /* Does unit contain any money of type?
  */
-struct unit_data *unit_has_money_type(struct unit_data *unit, ubit8 type);
+auto unit_has_money_type(struct unit_data *unit, ubit8 type) -> struct unit_data *;
 
 /* Split `money' into two objects.  Return object with amount `amt'
  */
-struct unit_data *split_money(struct unit_data *money, amount_t amt);
+auto split_money(struct unit_data *money, amount_t amt) -> struct unit_data *;
 
 /* Set all the values on money correctly according to amount - return money
  * In general: DON'T use, as the db handles this correctly...
  */
-struct unit_data *set_money(struct unit_data *money, amount_t amt);
+auto set_money(struct unit_data *money, amount_t amt) -> struct unit_data *;
 
 /* Check to see if UNIT_IN(money) contains any money of same type, and
  * if so, merge the piles
@@ -98,31 +98,31 @@ void pile_money(struct unit_data *money);
 
 /*  Round amount down/up to nearest `types' number of coins
  */
-amount_t money_round(ubit1 up, amount_t amt, currency_t currency, int types);
+auto money_round(ubit1 up, amount_t amt, currency_t currency, int types) -> amount_t;
 
 #define money_round_up(a, c, t)   (money_round(TRUE, (a), (c), (t)))
 #define money_round_down(a, c, t) (money_round(FALSE, (a), (c), (t)))
 
 /* Local currency of unit, or DEF_CURRENCY if not defined.
  */
-currency_t local_currency(struct unit_data *unit);
+auto local_currency(struct unit_data *unit) -> currency_t;
 
 /* Print out representation of money-object with the amount amt .
  * (amt == 0 means all)
  */
-char *obj_money_string(struct unit_data *obj, amount_t amt);
+auto obj_money_string(struct unit_data *obj, amount_t amt) -> char *;
 
 /* Print out optimal representation of amt in currency
  *
  * Impossible amounts are converted automagically
  */
-const char *money_string(amount_t amt, currency_t currency, ubit1 verbose);
+auto money_string(amount_t amt, currency_t currency, ubit1 verbose) -> const char *;
 
 /* How many `coins' of given money-object can char carry, resp. unit contain
  *   (Naturally the amount of money is an upper bound)
  */
-amount_t char_can_carry_amount(struct unit_data *ch, struct unit_data *money);
-amount_t unit_can_hold_amount(struct unit_data *unit, struct unit_data *money);
+auto char_can_carry_amount(struct unit_data *ch, struct unit_data *money) -> amount_t;
+auto unit_can_hold_amount(struct unit_data *unit, struct unit_data *money) -> amount_t;
 
 #define money_pluralis_type(type) (money_types[(type)].strings[money_types[(type)].pl_idx])
 #define money_pluralis(unit)      (money_pluralis_type(MONEY_TYPE(unit)))

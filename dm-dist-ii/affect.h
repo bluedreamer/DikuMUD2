@@ -27,10 +27,10 @@
 
 #include "essential.h"
 
-void                       apply_affect(struct unit_data *unit);
-void                       start_affect(struct unit_data *unit);
-void                       stop_affect(struct unit_data *unit);
-struct unit_affected_type *affected_by_spell(const struct unit_data *unit, sbit16 id);
+void apply_affect(struct unit_data *unit);
+void start_affect(struct unit_data *unit);
+void stop_affect(struct unit_data *unit);
+auto affected_by_spell(const struct unit_data *unit, sbit16 id) -> struct unit_affected_type *;
 
 void create_affect(struct unit_data *unit, struct unit_affected_type *orgaf);
 void destroy_affect(struct unit_affected_type *af);

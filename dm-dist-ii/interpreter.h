@@ -28,8 +28,8 @@
 #include "dil.h"
 #include "essential.h"
 
-int  char_is_playing(struct unit_data *u);
-int  descriptor_is_playing(struct descriptor_data *d);
+auto char_is_playing(struct unit_data *u) -> int;
+auto descriptor_is_playing(struct descriptor_data *d) -> int;
 void set_descriptor_fptr(struct descriptor_data *d, void (*fptr)(struct descriptor_data *, char *), ubit1 call);
 void descriptor_interpreter(struct descriptor_data *d, char *arg);
 void interpreter_string_add(struct descriptor_data *d, char *str);
@@ -99,10 +99,10 @@ extern struct command_info cmd_auto_damage;
 extern struct command_info cmd_a_social;
 
 /* To check for commands by string */
-ubit1 is_command(const struct command_info *cmd, const char *str);
+auto is_command(const struct command_info *cmd, const char *str) -> ubit1;
 
 /* Check to see if typed command is abbreviated */
-ubit1 cmd_is_abbrev(struct unit_data *ch, const struct command_info *cmd);
+auto cmd_is_abbrev(struct unit_data *ch, const struct command_info *cmd) -> ubit1;
 
 /* Interpreter routines */
 void wrong_position(struct unit_data *ch);
@@ -112,20 +112,20 @@ void half_chop(char *string, char *arg1, char *arg2);
 
 /* The routine to check for special routines */
 
-int unit_function_scan(struct unit_data *u, struct spec_arg *sarg);
-int function_activate(struct unit_data *u, struct spec_arg *sarg);
+auto unit_function_scan(struct unit_data *u, struct spec_arg *sarg) -> int;
+auto function_activate(struct unit_data *u, struct spec_arg *sarg) -> int;
 #ifdef DMSERVER
-int basic_special(struct unit_data *ch, struct spec_arg *sarg, ubit16 mflt, struct unit_data *extra_target = NULL);
+auto basic_special(struct unit_data *ch, struct spec_arg *sarg, ubit16 mflt, struct unit_data *extra_target = nullptr) -> int;
 #endif
-int  send_preprocess(struct unit_data *ch, const struct command_info *cmd, const char *arg);
+auto send_preprocess(struct unit_data *ch, const struct command_info *cmd, const char *arg) -> int;
 void send_done(struct unit_data *activator, struct unit_data *medium, struct unit_data *target, int i, const struct command_info *cmd,
-               const char *arg, struct unit_data *extra_target = NULL);
-int  send_ack(struct unit_data *activator, struct unit_data *medium, struct unit_data *target, int *i, const struct command_info *cmd,
-              const char *arg, struct unit_data *extra_target);
-int  send_message(struct unit_data *ch, const char *arg);
-int  send_death(struct unit_data *ch);
-int  send_combat(struct unit_data *ch);
-int  send_save_to(struct unit_data *from, struct unit_data *to);
+               const char *arg, struct unit_data *extra_target = nullptr);
+auto send_ack(struct unit_data *activator, struct unit_data *medium, struct unit_data *target, int *i, const struct command_info *cmd,
+              const char *arg, struct unit_data *extra_target) -> int;
+auto send_message(struct unit_data *ch, const char *arg) -> int;
+auto send_death(struct unit_data *ch) -> int;
+auto send_combat(struct unit_data *ch) -> int;
+auto send_save_to(struct unit_data *from, struct unit_data *to) -> int;
 
 #include "spec_assign.h"
 
@@ -181,7 +181,7 @@ void do_set(struct unit_data *, char *, const struct command_info *);
 void do_setskill(struct unit_data *, char *, const struct command_info *);
 void do_give(struct unit_data *, char *, const struct command_info *);
 void do_wstat(struct unit_data *, char *, const struct command_info *);
-void do_setskill(struct unit_data *, char *, const struct command_info *);
+
 void do_time(struct unit_data *, char *, const struct command_info *);
 void do_weather(struct unit_data *, char *, const struct command_info *);
 void do_load(struct unit_data *, char *, const struct command_info *);
