@@ -68,11 +68,11 @@ public:
    struct file_index_type *next;     /* Next File Index                  */
    class unit_data        *room_ptr; /* Pointer to room if is room       */
 
-   long   filepos; /* Byte offset into file            */
+   long     filepos; /* Byte offset into file            */
    uint32_t length;  /* No of bytes to read              */
    uint32_t crc;     /* CRC check for compessed items    */
 
-   int16_t no_in_zone; /* Updated in zone reset for reset  */
+   int16_t  no_in_zone; /* Updated in zone reset for reset  */
    uint16_t no_in_mem;  /* Number of these in the game      */
    uint16_t room_no;    /* The number of the room           */
    uint8_t  type;       /* Room/Obj/Char or other?          */
@@ -85,7 +85,7 @@ struct zone_reset_cmd
    uint8_t cmpl;   /* Complete flag                 */
 
    struct file_index_type *fi[2];
-   int16_t                  num[3];
+   int16_t                 num[3];
 
    struct zone_reset_cmd *next;
    struct zone_reset_cmd *nested;
@@ -165,13 +165,13 @@ public:
 
    time_t      logon; /* Time of last connect              */
    cMultiHook *multi; /* Multi element pointer             */
-   uint16_t      id;    /* The ID for the multi              */
+   uint16_t    id;    /* The ID for the multi              */
    void (*fptr)(struct descriptor_data *, const char *);
-   int    state;    /* Locally used in each fptr         */
-   char   host[50]; /* hostname                          */
+   int      state;    /* Locally used in each fptr         */
+   char     host[50]; /* hostname                          */
    uint16_t nPort;    /* Mplex port                        */
    uint8_t  nLine;    /* Serial Line                       */
-   int    wait;     /* wait for how many loops           */
+   int      wait;     /* wait for how many loops           */
    uint16_t timer;    /* num of hours idleness for mortals */
    uint32_t replyid;  /* Used for 'tell reply'             */
 
@@ -231,7 +231,7 @@ public:
    obj_data();
    ~obj_data();
 
-   int32_t value[5];     /* Values of the item (see list)       */
+   int32_t  value[5];     /* Values of the item (see list)       */
    uint32_t cost;         /* Value when sold (gp.)               */
    uint32_t cost_per_day; /* Cost to keep pr. real day           */
 
@@ -244,18 +244,18 @@ public:
 /* ------------------  PC SPECIFIC STRUCTURES ------------------------ */
 struct pc_time_data
 {
-   time_t creation; /* This represents time when the pc was created.     */
-   time_t connect;  /* This is the last time that the pc connected.      */
-   time_t birth;    /* This represents the characters age                */
+   time_t   creation; /* This represents time when the pc was created.     */
+   time_t   connect;  /* This is the last time that the pc connected.      */
+   time_t   birth;    /* This represents the characters age                */
    uint32_t played;   /* This is the total accumulated time played in secs */
 };
 
 struct pc_account_data
 {
-   float  credit;       /* How many coin units are left on account?       */
+   float    credit;       /* How many coin units are left on account?       */
    uint32_t credit_limit; /* In coin units (i.e. cents / oerer)             */
    uint32_t total_credit; /* Accumulated credit to date (coin units)        */
-   int16_t last4;        /* The last four digits of his credit card, or -1 */
+   int16_t  last4;        /* The last four digits of his credit card, or -1 */
    uint8_t  cracks;       /* Crack-attempts on CC last4                     */
    uint8_t  discount;     /* 0 - 100% discount                              */
    uint32_t flatrate;     /* The expiration date of a flat rate service     */
@@ -284,10 +284,10 @@ public:
 
    uint32_t guild_time; /* When (playing secs) player entered      */
    uint16_t vlvl;       /* Virtual Level for player                */
-   int32_t id;         /* Unique identifier for each player (-1 guest) */
+   int32_t  id;         /* Unique identifier for each player (-1 guest) */
 
-   int32_t skill_points;   /* No of practice points left              */
-   int32_t ability_points; /* No of practice points left              */
+   int32_t  skill_points;   /* No of practice points left              */
+   int32_t  ability_points; /* No of practice points left              */
    uint16_t flags;          /* flags for PC setup (brief, noshout...)  */
 
    uint16_t nr_of_crimes;   /* Number of crimes committed              */
@@ -296,24 +296,24 @@ public:
 
    uint8_t spells[SPL_TREE_MAX];     /* The spells learned                  */
    uint8_t spell_lvl[SPL_TREE_MAX];  /* Practiced within that level         */
-   int8_t spell_cost[SPL_TREE_MAX]; /* Cost modifier                       */
+   int8_t  spell_cost[SPL_TREE_MAX]; /* Cost modifier                       */
 
    uint8_t skills[SKI_TREE_MAX];     /* The skills learned                  */
    uint8_t skill_lvl[SKI_TREE_MAX];  /* The skills practiced within level   */
-   int8_t skill_cost[SKI_TREE_MAX]; /* Cost modifier                       */
+   int8_t  skill_cost[SKI_TREE_MAX]; /* Cost modifier                       */
 
    uint8_t weapons[WPN_TREE_MAX];     /* The weapons learned                 */
    uint8_t weapon_lvl[WPN_TREE_MAX];  /* The spells learned                  */
-   int8_t weapon_cost[WPN_TREE_MAX]; /* Cost modifier                       */
+   int8_t  weapon_cost[WPN_TREE_MAX]; /* Cost modifier                       */
 
    uint8_t ability_lvl[ABIL_TREE_MAX];  /* The spells learned                  */
-   int8_t ability_cost[ABIL_TREE_MAX]; /* Cost modifier                       */
+   int8_t  ability_cost[ABIL_TREE_MAX]; /* Cost modifier                       */
 
-   int8_t conditions[3]; /* Drunk full etc.                     */
+   int8_t  conditions[3]; /* Drunk full etc.                     */
    uint8_t nAccessLevel;  /* Access Level for BBS use            */
 
-   char   pwd[PC_MAX_PASSWORD];  /* Needed when loaded w/o descriptor   */
-   char   filename[PC_MAX_NAME]; /* The name on disk...                 */
+   char     pwd[PC_MAX_PASSWORD];  /* Needed when loaded w/o descriptor   */
+   char     filename[PC_MAX_NAME]; /* The name on disk...                 */
    uint32_t lasthosts[5];          /* last 5 different IPs                */
 };
 
@@ -337,10 +337,10 @@ public:
 struct char_point_data
 {
    uint32_t flags; /* Char flags                               */
-   int32_t exp;   /* The experience of the player             */
+   int32_t  exp;   /* The experience of the player             */
 
-   int16_t mana;      /* How many mana points are left?           */
-   int16_t endurance; /* How many endurance points are left?      */
+   int16_t  mana;      /* How many mana points are left?           */
+   int16_t  endurance; /* How many endurance points are left?      */
    uint16_t race;      /* PC/NPC race, Humanoid, Animal, etc.     */
 
    int16_t offensive; /* The OB of a character.                   */
@@ -395,9 +395,9 @@ public:
 
 struct unit_affected_type
 {
-   int16_t id;
+   int16_t  id;
    uint16_t beat;     /* Beat in 1/4 of secs, 0 = None */
-   int16_t duration; /* How many beats until end      */
+   int16_t  duration; /* How many beats until end      */
 
    int data[3];
 
@@ -412,9 +412,9 @@ struct unit_affected_type
 
 struct unit_fptr
 {
-   uint16_t            index;      /* Index to function pointer array             */
-   uint16_t            heart_beat; /* in 1/4 of a sec                             */
-   uint16_t            flags;      /* When to override next function (boolean)    */
+   uint16_t          index;      /* Index to function pointer array             */
+   uint16_t          heart_beat; /* in 1/4 of a sec                             */
+   uint16_t          flags;      /* When to override next function (boolean)    */
    void             *data;       /* Pointer to data local for this unit         */
    struct unit_fptr *next;       /* Next in linked list                         */
 };
@@ -422,52 +422,49 @@ struct unit_fptr
 class unit_data
 {
 public:
-   unit_data(uint8_t type);
+   explicit unit_data(uint8_t type);
    ~unit_data();
 
-   class cNamelist names; /* Name Keyword list for get, enter, etc.      */
+   cNamelist names; /* Name Keyword list for get, enter, etc.      */
 
    union
    {
-      class char_data *ch;
-      class room_data *room;
-      class obj_data  *obj;
+      char_data *ch;
+      room_data *room;
+      obj_data  *obj;
    } data;
+   /* Function pointer type                      */
+   unit_fptr *func;
 
-   struct unit_fptr /* Function pointer type                      */
-      *func;
+   unit_affected_type *affected;
 
-   struct unit_affected_type *affected;
+   file_index_type *fi; /* Unit file-index                               */
 
-   struct file_index_type *fi; /* Unit file-index                               */
+   file_index_type *key; /* Pointer to fileindex to Unit which is the key */
 
-   struct file_index_type *key; /* Pointer to fileindex to Unit which is the key */
-
-   class unit_data *outside; /* Pointer out of the unit, ei. from an object   */
-                             /* out to the char carrying it                   */
-   class unit_data *inside;  /* Linked list of chars,rooms & objs             */
-
-   class unit_data /* For next unit in 'inside' linked list         */
-      *next;
-
-   class unit_data /* global l-list of objects, chars & rooms       */
-      *gnext,
-      *gprevious;
+   unit_data *outside; /* Pointer out of the unit, ei. from an object   */
+                       /* out to the char carrying it                   */
+   unit_data *inside;  /* Linked list of chars,rooms & objs             */
+                       /* For next unit in 'inside' linked list         */
+   unit_data *next;
+   /* global l-list of objects, chars & rooms       */
+   unit_data *gnext;
+   unit_data *gprevious;
 
    uint32_t manipulate;  /* WEAR_XXX macros                               */
    uint16_t flags;       /* Invisible, can_bury, burried...               */
-   int16_t base_weight; /* The "empty" weight of a room/char/obj         */
-   int16_t weight;      /* Current weight of a room/obj/char             */
-   int16_t capacity;    /* Capacity of obj/char/room, -1 => any          */
+   int16_t  base_weight; /* The "empty" weight of a room/char/obj         */
+   int16_t  weight;      /* Current weight of a room/obj/char             */
+   int16_t  capacity;    /* Capacity of obj/char/room, -1 => any          */
    uint16_t size;        /* (cm) MOBs height, weapons size, ropes length  */
 
-   uint8_t  status;     /* IS_ROOM, IS_OBJ, IS_PC, IS_NPC                */
-   uint8_t  open_flags; /* In general OPEN will mean can "enter"?        */
+   uint8_t status;     /* IS_ROOM, IS_OBJ, IS_PC, IS_NPC                */
+   uint8_t open_flags; /* In general OPEN will mean can "enter"?        */
    int8_t  light;      /* Number of active light sources in unit        */
    int8_t  bright;     /* How much the unit shines                      */
    int8_t  illum;      /* how much bright is by transparency            */
-   uint8_t  chars;      /* How many chars is inside the unit             */
-   uint8_t  minv;       /* Level of wizard invisible                     */
+   uint8_t chars;      /* How many chars is inside the unit             */
+   uint8_t minv;       /* Level of wizard invisible                     */
    int32_t max_hp;     /* The maximum number of hitpoint                */
    int32_t hp;         /* The actual amount of hitpoints left           */
 
@@ -476,16 +473,15 @@ public:
    /* MS2020 Cleaned up the swap stuff */
 
    /* Room title, Char title, Obj "the barrel", NPC "the Beastly Fido" */
-   class cStringInstance title;
+   cStringInstance title;
 
    /* The outside description of a unit           */
-   class cStringInstance out_descr;
+   cStringInstance out_descr;
 
    /* The inside description of a unit            */
-   class cStringInstance in_descr;
-
-   class extra_descr_data /* All the look 'at' stuff                     */
-      *extra_descr;
+   cStringInstance in_descr;
+   /* All the look 'at' stuff                     */
+   extra_descr_data *extra_descr;
 };
 
 /* ----------------- Destructed decalrations ----------------------- */

@@ -313,8 +313,8 @@ These have not yet been made/or have been deleted
 
 struct pain_type
 {
-   uint16_t                top; /* No of commands          */
-   uint16_t                idx; /* Current command pointer */
+   uint16_t              top; /* No of commands          */
+   uint16_t              idx; /* Current command pointer */
    struct pain_cmd_type *cmds;
 
    void *vars[1]; /* Global Working Variable! */
@@ -326,7 +326,7 @@ struct pain_cmd_type
 
    int32_t gotoline;
    int32_t data[2];
-   void  *ptr[2];
+   void   *ptr[2];
 };
 
 /* Intended to be used for error-reports */

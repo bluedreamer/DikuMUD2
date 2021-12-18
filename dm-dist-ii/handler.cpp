@@ -559,8 +559,8 @@ void intern_unit_up(struct unit_data *unit, bool pile)
    struct unit_data *in;
    struct unit_data *toin;
    struct unit_data *extin;
-   int8_t             bright;
-   int8_t             selfb;
+   int8_t            bright;
+   int8_t            selfb;
 
    assert(UNIT_IN(unit));
 
@@ -648,8 +648,8 @@ void intern_unit_down(struct unit_data *unit, struct unit_data *to, bool pile)
    struct unit_data *u;
    struct unit_data *in;
    struct unit_data *extin;
-   int8_t             bright;
-   int8_t             selfb;
+   int8_t            bright;
+   int8_t            selfb;
 
    assert(UNIT_IN(unit) == UNIT_IN(to));
    assert(unit != to);

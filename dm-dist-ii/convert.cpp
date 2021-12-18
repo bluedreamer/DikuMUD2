@@ -25,10 +25,10 @@
 /* 09/09/93 seifert : Changed to accomodate blkfile V2                     */
 /*          seifert : Changed to accomodate single player files.           */
 
+#include <cctype>
 #include <climits>
 #include <cmath>
 #include <cstdio>
-#include <cctype>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
@@ -56,9 +56,9 @@ auto delete_player(const char *pName) -> int;
 auto delete_inventory(const char *pName) -> int;
 void save_player_file(struct unit_data *pc);
 
-char **player_name_list = nullptr;
-int    max_id           = -1;
-int    top_id           = -1;
+char   **player_name_list = nullptr;
+int      max_id           = -1;
+int      top_id           = -1;
 uint8_t *ids              = nullptr; /* For checking duplicate players... */
 
 #define OUTPUT_DIR "lib/"

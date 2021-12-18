@@ -1091,7 +1091,7 @@ void split_fi_ref(const char *str, char *zone, char *name)
 auto catnames(char *s, const char **names) -> char *
 {
    const char **nam;
-   bool        ok = FALSE;
+   bool         ok = FALSE;
 
    if(names != nullptr)
    {

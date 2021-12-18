@@ -103,10 +103,10 @@ int is_in(int a, int from, int to)
 int main(int argc, char *argv[])
 {
    int       n, i;
-   uint8_t     Buf[12];
+   uint8_t   Buf[12];
    struct tm tm_on, tm_off;
    int       error = FALSE;
-   uint32_t    count = 1;
+   uint32_t  count = 1;
 
    int day   = -1;
    int week  = -1;

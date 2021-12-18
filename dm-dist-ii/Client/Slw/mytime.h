@@ -27,7 +27,7 @@
 
 class cMyTime
 {
-  public:
+public:
    void gettime(void);
 
    int operator==(const cMyTime &cT1);
@@ -39,7 +39,7 @@ class cMyTime
    void operator-=(const cMyTime &cT1);
 
    uint32_t secs;  // Number of seconds passed.
-   int32_t hunds; // Number of 1/100 seconds passed.
+   int32_t  hunds; // Number of 1/100 seconds passed.
 };
 
 #endif

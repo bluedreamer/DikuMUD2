@@ -28,8 +28,8 @@
 /* #define MAGIC_POWER(ch)  \
    MAX(CHAR_MAG(ch), CHAR_DIV(ch)) */
 
-auto  dil_effect(const char *pStr, struct spell_args *sa) -> int;
-auto  object_power(struct unit_data *unit) -> int;
+auto dil_effect(const char *pStr, struct spell_args *sa) -> int;
+auto object_power(struct unit_data *unit) -> int;
 bool use_mana(struct unit_data *medium, int mana);
 bool cast_magic_now(struct unit_data *ch, int mana);
 

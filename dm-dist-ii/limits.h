@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : limits.h                                  Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -21,9 +22,6 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
-
-#ifndef _MUD_LIMITS_H
-#define _MUD_LIMITS_H
 
 #include "structs.h"
 
@@ -54,5 +52,3 @@ void advance_level(struct unit_data *ch);
 void gain_exp(struct unit_data *ch, int gain);
 void gain_exp_regardless(struct unit_data *ch, int gain);
 void gain_condition(struct unit_data *ch, int condition, int value);
-
-#endif /* _MUD_LIMITS_H */

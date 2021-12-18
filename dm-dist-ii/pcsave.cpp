@@ -53,7 +53,7 @@
 #include "utility.h"
 #include "utils.h"
 
-int32_t             player_id       = 1;
+int32_t            player_id       = 1;
 static const char *tmp_player_name = PLAY_DIR "player.tmp";
 
 extern char libdir[];
@@ -151,7 +151,7 @@ auto find_player_id(char *pName) -> int
 auto read_player_id() -> int32_t
 {
    int32_t tmp_sl;
-   FILE  *pFile;
+   FILE   *pFile;
 
    /* By using r+ we are sure that we don't erase it accidentially
       if the host crashes just after opening the file. */
@@ -393,7 +393,7 @@ void save_player(struct unit_data *pc)
 {
    if(CHAR_DESCRIPTOR(pc))
    {
-      time_t t0;
+      time_t   t0;
       uint32_t used;
 
       t0 = time(nullptr);
@@ -534,9 +534,9 @@ auto load_player(const char *pName) -> struct unit_data *
 /* Call at boot time to index file */
 void player_file_index()
 {
-   FILE  *pFile;
+   FILE   *pFile;
    int32_t tmp_sl;
-   int    n;
+   int     n;
 
    /* Get rid of any temporary player save file */
    while(file_exists(tmp_player_name) != 0u)

@@ -403,7 +403,7 @@ extern struct log_buffer log_buf[];
 
 auto log_object(struct spec_arg *sarg) -> int
 {
-   uint8_t            *ip;
+   uint8_t          *ip;
    enum log_level    lev = LOG_OFF;
    char              c;
    struct unit_data *ch = UNIT_IN(sarg->owner);

@@ -60,7 +60,7 @@ public:
 
    char           str[MAX_INPUT_LENGTH + 50];
    enum log_level level;
-   uint8_t          wizinv_level;
+   uint8_t        wizinv_level;
 };
 
 /* For the printing of obj_type information, as used by the identify spell and
@@ -69,7 +69,7 @@ public:
 struct obj_type_t
 {
    const char *fmt;
-   uint8_t       v[5];
+   uint8_t     v[5];
 };
 
 auto stat_obj_data(struct unit_data *u, struct obj_type_t *obj_data) -> char *;

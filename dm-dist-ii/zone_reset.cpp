@@ -111,7 +111,7 @@ void zone_loaded_a_unit(struct unit_data *u)
 auto zone_limit(struct unit_data *u, struct file_index_type *fi, struct zone_reset_cmd *cmd) -> bool
 {
    struct unit_data *tmp;
-   int16_t            i;
+   int16_t           i;
 
    if(fi->type == UNIT_ST_NPC)
    {

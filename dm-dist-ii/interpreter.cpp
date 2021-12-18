@@ -436,8 +436,8 @@ public:
       flags = 0;
       fi    = nullptr;
    }
-   uint16_t                  idx;
-   uint16_t                  flags;
+   uint16_t                idx;
+   uint16_t                flags;
    struct file_index_type *fi;
 } func_history_data[MAX_DEBUG_HISTORY];
 

@@ -55,10 +55,10 @@ struct skill_teach_type
 {
    uint8_t max_skill;          /* Maximum skill that can be taught            */
    uint8_t min_level;          /* What level do you have to be to learn this? */
-   int  *costs;              /* The point cost (0 ends)                     */
-   int   node;               /* A node in a tree               */
-   int   min_cost_per_point; /* The gold point cost per point  */
-   int   max_cost_per_point; /* The gold point cost per point  */
+   int    *costs;              /* The point cost (0 ends)                     */
+   int     node;               /* A node in a tree               */
+   int     min_cost_per_point; /* The gold point cost per point  */
+   int     max_cost_per_point; /* The gold point cost per point  */
 };
 
 struct teacher_msg
@@ -74,8 +74,8 @@ struct teacher_msg
 
 struct teach_packet
 {
-   uint8_t                    type;       /* Ability, spell, skill, weapon */
-   uint8_t                    level_type; /* 0 for guild-level, 1 for ordinary level */
+   uint8_t                  type;       /* Ability, spell, skill, weapon */
+   uint8_t                  level_type; /* 0 for guild-level, 1 for ordinary level */
    struct teacher_msg       msgs;
    struct skill_teach_type *teaches; /* Array of skills */
    struct tree_type        *tree;
@@ -540,14 +540,14 @@ auto practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type
 
 auto teach_basis(struct spec_arg *sarg, struct teach_packet *pckt) -> int
 {
-   int     index;
-   int     stop;
-   uint8_t  *pc_values       = nullptr;
-   uint8_t  *pc_lvl          = nullptr;
+   int      index;
+   int      stop;
+   uint8_t *pc_values       = nullptr;
+   uint8_t *pc_lvl          = nullptr;
    int8_t  *pc_cost         = nullptr;
    int32_t *practice_points = nullptr;
-   char    buf[MAX_INPUT_LENGTH];
-   char   *arg;
+   char     buf[MAX_INPUT_LENGTH];
+   char    *arg;
 
    if(sarg->cmd->no != CMD_INFO && sarg->cmd->no != CMD_PRACTICE)
    {

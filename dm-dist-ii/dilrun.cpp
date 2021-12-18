@@ -782,9 +782,9 @@ static auto check_interrupt(struct dilprg *prg) -> int
       if(IS_SET(prg->sp->intr[i].flags, prg->sarg->mflags | SFB_ACTIVATE))
       {
          class dilval v1;
-         uint32_t       adr;
+         uint32_t     adr;
          int          oldwaitcmd = prg->waitcmd;
-         uint8_t       *oldpc      = prg->sp->pc;
+         uint8_t     *oldpc      = prg->sp->pc;
 
          prg->sp->pc = prg->sp->intr[i].lab;
 

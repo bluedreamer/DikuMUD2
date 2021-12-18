@@ -72,8 +72,8 @@ struct char_crime_data
    char name_criminal[PC_MAX_NAME]; /* Name of offender            */
 
    char                    victim[31]; /* name of victim              */
-   uint8_t                   crime_type; /* what crime? (kill, theft..) */
-   uint8_t                   reported;   /* Has crime been reported?    */
+   uint8_t                 crime_type; /* what crime? (kill, theft..) */
+   uint8_t                 reported;   /* Has crime been reported?    */
    struct char_crime_data *next;       /* link->                      */
 };
 
@@ -701,9 +701,9 @@ void update_crimes()
 
 struct npc_accuse_data
 {
-   char *criminal_name;
+   char   *criminal_name;
    uint8_t crime_type;
-   int   was_wimpy;
+   int     was_wimpy;
 };
 
 /* For use with the walk.c system. When at captain accuse the criminal */

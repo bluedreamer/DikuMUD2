@@ -36,9 +36,9 @@ struct unit_vector_data
 extern struct unit_vector_data unit_vector;
 
 auto same_surroundings(struct unit_data *u1, struct unit_data *u2) -> bool;
-void  scan4_unit_room(struct unit_data *room, uint8_t type);
-void  scan4_unit(struct unit_data *ch, uint8_t type);
-auto  scan4_ref(struct unit_data *ch, struct unit_data *fu) -> struct unit_data *;
+void scan4_unit_room(struct unit_data *room, uint8_t type);
+void scan4_unit(struct unit_data *ch, uint8_t type);
+auto scan4_ref(struct unit_data *ch, struct unit_data *fu) -> struct unit_data *;
 
 auto random_direction(struct unit_data *ch) -> int;
 auto find_unit(const struct unit_data *ch, char **arg, const struct unit_data *list, uint32_t bitvector) -> struct unit_data *;

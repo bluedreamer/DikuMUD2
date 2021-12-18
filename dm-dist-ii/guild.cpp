@@ -72,7 +72,7 @@ auto find_quest(char *word, struct unit_data *unit) -> struct extra_descr_data *
 
 auto char_guild_level(struct unit_data *ch) -> int
 {
-   uint32_t                   i;
+   uint32_t                 i;
    struct extra_descr_data *exd;
 
    assert(IS_CHAR(ch));
@@ -105,7 +105,7 @@ void advance_guild_level(struct unit_data *ch)
 {
    struct extra_descr_data *exd;
 
-   int    lvl = char_guild_level(ch);
+   int      lvl = char_guild_level(ch);
    uint32_t i;
 
    if(!IS_PC(ch))

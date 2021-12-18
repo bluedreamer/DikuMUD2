@@ -587,7 +587,7 @@ void check_namelist(struct unit_data *unit, class cNamelist *nl)
    if(nl)
    {
       uint32_t i;
-      int    len;
+      int      len;
 
       for(i = 0; i < nl->Length(); i++)
       {

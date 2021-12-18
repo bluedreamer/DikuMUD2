@@ -125,7 +125,7 @@ void dilfi_fon(struct dilprg *p, class dilval *v)
 {
    class dilval      v1;
    struct unit_data *u;
-   uint32_t            adr;
+   uint32_t          adr;
    int               i;
 
    if(v != nullptr)
@@ -612,7 +612,7 @@ void dilfi_rproc(struct dilprg *p, class dilval *v)
    int                 i;
    struct diltemplate *ctmpl;
    class dilval        av[255];
-   uint16_t              argcnt;
+   uint16_t            argcnt;
 
    if(v != nullptr)
    {
@@ -661,7 +661,7 @@ void dilfi_rsproc(struct dilprg *p, class dilval *v)
    struct diltemplate *ntmpl;
    class dilval        av[255];
    class dilval        v1;
-   uint8_t               argcnt;
+   uint8_t             argcnt;
 
    if(v != nullptr)
    {
@@ -755,7 +755,7 @@ void dilfi_rfunc(struct dilprg *p, class dilval *v)
    int                 i;
    struct diltemplate *ctmpl;
    class dilval        av[255];
-   uint16_t              argcnt;
+   uint16_t            argcnt;
 
    if(v != nullptr)
    {
@@ -771,7 +771,7 @@ void dilfi_rfunc(struct dilprg *p, class dilval *v)
     */
 
    ctmpl = p->sp->tmpl;
-   p->sp->pc++;                         /* skip <var> */
+   p->sp->pc++;                           /* skip <var> */
    vari   = bread_uint16_t(&(p->sp->pc)); /* <var#> */
    xrefi  = bread_uint16_t(&(p->sp->pc)); /* <funcnumber> */
    argcnt = bread_uint16_t(&(p->sp->pc)); /* <nargs>, ignored */
@@ -809,7 +809,7 @@ void dilfi_rsfunc(struct dilprg *p, class dilval *v)
    struct diltemplate *ntmpl;
    class dilval        av[255];
    class dilval        v1;
-   uint8_t               argcnt;
+   uint8_t             argcnt;
 
    if(v != nullptr)
    {
@@ -825,9 +825,9 @@ void dilfi_rsfunc(struct dilprg *p, class dilval *v)
     */
 
    ctmpl = p->sp->tmpl;
-   p->sp->pc++;                         /* skip <var> */
+   p->sp->pc++;                           /* skip <var> */
    vari = bread_uint16_t(&(p->sp->pc));   /* <var#> */
-   eval_dil_exp(p, &v1);                /* funcname */
+   eval_dil_exp(p, &v1);                  /* funcname */
    argcnt = bread_uint16_t(&(p->sp->pc)); /* <nargs>, ignored */
 
    /* evaluate arguments */
@@ -1269,7 +1269,7 @@ void dilfi_folo(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
    class dilval v2;
-   int32_t       value = 0;
+   int32_t      value = 0;
 
    if(v != nullptr)
    {
@@ -1306,7 +1306,7 @@ void dilfi_lcri(struct dilprg *p, class dilval *v)
    class dilval v1;
    class dilval v2;
    class dilval v3;
-   int32_t       value = 0;
+   int32_t      value = 0;
 
    if(v != nullptr)
    {
@@ -1338,7 +1338,7 @@ void dilfi_exp(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
    class dilval v2;
-   int32_t       value = 0;
+   int32_t      value = 0;
 
    if(v != nullptr)
    {
@@ -1378,7 +1378,7 @@ void dilfi_exp(struct dilprg *p, class dilval *v)
 void dilfi_if(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
-   uint32_t       coreptr;
+   uint32_t     coreptr;
 
    if(v != nullptr)
    {
@@ -1723,8 +1723,8 @@ void dilfi_dst(struct dilprg *p, class dilval *v)
 void dilfi_walk(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
-   uint16_t       i;
-   uint8_t       *oldpc;
+   uint16_t     i;
+   uint8_t     *oldpc;
 
    if(v != nullptr)
    {
@@ -1853,7 +1853,7 @@ void dilfi_wit(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
    class dilval v2;
-   uint8_t       *oldpc;
+   uint8_t     *oldpc;
 
    if(v != nullptr)
    {
@@ -1976,9 +1976,9 @@ void dilfi_goto(struct dilprg *p, class dilval *v)
 void dilfi_on(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
-   uint32_t       adr;
-   uint16_t       maxlab;
-   uint8_t       *brkptr;
+   uint32_t     adr;
+   uint16_t     maxlab;
+   uint8_t     *brkptr;
 
    if(v != nullptr)
    {
@@ -2395,7 +2395,7 @@ void dilfi_log(struct dilprg *p, class dilval *v)
 void dilfi_sec(struct dilprg *p, class dilval *v)
 {
    class dilval v1;  /* unit */
-   uint32_t       adr; /* address */
+   uint32_t     adr; /* address */
 
    if(v != nullptr)
    {

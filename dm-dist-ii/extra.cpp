@@ -39,7 +39,7 @@ extra_descr_data::~extra_descr_data()
 void extra_descr_data::AppendBuffer(CByteBuffer *pBuf)
 {
    uint8_t  u;
-   int    i = 0;
+   int      i = 0;
    uint32_t nOrgPos;
    uint32_t nPos;
 

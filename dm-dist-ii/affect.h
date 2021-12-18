@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : affect.h                                  Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -22,30 +23,30 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#pragma once
 #include "essential.h"
+#include "structs.h"
 
-void apply_affect(struct unit_data *unit);
-void start_affect(struct unit_data *unit);
-void stop_affect(struct unit_data *unit);
-auto affected_by_spell(const struct unit_data *unit, int16_t id) -> struct unit_affected_type *;
-void unlink_affect(struct unit_data *u, struct unit_affected_type *af);
+void apply_affect(unit_data *unit);
+void start_affect(unit_data *unit);
+void stop_affect(unit_data *unit);
+auto affected_by_spell(const unit_data *unit, int16_t id) -> unit_affected_type *;
+void unlink_affect(unit_data *u, unit_affected_type *af);
 
-void create_affect(struct unit_data *unit, struct unit_affected_type *orgaf);
-void destroy_affect(struct unit_affected_type *af);
-void affect_clear_unit(struct unit_data *unit);
+void create_affect(unit_data *unit, unit_affected_type *orgaf);
+void destroy_affect(unit_affected_type *af);
+void affect_clear_unit(unit_data *unit);
 
 /* These functions may not send messages - nor destroy units. Only */
 /* affect a units values                                           */
 struct apply_function_type
 {
    const char *descr;
-   bool (*func)(struct unit_affected_type *af, struct unit_data *unit, bool set);
+   bool (*func)(unit_affected_type *af, unit_data *unit, bool set);
 };
 
 /* These functions may send messages and destroy any unit. */
 struct tick_function_type
 {
    const char *descr;
-   void (*func)(struct unit_affected_type *af, struct unit_data *unit);
+   void (*func)(unit_affected_type *af, unit_data *unit);
 };

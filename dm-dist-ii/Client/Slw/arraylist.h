@@ -23,11 +23,11 @@
 #ifndef ARRAYLIST_H
 #define ARRAYLIST_H
 
-#include <string.h>
 #include "essential.h"
+#include <string.h>
 
-template <class Type> class ArrayList;
-
+template<class Type>
+class ArrayList;
 
 // This is a really wierd class. It is a FIFO in the sense that items
 // are appended. However, items can be removed from anywhere within the
@@ -37,39 +37,34 @@ template <class Type> class ArrayList;
 // was designed for use with my timer system.
 //
 
-template <class Type>
+template<class Type>
 class ArrayList
 {
-  public:
+public:
    ArrayList(int i);
    virtual ~ArrayList();
 
    inline int is_empty(void);
    inline int is_full(void);
-   inline int size(void);      // Total size of the array.
-   inline int used(void);      // Currently used in the array.
+   inline int size(void); // Total size of the array.
+   inline int used(void); // Currently used in the array.
 
-   Type *insert(void);         // Make room for element and returns ref for it.
-   void remove(Type *);        // Remove oldest element.
+   Type *insert(void);   // Make room for element and returns ref for it.
+   void  remove(Type *); // Remove oldest element.
 
-   Type *head(void);           // Makes this class obscure... what the hex.
-   
+   Type *head(void); // Makes this class obscure... what the hex.
 
-   virtual Type *find(int i);  // Function to find an object. NULL if not found
+   virtual Type *find(int i); // Function to find an object. NULL if not found
 
-  protected:
-   int nSize;   // Total size of the array
-   int nUsed;   // How many elements currently in the array
+protected:
+   int nSize; // Total size of the array
+   int nUsed; // How many elements currently in the array
 
    Type *pArray;
-   int *pIdx;
-
+   int  *pIdx;
 };
 
-
-
-
-template <class Type>
+template<class Type>
 ArrayList<Type>::ArrayList(int nSz)
 {
    nSize = nSz;
@@ -81,47 +76,43 @@ ArrayList<Type>::ArrayList(int nSz)
    pIdx = new int[nSize];
    assert(pIdx != NULL);
 
-   for (int i=0; i < nSize; i++)
-     pIdx[i] = i;
+   for(int i = 0; i < nSize; i++)
+      pIdx[i] = i;
 }
 
-
-template <class Type>
+template<class Type>
 ArrayList<Type>::~ArrayList()
 {
    delete pArray;
    delete pIdx;
 }
 
-
-template <class Type>
+template<class Type>
 int ArrayList<Type>::is_empty(void)
 {
    return nUsed == 0;
 }
 
-template <class Type>
+template<class Type>
 int ArrayList<Type>::is_full(void)
 {
    return nUsed == nSize;
 }
 
-template <class Type>
+template<class Type>
 int ArrayList<Type>::size(void)
 {
    return nSize;
 }
 
-
-template <class Type>
+template<class Type>
 int ArrayList<Type>::used(void)
 {
    return nUsed;
 }
 
-
-template <class Type>
-Type * ArrayList<Type>::insert(void)
+template<class Type>
+Type *ArrayList<Type>::insert(void)
 {
    assert(!is_full());
 
@@ -130,8 +121,7 @@ Type * ArrayList<Type>::insert(void)
    return &pArray[pIdx[nUsed - 1]];
 }
 
-
-template <class Type>
+template<class Type>
 Type *ArrayList<Type>::head(void)
 {
    assert(!is_empty());
@@ -139,21 +129,19 @@ Type *ArrayList<Type>::head(void)
    return &pArray[pIdx[0]];
 }
 
-
-template <class Type>
+template<class Type>
 Type *ArrayList<Type>::find(int i)
 {
    assert(!is_empty());
    assert(i >= 0 && i < nSize);
 
-   if (i+1 > nUsed)
-     return NULL;
+   if(i + 1 > nUsed)
+      return NULL;
    else
-     return &pArray[pIdx[i]];
+      return &pArray[pIdx[i]];
 }
 
-
-template <class Type>
+template<class Type>
 void ArrayList<Type>::remove(Type *pRef)
 {
    int i, tmp;
@@ -161,19 +149,18 @@ void ArrayList<Type>::remove(Type *pRef)
    assert(!is_empty());
    assert(pRef);
 
-   for (i=0; i < nUsed; i++)
-     if (&pArray[pIdx[i]] == pRef)
-       break;
+   for(i = 0; i < nUsed; i++)
+      if(&pArray[pIdx[i]] == pRef)
+         break;
 
    assert(i < nUsed);
 
-   if (i < nSize)
+   if(i < nSize)
    {
       tmp = pIdx[i];
-      memmove(&pIdx[i], &pIdx[i+1], sizeof(int) * (nSize - i - 1));
-      pIdx[nSize-1] = tmp;
+      memmove(&pIdx[i], &pIdx[i + 1], sizeof(int) * (nSize - i - 1));
+      pIdx[nSize - 1] = tmp;
    }
-   
 
    nUsed--;
 }

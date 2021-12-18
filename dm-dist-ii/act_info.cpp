@@ -168,7 +168,7 @@ void do_purse(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
    struct unit_data *thing;
    struct unit_data *purse[MAX_MONEY + 1];
-   bool             found = FALSE;
+   bool              found = FALSE;
    int               i;
 
    for(i = 0; i <= MAX_MONEY; ++i)

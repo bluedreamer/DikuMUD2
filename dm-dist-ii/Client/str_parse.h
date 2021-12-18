@@ -25,26 +25,26 @@
 #ifndef _MUD_STR_PARSE_H
 #define _MUD_STR_PARSE_H
 
-char *parse_match(char *pData, char *pMatch);
-char *parse_name(char **pData);
-int *parse_numlist(char **pData, int *count);
-int parse_num(char **pData, int *pNum);
+char  *parse_match(char *pData, char *pMatch);
+char  *parse_name(char **pData);
+int   *parse_numlist(char **pData, int *count);
+int    parse_num(char **pData, int *pNum);
 char **parse_namelist(char **pData);
-int parse_match_num(char **pData, char *pMatch, int *pResult);
-int *parse_match_numlist(char **pData, char *pMatch, int *count);
-char *parse_match_name(char **pData, char *pMatch);
+int    parse_match_num(char **pData, char *pMatch, int *pResult);
+int   *parse_match_numlist(char **pData, char *pMatch, int *count);
+char  *parse_match_name(char **pData, char *pMatch);
 char **parse_match_namelist(char **pData, char *pMatch);
 
 // From textutil
-bool str_is_empty(const char *arg);
-int isfilename(char *fname);
-char *str_dup( const char *source);
+bool   str_is_empty(const char *arg);
+int    isfilename(char *fname);
+char  *str_dup(const char *source);
 char **add_name(const char *name, char **namelist);
 char **del_name(const char *name, char **namelist);
-void free_namelist(char **list);
+void   free_namelist(char **list);
 char **create_namelist(void);
-char *str_cc(const char *s1, const char *s2);
-char *skip_blanks(const char *string);
-char *str_cstr( const char *cs,  const char *ct);
+char  *str_cc(const char *s1, const char *s2);
+char  *skip_blanks(const char *string);
+char  *str_cstr(const char *cs, const char *ct);
 
 #endif

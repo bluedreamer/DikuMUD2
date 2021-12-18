@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : base.h                                    Part of Valhalla MUD *
  * Version: 2.03                                                           *
@@ -24,8 +25,7 @@
  * written consent of Valhalla.                                            *
  * *********************************************************************** */
 
-#ifndef _MUD_BASE_H
-#define _MUD_BASE_H
+
 
 #define BASE_GOLEM(MLVL, GENDER)                                                                                                           \
    race RACE_GOLEM sex GENDER level MLVL height 250 weight 700 alignment 0 NATURAL_DEF(WPN_FIST, ARM_PLATE)                                \
@@ -468,5 +468,3 @@
    BASE_ORC(MLVL, GENDER)                                                                                                                  \
    MSET_SPELL(0, 0, 0, 5, 0, 5, 1, 1, 1, 1, 1) /* 15% resistances */                                                                       \
    MSET_ABILITY(25, 20, 15, 20, 15, 5, 0, 0)
-
-#endif

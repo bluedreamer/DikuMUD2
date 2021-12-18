@@ -64,5 +64,5 @@ public:
 
 private:
    class cStringInstance **namelist;
-   uint32_t                  length;
+   uint32_t                length;
 };

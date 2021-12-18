@@ -24,9 +24,9 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include <assert.h>
 #include "essential.h"
 #include "slide.h"
+#include <assert.h>
 
 extern int bDirectConnect;
 

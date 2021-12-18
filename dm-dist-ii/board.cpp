@@ -554,10 +554,10 @@ auto remove_msg(struct unit_data *ch, struct board_info *tb, char *arg) -> int
 
 void save_board_msg(struct board_info *tb, int index, char *text)
 {
-   uint8_t     *buffer;
-   uint8_t     *start;
+   uint8_t   *buffer;
+   uint8_t   *start;
    blk_length len;
-   uint8_t      buf[4 * MAX_STRING_LENGTH];
+   uint8_t    buf[4 * MAX_STRING_LENGTH];
 
    if(tb->handles[index] != BLK_NULL)
    {
@@ -589,7 +589,7 @@ void load_board_msg(struct board_info *tb, int index, bool text)
 {
    uint8_t *buffer;
    uint8_t *keep;
-   char   buf[MAX_STRING_LENGTH];
+   char     buf[MAX_STRING_LENGTH];
 
    keep = buffer = (uint8_t *)blk_read(tb->bf, tb->handles[index], nullptr);
 

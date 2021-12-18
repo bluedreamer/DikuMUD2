@@ -52,8 +52,8 @@ public:
    auto PeekNext() -> cQueueElem * { return pNext; }
 
 private:
-   uint8_t      *pData;
-   uint32_t      nSize; // Optional number of bytes
+   uint8_t    *pData;
+   uint32_t    nSize; // Optional number of bytes
    cQueueElem *pNext;
 };
 

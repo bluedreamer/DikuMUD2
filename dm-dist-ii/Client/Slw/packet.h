@@ -31,29 +31,28 @@
 
 class cPcktErrors
 {
-  public:
+public:
    void Reset(void)
    {
-      nTxPackets = 0;
-      nRxPackets = 0;
+      nTxPackets   = 0;
+      nRxPackets   = 0;
       nLengthError = 0;
-      nCrcError = 0;
-      nEscError = 0;
+      nCrcError    = 0;
+      nEscError    = 0;
    }
 
    cPcktErrors() { Reset(); }
 
    void Status(char *Buf)
    {
-      sprintf(Buf, "\nPacket Layer:\n"
-	      "        TX: %5ld   RX:    %5ld\n"
+      sprintf(Buf,
+              "\nPacket Layer:\n"
+              "        TX: %5ld   RX:    %5ld\n"
               "Errors: CRC %5ld   Length %5ld   Garbled %5ld\n",
 
-              (signed long) nTxPackets, (signed long) nRxPackets,
-              (signed long) nCrcError,  (signed long) nLengthError,
-	      (signed long) nEscError);
+              (signed long)nTxPackets, (signed long)nRxPackets, (signed long)nCrcError, (signed long)nLengthError, (signed long)nEscError);
    }
- 
+
    uint32_t nTxPackets;
    uint32_t nRxPackets;
 
@@ -62,10 +61,9 @@ class cPcktErrors
    uint32_t nEscError;
 };
 
-
 class cPacketLayer : public cSerial
 {
-  public:
+public:
    cPacketLayer(void);
    ~cPacketLayer(void);
 
@@ -86,7 +84,6 @@ class cPacketLayer : public cSerial
    //
    virtual void EventFrameArrival(uint8_t *pTmpData, uint32_t nTmpLen) = 0;
 
-
    // Called from the physical layer in one of two ways.
    //   if bPcktRXBlocked is TRUE
    //      Called with a garbage character to try to make the layer
@@ -101,34 +98,33 @@ class cPacketLayer : public cSerial
 
    cPcktErrors PcktError;
 
-  private:
-   inline uint16_t UpdateCRC( uint8_t c,  uint16_t crc);
-   inline void TransmitStuffCharacter( uint8_t c);
-   void   FrameError(void);
-   inline int FrameCheck(void);
-   void   DeliverPacket(void);
+private:
+   inline uint16_t UpdateCRC(uint8_t c, uint16_t crc);
+   inline void     TransmitStuffCharacter(uint8_t c);
+   void            FrameError(void);
+   inline int      FrameCheck(void);
+   void            DeliverPacket(void);
 
    // It's nasty that these are "global", but I dont want one big messy
    // function, neither do I want to pass millions of arguments and get
    // huge overheads in processing.
    //
 
-   uint8_t    bActive;
-   uint8_t    bHadError;
-   uint8_t    bEscaped;
+   uint8_t bActive;
+   uint8_t bHadError;
+   uint8_t bEscaped;
 
-   uint32_t   nLength;
-   uint16_t   nCrc;
-   uint8_t    *pData;
+   uint32_t nLength;
+   uint16_t nCrc;
+   uint8_t *pData;
 };
-
 
 // The maximum amount of data in a packet (excl. header).
 //
-#define PCKT_DATA_LEN     (256)
+#define PCKT_DATA_LEN (256)
 
 // The maximum amount of header data in a packet.
 //
-#define PCKT_HEADER_LEN   (3)
+#define PCKT_HEADER_LEN (3)
 
 #endif

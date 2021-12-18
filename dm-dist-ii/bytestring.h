@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : bytestring.h                              Part of Valhalla MUD *
  * Version: 2.00                                                           *
@@ -22,22 +23,20 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_BYTESTRING_H
-#define _MUD_BYTESTRING_H
+
 
 #include "essential.h"
 
 class CByteBuffer
 {
 public:
-   CByteBuffer(uint32_t nSize = 1024);
+   explicit CByteBuffer(uint32_t nSize = 1024);
    virtual ~CByteBuffer();
 
    // Informative functions
-
-   inline auto GetLength() -> uint32_t const { return m_nLength; }
-   inline auto GetAllocated() -> uint32_t const { return m_nAllocated; }
-   inline auto GetReadPosition() -> uint32_t const { return m_nReadPos; }
+   [[nodiscard]] inline auto GetLength() const -> uint32_t  { return m_nLength; }
+   [[nodiscard]] inline auto GetAllocated() const -> uint32_t  { return m_nAllocated; }
+   [[nodiscard]] inline auto GetReadPosition() const -> uint32_t  { return m_nReadPos; }
    inline auto GetData() -> const uint8_t * { return m_pData; }
 
    void SetReadPosition(uint32_t nReadPosition);
@@ -103,10 +102,10 @@ protected:
    void IncreaseSize(uint32_t nSize);
 
 private:
-   uint32_t m_nReadPos;
-   uint32_t m_nLength;
-   uint32_t m_nAllocated;
-   uint8_t *m_pData;
+   uint32_t m_nReadPos{0};
+   uint32_t m_nLength{0};
+   uint32_t m_nAllocated{0};
+   uint8_t *m_pData{nullptr};
 };
 
 auto bread_uint8_t(uint8_t **buf) -> uint8_t;
@@ -127,5 +126,3 @@ void bwrite_float(uint8_t **b, float f);
 void bwrite_string(uint8_t **b, const char *str);
 void bwrite_double_string(uint8_t **b, char *str);
 void bwrite_nameblock(uint8_t **b, char **nb);
-
-#endif /* _MUD_BYTESTRING_H */

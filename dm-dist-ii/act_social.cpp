@@ -48,7 +48,7 @@ extern char libdir[]; /* from dikumud.c */
 
 struct social_msg
 {
-   char *cmd_str;     /* "hug" "kiss" etc */
+   char   *cmd_str;     /* "hug" "kiss" etc */
    uint8_t hide_flag;   /* Should we hideinvis? */
    uint8_t min_pos;     /* Minimum position of char */
    uint8_t vic_min_pos; /* Minimum position of victim */
@@ -472,7 +472,7 @@ static struct pose_type pose_messages[MAX_POSES];
 
 void boot_pose_messages()
 {
-   FILE  *fl;
+   FILE   *fl;
    int16_t counter;
    int16_t cls;
 

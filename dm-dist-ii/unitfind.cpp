@@ -265,7 +265,7 @@ auto find_unit_general(const struct unit_data *viewer, const struct unit_data *c
 {
    struct unit_data *best     = nullptr;
    int               best_len = 0;
-   uint32_t            bitvectorm;
+   uint32_t          bitvectorm;
 
    int               i;
    int               number;
@@ -273,7 +273,7 @@ auto find_unit_general(const struct unit_data *viewer, const struct unit_data *c
    const char       *ct = nullptr;
    char              name[256];
    char             *c;
-   bool             is_fillword = TRUE;
+   bool              is_fillword = TRUE;
    struct unit_data *u;
    struct unit_data *uu;
 

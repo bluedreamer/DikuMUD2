@@ -830,7 +830,7 @@ void cConHook::Input(int nFlags)
    }
    else if(nFlags & SELECT_READ)
    {
-      char *c;
+      char   *c;
       uint8_t buf[1024];
 
       int n = read(this->tfd(), buf, sizeof(buf) - 1);
@@ -918,7 +918,7 @@ void ClearUnhooked(void)
 
 void cConHook::TransmitCommand(const char *text)
 {
-   char  *d;
+   char    *d;
    uint16_t len;
 
    if((d = (char *)strchr(text, '\r'))) // MS2020
@@ -1113,10 +1113,10 @@ void cConHook::ProcessPaged(void)
 int cMudHook::read_mud(void)
 {
    class cConHook *con;
-   uint16_t          id, len;
+   uint16_t        id, len;
    int             p, n;
    char           *data;
-   uint8_t           text_type;
+   uint8_t         text_type;
 
    p = protocol_parse_incoming(this, &id, &len, &data, &text_type);
 

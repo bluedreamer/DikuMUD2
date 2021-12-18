@@ -23,14 +23,14 @@
 #ifndef LOG_H
 #define LOG_H
 
-#include <stdio.h>
 #include <stdarg.h>
+#include <stdio.h>
 
 #define HERE __FILE__, __LINE__
 
 class cLog
 {
-  public:
+public:
    cLog(char *name = "file.log");
    ~cLog(void);
 
@@ -38,7 +38,7 @@ class cLog
    void Debug(const char *format, ...);
    void Error(const char *file, const int line, const char *format, ...);
 
-  private:
+private:
    FILE *pFile;
 };
 

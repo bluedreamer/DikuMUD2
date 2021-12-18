@@ -232,7 +232,7 @@ void blk_delete(BLK_FILE *bf, blk_handle index)
 {
    blk_handle next_block;
    int        first;
-   uint8_t     *b;
+   uint8_t   *b;
 
    if((bf->f = fopen_cache(bf->name, "r+b")) == nullptr)
    {
@@ -448,7 +448,7 @@ auto blk_write(BLK_FILE *bf, const void *data, blk_length len) -> blk_handle
 void blk_write_reserved(BLK_FILE *bf, const void *data, blk_length len)
 {
    blk_handle i;
-   uint8_t     *b;
+   uint8_t   *b;
 
    blk_read_block(bf, BLK_RESERVED);
    b = (uint8_t *)bf->buf;
@@ -469,7 +469,7 @@ void blk_write_reserved(BLK_FILE *bf, const void *data, blk_length len)
 auto blk_read_reserved(BLK_FILE *bf, blk_length *blen) -> void *
 {
    blk_handle i;
-   uint8_t     *b;
+   uint8_t   *b;
 
    if(bf->blktop == 0)
    {

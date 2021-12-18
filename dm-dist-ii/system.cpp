@@ -509,10 +509,10 @@ auto cMultiHook::Read() -> int
    struct descriptor_data *d = nullptr;
    int                     p;
    int                     n;
-   uint16_t                  id;
-   uint16_t                  len;
+   uint16_t                id;
+   uint16_t                len;
    char                   *data;
-   uint8_t                   text_type;
+   uint8_t                 text_type;
 
    extern char *logo;
 

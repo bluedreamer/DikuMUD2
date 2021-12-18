@@ -101,9 +101,9 @@ auto money_string(amount_t amt, currency_t currency, bool verbose) -> const char
    static char        buf[512];
    char               tmp[256];
    struct money_type *money_tmp[MAX_MONEY + 1];
-   int8_t              i;
-   int8_t              nr    = 0;
-   int8_t              count = 0;
+   int8_t             i;
+   int8_t             nr    = 0;
+   int8_t             count = 0;
    amount_t           times;
 
    /* Get an array of all types in this currency */
@@ -202,7 +202,7 @@ static auto calc_money(amount_t v1, char op, amount_t v2) -> amount_t
 /* Set all the values on money correctly according to amount - return money */
 auto set_money(struct unit_data *money, amount_t amt) -> struct unit_data *
 {
-   char   tmp[256];
+   char     tmp[256];
    uint32_t i;
 
    assert(IS_MONEY(money));
@@ -888,7 +888,7 @@ void boot_money()
    int        idx;
    int        prev_idx;
    currency_t cur;
-   bool      currencies = TRUE;
+   bool       currencies = TRUE;
 
    if((fl = fopen(str_cc(libdir, MONEYDEF_FILE), "r")) == nullptr)
    {

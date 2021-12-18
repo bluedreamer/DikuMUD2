@@ -46,16 +46,16 @@ struct spell_args
 struct spell_info_type
 {
    uint8_t acttype;
-   char *tochar;
-   char *tovict;
-   char *torest;
-   char *toself;
-   char *toselfroom;
+   char   *tochar;
+   char   *tovict;
+   char   *torest;
+   char   *toself;
+   char   *toselfroom;
 
    void (*spell_pointer)(struct spell_args *sa);
    uint8_t  minimum_position; /* Position for caster               */
-   int16_t usesmana;         /* Amount of mana used by a spell    */
-   int8_t  beats;            /* Heartbeats until ready for next   */
+   int16_t  usesmana;         /* Amount of mana used by a spell    */
+   int8_t   beats;            /* Heartbeats until ready for next   */
    uint16_t targets;          /* See below for use with TAR_XXX    */
    uint8_t  media;            /* found in spells/potions/...       */
    uint8_t  cast_type;        /* Resist, self check, etc?          */

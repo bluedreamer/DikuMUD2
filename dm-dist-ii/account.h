@@ -25,12 +25,12 @@
 #pragma once
 
 #define MAX_FLATRATE 2
-
 #include "essential.h"
+#include "structs.h"
 
 struct flatrate_type
 {
-   char  *pMessage;
+   char    *pMessage;
    uint16_t days;
    uint32_t price;
 };
@@ -55,27 +55,27 @@ public:
    int m_nHourlyRate;
    int m_bCreditCard;
 
-   struct flatrate_type m_flatrate[MAX_FLATRATE];
+   flatrate_type m_flatrate[MAX_FLATRATE]{};
 };
 
 extern class CAccountConfig g_cAccountConfig;
 
-void account_flatrate_change(struct unit_data *god, struct unit_data *whom, int32_t days);
+void account_flatrate_change(unit_data *god, unit_data *whom, int32_t days);
 
-void account_cclog(struct unit_data *ch, int amount);
+void account_cclog(unit_data *ch, int amount);
 
-void account_insert(struct unit_data *god, struct unit_data *whom, uint32_t amount);
-void account_withdraw(struct unit_data *god, struct unit_data *whom, uint32_t amount);
-void account_global_stat(const struct unit_data *ch);
-void account_local_stat(const struct unit_data *ch, struct unit_data *u);
+void account_insert(unit_data *god, unit_data *whom, uint32_t amount);
+void account_withdraw(unit_data *god, unit_data *whom, uint32_t amount);
+void account_global_stat(const unit_data *ch);
+void account_local_stat(const unit_data *ch, unit_data *u);
 
-void account_defaults(struct unit_data *pc);
+void account_defaults(unit_data *pc);
 
-void account_subtract(struct unit_data *pc, time_t from, time_t to);
+void account_subtract(unit_data *pc, time_t from, time_t to);
 
-auto account_is_overdue(const struct unit_data *ch) -> int;
-void account_overdue(const struct unit_data *ch);
+auto account_is_overdue(const unit_data *ch) -> int;
+void account_overdue(const unit_data *ch);
 
-void account_paypoint(struct unit_data *ch);
-void account_closed(struct unit_data *ch);
-auto account_is_closed(struct unit_data *ch) -> int;
+void account_paypoint(unit_data *ch);
+void account_closed(unit_data *ch);
+auto account_is_closed(unit_data *ch) -> int;

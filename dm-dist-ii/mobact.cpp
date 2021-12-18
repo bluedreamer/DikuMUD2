@@ -74,8 +74,8 @@ void special_event(void *p1, void *p2)
    auto *u    = (struct unit_data *)p1;
    auto *fptr = (struct unit_fptr *)p2;
 
-   uint32_t            ret = SFR_SHARE;
-   uint32_t            ticks;
+   uint32_t          ret = SFR_SHARE;
+   uint32_t          ticks;
    struct unit_fptr *ftmp;
    struct spec_arg   sarg;
 

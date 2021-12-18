@@ -61,7 +61,7 @@ auto bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra) -> int
 {
    struct extra_descr_data *e;
    struct extra_descr_data *te;
-   uint8_t                    i;
+   uint8_t                  i;
    char                    *c;
 
    *ppExtra = nullptr;
@@ -140,7 +140,7 @@ auto bread_swap(CByteBuffer *pBuf, struct unit_data *u) -> int
 
 auto bread_swap_skip(CByteBuffer *pBuf) -> int
 {
-   int   i;
+   int     i;
    uint8_t t8;
 
    pBuf->SkipString();
@@ -323,7 +323,7 @@ auto bread_diltemplate(CByteBuffer *pBuf) -> struct diltemplate *
 /* Reads DIL interrupt list */
 void bread_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
 {
-   int    i;
+   int      i;
    uint32_t lab;
 
    /* read interrupts */
@@ -413,8 +413,8 @@ auto bread_dil(CByteBuffer *pBuf, struct unit_data *owner, uint8_t version, stru
 {
    struct dilprg      *prg;
    struct diltemplate *tmpl     = nullptr;
-   uint32_t              recallpc = 0;
-   uint16_t              t16;
+   uint32_t            recallpc = 0;
+   uint16_t            t16;
    int                 i;
    int                 novar;
 #ifdef DMSERVER
@@ -651,9 +651,9 @@ auto bread_func(CByteBuffer *pBuf, uint8_t version, struct unit_data *owner) -> 
    struct unit_fptr *head;
    int               cnt;
    int               i;
-   uint8_t             t8;
-   uint16_t            t16;
-   uint32_t            t32;
+   uint8_t           t8;
+   uint16_t          t16;
+   uint32_t          t32;
 
    fptr = nullptr;
    head = nullptr;
@@ -780,7 +780,7 @@ void bwrite_swap(CByteBuffer *pBuf, struct unit_data *u)
 
 void bwrite_affect(CByteBuffer *pBuf, struct unit_affected_type *af, uint8_t version)
 {
-   int    i = 0;
+   int      i = 0;
    uint32_t nPos;
    uint32_t nOrgPos = pBuf->GetLength();
 
@@ -975,9 +975,9 @@ void bwrite_dil(CByteBuffer *pBuf, struct dilprg *prg)
 
 void bwrite_func(CByteBuffer *pBuf, struct unit_fptr *fptr)
 {
-   char  *data;
-   int    cnt;
-   int    i = 0;
+   char    *data;
+   int      cnt;
+   int      i = 0;
    uint32_t nPos;
    uint32_t nOrgPos = pBuf->GetLength();
    pBuf->Append8(0); /* Assume no affects by default */
@@ -1087,7 +1087,7 @@ void bwrite_block(FILE *datafile, int length, void *buffer)
 /* Write unit to string. */
 auto write_unit_string(CByteBuffer *pBuf, struct unit_data *u) -> int
 {
-   int   i;
+   int     i;
    uint8_t nVersion;
 
    nVersion = 57;
@@ -1364,11 +1364,11 @@ auto write_unit_string(CByteBuffer *pBuf, struct unit_data *u) -> int
 void write_unit(FILE *f, struct unit_data *u, char *fname)
 {
    CByteBuffer *pBuf;
-   uint32_t       nSizeStart;
-   uint32_t       nStart;
-   uint32_t       nPos;
-   uint32_t       length;
-   uint32_t       crc;
+   uint32_t     nSizeStart;
+   uint32_t     nStart;
+   uint32_t     nPos;
+   uint32_t     length;
+   uint32_t     crc;
 
    pBuf = &g_FileBuffer;
    pBuf->Clear();
@@ -1412,11 +1412,11 @@ void write_unit(FILE *f, struct unit_data *u, char *fname)
 void write_diltemplate(FILE *f, struct diltemplate *tmpl)
 {
    CByteBuffer *pBuf;
-   uint8_t       *b;
-   uint8_t       *bstart;
-   uint32_t       length;
-   uint32_t       nStart;
-   uint32_t       nPos;
+   uint8_t     *b;
+   uint8_t     *bstart;
+   uint32_t     length;
+   uint32_t     nStart;
+   uint32_t     nPos;
 
    pBuf = &g_FileBuffer;
    pBuf->Clear();

@@ -103,7 +103,7 @@ Mon Nov 14 17:19:47 MET 1994
        */
 struct alias_head
 {
-   uint16_t            char_count;
+   uint16_t          char_count;
    struct trie_type *trie;
    char              owner[20];
 };
@@ -384,8 +384,8 @@ static auto circle_alias(char *key, char *val, struct trie_type *t, bool first) 
    char           *sc;
    char            comm[MAX_INPUT_LENGTH + 2];
    struct alias_t *tmp_al      = nullptr;
-   uint8_t           res         = 0;
-   static uint8_t    check_count = 0;
+   uint8_t         res         = 0;
+   static uint8_t  check_count = 0;
 
    if(first)
    {
@@ -710,7 +710,7 @@ static auto local_dictionary(struct spec_arg *sarg) -> int
 {
    char                    *pcomm = NULL;
    char                    *cmd_array[256];
-   uint8_t                    i;
+   uint8_t                  i;
    struct alias_t          *al = nullptr;
    struct alias_head       *alias_h;
    struct extra_descr_data *exd;

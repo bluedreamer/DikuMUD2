@@ -51,8 +51,9 @@ int main(int argc, char *argv[])
       if(feof(stdin))
          break;
 
-      sscanf(Buf, "%c %s %s %d %*01x%08x%08x%08x%08x%08x%08x%08x%08x\n", &action, name1, name2, &amount1, (uint32_t *)&mxor, (uint32_t *)&gid,
-             (uint32_t *)&crc, (uint32_t *)&pid, (uint32_t *)&amount, (uint32_t *)&total, (uint32_t *)&next_crc, (uint32_t *)&now);
+      sscanf(Buf, "%c %s %s %d %*01x%08x%08x%08x%08x%08x%08x%08x%08x\n", &action, name1, name2, &amount1, (uint32_t *)&mxor,
+             (uint32_t *)&gid, (uint32_t *)&crc, (uint32_t *)&pid, (uint32_t *)&amount, (uint32_t *)&total, (uint32_t *)&next_crc,
+             (uint32_t *)&now);
 
       check = gid + pid + total + amount + (uint32_t)now;
 
@@ -78,7 +79,8 @@ int main(int argc, char *argv[])
          printf("\nCRC mismatch: %08x versus %08x\n", crc, check);
 
       if(first_crc != next_crc)
-         printf("Dependancy check [%08x] [%08x] [%08x] [%08x]!\n", (uint32_t)first_crc, next_crc, (uint32_t)first_crc ^ mxor, next_crc ^ mxor);
+         printf("Dependancy check [%08x] [%08x] [%08x] [%08x]!\n", (uint32_t)first_crc, next_crc, (uint32_t)first_crc ^ mxor,
+                next_crc ^ mxor);
 
       first_crc = next_crc ^ mxor;
    }

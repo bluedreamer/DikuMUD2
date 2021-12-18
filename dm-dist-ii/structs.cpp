@@ -23,7 +23,6 @@
 
 #include "structs.h"
 #include "handler.h"
-#include "main.h"
 #include "utils.h"
 
 int world_norooms   = 0; /* number of rooms in the world   */

@@ -44,9 +44,9 @@ private:
    inline auto Next() -> cStringConstant * { return pNext; }
 
    char                  *pStr;
-   uint32_t                 nReferences;
+   uint32_t               nReferences;
    class cStringConstant *pNext;
-   uint32_t                 nStrLen;
+   uint32_t               nStrLen;
    // Possibly consider storing the Hash value for speed on destruction
 };
 

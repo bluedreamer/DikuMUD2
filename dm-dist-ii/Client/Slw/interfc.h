@@ -23,27 +23,24 @@
 #ifndef _MS_NETINTERFC_H
 #define _MS_NETINTERFC_H
 
-
-
 class cNetInterface
 {
-  public:
-   virtual int  Open(char *pDev)    { return 0;     }
-   virtual int  Close(void)         { return 0;     }
+public:
+   virtual int Open(char *pDev) { return 0; }
+   virtual int Close(void) { return 0; }
 
-   virtual int  Send(uint8_t data)                 = 0;
-   virtual int  Send(const uint8_t *data, uint32_t len)    = 0;
+   virtual int Send(uint8_t data)                      = 0;
+   virtual int Send(const uint8_t *data, uint32_t len) = 0;
 
-   virtual int  SendString(char *String)         = 0;
+   virtual int SendString(char *String) = 0;
 
    virtual void Receive(uint8_t *data, uint32_t len) = 0;
 
-   virtual void Poll(void)          { return;       }
+   virtual void Poll(void) { return; }
 
-   virtual int  Online(void)        { return FALSE; }
-   virtual int  Hangup(void)        { return -1;    }
-   virtual int  fd(void)            { return -1;    }
+   virtual int Online(void) { return FALSE; }
+   virtual int Hangup(void) { return -1; }
+   virtual int fd(void) { return -1; }
 };
-
 
 #endif

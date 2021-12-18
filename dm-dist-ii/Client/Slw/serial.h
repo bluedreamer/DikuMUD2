@@ -31,29 +31,29 @@
 
 class cSerial : public cNetInterface, public cHook
 {
-  public:
+public:
    cSerial();
    cSerial(char *pDev);
    virtual ~cSerial();
-   
-   int  Open(char *cpDev, int nBaud = 38400);
-   int  Close(void);
 
-   int  Online(void);
-   int  Hangup(void);
-   int  ModemInit(char **init_string[]);
+   int Open(char *cpDev, int nBaud = 38400);
+   int Close(void);
 
-   int  Send(uint8_t data);
-   int  Send(const uint8_t *pData, uint32_t nLen);
+   int Online(void);
+   int Hangup(void);
+   int ModemInit(char **init_string[]);
 
-   int  SendString(char *pStr);
+   int Send(uint8_t data);
+   int Send(const uint8_t *pData, uint32_t nLen);
+
+   int          SendString(char *pStr);
    virtual void Receive(uint8_t *pChunk, uint32_t nSize) = 0;
 
    void Poll(void);
-   int WaitOnline(void);  // Wait for modem to become active
-   int Flush(void);
+   int  WaitOnline(void); // Wait for modem to become active
+   int  Flush(void);
 
-  private:
+private:
    int ReadBlock(uint8_t *pChunk, uint32_t nSize);
    int DisplayStatus(void);
    int Status(void);
@@ -66,8 +66,8 @@ class cSerial : public cNetInterface, public cHook
 
    struct termios org_tty;
    struct termios raw_tty;
-   int ori_flags;
-   int raw_flags;
+   int            ori_flags;
+   int            raw_flags;
 };
 
 #endif

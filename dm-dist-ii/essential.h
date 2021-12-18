@@ -107,7 +107,7 @@ enum log_level
       fprintf(stderr, a);                                                                                                                  \
    } while(0)
 
-//using bool = uint8_t; /* Boolean */
+// using bool = uint8_t; /* Boolean */
 
 void slog(enum log_level, uint8_t, const char *, ...);
 

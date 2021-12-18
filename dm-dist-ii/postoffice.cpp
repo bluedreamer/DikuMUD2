@@ -54,7 +54,7 @@ extern char libdir[]; /* from dikumud.c */
 
 struct mail_file_info_type *mailfile_info = nullptr;
 
-int16_t    top_of_mailfile = 0;
+int16_t   top_of_mailfile = 0;
 BLK_FILE *mbf; /* Mail Block File */
 auto      find_player_id(char *pName) -> int;
 
@@ -154,7 +154,7 @@ auto read_mail(int16_t index) -> char *
 void mail_mail(int receipient, char *rcv_name, struct unit_data *sender, const char *str)
 {
    FILE                 *f;
-   int16_t                index;
+   int16_t               index;
    blk_length            len;
    char                  from[MAX_STRING_LENGTH];
    char                 *b;
@@ -225,9 +225,9 @@ auto player_has_mail(struct unit_data *ch) -> uint8_t
 void mail_boot()
 {
    long                       size;
-   uint32_t                     now;
-   int16_t                     index;
-   int16_t                     wi;
+   uint32_t                   now;
+   int16_t                    index;
+   int16_t                    wi;
    FILE                      *f;
    struct mail_file_info_type maildata;
 
@@ -277,7 +277,7 @@ void mail_boot()
 
 auto eat_and_delete(struct spec_arg *sarg) -> int
 {
-   int16_t            index;
+   int16_t           index;
    struct unit_data *u;
    char             *arg = (char *)sarg->arg;
 
@@ -313,8 +313,8 @@ auto postman(struct spec_arg *sarg) -> int
    struct descriptor_data  *d;
    struct unit_data        *letter;
    char                     tmpname[MAX_INPUT_LENGTH];
-   int16_t                   index;
-   int16_t                  *tmp;
+   int16_t                  index;
+   int16_t                 *tmp;
    long                     rcp;
    currency_t               currency = local_currency(sarg->owner);
    amount_t                 postage;

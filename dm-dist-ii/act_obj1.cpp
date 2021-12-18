@@ -527,7 +527,7 @@ auto put(struct unit_data *ch, struct unit_data *unit, struct unit_data *tounit,
 {
    struct unit_data *money = nullptr;
    int               weight;
-   int32_t            amt = 0;
+   int32_t           amt = 0;
 
    /* Curse check if carrying? */
 

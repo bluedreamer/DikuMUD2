@@ -70,9 +70,9 @@ void cHook::Unhook()
 
 void cHook::PushWrite()
 {
-   int   sofar;
-   int   len;
-   int   thisround;
+   int     sofar;
+   int     len;
+   int     thisround;
    uint8_t buf[1460];
 
    if(IsHooked() == 0)

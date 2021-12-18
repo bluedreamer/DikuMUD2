@@ -27,38 +27,43 @@
 
 #include "essential.h"
 
-
 // To use, inherit this type into your data structure.
 class cQueueElem
 {
    friend class cQueue;
 
-  public:
+public:
    cQueueElem(char *c, int bCopy = TRUE);
    cQueueElem(uint8_t *d, uint32_t n, int bCopy = TRUE);
-   ~cQueueElem(void)              { if (pData) free(pData); }
+   ~cQueueElem(void)
+   {
+      if(pData)
+         free(pData);
+   }
 
    uint32_t Bytes(void) { return nSize; }
-   uint8_t  *Data(void) { return pData; }
-   void   SetNull(void) { pData = NULL; nSize = 0; }
+   uint8_t *Data(void) { return pData; }
+   void     SetNull(void)
+   {
+      pData = NULL;
+      nSize = 0;
+   }
 
    cQueueElem *PeekNext(void) { return pNext; }
 
-  private:
-   uint8_t  *pData;
-   uint32_t nSize;  // Optional number of bytes
+private:
+   uint8_t    *pData;
+   uint32_t    nSize; // Optional number of bytes
    cQueueElem *pNext;
 };
 
-
-
 class cQueue
 {
-  public: 
+public:
    cQueue();
    ~cQueue();
 
-   int IsEmpty(void);
+   int      IsEmpty(void);
    uint32_t Size(void);
    uint32_t Bytes(void);
 
@@ -75,8 +80,8 @@ class cQueue
    const cQueueElem *PeekTail(void);
 
    void Flush(void);
-   
-  private:
+
+private:
    cQueueElem *pHead;
    cQueueElem *pTail;
    cQueueElem *pPreTail;
@@ -84,6 +89,5 @@ class cQueue
    uint32_t nEntries;
    uint32_t nBytes;
 };
-
 
 #endif

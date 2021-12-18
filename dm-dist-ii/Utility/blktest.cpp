@@ -33,7 +33,7 @@
 
 #undef free
 
-int         sunlight       = 0;
+int          sunlight       = 0;
 const int8_t time_light[24] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 #define TFSIZE 128
@@ -58,8 +58,8 @@ char *gen_data(int len)
 {
    uint8_t       *ptr;
    static uint8_t data[4 * TFSIZE];
-   static int   count = 0;
-   int          i;
+   static int     count = 0;
+   int            i;
 
    ptr = data;
 
@@ -74,7 +74,7 @@ char *gen_data(int len)
 void verify_data(uint8_t *data, int len)
 {
    uint8_t *ptr;
-   int    i, j;
+   int      i, j;
 
    ptr = data;
    j   = len;
@@ -145,7 +145,7 @@ void new_data(BLK_FILE *tf, int no)
 
 void verify_read(BLK_FILE *tf)
 {
-   uint8_t     *data;
+   uint8_t   *data;
    int        i;
    blk_length len;
 

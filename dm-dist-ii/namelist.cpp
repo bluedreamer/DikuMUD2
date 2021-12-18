@@ -114,7 +114,7 @@ void cNamelist::bread(uint8_t **b)
 void cNamelist::catnames(char *s)
 {
    uint32_t i;
-   bool  ok = FALSE;
+   bool     ok = FALSE;
 
    strcpy(s, "{");
    TAIL(s);
@@ -217,7 +217,7 @@ cNamelist::~cNamelist()
 
 auto cNamelist::Duplicate() -> cNamelist *
 {
-   auto  *pNl = new cNamelist;
+   auto    *pNl = new cNamelist;
    uint32_t i   = 0;
 
    for(i = 0; i < length; i++)

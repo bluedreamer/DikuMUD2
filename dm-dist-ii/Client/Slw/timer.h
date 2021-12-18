@@ -23,9 +23,9 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-#include <unistd.h>
-#include <sys/types.h>
 #include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "mytime.h"
 
@@ -34,21 +34,21 @@
 //
 class cTimer
 {
-  friend void _AlarmHandler(int);
+   friend void _AlarmHandler(int);
 
-  public:
+public:
    cTimer();
    virtual ~cTimer();
 
    void SetEvent(cMyTime *psWhen); // , pfTimerEvent fptr);
-   void ClearEvent(void);    // Call to clear any pending timeout
+   void ClearEvent(void);          // Call to clear any pending timeout
 
-   void SuspendEvent(void);  // Call to suspend timeouts
-   void ResumeEvent(void);   // Call when allowed again, possibly releasing one
+   void SuspendEvent(void); // Call to suspend timeouts
+   void ResumeEvent(void);  // Call when allowed again, possibly releasing one
 
    virtual void Event(void) {} // Inherit this to catch the timeout events.
 
-  private:
+private:
    void InternEvent(void);
 
    uint8_t bSuspended;
@@ -57,7 +57,7 @@ class cTimer
 
    struct itimerval itimer;
 
-   //pfTimerEvent pfTimer;
+   // pfTimerEvent pfTimer;
 };
 
 #endif

@@ -188,8 +188,8 @@ void do_rent(struct unit_data *ch, char *arg, const struct command_info *cmd)
    the header. */
 struct diffhead
 {
-   uint32_t    reflen; /* length of reference (for checking) */
-   uint32_t    crc;    /* extra check - maybe one enough? */
+   uint32_t  reflen; /* length of reference (for checking) */
+   uint32_t  crc;    /* extra check - maybe one enough? */
    short int start;  /* offset to first different byte */
    short int end;    /* offset to first similar byte after start */
 };
@@ -198,12 +198,12 @@ struct diffhead
 struct objheader
 {
    int16_t length; /* length of data */
-   char   zone[FI_MAX_ZONENAME + 1];
-   char   unit[FI_MAX_UNITNAME + 1];
-   uint8_t  level;      /* level of 'containment' (depth) */
-   uint8_t  equip;      /* equipment position */
-   uint8_t  compressed; /* compressed? */
-   uint8_t  type;       /* NPC or OBJ? */
+   char    zone[FI_MAX_ZONENAME + 1];
+   char    unit[FI_MAX_UNITNAME + 1];
+   uint8_t level;      /* level of 'containment' (depth) */
+   uint8_t equip;      /* equipment position */
+   uint8_t compressed; /* compressed? */
+   uint8_t type;       /* NPC or OBJ? */
 };
 
 /* Local global variables */

@@ -21,7 +21,7 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
-	
+
 #ifndef _MUD_DILPAR_H
 #define _MUD_DILPAR_H
 
@@ -33,13 +33,14 @@
 
 /* This is for the compiler */
 
-#define CODESIZE 16768     /* maximum expression size */
+#define CODESIZE 16768 /* maximum expression size */
 
-struct exptype {
-   uint8_t dsl, typ, rtyp; /* static/dynamic/lvalue, type, req type */
-   uint8_t boolean;        /* if expression contains boolean op */
-   int32_t num;           /* static value INT or field type */
-   uint8_t *code;          /* code / static value SP */
-   uint8_t *codep;         /* code write pointer */
+struct exptype
+{
+   uint8_t  dsl, typ, rtyp; /* static/dynamic/lvalue, type, req type */
+   uint8_t  boolean;        /* if expression contains boolean op */
+   int32_t  num;            /* static value INT or field type */
+   uint8_t *code;           /* code / static value SP */
+   uint8_t *codep;          /* code write pointer */
 };
 #endif /* _MUD_DILPAR_H */

@@ -79,7 +79,7 @@ auto read_to_queue(int fd, cQueue *q) -> int
 /* Return -1 on socket fail, 0 on amount fail, 1 on success                */
 void protocol_send_close(cHook *Hook, uint16_t id)
 {
-   int    n;
+   int      n;
    uint16_t len = 0;
    uint8_t  buf[20];
 
@@ -100,7 +100,7 @@ void protocol_send_close(cHook *Hook, uint16_t id)
 /* Return -1 on socket fail, 0 on amount fail, 1 on success                */
 void protocol_send_confirm(cHook *Hook, uint16_t id)
 {
-   int    n;
+   int      n;
    uint16_t len = 0;
    uint8_t  buf[20];
 
@@ -121,7 +121,7 @@ void protocol_send_confirm(cHook *Hook, uint16_t id)
 /* Return -1 on socket fail, 0 on amount fail, 1 on success                */
 void protocol_send_request(cHook *Hook)
 {
-   int    n;
+   int      n;
    uint16_t id  = 0;
    uint16_t len = 0;
    uint8_t  buf[10];
@@ -143,11 +143,11 @@ void protocol_send_request(cHook *Hook)
 /* Return -1 on socket fail, 0 on amount fail, 1 on success                */
 void protocol_send_host(cHook *Hook, uint16_t id, char *host, uint16_t nPort, uint8_t nLine)
 {
-   char   bufms[MAX_STRING_LENGTH] = "UNKNOWN HOST"; // MS2020
-   int    n;
+   char     bufms[MAX_STRING_LENGTH] = "UNKNOWN HOST"; // MS2020
+   int      n;
    uint16_t len = 0;
    uint8_t  buf[80];
-   char  *ptext = nullptr; // MS2020
+   char    *ptext = nullptr; // MS2020
    uint8_t *b;
 
    if(Hook->IsHooked() == 0)
@@ -189,7 +189,7 @@ void protocol_send_text(cHook *Hook, const uint16_t id, const char *text, const 
 {
 #define MAX_TEXT_LEN (4 * 1460 - 6)
 
-   int    n;
+   int      n;
    uint16_t len;
    uint16_t txlen;
    uint8_t  buf[6 + MAX_TEXT_LEN];
@@ -286,11 +286,11 @@ void protocol_send_setup(cHook *Hook, uint16_t id, struct terminal_setup_type *s
 /*                                                                         */
 auto protocol_parse_incoming(cHook *Hook, uint16_t *pid, uint16_t *plen, char **str, uint8_t *text_type) -> int
 {
-   int    n;
+   int      n;
    uint16_t id;
    uint16_t len;
-   char   buf[10];
-   char  *data;
+   char     buf[10];
+   char    *data;
 
    if(str != nullptr)
    {

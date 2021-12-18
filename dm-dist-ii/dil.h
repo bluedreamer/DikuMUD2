@@ -52,7 +52,7 @@ struct dilargtype
 
 struct dilargstype
 {
-   uint8_t             no;
+   uint8_t           no;
    char             *name;
    struct dilargtype dilarg[256];
 };
@@ -353,7 +353,7 @@ struct dilvar
    union
    {
       struct unit_data        *unitptr;
-      int32_t                   integer;
+      int32_t                  integer;
       struct extra_descr_data *extraptr;
       char                    *string;
       class cStringInstance   *pHash;
@@ -387,7 +387,7 @@ public:
 struct dilsecure
 {
    struct unit_data *sup; /* A direct reference to the variabel! */
-   uint8_t            *lab; /* address to jump to, NULL=foreach */
+   uint8_t          *lab; /* address to jump to, NULL=foreach */
 };
 
 /*
@@ -397,7 +397,7 @@ struct dilsecure
  */
 struct dilxref
 {
-   char  *name; /* func/proc name [@ zone] */
+   char    *name; /* func/proc name [@ zone] */
    uint8_t  rtnt; /* return type */
    uint8_t  argc; /* number of arguments (min 1) */
    uint8_t *argt; /* argument types */
@@ -427,7 +427,7 @@ struct diltemplate
    uint16_t varc; /* number of variables */
    uint8_t *vart; /* variable types */
 
-   uint16_t               xrefcount; /* number of external references   */
+   uint16_t             xrefcount; /* number of external references   */
    struct diltemplate **extprg;    /* external programs (SERVER only) */
    struct dilxref      *xrefs;     /* external references (DMC only)  */
 
@@ -451,16 +451,16 @@ struct dilintr
  */
 struct dilframe
 {
-   uint16_t              ret;  /* return variable # (not saved) */
+   uint16_t            ret;  /* return variable # (not saved) */
    struct diltemplate *tmpl; /* current template */
    struct dilvar      *vars; /* variables */
 
    uint8_t *pc; /* program counter */
 
-   uint16_t            securecount; /* number of secures (not saved) */
+   uint16_t          securecount; /* number of secures (not saved) */
    struct dilsecure *secure;      /* secured vars (not saved) */
 
-   uint16_t          intrcount; /* number of interrupts */
+   uint16_t        intrcount; /* number of interrupts */
    struct dilintr *intr;      /* interrupts */
 };
 
@@ -477,7 +477,7 @@ struct dilprg
    uint16_t varcrc;  /* variable crc from compiler (saved) */
    uint16_t corecrc; /* core crc from compiler (saved) */
 
-   uint16_t           stacksz; /* stack size */
+   uint16_t         stacksz; /* stack size */
    struct dilframe *sp;      /* stack and pointer */
    struct dilframe *stack;   /* stack frames, #0 saved */
 

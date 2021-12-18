@@ -264,7 +264,7 @@ void do_cast(struct unit_data *ch, char *argument, const struct command_info *cm
 {
    struct unit_data *unit;
    int               spl;
-   bool             target_ok;
+   bool              target_ok;
    char             *orgarg;
    char             *c;
 

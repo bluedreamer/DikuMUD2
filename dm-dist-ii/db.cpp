@@ -64,7 +64,7 @@ struct unit_data *unit_list = nullptr; /* The global unit_list          */
 /* Global permanent element of zone info */
 struct zone_info_type zone_info = {0, nullptr, nullptr, nullptr};
 
-extern char   zondir[];
+extern char     zondir[];
 extern uint32_t memory_total_alloc;
 
 auto create_direction_data() -> struct room_direction_data *;
@@ -172,7 +172,7 @@ auto generate_templates(FILE *f, struct zone_type *zone) -> struct diltemplate *
    struct diltemplate *tmpllist;
    struct diltemplate *tmpl;
    CByteBuffer         Buf;
-   uint32_t              tmplsize = 0;
+   uint32_t            tmplsize = 0;
    char                nBuf[256];
    char                zBuf[256];
 
@@ -353,9 +353,9 @@ void generate_zone_indexes()
    FILE            *f;
    FILE            *zone_file;
    char            *c;
-   uint8_t            access;
-   uint8_t            loadlevel;
-   uint8_t            payonly;
+   uint8_t          access;
+   uint8_t          loadlevel;
+   uint8_t          payonly;
 
    zone_info.no_of_zones = 0;
    zone_info.zone_list   = nullptr;
@@ -567,8 +567,8 @@ auto bread_affect(CByteBuffer *pBuf, struct unit_data *u, uint8_t nVersion) -> i
 {
    struct unit_affected_type af;
    int                       i;
-   uint8_t                     t8;
-   uint16_t                    t16;
+   uint8_t                   t8;
+   uint16_t                  t16;
 
    auto link_alloc_affect(struct unit_data * unit, struct unit_affected_type * orgaf)->struct unit_affected_type *;
 
@@ -679,11 +679,11 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
    char                   *tmp;
    int                     i;
    int                     j;
-   uint8_t                   unit_version;
-   uint8_t                   t8;
-   uint16_t                  t16;
-   uint32_t                  t32;
-   uint32_t                  nStart;
+   uint8_t                 unit_version;
+   uint8_t                 t8;
+   uint16_t                t16;
+   uint32_t                t32;
+   uint32_t                nStart;
 
 #ifdef MEMORY_DEBUG
    int memory_start;
@@ -1467,8 +1467,8 @@ auto read_zone(FILE *f, struct zone_reset_cmd *cmd_list) -> struct zone_reset_cm
    struct zone_reset_cmd  *cmd;
    struct zone_reset_cmd  *tmp_cmd;
    struct file_index_type *fi;
-   uint8_t                   cmdno;
-   uint8_t                   direction;
+   uint8_t                 cmdno;
+   uint8_t                 direction;
    char                    zonename[FI_MAX_ZONENAME + 1];
    char                    name[FI_MAX_UNITNAME + 1];
    CByteBuffer             cBuf(100);

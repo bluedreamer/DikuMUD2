@@ -55,19 +55,19 @@
 #define CL(x, h) MIN((x) * (h)->d + (h)->d, (h)->no)
 
 extern uint32_t memory_total_alloc;
-extern int    memory_dijkstra_alloc;
+extern int      memory_dijkstra_alloc;
 
 struct dir_array
 {
    struct graph_vertice *to_vertice;
-   uint8_t                 direction;
-   int16_t                weight;
+   uint8_t               direction;
+   int16_t               weight;
 };
 
 struct izone_type
 {
    struct unit_data *room;
-   uint8_t             dir;
+   uint8_t           dir;
 };
 
 struct izone_type **iz = nullptr; /* Global for ease of use :)
@@ -79,9 +79,9 @@ struct graph_vertice
 {
    struct unit_data     *room;      /* Pointer to direction/edge info */
    struct graph_vertice *parent;    /* Path info for shortest path    */
-   int32_t                dist;      /* Current Distance found         */
-   uint8_t                 direction; /* Path direction found           */
-   uint16_t                hob_pos;   /* Position in Hob                */
+   int32_t               dist;      /* Current Distance found         */
+   uint8_t               direction; /* Path direction found           */
+   uint16_t              hob_pos;   /* Position in Hob                */
 };
 
 struct graph
@@ -407,7 +407,7 @@ auto create_graph(struct zone_type *zone) -> uint8_t **
    int                     j;
    int                     hidx;
    int                     vidx;
-   uint8_t                 **spi;
+   uint8_t               **spi;
 
    g.no = zone->no_rooms;
 

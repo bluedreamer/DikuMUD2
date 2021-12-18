@@ -34,10 +34,10 @@ struct money_type
    char                  **strings;          /* The money-strings */
    char                   *tails;            /* What to print on the dark side of the coin */
    char                   *abbrev;           /* Small string for lists */
-   uint8_t                   pl_idx;           /* The index in above to first plural string */
-   int32_t                  relative_value;   /* Relative to the internal value */
-   int32_t                  min_value;        /* Minimum internal value of the currency */
-   uint8_t                   coins_per_weight; /* How many coins per weight unit */
+   uint8_t                 pl_idx;           /* The index in above to first plural string */
+   int32_t                 relative_value;   /* Relative to the internal value */
+   int32_t                 min_value;        /* Minimum internal value of the currency */
+   uint8_t                 coins_per_weight; /* How many coins per weight unit */
    struct file_index_type *fi;               /* Where is coin object in file */
 };
 

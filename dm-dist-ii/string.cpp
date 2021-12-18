@@ -83,9 +83,9 @@ cHashSystem::cHashSystem()
 auto cHashSystem::MaxDepth(uint32_t *slots) -> uint32_t
 {
    class cStringConstant *tmp;
-   uint32_t                 depth;
-   uint32_t                 i;
-   uint32_t                 tmpd;
+   uint32_t               depth;
+   uint32_t               i;
+   uint32_t               tmpd;
 
    if(slots != nullptr)
    {
@@ -152,7 +152,7 @@ void cHashSystem::Insert(class cStringConstant *p, uint32_t nHash)
 
 void cHashSystem::Remove(class cStringConstant *r)
 {
-   uint32_t                 h;
+   uint32_t               h;
    class cStringConstant *o;
    class cStringConstant *p;
 

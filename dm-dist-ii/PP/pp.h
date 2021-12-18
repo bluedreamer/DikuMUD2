@@ -1,3 +1,4 @@
+#pragma once
 #include <ctype.h> /* Char type info			*/
 #include <stdio.h>
 #include <stdio.h>  /* Standard I/O info			*/
