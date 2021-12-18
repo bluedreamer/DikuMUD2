@@ -55,7 +55,7 @@ auto fsize(FILE *f) -> long
 }
 
 /* check if a file exists */
-auto file_exists(const char *name) -> ubit1
+auto file_exists(const char *name) -> bool
 {
    FILE *fp;
 
@@ -205,7 +205,7 @@ auto config_file_to_string(char *name, char *buf, int max_len) -> int
             continue;
          }
 
-         if(strlen(buf) + strlen(tmp) + 2 > (ubit32)max_len)
+         if(strlen(buf) + strlen(tmp) + 2 > (uint32_t)max_len)
          {
             DEBUG("fl->strng: string too big (db.c, file_to_string)\n");
             strcpy(buf + strlen(buf) - 20, "TRUNCATED!");
@@ -243,7 +243,7 @@ auto file_to_string(char *name, char *buf, int max_len) -> int
    {
       if(fgets(tmp, sizeof(tmp) - 1, fl) != nullptr)
       {
-         if(strlen(buf) + strlen(tmp) + 2 > (ubit32)max_len)
+         if(strlen(buf) + strlen(tmp) + 2 > (uint32_t)max_len)
          {
             slog(LOG_ALL, 0, "fl->strng: string too big (db.c, file_to_string)");
             strcpy(buf + strlen(buf) - 20, "TRUNCATED!");

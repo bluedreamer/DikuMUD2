@@ -45,10 +45,10 @@ extern struct bbs_type bbs;
 class cUpload : public cChannel
 {
   public:
-   cUpload(ubit8 nChn, char *file);
+   cUpload(uint8_t nChn, char *file);
    ~cUpload(void);
    
-   void Receive(ubit8 *data, ubit32 len);
+   void Receive(uint8_t *data, uint32_t len);
    const char *Status(void); // Returns how far we are
    void Thread(void);
 
@@ -57,10 +57,10 @@ class cUpload : public cChannel
 
    char *pFileName;
 
-   ubit32 nState;
-   ubit32 nLength;
-   ubit16 nCrc;
-   ubit32 nPos;
+   uint32_t nState;
+   uint32_t nLength;
+   uint16_t nCrc;
+   uint32_t nPos;
 
    char FileBuf[4 * (SLW_MAX_DATA + 1)];
 };
@@ -70,10 +70,10 @@ class cUpload : public cChannel
 class cDownload : public cChannel
 {
   public:
-   cDownload(ubit8 nChn, char *file);
+   cDownload(uint8_t nChn, char *file);
    ~cDownload(void);
 
-   void Receive(ubit8 *data, ubit32 len);
+   void Receive(uint8_t *data, uint32_t len);
    const char *Status(void); // Returns how far we are
 
   private:
@@ -85,13 +85,13 @@ class cDownload : public cChannel
    char *pShadowName;
    char FileBuf[4 * SLW_MAX_DATA + 4];
 
-   ubit32 nExpectedLength;
-   ubit16 nExpectedCrc;
+   uint32_t nExpectedLength;
+   uint16_t nExpectedCrc;
 
-   ubit32 nState;
-   ubit32 nLength;
-   ubit16 nCrc;
-   ubit8  bComplete;
+   uint32_t nState;
+   uint32_t nLength;
+   uint16_t nCrc;
+   uint8_t  bComplete;
 };
 
 #endif

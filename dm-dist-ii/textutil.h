@@ -61,15 +61,15 @@ auto  str_nccmp(const char *s, const char *d, int n) -> int;
 auto  str_dup(const char *source) -> char *;
 auto  str_str(const char *cs, const char *ct) -> char *;
 auto  str_cstr(const char *cs, const char *ct) -> char *;
-ubit1 str_is_empty(const char *arg);
-ubit1 str_is_number(const char *str);
-ubit1 next_word_is_number(const char *str);
+bool str_is_empty(const char *arg);
+bool str_is_number(const char *str);
+bool next_word_is_number(const char *str);
 auto  one_argument(const char *argument, char *first_arg) -> char *;
 auto  search_block_abbrevs(const char *oarg, const char **list, const char **end) -> int;
-auto  search_block(const char *arg, const char **list, ubit1 exact) -> int;
-auto  search_block_length(const char *arg, int length, const char **list, ubit1 exact) -> int;
+auto  search_block(const char *arg, const char **list, bool exact) -> int;
+auto  search_block_length(const char *arg, int length, const char **list, bool exact) -> int;
 auto  fill_word(const char *argument) -> int;
-ubit1 is_abbrev(const char *arg1, const char *arg2);
+bool is_abbrev(const char *arg1, const char *arg2);
 auto  str_cc(const char *s1, const char *s2) -> char *;
 auto  add_name(const char *name, char **namelist) -> char **;
 auto  del_name(const char *name, char **namelist) -> char **;
@@ -86,15 +86,15 @@ auto  skip_blanks(const char *string) -> char *;
 void  strip_trailing_spaces(char *str);
 void  strip_trailing_blanks(char *str);
 
-#ifdef toupper
-   #undef toupper
-#endif
-#define toupper(c) ((c) >= 'a' && (c) <= 'z' ? ((c) + ('A' - 'a')) : (c))
-
-#ifdef tolower
-   #undef tolower
-#endif
-#define tolower(c) ((c) >= 'A' && (c) <= 'Z' ? ((c) + ('a' - 'A')) : (c))
+//#ifdef toupper
+//   #undef toupper
+//#endif
+//#define toupper(c) ((c) >= 'a' && (c) <= 'z' ? ((c) + ('A' - 'a')) : (c))
+//
+//#ifdef tolower
+//   #undef tolower
+//#endif
+//#define tolower(c) ((c) >= 'A' && (c) <= 'Z' ? ((c) + ('a' - 'A')) : (c))
 
 #define str_delete(str, nDel, nStrLen) memmove(str, str + nDel, nStrLen - nDel + 1)
 

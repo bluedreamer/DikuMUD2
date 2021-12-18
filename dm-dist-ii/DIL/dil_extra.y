@@ -53,18 +53,18 @@ forlist  : block
              */
 				 
             wtmp = &tmpl.core[$6];
-            bwrite_ubit8(&wtmp,DILI_IF);
+            bwrite_uint8_t(&wtmp,DILI_IF);
             wtmp = &tmpl.core[$8];
-            bwrite_ubit32(&wtmp,wcore-tmpl.core);
+            bwrite_uint32_t(&wtmp,wcore-tmpl.core);
             wtmp = &tmpl.core[$12];
-            bwrite_ubit8(&wtmp,DILI_GOTO);
-            bwrite_ubit32(&wtmp,$18.fst);
+            bwrite_uint8_t(&wtmp,DILI_GOTO);
+            bwrite_uint32_t(&wtmp,$18.fst);
             wtmp = &tmpl.core[$15];
-            bwrite_ubit8(&wtmp,DILI_GOTO);
-            bwrite_ubit32(&wtmp,$6);
+            bwrite_uint8_t(&wtmp,DILI_GOTO);
+            bwrite_uint32_t(&wtmp,$6);
             wtmp = &tmpl.core[$19];
-            bwrite_ubit8(&wtmp,DILI_GOTO);
-            bwrite_ubit32(&wtmp,$14.fst);				
+            bwrite_uint8_t(&wtmp,DILI_GOTO);
+            bwrite_uint32_t(&wtmp,$14.fst);				
          }
          | DILSI_FOE SYMBOL ihold ihold ihold ihold '(' coreexp ')'
              pushbrk pushcnt ihold ihold ihold ihold ahold
@@ -96,23 +96,23 @@ forlist  : block
             else {
                /* assign variable to expression initially */
                wtmp = &tmpl.core[$3];
-               bwrite_ubit8(&wtmp,DILI_ASS);
-               bwrite_ubit8(&wtmp,DILE_VAR);
-               bwrite_ubit16(&wtmp,i);
+               bwrite_uint8_t(&wtmp,DILI_ASS);
+               bwrite_uint8_t(&wtmp,DILE_VAR);
+               bwrite_uint16_t(&wtmp,i);
                wtmp = &tmpl.core[$12];
-               bwrite_ubit8(&wtmp,DILI_IF);
-               bwrite_ubit8(&wtmp,DILE_VAR);
-               bwrite_ubit16(&wtmp,i);
-               bwrite_ubit32(&wtmp,wcore-tmpl.core);
+               bwrite_uint8_t(&wtmp,DILI_IF);
+               bwrite_uint8_t(&wtmp,DILE_VAR);
+               bwrite_uint16_t(&wtmp,i);
+               bwrite_uint32_t(&wtmp,wcore-tmpl.core);
                wtmp = &tmpl.core[$19];
-               bwrite_ubit8(&wtmp,DILI_ASS);
-               bwrite_ubit8(&wtmp,DILE_VAR);
-               bwrite_ubit16(&wtmp,i);
-               bwrite_ubit8(&wtmp,DILE_FLD);
-               bwrite_ubit8(&wtmp,DILE_VAR);
-               bwrite_ubit16(&wtmp,i);
-               bwrite_ubit8(&wtmp,DILF_NXT);
-               bwrite_ubit8(&wtmp,DILI_GOTO);
-               bwrite_ubit32(&wtmp,$12);					
+               bwrite_uint8_t(&wtmp,DILI_ASS);
+               bwrite_uint8_t(&wtmp,DILE_VAR);
+               bwrite_uint16_t(&wtmp,i);
+               bwrite_uint8_t(&wtmp,DILE_FLD);
+               bwrite_uint8_t(&wtmp,DILE_VAR);
+               bwrite_uint16_t(&wtmp,i);
+               bwrite_uint8_t(&wtmp,DILF_NXT);
+               bwrite_uint8_t(&wtmp,DILI_GOTO);
+               bwrite_uint32_t(&wtmp,$12);					
             }
          }

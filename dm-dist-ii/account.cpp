@@ -50,7 +50,7 @@
 #define MINUTE_GRANULARITY (15)
 #define TIME_GRANULARITY   ((24 * 60) / MINUTE_GRANULARITY)
 
-static sbit32 day_charge[7][TIME_GRANULARITY];
+static int32_t day_charge[7][TIME_GRANULARITY];
 
 static int next_crc = 0;
 
@@ -72,11 +72,11 @@ static void account_log(char action, struct unit_data *god, struct unit_data *pc
    time_t now = time(nullptr);
    char  *c;
    char   buf[1024];
-   ubit32 gid;
-   ubit32 pid;
-   ubit32 total;
-   ubit32 crc;
-   ubit32 m_xor;
+   uint32_t gid;
+   uint32_t pid;
+   uint32_t total;
+   uint32_t crc;
+   uint32_t m_xor;
    FILE  *f;
 
    m_xor = number(0x10000000, 0xFFFFFF00 >> 1);
@@ -120,7 +120,7 @@ static void account_log(char action, struct unit_data *god, struct unit_data *pc
    crc ^= m_xor << 4;
 
    TAIL(c);
-   sprintf(c, "%01x%08x%08x%08x%08x%08x%08x%08x%08x\n", number(0, 15), ~m_xor, gid, crc, pid, amount, total, next_crc, (ubit32)now);
+   sprintf(c, "%01x%08x%08x%08x%08x%08x%08x%08x%08x\n", number(0, 15), ~m_xor, gid, crc, pid, amount, total, next_crc, (uint32_t)now);
 
    fseek(f, 0L, SEEK_END);
 
@@ -137,7 +137,7 @@ auto index_to_time(int index) -> int
 }
 
 /* Hours in 0..23, minutes in 0..59 */
-auto time_to_index(ubit8 hours, ubit8 minutes) -> int
+auto time_to_index(uint8_t hours, uint8_t minutes) -> int
 {
    return ((hours * 60) + minutes) / MINUTE_GRANULARITY;
 }
@@ -172,8 +172,8 @@ void account_local_stat(const struct unit_data *ch, struct unit_data *u)
               "Crack counter  : %3d\n\r",
               (float)PC_ACCOUNT(u).credit / 100.0, (float)PC_ACCOUNT(u).credit_limit / 100.0, (float)PC_ACCOUNT(u).total_credit / 100.0,
               PC_ACCOUNT(u).last4 == -1 ? "NONE" : "REGISTERED", PC_ACCOUNT(u).discount,
-              PC_ACCOUNT(u).flatrate < (ubit32)now ? "Expired" : "Expires on ",
-              PC_ACCOUNT(u).flatrate < (ubit32)now ? " (none)\n\r" : pTmstr, PC_ACCOUNT(u).cracks);
+              PC_ACCOUNT(u).flatrate < (uint32_t)now ? "Expired" : "Expires on ",
+              PC_ACCOUNT(u).flatrate < (uint32_t)now ? " (none)\n\r" : pTmstr, PC_ACCOUNT(u).cracks);
    }
    else
    {
@@ -249,8 +249,8 @@ void account_overdue(const struct unit_data *ch)
    {
       char Buf[256];
 
-      ubit32 discount = PC_ACCOUNT(ch).discount;
-      ubit32 lcharge  = ((100 - discount) * g_cAccountConfig.m_nHourlyRate) / 100;
+      uint32_t discount = PC_ACCOUNT(ch).discount;
+      uint32_t lcharge  = ((100 - discount) * g_cAccountConfig.m_nHourlyRate) / 100;
 
       if(lcharge == 0)
       {
@@ -289,9 +289,9 @@ void account_closed(struct unit_data *ch)
    }
 }
 
-static auto seconds_used(ubit8 bhr, ubit8 bmi, ubit8 bse, ubit8 ehr, ubit8 emi, ubit8 ese) -> ubit32
+static auto seconds_used(uint8_t bhr, uint8_t bmi, uint8_t bse, uint8_t ehr, uint8_t emi, uint8_t ese) -> uint32_t
 {
-   ubit32 secs;
+   uint32_t secs;
 
    secs = (ese - bse);
 
@@ -337,9 +337,9 @@ static void account_calc(struct unit_data *pc, struct tm *b, struct tm *e)
    int       bidx;
    int       eidx;
    struct tm t;
-   ubit32    secs;
+   uint32_t    secs;
 
-   if(PC_ACCOUNT(pc).flatrate > (ubit32)time(nullptr))
+   if(PC_ACCOUNT(pc).flatrate > (uint32_t)time(nullptr))
    {
       return;
    }
@@ -446,7 +446,7 @@ auto account_is_overdue(const struct unit_data *ch) -> int
 {
    if((g_cServerConfig.m_bAccounting != 0) && (CHAR_LEVEL(ch) < g_cAccountConfig.m_nFreeFromLevel))
    {
-      if(PC_ACCOUNT(ch).flatrate > (ubit32)time(nullptr))
+      if(PC_ACCOUNT(ch).flatrate > (uint32_t)time(nullptr))
       {
          return FALSE;
       }
@@ -463,8 +463,8 @@ static void account_status(const struct unit_data *ch)
    int    j;
    int    i;
    char  *pTmstr;
-   ubit32 discount = PC_ACCOUNT(ch).discount;
-   ubit32 lcharge  = ((100 - discount) * g_cAccountConfig.m_nHourlyRate) / 100;
+   uint32_t discount = PC_ACCOUNT(ch).discount;
+   uint32_t lcharge  = ((100 - discount) * g_cAccountConfig.m_nHourlyRate) / 100;
 
    if(account_is_overdue(ch) != 0)
    {
@@ -478,7 +478,7 @@ static void account_status(const struct unit_data *ch)
       send_to_char(Buf, ch);
    }
 
-   if(PC_ACCOUNT(ch).flatrate > (ubit32)time(nullptr))
+   if(PC_ACCOUNT(ch).flatrate > (uint32_t)time(nullptr))
    {
       pTmstr = ctime((time_t *)&PC_ACCOUNT(ch).flatrate);
       sprintf(Buf, "Your account is on a flat rate until %s", pTmstr);
@@ -544,7 +544,7 @@ auto account_is_closed(struct unit_data *ch) -> int
 
    if((g_cServerConfig.m_bAccounting != 0) && (CHAR_LEVEL(ch) < g_cAccountConfig.m_nFreeFromLevel))
    {
-      if(PC_ACCOUNT(ch).flatrate > (ubit32)time(nullptr))
+      if(PC_ACCOUNT(ch).flatrate > (uint32_t)time(nullptr))
       {
          return FALSE;
       }
@@ -558,7 +558,7 @@ auto account_is_closed(struct unit_data *ch) -> int
    return FALSE;
 }
 
-void account_insert(struct unit_data *god, struct unit_data *whom, ubit32 amount)
+void account_insert(struct unit_data *god, struct unit_data *whom, uint32_t amount)
 {
    PC_ACCOUNT(whom).credit += (float)amount;
    PC_ACCOUNT(whom).total_credit += amount;
@@ -567,10 +567,10 @@ void account_insert(struct unit_data *god, struct unit_data *whom, ubit32 amount
    account_log('I', god, whom, amount);
 }
 
-void account_withdraw(struct unit_data *god, struct unit_data *whom, ubit32 amount)
+void account_withdraw(struct unit_data *god, struct unit_data *whom, uint32_t amount)
 {
    PC_ACCOUNT(whom).credit -= (float)amount;
-   if((ubit32)amount > PC_ACCOUNT(whom).total_credit)
+   if((uint32_t)amount > PC_ACCOUNT(whom).total_credit)
    {
       PC_ACCOUNT(whom).total_credit = 0;
    }
@@ -584,16 +584,16 @@ void account_withdraw(struct unit_data *god, struct unit_data *whom, ubit32 amou
    account_log('W', god, whom, amount);
 }
 
-void account_flatrate_change(struct unit_data *god, struct unit_data *whom, sbit32 days)
+void account_flatrate_change(struct unit_data *god, struct unit_data *whom, int32_t days)
 {
    char   Buf[256];
-   sbit32 add = days * SECS_PER_REAL_DAY;
+   int32_t add = days * SECS_PER_REAL_DAY;
 
    time_t now = time(nullptr);
 
    if(days > 0)
    {
-      if(PC_ACCOUNT(whom).flatrate > (ubit32)now)
+      if(PC_ACCOUNT(whom).flatrate > (uint32_t)now)
       {
          sprintf(Buf, "\n\rAdding %d days to the flatrate.\n\r\n\r", days);
          PC_ACCOUNT(whom).flatrate += add;
@@ -607,7 +607,7 @@ void account_flatrate_change(struct unit_data *god, struct unit_data *whom, sbit
    }
    else /* days < 0 */
    {
-      if((sbit32)PC_ACCOUNT(whom).flatrate + add < now)
+      if((int32_t)PC_ACCOUNT(whom).flatrate + add < now)
       {
          sprintf(Buf, "\n\rDisabling flatrate, enabling measure rate.\n\r\n\r");
          PC_ACCOUNT(whom).flatrate = 0;
@@ -832,7 +832,7 @@ void account_defaults(struct unit_data *pc)
    PC_ACCOUNT(pc).flatrate     = 0;
 }
 
-void charge_sanity(ubit8 b_hr, ubit8 b_min, ubit8 e_hr, ubit8 e_min, int charge)
+void charge_sanity(uint8_t b_hr, uint8_t b_min, uint8_t e_hr, uint8_t e_min, int charge)
 {
    if(charge < 0)
    {
@@ -997,7 +997,7 @@ void CAccountConfig::Boot()
       slog(LOG_ALL, 0, "No account log existed - a new was created.");
 
       now ^= 0xAF876162;
-      fprintf(f, "%08x%08x\n", (ubit32)now, (ubit32)now);
+      fprintf(f, "%08x%08x\n", (uint32_t)now, (uint32_t)now);
 
       fclose(f);
    }

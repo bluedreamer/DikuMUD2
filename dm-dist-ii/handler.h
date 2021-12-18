@@ -47,8 +47,8 @@ auto quest_add(struct unit_data *ch, const char *name, char *descr) -> struct ex
 void insert_in_unit_list(struct unit_data *u);
 void remove_from_unit_list(struct unit_data *unit);
 
-auto find_fptr(struct unit_data *u, ubit16 index) -> struct unit_fptr *;
-auto create_fptr(struct unit_data *u, ubit16 index, ubit16 beat, ubit16 flags, void *data) -> struct unit_fptr *;
+auto find_fptr(struct unit_data *u, uint16_t index) -> struct unit_fptr *;
+auto create_fptr(struct unit_data *u, uint16_t index, uint16_t beat, uint16_t flags, void *data) -> struct unit_fptr *;
 void destroy_fptr(struct unit_data *u, struct unit_fptr *f);
 
 void stop_following(struct unit_data *ch);
@@ -58,10 +58,10 @@ void modify_bright(struct unit_data *unit, int bright);
 void trans_set(struct unit_data *u);
 void trans_unset(struct unit_data *u);
 
-auto equipment(struct unit_data *ch, ubit8 pos) -> struct unit_data *;
-auto equipment_type(struct unit_data *ch, int pos, ubit8 type) -> struct unit_data *;
-void equip_char(struct unit_data *ch, struct unit_data *obj, ubit8 pos);
-auto unequip_char(struct unit_data *ch, ubit8 pos) -> struct unit_data *;
+auto equipment(struct unit_data *ch, uint8_t pos) -> struct unit_data *;
+auto equipment_type(struct unit_data *ch, int pos, uint8_t type) -> struct unit_data *;
+void equip_char(struct unit_data *ch, struct unit_data *obj, uint8_t pos);
+auto unequip_char(struct unit_data *ch, uint8_t pos) -> struct unit_data *;
 auto unequip_object(struct unit_data *obj) -> struct unit_data *;
 void recalc_dex_red(struct unit_data *ch);
 

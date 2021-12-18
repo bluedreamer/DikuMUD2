@@ -111,7 +111,7 @@ void zone_loaded_a_unit(struct unit_data *u)
 auto zone_limit(struct unit_data *u, struct file_index_type *fi, struct zone_reset_cmd *cmd) -> bool
 {
    struct unit_data *tmp;
-   sbit16            i;
+   int16_t            i;
 
    if(fi->type == UNIT_ST_NPC)
    {
@@ -131,7 +131,7 @@ auto zone_limit(struct unit_data *u, struct file_index_type *fi, struct zone_res
    }
 
    /* Check for global maxima */
-   if((cmd->num[0] != 0) && fi->no_in_mem >= (ubit16)(cmd->num[0]))
+   if((cmd->num[0] != 0) && fi->no_in_mem >= (uint16_t)(cmd->num[0]))
    {
       return FALSE;
    }
@@ -231,7 +231,7 @@ auto zone_equip(struct unit_data *u, struct zone_reset_cmd *cmd) -> struct unit_
    {
       szonelog(boot_zone, "Reset Error: %s@%s doesn't have a legal equip position.", cmd->fi[0]->name, cmd->fi[0]->zone->name);
    }
-   else if((equipment(u, cmd->num[1]) == nullptr) && !((cmd->num[0] != 0) && cmd->fi[0]->no_in_mem >= (ubit16)(cmd->num[0])))
+   else if((equipment(u, cmd->num[1]) == nullptr) && !((cmd->num[0] != 0) && cmd->fi[0]->no_in_mem >= (uint16_t)(cmd->num[0])))
    {
       loaded = read_unit(cmd->fi[0]);
 

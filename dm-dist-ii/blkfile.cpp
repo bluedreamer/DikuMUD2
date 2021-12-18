@@ -142,7 +142,7 @@ static void register_free_block(BLK_FILE *bf, blk_handle idx)
 /* Returns a free block and occupies it at the same time. */
 static auto find_occupy_free_blk(BLK_FILE *bf) -> blk_handle
 {
-   ubit8 *b;
+   uint8_t *b;
 
    if(bf->listtop > 0) /* We got a free space in current list */
    {
@@ -158,8 +158,8 @@ static auto find_occupy_free_blk(BLK_FILE *bf) -> blk_handle
 
    if(bf->blktop == BLK_RESERVED)
    {
-      b = (ubit8 *)bf->buf;
-      bwrite_ubit16(&b, (ubit16)BLK_FREE);
+      b = (uint8_t *)bf->buf;
+      bwrite_uint16_t(&b, (uint16_t)BLK_FREE);
       blk_write_block(bf, BLK_RESERVED);
 
       bf->blktop++; /* Skip the reserved block */
@@ -180,7 +180,7 @@ static auto blk_extract_data(BLK_FILE *bf, void *blk_start, void *data, blk_leng
       return nullptr;
    }
 
-   used = (ubit8 *)blk_start - (ubit8 *)bf->buf;
+   used = (uint8_t *)blk_start - (uint8_t *)bf->buf;
    no   = bf->bsize - used;
 
    no = MIN(*len, no); /* Make sure we don't copy too much */
@@ -199,7 +199,7 @@ static auto blk_extract_data(BLK_FILE *bf, void *blk_start, void *data, blk_leng
 
    *len -= no; /* We've not got len-no left to copy */
 
-   return (ubit8 *)data + no;
+   return (uint8_t *)data + no;
 }
 
 /* Copy from data into blk_start the apropriate number of bytes */
@@ -209,7 +209,7 @@ static auto blk_put_data(BLK_FILE *bf, void *blk_start, const void *data) -> con
    int no;
    int used;
 
-   used = (ubit8 *)blk_start - (ubit8 *)bf->buf;
+   used = (uint8_t *)blk_start - (uint8_t *)bf->buf;
    no   = bf->bsize - used;
 
    if(no < 0)
@@ -224,7 +224,7 @@ static auto blk_put_data(BLK_FILE *bf, void *blk_start, const void *data) -> con
 
    memcpy(blk_start, data, no); /* Copy data */
 
-   return (ubit8 *)data + no;
+   return (uint8_t *)data + no;
 }
 
 /* Delete message starting at index "index" */
@@ -232,7 +232,7 @@ void blk_delete(BLK_FILE *bf, blk_handle index)
 {
    blk_handle next_block;
    int        first;
-   ubit8     *b;
+   uint8_t     *b;
 
    if((bf->f = fopen_cache(bf->name, "r+b")) == nullptr)
    {
@@ -245,9 +245,9 @@ void blk_delete(BLK_FILE *bf, blk_handle index)
    {
       blk_read_block(bf, index); /* Read the block to find next block */
 
-      b = (ubit8 *)bf->buf;
+      b = (uint8_t *)bf->buf;
 
-      next_block = (blk_handle)bread_ubit16(&b);
+      next_block = (blk_handle)bread_uint16_t(&b);
 
       if(next_block == BLK_FREE)
       {
@@ -267,12 +267,12 @@ void blk_delete(BLK_FILE *bf, blk_handle index)
                  bf->name);
             return;
          }
-         next_block = (blk_handle)bread_ubit16(&b);
+         next_block = (blk_handle)bread_uint16_t(&b);
          first      = FALSE;
       }
 
-      b = (ubit8 *)bf->buf;
-      bwrite_ubit16(&b, (ubit16)BLK_FREE);
+      b = (uint8_t *)bf->buf;
+      bwrite_uint16_t(&b, (uint16_t)BLK_FREE);
 
       blk_write_block(bf, index); /* Save on disk                      */
 
@@ -311,7 +311,7 @@ auto blk_read(BLK_FILE *bf, blk_handle index, blk_length *blen) -> void *
       blk_read_block(bf, index); /* Read the block into bf->buf */
 
       blk_ptr    = bf->buf;
-      next_block = bread_ubit16((ubit8 **)&blk_ptr);
+      next_block = bread_uint16_t((uint8_t **)&blk_ptr);
 
       if(next_block == BLK_FREE)
       {
@@ -342,12 +342,12 @@ auto blk_read(BLK_FILE *bf, blk_handle index, blk_length *blen) -> void *
          }
 
          /* This was the first block, now read the real next_block */
-         next_block = bread_ubit16((ubit8 **)&blk_ptr);
+         next_block = bread_uint16_t((uint8_t **)&blk_ptr);
 
-         len = bread_ubit32((ubit8 **)&blk_ptr);
+         len = bread_uint32_t((uint8_t **)&blk_ptr);
          if(len > 0)
          {
-            CREATE(data, ubit8, len); /* Alloc space for the buffer */
+            CREATE(data, uint8_t, len); /* Alloc space for the buffer */
          }
          else
          {
@@ -398,19 +398,19 @@ auto blk_write(BLK_FILE *bf, const void *data, blk_length len) -> blk_handle
 
       if(first_block == index)
       {
-         bread_ubit16((ubit8 **)&blk_ptr);
+         bread_uint16_t((uint8_t **)&blk_ptr);
       }
 
-      bread_ubit16((ubit8 **)&blk_ptr);
+      bread_uint16_t((uint8_t **)&blk_ptr);
 
       if(first_block == index)
       {
-         bread_ubit32((ubit8 **)&blk_ptr);
+         bread_uint32_t((uint8_t **)&blk_ptr);
       }
 
       data = blk_put_data(bf, blk_ptr, data);
 
-      if((ubit8 *)data - (ubit8 *)org < len)
+      if((uint8_t *)data - (uint8_t *)org < len)
       {
          next_block = find_occupy_free_blk(bf);
       }
@@ -423,14 +423,14 @@ auto blk_write(BLK_FILE *bf, const void *data, blk_length len) -> blk_handle
 
       if(first_block == index)
       {
-         bwrite_ubit16((ubit8 **)&blk_ptr, (ubit16)BLK_START_V1);
+         bwrite_uint16_t((uint8_t **)&blk_ptr, (uint16_t)BLK_START_V1);
       }
 
-      bwrite_ubit16((ubit8 **)&blk_ptr, (ubit16)next_block);
+      bwrite_uint16_t((uint8_t **)&blk_ptr, (uint16_t)next_block);
 
       if(first_block == index)
       {
-         bwrite_ubit32((ubit8 **)&blk_ptr, (ubit32)len);
+         bwrite_uint32_t((uint8_t **)&blk_ptr, (uint32_t)len);
       }
 
       blk_write_block(bf, index);
@@ -448,11 +448,11 @@ auto blk_write(BLK_FILE *bf, const void *data, blk_length len) -> blk_handle
 void blk_write_reserved(BLK_FILE *bf, const void *data, blk_length len)
 {
    blk_handle i;
-   ubit8     *b;
+   uint8_t     *b;
 
    blk_read_block(bf, BLK_RESERVED);
-   b = (ubit8 *)bf->buf;
-   i = bread_ubit16(&b);
+   b = (uint8_t *)bf->buf;
+   i = bread_uint16_t(&b);
 
    if(i != BLK_FREE)
    {
@@ -461,15 +461,15 @@ void blk_write_reserved(BLK_FILE *bf, const void *data, blk_length len)
 
    i = blk_write(bf, data, len);
 
-   b = (ubit8 *)bf->buf;
-   bwrite_ubit16(&b, i);
+   b = (uint8_t *)bf->buf;
+   bwrite_uint16_t(&b, i);
    blk_write_block(bf, BLK_RESERVED);
 }
 
 auto blk_read_reserved(BLK_FILE *bf, blk_length *blen) -> void *
 {
    blk_handle i;
-   ubit8     *b;
+   uint8_t     *b;
 
    if(bf->blktop == 0)
    {
@@ -481,8 +481,8 @@ auto blk_read_reserved(BLK_FILE *bf, blk_length *blen) -> void *
    }
 
    blk_read_block(bf, BLK_RESERVED);
-   b = (ubit8 *)bf->buf;
-   i = bread_ubit16(&b);
+   b = (uint8_t *)bf->buf;
+   i = bread_uint16_t(&b);
 
    if(i == BLK_FREE)
    {
@@ -516,7 +516,7 @@ auto blk_open(const char *name, blk_length block_size) -> BLK_FILE *
    bf->list    = nullptr;
    bf->bsize   = block_size;
    bf->f       = nullptr;
-   CREATE(bf->buf, ubit8, bf->bsize);
+   CREATE(bf->buf, uint8_t, bf->bsize);
 
    if((bf->f = fopen_cache(bf->name, "r+b")) == nullptr)
    {

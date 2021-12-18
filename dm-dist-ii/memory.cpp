@@ -39,18 +39,18 @@
 
 #ifdef MEMORY_DEBUG /* Endif is at the very bottom! */
 
-ubit32 memory_total_limit = 64L * 1024L * 1024L;
+uint32_t memory_total_limit = 64L * 1024L * 1024L;
 
-ubit32 memory_total_alloc     = 0L;
-ubit32 memory_total_overhead  = 0L;
-ubit32 memory_dijkstra_alloc  = 0L;
-ubit32 memory_pc_alloc        = 0L;
-ubit32 memory_npc_alloc       = 0L;
-ubit32 memory_obj_alloc       = 0L;
-ubit32 memory_room_alloc      = 0L;
-ubit32 memory_roomread_alloc  = 0L;
-ubit32 memory_zoneidx_alloc   = 0L;
-ubit32 memory_zonereset_alloc = 0L;
+uint32_t memory_total_alloc     = 0L;
+uint32_t memory_total_overhead  = 0L;
+uint32_t memory_dijkstra_alloc  = 0L;
+uint32_t memory_pc_alloc        = 0L;
+uint32_t memory_npc_alloc       = 0L;
+uint32_t memory_obj_alloc       = 0L;
+uint32_t memory_room_alloc      = 0L;
+uint32_t memory_roomread_alloc  = 0L;
+uint32_t memory_zoneidx_alloc   = 0L;
+uint32_t memory_zonereset_alloc = 0L;
 
    #define MAX_MEMORY_CHUNK (1000000L) /* Purely for sanity checking! */
 
@@ -89,12 +89,12 @@ void memory_status(char *Buf)
 
 /* Set debug info into allocated memory block (size + info_Size) */
 /* Save no of bytes alloced as RAN_SIZE                          */
-void safe_set_info(void *p, ubit32 len)
+void safe_set_info(void *p, uint32_t len)
 {
-   ubit32 crc;
-   ubit16 low;
-   ubit16 high;
-   ubit8 *ptr;
+   uint32_t crc;
+   uint16_t low;
+   uint16_t high;
+   uint8_t *ptr;
 
    assert(len > 0);
 
@@ -106,26 +106,26 @@ void safe_set_info(void *p, ubit32 len)
 
    crc = len ^ 0xAAAAAAAA;
 
-   ptr = (ubit8 *)p;
+   ptr = (uint8_t *)p;
 
    low  = crc & 0xFFFF;
    high = crc >> 16 & 0xFFFF;
 
-   memcpy(ptr, &low, sizeof(ubit16));
-   memcpy(sizeof(ubit16) + ptr, &len, sizeof(len));
-   ptr = (ubit8 *)p + len - CRC_SIZE / 2;
-   memcpy(ptr, &high, sizeof(ubit16));
+   memcpy(ptr, &low, sizeof(uint16_t));
+   memcpy(sizeof(uint16_t) + ptr, &len, sizeof(len));
+   ptr = (uint8_t *)p + len - CRC_SIZE / 2;
+   memcpy(ptr, &high, sizeof(uint16_t));
 }
 
 /* Reset and check debug info from memory block */
 /* Return len of data checkked.                 */
-auto safe_check_info(void *p) -> ubit32
+auto safe_check_info(void *p) -> uint32_t
 {
-   ubit32 crc;
-   ubit16 low;
-   ubit16 high;
-   ubit32 len;
-   ubit8 *pEnd;
+   uint32_t crc;
+   uint16_t low;
+   uint16_t high;
+   uint32_t len;
+   uint8_t *pEnd;
 
    if(p == nullptr)
    {
@@ -133,16 +133,16 @@ auto safe_check_info(void *p) -> ubit32
       assert(FALSE);
    }
 
-   pEnd = (ubit8 *)p;
-   memcpy(&low, pEnd, sizeof(ubit16));
-   memcpy(&len, sizeof(ubit16) + pEnd, sizeof(len));
+   pEnd = (uint8_t *)p;
+   memcpy(&low, pEnd, sizeof(uint16_t));
+   memcpy(&len, sizeof(uint16_t) + pEnd, sizeof(len));
 
    assert(len < MAX_MEMORY_CHUNK);
 
-   pEnd = (ubit8 *)p + len - CRC_SIZE / 2;
-   memcpy(&high, pEnd, sizeof(ubit16));
+   pEnd = (uint8_t *)p + len - CRC_SIZE / 2;
+   memcpy(&high, pEnd, sizeof(uint16_t));
 
-   crc = (((ubit32)high) << 16) | (ubit32)low;
+   crc = (((uint32_t)high) << 16) | (uint32_t)low;
 
    if(crc != (len ^ 0xAAAAAAAA))
    {
@@ -168,14 +168,14 @@ auto safe_malloc(size_t size) -> void *
 
    safe_set_info(p, size + RAN_SIZE + CRC_SIZE);
 
-   return (ubit8 *)p + RAN_SIZE + CRC_SIZE / 2; /* Skip control info */
+   return (uint8_t *)p + RAN_SIZE + CRC_SIZE / 2; /* Skip control info */
 }
 
 auto safe_realloc(void *p, size_t size) -> void *
 {
    assert(size > 0);
 
-   p = (ubit8 *)p - (RAN_SIZE + CRC_SIZE / 2);
+   p = (uint8_t *)p - (RAN_SIZE + CRC_SIZE / 2);
 
    memory_total_alloc -= safe_check_info(p);
    memory_total_alloc += size + RAN_SIZE + CRC_SIZE;
@@ -184,7 +184,7 @@ auto safe_realloc(void *p, size_t size) -> void *
    p = realloc(p, size + RAN_SIZE + CRC_SIZE);
    safe_set_info(p, size + RAN_SIZE + CRC_SIZE);
 
-   return (ubit8 *)p + RAN_SIZE + CRC_SIZE / 2; /* Skip control info */
+   return (uint8_t *)p + RAN_SIZE + CRC_SIZE / 2; /* Skip control info */
 }
 
 auto safe_calloc(size_t nobj, size_t size) -> void *
@@ -201,19 +201,19 @@ auto safe_calloc(size_t nobj, size_t size) -> void *
 
 void safe_free(void *p)
 {
-   ubit32 len;
+   uint32_t len;
 
    if(p == nullptr)
    {
       assert(FALSE);
    }
-   p   = (ubit8 *)p - (RAN_SIZE + CRC_SIZE / 2);
+   p   = (uint8_t *)p - (RAN_SIZE + CRC_SIZE / 2);
    len = safe_check_info(p);
    memset(p, 255, len);
 
    memory_total_alloc -= len;
    memory_total_overhead--;
 
-   free((ubit8 *)p);
+   free((uint8_t *)p);
 }
 #endif

@@ -42,7 +42,7 @@
 #include "utils.h"
 #include <climits>
 
-auto raw_destruct_affect(struct unit_affected_type *af) -> ubit1
+auto raw_destruct_affect(struct unit_affected_type *af) -> bool
 {
    void unlink_affect(struct unit_data * u, struct unit_affected_type * af);
 
@@ -50,7 +50,7 @@ auto raw_destruct_affect(struct unit_affected_type *af) -> ubit1
    return FALSE;                 /* CANCEL */
 }
 
-auto skill_overflow(int skill, int change, ubit1 set) -> ubit1
+auto skill_overflow(int skill, int change, bool set) -> bool
 {
    if(set != 0u)
    {
@@ -78,7 +78,7 @@ auto skill_overflow(int skill, int change, ubit1 set) -> ubit1
 /*                                                      */
 /* Data[0] Must contain bits to set in CHAR_FLAGS()     */
 /*                                                      */
-auto apf_mod_char_flags(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
+auto apf_mod_char_flags(struct unit_affected_type *af, struct unit_data *unit, bool set) -> bool
 {
    struct unit_affected_type *taf;
 
@@ -86,11 +86,11 @@ auto apf_mod_char_flags(struct unit_affected_type *af, struct unit_data *unit, u
 
    if(set != 0u)
    {
-      SET_BIT(CHAR_FLAGS(unit), (ubit32)af->data[0]);
+      SET_BIT(CHAR_FLAGS(unit), (uint32_t)af->data[0]);
    }
    else
    {
-      REMOVE_BIT(CHAR_FLAGS(unit), (ubit32)af->data[0]);
+      REMOVE_BIT(CHAR_FLAGS(unit), (uint32_t)af->data[0]);
 
       /* After bit has been removed, call all apply functions  */
       /* which will set bits [and one of these may be the bit  */
@@ -102,7 +102,7 @@ auto apf_mod_char_flags(struct unit_affected_type *af, struct unit_data *unit, u
       {
          if((taf != af) && (taf->applyf_i == APF_MOD_CHAR_FLAGS))
          {
-            SET_BIT(CHAR_FLAGS(unit), (ubit32)taf->data[0]);
+            SET_BIT(CHAR_FLAGS(unit), (uint32_t)taf->data[0]);
          }
       }
    }
@@ -112,7 +112,7 @@ auto apf_mod_char_flags(struct unit_affected_type *af, struct unit_data *unit, u
 /*                                                      */
 /* Data[0] Must contain bits to set in OBJ_FLAGS() */
 /*                                                      */
-auto apf_mod_obj_flags(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
+auto apf_mod_obj_flags(struct unit_affected_type *af, struct unit_data *unit, bool set) -> bool
 {
    struct unit_affected_type *taf;
 
@@ -120,11 +120,11 @@ auto apf_mod_obj_flags(struct unit_affected_type *af, struct unit_data *unit, ub
 
    if(set != 0u)
    {
-      SET_BIT(OBJ_FLAGS(unit), (ubit32)af->data[0]);
+      SET_BIT(OBJ_FLAGS(unit), (uint32_t)af->data[0]);
    }
    else
    {
-      REMOVE_BIT(OBJ_FLAGS(unit), (ubit32)af->data[0]);
+      REMOVE_BIT(OBJ_FLAGS(unit), (uint32_t)af->data[0]);
 
       /* After bit has been removed, call all apply functions  */
       /* which will set bits [and one of these may be the bit  */
@@ -136,7 +136,7 @@ auto apf_mod_obj_flags(struct unit_affected_type *af, struct unit_data *unit, ub
       {
          if((taf != af) && (taf->applyf_i == APF_MOD_OBJ_FLAGS))
          {
-            SET_BIT(OBJ_FLAGS(unit), (ubit32)taf->data[0]);
+            SET_BIT(OBJ_FLAGS(unit), (uint32_t)taf->data[0]);
          }
       }
    }
@@ -146,17 +146,17 @@ auto apf_mod_obj_flags(struct unit_affected_type *af, struct unit_data *unit, ub
 /*                                                      */
 /* Data[0] Must contain bits to set in UNIT_FLAGS()     */
 /*                                                      */
-auto apf_mod_unit_flags(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
+auto apf_mod_unit_flags(struct unit_affected_type *af, struct unit_data *unit, bool set) -> bool
 {
    struct unit_affected_type *taf;
 
    if(set != 0u)
    {
-      SET_BIT(UNIT_FLAGS(unit), (ubit16)af->data[0]);
+      SET_BIT(UNIT_FLAGS(unit), (uint16_t)af->data[0]);
    }
    else
    {
-      REMOVE_BIT(UNIT_FLAGS(unit), (ubit16)af->data[0]);
+      REMOVE_BIT(UNIT_FLAGS(unit), (uint16_t)af->data[0]);
 
       /* After bit has been removed, call all apply functions  */
       /* which will set bits [and one of these may be the bit  */
@@ -168,14 +168,14 @@ auto apf_mod_unit_flags(struct unit_affected_type *af, struct unit_data *unit, u
       {
          if((taf != af) && (taf->applyf_i == APF_MOD_UNIT_FLAGS))
          {
-            SET_BIT(UNIT_FLAGS(unit), (ubit16)taf->data[0]);
+            SET_BIT(UNIT_FLAGS(unit), (uint16_t)taf->data[0]);
          }
       }
    }
    return TRUE;
 }
 
-auto apf_weapon_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
+auto apf_weapon_adj(struct unit_affected_type *af, struct unit_data *unit, bool set) -> bool
 {
    int modify;
 
@@ -239,7 +239,7 @@ auto apf_weapon_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1
 }
 
 /* NPC's are ignored, they don't have skills. */
-auto apf_skill_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
+auto apf_skill_adj(struct unit_affected_type *af, struct unit_data *unit, bool set) -> bool
 {
    if(!IS_CHAR(unit))
    {
@@ -278,7 +278,7 @@ auto apf_skill_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1 
 /* Data[1] must contain the amount to change              */
 /* Data[1] is added when set, and subtracted when not set */
 /* Unit can be CHAR                                       */
-auto apf_spell_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
+auto apf_spell_adj(struct unit_affected_type *af, struct unit_data *unit, bool set) -> bool
 {
    int modify;
 
@@ -345,7 +345,7 @@ auto apf_spell_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1 
 /* Data[1] must contain the amount to change              */
 /* Data[1] is added when set, and subtracted when not set */
 /* Unit must be a CHAR!                                   */
-auto apf_ability_adj(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
+auto apf_ability_adj(struct unit_affected_type *af, struct unit_data *unit, bool set) -> bool
 {
    assert(IS_CHAR(unit));
 
@@ -382,7 +382,7 @@ auto apf_ability_adj(struct unit_affected_type *af, struct unit_data *unit, ubit
 }
 
 /* Data[0] = Amount of light sources */
-auto apf_light(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
+auto apf_light(struct unit_affected_type *af, struct unit_data *unit, bool set) -> bool
 {
    if(set == 0u)
    {
@@ -406,7 +406,7 @@ auto apf_light(struct unit_affected_type *af, struct unit_data *unit, ubit1 set)
 
 /* Data[0] = The new armour-type */
 /* Data[1] = The original armour-type */
-auto apf_natural_armour(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
+auto apf_natural_armour(struct unit_affected_type *af, struct unit_data *unit, bool set) -> bool
 {
    if(!IS_CHAR(unit))
    {
@@ -446,7 +446,7 @@ auto apf_natural_armour(struct unit_affected_type *af, struct unit_data *unit, u
 /* Data[0] = The new speed            */
 /* Data[2] = The original speed - [2] because it is not tested in the
              unequip_object affect remove match. */
-auto apf_speed(struct unit_affected_type *af, struct unit_data *unit, ubit1 set) -> ubit1
+auto apf_speed(struct unit_affected_type *af, struct unit_data *unit, bool set) -> bool
 {
    if(!IS_CHAR(unit))
    {

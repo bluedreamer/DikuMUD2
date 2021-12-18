@@ -290,7 +290,7 @@ file_index_type::~file_index_type()
    }
 }
 
-unit_data::unit_data(ubit8 type)
+unit_data::unit_data(uint8_t type)
 {
    status = type;
 
@@ -360,7 +360,7 @@ unit_data::~unit_data()
    int        memory_start = memory_total_alloc;
 #endif
 
-   ubit8 type;
+   uint8_t type;
 
    void unlink_affect(struct unit_data * u, struct unit_affected_type * af);
 

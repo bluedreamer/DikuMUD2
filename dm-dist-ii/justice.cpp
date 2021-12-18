@@ -65,15 +65,15 @@ static int crime_serial_no = 0;
 
 struct char_crime_data
 {
-   ubit32 crime_nr;            /* global unique crime number  */
-   ubit8  ticks_to_neutralize; /* ticks before crime deletes  */
+   uint32_t crime_nr;            /* global unique crime number  */
+   uint8_t  ticks_to_neutralize; /* ticks before crime deletes  */
 
    int  id;                         /* id of offender PC           */
    char name_criminal[PC_MAX_NAME]; /* Name of offender            */
 
    char                    victim[31]; /* name of victim              */
-   ubit8                   crime_type; /* what crime? (kill, theft..) */
-   ubit8                   reported;   /* Has crime been reported?    */
+   uint8_t                   crime_type; /* what crime? (kill, theft..) */
+   uint8_t                   reported;   /* Has crime been reported?    */
    struct char_crime_data *next;       /* link->                      */
 };
 
@@ -301,7 +301,7 @@ void set_witness(struct unit_data *criminal, struct unit_data *witness, int no, 
 {
    struct unit_affected_type af;
 
-   void activate_accuse(struct unit_data * npc, ubit8 crime_type, const char *cname);
+   void activate_accuse(struct unit_data * npc, uint8_t crime_type, const char *cname);
 
    if(!IS_PC(criminal))
    {
@@ -384,7 +384,7 @@ auto crime_victim_name(int crime_no, int id) -> const char *
 
    for(c = crime_list; c != nullptr; c = c->next)
    {
-      if((c->crime_nr == (ubit32)crime_no) && (c->id == id))
+      if((c->crime_nr == (uint32_t)crime_no) && (c->id == id))
       {
          return c->name_criminal;
       }
@@ -393,7 +393,7 @@ auto crime_victim_name(int crime_no, int id) -> const char *
    return "";
 }
 
-void log_crime(struct unit_data *criminal, struct unit_data *victim, ubit8 crime_type, int active)
+void log_crime(struct unit_data *criminal, struct unit_data *victim, uint8_t crime_type, int active)
 {
    int i;
    int j;
@@ -702,7 +702,7 @@ void update_crimes()
 struct npc_accuse_data
 {
    char *criminal_name;
-   ubit8 crime_type;
+   uint8_t crime_type;
    int   was_wimpy;
 };
 
@@ -763,7 +763,7 @@ auto npc_accuse(const struct unit_data *npc, struct visit_data *vd) -> int
    return DESTROY_ME;
 }
 
-void activate_accuse(struct unit_data *npc, ubit8 crime_type, const char *cname)
+void activate_accuse(struct unit_data *npc, uint8_t crime_type, const char *cname)
 {
    struct npc_accuse_data *nad;
    struct unit_data       *prison;

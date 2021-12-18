@@ -103,10 +103,10 @@ int is_in(int a, int from, int to)
 int main(int argc, char *argv[])
 {
    int       n, i;
-   ubit8     Buf[12];
+   uint8_t     Buf[12];
    struct tm tm_on, tm_off;
    int       error = FALSE;
-   ubit32    count = 1;
+   uint32_t    count = 1;
 
    int day   = -1;
    int week  = -1;
@@ -161,14 +161,14 @@ int main(int argc, char *argv[])
 
    while(!feof(stdin))
    {
-      ubit32 id;
-      ubit32 on;
-      ubit32 off;
+      uint32_t id;
+      uint32_t on;
+      uint32_t off;
 
       n = 0;
-      n += fread(&id, sizeof(ubit32), 1, stdin);
-      n += fread(&on, sizeof(ubit32), 1, stdin);
-      n += fread(&off, sizeof(ubit32), 1, stdin);
+      n += fread(&id, sizeof(uint32_t), 1, stdin);
+      n += fread(&on, sizeof(uint32_t), 1, stdin);
+      n += fread(&off, sizeof(uint32_t), 1, stdin);
 
       if(n != 3)
       {

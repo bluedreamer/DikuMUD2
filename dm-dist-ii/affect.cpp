@@ -236,7 +236,7 @@ void affect_clear_unit(struct unit_data *unit)
    }
 }
 
-auto affected_by_spell(const struct unit_data *unit, sbit16 id) -> struct unit_affected_type *
+auto affected_by_spell(const struct unit_data *unit, int16_t id) -> struct unit_affected_type *
 {
    struct unit_affected_type *af;
 

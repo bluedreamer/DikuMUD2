@@ -61,14 +61,14 @@ void set_spellargs(struct spell_args *sa, struct unit_data *caster, struct unit_
 
 /* Check if type is proper compared to specifications in the spell list */
 /* above.                                                               */
-auto spell_legal_type(int spl, int type) -> ubit1
+auto spell_legal_type(int spl, int type) -> bool
 {
    return IS_SET(spell_info[spl].media, type);
 }
 
 /* Check if target is proper compared to specifications in the spell list */
 /* above. Useable with for example wand checks to see if target is legal  */
-auto spell_legal_target(int spl, struct unit_data *caster, struct unit_data *target) -> ubit1
+auto spell_legal_target(int spl, struct unit_data *caster, struct unit_data *target) -> bool
 {
    if(IS_SET(spell_info[spl].targets, TAR_IGNORE))
    {
@@ -264,7 +264,7 @@ void do_cast(struct unit_data *ch, char *argument, const struct command_info *cm
 {
    struct unit_data *unit;
    int               spl;
-   ubit1             target_ok;
+   bool             target_ok;
    char             *orgarg;
    char             *c;
 
@@ -458,7 +458,7 @@ void do_cast(struct unit_data *ch, char *argument, const struct command_info *cm
 
       if(IS_MORTAL(ch))
    {
-      if(CHAR_MANA(ch) < (sbit16)(spell_info[spl].usesmana))
+      if(CHAR_MANA(ch) < (int16_t)(spell_info[spl].usesmana))
       {
          send_to_char("You can't summon enough energy to "
                       "cast the spell.\n\r",
@@ -741,7 +741,7 @@ static void spell_read()
       else if(strncmp(pTmp, "offensive", 9) == 0)
       {
          dummy                     = atoi(pCh);
-         spell_info[idx].offensive = static_cast<ubit8>(dummy != 0);
+         spell_info[idx].offensive = static_cast<uint8_t>(dummy != 0);
       }
       else if(strncmp(pTmp, "race ", 5) == 0)
       {

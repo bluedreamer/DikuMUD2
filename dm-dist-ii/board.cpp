@@ -554,10 +554,10 @@ auto remove_msg(struct unit_data *ch, struct board_info *tb, char *arg) -> int
 
 void save_board_msg(struct board_info *tb, int index, char *text)
 {
-   ubit8     *buffer;
-   ubit8     *start;
+   uint8_t     *buffer;
+   uint8_t     *start;
    blk_length len;
-   ubit8      buf[4 * MAX_STRING_LENGTH];
+   uint8_t      buf[4 * MAX_STRING_LENGTH];
 
    if(tb->handles[index] != BLK_NULL)
    {
@@ -568,7 +568,7 @@ void save_board_msg(struct board_info *tb, int index, char *text)
 
    bwrite_string(&buffer, tb->msgs[index].header);
    bwrite_string(&buffer, tb->msgs[index].owner);
-   bwrite_ubit32(&buffer, tb->msgs[index].time);
+   bwrite_uint32_t(&buffer, tb->msgs[index].time);
 
    tb->msgs[index].text = str_dup(text);
    bwrite_string(&buffer, tb->msgs[index].text);
@@ -587,11 +587,11 @@ void save_board_msg(struct board_info *tb, int index, char *text)
 
 void load_board_msg(struct board_info *tb, int index, bool text)
 {
-   ubit8 *buffer;
-   ubit8 *keep;
+   uint8_t *buffer;
+   uint8_t *keep;
    char   buf[MAX_STRING_LENGTH];
 
-   keep = buffer = (ubit8 *)blk_read(tb->bf, tb->handles[index], nullptr);
+   keep = buffer = (uint8_t *)blk_read(tb->bf, tb->handles[index], nullptr);
 
    if(buffer == nullptr) /* Read error */
    {
@@ -607,14 +607,14 @@ void load_board_msg(struct board_info *tb, int index, bool text)
    {
       bread_strcpy(&buffer, buf); /* Skip Header */
       bread_strcpy(&buffer, buf); /* Skip Owner  */
-      bread_ubit32(&buffer);
+      bread_uint32_t(&buffer);
       tb->msgs[index].text = bread_str_alloc(&buffer);
    }
    else
    {
       tb->msgs[index].header = bread_str_alloc(&buffer);
       tb->msgs[index].owner  = bread_str_alloc(&buffer);
-      tb->msgs[index].time   = bread_ubit32(&buffer);
+      tb->msgs[index].time   = bread_uint32_t(&buffer);
       tb->msgs[index].text   = nullptr;
    }
 

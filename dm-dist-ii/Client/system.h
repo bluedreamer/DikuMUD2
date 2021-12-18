@@ -48,35 +48,35 @@
 class cSystem : public cChannel
 {
   public:
-   cSystem(ubit8 nChn);
+   cSystem(uint8_t nChn);
    ~cSystem(void);
    
-   void Receive(ubit8 *data, ubit32 len);
+   void Receive(uint8_t *data, uint32_t len);
    const char *Status(void);
 
    void SetPriority(void);
-   void RemoteOpen(int nServiceType, ubit8 nChn = 0, char *pStr = NULL);
-   void RemoteClose(ubit8 nChn);
+   void RemoteOpen(int nServiceType, uint8_t nChn = 0, char *pStr = NULL);
+   void RemoteClose(uint8_t nChn);
 
-   ubit32 PriorityDelay(void) { return nDelay; }
-   ubit16 PriorityQueue(void) { return nQueue; }
-   ubit16 PrioritySize(void)  { return nSize; }
+   uint32_t PriorityDelay(void) { return nDelay; }
+   uint16_t PriorityQueue(void) { return nQueue; }
+   uint16_t PrioritySize(void)  { return nSize; }
 
   private:
-   void SystemGatherInfo(ubit8 *data, int len);
-   void SystemNormal(ubit8 *data, int len);
+   void SystemGatherInfo(uint8_t *data, int len);
+   void SystemNormal(uint8_t *data, int len);
    void SendDir(void);
    void CD(char *path);
 
    char StatusBuf[1024];
-   ubit32 nState;
-   ubit8 nPriorityQueue;
-   ubit8 nPriorityDelay;
-   ubit8 nPrioritySize;
+   uint32_t nState;
+   uint8_t nPriorityQueue;
+   uint8_t nPriorityDelay;
+   uint8_t nPrioritySize;
 
-   ubit16 nQueue;
-   ubit32 nSize;
-   ubit32 nDelay;
+   uint16_t nQueue;
+   uint32_t nSize;
+   uint32_t nDelay;
 };
 
 extern class cSystem *System;

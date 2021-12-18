@@ -62,7 +62,7 @@ struct timezone
 
 #include "unixshit.h"
 
-extern ubit32 memory_total_alloc;
+extern uint32_t memory_total_alloc;
 
 #define OPT_USEC            250000L /* time delay corresponding to 4 passes/sec */
 #define HEAPSPACE_INCREMENT 500
@@ -161,11 +161,11 @@ void type_validate()
 {
    assert(sizeof(void *) == 8);
    assert(sizeof(char) == 1);
-   assert(sizeof(ubit1) == 1);
-   assert(sizeof(ubit8) == 1);
-   assert(sizeof(ubit16) == 2);
-   assert(sizeof(ubit32) == 4);
-   assert(sizeof(ubit64) == 8);
+   assert(sizeof(bool) == 1);
+   assert(sizeof(uint8_t) == 1);
+   assert(sizeof(uint16_t) == 2);
+   assert(sizeof(uint32_t) == 4);
+   assert(sizeof(uint64_t) == 8);
    slog(LOG_ALL, 0, "64-bit architecture checked out OK");
 }
 

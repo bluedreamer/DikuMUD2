@@ -48,7 +48,7 @@ public:
 
    [[nodiscard]] auto tfd() const -> int;
    [[nodiscard]] auto IsHooked() const -> int;
-   void               Write(ubit8 *pData, ubit32 nLen, int bCopy = TRUE);
+   void               Write(uint8_t *pData, uint32_t nLen, int bCopy = TRUE);
 
    cQueue qRX;
 

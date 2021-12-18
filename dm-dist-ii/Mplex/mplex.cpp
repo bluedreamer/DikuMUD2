@@ -109,7 +109,7 @@ public:
          }
          else
          {
-            extern ubit32 memory_total_alloc;
+            extern uint32_t memory_total_alloc;
             slog(LOG_OFF, 0,
                  "Connection from [%s] (%d left) (%d bytes "
                  "allocated).",
@@ -290,7 +290,7 @@ int ParseArg(int argc, char *argv[], struct arg_type *arg)
 /* ======================= TEXT PARSE & ECHO INPUT ====================== */
 
 /* Maybe this would be overall easier? */
-char cConHook::AddInputChar(ubit8 c)
+char cConHook::AddInputChar(uint8_t c)
 {
    char *cp = m_aInputBuf;
 
@@ -403,7 +403,7 @@ void cConHook::AddString(char *str)
    assert(eb - echobuf < (int)sizeof(echobuf) - 1);
 
    if(m_sSetup.echo)
-      Write((ubit8 *)echobuf, eb - echobuf);
+      Write((uint8_t *)echobuf, eb - echobuf);
 }
 
 /* On -1 'con' was destroyed */
@@ -533,17 +533,17 @@ void cConHook::PromptErase(void)
    m_nPromptLen = 0;
 
    if(*buf)
-      Write((ubit8 *)buf, strlen(buf));
+      Write((uint8_t *)buf, strlen(buf));
 }
 
 /* Assumes that a newline has already been output */
 void cConHook::PromptRedraw(const char *prompt)
 {
    if(*prompt)
-      Write((ubit8 *)prompt, strlen(prompt));
+      Write((uint8_t *)prompt, strlen(prompt));
 
    if(*m_aInputBuf)
-      Write((ubit8 *)m_aInputBuf, strlen(m_aInputBuf));
+      Write((uint8_t *)m_aInputBuf, strlen(m_aInputBuf));
 
    m_nPromptLen = strlen(prompt);
 }
@@ -556,7 +556,7 @@ void cConHook::WriteCon(const char *text)
    if(text == NULL)
       return;
 
-   Write((ubit8 *)text, strlen(text));
+   Write((uint8_t *)text, strlen(text));
 }
 
 void cConHook::SendCon(const char *text)
@@ -566,7 +566,7 @@ void cConHook::SendCon(const char *text)
 
 /* ======================= 'Con' handling ====================== */
 
-void cConHook::SequenceCompare(ubit8 *pBuf, int *pnLen)
+void cConHook::SequenceCompare(uint8_t *pBuf, int *pnLen)
 {
    // static const char *match = "a";
    static const char *match = "[W32-V/C@SiGn]";
@@ -730,7 +730,7 @@ cConHook::~cConHook(void)
    connections_left++;
 }
 
-void cConHook::testChar(ubit8 c)
+void cConHook::testChar(uint8_t c)
 {
    switch(m_nFirst)
    {
@@ -799,7 +799,7 @@ void cConHook::testChar(ubit8 c)
    }
 }
 
-void cConHook::getLine(ubit8 buf[], int *size)
+void cConHook::getLine(uint8_t buf[], int *size)
 {
    int i;
 
@@ -831,7 +831,7 @@ void cConHook::Input(int nFlags)
    else if(nFlags & SELECT_READ)
    {
       char *c;
-      ubit8 buf[1024];
+      uint8_t buf[1024];
 
       int n = read(this->tfd(), buf, sizeof(buf) - 1);
 
@@ -919,7 +919,7 @@ void ClearUnhooked(void)
 void cConHook::TransmitCommand(const char *text)
 {
    char  *d;
-   ubit16 len;
+   uint16_t len;
 
    if((d = (char *)strchr(text, '\r'))) // MS2020
       *d = 0;
@@ -1026,7 +1026,7 @@ void cConHook::PressReturn(const char *cmd)
       {
          char buf[1000];
          strcpy(buf, ParseOutput(CONTROL_FG_RED "\n\r<Read Done>" CONTROL_FG_WHITE "\n\r"));
-         Write((ubit8 *)buf, strlen(buf));
+         Write((uint8_t *)buf, strlen(buf));
          PlayLoop("");
       }
    }
@@ -1097,7 +1097,7 @@ void cConHook::ShowChunk(void)
 
    assert(strlen(buffer) < sizeof(buffer));
 
-   Write((ubit8 *)buffer, strlen(buffer));
+   Write((uint8_t *)buffer, strlen(buffer));
 }
 
 void cConHook::ProcessPaged(void)
@@ -1113,10 +1113,10 @@ void cConHook::ProcessPaged(void)
 int cMudHook::read_mud(void)
 {
    class cConHook *con;
-   ubit16          id, len;
+   uint16_t          id, len;
    int             p, n;
    char           *data;
-   ubit8           text_type;
+   uint8_t           text_type;
 
    p = protocol_parse_incoming(this, &id, &len, &data, &text_type);
 
@@ -1221,7 +1221,7 @@ int cMudHook::read_mud(void)
                      break;
 
                   default:
-                     con->Write((ubit8 *)parsed, strlen(parsed));
+                     con->Write((uint8_t *)parsed, strlen(parsed));
                      break;
                }
                break;

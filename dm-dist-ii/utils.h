@@ -32,7 +32,7 @@
 #include "essential.h"
 #include "structs.h"
 
-extern const sbit8 time_light[];
+extern const int8_t time_light[];
 
 /* ..................................................................... */
 

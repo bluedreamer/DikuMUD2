@@ -126,12 +126,12 @@ auto pay_point_charlie(struct unit_data *ch, struct unit_data *to) -> int
             account_paypoint(ch);
             return FALSE;
          }
-         if((UNIT_FI_ZONE(to)->payonly == 2) && (PC_ACCOUNT(ch).flatrate < (ubit32)time(0)))
+         if((UNIT_FI_ZONE(to)->payonly == 2) && (PC_ACCOUNT(ch).flatrate < (uint32_t)time(0)))
          {
             account_paypoint(ch);
             return FALSE;
          }
-         else if((UNIT_FI_ZONE(to)->payonly == 3) && ((PC_ACCOUNT(ch).total_credit > 0) || (PC_ACCOUNT(ch).flatrate > (ubit32)time(0))))
+         else if((UNIT_FI_ZONE(to)->payonly == 3) && ((PC_ACCOUNT(ch).total_credit > 0) || (PC_ACCOUNT(ch).flatrate > (uint32_t)time(0))))
          {
             account_paypoint(ch);
             return FALSE;

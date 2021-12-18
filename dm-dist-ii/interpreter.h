@@ -44,24 +44,24 @@ struct spec_arg
    int *pInt; /* Potential int to modify */
 
    const char *arg;
-   ubit16      mflags; /* Would like to make constant, but then can't define.. */
+   uint16_t      mflags; /* Would like to make constant, but then can't define.. */
 };
 
 struct command_info
 {
-   ubit8 combat_speed;  /* The speed of a combat command         */
-   ubit8 combat_buffer; /* Use the combat speed / buffer system? */
+   uint8_t combat_speed;  /* The speed of a combat command         */
+   uint8_t combat_buffer; /* Use the combat speed / buffer system? */
 
    const char *cmd_str;
 
-   sbit32 no;
+   int32_t no;
 
-   ubit8 minimum_position;
+   uint8_t minimum_position;
 
    void (*cmd_fptr)(struct unit_data *ch, char *arg, const struct command_info *c);
 
-   ubit8 minimum_level;
-   ubit8 log_level; /* For logging certain immortal commands */
+   uint8_t minimum_level;
+   uint8_t log_level; /* For logging certain immortal commands */
 
    struct diltemplate *tmpl; /* Perhaps a DIL template...         */
 
@@ -80,8 +80,8 @@ struct unit_function_array_type
    const char *name;
    int (*func)(struct spec_arg *sarg);
    int    save_w_d; /* May it be saved if it has data? True/false */
-   ubit16 sfb;      /* what kind of messages should be send */
-   sbit16 tick;     /* Default tick count */
+   uint16_t sfb;      /* what kind of messages should be send */
+   int16_t tick;     /* Default tick count */
 };
 
 extern struct command_info  cmd_auto_enter;
@@ -97,10 +97,10 @@ extern struct command_info  cmd_auto_damage;
 extern struct command_info  cmd_a_social;
 
 /* To check for commands by string */
-auto is_command(const struct command_info *cmd, const char *str) -> ubit1;
+auto is_command(const struct command_info *cmd, const char *str) -> bool;
 
 /* Check to see if typed command is abbreviated */
-auto cmd_is_abbrev(struct unit_data *ch, const struct command_info *cmd) -> ubit1;
+auto cmd_is_abbrev(struct unit_data *ch, const struct command_info *cmd) -> bool;
 
 /* Interpreter routines */
 void wrong_position(struct unit_data *ch);
@@ -113,7 +113,7 @@ void half_chop(char *string, char *arg1, char *arg2);
 auto unit_function_scan(struct unit_data *u, struct spec_arg *sarg) -> int;
 auto function_activate(struct unit_data *u, struct spec_arg *sarg) -> int;
 #ifdef DMSERVER
-auto basic_special(struct unit_data *ch, struct spec_arg *sarg, ubit16 mflt, struct unit_data *extra_target = nullptr) -> int;
+auto basic_special(struct unit_data *ch, struct spec_arg *sarg, uint16_t mflt, struct unit_data *extra_target = nullptr) -> int;
 #endif
 auto send_preprocess(struct unit_data *ch, const struct command_info *cmd, const char *arg) -> int;
 void send_done(struct unit_data *activator, struct unit_data *medium, struct unit_data *target, int i, const struct command_info *cmd,

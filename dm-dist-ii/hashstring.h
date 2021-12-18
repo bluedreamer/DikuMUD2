@@ -38,15 +38,15 @@ class cStringConstant
       friends of this class */
 
 private:
-   cStringConstant(const char *c, ubit32 len, ubit32 h);
+   cStringConstant(const char *c, uint32_t len, uint32_t h);
    ~cStringConstant();
    inline auto String() -> const char * { return pStr; }
    inline auto Next() -> cStringConstant * { return pNext; }
 
    char                  *pStr;
-   ubit32                 nReferences;
+   uint32_t                 nReferences;
    class cStringConstant *pNext;
-   ubit32                 nStrLen;
+   uint32_t                 nStrLen;
    // Possibly consider storing the Hash value for speed on destruction
 };
 
@@ -59,7 +59,7 @@ public:
    inline auto StringPtr() -> const char * { return pConst != nullptr ? pConst->pStr : nullptr; }
    inline auto String() -> const char * { return pConst != nullptr ? pConst->pStr : ""; }
    void        Reassign(const char *c);
-   inline auto Length() -> const ubit32 { return pConst != nullptr ? pConst->nStrLen : 0; }
+   inline auto Length() -> const uint32_t { return pConst != nullptr ? pConst->nStrLen : 0; }
 
 private:
    void                   Make(const char *str);

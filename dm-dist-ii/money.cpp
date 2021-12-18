@@ -96,14 +96,14 @@ auto local_currency(struct unit_data *unit) -> currency_t
 /*  Print out an optimal representation of currency
  *  e.g.: (1230, DEF_CURRENCY) -> '10 copper coins and 3 iron coins'
  */
-auto money_string(amount_t amt, currency_t currency, ubit1 verbose) -> const char *
+auto money_string(amount_t amt, currency_t currency, bool verbose) -> const char *
 {
    static char        buf[512];
    char               tmp[256];
    struct money_type *money_tmp[MAX_MONEY + 1];
-   sbit8              i;
-   sbit8              nr    = 0;
-   sbit8              count = 0;
+   int8_t              i;
+   int8_t              nr    = 0;
+   int8_t              count = 0;
    amount_t           times;
 
    /* Get an array of all types in this currency */
@@ -203,7 +203,7 @@ static auto calc_money(amount_t v1, char op, amount_t v2) -> amount_t
 auto set_money(struct unit_data *money, amount_t amt) -> struct unit_data *
 {
    char   tmp[256];
-   ubit32 i;
+   uint32_t i;
 
    assert(IS_MONEY(money));
 
@@ -235,8 +235,8 @@ auto set_money(struct unit_data *money, amount_t amt) -> struct unit_data *
     */
    for(i = 0; i < UNIT_NAMES(money).Length(); ++i)
    {
-      ubit32 j;
-      ubit32 m = i;
+      uint32_t j;
+      uint32_t m = i;
 
       for(j = i; j < UNIT_NAMES(money).Length(); ++j)
       {
@@ -573,7 +573,7 @@ auto char_holds_amount(struct unit_data *ch, currency_t currency) -> amount_t
 /*  Checks if the character is able to pay the amount with the currency
  *  (Currently) based on what money he has in inventory.
  */
-auto char_can_afford(struct unit_data *ch, amount_t amt, currency_t currency) -> ubit1
+auto char_can_afford(struct unit_data *ch, amount_t amt, currency_t currency) -> bool
 {
    struct unit_data *tmp;
 
@@ -593,11 +593,11 @@ auto char_can_afford(struct unit_data *ch, amount_t amt, currency_t currency) ->
       }
    }
 
-   return static_cast<ubit1>(amt <= 0);
+   return static_cast<bool>(amt <= 0);
 }
 
 /* Check if there is some money of `type' in unit. (For piling purposes.) */
-auto unit_has_money_type(struct unit_data *unit, ubit8 type) -> struct unit_data *
+auto unit_has_money_type(struct unit_data *unit, uint8_t type) -> struct unit_data *
 {
    struct unit_data *tmp;
 
@@ -630,7 +630,7 @@ auto split_money(struct unit_data *money, amount_t amt) -> struct unit_data *
    if((amount_t)MONEY_AMOUNT(money) > amt)
    {
       /* Not very pretty to use this, but I really can't find an alternative */
-      void intern_unit_to_unit(struct unit_data *, struct unit_data *, ubit1);
+      void intern_unit_to_unit(struct unit_data *, struct unit_data *, bool);
 
       struct unit_data *pnew = make_money(money_types[MONEY_TYPE(money)].fi, amt);
       set_money(money, calc_money(MONEY_AMOUNT(money), '-', amt));
@@ -670,7 +670,7 @@ void pile_money(struct unit_data *money)
 
 /*  Round amount down/up to nearest `types' number of coins
  */
-auto money_round(ubit1 up, amount_t amt, currency_t currency, int types) -> amount_t
+auto money_round(bool up, amount_t amt, currency_t currency, int types) -> amount_t
 {
    struct money_type *money_tmp[MAX_MONEY + 1];
    int                i;
@@ -859,7 +859,7 @@ static void set_relval(FILE *fl, int idx)
  *    1: cut of trailing whitespace from line
  *    2: return a copy of read string
  */
-static auto get_string(FILE *fl, const char *err, ubit8 flag) -> char *
+static auto get_string(FILE *fl, const char *err, uint8_t flag) -> char *
 {
    static char buf[256];
 
@@ -888,7 +888,7 @@ void boot_money()
    int        idx;
    int        prev_idx;
    currency_t cur;
-   ubit1      currencies = TRUE;
+   bool      currencies = TRUE;
 
    if((fl = fopen(str_cc(libdir, MONEYDEF_FILE), "r")) == nullptr)
    {
@@ -958,7 +958,7 @@ void boot_money()
          slog(LOG_OFF, 0, "Error reading coins_per_weight");
          assert(FALSE);
       }
-      money_types[idx].coins_per_weight = (ubit8)tmp;
+      money_types[idx].coins_per_weight = (uint8_t)tmp;
 
 #ifndef DMC_SRC
       money_types[idx].fi = str_to_file_index(get_string(fl, "unit-string", 1));

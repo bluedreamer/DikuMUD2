@@ -436,14 +436,14 @@ public:
       flags = 0;
       fi    = nullptr;
    }
-   ubit16                  idx;
-   ubit16                  flags;
+   uint16_t                  idx;
+   uint16_t                  flags;
    struct file_index_type *fi;
 } func_history_data[MAX_DEBUG_HISTORY];
 
 static int func_history_pos = 0;
 
-void add_func_history(struct unit_data *u, ubit16 idx, ubit16 flags)
+void add_func_history(struct unit_data *u, uint16_t idx, uint16_t flags)
 {
    func_history_data[func_history_pos].idx   = idx;
    func_history_data[func_history_pos].flags = flags;
@@ -650,17 +650,17 @@ void descriptor_interpreter(struct descriptor_data *d, const char *arg)
 }
 
 /* Check to see if the full command was typed */
-auto cmd_is_abbrev(struct unit_data *ch, const struct command_info *cmd) -> ubit1
+auto cmd_is_abbrev(struct unit_data *ch, const struct command_info *cmd) -> bool
 {
    return CHAR_DESCRIPTOR(ch) && (str_ccmp(CHAR_DESCRIPTOR(ch)->last_cmd, cmd->cmd_str) != 0);
 }
 
 /* To check for commands by string */
-auto is_command(const struct command_info *cmd, const char *str) -> ubit1
+auto is_command(const struct command_info *cmd, const char *str) -> bool
 {
    if((cmd->no == CMD_AUTO_UNKNOWN) || (cmd->no == CMD_A_SOCIAL))
    {
-      return (static_cast<ubit1>(cmd->cmd_str != nullptr) && (is_abbrev(cmd->cmd_str, str)) != 0u);
+      return (static_cast<bool>(cmd->cmd_str != nullptr) && (is_abbrev(cmd->cmd_str, str)) != 0u);
    }
 
    struct command_info *cmd_ptr = (struct command_info *)search_trie(str, intr_trie);
@@ -756,7 +756,7 @@ auto unit_function_scan(struct unit_data *u, struct spec_arg *sarg) -> int
    if extra_target is set, then also send message to that unit
 */
 
-auto basic_special(struct unit_data *ch, struct spec_arg *sarg, ubit16 mflt, struct unit_data *extra_target) -> int
+auto basic_special(struct unit_data *ch, struct spec_arg *sarg, uint16_t mflt, struct unit_data *extra_target) -> int
 {
    struct unit_data *u;
    struct unit_data *uu;

@@ -38,10 +38,10 @@ extra_descr_data::~extra_descr_data()
 
 void extra_descr_data::AppendBuffer(CByteBuffer *pBuf)
 {
-   ubit8  u;
+   uint8_t  u;
    int    i = 0;
-   ubit32 nOrgPos;
-   ubit32 nPos;
+   uint32_t nOrgPos;
+   uint32_t nPos;
 
    nOrgPos = pBuf->GetLength();
 
@@ -91,7 +91,7 @@ void extra_descr_data::free_list()
 
 auto extra_descr_data::find_raw(const char *word) -> class extra_descr_data *
 {
-   ubit32 i;
+   uint32_t i;
 
    // MS2020 warning. if (this == 0) return NULL;
 

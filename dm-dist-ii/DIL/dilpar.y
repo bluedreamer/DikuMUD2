@@ -58,7 +58,7 @@ extern int linenum;
  */
 
 int sunlight = 0;
-const sbit8 time_light[24] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+const int8_t time_light[24] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 #define yyerror(dum) syntax(dum)
 
@@ -74,21 +74,21 @@ const char *cur_zonename="NOZONE"; /* zone name from argument */
 char cur_tmplref[8192];      /* generated template reference (if -t) */
 
 char **var_names;       /* names of variables */
-ubit8 in_foreach=0;     /* inside foreach */
+uint8_t in_foreach=0;     /* inside foreach */
  
-ubit16 label_no;        /* number of labels */
+uint16_t label_no;        /* number of labels */
 char **label_names;     /* names of labels */
-ubit32 *label_adr;      /* address of label */
+uint32_t *label_adr;      /* address of label */
 
-ubit16 label_use_no;    /* number of used labels */
-ubit32 *label_use_idx;  /* what label is used (label_adr) */
-ubit32 *label_use_adr;  /* where a label is used */
-ubit32 labelgen;        /* counter for label generation */
+uint16_t label_use_no;    /* number of used labels */
+uint32_t *label_use_idx;  /* what label is used (label_adr) */
+uint32_t *label_use_adr;  /* where a label is used */
+uint32_t labelgen;        /* counter for label generation */
 
-ubit16 break_no;		/* size of break stack */
-ubit16 cont_no;			/* size of continue stack */
-ubit16 *break_idx;		/* break stack (label idx) */
-ubit16 *cont_idx;		/* continue stack (label idx) */
+uint16_t break_no;		/* size of break stack */
+uint16_t cont_no;			/* size of continue stack */
+uint16_t *break_idx;		/* break stack (label idx) */
+uint16_t *cont_idx;		/* continue stack (label idx) */
 
 int errcon = 0;
 int istemplate = 0;		/* is this a template program */
@@ -98,9 +98,9 @@ int istemplate = 0;		/* is this a template program */
 struct dilref {
    char *zname;		/* func/proc name */
    char *name;          /* zone name */
-   ubit8 rtnt;		/* return type */
-   ubit8 argc;		/* number of arguments (min 1) */
-   ubit8 *argt;		/* argument types */
+   uint8_t rtnt;		/* return type */
+   uint8_t argc;		/* number of arguments (min 1) */
+   uint8_t *argt;		/* argument types */
    char **argv;		/* argument names */
 };
 
@@ -120,29 +120,29 @@ char **ref_names;		/* for fast search */
 char **ref_usednames;           /* used names, registered in tmpl */
 int refcount = 0;		/* number of ext. ref. */
 
-ubit8 *wcore;           /* writing pointer (in cur.core )  */
-ubit8 *wtmp;            /* writing pointer (in cur.core )  */
+uint8_t *wcore;           /* writing pointer (in cur.core )  */
+uint8_t *wtmp;            /* writing pointer (in cur.core )  */
 
 char *str_list[300];     /* Data for string lists */
 int str_top;            /* Number of strings */
 char tmpfname[L_tmpnam] = "";
 
 void add_ref(struct dilref *ref);
-void add_var(char *name, ubit16 type);
-int add_label(char *str, ubit32 adr);
-ubit32 get_label(char *name, ubit32 adr);
-void moredilcore(ubit32 size);
+void add_var(char *name, uint16_t type);
+int add_label(char *str, uint32_t adr);
+uint32_t get_label(char *name, uint32_t adr);
+void moredilcore(uint32_t size);
 void update_labels(void);
 void fatal(const char *str);
 void warning(const char *str);
 void syntax(const char *str);
 void dumpdiltemplate(struct diltemplate *tmpl);
 void dumpdil(struct dilprg *prg);
-int dil_corecrc(ubit8 *core, int len);
-int dil_headercrc(char **name, ubit8 *type);
+int dil_corecrc(uint8_t *core, int len);
+int dil_headercrc(char **name, uint8_t *type);
 
 #define INITEXP(v) \
-   CREATE(v.code, ubit8, CODESIZE); \
+   CREATE(v.code, uint8_t, CODESIZE); \
    v.codep=v.code;v.num=0;v.typ=v.rtyp=DILV_NULL;v.dsl=DSL_STA;v.boolean=0;
 
 #define FREEEXP(v) \
@@ -152,24 +152,24 @@ int dil_headercrc(char **name, ubit8 *type);
 %}
 
 %union {
-   sbit32 num;
+   int32_t num;
    char *str;
    char sym[SYMSIZE + 1];
    char **str_list;
    struct exptype exp;
    struct {
-      ubit32 fst,lst; /* first, last addr in core */
-      ubit8 dsl,typ;      /* if expression: leftvalue, type */
-      ubit8 boolean;
+      uint32_t fst,lst; /* first, last addr in core */
+      uint8_t dsl,typ;      /* if expression: leftvalue, type */
+      uint8_t boolean;
    } ins;
    struct dilxref xref;
 }
 
 %{
-void add_ubit8(struct exptype *dest, ubit8 d);
-void add_ubit32(struct exptype *dest, ubit32 d);
-void add_sbit32(struct exptype *dest, sbit32 d);
-void add_ubit16(struct exptype *dest, ubit16 d);
+void add_uint8_t(struct exptype *dest, uint8_t d);
+void add_uint32_t(struct exptype *dest, uint32_t d);
+void add_int32_t(struct exptype *dest, int32_t d);
+void add_uint16_t(struct exptype *dest, uint16_t d);
 void add_string(struct exptype *dest, char *d);
 void cat_string(struct exptype *dest, char *d);
 void add_stringlist(struct exptype *dest, char **d);
@@ -256,7 +256,7 @@ void make_code(struct exptype *dest);
 
 file     : program
          {
-            ubit8 *b;
+            uint8_t *b;
             FILE *f;
 
 #ifdef MARCEL
@@ -338,8 +338,8 @@ program  : DILSC_BEG dilinit diloptions fundef dilrefs
          {
             /* start at the top again */
             moredilcore(5);
-            bwrite_ubit8(&wcore, DILI_GOTO);
-            bwrite_ubit32(&wcore, 0);
+            bwrite_uint8_t(&wcore, DILI_GOTO);
+            bwrite_uint32_t(&wcore, 0);
             /* truncate surplus core space */
             tmpl.coresz = wcore - tmpl.core + 1;
             update_labels();
@@ -375,9 +375,9 @@ dilinit   : /* nothing */
 	      fprintf(stderr, "DIL (line %5d)",linenum);
 
             /* Set up template  */
-            CREATE(tmpl.argt, ubit8, ARGMAX);
-            CREATE(tmpl.core, ubit8, CODESIZE);
-            CREATE(tmpl.vart, ubit8, VARMAX);
+            CREATE(tmpl.argt, uint8_t, ARGMAX);
+            CREATE(tmpl.core, uint8_t, CODESIZE);
+            CREATE(tmpl.vart, uint8_t, VARMAX);
             tmpl.prgname = "NONAME";
             tmpl.varc = 0;
             tmpl.coresz = CODESIZE;
@@ -393,7 +393,7 @@ dilinit   : /* nothing */
             wcore = tmpl.core;
 
             /* setup tmp. reference */
-            CREATE(ref.argt, ubit8, ARGMAX);
+            CREATE(ref.argt, uint8_t, ARGMAX);
             CREATE(ref.argv, char *, ARGMAX);
             ref.name= NULL;
             ref.rtnt= DILV_NULL;
@@ -569,7 +569,7 @@ fundef   : ref
 		    "it into a template instead.");
 
 	    if (tmpl.argc) {
-	       CREATE(tmpl.argt, ubit8, ref.argc);
+	       CREATE(tmpl.argt, uint8_t, ref.argc);
 	       memcpy(tmpl.argt,ref.argt,ref.argc);
 	    } else 
 	      tmpl.argt=NULL;
@@ -665,8 +665,8 @@ variable : variable '.' field
             }
 
             /* create code */
-            add_ubit8(&($$),DILE_FLD);
-            add_ubit8(&($$),$3.num);
+            add_uint8_t(&($$),DILE_FLD);
+            add_uint8_t(&($$),$3.num);
             add_code(&($$),&($1));
 
             if ($3.codep != $3.code) /* index optinal */
@@ -729,16 +729,16 @@ variable : variable '.' field
 	       $$.dsl = DSL_FCT;
 	       $$.rtyp = refnum;
 	       $$.typ = tmpl.xrefs[refnum].rtnt;
-               /*fprintf(stderr, "Adding ubit16 reference %d %p.\n",
+               /*fprintf(stderr, "Adding uint16_t reference %d %p.\n",
 		       refnum, &($$));*/
-               add_ubit16(&($$), refnum);
+               add_uint16_t(&($$), refnum);
             }
 	    else /* A variable */
 	    {
                $$.typ = tmpl.vart[i];
                $$.dsl = DSL_LFT;
-               add_ubit8(&($$),DILE_VAR);
-               add_ubit16(&($$),i);
+               add_uint8_t(&($$),DILE_VAR);
+               add_uint16_t(&($$),i);
             }
          }
          | DILSE_SELF
@@ -746,98 +746,98 @@ variable : variable '.' field
             INITEXP($$);
             $$.dsl = DSL_DYN;
             $$.typ = DILV_UP;
-            add_ubit8(&($$),DILE_SELF);
+            add_uint8_t(&($$),DILE_SELF);
          }
          | DILSE_ACTI
          {
             INITEXP($$);
             $$.dsl = DSL_DYN;
             $$.typ = DILV_UP;
-            add_ubit8(&($$),DILE_ACTI);
+            add_uint8_t(&($$),DILE_ACTI);
          }
          | DILSE_MEDI
          {
             INITEXP($$);
             $$.dsl = DSL_DYN;
             $$.typ = DILV_UP;
-            add_ubit8(&($$),DILE_MEDI);
+            add_uint8_t(&($$),DILE_MEDI);
          }
          | DILSE_TARG
          {
             INITEXP($$);
             $$.dsl = DSL_DYN;
             $$.typ = DILV_UP;
-            add_ubit8(&($$),DILE_TARG);
+            add_uint8_t(&($$),DILE_TARG);
          }
          | DILSE_POWE
          {
             INITEXP($$);
             $$.dsl = DSL_LFT;
             $$.typ = DILV_INT;
-            add_ubit8(&($$),DILE_POWE);
+            add_uint8_t(&($$),DILE_POWE);
          }
          | DILSE_CMST
          {
             INITEXP($$);
             $$.dsl = DSL_DYN;
             $$.typ = DILV_SP;
-            add_ubit8(&($$),DILE_CMST);
+            add_uint8_t(&($$),DILE_CMST);
          }
          | DILSE_ARGM
          {
             INITEXP($$);
             $$.dsl = DSL_DYN;
             $$.typ = DILV_SP;
-            add_ubit8(&($$),DILE_ARGM);
+            add_uint8_t(&($$),DILE_ARGM);
          }
          | DILSE_HRT
          {
             INITEXP($$);
             $$.dsl = DSL_LFT;
             $$.typ = DILV_INT;
-            add_ubit8(&($$),DILE_HRT);
+            add_uint8_t(&($$),DILE_HRT);
          }
          | DILSE_WEAT
          {
             INITEXP($$);
             $$.dsl = DSL_DYN;
             $$.typ = DILV_INT;
-            add_ubit8(&($$),DILE_WEAT);
+            add_uint8_t(&($$),DILE_WEAT);
 	 }
          | DILSE_THO
          {
             INITEXP($$);
             $$.dsl = DSL_DYN;
             $$.typ = DILV_INT;
-            add_ubit8(&($$),DILE_THO);
+            add_uint8_t(&($$),DILE_THO);
          }
          | DILSE_TDA
          {
             INITEXP($$);
             $$.dsl = DSL_DYN;
             $$.typ = DILV_INT;
-            add_ubit8(&($$),DILE_TDA);
+            add_uint8_t(&($$),DILE_TDA);
          }
          | DILSE_TMD
          {
             INITEXP($$);
             $$.dsl = DSL_DYN;
             $$.typ = DILV_INT;
-            add_ubit8(&($$),DILE_TMD);
+            add_uint8_t(&($$),DILE_TMD);
          }
          | DILSE_TYE
          {
             INITEXP($$);
             $$.dsl = DSL_DYN;
             $$.typ = DILV_INT;
-            add_ubit8(&($$),DILE_TYE);
+            add_uint8_t(&($$),DILE_TYE);
          }
          | DILSE_RTI
          {
             INITEXP($$);
             $$.dsl = DSL_DYN;
             $$.typ = DILV_INT;
-            add_ubit8(&($$),DILE_RTI);
+            add_uint8_t(&($$),DILE_RTI);
          }
          ;
 
@@ -1693,7 +1693,7 @@ dilexp   : dilsexp
             /* Integer compares are not _yet_ static */
             make_code(&($1));
             make_code(&($3));
-            add_ubit8(&($$),$2);
+            add_uint8_t(&($$),$2);
             add_code(&($$),&($1));
             add_code(&($$),&($3));
             $$.dsl = DSL_DYN;
@@ -1715,7 +1715,7 @@ dilexp   : dilsexp
                /* Integer compares are not _yet_ static */
                make_code(&($1));
                make_code(&($3));
-               add_ubit8(&($$),$2);
+               add_uint8_t(&($$),$2);
                add_code(&($$),&($1));
                add_code(&($$),&($3));
                $$.dsl = DSL_DYN;
@@ -1742,7 +1742,7 @@ dilexp   : dilsexp
                {
                   make_code(&($1));
                   make_code(&($3));
-                  add_ubit8(&($$),$2); /* compare funct */
+                  add_uint8_t(&($$),$2); /* compare funct */
                   add_code(&($$),&($1));
                   add_code(&($$),&($3));
                   $$.dsl = DSL_DYN;
@@ -1771,7 +1771,7 @@ dilexp   : dilsexp
                /* String compare not _yet_ static */
                make_code(&($1));
                make_code(&($3));
-               add_ubit8(&($$),$2); /* compare funct */
+               add_uint8_t(&($$),$2); /* compare funct */
                add_code(&($$),&($1));
                add_code(&($$),&($3));
                $$.dsl = DSL_DYN;
@@ -1803,7 +1803,7 @@ dilsexp   : dilterm
                if (!$2.dsl)
                   $$.num =   - $2.num; /* static */
                else {
-                  add_ubit8(&($$), DILE_UMIN); 
+                  add_uint8_t(&($$), DILE_UMIN); 
                   add_code(&($$),&($2));
                }
             }
@@ -1843,7 +1843,7 @@ dilsexp   : dilterm
                      /* one is dynamic */
                      make_code(&($1));
                      make_code(&($3));
-                     add_ubit8(&($$),DILE_PLUS);
+                     add_uint8_t(&($$),DILE_PLUS);
                      add_code(&($$),&($1));
                      add_code(&($$),&($3));
                      $$.dsl = DSL_DYN;
@@ -1862,7 +1862,7 @@ dilsexp   : dilterm
                   /* make nodes dynamic */
                   make_code(&($1));
                   make_code(&($3));
-                  add_ubit8(&($$), DILE_PLUS);
+                  add_uint8_t(&($$), DILE_PLUS);
                   add_code(&($$),&($1));
                   add_code(&($$),&($3));
                   $$.dsl = DSL_DYN;
@@ -1889,7 +1889,7 @@ dilsexp   : dilterm
                   /* make nodes dynamic */
                   make_code(&($1));
                   make_code(&($3));
-                  add_ubit8(&($$), DILE_MIN);
+                  add_uint8_t(&($$), DILE_MIN);
                   add_code(&($$),&($1));
                   add_code(&($$),&($3));
                   $$.dsl = DSL_DYN;
@@ -1914,7 +1914,7 @@ dilsexp   : dilterm
                /* make nodes dynamic */
                make_code(&($1));
                make_code(&($3));
-               add_ubit8(&($$), DILE_LOR);
+               add_uint8_t(&($$), DILE_LOR);
                add_code(&($$),&($1));
                add_code(&($$),&($3));
                $$.dsl = DSL_DYN;
@@ -1938,7 +1938,7 @@ dilsexp   : dilterm
                /* make nodes dynamic */
                make_code(&($1));
                make_code(&($3));
-               add_ubit8(&($$), DILE_OR);
+               add_uint8_t(&($$), DILE_OR);
                add_code(&($$),&($1));
                add_code(&($$),&($3));
                $$.dsl = DSL_DYN;
@@ -1975,7 +1975,7 @@ dilterm  : dilfactor
                   /* make nodes dynamic */
                   make_code(&($1));
                   make_code(&($3));
-                  add_ubit8(&($$), DILE_MUL);
+                  add_uint8_t(&($$), DILE_MUL);
                   add_code(&($$),&($1));
                   add_code(&($$),&($3));
                   $$.dsl = DSL_DYN;
@@ -2002,7 +2002,7 @@ dilterm  : dilfactor
                   /* make nodes dynamic */
                   make_code(&($1));
                   make_code(&($3));
-                  add_ubit8(&($$), DILE_DIV);
+                  add_uint8_t(&($$), DILE_DIV);
                   add_code(&($$),&($1));
                   add_code(&($$),&($3));
                   $$.dsl = DSL_DYN;
@@ -2026,7 +2026,7 @@ dilterm  : dilfactor
                /* make nodes dynamic */
                make_code(&($1));
                make_code(&($3));
-               add_ubit8(&($$), DILE_LAND);
+               add_uint8_t(&($$), DILE_LAND);
                add_code(&($$),&($1));
                add_code(&($$),&($3));
                $$.dsl = DSL_DYN;
@@ -2049,7 +2049,7 @@ dilterm  : dilfactor
                /* make nodes dynamic */
                make_code(&($1));
                make_code(&($3));
-               add_ubit8(&($$), DILE_AND);
+               add_uint8_t(&($$), DILE_AND);
                add_code(&($$),&($1));
                add_code(&($$),&($3));
                $$.dsl = DSL_DYN;
@@ -2075,7 +2075,7 @@ dilterm  : dilfactor
                   /* make nodes dynamic */
                   make_code(&($1));
                   make_code(&($3));
-                  add_ubit8(&($$), DILE_MOD);
+                  add_uint8_t(&($$), DILE_MOD);
                   add_code(&($$),&($1));
                   add_code(&($$),&($3));
                   $$.dsl = DSL_DYN;
@@ -2115,7 +2115,7 @@ dilterm  : dilfactor
                }
                make_code(&($1));
                make_code(&($3));
-               add_ubit8(&($$), DILE_IN);
+               add_uint8_t(&($$), DILE_IN);
                add_code(&($$),&($1));
                add_code(&($$),&($3));
                $$.dsl = DSL_DYN;
@@ -2153,7 +2153,7 @@ dilfactor : '(' dilexp ')'
                /* Strings are now static */
                $$.typ = DILV_SP;
                $$.dsl = DSL_STA;
-               add_ubit8(&($$),DILE_FS);
+               add_uint8_t(&($$),DILE_FS);
                add_string(&($$),$1);
 /* WHY NOT?           } else
                fatal("empty strings not allowed for now"); */
@@ -2167,7 +2167,7 @@ dilfactor : '(' dilexp ')'
                /* write stringlist _NOT_ static */
                $$.dsl = DSL_DYN;
                $$.typ = DILV_SLP;
-               add_ubit8(&($$),DILE_FSL);
+               add_uint8_t(&($$),DILE_FSL);
                add_stringlist(&($$),$1);
             }
          }
@@ -2197,7 +2197,7 @@ dilfactor : '(' dilexp ')'
             if (!$2.dsl && $2.typ == DILV_INT)
                $$.num = !$2.num;
             else {
-               add_ubit8(&($$),DILE_NOT);
+               add_uint8_t(&($$),DILE_NOT);
                add_code(&($$),&($2));
             }
             FREEEXP($2);
@@ -2219,7 +2219,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.dsl = DSL_DYN;
                $$.typ = DILV_INT;
                make_code(&($3));
-               add_ubit8(&($$),DILE_ATOI);
+               add_uint8_t(&($$),DILE_ATOI);
                add_code(&($$),&($3));
             }
             FREEEXP($3);
@@ -2238,7 +2238,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.typ = DILV_INT;
                make_code(&($3));
                make_code(&($5));
-               add_ubit8(&($$),DILE_DLD);
+               add_uint8_t(&($$),DILE_DLD);
                add_code(&($$),&($3));
                add_code(&($$),&($5));
             }
@@ -2259,7 +2259,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.typ = DILV_INT;
                make_code(&($3));
                make_code(&($5));
-               add_ubit8(&($$),DILE_DLF);
+               add_uint8_t(&($$),DILE_DLF);
                add_code(&($$),&($3));
                add_code(&($$),&($5));
             }
@@ -2277,7 +2277,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.dsl = DSL_DYN;
                $$.typ = DILV_INT;
                make_code(&($3));
-               add_ubit8(&($$),DILE_LEN);
+               add_uint8_t(&($$),DILE_LEN);
                add_code(&($$),&($3));
             }
             FREEEXP($3);
@@ -2293,7 +2293,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.dsl = DSL_DYN;
                $$.typ = DILV_SP;
                make_code(&($3));
-               add_ubit8(&($$),DILE_ITOA);
+               add_uint8_t(&($$),DILE_ITOA);
                add_code(&($$),&($3));
             }
             FREEEXP($3);
@@ -2337,7 +2337,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
 	       make_code(&($11));
 	       make_code(&($13));
 
-               add_ubit8(&($$),DILE_ACT);
+               add_uint8_t(&($$),DILE_ACT);
 	       add_code(&($$),&($3));
 	       add_code(&($$),&($5));
 	       add_code(&($$),&($7));
@@ -2360,7 +2360,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.typ = DILV_INT;
                make_code(&($3));
                make_code(&($5));
-               add_ubit8(&($$),DILE_RND);
+               add_uint8_t(&($$),DILE_RND);
                add_code(&($$),&($3));
                add_code(&($$),&($5));
             }
@@ -2383,7 +2383,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.typ = DILV_INT;
                make_code(&($3));
                make_code(&($5));
-               add_ubit8(&($$),DILE_ISS);
+               add_uint8_t(&($$),DILE_ISS);
                add_code(&($$),&($3));
                add_code(&($$),&($5));
             }
@@ -2405,7 +2405,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.typ = DILV_INT;
                make_code(&($3));
                make_code(&($5));
-               add_ubit8(&($$),DILE_ISA);
+               add_uint8_t(&($$),DILE_ISA);
                add_code(&($$),&($3));
                add_code(&($$),&($5));
             }
@@ -2434,7 +2434,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                make_code(&($5));
                make_code(&($7));
                make_code(&($9));
-               add_ubit8(&($$),DILE_FNDU);
+               add_uint8_t(&($$),DILE_FNDU);
                add_code(&($$),&($3));
                add_code(&($$),&($5));
                add_code(&($$),&($7));
@@ -2464,7 +2464,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                make_code(&($3));
                make_code(&($5));
                make_code(&($7));
-               add_ubit8(&($$),DILE_FNDRU);
+               add_uint8_t(&($$),DILE_FNDRU);
                add_code(&($$),&($3));
                add_code(&($$),&($5));
                add_code(&($$),&($7));
@@ -2484,7 +2484,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.dsl = DSL_DYN;
                $$.typ = DILV_UP;
                make_code(&($3));
-               add_ubit8(&($$),DILE_FNDR);
+               add_uint8_t(&($$),DILE_FNDR);
                add_code(&($$),&($3));
             }
 	    FREEEXP($3);
@@ -2500,7 +2500,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.dsl = DSL_DYN;
                $$.typ = DILV_UP;
                make_code(&($3));
-               add_ubit8(&($$),DILE_FNDS);
+               add_uint8_t(&($$),DILE_FNDS);
                add_code(&($$),&($3));
             }
             FREEEXP($3);
@@ -2522,7 +2522,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                make_code(&($3));
                make_code(&($5));
                make_code(&($7));
-               add_ubit8(&($$),DILE_FNDS2);
+               add_uint8_t(&($$),DILE_FNDS2);
                add_code(&($$),&($3));
                add_code(&($$),&($5));
                add_code(&($$),&($7));
@@ -2546,7 +2546,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.typ = DILV_INT;
                make_code(&($3));
                make_code(&($5));
-               add_ubit8(&($$),DILE_VISI);
+               add_uint8_t(&($$),DILE_VISI);
                add_code(&($$),&($3));
                add_code(&($$),&($5));
             }
@@ -2568,7 +2568,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.typ = DILV_INT;
                make_code(&($3));
                make_code(&($5));
-               add_ubit8(&($$),DILE_PCK);
+               add_uint8_t(&($$),DILE_PCK);
                add_code(&($$),&($3));
                add_code(&($$),&($5));
             }
@@ -2590,7 +2590,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.typ = DILV_INT;
                make_code(&($3));
                make_code(&($5));
-               add_ubit8(&($$), DILE_OPPO);
+               add_uint8_t(&($$), DILE_OPPO);
                add_code(&($$),&($3));
                add_code(&($$),&($5));
             }
@@ -2608,7 +2608,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.dsl = DSL_DYN;
                $$.typ = DILV_INT;
                make_code(&($3));
-               add_ubit8(&($$), DILE_SPLX);
+               add_uint8_t(&($$), DILE_SPLX);
                add_code(&($$),&($3));
             }
             FREEEXP($3);
@@ -2650,7 +2650,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                make_code(&($15));
                make_code(&($17));
 
-               add_ubit8(&($$), DILE_SPLI);
+               add_uint8_t(&($$), DILE_SPLI);
 
                add_code(&($$),&($3));
                add_code(&($$),&($5));
@@ -2684,7 +2684,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.typ = DILV_SP;
                make_code(&($3));
                make_code(&($5));
-               add_ubit8(&($$), DILE_MONS);
+               add_uint8_t(&($$), DILE_MONS);
                add_code(&($$),&($3));
                add_code(&($$),&($5));
             }
@@ -2705,7 +2705,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.typ = DILV_INT;
                make_code(&($3));
                make_code(&($5));
-               add_ubit8(&($$), DILE_PATH);
+               add_uint8_t(&($$), DILE_PATH);
                add_code(&($$),&($3));
                add_code(&($$),&($5));
             }
@@ -2730,7 +2730,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                make_code(&($3));
                make_code(&($5));
                make_code(&($7));
-               add_ubit8(&($$), DILE_CARY);
+               add_uint8_t(&($$), DILE_CARY);
                add_code(&($$),&($3));
                add_code(&($$),&($5));
                add_code(&($$),&($7));
@@ -2753,7 +2753,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.typ = DILV_INT;
                make_code(&($3));
                make_code(&($5));
-               add_ubit8(&($$), DILE_PURS);
+               add_uint8_t(&($$), DILE_PURS);
                add_code(&($$),&($3));
                add_code(&($$),&($5));
             }
@@ -2778,7 +2778,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                make_code(&($3));
                make_code(&($5));
                make_code(&($7));
-               add_ubit8(&($$), DILE_TRMO);
+               add_uint8_t(&($$), DILE_TRMO);
                add_code(&($$),&($3));
                add_code(&($$),&($5));
                add_code(&($$),&($7));
@@ -2798,7 +2798,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.dsl = DSL_DYN;
                $$.typ = DILV_UP;
                make_code(&($3));
-               add_ubit8(&($$),DILE_LOAD);
+               add_uint8_t(&($$),DILE_LOAD);
                add_code(&($$),&($3));
             }
             FREEEXP($3);
@@ -2831,7 +2831,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                make_code(&($9));
                make_code(&($11));
 
-               add_ubit8(&($$), DILE_ATSP);
+               add_uint8_t(&($$), DILE_ATSP);
 
                add_code(&($$),&($3));
                add_code(&($$),&($5));
@@ -2874,7 +2874,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                make_code(&($9));
                make_code(&($11));
 
-               add_ubit8(&($$), DILE_CAST2);
+               add_uint8_t(&($$), DILE_CAST2);
 
                add_code(&($$),&($3));
                add_code(&($$),&($5));
@@ -2909,7 +2909,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                make_code(&($5));
                make_code(&($7));
 
-               add_ubit8(&($$), DILE_FIT);
+               add_uint8_t(&($$), DILE_FIT);
 
                add_code(&($$),&($3));
                add_code(&($$),&($5));
@@ -2937,7 +2937,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                make_code(&($3));
                make_code(&($5));
 
-               add_ubit8(&($$), DILE_REST);
+               add_uint8_t(&($$), DILE_REST);
 
                add_code(&($$),&($3));
                add_code(&($$),&($5));
@@ -2963,7 +2963,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                make_code(&($3));
                make_code(&($5));
 
-               add_ubit8(&($$), DILE_OPRO);
+               add_uint8_t(&($$), DILE_OPRO);
 
                add_code(&($$),&($3));
                add_code(&($$),&($5));
@@ -2989,7 +2989,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                make_code(&($3));
                make_code(&($5));
 
-               add_ubit8(&($$), DILE_EQPM);
+               add_uint8_t(&($$), DILE_EQPM);
 
                add_code(&($$),&($3));
                add_code(&($$),&($5));
@@ -3023,7 +3023,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                make_code(&($7));
                make_code(&($9));
 
-               add_ubit8(&($$), DILE_MEL);
+               add_uint8_t(&($$), DILE_MEL);
 
                add_code(&($$),&($3));
                add_code(&($$),&($5));
@@ -3046,7 +3046,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                /* Make nodes dynamic */
                $$.dsl = DSL_DYN;
                $$.typ = DILV_SP;
-               add_ubit8(&($$),DILE_TXF);
+               add_uint8_t(&($$),DILE_TXF);
                add_code(&($$),&($3));
             }
             FREEEXP($3);
@@ -3061,7 +3061,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                /* Make nodes dynamic */
                $$.dsl = DSL_DYN;
                $$.typ = DILV_SP;
-               add_ubit8(&($$),DILE_AST);
+               add_uint8_t(&($$),DILE_AST);
                add_code(&($$),&($3));
             }
             FREEEXP($3);
@@ -3076,7 +3076,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                /* Make nodes dynamic */
                $$.dsl = DSL_DYN;
                $$.typ = DILV_SP;
-               add_ubit8(&($$),DILE_GETW);
+               add_uint8_t(&($$),DILE_GETW);
                add_code(&($$),&($3));
             }
             FREEEXP($3);
@@ -3091,7 +3091,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                /* Make nodes dynamic */
                $$.dsl = DSL_DYN;
                $$.typ = DILV_SLP;
-               add_ubit8(&($$),DILE_GETWS);
+               add_uint8_t(&($$),DILE_GETWS);
                add_code(&($$),&($3));
             }
             FREEEXP($3);
@@ -3107,7 +3107,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.dsl = DSL_DYN;
                $$.typ = DILV_INT;
                make_code(&($3));
-               add_ubit8(&($$),DILE_CMDS);
+               add_uint8_t(&($$),DILE_CMDS);
                add_code(&($$),&($3));
             } else if ($3.typ == DILV_INT) {
                /* Type is ok */
@@ -3115,7 +3115,7 @@ dilfun   : DILSE_ATOI '(' dilexp ')'
                $$.dsl = DSL_DYN;
                $$.typ = DILV_INT;
                make_code(&($3));
-               add_ubit8(&($$),DILE_CMDS);
+               add_uint8_t(&($$),DILE_CMDS);
                add_code(&($$),&($3));
             } else
                 fatal("Arg 1 of 'command' not a string or an integer");
@@ -3209,20 +3209,20 @@ corevar   : variable
 ihold      : /* instruction core placeholder */
          {
             $$ = wcore - tmpl.core;
-            wcore++;      /* ubit8 */
+            wcore++;      /* uint8_t */
          }
          ;
 
 iunhold  :
 	 {
-            wcore--;      /* ubit8 */
+            wcore--;      /* uint8_t */
             $$ = wcore - tmpl.core;
 	 }    
 
 ahold    : /* address core placeholder */
          {
             $$ = wcore - tmpl.core;
-            wcore+=4;   /* ubit32 */
+            wcore+=4;   /* uint32_t */
          }
          ;
 
@@ -3231,7 +3231,7 @@ label    : SYMBOL
             /* lable reference */
             $$.fst = wcore - tmpl.core;
             moredilcore(4);
-            bwrite_ubit32(&wcore,get_label($1,wcore-tmpl.core)); /* here */
+            bwrite_uint32_t(&wcore,get_label($1,wcore-tmpl.core)); /* here */
             $$.lst = wcore - tmpl.core;
          }
          ;
@@ -3245,7 +3245,7 @@ labelskip : label
             /* 'skip' reference */
             $$.fst = wcore - tmpl.core;
             moredilcore(4);
-            bwrite_ubit32(&wcore,SKIP);  /* address null value */
+            bwrite_uint32_t(&wcore,SKIP);  /* address null value */
             $$.lst = wcore - tmpl.core;
          }
          ;
@@ -3279,7 +3279,7 @@ dilproc  : ihold proccall
 		*/
 
 	       wtmp = &tmpl.core[$1];
-	       bwrite_ubit8(&wtmp,DILI_SPC);
+	       bwrite_uint8_t(&wtmp,DILI_SPC);
 	       $$.fst = $1;
 	       $$.lst = wcore - tmpl.core;
 	    } else {
@@ -3294,7 +3294,7 @@ dilproc  : ihold proccall
 		 fatal ("refernce not a procedure");
 
 	       wtmp = &tmpl.core[$1];
-	       bwrite_ubit8(&wtmp,DILI_RPC);
+	       bwrite_uint8_t(&wtmp,DILI_RPC);
 
 	       $$.fst = $1;
 	       $$.lst = wcore - tmpl.core;
@@ -3308,7 +3308,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $4.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_CLI);
+               bwrite_uint8_t(&wtmp,DILI_CLI);
             }
          }
          | DILSI_STOR ihold '(' coreexp ')'
@@ -3319,7 +3319,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $4.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_STOR);
+               bwrite_uint8_t(&wtmp,DILI_STOR);
             }
          }
          | DILSI_AMOD ihold '(' coreexp ',' coreexp ')'
@@ -3332,7 +3332,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_AMOD);
+               bwrite_uint8_t(&wtmp,DILI_AMOD);
             }
          }
          | DILSI_FOLO ihold '(' coreexp ',' coreexp ')'
@@ -3345,7 +3345,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_FOLO);
+               bwrite_uint8_t(&wtmp,DILI_FOLO);
             }
          }
          | DILSI_SETF ihold '(' coreexp ',' coreexp ')'
@@ -3358,7 +3358,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_SETF);
+               bwrite_uint8_t(&wtmp,DILI_SETF);
             }
          }
          | DILSI_CHAS ihold '(' coreexp ',' coreexp ')'
@@ -3372,7 +3372,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_CHAS);
+               bwrite_uint8_t(&wtmp,DILI_CHAS);
             }
          }
          | DILSI_SBT ihold '(' coreexp ',' coreexp ')'
@@ -3386,7 +3386,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_SBT);
+               bwrite_uint8_t(&wtmp,DILI_SBT);
             }
          }
          | DILSI_SWT ihold '(' coreexp ',' coreexp ')'
@@ -3400,7 +3400,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_SWT);
+               bwrite_uint8_t(&wtmp,DILI_SWT);
             }
          }
          | DILSI_SET ihold '(' coreexp ',' coreexp ')'
@@ -3414,7 +3414,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_SET);
+               bwrite_uint8_t(&wtmp,DILI_SET);
             }
          }
          | DILSI_DLC ihold '(' coreexp ',' coreexp ')'
@@ -3428,7 +3428,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_DLC);
+               bwrite_uint8_t(&wtmp,DILI_DLC);
             }
          }
          | DILSI_SETE ihold '(' coreexp ',' coreexp ')'
@@ -3442,7 +3442,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_SETE);
+               bwrite_uint8_t(&wtmp,DILI_SETE);
             }
          }
          | DILSI_UST ihold '(' coreexp ',' coreexp ')'
@@ -3456,7 +3456,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_USET);
+               bwrite_uint8_t(&wtmp,DILI_USET);
             }
          }
          | DILSI_ADE ihold '(' coreexp ',' coreexp ',' coreexp ')'
@@ -3471,7 +3471,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $8.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_ADE);
+               bwrite_uint8_t(&wtmp,DILI_ADE);
             }
          }
          | DILSI_LCRI ihold '(' coreexp ',' coreexp ',' coreexp ')'
@@ -3486,7 +3486,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $8.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_LCRI);
+               bwrite_uint8_t(&wtmp,DILI_LCRI);
             }
          }
          | DILSE_CST ihold '(' coreexp ',' coreexp ',' coreexp ',' coreexp ')'
@@ -3504,7 +3504,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $10.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_CAST);
+               bwrite_uint8_t(&wtmp,DILI_CAST);
             }
          }
          | DILSI_ADL ihold '(' coreexp ',' coreexp ')'
@@ -3517,7 +3517,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_ADL);
+               bwrite_uint8_t(&wtmp,DILI_ADL);
             }
          }
          | DILSI_SUE ihold '(' coreexp ',' coreexp ')'
@@ -3532,7 +3532,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_SUE);
+               bwrite_uint8_t(&wtmp,DILI_SUE);
             }
          }
          | DILSI_SUL ihold '(' coreexp ',' coreexp ')'
@@ -3545,7 +3545,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_SUL);
+               bwrite_uint8_t(&wtmp,DILI_SUL);
             }
          }
          | DILSI_SUA ihold '(' coreexp ',' coreexp ')'
@@ -3559,7 +3559,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_SUA);
+               bwrite_uint8_t(&wtmp,DILI_SUA);
             }
          }
          | DILSI_ADA ihold '(' coreexp ',' coreexp ',' coreexp ','
@@ -3593,7 +3593,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $24.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_ADA);
+               bwrite_uint8_t(&wtmp,DILI_ADA);
             }
          }
          | DILSI_DST ihold '(' coreexp ')'
@@ -3604,7 +3604,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $4.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_DST);
+               bwrite_uint8_t(&wtmp,DILI_DST);
             }
          }
          | DILSI_LOG ihold '(' coreexp ')'
@@ -3615,7 +3615,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $4.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_LOG);
+               bwrite_uint8_t(&wtmp,DILI_LOG);
             }
          }
          | DILSI_PUP ihold '(' coreexp ')'
@@ -3626,7 +3626,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $4.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_PUP);
+               bwrite_uint8_t(&wtmp,DILI_PUP);
             }
          }
          | DILSI_LNK ihold '(' coreexp ',' coreexp ')'
@@ -3639,7 +3639,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_LNK);
+               bwrite_uint8_t(&wtmp,DILI_LNK);
             }
          }
          | DILSI_EXP ihold '(' coreexp ',' coreexp ')'
@@ -3653,7 +3653,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_EXP);
+               bwrite_uint8_t(&wtmp,DILI_EXP);
             }
          }
          | DILSI_ACT ihold '(' coreexp ',' coreexp ',' coreexp ',' coreexp ',' coreexp ',' coreexp ')'
@@ -3683,7 +3683,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $14.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_ACT);
+               bwrite_uint8_t(&wtmp,DILI_ACT);
             }
          }
          | DILSI_EXE ihold '(' coreexp ',' coreexp ')'
@@ -3696,7 +3696,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_EXEC);
+               bwrite_uint8_t(&wtmp,DILI_EXEC);
             }
          }
          | DILSI_WIT ihold '(' coreexp ',' coreexp ')'
@@ -3708,7 +3708,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_WIT);
+               bwrite_uint8_t(&wtmp,DILI_WIT);
             }
          }
          | DILSI_SND ihold '(' coreexp ')'
@@ -3719,7 +3719,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $4.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_SND);
+               bwrite_uint8_t(&wtmp,DILI_SND);
             }
          }
          | DILSI_SNT ihold '(' coreexp ',' coreexp ')'
@@ -3732,7 +3732,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_SNT);
+               bwrite_uint8_t(&wtmp,DILI_SNT);
             }
          }
          | DILSI_SNTA ihold '(' coreexp ',' coreexp ')'
@@ -3745,7 +3745,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_SNTA);
+               bwrite_uint8_t(&wtmp,DILI_SNTA);
             }
          }
          | DILSI_SNTADIL ihold '(' coreexp ',' coreexp ')'
@@ -3758,7 +3758,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_SNTADIL);
+               bwrite_uint8_t(&wtmp,DILI_SNTADIL);
             }
          }
          | DILSI_SEC ihold '(' coreexp ',' label ')'
@@ -3771,7 +3771,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_SEC);
+               bwrite_uint8_t(&wtmp,DILI_SEC);
             }
          }
          | DILSI_USE ihold '(' coreexp ')'
@@ -3782,7 +3782,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $4.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_USE);
+               bwrite_uint8_t(&wtmp,DILI_USE);
             }
          }
          | DILSI_QUIT ihold
@@ -3790,28 +3790,28 @@ dilproc  : ihold proccall
             $$.fst = $2;
             $$.lst = $2+1;
             wtmp = &tmpl.core[$2];
-            bwrite_ubit8(&wtmp,DILI_QUIT);
+            bwrite_uint8_t(&wtmp,DILI_QUIT);
          }
          | DILSI_BLK ihold
          {
             $$.fst = $2;
             $$.lst = $2+1;
             wtmp = &tmpl.core[$2];
-            bwrite_ubit8(&wtmp,DILI_BLK);
+            bwrite_uint8_t(&wtmp,DILI_BLK);
          }
          | DILSI_PRI ihold
          {
             $$.fst = $2;
             $$.lst = $2+1;
             wtmp = &tmpl.core[$2];
-            bwrite_ubit8(&wtmp,DILI_PRI);
+            bwrite_uint8_t(&wtmp,DILI_PRI);
          }
          | DILSI_NPR ihold
          {
             $$.fst = $2;
             $$.lst = $2+1;
             wtmp = &tmpl.core[$2];
-            bwrite_ubit8(&wtmp,DILI_NPR);
+            bwrite_uint8_t(&wtmp,DILI_NPR);
          }
          | DILSI_WLK ihold '(' coreexp ')'
          {
@@ -3821,7 +3821,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $4.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_WALK);
+               bwrite_uint8_t(&wtmp,DILI_WALK);
             }
          }
          | DILSI_EQP ihold '(' coreexp ',' coreexp ')'
@@ -3835,7 +3835,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $6.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_EQP);
+               bwrite_uint8_t(&wtmp,DILI_EQP);
             }
          }
          | DILSI_UEQ ihold '(' coreexp ')'
@@ -3846,7 +3846,7 @@ dilproc  : ihold proccall
                $$.fst = $2;
                $$.lst = $4.lst;
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_UEQ);
+               bwrite_uint8_t(&wtmp,DILI_UEQ);
             }
          }
          ;
@@ -3870,10 +3870,10 @@ pushbrk  : /* naught */
 			 	
              if (break_no) {
                 /* reallocate break stack */
-                RECREATE(break_idx,ubit16,break_no+1);
+                RECREATE(break_idx,uint16_t,break_no+1);
              } else {
                 /* allocate new break stack */
-                CREATE(break_idx,ubit16,break_no+1);
+                CREATE(break_idx,uint16_t,break_no+1);
              }
              break_idx[break_no++]=add_label(buf,SKIP);
          }
@@ -3917,10 +3917,10 @@ pushcnt  : /* naught */
 			 	
              if (cont_no) {
                 /* reallocate cont stack */
-                RECREATE(cont_idx,ubit16,cont_no+1);
+                RECREATE(cont_idx,uint16_t,cont_no+1);
              } else {
                 /* allocate new cont stack */
-                CREATE(cont_idx,ubit16,cont_no+1);
+                CREATE(cont_idx,uint16_t,cont_no+1);
              }
              cont_idx[cont_no++]=add_label(buf,SKIP);		 		
          }
@@ -3978,35 +3978,35 @@ dilcomposed   : '{' dilinstlist '}' optsemicolons
 dilcomplex : DILSI_IF ihold '(' coreexp ')' ahold block ihold ahold DILSI_ELS dilcomposed
          {
             wtmp = &tmpl.core[$2];
-            bwrite_ubit8(&wtmp,DILI_IF); /* the instruction */
+            bwrite_uint8_t(&wtmp,DILI_IF); /* the instruction */
             wtmp = &tmpl.core[$6];
-            bwrite_ubit32(&wtmp,$11.fst); /* address of else */
+            bwrite_uint32_t(&wtmp,$11.fst); /* address of else */
             wtmp = &tmpl.core[$8];
-            bwrite_ubit8(&wtmp,DILI_GOTO); /* skip else */
+            bwrite_uint8_t(&wtmp,DILI_GOTO); /* skip else */
             wtmp = &tmpl.core[$9];
-            bwrite_ubit32(&wtmp,$11.lst); /* end of else */
+            bwrite_uint32_t(&wtmp,$11.lst); /* end of else */
             $$.fst = $2;
             $$.lst = $11.lst;
          }
          | DILSI_IF ihold '(' coreexp ')' ahold dilinst optsemicolons ihold ahold DILSI_ELS dilcomposed
          {
             wtmp = &tmpl.core[$2];
-            bwrite_ubit8(&wtmp,DILI_IF); /* the instruction */
+            bwrite_uint8_t(&wtmp,DILI_IF); /* the instruction */
             wtmp = &tmpl.core[$6];
-            bwrite_ubit32(&wtmp,$12.fst); /* address of else */
+            bwrite_uint32_t(&wtmp,$12.fst); /* address of else */
             wtmp = &tmpl.core[$9];
-            bwrite_ubit8(&wtmp,DILI_GOTO); /* skip else */
+            bwrite_uint8_t(&wtmp,DILI_GOTO); /* skip else */
             wtmp = &tmpl.core[$10];
-            bwrite_ubit32(&wtmp,$12.lst); /* end of else */
+            bwrite_uint32_t(&wtmp,$12.lst); /* end of else */
             $$.fst = $2;
             $$.lst = $12.lst;
          }
          | DILSI_IF ihold '(' coreexp ')' ahold dilcomposed
          {
             wtmp = &tmpl.core[$2];
-            bwrite_ubit8(&wtmp,DILI_IF); /* the instruction */
+            bwrite_uint8_t(&wtmp,DILI_IF); /* the instruction */
             wtmp = &tmpl.core[$6];
-            bwrite_ubit32(&wtmp,$7.lst); /* address of else */
+            bwrite_uint32_t(&wtmp,$7.lst); /* address of else */
             $$.fst = $2;
             $$.lst = $7.lst;
          }
@@ -4029,14 +4029,14 @@ dilcomplex : DILSI_IF ihold '(' coreexp ')' ahold block ihold ahold DILSI_ELS di
             if ($4.typ != DILV_INT)
 	      fatal("Arg 1 of 'foreach' not an integer");
             wtmp = &tmpl.core[$2];
-            bwrite_ubit8(&wtmp,DILI_FOE); /* foreach - clear / build */
+            bwrite_uint8_t(&wtmp,DILI_FOE); /* foreach - clear / build */
             wtmp = &tmpl.core[$9];
-            bwrite_ubit8(&wtmp,DILI_FON); /* foreach - next */
+            bwrite_uint8_t(&wtmp,DILI_FON); /* foreach - next */
             wtmp = &tmpl.core[$11];
-            bwrite_ubit32(&wtmp,wcore-tmpl.core);
+            bwrite_uint32_t(&wtmp,wcore-tmpl.core);
             wtmp = &tmpl.core[$16];
-            bwrite_ubit8(&wtmp,DILI_GOTO); /* loop */
-            bwrite_ubit32(&wtmp,$9);
+            bwrite_uint8_t(&wtmp,DILI_GOTO); /* loop */
+            bwrite_uint32_t(&wtmp,$9);
             $$.fst=$2;
             $$.lst=wcore-tmpl.core;
          }
@@ -4052,13 +4052,13 @@ dilcomplex : DILSI_IF ihold '(' coreexp ')' ahold block ihold ahold DILSI_ELS di
          	 
             /* made with 'if' and 'goto' */
             wtmp = &tmpl.core[$5];
-            bwrite_ubit8(&wtmp,DILI_IF); /* the instruction */
+            bwrite_uint8_t(&wtmp,DILI_IF); /* the instruction */
             wtmp = &tmpl.core[$9];
-            bwrite_ubit32(&wtmp,wcore - tmpl.core); /* address of break */
+            bwrite_uint32_t(&wtmp,wcore - tmpl.core); /* address of break */
             wtmp = &tmpl.core[$11];
-            bwrite_ubit8(&wtmp,DILI_GOTO); /* test again */
+            bwrite_uint8_t(&wtmp,DILI_GOTO); /* test again */
             wtmp = &tmpl.core[$12];
-            bwrite_ubit32(&wtmp,$5); /* address of start */
+            bwrite_uint32_t(&wtmp,$5); /* address of start */
             $$.fst = $5;
             $$.lst = wcore-tmpl.core;
          }
@@ -4120,10 +4120,10 @@ dilass   : ihold corevar DILTO_ASS dilassrgt
               
 	       /* read variable number from core */
 	       wtmp = &tmpl.core[1+($2.fst)];
-	       varnum=bread_ubit16(&wtmp);
+	       varnum=bread_uint16_t(&wtmp);
 
 	       wtmp = &tmpl.core[$4.fst];
-	       refnum=bread_ubit16(&wtmp);
+	       refnum=bread_uint16_t(&wtmp);
 
 	       /* check func/var types */
 	       switch (tmpl.vart[varnum])
@@ -4146,7 +4146,7 @@ dilass   : ihold corevar DILTO_ASS dilassrgt
 		  break;
 	       }
 	       wtmp = &tmpl.core[$1];
-	       bwrite_ubit8(&wtmp,DILI_RFC);
+	       bwrite_uint8_t(&wtmp,DILI_RFC);
 	       $$.fst = $1;
 	       $$.lst = $4.lst;
 	       
@@ -4170,7 +4170,7 @@ dilass   : ihold corevar DILTO_ASS dilassrgt
 	       /* check func/var types impossible! */
 
 	       wtmp = &tmpl.core[$1];
-	       bwrite_ubit8(&wtmp,DILI_SFC);
+	       bwrite_uint8_t(&wtmp,DILI_SFC);
 	       $$.fst = $1;
 	       $$.lst = $4.lst;	       
 	       
@@ -4187,7 +4187,7 @@ dilass   : ihold corevar DILTO_ASS dilassrgt
 		    fatal("Assigning incompatible types (C)");
                   else {
                      wtmp = &tmpl.core[$1];
-                     bwrite_ubit8(&wtmp,DILI_ASS);
+                     bwrite_uint8_t(&wtmp,DILI_ASS);
                      $$.fst = $1;
                      $$.lst = $4.lst;
                   }
@@ -4197,7 +4197,7 @@ dilass   : ihold corevar DILTO_ASS dilassrgt
 		    fatal("Assigning incompatible types (D)");
                   else {
                      wtmp = &tmpl.core[$1];
-                     bwrite_ubit8(&wtmp,DILI_ASS);
+                     bwrite_uint8_t(&wtmp,DILI_ASS);
                      $$.fst = $1;
                      $$.lst = $4.lst;
                   }
@@ -4225,7 +4225,7 @@ proccall : corevar ihold ihold '(' arginit arglist ')'
 		  $$.fst = $1.fst;
 		  $$.typ = $1.typ;
 		  wtmp=&tmpl.core[$2];
-		  bwrite_ubit16(&wtmp,ref.argc);
+		  bwrite_uint16_t(&wtmp,ref.argc);
 		  $$.lst = wcore-tmpl.core;
 	       }
 	       else
@@ -4245,7 +4245,7 @@ proccall : corevar ihold ihold '(' arginit arglist ')'
 	       /* read refnum from core */
 	       wtmp = &tmpl.core[$1.fst];
 
-               refnum = bread_ubit16(&wtmp);
+               refnum = bread_uint16_t(&wtmp);
 	       /*fprintf(stderr, "refnum read %d, %p.\n",
 		       refnum, &wcore[$1.fst]);*/
 
@@ -4292,7 +4292,7 @@ proccall : corevar ihold ihold '(' arginit arglist ')'
 	       $$.fst = $1.fst;
 	       $$.typ = $1.typ;
 	       wtmp=&tmpl.core[$2];
-	       bwrite_ubit16(&wtmp,ref.argc);
+	       bwrite_uint16_t(&wtmp,ref.argc);
 	       $$.lst = wcore-tmpl.core;
 	    }
 	 }
@@ -4308,7 +4308,7 @@ corefunc : DILSE_INTR ihold '(' coreexp ',' coreexp ',' labelskip ')'
 	       $$.lst=$8.lst;
                /* Type is ok */
 	       wtmp=&tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILE_INTR);
+               bwrite_uint8_t(&wtmp,DILE_INTR);
 	       tmpl.intrcount++;
 	       frm.intrcount++;
             }
@@ -4317,16 +4317,16 @@ corefunc : DILSE_INTR ihold '(' coreexp ',' coreexp ',' labelskip ')'
 	 }
          | DILSI_OAC ihold ihold ahold '(' coreexp ',' labelskip ')'
          {
-	    ubit32 flags;
+	    uint32_t flags;
 
             $$.fst = $2;
             $$.lst = $8.lst;
             /* write an interrupt instead! */
             wtmp = &tmpl.core[$2];
-            bwrite_ubit8(&wtmp,DILE_INTR);
-	    bwrite_ubit8(&wtmp,DILE_INT);
+            bwrite_uint8_t(&wtmp,DILE_INTR);
+	    bwrite_uint8_t(&wtmp,DILE_INT);
 	    flags = SFB_ACTIVATE;
-            bwrite_ubit32(&wtmp,flags);
+            bwrite_uint32_t(&wtmp,flags);
 	    tmpl.intrcount++;
 	    frm.intrcount++;
 	    $$.dsl=DSL_DYN;
@@ -4360,10 +4360,10 @@ dilinst  : dilproc
               fatal("no return expression expected");
 	    }            	
 
-            /* WAS: bwrite_ubit8(&wcore,DILI_RTS); */ /* the instruction */
+            /* WAS: bwrite_uint8_t(&wcore,DILI_RTS); */ /* the instruction */
 
             wtmp = &tmpl.core[$2];
-            bwrite_ubit8(&wtmp,DILI_RTS); /* the instruction */
+            bwrite_uint8_t(&wtmp,DILI_RTS); /* the instruction */
 
 	    $$.fst = $2;
 	    $$.lst = $2+1;
@@ -4377,7 +4377,7 @@ dilinst  : dilproc
               fatal("return expression not of correct type");
 	    }            	
             wtmp = &tmpl.core[$2];
-            bwrite_ubit8(&wtmp,DILI_RTF); /* the instruction */
+            bwrite_uint8_t(&wtmp,DILI_RTF); /* the instruction */
 	    $$.fst = $2; 
 	    $$.lst = $4.lst;
          }
@@ -4389,15 +4389,15 @@ dilinst  : dilproc
 	       $$.fst=$2;
 	       $$.lst=$7.lst;
 	       wtmp=&tmpl.core[$2];
-	       bwrite_ubit8(&wtmp, DILI_ON);
+	       bwrite_uint8_t(&wtmp, DILI_ON);
 	       wtmp=&tmpl.core[$4];
-	       bwrite_ubit16(&wtmp, $7.typ);
+	       bwrite_uint16_t(&wtmp, $7.typ);
 	    }
          }
          | DILSI_GOT ihold label
          {
             wtmp = &tmpl.core[$2];
-            bwrite_ubit8(&wtmp,DILI_GOTO);
+            bwrite_uint8_t(&wtmp,DILI_GOTO);
             $$.fst = $2;
             $$.lst = $3.lst;
          }
@@ -4409,10 +4409,10 @@ dilinst  : dilproc
                fatal("Using break outside loop");
             } else {
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_GOTO);
+               bwrite_uint8_t(&wtmp,DILI_GOTO);
                wtmp = &tmpl.core[$3];
                /* register use or find break label */
-               bwrite_ubit32(&wtmp,
+               bwrite_uint32_t(&wtmp,
                   get_label(label_names[break_idx[break_no-1]],$3)); 
             }
             $$.fst = $2;
@@ -4426,10 +4426,10 @@ dilinst  : dilproc
                fatal("Using continue outside loop");
             } else {
                wtmp = &tmpl.core[$2];
-               bwrite_ubit8(&wtmp,DILI_GOTO);
+               bwrite_uint8_t(&wtmp,DILI_GOTO);
                wtmp = &tmpl.core[$3];
                /* register use or find continue label */
-               bwrite_ubit32(&wtmp,
+               bwrite_uint32_t(&wtmp,
                   get_label(label_names[cont_idx[break_no-1]],$3)); 
             }
             $$.fst = $2;
@@ -4438,7 +4438,7 @@ dilinst  : dilproc
          ;
 %%
 
-void add_var(char *name, ubit16 type)
+void add_var(char *name, uint16_t type)
 {            
    str_lower(name);
 
@@ -4454,7 +4454,7 @@ void add_var(char *name, ubit16 type)
      fatal("Too many variables");
 }
 
-int add_label(char *name, ubit32 adr)
+int add_label(char *name, uint32_t adr)
 {
    str_lower(name);
 
@@ -4462,9 +4462,9 @@ int add_label(char *name, ubit32 adr)
    label_names = add_name(name, label_names);
 
    if (label_no == 0)
-      CREATE(label_adr, ubit32, 1);
+      CREATE(label_adr, uint32_t, 1);
    else
-      RECREATE(label_adr, ubit32, label_no+1);
+      RECREATE(label_adr, uint32_t, label_no+1);
 
    label_adr[label_no] = adr; /* index adress */
 
@@ -4473,7 +4473,7 @@ int add_label(char *name, ubit32 adr)
    return (label_no++);
 }
 
-ubit32 get_label(char *name, ubit32 adr)
+uint32_t get_label(char *name, uint32_t adr)
 {
    /* get number of referenced label */
    int i;
@@ -4487,11 +4487,11 @@ ubit32 get_label(char *name, ubit32 adr)
    if (label_adr[i] == SKIP) {
       /* register use of label before definition */
       if (label_use_no == 0) {
-         CREATE(label_use_adr, ubit32, 1);
-         CREATE(label_use_idx, ubit32, 1);
+         CREATE(label_use_adr, uint32_t, 1);
+         CREATE(label_use_idx, uint32_t, 1);
       } else {
-         RECREATE(label_use_adr, ubit32, label_use_no+1);
-         RECREATE(label_use_idx, ubit32, label_use_no+1);
+         RECREATE(label_use_adr, uint32_t, label_use_no+1);
+         RECREATE(label_use_idx, uint32_t, label_use_no+1);
       }
       /*fprintf(stderr,"GET LABEL REGISTERED LOCATION: %s %d\n", name, adr);*/
       label_use_adr[label_use_no] = adr; /* update here */
@@ -4510,7 +4510,7 @@ void update_labels(void)
 {
    int i;
    char buf[255];
-   ubit8 *wtmp;
+   uint8_t *wtmp;
    
    for(i = 0; i < label_use_no; i++)
    {
@@ -4531,7 +4531,7 @@ void update_labels(void)
              sprintf(buf,"Undefined label: %s",label_names[label_use_idx[i]]);
              fatal(buf);
           } 
-          bwrite_ubit32(&wtmp, label_adr[label_use_idx[i]]);
+          bwrite_uint32_t(&wtmp, label_adr[label_use_idx[i]]);
 	  if (label_adr[label_use_idx[i]] > (wcore - tmpl.core))
 	  {
 	     sprintf(buf, "Internal compiler error when resolving label %s.",
@@ -4591,15 +4591,15 @@ int strlstlen(char **strlst)
 /* code manipulation */
 
 /* increase core size of tmpl.core if need be, and updates wcore */
-void moredilcore(ubit32 size)
+void moredilcore(uint32_t size)
 {
-   ubit32 p1,p2,pos;
+   uint32_t p1,p2,pos;
    p1 = tmpl.coresz;
    p2 = (wcore - tmpl.core) + size;
    
    if ( p1 < p2 ) {
       pos = wcore - tmpl.core;
-      RECREATE(tmpl.core, ubit8, tmpl.coresz+CODESIZE);
+      RECREATE(tmpl.core, uint8_t, tmpl.coresz+CODESIZE);
       tmpl.coresz+=CODESIZE;
       wcore = &tmpl.core[pos];
     }
@@ -4609,36 +4609,36 @@ void moredilcore(ubit32 size)
 
 /* expression manipulation */
 
-void add_ubit8(struct exptype *dest, ubit8 d)
+void add_uint8_t(struct exptype *dest, uint8_t d)
 {
 /*   fprintf(stderr, "UBIT8\n");*/
-   if (dest->codep - dest->code + sizeof(ubit8) >= CODESIZE) 
+   if (dest->codep - dest->code + sizeof(uint8_t) >= CODESIZE) 
       fatal("U8: Expression too large");
-   bwrite_ubit8(&(dest->codep), d);
+   bwrite_uint8_t(&(dest->codep), d);
 }
 
-void add_ubit32(struct exptype *dest, ubit32 d)
+void add_uint32_t(struct exptype *dest, uint32_t d)
 {
 /*   fprintf(stderr, "UBIT32\n");*/
-   if (dest->codep - dest->code + sizeof(ubit32) >= CODESIZE) 
+   if (dest->codep - dest->code + sizeof(uint32_t) >= CODESIZE) 
       fatal("U32: Expression too large");
-   bwrite_ubit32(&(dest->codep), d);
+   bwrite_uint32_t(&(dest->codep), d);
 }
 
-void add_sbit32(struct exptype *dest, sbit32 d)
+void add_int32_t(struct exptype *dest, int32_t d)
 {
 /*   fprintf(stderr, "SBIT32\n");*/
-   if (dest->codep - dest->code + sizeof(sbit32) >= CODESIZE) 
+   if (dest->codep - dest->code + sizeof(int32_t) >= CODESIZE) 
       fatal("S32: Expression too large");
-   bwrite_ubit32(&(dest->codep), (ubit32) d);
+   bwrite_uint32_t(&(dest->codep), (uint32_t) d);
 }
 
-void add_ubit16(struct exptype *dest, ubit16 d)
+void add_uint16_t(struct exptype *dest, uint16_t d)
 {
 /*   fprintf(stderr, "UBIT16\n");*/
-   if (dest->codep - dest->code + sizeof(ubit16) >= CODESIZE) 
+   if (dest->codep - dest->code + sizeof(uint16_t) >= CODESIZE) 
       fatal("U16: Expression too large");
-   bwrite_ubit16(&(dest->codep), d);
+   bwrite_uint16_t(&(dest->codep), d);
 }
 
 void add_string(struct exptype *dest, char *d)
@@ -4674,7 +4674,7 @@ void add_stringlist(struct exptype *dest, char **d)
 
 void add_code(struct exptype *dest, struct exptype *src)
 {
-   sbit32 len = src->codep - src->code;
+   int32_t len = src->codep - src->code;
 
 /*   fprintf(stderr, "ADD CODE\n");*/
 
@@ -4687,7 +4687,7 @@ void add_code(struct exptype *dest, struct exptype *src)
 
 void copy_code(struct exptype *dest, struct exptype *src)
 {
-   sbit32 len = src->codep - src->code;
+   int32_t len = src->codep - src->code;
 
 /*   fprintf(stderr, "COPY CODE %d\n", len);*/
 
@@ -4702,7 +4702,7 @@ void copy_code(struct exptype *dest, struct exptype *src)
 
 
 
-ubit16 UpdateCRC( ubit8 c,  ubit16 crc)
+uint16_t UpdateCRC( uint8_t c,  uint16_t crc)
 {
 /*
 
@@ -4749,10 +4749,10 @@ SKIP:
       
 
 
-int dil_headercrc(char **name, ubit8 *type)
+int dil_headercrc(char **name, uint8_t *type)
 {
    int i, j;
-   ubit16 crc = 0;
+   uint16_t crc = 0;
 
    for (i=0; name[i]; i++)
    {
@@ -4766,10 +4766,10 @@ int dil_headercrc(char **name, ubit8 *type)
 }
 
 
-int dil_corecrc(ubit8 *core, int len)
+int dil_corecrc(uint8_t *core, int len)
 {
    int i, j;
-   ubit16 crc = 0;
+   uint16_t crc = 0;
 
    for (i=0; i < len; i++)
      crc = UpdateCRC(core[i], crc);
@@ -4787,13 +4787,13 @@ void make_code(struct exptype *dest)
          case DILV_INT: /* static integer */
              dest->codep = dest->code;
              dest->dsl = DSL_DYN;
-             bwrite_ubit8(&(dest->codep), DILE_INT);
-             bwrite_ubit32(&(dest->codep),(ubit32) dest->num);
+             bwrite_uint8_t(&(dest->codep), DILE_INT);
+             bwrite_uint32_t(&(dest->codep),(uint32_t) dest->num);
          break;
           case DILV_NULL: /* null pointer */
              dest->codep = dest->code;
              dest->dsl = DSL_DYN;
-             bwrite_ubit8(&(dest->codep),DILE_NULL);
+             bwrite_uint8_t(&(dest->codep),DILE_NULL);
          break;
          default: /* static other */
              dest->dsl = DSL_DYN; /* then its allready there */
@@ -4817,8 +4817,8 @@ void add_ref(struct dilref *ref)
    {
       CREATE(refs[refcount].argv, char *, ref->argc);
       memcpy(refs[refcount].argv, ref->argv, ref->argc*sizeof(char *));
-      CREATE(refs[refcount].argt, ubit8, ref->argc);
-      memcpy(refs[refcount].argt, ref->argt, ref->argc*sizeof(ubit8));
+      CREATE(refs[refcount].argt, uint8_t, ref->argc);
+      memcpy(refs[refcount].argt, ref->argt, ref->argc*sizeof(uint8_t));
    }
    else
    {

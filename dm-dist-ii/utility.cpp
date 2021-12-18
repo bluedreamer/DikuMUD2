@@ -115,10 +115,10 @@ auto dice(int number, int size) -> int
    struct log_buffer log_buf[MAXLOG];
 
    /* writes a string to the log */
-   void slog(enum log_level level, ubit8 wizinv_level, const char *fmt, ...)
+   void slog(enum log_level level, uint8_t wizinv_level, const char *fmt, ...)
    {
-      static ubit8  idx      = 0;
-      static ubit32 log_size = 0;
+      static uint8_t  idx      = 0;
+      static uint32_t log_size = 0;
 
       char    buf[MAX_STRING_LENGTH];
       char   *t;
@@ -189,7 +189,7 @@ auto dice(int number, int size) -> int
       abort();
    }
 
-   auto sprintbit(char *buf, ubit32 vektor, const char *names[])->char *
+   auto sprintbit(char *buf, uint32_t vektor, const char *names[])->char *
    {
       char *result = buf;
       long  nr;

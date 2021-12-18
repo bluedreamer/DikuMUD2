@@ -45,7 +45,7 @@
 #include "nanny.h"
 #include "utility.h"
 
-ubit8 g_nShout = 0;
+uint8_t g_nShout = 0;
 
 /* extern variables */
 

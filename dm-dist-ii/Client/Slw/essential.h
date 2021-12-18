@@ -47,8 +47,8 @@ enum log_level { LOG_OFF, LOG_BRIEF, LOG_EXTENSIVE, LOG_ALL };
 /*   #define NULL ((void *) 0) */
 #endif
 
-#define BITCONV16(i) ((((ubit16) i)>>8)|(( ((ubit16) i)&255)<<8))
-#define BITCONV32(i) ((((ubit32) i)>>16)|(( ((ubit32) i)&65535)<<16))
+#define BITCONV16(i) ((((uint16_t) i)>>8)|(( ((uint16_t) i)&255)<<8))
+#define BITCONV32(i) ((((uint32_t) i)>>16)|(( ((uint32_t) i)&65535)<<16))
 
 #define ISNEWL(ch) ((ch) == '\n' || (ch) == '\r')
 
@@ -102,24 +102,24 @@ enum log_level { LOG_OFF, LOG_BRIEF, LOG_EXTENSIVE, LOG_ALL };
 #define isascii(ch) ((ch >= 32) && (ch <= 126))
 
 #ifndef HPUX
-typedef signed char        sbit8;
-typedef unsigned char      ubit8;
-typedef signed short int   sbit16;
-typedef unsigned short int ubit16;
+typedef signed char        int8_t;
+typedef unsigned char      uint8_t;
+typedef signed short int   int16_t;
+typedef unsigned short int uint16_t;
 
 #ifdef DOS
-typedef signed long        sbit32;
-typedef unsigned long      ubit32;
+typedef signed long        int32_t;
+typedef unsigned long      uint32_t;
 #else
-typedef signed int         sbit32;
-typedef unsigned int       ubit32;
+typedef signed int         int32_t;
+typedef unsigned int       uint32_t;
 #endif
 
 #endif /* HPUX */
 
-typedef ubit8               ubit1; /* Boolean */
+typedef uint8_t               bool; /* Boolean */
 
-void slog(enum log_level, ubit8, const char *, ...);
+void slog(enum log_level, uint8_t, const char *, ...);
 
 
 #ifdef MEMORY_DEBUG

@@ -49,7 +49,7 @@ void swap_in(struct unit_data *u)
 {
    /*
 CByteBuffer Buf;
-ubit8 *p;
+uint8_t *p;
 
 assert(UNIT_SWAP(u) == NULL);
 
@@ -57,7 +57,7 @@ if (UNIT_SWAP_HANDLE(u) == BLK_NULL) // In '.data' file
 {
   FILE *f;
   char str[256];
-  ubit8 version;
+  uint8_t version;
 
   assert(UNIT_FILE_INDEX(u));
 
@@ -79,7 +79,7 @@ if (UNIT_SWAP_HANDLE(u) == BLK_NULL) // In '.data' file
 }
 
 blk_length n;
-p = (ubit8 *) blk_read(swap_file, UNIT_SWAP_HANDLE(u), &n);
+p = (uint8_t *) blk_read(swap_file, UNIT_SWAP_HANDLE(u), &n);
 assert(p != NULL);  // If read error here, we are fucked bad
 
 Buf.SetData(p, n);
@@ -114,7 +114,7 @@ void swap_out(struct unit_data *u)
 {
    /*
     CByteBuffer *pBuf = &g_FileBuffer;
-    ubit8 *p;
+    uint8_t *p;
 
     assert(UNIT_SWAP(u) != NULL);
 

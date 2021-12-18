@@ -61,7 +61,7 @@ void dil_free_frame(struct dilframe *frame);
 
 auto dil_getbool(struct dilval *v) -> char;
 auto dil_getval(struct dilval *v) -> int;
-void dil_add_secure(struct dilprg *prg, struct unit_data *sup, ubit8 *lab);
+void dil_add_secure(struct dilprg *prg, struct unit_data *sup, uint8_t *lab);
 #ifdef __cplusplus
 void dil_sub_secure(struct dilframe *frm, struct unit_data *sup, int bForeach = FALSE);
 #endif
@@ -87,6 +87,6 @@ auto dil_type_check(const char *f, struct dilprg *p, int tot, ...) -> int;
 void dil_free_prg(struct dilprg *prg);
 
 void dil_intr_remove(struct dilprg *p, int idx);
-auto dil_intr_insert(struct dilprg *p, ubit8 *lab, ubit16 flags) -> int;
+auto dil_intr_insert(struct dilprg *p, uint8_t *lab, uint16_t flags) -> int;
 
 #endif

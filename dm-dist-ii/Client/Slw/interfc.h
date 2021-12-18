@@ -31,12 +31,12 @@ class cNetInterface
    virtual int  Open(char *pDev)    { return 0;     }
    virtual int  Close(void)         { return 0;     }
 
-   virtual int  Send(ubit8 data)                 = 0;
-   virtual int  Send(const ubit8 *data, ubit32 len)    = 0;
+   virtual int  Send(uint8_t data)                 = 0;
+   virtual int  Send(const uint8_t *data, uint32_t len)    = 0;
 
    virtual int  SendString(char *String)         = 0;
 
-   virtual void Receive(ubit8 *data, ubit32 len) = 0;
+   virtual void Receive(uint8_t *data, uint32_t len) = 0;
 
    virtual void Poll(void)          { return;       }
 

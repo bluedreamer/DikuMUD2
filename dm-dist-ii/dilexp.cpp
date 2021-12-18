@@ -774,13 +774,13 @@ void dilfe_spli(struct dilprg *p, class dilval *v)
 
    /* We're home free... */
 
-   *((ubit32 *)v2.ref) = spell_info[v1.val.num].realm;
-   *((ubit32 *)v3.ref) = spl_tree[v1.val.num].parent;
-   *((ubit32 *)v4.ref) = spell_info[v1.val.num].usesmana;
-   *((ubit32 *)v5.ref) = spell_info[v1.val.num].offensive;
-   *((ubit32 *)v6.ref) = spell_info[v1.val.num].cast_type;
-   *((ubit32 *)v7.ref) = spell_info[v1.val.num].media;
-   *((ubit32 *)v8.ref) = spell_info[v1.val.num].targets;
+   *((uint32_t *)v2.ref) = spell_info[v1.val.num].realm;
+   *((uint32_t *)v3.ref) = spl_tree[v1.val.num].parent;
+   *((uint32_t *)v4.ref) = spell_info[v1.val.num].usesmana;
+   *((uint32_t *)v5.ref) = spell_info[v1.val.num].offensive;
+   *((uint32_t *)v6.ref) = spell_info[v1.val.num].cast_type;
+   *((uint32_t *)v7.ref) = spell_info[v1.val.num].media;
+   *((uint32_t *)v8.ref) = spell_info[v1.val.num].targets;
 
    v->type    = DILV_SP;
    v->atyp    = DILA_EXP;
@@ -1212,8 +1212,8 @@ void dilfe_fits(struct dilprg *p, class dilval *v)
 void dilfe_intr(struct dilprg *p, class dilval *v)
 {
    /* add interrupt to current frame */
-   ubit16 intnum;
-   ubit8 *lab;
+   uint16_t intnum;
+   uint8_t *lab;
 
    class dilval v1;
    class dilval v2;
@@ -1231,7 +1231,7 @@ void dilfe_intr(struct dilprg *p, class dilval *v)
       v->atyp    = DILA_NONE;
    }
 
-   bread_ubit32(&(p->sp->pc)); /* skip label */
+   bread_uint32_t(&(p->sp->pc)); /* skip label */
 }
 
 void dilfe_not(struct dilprg *p, class dilval *v)
@@ -3180,7 +3180,7 @@ void dilfe_var(struct dilprg *p, class dilval *v)
    /* A variable */
    int varno;
 
-   varno = bread_ubit16(&(p->sp->pc));
+   varno = bread_uint16_t(&(p->sp->pc));
 
    switch(p->sp->vars[varno].type)
    {
@@ -3239,7 +3239,7 @@ void dilfe_hrt(struct dilprg *p, class dilval *v)
 
    v->type = DILV_SINT2R;
    v->atyp = DILA_NONE;
-   v->ref  = (sbit16 *)&(p->sarg->fptr->heart_beat);
+   v->ref  = (int16_t *)&(p->sarg->fptr->heart_beat);
 }
 
 void dilfe_tho(struct dilprg *p, class dilval *v)
@@ -3325,7 +3325,7 @@ void dilfe_powe(struct dilprg *p, class dilval *v)
 
    if(p->sarg->pInt != nullptr)
    {
-      v->ref = (sbit32 *)p->sarg->pInt;
+      v->ref = (int32_t *)p->sarg->pInt;
    }
    else
    {
@@ -3383,7 +3383,7 @@ void dilfe_int(struct dilprg *p, class dilval *v)
 
    v->type    = DILV_INT;
    v->atyp    = DILA_NONE;
-   v->val.num = (sbit32)bread_ubit32(&(p->sp->pc));
+   v->val.num = (int32_t)bread_uint32_t(&(p->sp->pc));
 }
 
 void dilfe_cmds(struct dilprg *p, class dilval *v)

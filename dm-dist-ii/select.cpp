@@ -73,7 +73,7 @@ void cHook::PushWrite()
    int   sofar;
    int   len;
    int   thisround;
-   ubit8 buf[1460];
+   uint8_t buf[1460];
 
    if(IsHooked() == 0)
    {
@@ -128,7 +128,7 @@ void cHook::PushWrite()
    }
 }
 
-void cHook::Write(ubit8 *pData, ubit32 nLen, int bCopy)
+void cHook::Write(uint8_t *pData, uint32_t nLen, int bCopy)
 {
    if(nLen <= 0)
    {

@@ -36,7 +36,7 @@ char *parse_match_name(char **pData, char *pMatch);
 char **parse_match_namelist(char **pData, char *pMatch);
 
 // From textutil
-ubit1 str_is_empty(const char *arg);
+bool str_is_empty(const char *arg);
 int isfilename(char *fname);
 char *str_dup( const char *source);
 char **add_name(const char *name, char **namelist);

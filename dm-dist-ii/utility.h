@@ -39,7 +39,7 @@ auto MAX(int a, int b) -> int;
 auto number(int from, int to) -> int;
 auto dice(int number, int size) -> int;
 
-auto sprintbit(char *buf, ubit32 vektor, const char *names[]) -> char *;
+auto sprintbit(char *buf, uint32_t vektor, const char *names[]) -> char *;
 auto sprinttype(char *buf, int type, const char *names[]) -> const char *;
 
 /* in game log stuff below */
@@ -60,7 +60,7 @@ public:
 
    char           str[MAX_INPUT_LENGTH + 50];
    enum log_level level;
-   ubit8          wizinv_level;
+   uint8_t          wizinv_level;
 };
 
 /* For the printing of obj_type information, as used by the identify spell and
@@ -69,7 +69,7 @@ public:
 struct obj_type_t
 {
    const char *fmt;
-   ubit8       v[5];
+   uint8_t       v[5];
 };
 
 auto stat_obj_data(struct unit_data *u, struct obj_type_t *obj_data) -> char *;

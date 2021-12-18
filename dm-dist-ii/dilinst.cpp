@@ -125,7 +125,7 @@ void dilfi_fon(struct dilprg *p, class dilval *v)
 {
    class dilval      v1;
    struct unit_data *u;
-   ubit32            adr;
+   uint32_t            adr;
    int               i;
 
    if(v != nullptr)
@@ -136,7 +136,7 @@ void dilfi_fon(struct dilprg *p, class dilval *v)
    }
 
    eval_dil_exp(p, &v1);
-   adr = bread_ubit32(&(p->sp->pc));
+   adr = bread_uint32_t(&(p->sp->pc));
    p->waitcmd--;
 
    if(v1.type != DILV_UPR)
@@ -559,7 +559,7 @@ void dil_push_frame(struct dilprg *p, struct diltemplate *rtmpl, class dilval *a
       frm->vars = nullptr;
    }
 
-   ubit8 tmp;
+   uint8_t tmp;
 
    for(i = 0; i < rtmpl->argc; i++)
    {
@@ -612,7 +612,7 @@ void dilfi_rproc(struct dilprg *p, class dilval *v)
    int                 i;
    struct diltemplate *ctmpl;
    class dilval        av[255];
-   ubit16              argcnt;
+   uint16_t              argcnt;
 
    if(v != nullptr)
    {
@@ -628,8 +628,8 @@ void dilfi_rproc(struct dilprg *p, class dilval *v)
     */
 
    ctmpl  = p->sp->tmpl;
-   xrefi  = bread_ubit16(&(p->sp->pc)); /* <funcnumber> */
-   argcnt = bread_ubit16(&(p->sp->pc)); /* <argc>, ignored */
+   xrefi  = bread_uint16_t(&(p->sp->pc)); /* <funcnumber> */
+   argcnt = bread_uint16_t(&(p->sp->pc)); /* <argc>, ignored */
 
    if(ctmpl->extprg[xrefi] == nullptr)
    {
@@ -661,7 +661,7 @@ void dilfi_rsproc(struct dilprg *p, class dilval *v)
    struct diltemplate *ntmpl;
    class dilval        av[255];
    class dilval        v1;
-   ubit8               argcnt;
+   uint8_t               argcnt;
 
    if(v != nullptr)
    {
@@ -678,7 +678,7 @@ void dilfi_rsproc(struct dilprg *p, class dilval *v)
 
    ctmpl = p->sp->tmpl;
    eval_dil_exp(p, &v1);
-   argcnt = (ubit8)bread_ubit16(&(p->sp->pc)); /* <argc> */
+   argcnt = (uint8_t)bread_uint16_t(&(p->sp->pc)); /* <argc> */
 
    /* evaluate arguments */
    for(i = 0; i < argcnt; i++)
@@ -755,7 +755,7 @@ void dilfi_rfunc(struct dilprg *p, class dilval *v)
    int                 i;
    struct diltemplate *ctmpl;
    class dilval        av[255];
-   ubit16              argcnt;
+   uint16_t              argcnt;
 
    if(v != nullptr)
    {
@@ -772,9 +772,9 @@ void dilfi_rfunc(struct dilprg *p, class dilval *v)
 
    ctmpl = p->sp->tmpl;
    p->sp->pc++;                         /* skip <var> */
-   vari   = bread_ubit16(&(p->sp->pc)); /* <var#> */
-   xrefi  = bread_ubit16(&(p->sp->pc)); /* <funcnumber> */
-   argcnt = bread_ubit16(&(p->sp->pc)); /* <nargs>, ignored */
+   vari   = bread_uint16_t(&(p->sp->pc)); /* <var#> */
+   xrefi  = bread_uint16_t(&(p->sp->pc)); /* <funcnumber> */
+   argcnt = bread_uint16_t(&(p->sp->pc)); /* <nargs>, ignored */
    if(ctmpl->extprg[xrefi] == nullptr)
    {
       /*
@@ -809,7 +809,7 @@ void dilfi_rsfunc(struct dilprg *p, class dilval *v)
    struct diltemplate *ntmpl;
    class dilval        av[255];
    class dilval        v1;
-   ubit8               argcnt;
+   uint8_t               argcnt;
 
    if(v != nullptr)
    {
@@ -826,9 +826,9 @@ void dilfi_rsfunc(struct dilprg *p, class dilval *v)
 
    ctmpl = p->sp->tmpl;
    p->sp->pc++;                         /* skip <var> */
-   vari = bread_ubit16(&(p->sp->pc));   /* <var#> */
+   vari = bread_uint16_t(&(p->sp->pc));   /* <var#> */
    eval_dil_exp(p, &v1);                /* funcname */
-   argcnt = bread_ubit16(&(p->sp->pc)); /* <nargs>, ignored */
+   argcnt = bread_uint16_t(&(p->sp->pc)); /* <nargs>, ignored */
 
    /* evaluate arguments */
    for(i = 0; i < argcnt; i++)
@@ -1072,7 +1072,7 @@ void dilfi_ass(struct dilprg *p, class dilval *v)
             case DILV_FAIL:
                break;
             case DILV_INT:
-               *((sbit8 *)v1.ref) = v2.val.num;
+               *((int8_t *)v1.ref) = v2.val.num;
                break;
             default:
                /* ERROR incompatible types */
@@ -1088,7 +1088,7 @@ void dilfi_ass(struct dilprg *p, class dilval *v)
             case DILV_FAIL:
                break;
             case DILV_INT:
-               *((sbit16 *)v1.ref) = v2.val.num;
+               *((int16_t *)v1.ref) = v2.val.num;
                break;
             default:
                /* ERROR incompatible types */
@@ -1104,7 +1104,7 @@ void dilfi_ass(struct dilprg *p, class dilval *v)
             case DILV_FAIL:
                break;
             case DILV_INT:
-               *((sbit32 *)v1.ref) = v2.val.num;
+               *((int32_t *)v1.ref) = v2.val.num;
                break;
             default:
                /* ERROR incompatible types */
@@ -1120,7 +1120,7 @@ void dilfi_ass(struct dilprg *p, class dilval *v)
             case DILV_FAIL:
                break;
             case DILV_INT:
-               *((ubit8 *)v1.ref) = v2.val.num;
+               *((uint8_t *)v1.ref) = v2.val.num;
                break;
             default:
                /* ERROR incompatible types */
@@ -1136,7 +1136,7 @@ void dilfi_ass(struct dilprg *p, class dilval *v)
             case DILV_FAIL:
                break;
             case DILV_INT:
-               *((ubit16 *)v1.ref) = v2.val.num;
+               *((uint16_t *)v1.ref) = v2.val.num;
                break;
             default:
                /* ERROR incompatible types */
@@ -1152,7 +1152,7 @@ void dilfi_ass(struct dilprg *p, class dilval *v)
             case DILV_FAIL:
                break;
             case DILV_INT:
-               *((ubit32 *)v1.ref) = v2.val.num;
+               *((uint32_t *)v1.ref) = v2.val.num;
                break;
             default:
                /* ERROR incompatible types */
@@ -1269,7 +1269,7 @@ void dilfi_folo(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
    class dilval v2;
-   sbit32       value = 0;
+   int32_t       value = 0;
 
    if(v != nullptr)
    {
@@ -1306,7 +1306,7 @@ void dilfi_lcri(struct dilprg *p, class dilval *v)
    class dilval v1;
    class dilval v2;
    class dilval v3;
-   sbit32       value = 0;
+   int32_t       value = 0;
 
    if(v != nullptr)
    {
@@ -1338,7 +1338,7 @@ void dilfi_exp(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
    class dilval v2;
-   sbit32       value = 0;
+   int32_t       value = 0;
 
    if(v != nullptr)
    {
@@ -1378,7 +1378,7 @@ void dilfi_exp(struct dilprg *p, class dilval *v)
 void dilfi_if(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
-   ubit32       coreptr;
+   uint32_t       coreptr;
 
    if(v != nullptr)
    {
@@ -1388,7 +1388,7 @@ void dilfi_if(struct dilprg *p, class dilval *v)
    }
 
    eval_dil_exp(p, &v1);
-   coreptr = bread_ubit32(&(p->sp->pc)); /* else branch */
+   coreptr = bread_uint32_t(&(p->sp->pc)); /* else branch */
 
    p->waitcmd--;
    if(dil_getbool(&v1) == 0)
@@ -1426,22 +1426,22 @@ void dilfi_set(struct dilprg *p, class dilval *v)
          return;
 
       case DILV_SINT1R:
-         *((sbit8 *)v1.ref) |= v2.val.num;
+         *((int8_t *)v1.ref) |= v2.val.num;
          break;
       case DILV_SINT2R:
-         *((sbit16 *)v1.ref) |= v2.val.num;
+         *((int16_t *)v1.ref) |= v2.val.num;
          break;
       case DILV_SINT4R:
-         *((sbit32 *)v1.ref) |= v2.val.num;
+         *((int32_t *)v1.ref) |= v2.val.num;
          break;
       case DILV_UINT1R:
-         *((ubit8 *)v1.ref) |= v2.val.num;
+         *((uint8_t *)v1.ref) |= v2.val.num;
          break;
       case DILV_UINT2R:
-         *((ubit16 *)v1.ref) |= v2.val.num;
+         *((uint16_t *)v1.ref) |= v2.val.num;
          break;
       case DILV_UINT4R:
-         *((ubit32 *)v1.ref) |= v2.val.num;
+         *((uint32_t *)v1.ref) |= v2.val.num;
          break;
       default:
          /* not an lvalue! */
@@ -1479,22 +1479,22 @@ void dilfi_uset(struct dilprg *p, class dilval *v)
          return;
 
       case DILV_SINT1R:
-         REMOVE_BIT(*((sbit8 *)v1.ref), v2.val.num);
+         REMOVE_BIT(*((int8_t *)v1.ref), v2.val.num);
          break;
       case DILV_SINT2R:
-         REMOVE_BIT(*((sbit16 *)v1.ref), v2.val.num);
+         REMOVE_BIT(*((int16_t *)v1.ref), v2.val.num);
          break;
       case DILV_SINT4R:
-         REMOVE_BIT(*((sbit32 *)v1.ref), v2.val.num);
+         REMOVE_BIT(*((int32_t *)v1.ref), v2.val.num);
          break;
       case DILV_UINT1R:
-         REMOVE_BIT(*((ubit8 *)v1.ref), v2.val.num);
+         REMOVE_BIT(*((uint8_t *)v1.ref), v2.val.num);
          break;
       case DILV_UINT2R:
-         REMOVE_BIT(*((ubit16 *)v1.ref), v2.val.num);
+         REMOVE_BIT(*((uint16_t *)v1.ref), v2.val.num);
          break;
       case DILV_UINT4R:
-         REMOVE_BIT(*((ubit32 *)v1.ref), v2.val.num);
+         REMOVE_BIT(*((uint32_t *)v1.ref), v2.val.num);
          break;
 
       default:
@@ -1723,8 +1723,8 @@ void dilfi_dst(struct dilprg *p, class dilval *v)
 void dilfi_walk(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
-   ubit16       i;
-   ubit8       *oldpc;
+   uint16_t       i;
+   uint8_t       *oldpc;
 
    if(v != nullptr)
    {
@@ -1853,7 +1853,7 @@ void dilfi_wit(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
    class dilval v2;
-   ubit8       *oldpc;
+   uint8_t       *oldpc;
 
    if(v != nullptr)
    {
@@ -1958,7 +1958,7 @@ void dilfi_act(struct dilprg *p, class dilval *v)
 /* Goto new command */
 void dilfi_goto(struct dilprg *p, class dilval *v)
 {
-   ubit32 adr;
+   uint32_t adr;
 
    if(v != nullptr)
    {
@@ -1967,7 +1967,7 @@ void dilfi_goto(struct dilprg *p, class dilval *v)
       return;
    }
 
-   adr       = bread_ubit32(&(p->sp->pc));
+   adr       = bread_uint32_t(&(p->sp->pc));
    p->sp->pc = &(p->sp->tmpl->core[adr]);
    p->waitcmd--;
 }
@@ -1976,9 +1976,9 @@ void dilfi_goto(struct dilprg *p, class dilval *v)
 void dilfi_on(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
-   ubit32       adr;
-   ubit16       maxlab;
-   ubit8       *brkptr;
+   uint32_t       adr;
+   uint16_t       maxlab;
+   uint8_t       *brkptr;
 
    if(v != nullptr)
    {
@@ -1990,8 +1990,8 @@ void dilfi_on(struct dilprg *p, class dilval *v)
    eval_dil_exp(p, &v1);
    p->waitcmd--;
 
-   maxlab = bread_ubit16(&(p->sp->pc));
-   brkptr = p->sp->pc + sizeof(ubit32) * (maxlab);
+   maxlab = bread_uint16_t(&(p->sp->pc));
+   brkptr = p->sp->pc + sizeof(uint32_t) * (maxlab);
 
    if(dil_getval(&v1) != DILV_INT)
    {
@@ -2005,8 +2005,8 @@ void dilfi_on(struct dilprg *p, class dilval *v)
    }
    else
    {
-      p->sp->pc += sizeof(ubit32) * (v1.val.num);
-      adr = bread_ubit32(&(p->sp->pc));
+      p->sp->pc += sizeof(uint32_t) * (v1.val.num);
+      adr = bread_uint32_t(&(p->sp->pc));
       if(adr == SKIP)
       {
          p->sp->pc = brkptr;
@@ -2395,7 +2395,7 @@ void dilfi_log(struct dilprg *p, class dilval *v)
 void dilfi_sec(struct dilprg *p, class dilval *v)
 {
    class dilval v1;  /* unit */
-   ubit32       adr; /* address */
+   uint32_t       adr; /* address */
 
    if(v != nullptr)
    {
@@ -2405,7 +2405,7 @@ void dilfi_sec(struct dilprg *p, class dilval *v)
    }
 
    eval_dil_exp(p, &v1);
-   adr = bread_ubit32(&(p->sp->pc));
+   adr = bread_uint32_t(&(p->sp->pc));
 
    p->waitcmd--;
 

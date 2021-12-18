@@ -32,8 +32,8 @@ auto spell_perform(int spell_no, int spell_type, struct unit_data *caster, struc
 
 #include "dil.h"
 
-auto spell_legal_type(int spl, int type) -> ubit1;
-auto spell_legal_target(int spl, struct unit_data *c, struct unit_data *t) -> ubit1;
+auto spell_legal_type(int spl, int type) -> bool;
+auto spell_legal_target(int spl, struct unit_data *c, struct unit_data *t) -> bool;
 
 struct spell_args
 {
@@ -45,7 +45,7 @@ struct spell_args
 
 struct spell_info_type
 {
-   ubit8 acttype;
+   uint8_t acttype;
    char *tochar;
    char *tovict;
    char *torest;
@@ -53,16 +53,16 @@ struct spell_info_type
    char *toselfroom;
 
    void (*spell_pointer)(struct spell_args *sa);
-   ubit8  minimum_position; /* Position for caster               */
-   sbit16 usesmana;         /* Amount of mana used by a spell    */
-   sbit8  beats;            /* Heartbeats until ready for next   */
-   ubit16 targets;          /* See below for use with TAR_XXX    */
-   ubit8  media;            /* found in spells/potions/...       */
-   ubit8  cast_type;        /* Resist, self check, etc?          */
-   ubit16 demi_power;       /* Power used by demis (0..5)        */
-   ubit8  offensive;        /* Is this an offensive spell?       */
-   ubit8  realm;            /* Essence, Channeling, Mentalism?   */
-   ubit8  shield;           /* Shield method SHIELD_M_XXX        */
+   uint8_t  minimum_position; /* Position for caster               */
+   int16_t usesmana;         /* Amount of mana used by a spell    */
+   int8_t  beats;            /* Heartbeats until ready for next   */
+   uint16_t targets;          /* See below for use with TAR_XXX    */
+   uint8_t  media;            /* found in spells/potions/...       */
+   uint8_t  cast_type;        /* Resist, self check, etc?          */
+   uint16_t demi_power;       /* Power used by demis (0..5)        */
+   uint8_t  offensive;        /* Is this an offensive spell?       */
+   uint8_t  realm;            /* Essence, Channeling, Mentalism?   */
+   uint8_t  shield;           /* Shield method SHIELD_M_XXX        */
 
    struct diltemplate *tmpl; /* Perhaps a DIL template...         */
 };

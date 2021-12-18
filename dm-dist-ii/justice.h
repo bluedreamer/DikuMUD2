@@ -35,7 +35,7 @@
 
 void offend_legal_state(class unit_data *ch, class unit_data *victim);
 
-void log_crime(struct unit_data *criminal, struct unit_data *victim, ubit8 crime_type, int active = TRUE);
+void log_crime(struct unit_data *criminal, struct unit_data *victim, uint8_t crime_type, int active = TRUE);
 
 void set_reward_char(struct unit_data *ch, int crimes);
 

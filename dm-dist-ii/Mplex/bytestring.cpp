@@ -31,59 +31,59 @@
 #include "essential.h"
 #include "textutil.h"
 
-ubit8 bread_ubit8(ubit8 **b)
+uint8_t bread_uint8_t(uint8_t **b)
 {
-   ubit8 i;
+   uint8_t i;
 
-   memcpy((ubit8 *)&i, *b, sizeof(ubit8));
-   *b += sizeof(ubit8);
+   memcpy((uint8_t *)&i, *b, sizeof(uint8_t));
+   *b += sizeof(uint8_t);
 
    return i;
 }
 
-ubit16 bread_ubit16(ubit8 **b)
+uint16_t bread_uint16_t(uint8_t **b)
 {
-   ubit16 i;
+   uint16_t i;
 
-   memcpy((ubit8 *)&i, *b, sizeof(ubit16));
-   *b += sizeof(ubit16);
+   memcpy((uint8_t *)&i, *b, sizeof(uint16_t));
+   *b += sizeof(uint16_t);
 
    return i;
 }
 
-ubit32 bread_ubit32(ubit8 **b)
+uint32_t bread_uint32_t(uint8_t **b)
 {
-   ubit32 i;
+   uint32_t i;
 
-   memcpy((ubit8 *)&i, *b, sizeof(ubit32));
-   *b += sizeof(ubit32);
+   memcpy((uint8_t *)&i, *b, sizeof(uint32_t));
+   *b += sizeof(uint32_t);
 
    return i;
 }
 
-float bread_float(ubit8 **b)
+float bread_float(uint8_t **b)
 {
    float f;
 
-   memcpy((ubit8 *)&f, *b, sizeof(float));
+   memcpy((uint8_t *)&f, *b, sizeof(float));
    *b += sizeof(float);
 
    return f;
 }
 
-ubit8 *bread_data(ubit8 **b, ubit32 *plen)
+uint8_t *bread_data(uint8_t **b, uint32_t *plen)
 {
-   ubit32 len;
-   ubit8 *data;
+   uint32_t len;
+   uint8_t *data;
 
    data = NULL;
-   len  = bread_ubit32(b);
+   len  = bread_uint32_t(b);
    if(plen)
       *plen = len;
 
    if(len > 0)
    {
-      CREATE(data, ubit8, len);
+      CREATE(data, uint8_t, len);
       memcpy(data, *b, len);
       *b += len;
    }
@@ -93,7 +93,7 @@ ubit8 *bread_data(ubit8 **b, ubit32 *plen)
 
 /* Stored: as Null terminated string            */
 /* Copy string from **b into *str               */
-void bread_strcpy(ubit8 **b, char *str)
+void bread_strcpy(uint8_t **b, char *str)
 {
    for(; (*str++ = **b); (*b)++)
       ;
@@ -105,7 +105,7 @@ void bread_strcpy(ubit8 **b, char *str)
  *  string is one or more characters, and return
  *  pointer to allocated string (or 0)
  */
-char *bread_str_alloc(ubit8 **b)
+char *bread_str_alloc(uint8_t **b)
 {
    if(**b)
    {
@@ -124,7 +124,7 @@ char *bread_str_alloc(ubit8 **b)
 
 /* Returns pointer to the string and skips past the end to next
    point in buffer */
-char *bread_str_skip(ubit8 **b)
+char *bread_str_skip(uint8_t **b)
 {
    char *o = (char *)*b;
 
@@ -138,7 +138,7 @@ char *bread_str_skip(ubit8 **b)
 /* string ("")                                  */
 /* Returns * to nameblock, nameblock may be     */
 /* but is never null ({""}).                    */
-char **bread_nameblock(ubit8 **b)
+char **bread_nameblock(uint8_t **b)
 {
    char   buf[MAX_STRING_LENGTH];
    char **nb;
@@ -157,33 +157,33 @@ char **bread_nameblock(ubit8 **b)
    return nb;
 }
 
-void bwrite_ubit8(ubit8 **b, ubit8 i)
+void bwrite_uint8_t(uint8_t **b, uint8_t i)
 {
    **b = i;
-   *b += sizeof(ubit8);
+   *b += sizeof(uint8_t);
 }
 
-void bwrite_ubit16(ubit8 **b, ubit16 i)
+void bwrite_uint16_t(uint8_t **b, uint16_t i)
 {
-   memcpy(*b, (ubit8 *)&i, sizeof(ubit16));
-   *b += sizeof(ubit16);
+   memcpy(*b, (uint8_t *)&i, sizeof(uint16_t));
+   *b += sizeof(uint16_t);
 }
 
-void bwrite_ubit32(ubit8 **b, ubit32 i)
+void bwrite_uint32_t(uint8_t **b, uint32_t i)
 {
-   memcpy(*b, (ubit8 *)&i, sizeof(ubit32));
-   *b += sizeof(ubit32);
+   memcpy(*b, (uint8_t *)&i, sizeof(uint32_t));
+   *b += sizeof(uint32_t);
 }
 
-void bwrite_float(ubit8 **b, float f)
+void bwrite_float(uint8_t **b, float f)
 {
-   memcpy(*b, (ubit8 *)&f, sizeof(float));
+   memcpy(*b, (uint8_t *)&f, sizeof(float));
    *b += sizeof(float);
 }
 
-void bwrite_data(ubit8 **b, ubit8 *data, ubit32 len)
+void bwrite_data(uint8_t **b, uint8_t *data, uint32_t len)
 {
-   bwrite_ubit32(b, len);
+   bwrite_uint32_t(b, len);
    if(len > 0)
    {
       memcpy(*b, data, len);
@@ -194,7 +194,7 @@ void bwrite_data(ubit8 **b, ubit8 *data, ubit32 len)
 /* String is stored as Null terminated string   */
 /* Space is NOT allocated if string is 0 length */
 /* but NIL is returned                          */
-void bwrite_string(ubit8 **b, const char *str)
+void bwrite_string(uint8_t **b, const char *str)
 {
    if(str)
    {
@@ -212,7 +212,7 @@ void bwrite_string(ubit8 **b, const char *str)
 }
 
 /* Write a string of the format:  ssss\0ssss\0 */
-void bwrite_double_string(ubit8 **b, char *str)
+void bwrite_double_string(uint8_t **b, char *str)
 {
    int i;
 
@@ -232,7 +232,7 @@ void bwrite_double_string(ubit8 **b, char *str)
 }
 
 /* Stored: As 'N' strings followed by the empty string ("") */
-void bwrite_nameblock(ubit8 **b, char **nb)
+void bwrite_nameblock(uint8_t **b, char **nb)
 {
    if(nb)
       for(; *nb && **nb; nb++)

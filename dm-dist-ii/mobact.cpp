@@ -44,7 +44,7 @@ extern struct unit_function_array_type unit_function_array[];
 
 void SetFptrTimer(struct unit_data *u, struct unit_fptr *fptr)
 {
-   ubit32 ticks;
+   uint32_t ticks;
 
    if((ticks = fptr->heart_beat) > 0)
    {
@@ -74,12 +74,12 @@ void special_event(void *p1, void *p2)
    auto *u    = (struct unit_data *)p1;
    auto *fptr = (struct unit_fptr *)p2;
 
-   ubit32            ret = SFR_SHARE;
-   ubit32            ticks;
+   uint32_t            ret = SFR_SHARE;
+   uint32_t            ticks;
    struct unit_fptr *ftmp;
    struct spec_arg   sarg;
 
-   void add_func_history(struct unit_data * u, ubit16, ubit16);
+   void add_func_history(struct unit_data * u, uint16_t, uint16_t);
 
    if(g_cServerConfig.m_bNoSpecials != 0)
    {

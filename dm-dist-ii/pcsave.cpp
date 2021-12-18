@@ -53,7 +53,7 @@
 #include "utility.h"
 #include "utils.h"
 
-sbit32             player_id       = 1;
+int32_t             player_id       = 1;
 static const char *tmp_player_name = PLAY_DIR "player.tmp";
 
 extern char libdir[];
@@ -148,9 +148,9 @@ auto find_player_id(char *pName) -> int
 }
 
 /* Call to read current id from file*/
-auto read_player_id() -> sbit32
+auto read_player_id() -> int32_t
 {
-   sbit32 tmp_sl;
+   int32_t tmp_sl;
    FILE  *pFile;
 
    /* By using r+ we are sure that we don't erase it accidentially
@@ -183,7 +183,7 @@ auto new_player_id() -> int
    return player_id++;
 }
 
-void save_player_disk(const char *pName, char *pPassword, int id, int nPlyLen, const ubit8 *pPlyBuf)
+void save_player_disk(const char *pName, char *pPassword, int id, int nPlyLen, const uint8_t *pPlyBuf)
 {
    int   n;
    FILE *pPlayerFile;
@@ -199,7 +199,7 @@ void save_player_disk(const char *pName, char *pPassword, int id, int nPlyLen, c
    n = fwrite(&nPlyLen, sizeof(nPlyLen), 1, pPlayerFile);
    assert(n == 1);
 
-   n = fwrite(pPlyBuf, sizeof(ubit8), nPlyLen, pPlayerFile);
+   n = fwrite(pPlyBuf, sizeof(uint8_t), nPlyLen, pPlayerFile);
    assert(n == nPlyLen);
 
    /* This is a small test to see if the file was actually written to the
@@ -394,7 +394,7 @@ void save_player(struct unit_data *pc)
    if(CHAR_DESCRIPTOR(pc))
    {
       time_t t0;
-      ubit32 used;
+      uint32_t used;
 
       t0 = time(nullptr);
       if(t0 < CHAR_DESCRIPTOR(pc)->logon)
@@ -535,7 +535,7 @@ auto load_player(const char *pName) -> struct unit_data *
 void player_file_index()
 {
    FILE  *pFile;
-   sbit32 tmp_sl;
+   int32_t tmp_sl;
    int    n;
 
    /* Get rid of any temporary player save file */

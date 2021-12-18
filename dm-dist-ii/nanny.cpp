@@ -246,9 +246,9 @@ void reconnect_game(struct descriptor_data *d, struct unit_data *ch)
    set_descriptor_fptr(d, descriptor_interpreter, FALSE);
 }
 
-void update_lasthost(struct unit_data *pc, ubit32 s_addr)
+void update_lasthost(struct unit_data *pc, uint32_t s_addr)
 {
-   if((sbit32)s_addr == -1)
+   if((int32_t)s_addr == -1)
    {
       return;
    }
@@ -261,7 +261,7 @@ void update_lasthost(struct unit_data *pc, ubit32 s_addr)
       }
    }
 
-   memmove(&PC_LASTHOST(pc)[0], &PC_LASTHOST(pc)[1], sizeof(ubit32) * 4);
+   memmove(&PC_LASTHOST(pc)[0], &PC_LASTHOST(pc)[1], sizeof(uint32_t) * 4);
    PC_LASTHOST(pc)[4] = s_addr;
 }
 
@@ -279,7 +279,7 @@ void enter_game(struct unit_data *ch)
 
    extern struct command_info cmd_info[];
 
-   auto player_has_mail(struct unit_data * ch)->ubit8;
+   auto player_has_mail(struct unit_data * ch)->uint8_t;
    auto ContentsFileName(const char *)->char *;
    void start_all_special(struct unit_data * u);
 
@@ -355,7 +355,7 @@ void enter_game(struct unit_data *ch)
 
    if(file_exists(ContentsFileName(PC_FILENAME(ch))) != 0u)
    {
-      auto rent_calc(struct unit_data * ch, time_t savetime)->ubit32;
+      auto rent_calc(struct unit_data * ch, time_t savetime)->uint32_t;
 
       load_contents(PC_FILENAME(ch), ch);
       rent_calc(ch, last_connect);
@@ -388,7 +388,7 @@ void enter_game(struct unit_data *ch)
    start_all_special(ch); /* Activate fptr ticks   */
 }
 
-void set_descriptor_fptr(struct descriptor_data *d, void (*fptr)(struct descriptor_data *, const char *), ubit1 call)
+void set_descriptor_fptr(struct descriptor_data *d, void (*fptr)(struct descriptor_data *, const char *), bool call)
 {
    if(d->fptr == interpreter_string_add)
    {
@@ -821,7 +821,7 @@ void nanny_kill_confirm(struct descriptor_data *d, char *arg)
 }
 
 /* Return TRUE when done... */
-auto base_string_add(struct descriptor_data *d, char *str) -> ubit1
+auto base_string_add(struct descriptor_data *d, char *str) -> bool
 {
    char *scan;
    int   terminator = 0;
@@ -1190,7 +1190,7 @@ void nanny_charge_confirm(struct descriptor_data *d, char *arg)
    char  word[200];
    int   j;
 
-   ubit32 price = 0;
+   uint32_t price = 0;
 
    switch(c[0])
    {
@@ -1320,7 +1320,7 @@ void nanny_credit_card(struct descriptor_data *d, const char *arg)
       return;
    }
 
-   ubit32 discount = PC_ACCOUNT(d->character).discount;
+   uint32_t discount = PC_ACCOUNT(d->character).discount;
 
    if(STATE(d)++ == 0)
    {
@@ -1520,19 +1520,19 @@ void nanny_change_terminal(struct descriptor_data *d, const char *arg)
          return;
 
       case '3':
-         PC_SETUP_TELNET(d->character) = static_cast<ubit8>(!PC_SETUP_TELNET(d->character));
+         PC_SETUP_TELNET(d->character) = static_cast<uint8_t>(!PC_SETUP_TELNET(d->character));
          send_to_descriptor("Telnet option toggled.\n\r", d);
          set_descriptor_fptr(d, nanny_change_terminal, TRUE);
          return;
 
       case '4':
-         PC_SETUP_ECHO(d->character) = static_cast<ubit8>(!PC_SETUP_ECHO(d->character));
+         PC_SETUP_ECHO(d->character) = static_cast<uint8_t>(!PC_SETUP_ECHO(d->character));
          send_to_descriptor("Echo option toggled.\n\r", d);
          set_descriptor_fptr(d, nanny_change_terminal, TRUE);
          return;
 
       case '5':
-         PC_SETUP_REDRAW(d->character) = static_cast<ubit8>(!PC_SETUP_REDRAW(d->character));
+         PC_SETUP_REDRAW(d->character) = static_cast<uint8_t>(!PC_SETUP_REDRAW(d->character));
          send_to_descriptor("Redraw option toggled.\n\r", d);
          set_descriptor_fptr(d, nanny_change_terminal, TRUE);
          return;

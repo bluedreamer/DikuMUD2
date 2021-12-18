@@ -29,5 +29,5 @@ struct mail_file_info_type
    blk_handle handle;
    int        sender;     /* PC ID */
    int        receipient; /* PC ID */
-   ubit8      loaded;     /* Boolean, has player got a note? */
+   uint8_t      loaded;     /* Boolean, has player got a note? */
 };

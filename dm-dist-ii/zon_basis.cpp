@@ -403,14 +403,14 @@ extern struct log_buffer log_buf[];
 
 auto log_object(struct spec_arg *sarg) -> int
 {
-   ubit8            *ip;
+   uint8_t            *ip;
    enum log_level    lev = LOG_OFF;
    char              c;
    struct unit_data *ch = UNIT_IN(sarg->owner);
 
    if(sarg->fptr->data == nullptr)
    {
-      CREATE(ip, ubit8, 1);
+      CREATE(ip, uint8_t, 1);
       *ip = 0;
 
       OBJ_VALUE(sarg->owner, 0) = 'b';
@@ -418,7 +418,7 @@ auto log_object(struct spec_arg *sarg) -> int
    }
    else
    {
-      ip = (ubit8 *)sarg->fptr->data;
+      ip = (uint8_t *)sarg->fptr->data;
    }
 
    c = OBJ_VALUE(sarg->owner, 0);

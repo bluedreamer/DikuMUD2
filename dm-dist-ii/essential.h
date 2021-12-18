@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : essential.h                               Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -22,9 +23,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_ESSENTIAL_H
-#define _MUD_ESSENTIAL_H
-
 #include <cassert>
 #include <cstdint>
 #include <cstdio>
@@ -45,17 +43,8 @@ enum log_level
 #define TRUE  1
 #define FALSE 0
 
-#if defined(NULL)
-
-   #undef NULL
-   /* I need this for various C++ modules, MS */
-   #define NULL 0
-
-/*   #define NULL ((void *) 0) */
-#endif
-
-#define BITCONV16(i) ((((ubit16)i) >> 8) | ((((ubit16)i) & 255) << 8))
-#define BITCONV32(i) ((((ubit32)i) >> 16) | ((((ubit32)i) & 65535) << 16))
+#define BITCONV16(i) ((((uint16_t)i) >> 8) | ((((uint16_t)i) & 255) << 8))
+#define BITCONV32(i) ((((uint32_t)i) >> 16) | ((((uint32_t)i) & 65535) << 16))
 
 #define ISNEWL(ch) ((ch) == '\n' || (ch) == '\r')
 
@@ -118,29 +107,9 @@ enum log_level
       fprintf(stderr, a);                                                                                                                  \
    } while(0)
 
-//#define isascii(ch) ((ch >= 32) && (ch <= 126))
+//using bool = uint8_t; /* Boolean */
 
-#ifndef HPUX
-using sbit8  = signed char;
-using ubit8  = unsigned char;
-using sbit16 = short;
-using ubit16 = unsigned short;
-
-   #ifdef DOS
-typedef signed long   sbit32;
-typedef unsigned long ubit32;
-   #else
-using sbit32 = int;
-using ubit32 = unsigned int;
-using sbit64 = long;
-using ubit64 = unsigned long;
-   #endif
-
-#endif /* HPUX */
-
-using ubit1 = ubit8; /* Boolean */
-
-void slog(enum log_level, ubit8, const char *, ...);
+void slog(enum log_level, uint8_t, const char *, ...);
 
 #ifdef MEMORY_DEBUG
    #define strdup xxx
@@ -160,5 +129,4 @@ auto safe_realloc(void *p, size_t size) -> void *;
    #endif
    #define calloc(nobj, size) safe_calloc((nobj), (size))
    #define realloc(p, size)   safe_realloc((p), (size))
-#endif
 #endif

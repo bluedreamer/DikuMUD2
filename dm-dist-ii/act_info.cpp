@@ -168,7 +168,7 @@ void do_purse(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
    struct unit_data *thing;
    struct unit_data *purse[MAX_MONEY + 1];
-   ubit1             found = FALSE;
+   bool             found = FALSE;
    int               i;
 
    for(i = 0; i <= MAX_MONEY; ++i)
@@ -237,7 +237,7 @@ void do_quests(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-static void status_spells(struct unit_data *ch, ubit8 realm)
+static void status_spells(struct unit_data *ch, uint8_t realm)
 {
    int   i;
    int   j;

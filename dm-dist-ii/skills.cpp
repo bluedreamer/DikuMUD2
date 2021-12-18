@@ -70,7 +70,7 @@ int hit_location_table[] =                       /* Determine by using 2d8 */
 
 const char              *spl_text[SPL_TREE_MAX + 1];
 struct tree_type         spl_tree[SPL_TREE_MAX + 1];
-sbit8                    racial_spells[SPL_TREE_MAX][PC_RACE_MAX];
+int8_t                    racial_spells[SPL_TREE_MAX][PC_RACE_MAX];
 struct damage_chart_type spell_chart[SPL_TREE_MAX];
 
 const char           *pc_races[PC_RACE_MAX + 1];
@@ -79,15 +79,15 @@ struct race_info_type race_info[PC_RACE_MAX];
 
 const char      *ski_text[SKI_TREE_MAX + 1];
 struct tree_type ski_tree[SKI_TREE_MAX + 1];
-sbit8            racial_skills[SKI_TREE_MAX][PC_RACE_MAX];
+int8_t            racial_skills[SKI_TREE_MAX][PC_RACE_MAX];
 
 const char      *abil_text[ABIL_TREE_MAX + 1];
 struct tree_type abil_tree[ABIL_TREE_MAX + 1];
-sbit8            racial_ability[ABIL_TREE_MAX][PC_RACE_MAX];
+int8_t            racial_ability[ABIL_TREE_MAX][PC_RACE_MAX];
 
 const char              *wpn_text[WPN_TREE_MAX + 1];
 struct tree_type         wpn_tree[WPN_TREE_MAX + 1];
-sbit8                    racial_weapons[WPN_TREE_MAX][PC_RACE_MAX];
+int8_t                    racial_weapons[WPN_TREE_MAX][PC_RACE_MAX];
 struct damage_chart_type weapon_chart[WPN_TREE_MAX];
 struct wpn_info_type     wpn_info[WPN_TREE_MAX];
 

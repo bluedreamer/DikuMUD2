@@ -39,7 +39,7 @@ class cConHook : public cHook
    ~cConHook(void);
 
    void Close(int bNotifyMud);
-   char AddInputChar(ubit8 c);
+   char AddInputChar(uint8_t c);
    void AddString(char *str);
    void ParseInput(void);
    void SendCon(const char *str);
@@ -55,15 +55,15 @@ class cConHook : public cHook
    void PlayLoop(const char *cmd);
    void MudDown(const char *cmd);
    void MenuSelect(const char *cmd);
-   void SequenceCompare(ubit8 *pBuf, int *pnLen);
+   void SequenceCompare(uint8_t *pBuf, int *pnLen);
 
    void Input(int nFlags);
-   void getLine(ubit8 buf[], int *size);
-   void testChar(ubit8 c);
+   void getLine(uint8_t buf[], int *size);
+   void testChar(uint8_t c);
 
-   ubit16 m_nId;
+   uint16_t m_nId;
    int    m_nFirst;
-   ubit8  m_nLine;
+   uint8_t  m_nLine;
    int    m_nPromptMode;  /* 0 none, 1 press return */
    int    m_nPromptLen;   /* Prompt length          */
    int    m_nSequenceCompare;
@@ -79,7 +79,7 @@ class cConHook : public cHook
 
    struct terminal_setup_type m_sSetup;
 
-   ubit8 m_nBgColor;       /* Stupid bitching ANSI   */
+   uint8_t m_nBgColor;       /* Stupid bitching ANSI   */
 
    cQueue m_qInput;         /* Input from user        */
    cQueue m_qPaged;         /* Paged text output      */

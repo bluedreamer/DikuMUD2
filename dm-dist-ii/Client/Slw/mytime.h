@@ -38,8 +38,8 @@ class cMyTime
 
    void operator-=(const cMyTime &cT1);
 
-   ubit32 secs;  // Number of seconds passed.
-   sbit32 hunds; // Number of 1/100 seconds passed.
+   uint32_t secs;  // Number of seconds passed.
+   int32_t hunds; // Number of 1/100 seconds passed.
 };
 
 #endif

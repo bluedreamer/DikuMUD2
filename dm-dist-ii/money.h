@@ -25,8 +25,8 @@
 
 #include "structs.h"
 
-using currency_t = sbit16;
-using amount_t   = sbit32;
+using currency_t = int16_t;
+using amount_t   = int32_t;
 
 struct money_type
 {
@@ -34,10 +34,10 @@ struct money_type
    char                  **strings;          /* The money-strings */
    char                   *tails;            /* What to print on the dark side of the coin */
    char                   *abbrev;           /* Small string for lists */
-   ubit8                   pl_idx;           /* The index in above to first plural string */
-   sbit32                  relative_value;   /* Relative to the internal value */
-   sbit32                  min_value;        /* Minimum internal value of the currency */
-   ubit8                   coins_per_weight; /* How many coins per weight unit */
+   uint8_t                   pl_idx;           /* The index in above to first plural string */
+   int32_t                  relative_value;   /* Relative to the internal value */
+   int32_t                  min_value;        /* Minimum internal value of the currency */
+   uint8_t                   coins_per_weight; /* How many coins per weight unit */
    struct file_index_type *fi;               /* Where is coin object in file */
 };
 
@@ -74,11 +74,11 @@ auto char_holds_amount(struct unit_data *ch, currency_t currency) -> amount_t;
  *
  * Impossible amounts are converted automagically
  */
-auto char_can_afford(struct unit_data *ch, amount_t amt, currency_t currency) -> ubit1;
+auto char_can_afford(struct unit_data *ch, amount_t amt, currency_t currency) -> bool;
 
 /* Does unit contain any money of type?
  */
-auto unit_has_money_type(struct unit_data *unit, ubit8 type) -> struct unit_data *;
+auto unit_has_money_type(struct unit_data *unit, uint8_t type) -> struct unit_data *;
 
 /* Split `money' into two objects.  Return object with amount `amt'
  */
@@ -96,7 +96,7 @@ void pile_money(struct unit_data *money);
 
 /*  Round amount down/up to nearest `types' number of coins
  */
-auto money_round(ubit1 up, amount_t amt, currency_t currency, int types) -> amount_t;
+auto money_round(bool up, amount_t amt, currency_t currency, int types) -> amount_t;
 
 #define money_round_up(a, c, t)   (money_round(TRUE, (a), (c), (t)))
 #define money_round_down(a, c, t) (money_round(FALSE, (a), (c), (t)))
@@ -114,7 +114,7 @@ auto obj_money_string(struct unit_data *obj, amount_t amt) -> char *;
  *
  * Impossible amounts are converted automagically
  */
-auto money_string(amount_t amt, currency_t currency, ubit1 verbose) -> const char *;
+auto money_string(amount_t amt, currency_t currency, bool verbose) -> const char *;
 
 /* How many `coins' of given money-object can char carry, resp. unit contain
  *   (Naturally the amount of money is an upper bound)

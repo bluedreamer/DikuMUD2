@@ -36,21 +36,21 @@
 #include "files.h"
 #include "textutil.h"
 
-static void ConnectionWrite(ubit32 nId, ubit32 nLogon, ubit32 nLogoff, ubit32 nLanPay)
+static void ConnectionWrite(uint32_t nId, uint32_t nLogon, uint32_t nLogoff, uint32_t nLanPay)
 {
    FILE *f = fopen_cache(str_cc(libdir, STATISTIC_FILE), "ab+");
 
    assert(f);
 
-   ubit8  buf[40];
-   ubit8 *b = buf;
+   uint8_t  buf[40];
+   uint8_t *b = buf;
 
-   bwrite_ubit32(&b, nId);
-   bwrite_ubit32(&b, nLogon);
-   bwrite_ubit32(&b, nLogoff);
-   bwrite_ubit32(&b, nLanPay);
+   bwrite_uint32_t(&b, nId);
+   bwrite_uint32_t(&b, nLogon);
+   bwrite_uint32_t(&b, nLogoff);
+   bwrite_uint32_t(&b, nLanPay);
 
-   fwrite(buf, sizeof(ubit8), b - buf, f);
+   fwrite(buf, sizeof(uint8_t), b - buf, f);
 
    fflush(f);
 }
@@ -64,7 +64,7 @@ void ConnectionLog(class unit_data *pc)
 {
    time_t t0 = time(nullptr);
 
-   ubit32 nLanPay = 0;
+   uint32_t nLanPay = 0;
 
    if(g_cServerConfig.FromLAN(CHAR_DESCRIPTOR(pc)->host) != 0)
    {
@@ -81,7 +81,7 @@ void ConnectionLog(class unit_data *pc)
       nLanPay |= 0x0004;
    }
 
-   if(PC_ACCOUNT(pc).flatrate > (ubit32)time(nullptr))
+   if(PC_ACCOUNT(pc).flatrate > (uint32_t)time(nullptr))
    {
       nLanPay |= 0x0008;
    }

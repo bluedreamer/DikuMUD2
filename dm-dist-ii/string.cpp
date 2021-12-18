@@ -51,11 +51,11 @@ class cHashSystem
 {
 public:
    cHashSystem();
-   static auto Hash(const char *str) -> ubit32;
-   void        Insert(class cStringConstant *p, ubit32 nHash);
+   static auto Hash(const char *str) -> uint32_t;
+   void        Insert(class cStringConstant *p, uint32_t nHash);
    void        Remove(class cStringConstant *p);
-   auto        Lookup(const char *str, ubit32 nLen, ubit32 nHash) -> class cStringConstant *;
-   auto        MaxDepth(ubit32        */*slots*/) -> ubit32;
+   auto        Lookup(const char *str, uint32_t nLen, uint32_t nHash) -> class cStringConstant *;
+   auto        MaxDepth(uint32_t        */*slots*/) -> uint32_t;
 
 private:
    class cStringConstant *str_table[HASH_SIZE];
@@ -80,12 +80,12 @@ cHashSystem::cHashSystem()
  * "Compilers: Principles, Techniques and Tools", page 436
  */
 
-auto cHashSystem::MaxDepth(ubit32 *slots) -> ubit32
+auto cHashSystem::MaxDepth(uint32_t *slots) -> uint32_t
 {
    class cStringConstant *tmp;
-   ubit32                 depth;
-   ubit32                 i;
-   ubit32                 tmpd;
+   uint32_t                 depth;
+   uint32_t                 i;
+   uint32_t                 tmpd;
 
    if(slots != nullptr)
    {
@@ -111,10 +111,10 @@ auto cHashSystem::MaxDepth(ubit32 *slots) -> ubit32
    return depth;
 }
 
-auto cHashSystem::Hash(const char *str) -> ubit32
+auto cHashSystem::Hash(const char *str) -> uint32_t
 {
-   ubit32 h = 0;
-   ubit32 g;
+   uint32_t h = 0;
+   uint32_t g;
 
    for(; *str != 0; ++str)
    {
@@ -127,7 +127,7 @@ auto cHashSystem::Hash(const char *str) -> ubit32
    return h % HASH_SIZE;
 }
 
-auto cHashSystem::Lookup(const char *str, ubit32 nLen, ubit32 nHash) -> class cStringConstant *
+auto cHashSystem::Lookup(const char *str, uint32_t nLen, uint32_t nHash) -> class cStringConstant *
 {
    class cStringConstant *lookup;
 
@@ -144,7 +144,7 @@ auto cHashSystem::Lookup(const char *str, ubit32 nLen, ubit32 nHash) -> class cS
    return nullptr;
 }
 
-void cHashSystem::Insert(class cStringConstant *p, ubit32 nHash)
+void cHashSystem::Insert(class cStringConstant *p, uint32_t nHash)
 {
    p->pNext         = str_table[nHash];
    str_table[nHash] = p;
@@ -152,7 +152,7 @@ void cHashSystem::Insert(class cStringConstant *p, ubit32 nHash)
 
 void cHashSystem::Remove(class cStringConstant *r)
 {
-   ubit32                 h;
+   uint32_t                 h;
    class cStringConstant *o;
    class cStringConstant *p;
 
@@ -179,7 +179,7 @@ void cHashSystem::Remove(class cStringConstant *r)
 
 /* ===================================================================== */
 
-cStringConstant::cStringConstant(const char *str, ubit32 len, ubit32 nHash)
+cStringConstant::cStringConstant(const char *str, uint32_t len, uint32_t nHash)
 {
    class cStringConstant *tmp;
 
@@ -225,8 +225,8 @@ void cStringInstance::Make(const char *str)
       return;
    }
 
-   ubit32 h   = Hash.Hash(str);
-   ubit32 len = strlen(str);
+   uint32_t h   = Hash.Hash(str);
+   uint32_t len = strlen(str);
 
    pConst = Hash.Lookup(str, len, h);
 
@@ -295,8 +295,8 @@ cStringInstance::~cStringInstance()
 
 void string_statistics(struct unit_data *ch)
 {
-   ubit32 depth;
-   ubit32 slots;
+   uint32_t depth;
+   uint32_t slots;
 
    #if STATISTICS
    char              buf[4096];

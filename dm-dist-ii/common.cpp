@@ -150,7 +150,7 @@ auto buy_points(int points, int level, int *error) -> int
 /* must add up to 100%.                                                */
 /* Returns true if error */
 
-auto distribute_points(ubit8 *skills, int max, int points, int level) -> int
+auto distribute_points(uint8_t *skills, int max, int points, int level) -> int
 {
    int i;
    int error;

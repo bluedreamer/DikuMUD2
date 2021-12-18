@@ -65,7 +65,7 @@ struct unit_data *unit_list = nullptr; /* The global unit_list          */
 struct zone_info_type zone_info = {0, nullptr, nullptr, nullptr};
 
 extern char   zondir[];
-extern ubit32 memory_total_alloc;
+extern uint32_t memory_total_alloc;
 
 auto create_direction_data() -> struct room_direction_data *;
 
@@ -172,7 +172,7 @@ auto generate_templates(FILE *f, struct zone_type *zone) -> struct diltemplate *
    struct diltemplate *tmpllist;
    struct diltemplate *tmpl;
    CByteBuffer         Buf;
-   ubit32              tmplsize = 0;
+   uint32_t              tmplsize = 0;
    char                nBuf[256];
    char                zBuf[256];
 
@@ -183,7 +183,7 @@ auto generate_templates(FILE *f, struct zone_type *zone) -> struct diltemplate *
     * written by write_template() in db_file.c
     */
 
-   if(fread(&(tmplsize), sizeof(ubit32), 1, f) != 1)
+   if(fread(&(tmplsize), sizeof(uint32_t), 1, f) != 1)
    {
       error(HERE, "Failed to fread() tmplsize");
    }
@@ -238,7 +238,7 @@ auto generate_templates(FILE *f, struct zone_type *zone) -> struct diltemplate *
          zone->no_tmpl++;
       }
       /* next size */
-      if(fread(&(tmplsize), sizeof(ubit32), 1, f) != 1)
+      if(fread(&(tmplsize), sizeof(uint32_t), 1, f) != 1)
       {
          error(HERE, "Failed to fread() tmplsize");
       }
@@ -276,17 +276,17 @@ auto generate_file_indexes(FILE *f, class zone_type *zone) -> struct file_index_
       fi->room_ptr = nullptr;
       fi->crc      = 0;
 
-      if(fread(&(fi->type), sizeof(ubit8), 1, f) != 1)
+      if(fread(&(fi->type), sizeof(uint8_t), 1, f) != 1)
       {
          error(HERE, "Failed to fread() fi->type");
       }
 
-      if(fread(&(fi->length), sizeof(ubit32), 1, f) != 1)
+      if(fread(&(fi->length), sizeof(uint32_t), 1, f) != 1)
       {
          error(HERE, "Failed to fread() fi->length");
       }
 
-      if(fread(&(fi->crc), sizeof(ubit32), 1, f) != 1)
+      if(fread(&(fi->crc), sizeof(uint32_t), 1, f) != 1)
       {
          error(HERE, "Failed to fread() fi->crc");
       }
@@ -353,9 +353,9 @@ void generate_zone_indexes()
    FILE            *f;
    FILE            *zone_file;
    char            *c;
-   ubit8            access;
-   ubit8            loadlevel;
-   ubit8            payonly;
+   uint8_t            access;
+   uint8_t            loadlevel;
+   uint8_t            payonly;
 
    zone_info.no_of_zones = 0;
    zone_info.zone_list   = nullptr;
@@ -542,7 +542,7 @@ void generate_zone_indexes()
 
    /* Allocate memory for the largest possible file-buffer */
    /* filbuffer_length = MAX(filbuffer_length + 1, 16384); */
-   // CREATE(filbuffer, ubit8, filbuffer_length + 1);
+   // CREATE(filbuffer, uint8_t, filbuffer_length + 1);
    // slog(LOG_OFF, 0, "Max length for filebuffer is %d bytes.", filbuffer_length);
 }
 
@@ -563,12 +563,12 @@ void generate_zone_indexes()
  *  other units. If the affect should also have an actual effect, then it
  *  must be followed by the function call 'apply_affects'.
  */
-auto bread_affect(CByteBuffer *pBuf, struct unit_data *u, ubit8 nVersion) -> int
+auto bread_affect(CByteBuffer *pBuf, struct unit_data *u, uint8_t nVersion) -> int
 {
    struct unit_affected_type af;
    int                       i;
-   ubit8                     t8;
-   ubit16                    t16;
+   uint8_t                     t8;
+   uint16_t                    t16;
 
    auto link_alloc_affect(struct unit_data * unit, struct unit_affected_type * orgaf)->struct unit_affected_type *;
 
@@ -679,11 +679,11 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
    char                   *tmp;
    int                     i;
    int                     j;
-   ubit8                   unit_version;
-   ubit8                   t8;
-   ubit16                  t16;
-   ubit32                  t32;
-   ubit32                  nStart;
+   uint8_t                   unit_version;
+   uint8_t                   t8;
+   uint16_t                  t16;
+   uint32_t                  t32;
+   uint32_t                  nStart;
 
 #ifdef MEMORY_DEBUG
    int memory_start;
@@ -1467,15 +1467,15 @@ auto read_zone(FILE *f, struct zone_reset_cmd *cmd_list) -> struct zone_reset_cm
    struct zone_reset_cmd  *cmd;
    struct zone_reset_cmd  *tmp_cmd;
    struct file_index_type *fi;
-   ubit8                   cmdno;
-   ubit8                   direction;
+   uint8_t                   cmdno;
+   uint8_t                   direction;
    char                    zonename[FI_MAX_ZONENAME + 1];
    char                    name[FI_MAX_UNITNAME + 1];
    CByteBuffer             cBuf(100);
 
    tmp_cmd = cmd_list;
 
-   while(((cmdno = (ubit8)fgetc(f)) != 255) && (feof(f) == 0))
+   while(((cmdno = (uint8_t)fgetc(f)) != 255) && (feof(f) == 0))
    {
       CREATE(cmd, struct zone_reset_cmd, 1);
       cmd->cmd_no = cmdno;
@@ -1562,7 +1562,7 @@ auto read_zone(FILE *f, struct zone_reset_cmd *cmd_list) -> struct zone_reset_cm
       {
          error(HERE, "Failed to fread() cmd->num[2]");
       }
-      if(fread(&(cmd->cmpl), sizeof(ubit8), 1, f) != 1)
+      if(fread(&(cmd->cmpl), sizeof(uint8_t), 1, f) != 1)
       {
          error(HERE, "Failed to fread() cmd->cmpl");
       }
@@ -1579,7 +1579,7 @@ auto read_zone(FILE *f, struct zone_reset_cmd *cmd_list) -> struct zone_reset_cm
          tmp_cmd       = cmd;
       }
 
-      direction = (ubit8)fgetc(f);
+      direction = (uint8_t)fgetc(f);
 
       switch(direction)
       {
@@ -1621,12 +1621,12 @@ void read_all_zones()
          exit(1);
       }
 
-      if(fread(&(zone->zone_time), sizeof(ubit16), 1, f) != 1)
+      if(fread(&(zone->zone_time), sizeof(uint16_t), 1, f) != 1)
       {
          error(HERE, "Failed to fread() zone->zone_time");
       }
 
-      if(fread(&(zone->reset_mode), sizeof(ubit8), 1, f) != 1)
+      if(fread(&(zone->reset_mode), sizeof(uint8_t), 1, f) != 1)
       {
          error(HERE, "Failed to fread() zone->reset_mode");
       }

@@ -54,20 +54,20 @@
 #define CF(x, h) ((x) * (h)->d + 1)
 #define CL(x, h) MIN((x) * (h)->d + (h)->d, (h)->no)
 
-extern ubit32 memory_total_alloc;
+extern uint32_t memory_total_alloc;
 extern int    memory_dijkstra_alloc;
 
 struct dir_array
 {
    struct graph_vertice *to_vertice;
-   ubit8                 direction;
-   sbit16                weight;
+   uint8_t                 direction;
+   int16_t                weight;
 };
 
 struct izone_type
 {
    struct unit_data *room;
-   ubit8             dir;
+   uint8_t             dir;
 };
 
 struct izone_type **iz = nullptr; /* Global for ease of use :)
@@ -79,9 +79,9 @@ struct graph_vertice
 {
    struct unit_data     *room;      /* Pointer to direction/edge info */
    struct graph_vertice *parent;    /* Path info for shortest path    */
-   sbit32                dist;      /* Current Distance found         */
-   ubit8                 direction; /* Path direction found           */
-   ubit16                hob_pos;   /* Position in Hob                */
+   int32_t                dist;      /* Current Distance found         */
+   uint8_t                 direction; /* Path direction found           */
+   uint16_t                hob_pos;   /* Position in Hob                */
 };
 
 struct graph
@@ -399,7 +399,7 @@ void dijkstra(struct graph *g, struct graph_vertice *source)
 
 /* Given a zone, create the nesseceary graph structure, and  */
 /* return a matrix of shortest path for the zone             */
-auto create_graph(struct zone_type *zone) -> ubit8 **
+auto create_graph(struct zone_type *zone) -> uint8_t **
 {
    static struct graph     g;
    struct file_index_type *fi;
@@ -407,7 +407,7 @@ auto create_graph(struct zone_type *zone) -> ubit8 **
    int                     j;
    int                     hidx;
    int                     vidx;
-   ubit8                 **spi;
+   uint8_t                 **spi;
 
    g.no = zone->no_rooms;
 
@@ -416,7 +416,7 @@ auto create_graph(struct zone_type *zone) -> ubit8 **
       return nullptr;
    }
 
-   CREATE(spi, ubit8 *, g.no);
+   CREATE(spi, uint8_t *, g.no);
    CREATE(g.array, struct graph_vertice, g.no);
 
    for(i = 0, fi = zone->fi; fi != nullptr; fi = fi->next)
@@ -442,7 +442,7 @@ auto create_graph(struct zone_type *zone) -> ubit8 **
 
       vidx = UNIT_FILE_INDEX(g.array[j].room)->room_no;
 
-      CREATE(spi[vidx], ubit8, (g.no / 2) + (g.no & 1));
+      CREATE(spi[vidx], uint8_t, (g.no / 2) + (g.no & 1));
 
       for(i = 0; i < g.no; i++)
       {

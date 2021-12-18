@@ -53,8 +53,8 @@
 /* Use -1 in node to indicate end of teach_type */
 struct skill_teach_type
 {
-   ubit8 max_skill;          /* Maximum skill that can be taught            */
-   ubit8 min_level;          /* What level do you have to be to learn this? */
+   uint8_t max_skill;          /* Maximum skill that can be taught            */
+   uint8_t min_level;          /* What level do you have to be to learn this? */
    int  *costs;              /* The point cost (0 ends)                     */
    int   node;               /* A node in a tree               */
    int   min_cost_per_point; /* The gold point cost per point  */
@@ -74,8 +74,8 @@ struct teacher_msg
 
 struct teach_packet
 {
-   ubit8                    type;       /* Ability, spell, skill, weapon */
-   ubit8                    level_type; /* 0 for guild-level, 1 for ordinary level */
+   uint8_t                    type;       /* Ability, spell, skill, weapon */
+   uint8_t                    level_type; /* 0 for guild-level, 1 for ordinary level */
    struct teacher_msg       msgs;
    struct skill_teach_type *teaches; /* Array of skills */
    struct tree_type        *tree;
@@ -117,7 +117,7 @@ auto actual_training_level(int lvl, const int costs[]) -> int
    return i;
 }
 
-auto actual_cost(int cost, sbit8 modifier) -> int
+auto actual_cost(int cost, int8_t modifier) -> int
 {
    if(cost <= 0)
    {
@@ -194,8 +194,8 @@ auto teaches_index(struct skill_teach_type *teaches_skills, int node) -> int
    return -1;
 }
 
-void info_show_one(struct unit_data *teacher, struct unit_data *pupil, ubit8 current_points, ubit8 max_level, int next_point, int gold,
-                   const char *text, int indent, ubit8 isleaf, ubit8 level_type, int min_level)
+void info_show_one(struct unit_data *teacher, struct unit_data *pupil, uint8_t current_points, uint8_t max_level, int next_point, int gold,
+                   const char *text, int indent, uint8_t isleaf, uint8_t level_type, int min_level)
 {
    char buf[256];
 
@@ -248,7 +248,7 @@ void info_show_one(struct unit_data *teacher, struct unit_data *pupil, ubit8 cur
 }
 
 void info_show_roots(struct unit_data *teacher, struct unit_data *pupil, struct skill_teach_type *teaches_skills, struct tree_type *tree,
-                     const char *text[], ubit8 level_type, ubit8 pc_values[], ubit8 pc_lvl[], sbit8 pc_cost[])
+                     const char *text[], uint8_t level_type, uint8_t pc_values[], uint8_t pc_lvl[], int8_t pc_cost[])
 {
    int i;
    int cost;
@@ -271,7 +271,7 @@ void info_show_roots(struct unit_data *teacher, struct unit_data *pupil, struct 
 }
 
 void info_one_skill(struct unit_data *teacher, struct unit_data *pupil, struct skill_teach_type *teaches_skills, struct tree_type *tree,
-                    const char *text[], ubit8 pc_values[], ubit8 pc_lvl[], sbit8 pc_cost[], int teach_index, ubit8 level_type,
+                    const char *text[], uint8_t pc_values[], uint8_t pc_lvl[], int8_t pc_cost[], int teach_index, uint8_t level_type,
                     struct teacher_msg *msgs)
 
 {
@@ -397,8 +397,8 @@ auto pupil_magic(struct unit_data *pupil) -> int
    return FALSE;
 }
 
-auto practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type *tree, const char *text[], ubit8 pc_values[],
-              ubit8 pc_lvl[], sbit8 pc_cost[], sbit32 *practice_points, int teach_index) -> int
+auto practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type *tree, const char *text[], uint8_t pc_values[],
+              uint8_t pc_lvl[], int8_t pc_cost[], int32_t *practice_points, int teach_index) -> int
 {
    int        current_points;
    int        cost;
@@ -542,10 +542,10 @@ auto teach_basis(struct spec_arg *sarg, struct teach_packet *pckt) -> int
 {
    int     index;
    int     stop;
-   ubit8  *pc_values       = nullptr;
-   ubit8  *pc_lvl          = nullptr;
-   sbit8  *pc_cost         = nullptr;
-   sbit32 *practice_points = nullptr;
+   uint8_t  *pc_values       = nullptr;
+   uint8_t  *pc_lvl          = nullptr;
+   int8_t  *pc_cost         = nullptr;
+   int32_t *practice_points = nullptr;
    char    buf[MAX_INPUT_LENGTH];
    char   *arg;
 

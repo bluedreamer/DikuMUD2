@@ -54,11 +54,11 @@ extern char libdir[]; /* from dikumud.c */
 
 struct mail_file_info_type *mailfile_info = nullptr;
 
-sbit16    top_of_mailfile = 0;
+int16_t    top_of_mailfile = 0;
 BLK_FILE *mbf; /* Mail Block File */
 auto      find_player_id(char *pName) -> int;
 
-void read_mail_block(FILE *f, sbit16 index)
+void read_mail_block(FILE *f, int16_t index)
 {
    if(fseek(f, index * sizeof(struct mail_file_info_type), SEEK_SET) != 0)
    {
@@ -71,7 +71,7 @@ void read_mail_block(FILE *f, sbit16 index)
    }
 }
 
-void write_mail_block(FILE *f, sbit16 index)
+void write_mail_block(FILE *f, int16_t index)
 {
    if(fseek(f, index * sizeof(struct mail_file_info_type), SEEK_SET) != 0)
    {
@@ -85,9 +85,9 @@ void write_mail_block(FILE *f, sbit16 index)
    fflush(f);
 }
 
-auto find_free_index() -> sbit16
+auto find_free_index() -> int16_t
 {
-   sbit16 i;
+   int16_t i;
 
    for(i = 0; i < top_of_mailfile; i++)
    {
@@ -116,7 +116,7 @@ auto find_free_index() -> sbit16
 }
 
 /* Delete mail starting at index "index" */
-void delete_mail(sbit16 index)
+void delete_mail(int16_t index)
 {
    FILE *f;
 
@@ -138,7 +138,7 @@ void delete_mail(sbit16 index)
 
 /* Read mail from file, starting at index "index" */
 /* String is allocated                            */
-auto read_mail(sbit16 index) -> char *
+auto read_mail(int16_t index) -> char *
 {
    char *msg;
 
@@ -154,7 +154,7 @@ auto read_mail(sbit16 index) -> char *
 void mail_mail(int receipient, char *rcv_name, struct unit_data *sender, const char *str)
 {
    FILE                 *f;
-   sbit16                index;
+   int16_t                index;
    blk_length            len;
    char                  from[MAX_STRING_LENGTH];
    char                 *b;
@@ -199,7 +199,7 @@ void mail_mail(int receipient, char *rcv_name, struct unit_data *sender, const c
 }
 
 /* Return index to the next letter of a player */
-auto player_next_mail(struct unit_data *ch, sbit16 index) -> sbit16
+auto player_next_mail(struct unit_data *ch, int16_t index) -> int16_t
 {
    int i;
 
@@ -217,17 +217,17 @@ auto player_next_mail(struct unit_data *ch, sbit16 index) -> sbit16
 }
 
 /* Return index to the first letter of the player */
-auto player_has_mail(struct unit_data *ch) -> ubit8
+auto player_has_mail(struct unit_data *ch) -> uint8_t
 {
-   return static_cast<ubit8>(player_next_mail(ch, 0) != -1);
+   return static_cast<uint8_t>(player_next_mail(ch, 0) != -1);
 }
 
 void mail_boot()
 {
    long                       size;
-   ubit32                     now;
-   sbit16                     index;
-   sbit16                     wi;
+   uint32_t                     now;
+   int16_t                     index;
+   int16_t                     wi;
    FILE                      *f;
    struct mail_file_info_type maildata;
 
@@ -277,7 +277,7 @@ void mail_boot()
 
 auto eat_and_delete(struct spec_arg *sarg) -> int
 {
-   sbit16            index;
+   int16_t            index;
    struct unit_data *u;
    char             *arg = (char *)sarg->arg;
 
@@ -289,7 +289,7 @@ auto eat_and_delete(struct spec_arg *sarg) -> int
          return SFR_SHARE;
       }
 
-      index = *((sbit16 *)sarg->fptr->data);
+      index = *((int16_t *)sarg->fptr->data);
       act("$1n eats $2n.", A_SOMEONE, sarg->activator, sarg->owner, nullptr, TO_ROOM);
       act("You eat the $2N and erase it permanently.", A_SOMEONE, sarg->activator, sarg->owner, nullptr, TO_CHAR);
       delete_mail(index);
@@ -298,7 +298,7 @@ auto eat_and_delete(struct spec_arg *sarg) -> int
    }
    if(sarg->cmd->no == CMD_AUTO_EXTRACT)
    {
-      index                       = *((sbit16 *)sarg->fptr->data);
+      index                       = *((int16_t *)sarg->fptr->data);
       mailfile_info[index].loaded = FALSE;
    }
 
@@ -313,8 +313,8 @@ auto postman(struct spec_arg *sarg) -> int
    struct descriptor_data  *d;
    struct unit_data        *letter;
    char                     tmpname[MAX_INPUT_LENGTH];
-   sbit16                   index;
-   sbit16                  *tmp;
+   int16_t                   index;
+   int16_t                  *tmp;
    long                     rcp;
    currency_t               currency = local_currency(sarg->owner);
    amount_t                 postage;
@@ -429,7 +429,7 @@ auto postman(struct spec_arg *sarg) -> int
          free(b);
       }
 
-      CREATE(tmp, sbit16, 1);
+      CREATE(tmp, int16_t, 1);
       *tmp = index;
       create_fptr(letter, SFUN_EAT_AND_DELETE, 0, SFB_CMD, tmp);
    } while((index = player_next_mail(sarg->activator, index + 1)) >= 0);

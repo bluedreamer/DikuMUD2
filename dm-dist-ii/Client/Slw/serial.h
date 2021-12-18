@@ -43,18 +43,18 @@ class cSerial : public cNetInterface, public cHook
    int  Hangup(void);
    int  ModemInit(char **init_string[]);
 
-   int  Send(ubit8 data);
-   int  Send(const ubit8 *pData, ubit32 nLen);
+   int  Send(uint8_t data);
+   int  Send(const uint8_t *pData, uint32_t nLen);
 
    int  SendString(char *pStr);
-   virtual void Receive(ubit8 *pChunk, ubit32 nSize) = 0;
+   virtual void Receive(uint8_t *pChunk, uint32_t nSize) = 0;
 
    void Poll(void);
    int WaitOnline(void);  // Wait for modem to become active
    int Flush(void);
 
   private:
-   int ReadBlock(ubit8 *pChunk, ubit32 nSize);
+   int ReadBlock(uint8_t *pChunk, uint32_t nSize);
    int DisplayStatus(void);
    int Status(void);
    int Break(void);

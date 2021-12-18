@@ -46,7 +46,7 @@
 #include "utility.h"
 #include "utils.h"
 
-auto write_unit_string(ubit8 *b, struct unit_data *u) -> int;
+auto write_unit_string(uint8_t *b, struct unit_data *u) -> int;
 
 /* *************************************************************************
  * Routines for calculating rent                                           *
@@ -54,7 +54,7 @@ auto write_unit_string(ubit8 *b, struct unit_data *u) -> int;
 
 static int rent_info;
 
-static void show_items(struct unit_data *ch, struct unit_data *item, ubit32 price)
+static void show_items(struct unit_data *ch, struct unit_data *item, uint32_t price)
 {
    if(price > 0)
    {
@@ -67,7 +67,7 @@ static void show_items(struct unit_data *ch, struct unit_data *item, ubit32 pric
 
 /* ----------------------------------------------------------------- */
 
-static void subtract_rent(struct unit_data *ch, struct unit_data *item, ubit32 price)
+static void subtract_rent(struct unit_data *ch, struct unit_data *item, uint32_t price)
 {
    if(price > 0)
    {
@@ -85,10 +85,10 @@ static void subtract_rent(struct unit_data *ch, struct unit_data *item, ubit32 p
 
 /* ----------------------------------------------------------------- */
 
-static auto subtract_recurse(struct unit_data *ch, struct unit_data *item, ubit32 seconds,
-                             void (*fptr)(struct unit_data *ch, struct unit_data *obj, ubit32 price)) -> ubit32
+static auto subtract_recurse(struct unit_data *ch, struct unit_data *item, uint32_t seconds,
+                             void (*fptr)(struct unit_data *ch, struct unit_data *obj, uint32_t price)) -> uint32_t
 {
-   ubit32 sum = 0;
+   uint32_t sum = 0;
 
    if(IS_IMMORTAL(ch))
    {
@@ -109,7 +109,7 @@ static auto subtract_recurse(struct unit_data *ch, struct unit_data *item, ubit3
 
    if(IS_OBJ(item) && !UNIT_MINV(item))
    {
-      ubit32 price = 0;
+      uint32_t price = 0;
 
       if(OBJ_PRICE_DAY(item) > 0)
       {
@@ -131,9 +131,9 @@ static auto subtract_recurse(struct unit_data *ch, struct unit_data *item, ubit3
 
 /* ----------------------------------------------------------------- */
 
-auto rent_calc(struct unit_data *ch, time_t savetime) -> ubit32
+auto rent_calc(struct unit_data *ch, time_t savetime) -> uint32_t
 {
-   ubit32 sum = 0;
+   uint32_t sum = 0;
 
    assert(IS_PC(ch));
 
@@ -162,7 +162,7 @@ auto rent_calc(struct unit_data *ch, time_t savetime) -> ubit32
 
 void do_rent(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   ubit32 sum;
+   uint32_t sum;
 
    rent_info = FALSE;
 
@@ -188,8 +188,8 @@ void do_rent(struct unit_data *ch, char *arg, const struct command_info *cmd)
    the header. */
 struct diffhead
 {
-   ubit32    reflen; /* length of reference (for checking) */
-   ubit32    crc;    /* extra check - maybe one enough? */
+   uint32_t    reflen; /* length of reference (for checking) */
+   uint32_t    crc;    /* extra check - maybe one enough? */
    short int start;  /* offset to first different byte */
    short int end;    /* offset to first similar byte after start */
 };
@@ -197,13 +197,13 @@ struct diffhead
 /* Per-object header */
 struct objheader
 {
-   sbit16 length; /* length of data */
+   int16_t length; /* length of data */
    char   zone[FI_MAX_ZONENAME + 1];
    char   unit[FI_MAX_UNITNAME + 1];
-   ubit8  level;      /* level of 'containment' (depth) */
-   ubit8  equip;      /* equipment position */
-   ubit8  compressed; /* compressed? */
-   ubit8  type;       /* NPC or OBJ? */
+   uint8_t  level;      /* level of 'containment' (depth) */
+   uint8_t  equip;      /* equipment position */
+   uint8_t  compressed; /* compressed? */
+   uint8_t  type;       /* NPC or OBJ? */
 };
 
 /* Local global variables */
@@ -225,7 +225,7 @@ void enlist(CByteBuffer *pBuf, struct unit_data *unit, int level, int fast)
    char            *buf;
    CByteBuffer      TmpBuf;
 
-   auto diff(char *ref, ubit32 reflen, char *obj, int objlen, char *dif, int diflen, ubit32 crc)->int;
+   auto diff(char *ref, uint32_t reflen, char *obj, int objlen, char *dif, int diflen, uint32_t crc)->int;
 
    assert(IS_SET(UNIT_TYPE(unit), UNIT_ST_NPC | UNIT_ST_OBJ));
    assert(!is_destructed(DR_UNIT, unit));
@@ -275,7 +275,7 @@ void enlist(CByteBuffer *pBuf, struct unit_data *unit, int level, int fast)
 
    h.length = len;
 
-   pBuf->Append((ubit8 *)&h, sizeof(h));
+   pBuf->Append((uint8_t *)&h, sizeof(h));
    pBuf->Append(&TmpBuf);
 }
 
@@ -458,7 +458,7 @@ auto base_load_contents(const char *pFileName, const struct unit_data *unit) -> 
    extern struct unit_data *void_room;
 
    auto is_slimed(struct file_index_type * sp)->int;
-   auto patch(char *ref, ubit32 reflen, char *dif, int diflen, char *res, int reslen, ubit32 crc)->int;
+   auto patch(char *ref, uint32_t reflen, char *dif, int diflen, char *res, int reslen, uint32_t crc)->int;
 
    assert(slime_fi != nullptr);
 
@@ -496,7 +496,7 @@ auto base_load_contents(const char *pFileName, const struct unit_data *unit) -> 
 
    for(init = TRUE; InvBuf.GetReadPosition() < InvBuf.GetLength();)
    {
-      if(InvBuf.Read((ubit8 *)&h, sizeof(h)) != 0)
+      if(InvBuf.Read((uint8_t *)&h, sizeof(h)) != 0)
       {
          break;
       }
@@ -641,7 +641,7 @@ void reception_boot()
  ************************************************************************* */
 
 /* Create difference-data (patch can reconstruct obj based on ref & dif) */
-auto diff(char *ref, ubit32 reflen, char *obj, int objlen, char *dif, int diflen, ubit32 crc) -> int
+auto diff(char *ref, uint32_t reflen, char *obj, int objlen, char *dif, int diflen, uint32_t crc) -> int
 {
    int             dstart;
    int             dend;
@@ -695,7 +695,7 @@ auto diff(char *ref, ubit32 reflen, char *obj, int objlen, char *dif, int diflen
 }
 
 /* reconstruct obj based on ref and diff */
-auto patch(char *ref, ubit32 reflen, char *dif, int diflen, char *res, int reslen, ubit32 crc) -> int
+auto patch(char *ref, uint32_t reflen, char *dif, int diflen, char *res, int reslen, uint32_t crc) -> int
 {
    struct diffhead head;
 
@@ -811,7 +811,7 @@ auto restore_unit(char *zonename, char *unitname) -> struct unit_data *
       return nullptr;
    }
 
-   ubit8 nType;
+   uint8_t nType;
 
    pBuf->Read8(&nType);
 

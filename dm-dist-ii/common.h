@@ -47,7 +47,7 @@ auto ability_point_total(int level) -> int;
 auto skill_point_total(int level) -> int;
 auto damage_str(int strength) -> double;
 
-auto distribute_points(ubit8 *skills, int max, int points, int level) -> int;
+auto distribute_points(uint8_t *skills, int max, int points, int level) -> int;
 auto buy_points(int points, int level, int *error) -> int;
 
 auto apply_quality(int num, int quality) -> int;

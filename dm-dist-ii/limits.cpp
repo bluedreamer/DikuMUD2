@@ -626,7 +626,7 @@ void gain_exp_regardless(struct unit_data *ch, int gain)
    }
    else /* gain <= 0 */
    {
-      if((((sbit32)CHAR_EXP(ch)) + gain) < required_xp(START_LEVEL))
+      if((((int32_t)CHAR_EXP(ch)) + gain) < required_xp(START_LEVEL))
       {
          CHAR_EXP(ch) = required_xp(START_LEVEL);
       }

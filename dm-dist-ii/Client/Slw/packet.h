@@ -54,12 +54,12 @@ class cPcktErrors
 	      (signed long) nEscError);
    }
  
-   ubit32 nTxPackets;
-   ubit32 nRxPackets;
+   uint32_t nTxPackets;
+   uint32_t nRxPackets;
 
-   ubit32 nLengthError;
-   ubit32 nCrcError;
-   ubit32 nEscError;
+   uint32_t nLengthError;
+   uint32_t nCrcError;
+   uint32_t nEscError;
 };
 
 
@@ -76,7 +76,7 @@ class cPacketLayer : public cSerial
    // Operation is blocking, not released until frame is placed in the
    // "hardware" (or system) buffers for transmission.
    //
-   int TransmitFrame(const ubit8 *data, ubit32 len);
+   int TransmitFrame(const uint8_t *data, uint32_t len);
 
    // Called when error occurs in this layer...
    //
@@ -84,7 +84,7 @@ class cPacketLayer : public cSerial
 
    // Called when packet is ready for delivery...
    //
-   virtual void EventFrameArrival(ubit8 *pTmpData, ubit32 nTmpLen) = 0;
+   virtual void EventFrameArrival(uint8_t *pTmpData, uint32_t nTmpLen) = 0;
 
 
    // Called from the physical layer in one of two ways.
@@ -94,16 +94,16 @@ class cPacketLayer : public cSerial
    //   if bPcktRXBlocked is FALSE
    //      Called with a data character read from the incoming data stream.
    //
-   inline void ReceiveCharacter(ubit8 c);
+   inline void ReceiveCharacter(uint8_t c);
 
    // Virtual From NetInterface
-   void Receive(ubit8 *pData, ubit32 nLen);
+   void Receive(uint8_t *pData, uint32_t nLen);
 
    cPcktErrors PcktError;
 
   private:
-   inline ubit16 UpdateCRC( ubit8 c,  ubit16 crc);
-   inline void TransmitStuffCharacter( ubit8 c);
+   inline uint16_t UpdateCRC( uint8_t c,  uint16_t crc);
+   inline void TransmitStuffCharacter( uint8_t c);
    void   FrameError(void);
    inline int FrameCheck(void);
    void   DeliverPacket(void);
@@ -113,13 +113,13 @@ class cPacketLayer : public cSerial
    // huge overheads in processing.
    //
 
-   ubit8    bActive;
-   ubit8    bHadError;
-   ubit8    bEscaped;
+   uint8_t    bActive;
+   uint8_t    bHadError;
+   uint8_t    bEscaped;
 
-   ubit32   nLength;
-   ubit16   nCrc;
-   ubit8    *pData;
+   uint32_t   nLength;
+   uint16_t   nCrc;
+   uint8_t    *pData;
 };
 
 

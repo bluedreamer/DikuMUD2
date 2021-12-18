@@ -28,7 +28,7 @@
 void apply_affect(struct unit_data *unit);
 void start_affect(struct unit_data *unit);
 void stop_affect(struct unit_data *unit);
-auto affected_by_spell(const struct unit_data *unit, sbit16 id) -> struct unit_affected_type *;
+auto affected_by_spell(const struct unit_data *unit, int16_t id) -> struct unit_affected_type *;
 void unlink_affect(struct unit_data *u, struct unit_affected_type *af);
 
 void create_affect(struct unit_data *unit, struct unit_affected_type *orgaf);
@@ -40,7 +40,7 @@ void affect_clear_unit(struct unit_data *unit);
 struct apply_function_type
 {
    const char *descr;
-   ubit1 (*func)(struct unit_affected_type *af, struct unit_data *unit, ubit1 set);
+   bool (*func)(struct unit_affected_type *af, struct unit_data *unit, bool set);
 };
 
 /* These functions may send messages and destroy any unit. */

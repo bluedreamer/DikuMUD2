@@ -30,19 +30,19 @@
 class CByteBuffer
 {
 public:
-   CByteBuffer(ubit32 nSize = 1024);
+   CByteBuffer(uint32_t nSize = 1024);
    virtual ~CByteBuffer();
 
    // Informative functions
 
-   inline auto GetLength() -> ubit32 const { return m_nLength; }
-   inline auto GetAllocated() -> ubit32 const { return m_nAllocated; }
-   inline auto GetReadPosition() -> ubit32 const { return m_nReadPos; }
-   inline auto GetData() -> const ubit8 * { return m_pData; }
+   inline auto GetLength() -> uint32_t const { return m_nLength; }
+   inline auto GetAllocated() -> uint32_t const { return m_nAllocated; }
+   inline auto GetReadPosition() -> uint32_t const { return m_nReadPos; }
+   inline auto GetData() -> const uint8_t * { return m_pData; }
 
-   void SetReadPosition(ubit32 nReadPosition);
-   void SetLength(ubit32 nLen);
-   void SetData(ubit8 *pData, ubit32 nLength);
+   void SetReadPosition(uint32_t nReadPosition);
+   void SetLength(uint32_t nLen);
+   void SetData(uint8_t *pData, uint32_t nLength);
 
    inline void Rewind() { m_nReadPos = 0; }
    inline void Clear()
@@ -53,25 +53,25 @@ public:
 
    // Public
    //
-   auto FileRead(FILE *f, ubit32 nLength) -> int;
-   auto FileRead(FILE *f, long offset, ubit32 length) -> int;
+   auto FileRead(FILE *f, uint32_t nLength) -> int;
+   auto FileRead(FILE *f, long offset, uint32_t length) -> int;
    auto FileWrite(FILE *f) -> int;
 
    // Public functions to read from a buffer
    //
-   auto Read(ubit8 *pBuf, ubit32 nLen) -> int;
+   auto Read(uint8_t *pBuf, uint32_t nLen) -> int;
 
-   auto ReadBlock(ubit8 **pData, ubit32 *nLen) -> int;
+   auto ReadBlock(uint8_t **pData, uint32_t *nLen) -> int;
 
-   auto Read8(ubit8 *pNum) -> int;
-   auto Read16(ubit16 *pNum) -> int;
-   auto Read32(ubit32 *pNum) -> int;
-   auto Read8(sbit8 *pNum) -> int;
-   auto Read16(sbit16 *pNum) -> int;
-   auto Read32(sbit32 *pNum) -> int;
+   auto Read8(uint8_t *pNum) -> int;
+   auto Read16(uint16_t *pNum) -> int;
+   auto Read32(uint32_t *pNum) -> int;
+   auto Read8(int8_t *pNum) -> int;
+   auto Read16(int16_t *pNum) -> int;
+   auto Read32(int32_t *pNum) -> int;
    auto ReadFloat(float *pFloat) -> int;
    auto ReadStringAlloc(char **pStr) -> int;
-   auto ReadStringCopy(char *pStr, ubit32 nSize) -> int;
+   auto ReadStringCopy(char *pStr, uint32_t nSize) -> int;
    auto ReadNames(char ***pppNames) -> int;
 
    auto Skip(int n) -> int;
@@ -84,48 +84,48 @@ public:
 
    // Public functions to write to a buffer
    //
-   void Append(const ubit8 *pData, ubit32 nLen);
+   void Append(const uint8_t *pData, uint32_t nLen);
 
    void Append(CByteBuffer *pBuf);
 
-   void AppendBlock(const ubit8 *pData, ubit32 nLen);
+   void AppendBlock(const uint8_t *pData, uint32_t nLen);
 
-   void Append8(ubit8 i);
-   void Append16(ubit16 i);
-   void Append32(ubit32 i);
+   void Append8(uint8_t i);
+   void Append16(uint16_t i);
+   void Append32(uint32_t i);
    void AppendFloat(float f);
    void AppendString(const char *pStr);
    void AppendDoubleString(const char *pStr);
    void AppendNames(const char *pNames[]);
 
 protected:
-   void SetSize(ubit32 nSize);
-   void IncreaseSize(ubit32 nSize);
+   void SetSize(uint32_t nSize);
+   void IncreaseSize(uint32_t nSize);
 
 private:
-   ubit32 m_nReadPos;
-   ubit32 m_nLength;
-   ubit32 m_nAllocated;
-   ubit8 *m_pData;
+   uint32_t m_nReadPos;
+   uint32_t m_nLength;
+   uint32_t m_nAllocated;
+   uint8_t *m_pData;
 };
 
-auto bread_ubit8(ubit8 **buf) -> ubit8;
-auto bread_ubit16(ubit8 **buf) -> ubit16;
-auto bread_ubit32(ubit8 **buf) -> ubit32;
-auto bread_float(ubit8 **buf) -> float;
-auto bread_data(ubit8 **b, ubit32 *len) -> ubit8 *;
-void bwrite_data(ubit8 **b, ubit8 *data, ubit32 len);
-void bread_strcpy(ubit8 **b, char *str);
-auto bread_str_alloc(ubit8 **buf) -> char *;
-auto bread_str_skip(ubit8 **b) -> char *;
-auto bread_nameblock(ubit8 **b) -> char **;
+auto bread_uint8_t(uint8_t **buf) -> uint8_t;
+auto bread_uint16_t(uint8_t **buf) -> uint16_t;
+auto bread_uint32_t(uint8_t **buf) -> uint32_t;
+auto bread_float(uint8_t **buf) -> float;
+auto bread_data(uint8_t **b, uint32_t *len) -> uint8_t *;
+void bwrite_data(uint8_t **b, uint8_t *data, uint32_t len);
+void bread_strcpy(uint8_t **b, char *str);
+auto bread_str_alloc(uint8_t **buf) -> char *;
+auto bread_str_skip(uint8_t **b) -> char *;
+auto bread_nameblock(uint8_t **b) -> char **;
 
-void bwrite_ubit8(ubit8 **b, ubit8 i);
-void bwrite_ubit16(ubit8 **b, ubit16 i);
-void bwrite_ubit32(ubit8 **b, ubit32 i);
-void bwrite_float(ubit8 **b, float f);
-void bwrite_string(ubit8 **b, const char *str);
-void bwrite_double_string(ubit8 **b, char *str);
-void bwrite_nameblock(ubit8 **b, char **nb);
+void bwrite_uint8_t(uint8_t **b, uint8_t i);
+void bwrite_uint16_t(uint8_t **b, uint16_t i);
+void bwrite_uint32_t(uint8_t **b, uint32_t i);
+void bwrite_float(uint8_t **b, float f);
+void bwrite_string(uint8_t **b, const char *str);
+void bwrite_double_string(uint8_t **b, char *str);
+void bwrite_nameblock(uint8_t **b, char **nb);
 
 #endif /* _MUD_BYTESTRING_H */

@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : ttydef.h                                  Part of Valhalla MUD *
  * Version: 1.01                                                           *
@@ -21,10 +22,6 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
-
-#ifndef _MUD_TTYDEF_H
-#define _MUD_TTYDEF_H
-
 #define BACKSPACE1_CHAR '\b' /* The two standard BACKSPACE chars */
 #define BACKSPACE2_CHAR '\177'
 
@@ -69,5 +66,3 @@
 #define ANSI_BG_MAGENTA "[45m"
 #define ANSI_BG_CYAN    "[46m"
 #define ANSI_BG_WHITE   "[47m"
-
-#endif

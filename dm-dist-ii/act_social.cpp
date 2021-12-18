@@ -49,10 +49,10 @@ extern char libdir[]; /* from dikumud.c */
 struct social_msg
 {
    char *cmd_str;     /* "hug" "kiss" etc */
-   ubit8 hide_flag;   /* Should we hideinvis? */
-   ubit8 min_pos;     /* Minimum position of char */
-   ubit8 vic_min_pos; /* Minimum position of victim */
-   ubit8 level;       /* Is this a restricted social? (silly concept) */
+   uint8_t hide_flag;   /* Should we hideinvis? */
+   uint8_t min_pos;     /* Minimum position of char */
+   uint8_t vic_min_pos; /* Minimum position of victim */
+   uint8_t level;       /* Is this a restricted social? (silly concept) */
 
    /* No argument was supplied */
    char *char_no_arg;
@@ -473,8 +473,8 @@ static struct pose_type pose_messages[MAX_POSES];
 void boot_pose_messages()
 {
    FILE  *fl;
-   sbit16 counter;
-   sbit16 cls;
+   int16_t counter;
+   int16_t cls;
 
    return; /* SUSPEKT  no reason to boot these, eh? */
 

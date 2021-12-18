@@ -28,6 +28,7 @@
 #include <climits>
 #include <cmath>
 #include <cstdio>
+#include <cctype>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
@@ -58,7 +59,7 @@ void save_player_file(struct unit_data *pc);
 char **player_name_list = nullptr;
 int    max_id           = -1;
 int    top_id           = -1;
-ubit8 *ids              = nullptr; /* For checking duplicate players... */
+uint8_t *ids              = nullptr; /* For checking duplicate players... */
 
 #define OUTPUT_DIR "lib/"
 
@@ -648,7 +649,7 @@ void cleanup_playerfile(int argc, char *argv[])
    extern struct unit_data *entry_room;
 
    top_id = read_player_id();
-   CREATE(ids, ubit8, top_id + 1);
+   CREATE(ids, uint8_t, top_id + 1);
 
    memset(ids, 0, top_id);
    printf("\n\n\n");

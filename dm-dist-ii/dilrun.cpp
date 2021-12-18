@@ -144,7 +144,7 @@ void dil_intr_remove(struct dilprg *p, int idx)
    }
 }
 
-auto dil_intr_insert(struct dilprg *p, ubit8 *lab, ubit16 flags) -> int
+auto dil_intr_insert(struct dilprg *p, uint8_t *lab, uint16_t flags) -> int
 {
    int intnum;
 
@@ -354,22 +354,22 @@ auto dil_getbool(class dilval *v) -> char
          return static_cast<char>(v->val.num != 0); /* return Rvalue */
 
       case DILV_SINT1R:
-         return static_cast<char>(*((sbit8 *)v->ref) != 0); /* return Lvalue */
+         return static_cast<char>(*((int8_t *)v->ref) != 0); /* return Lvalue */
 
       case DILV_SINT2R:
-         return static_cast<char>(*((sbit16 *)v->ref) != 0); /* return Lvalue */
+         return static_cast<char>(*((int16_t *)v->ref) != 0); /* return Lvalue */
 
       case DILV_SINT4R:
-         return static_cast<char>(*((sbit32 *)v->ref) != 0); /* return Lvalue */
+         return static_cast<char>(*((int32_t *)v->ref) != 0); /* return Lvalue */
 
       case DILV_UINT1R:
-         return static_cast<char>(*((ubit8 *)v->ref) != 0); /* return Lvalue */
+         return static_cast<char>(*((uint8_t *)v->ref) != 0); /* return Lvalue */
 
       case DILV_UINT2R:
-         return static_cast<char>(*((ubit16 *)v->ref) != 0); /* return Lvalue */
+         return static_cast<char>(*((uint16_t *)v->ref) != 0); /* return Lvalue */
 
       case DILV_UINT4R:
-         return static_cast<char>(*((ubit32 *)v->ref) != 0); /* return Lvalue */
+         return static_cast<char>(*((uint32_t *)v->ref) != 0); /* return Lvalue */
 
       case DILV_FAIL:
       case DILV_NULL:
@@ -385,7 +385,7 @@ auto dil_getbool(class dilval *v) -> char
 auto dil_getval(class dilval *v) -> int
 {
    /* original type */
-   static ubit8 orig_type[DILV_MAX + 1] = // MS2020 was missing var type def?! odd. Ubit8 added
+   static uint8_t orig_type[DILV_MAX + 1] = // MS2020 was missing var type def?! odd. Ubit8 added
       {DILV_ERR, DILV_UP,  DILV_SP,  DILV_SLP, DILV_EDP, DILV_INT,  DILV_UP,   DILV_SP,  DILV_SLP, DILV_EDP, DILV_INT, DILV_INT,
        DILV_INT, DILV_INT, DILV_INT, DILV_INT, DILV_ERR, DILV_NULL, DILV_FAIL, DILV_ERR, DILV_ERR, DILV_ERR, DILV_SP};
 
@@ -416,22 +416,22 @@ auto dil_getval(class dilval *v) -> int
          break;
 
       case DILV_SINT1R:
-         v->val.num = *((sbit8 *)v->ref);
+         v->val.num = *((int8_t *)v->ref);
          break;
       case DILV_SINT2R:
-         v->val.num = *((sbit16 *)v->ref);
+         v->val.num = *((int16_t *)v->ref);
          break;
       case DILV_SINT4R:
-         v->val.num = *((sbit32 *)v->ref);
+         v->val.num = *((int32_t *)v->ref);
          break;
       case DILV_UINT1R:
-         v->val.num = *((ubit8 *)v->ref);
+         v->val.num = *((uint8_t *)v->ref);
          break;
       case DILV_UINT2R:
-         v->val.num = *((ubit16 *)v->ref);
+         v->val.num = *((uint16_t *)v->ref);
          break;
       case DILV_UINT4R:
-         v->val.num = *((ubit32 *)v->ref);
+         v->val.num = *((uint32_t *)v->ref);
          break;
       case DILV_NULL:
       case DILV_FAIL:
@@ -449,7 +449,7 @@ auto dil_getval(class dilval *v) -> int
 }
 
 /* adds exp node to exp, returns node number */
-void dil_add_secure(struct dilprg *prg, struct unit_data *sup, ubit8 *lab)
+void dil_add_secure(struct dilprg *prg, struct unit_data *sup, uint8_t *lab)
 {
    if(sup == nullptr)
    {
@@ -782,15 +782,15 @@ static auto check_interrupt(struct dilprg *prg) -> int
       if(IS_SET(prg->sp->intr[i].flags, prg->sarg->mflags | SFB_ACTIVATE))
       {
          class dilval v1;
-         ubit32       adr;
+         uint32_t       adr;
          int          oldwaitcmd = prg->waitcmd;
-         ubit8       *oldpc      = prg->sp->pc;
+         uint8_t       *oldpc      = prg->sp->pc;
 
          prg->sp->pc = prg->sp->intr[i].lab;
 
          eval_dil_exp(prg, &v1);
 
-         adr = bread_ubit32(&(prg->sp->pc));
+         adr = bread_uint32_t(&(prg->sp->pc));
 
          prg->waitcmd = oldwaitcmd;
 
@@ -925,7 +925,7 @@ auto run_dil(struct spec_arg *sarg) -> int
    }
 
    /* For optimization purposes */
-   ubit16 OrgHeartBeat = sarg->fptr->heart_beat;
+   uint16_t OrgHeartBeat = sarg->fptr->heart_beat;
 
    activates++;
 
@@ -1280,7 +1280,7 @@ void dil_activate(struct dilprg *prg)
    assert(fptr);
 
 #ifdef DEBUG_HISTORY
-   void add_func_history(struct unit_data * u, ubit16, ubit16);
+   void add_func_history(struct unit_data * u, uint16_t, uint16_t);
    add_func_history(prg->owner, SFUN_DIL_INTERNAL, SFB_TICK);
 #endif
 

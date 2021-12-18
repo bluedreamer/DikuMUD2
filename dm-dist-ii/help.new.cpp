@@ -139,7 +139,7 @@ static auto help(struct help_file_type *hlp, struct descriptor_data *d, char *ar
 
 auto help_base(struct descriptor_data *d, char *arg) -> int
 {
-   ubit8 bHelp = FALSE;
+   uint8_t bHelp = FALSE;
 
    arg = skip_spaces(arg);
    str_lower(arg);

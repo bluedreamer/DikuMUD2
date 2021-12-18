@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : structs.h                                 Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -20,9 +21,6 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
-
-#ifndef _MUD_STRUCTS_H
-#define _MUD_STRUCTS_H
 
 #include "blkfile.h"
 #include "combat.h"
@@ -71,23 +69,23 @@ public:
    class unit_data        *room_ptr; /* Pointer to room if is room       */
 
    long   filepos; /* Byte offset into file            */
-   ubit32 length;  /* No of bytes to read              */
-   ubit32 crc;     /* CRC check for compessed items    */
+   uint32_t length;  /* No of bytes to read              */
+   uint32_t crc;     /* CRC check for compessed items    */
 
-   sbit16 no_in_zone; /* Updated in zone reset for reset  */
-   ubit16 no_in_mem;  /* Number of these in the game      */
-   ubit16 room_no;    /* The number of the room           */
-   ubit8  type;       /* Room/Obj/Char or other?          */
+   int16_t no_in_zone; /* Updated in zone reset for reset  */
+   uint16_t no_in_mem;  /* Number of these in the game      */
+   uint16_t room_no;    /* The number of the room           */
+   uint8_t  type;       /* Room/Obj/Char or other?          */
 };
 
 /* A linked list of commands to execute */
 struct zone_reset_cmd
 {
-   ubit8 cmd_no; /* Index to array of func() ptrs */
-   ubit8 cmpl;   /* Complete flag                 */
+   uint8_t cmd_no; /* Index to array of func() ptrs */
+   uint8_t cmpl;   /* Complete flag                 */
 
    struct file_index_type *fi[2];
-   sbit16                  num[3];
+   int16_t                  num[3];
 
    struct zone_reset_cmd *next;
    struct zone_reset_cmd *nested;
@@ -116,18 +114,18 @@ public:
    struct diltemplate     *tmpl;   /* DIL templates in zone            */
    struct bin_search_type *tmplba; /* Pointer to binarray of type      */
 
-   ubit8 **spmatrix; /* Shortest Path Matrix             */
+   uint8_t **spmatrix; /* Shortest Path Matrix             */
 
-   ubit16 zone_no;    /* Zone index counter (spmatrix)    */
-   ubit16 no_of_fi;   /* Number of fi's in the list       */
-   ubit16 zone_time;  /* How often to reset zone          */
-   ubit16 no_rooms;   /* The number of rooms              */
-   ubit8  reset_mode; /* when/how to reset zone           */
-   ubit16 no_tmpl;    /* number of DIL templates          */
+   uint16_t zone_no;    /* Zone index counter (spmatrix)    */
+   uint16_t no_of_fi;   /* Number of fi's in the list       */
+   uint16_t zone_time;  /* How often to reset zone          */
+   uint16_t no_rooms;   /* The number of rooms              */
+   uint8_t  reset_mode; /* when/how to reset zone           */
+   uint16_t no_tmpl;    /* number of DIL templates          */
 
-   ubit8 access;    /* Access Level 0 = highest (root)  */
-   ubit8 loadlevel; /* Level required to load items     */
-   ubit8 payonly;   /* TRUE when only 4 paying players  */
+   uint8_t access;    /* Access Level 0 = highest (root)  */
+   uint8_t loadlevel; /* Level required to load items     */
+   uint8_t payonly;   /* TRUE when only 4 paying players  */
 
    struct
    {
@@ -144,8 +142,8 @@ public:
 /* and return information about time (real or mudwise).            */
 struct time_info_data
 {
-   sbit8  hours, day, month;
-   sbit16 year;
+   int8_t  hours, day, month;
+   int16_t year;
 };
 
 /* --------------------- DESCRIPTOR STRUCTURES -------------------- */
@@ -167,15 +165,15 @@ public:
 
    time_t      logon; /* Time of last connect              */
    cMultiHook *multi; /* Multi element pointer             */
-   ubit16      id;    /* The ID for the multi              */
+   uint16_t      id;    /* The ID for the multi              */
    void (*fptr)(struct descriptor_data *, const char *);
    int    state;    /* Locally used in each fptr         */
    char   host[50]; /* hostname                          */
-   ubit16 nPort;    /* Mplex port                        */
-   ubit8  nLine;    /* Serial Line                       */
+   uint16_t nPort;    /* Mplex port                        */
+   uint8_t  nLine;    /* Serial Line                       */
    int    wait;     /* wait for how many loops           */
-   ubit16 timer;    /* num of hours idleness for mortals */
-   ubit32 replyid;  /* Used for 'tell reply'             */
+   uint16_t timer;    /* num of hours idleness for mortals */
+   uint32_t replyid;  /* Used for 'tell reply'             */
 
    /* For the 'modify-string' system.       */
    char *localstr; /* This string is expanded while editing */
@@ -209,7 +207,7 @@ public:
    struct file_index_type *key;
    class unit_data        *to_room;
 
-   ubit8 exit_info; /* Door info flags                   */
+   uint8_t exit_info; /* Door info flags                   */
 };
 
 class room_data
@@ -220,9 +218,9 @@ public:
 
    class room_direction_data *dir_option[6]; /* Her?? */
 
-   ubit8 flags;         /* Room flags                              */
-   ubit8 movement_type; /* The type of movement (city, hills etc.) */
-   ubit8 resistance;    /* Magic resistance of the room            */
+   uint8_t flags;         /* Room flags                              */
+   uint8_t movement_type; /* The type of movement (city, hills etc.) */
+   uint8_t resistance;    /* Magic resistance of the room            */
 };
 
 /* ------------------ OBJ SPECIFIC STRUCTURES ----------------------- */
@@ -233,14 +231,14 @@ public:
    obj_data();
    ~obj_data();
 
-   sbit32 value[5];     /* Values of the item (see list)       */
-   ubit32 cost;         /* Value when sold (gp.)               */
-   ubit32 cost_per_day; /* Cost to keep pr. real day           */
+   int32_t value[5];     /* Values of the item (see list)       */
+   uint32_t cost;         /* Value when sold (gp.)               */
+   uint32_t cost_per_day; /* Cost to keep pr. real day           */
 
-   ubit8 flags;      /* Various special object flags        */
-   ubit8 type;       /* Type of item (ITEM_XXX)             */
-   ubit8 equip_pos;  /* 0 or position of item in equipment  */
-   ubit8 resistance; /* Magic resistance                    */
+   uint8_t flags;      /* Various special object flags        */
+   uint8_t type;       /* Type of item (ITEM_XXX)             */
+   uint8_t equip_pos;  /* 0 or position of item in equipment  */
+   uint8_t resistance; /* Magic resistance                    */
 };
 
 /* ------------------  PC SPECIFIC STRUCTURES ------------------------ */
@@ -249,18 +247,18 @@ struct pc_time_data
    time_t creation; /* This represents time when the pc was created.     */
    time_t connect;  /* This is the last time that the pc connected.      */
    time_t birth;    /* This represents the characters age                */
-   ubit32 played;   /* This is the total accumulated time played in secs */
+   uint32_t played;   /* This is the total accumulated time played in secs */
 };
 
 struct pc_account_data
 {
    float  credit;       /* How many coin units are left on account?       */
-   ubit32 credit_limit; /* In coin units (i.e. cents / oerer)             */
-   ubit32 total_credit; /* Accumulated credit to date (coin units)        */
-   sbit16 last4;        /* The last four digits of his credit card, or -1 */
-   ubit8  cracks;       /* Crack-attempts on CC last4                     */
-   ubit8  discount;     /* 0 - 100% discount                              */
-   ubit32 flatrate;     /* The expiration date of a flat rate service     */
+   uint32_t credit_limit; /* In coin units (i.e. cents / oerer)             */
+   uint32_t total_credit; /* Accumulated credit to date (coin units)        */
+   int16_t last4;        /* The last four digits of his credit card, or -1 */
+   uint8_t  cracks;       /* Crack-attempts on CC last4                     */
+   uint8_t  discount;     /* 0 - 100% discount                              */
+   uint32_t flatrate;     /* The expiration date of a flat rate service     */
 };
 
 class pc_data
@@ -284,39 +282,39 @@ public:
    class extra_descr_data /* For saving QUEST information            */
       *quest;
 
-   ubit32 guild_time; /* When (playing secs) player entered      */
-   ubit16 vlvl;       /* Virtual Level for player                */
-   sbit32 id;         /* Unique identifier for each player (-1 guest) */
+   uint32_t guild_time; /* When (playing secs) player entered      */
+   uint16_t vlvl;       /* Virtual Level for player                */
+   int32_t id;         /* Unique identifier for each player (-1 guest) */
 
-   sbit32 skill_points;   /* No of practice points left              */
-   sbit32 ability_points; /* No of practice points left              */
-   ubit16 flags;          /* flags for PC setup (brief, noshout...)  */
+   int32_t skill_points;   /* No of practice points left              */
+   int32_t ability_points; /* No of practice points left              */
+   uint16_t flags;          /* flags for PC setup (brief, noshout...)  */
 
-   ubit16 nr_of_crimes;   /* Number of crimes committed              */
-   ubit16 crack_attempts; /* Number of wrong passwords entered       */
-   ubit16 lifespan;       /* How many year to live....               */
+   uint16_t nr_of_crimes;   /* Number of crimes committed              */
+   uint16_t crack_attempts; /* Number of wrong passwords entered       */
+   uint16_t lifespan;       /* How many year to live....               */
 
-   ubit8 spells[SPL_TREE_MAX];     /* The spells learned                  */
-   ubit8 spell_lvl[SPL_TREE_MAX];  /* Practiced within that level         */
-   sbit8 spell_cost[SPL_TREE_MAX]; /* Cost modifier                       */
+   uint8_t spells[SPL_TREE_MAX];     /* The spells learned                  */
+   uint8_t spell_lvl[SPL_TREE_MAX];  /* Practiced within that level         */
+   int8_t spell_cost[SPL_TREE_MAX]; /* Cost modifier                       */
 
-   ubit8 skills[SKI_TREE_MAX];     /* The skills learned                  */
-   ubit8 skill_lvl[SKI_TREE_MAX];  /* The skills practiced within level   */
-   sbit8 skill_cost[SKI_TREE_MAX]; /* Cost modifier                       */
+   uint8_t skills[SKI_TREE_MAX];     /* The skills learned                  */
+   uint8_t skill_lvl[SKI_TREE_MAX];  /* The skills practiced within level   */
+   int8_t skill_cost[SKI_TREE_MAX]; /* Cost modifier                       */
 
-   ubit8 weapons[WPN_TREE_MAX];     /* The weapons learned                 */
-   ubit8 weapon_lvl[WPN_TREE_MAX];  /* The spells learned                  */
-   sbit8 weapon_cost[WPN_TREE_MAX]; /* Cost modifier                       */
+   uint8_t weapons[WPN_TREE_MAX];     /* The weapons learned                 */
+   uint8_t weapon_lvl[WPN_TREE_MAX];  /* The spells learned                  */
+   int8_t weapon_cost[WPN_TREE_MAX]; /* Cost modifier                       */
 
-   ubit8 ability_lvl[ABIL_TREE_MAX];  /* The spells learned                  */
-   sbit8 ability_cost[ABIL_TREE_MAX]; /* Cost modifier                       */
+   uint8_t ability_lvl[ABIL_TREE_MAX];  /* The spells learned                  */
+   int8_t ability_cost[ABIL_TREE_MAX]; /* Cost modifier                       */
 
-   sbit8 conditions[3]; /* Drunk full etc.                     */
-   ubit8 nAccessLevel;  /* Access Level for BBS use            */
+   int8_t conditions[3]; /* Drunk full etc.                     */
+   uint8_t nAccessLevel;  /* Access Level for BBS use            */
 
    char   pwd[PC_MAX_PASSWORD];  /* Needed when loaded w/o descriptor   */
    char   filename[PC_MAX_NAME]; /* The name on disk...                 */
-   ubit32 lasthosts[5];          /* last 5 different IPs                */
+   uint32_t lasthosts[5];          /* last 5 different IPs                */
 };
 
 /* ------------------ NPC SPECIFIC STRUCTURES ----------------------- */
@@ -327,36 +325,36 @@ public:
    npc_data();
    ~npc_data();
 
-   ubit8 weapons[WPN_GROUP_MAX];
-   ubit8 spells[SPL_GROUP_MAX];
+   uint8_t weapons[WPN_GROUP_MAX];
+   uint8_t spells[SPL_GROUP_MAX];
 
-   ubit8 default_pos; /* Default position for NPC               */
-   ubit8 flags;       /* flags for NPC behavior                 */
+   uint8_t default_pos; /* Default position for NPC               */
+   uint8_t flags;       /* flags for NPC behavior                 */
 };
 
 /* ----------------- CHAR SPECIFIC STRUCTURES ----------------------- */
 
 struct char_point_data
 {
-   ubit32 flags; /* Char flags                               */
-   sbit32 exp;   /* The experience of the player             */
+   uint32_t flags; /* Char flags                               */
+   int32_t exp;   /* The experience of the player             */
 
-   sbit16 mana;      /* How many mana points are left?           */
-   sbit16 endurance; /* How many endurance points are left?      */
-   ubit16 race;      /* PC/NPC race, Humanoid, Animal, etc.     */
+   int16_t mana;      /* How many mana points are left?           */
+   int16_t endurance; /* How many endurance points are left?      */
+   uint16_t race;      /* PC/NPC race, Humanoid, Animal, etc.     */
 
-   sbit16 offensive; /* The OB of a character.                   */
-   sbit16 defensive; /* The DB of a character.                   */
+   int16_t offensive; /* The OB of a character.                   */
+   int16_t defensive; /* The DB of a character.                   */
 
-   ubit8 speed;          /* The default speed for natural combat     */
-   ubit8 natural_armour; /* The natural built-in armour (ARM_)       */
-   ubit8 attack_type;    /* PC/NPC Attack Type for bare hands (WPN_) */
+   uint8_t speed;          /* The default speed for natural combat     */
+   uint8_t natural_armour; /* The natural built-in armour (ARM_)       */
+   uint8_t attack_type;    /* PC/NPC Attack Type for bare hands (WPN_) */
 
-   ubit8 dex_reduction;            /* For speed of armour calculations only    */
-   ubit8 sex;                      /* PC / NPC s sex                           */
-   ubit8 level;                    /* PC / NPC s level                         */
-   ubit8 position;                 /* Standing, sitting, fighting...           */
-   ubit8 abilities[ABIL_TREE_MAX]; /* Str/dex etc.                 */
+   uint8_t dex_reduction;            /* For speed of armour calculations only    */
+   uint8_t sex;                      /* PC / NPC s sex                           */
+   uint8_t level;                    /* PC / NPC s level                         */
+   uint8_t position;                 /* Standing, sitting, fighting...           */
+   uint8_t abilities[ABIL_TREE_MAX]; /* Str/dex etc.                 */
 };
 
 struct char_follow_type
@@ -397,16 +395,16 @@ public:
 
 struct unit_affected_type
 {
-   sbit16 id;
-   ubit16 beat;     /* Beat in 1/4 of secs, 0 = None */
-   sbit16 duration; /* How many beats until end      */
+   int16_t id;
+   uint16_t beat;     /* Beat in 1/4 of secs, 0 = None */
+   int16_t duration; /* How many beats until end      */
 
    int data[3];
 
-   sbit16 firstf_i;
-   sbit16 tickf_i;
-   sbit16 lastf_i;
-   sbit16 applyf_i;
+   int16_t firstf_i;
+   int16_t tickf_i;
+   int16_t lastf_i;
+   int16_t applyf_i;
 
    class unit_data           *owner;
    struct unit_affected_type *next, *gnext, *gprevious;
@@ -414,9 +412,9 @@ struct unit_affected_type
 
 struct unit_fptr
 {
-   ubit16            index;      /* Index to function pointer array             */
-   ubit16            heart_beat; /* in 1/4 of a sec                             */
-   ubit16            flags;      /* When to override next function (boolean)    */
+   uint16_t            index;      /* Index to function pointer array             */
+   uint16_t            heart_beat; /* in 1/4 of a sec                             */
+   uint16_t            flags;      /* When to override next function (boolean)    */
    void             *data;       /* Pointer to data local for this unit         */
    struct unit_fptr *next;       /* Next in linked list                         */
 };
@@ -424,7 +422,7 @@ struct unit_fptr
 class unit_data
 {
 public:
-   unit_data(ubit8 type);
+   unit_data(uint8_t type);
    ~unit_data();
 
    class cNamelist names; /* Name Keyword list for get, enter, etc.      */
@@ -456,24 +454,24 @@ public:
       *gnext,
       *gprevious;
 
-   ubit32 manipulate;  /* WEAR_XXX macros                               */
-   ubit16 flags;       /* Invisible, can_bury, burried...               */
-   sbit16 base_weight; /* The "empty" weight of a room/char/obj         */
-   sbit16 weight;      /* Current weight of a room/obj/char             */
-   sbit16 capacity;    /* Capacity of obj/char/room, -1 => any          */
-   ubit16 size;        /* (cm) MOBs height, weapons size, ropes length  */
+   uint32_t manipulate;  /* WEAR_XXX macros                               */
+   uint16_t flags;       /* Invisible, can_bury, burried...               */
+   int16_t base_weight; /* The "empty" weight of a room/char/obj         */
+   int16_t weight;      /* Current weight of a room/obj/char             */
+   int16_t capacity;    /* Capacity of obj/char/room, -1 => any          */
+   uint16_t size;        /* (cm) MOBs height, weapons size, ropes length  */
 
-   ubit8  status;     /* IS_ROOM, IS_OBJ, IS_PC, IS_NPC                */
-   ubit8  open_flags; /* In general OPEN will mean can "enter"?        */
-   sbit8  light;      /* Number of active light sources in unit        */
-   sbit8  bright;     /* How much the unit shines                      */
-   sbit8  illum;      /* how much bright is by transparency            */
-   ubit8  chars;      /* How many chars is inside the unit             */
-   ubit8  minv;       /* Level of wizard invisible                     */
-   sbit32 max_hp;     /* The maximum number of hitpoint                */
-   sbit32 hp;         /* The actual amount of hitpoints left           */
+   uint8_t  status;     /* IS_ROOM, IS_OBJ, IS_PC, IS_NPC                */
+   uint8_t  open_flags; /* In general OPEN will mean can "enter"?        */
+   int8_t  light;      /* Number of active light sources in unit        */
+   int8_t  bright;     /* How much the unit shines                      */
+   int8_t  illum;      /* how much bright is by transparency            */
+   uint8_t  chars;      /* How many chars is inside the unit             */
+   uint8_t  minv;       /* Level of wizard invisible                     */
+   int32_t max_hp;     /* The maximum number of hitpoint                */
+   int32_t hp;         /* The actual amount of hitpoints left           */
 
-   sbit16 alignment; /* +-1000 for alignments                         */
+   int16_t alignment; /* +-1000 for alignments                         */
 
    /* MS2020 Cleaned up the swap stuff */
 
@@ -497,5 +495,3 @@ public:
 #define DR_FUNC   2
 
 auto is_destructed(int i, void *ptr) -> int;
-
-#endif /* _MUD_STRUCTS_H */

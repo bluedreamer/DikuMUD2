@@ -32,22 +32,22 @@
 extern CByteBuffer g_FileBuffer; /* Defined in db_file.c */
 extern int         g_nCorrupt;   /*          "           */
 
-auto bread_dil(CByteBuffer *pBuf, struct unit_data *, ubit8 version, struct unit_fptr *fptr) -> void *;
+auto bread_dil(CByteBuffer *pBuf, struct unit_data *, uint8_t version, struct unit_fptr *fptr) -> void *;
 
 auto bread_diltemplate(CByteBuffer *pBuf) -> struct diltemplate *;
 auto bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra) -> int;
 
 auto bread_swap(CByteBuffer *pBuf, struct unit_data *u) -> int;
 auto bread_swap_skip(CByteBuffer *pBuf) -> int;
-auto bread_affect(CByteBuffer *pBuf, struct unit_data *u, ubit8 nVersion) -> int;
+auto bread_affect(CByteBuffer *pBuf, struct unit_data *u, uint8_t nVersion) -> int;
 
-auto bread_func(CByteBuffer *pBuf, ubit8 version, struct unit_data *owner) -> struct unit_fptr *;
+auto bread_func(CByteBuffer *pBuf, uint8_t version, struct unit_data *owner) -> struct unit_fptr *;
 
 void bread_block(FILE *datafile, long file_pos, int length, void *buffer);
 
 void bwrite_extra_descr(CByteBuffer *pBuf, struct extra_descr_data *e);
 void bwrite_swap(CByteBuffer *pBuf, struct unit_data *u);
-void bwrite_affect(CByteBuffer *pBuf, struct unit_affected_type *af, ubit8 version);
+void bwrite_affect(CByteBuffer *pBuf, struct unit_affected_type *af, uint8_t version);
 void bwrite_func(CByteBuffer *pBuf, struct unit_fptr *fptr);
 void bwrite_block(FILE *f, int length, void *buffer);
 void bwrite_dil(CByteBuffer *pBuf, struct dilprg *prg);

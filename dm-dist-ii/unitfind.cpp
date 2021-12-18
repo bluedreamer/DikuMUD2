@@ -34,7 +34,7 @@
 #include "utils.h"
 
 /* Assumes UNIT_IN(room) == NULL */
-static auto same_surroundings_room(struct unit_data *room, struct unit_data *u2) -> ubit1
+static auto same_surroundings_room(struct unit_data *room, struct unit_data *u2) -> bool
 {
    if(!UNIT_IN(u2))
    {
@@ -54,7 +54,7 @@ static auto same_surroundings_room(struct unit_data *room, struct unit_data *u2)
    return FALSE;
 }
 
-auto same_surroundings(struct unit_data *u1, struct unit_data *u2) -> ubit1
+auto same_surroundings(struct unit_data *u1, struct unit_data *u2) -> bool
 {
    if(!UNIT_IN(u1))
    {
@@ -116,7 +116,7 @@ auto same_surroundings(struct unit_data *u1, struct unit_data *u2) -> ubit1
 static inline auto pcpay(struct unit_data *u) -> int
 {
    return static_cast<int>((PC_ACCOUNT(u).credit > 0.0) || (PC_ACCOUNT(u).discount == 100) ||
-                           (PC_ACCOUNT(u).flatrate > (ubit32)time(nullptr)) ||
+                           (PC_ACCOUNT(u).flatrate > (uint32_t)time(nullptr)) ||
                            ((CHAR_DESCRIPTOR(u) ? g_cServerConfig.FromLAN(CHAR_DESCRIPTOR(u)->host) : 0) != 0));
 }
 
@@ -261,11 +261,11 @@ auto random_unit(struct unit_data *ref, int sflags, int tflags) -> struct unit_d
    viewer with respect to CHAR_CAN_SEE */
 
 auto find_unit_general(const struct unit_data *viewer, const struct unit_data *ch, char **arg, const struct unit_data *list,
-                       const ubit32 bitvector) -> struct unit_data *
+                       const uint32_t bitvector) -> struct unit_data *
 {
    struct unit_data *best     = nullptr;
    int               best_len = 0;
-   ubit32            bitvectorm;
+   uint32_t            bitvectorm;
 
    int               i;
    int               number;
@@ -273,7 +273,7 @@ auto find_unit_general(const struct unit_data *viewer, const struct unit_data *c
    const char       *ct = nullptr;
    char              name[256];
    char             *c;
-   ubit1             is_fillword = TRUE;
+   bool             is_fillword = TRUE;
    struct unit_data *u;
    struct unit_data *uu;
 
@@ -592,12 +592,12 @@ auto find_unit_general(const struct unit_data *viewer, const struct unit_data *c
 
   */
 
-auto find_unit(const struct unit_data *ch, char **arg, const struct unit_data *list, const ubit32 bitvector) -> struct unit_data *
+auto find_unit(const struct unit_data *ch, char **arg, const struct unit_data *list, const uint32_t bitvector) -> struct unit_data *
 {
    return find_unit_general(ch, ch, arg, list, bitvector);
 }
 
-auto find_symbolic_instance_ref(struct unit_data *ref, struct file_index_type *fi, ubit16 bitvector) -> struct unit_data *
+auto find_symbolic_instance_ref(struct unit_data *ref, struct file_index_type *fi, uint16_t bitvector) -> struct unit_data *
 {
    struct unit_data *u;
    struct unit_data *uu;
@@ -757,7 +757,7 @@ static void double_unit_vector()
 /* units of types which match 'flags' in the 'room' specified.           */
 /* Difference to scan4_unit is that a room is searched for contents,     */
 /* but not outside room.                                                 */
-void scan4_unit_room(struct unit_data *room, ubit8 type)
+void scan4_unit_room(struct unit_data *room, uint8_t type)
 {
    struct unit_data *u;
    struct unit_data *uu;
@@ -804,7 +804,7 @@ void scan4_unit_room(struct unit_data *room, ubit8 type)
 /* Scan the chars surroundings and all transparent surroundsings for all */
 /* units of types which match 'flags'. Updates the 'unit_vector' for     */
 /* use in local routines.                                                */
-void scan4_unit(struct unit_data *ch, ubit8 type)
+void scan4_unit(struct unit_data *ch, uint8_t type)
 {
    struct unit_data *u;
    struct unit_data *uu;

@@ -3,4 +3,4 @@
 #include "essential.h"
 
 auto new_player_id() -> int;
-auto read_player_id() -> sbit32;
+auto read_player_id() -> int32_t;

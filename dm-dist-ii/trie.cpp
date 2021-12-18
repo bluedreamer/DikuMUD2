@@ -130,7 +130,7 @@ auto add_trienode(const char *s, struct trie_type *t) -> struct trie_type *
    return t;
 }
 
-void set_triedata(const char *s, struct trie_type *t, void *p, ubit1 nonabbrev)
+void set_triedata(const char *s, struct trie_type *t, void *p, bool nonabbrev)
 {
    int i;
 
@@ -183,7 +183,7 @@ auto search_trie(const char *s, struct trie_type *t) -> void *
 /* Free an entire trie */
 void free_trie(struct trie_type *t, void (*free_data)(void *))
 {
-   ubit8 i;
+   uint8_t i;
 
    /* If there's any data at this node, let the supplied method free it */
    if(t->data != nullptr)
@@ -219,7 +219,7 @@ void free_trie(struct trie_type *t, void (*free_data)(void *))
  *
  *  Overcommented due to non-trivialism :-)
  */
-auto del_trie(char *s, struct trie_type **t, void (*free_data)(void *)) -> ubit1
+auto del_trie(char *s, struct trie_type **t, void (*free_data)(void *)) -> bool
 {
    /* Any more string of keyword to delete? */
    if(*s != 0)

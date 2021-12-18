@@ -30,12 +30,12 @@
 
 auto  dil_effect(const char *pStr, struct spell_args *sa) -> int;
 auto  object_power(struct unit_data *unit) -> int;
-ubit1 use_mana(struct unit_data *medium, int mana);
-ubit1 cast_magic_now(struct unit_data *ch, int mana);
+bool use_mana(struct unit_data *medium, int mana);
+bool cast_magic_now(struct unit_data *ch, int mana);
 
-ubit1 may_teleport_away(struct unit_data *unit);
-ubit1 may_teleport_to(struct unit_data *unit, struct unit_data *dest);
-ubit1 may_teleport(struct unit_data *unit, struct unit_data *dest);
+bool may_teleport_away(struct unit_data *unit);
+bool may_teleport_to(struct unit_data *unit, struct unit_data *dest);
+bool may_teleport(struct unit_data *unit, struct unit_data *dest);
 
 auto spell_cast_check(struct unit_data *att, int spell) -> int;
 auto spell_resistance(struct unit_data *att, struct unit_data *def, int spell) -> int;

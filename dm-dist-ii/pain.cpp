@@ -313,8 +313,8 @@ These have not yet been made/or have been deleted
 
 struct pain_type
 {
-   ubit16                top; /* No of commands          */
-   ubit16                idx; /* Current command pointer */
+   uint16_t                top; /* No of commands          */
+   uint16_t                idx; /* Current command pointer */
    struct pain_cmd_type *cmds;
 
    void *vars[1]; /* Global Working Variable! */
@@ -324,8 +324,8 @@ struct pain_cmd_type
 {
    int (*func)(struct unit_data *npc, struct pain_type *pain);
 
-   sbit32 gotoline;
-   sbit32 data[2];
+   int32_t gotoline;
+   int32_t data[2];
    void  *ptr[2];
 };
 
@@ -621,7 +621,7 @@ auto pain_trash(struct unit_data *npc, struct pain_type *pain) -> int
    for(u = UNIT_CONTAINS(UNIT_IN(npc)); u != nullptr; u = u->next)
    {
       if(UNIT_WEAR(u, MANIPULATE_TAKE) && (UNIT_WEIGHT(u) <= 200) &&
-         ((OBJ_TYPE(u) == ITEM_DRINKCON) || (obj_trade_price(u) <= (sbit32)pain->cmds[pain->idx].data[0])))
+         ((OBJ_TYPE(u) == ITEM_DRINKCON) || (obj_trade_price(u) <= (int32_t)pain->cmds[pain->idx].data[0])))
       {
          act("$1n picks up $3n.", A_SOMEONE, npc, nullptr, u, TO_ROOM);
          /* unit_down(u, npc); */

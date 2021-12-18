@@ -37,28 +37,28 @@ cQueueElem::cQueueElem(char *pStr, int bCopy)
 {
    assert(pStr);
 
-   ubit32 n = strlen(pStr) + 1;
+   uint32_t n = strlen(pStr) + 1;
 
    if(bCopy != 0)
    {
-      CREATE(pData, ubit8, n);
+      CREATE(pData, uint8_t, n);
       memcpy(pData, pStr, n);
    }
    else
    {
-      pData = (ubit8 *)pStr;
+      pData = (uint8_t *)pStr;
    }
 
    nSize = n;
 }
 
-cQueueElem::cQueueElem(ubit8 *d, ubit32 n, int bCopy)
+cQueueElem::cQueueElem(uint8_t *d, uint32_t n, int bCopy)
 {
    if(bCopy != 0)
    {
       if(n > 0)
       {
-         CREATE(pData, ubit8, n);
+         CREATE(pData, uint8_t, n);
          memcpy(pData, d, n);
       }
       else
@@ -87,12 +87,12 @@ cQueue::~cQueue()
    Flush();
 }
 
-auto cQueue::Size() const -> ubit32
+auto cQueue::Size() const -> uint32_t
 {
    return nEntries;
 }
 
-auto cQueue::Bytes() const -> ubit32
+auto cQueue::Bytes() const -> uint32_t
 {
    return nBytes;
 }
@@ -102,7 +102,7 @@ auto cQueue::IsEmpty() const -> int
    return static_cast<int>(nEntries == 0);
 }
 
-void cQueue::Copy(ubit8 *data, ubit32 nLen)
+void cQueue::Copy(uint8_t *data, uint32_t nLen)
 {
    assert(nLen <= nBytes);
 
@@ -120,7 +120,7 @@ void cQueue::Copy(ubit8 *data, ubit32 nLen)
    } while(nLen > 0);
 }
 
-void cQueue::Cut(ubit32 nLen)
+void cQueue::Cut(uint32_t nLen)
 {
    if(nLen < 1)
    {
@@ -147,7 +147,7 @@ void cQueue::Cut(ubit32 nLen)
    } while(nLen > 0);
 }
 
-void cQueue::CutCopy(ubit8 *data, ubit32 nLen)
+void cQueue::CutCopy(uint8_t *data, uint32_t nLen)
 {
    Copy(data, nLen);
    Cut(nLen);

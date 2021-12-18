@@ -51,9 +51,9 @@ class cTimer
   private:
    void InternEvent(void);
 
-   ubit8 bSuspended;
-   ubit8 bActive;
-   ubit8 bPending;
+   uint8_t bSuspended;
+   uint8_t bActive;
+   uint8_t bPending;
 
    struct itimerval itimer;
 

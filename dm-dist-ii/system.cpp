@@ -98,7 +98,7 @@ void init_char(struct unit_data *ch)
    int i;
    int init_skills = 0;
 
-   extern sbit32 player_id;
+   extern int32_t player_id;
 
    if(g_cServerConfig.m_bBBS != 0)
    {
@@ -251,7 +251,7 @@ descriptor_data::descriptor_data(cMultiHook *pe)
    original       = nullptr;
    snoop.snooping = nullptr;
    snoop.snoop_by = nullptr;
-   replyid        = (ubit32)-1;
+   replyid        = (uint32_t)-1;
 
    /* Make a new PC struct */
    character = new(class unit_data)(UNIT_ST_PC);
@@ -509,10 +509,10 @@ auto cMultiHook::Read() -> int
    struct descriptor_data *d = nullptr;
    int                     p;
    int                     n;
-   ubit16                  id;
-   ubit16                  len;
+   uint16_t                  id;
+   uint16_t                  len;
    char                   *data;
-   ubit8                   text_type;
+   uint8_t                   text_type;
 
    extern char *logo;
 
@@ -585,10 +585,10 @@ auto cMultiHook::Read() -> int
       case MULTI_HOST_CHAR:
          if((d != nullptr) && (data != nullptr))
          {
-            auto *b = (ubit8 *)data;
+            auto *b = (uint8_t *)data;
 
-            d->nPort = bread_ubit16(&b);
-            d->nLine = bread_ubit8(&b);
+            d->nPort = bread_uint16_t(&b);
+            d->nLine = bread_uint8_t(&b);
             strncpy(d->host, (char *)b, sizeof(d->host));
             d->host[sizeof(d->host) - 1] = 0;
          }

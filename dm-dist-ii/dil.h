@@ -41,7 +41,7 @@
 
 struct dilargtype
 {
-   ubit8 type;
+   uint8_t type;
    union
    {
       char   *string;
@@ -52,7 +52,7 @@ struct dilargtype
 
 struct dilargstype
 {
-   ubit8             no;
+   uint8_t             no;
    char             *name;
    struct dilargtype dilarg[256];
 };
@@ -96,7 +96,7 @@ struct dilargstype
 #define DILE_NULL 19 /* null */
 
 /* DIL functions */
-#define DILE_FLD  20 /* get field + ubit8 DILF_? */
+#define DILE_FLD  20 /* get field + uint8_t DILF_? */
 #define DILE_ATOI 21 /* atoi(#) */
 #define DILE_ITOA 22 /* itoa(#) */
 #define DILE_RND  23 /* rnd(#,#) */
@@ -120,10 +120,10 @@ struct dilargstype
 #define DILE_SELF 39 /* self */
 
 /* DIL static references */
-#define DILE_VAR 40 /* variable (ubit16) */
+#define DILE_VAR 40 /* variable (uint16_t) */
 #define DILE_FS  41 /* fixed string (char[]) */
 #define DILE_FSL 42 /* fixed stringlist (char[][]) */
-#define DILE_INT 43 /* fixed integer (sbit32) */
+#define DILE_INT 43 /* fixed integer (int32_t) */
 #define DILE_LEN 44 /* length(#) */
 
 /* DIL instructions */
@@ -349,11 +349,11 @@ struct dilargstype
 /* DIL variable structure */
 struct dilvar
 {
-   ubit8 type; /* variable type */
+   uint8_t type; /* variable type */
    union
    {
       struct unit_data        *unitptr;
-      sbit32                   integer;
+      int32_t                   integer;
       struct extra_descr_data *extraptr;
       char                    *string;
       class cStringInstance   *pHash;
@@ -373,8 +373,8 @@ public:
    dilval() { type = DILV_FAIL; }
    ~dilval();
 
-   ubit8 type; /* result type     */
-   ubit8 atyp; /* allocation type */
+   uint8_t type; /* result type     */
+   uint8_t atyp; /* allocation type */
    union
    {
       void   *ptr; /* result pointer  */
@@ -387,7 +387,7 @@ public:
 struct dilsecure
 {
    struct unit_data *sup; /* A direct reference to the variabel! */
-   ubit8            *lab; /* address to jump to, NULL=foreach */
+   uint8_t            *lab; /* address to jump to, NULL=foreach */
 };
 
 /*
@@ -398,9 +398,9 @@ struct dilsecure
 struct dilxref
 {
    char  *name; /* func/proc name [@ zone] */
-   ubit8  rtnt; /* return type */
-   ubit8  argc; /* number of arguments (min 1) */
-   ubit8 *argt; /* argument types */
+   uint8_t  rtnt; /* return type */
+   uint8_t  argc; /* number of arguments (min 1) */
+   uint8_t *argt; /* argument types */
 };
 
 /*
@@ -413,33 +413,33 @@ struct diltemplate
    const char       *prgname; /* program name @ zone */
    struct zone_type *zone;    /* Pointer to owner of structure    */
 
-   ubit8  flags;     /* recall, etc. */
-   ubit16 intrcount; /* max number of interrupts */
-   ubit16 varcrc;    /* variable crc from compiler */
-   ubit16 corecrc;   /* core crc from compiler */
-   ubit8  rtnt;      /* return type */
-   ubit8  argc;      /* number of arguments */
-   ubit8 *argt;      /* argument types */
+   uint8_t  flags;     /* recall, etc. */
+   uint16_t intrcount; /* max number of interrupts */
+   uint16_t varcrc;    /* variable crc from compiler */
+   uint16_t corecrc;   /* core crc from compiler */
+   uint8_t  rtnt;      /* return type */
+   uint8_t  argc;      /* number of arguments */
+   uint8_t *argt;      /* argument types */
 
-   ubit32 coresz; /* size of coreblock */
-   ubit8 *core;   /* instructions, expressions and statics */
+   uint32_t coresz; /* size of coreblock */
+   uint8_t *core;   /* instructions, expressions and statics */
 
-   ubit16 varc; /* number of variables */
-   ubit8 *vart; /* variable types */
+   uint16_t varc; /* number of variables */
+   uint8_t *vart; /* variable types */
 
-   ubit16               xrefcount; /* number of external references   */
+   uint16_t               xrefcount; /* number of external references   */
    struct diltemplate **extprg;    /* external programs (SERVER only) */
    struct dilxref      *xrefs;     /* external references (DMC only)  */
 
-   ubit32 nActivations; /* Number of activations           */
+   uint32_t nActivations; /* Number of activations           */
 
    struct diltemplate *next; /* for zone templates              */
 };
 
 struct dilintr
 {
-   ubit16 flags; /* what message types to react on 0=off */
-   ubit8 *lab;   /* where to perform check */
+   uint16_t flags; /* what message types to react on 0=off */
+   uint8_t *lab;   /* where to perform check */
 };
 
 /*
@@ -451,16 +451,16 @@ struct dilintr
  */
 struct dilframe
 {
-   ubit16              ret;  /* return variable # (not saved) */
+   uint16_t              ret;  /* return variable # (not saved) */
    struct diltemplate *tmpl; /* current template */
    struct dilvar      *vars; /* variables */
 
-   ubit8 *pc; /* program counter */
+   uint8_t *pc; /* program counter */
 
-   ubit16            securecount; /* number of secures (not saved) */
+   uint16_t            securecount; /* number of secures (not saved) */
    struct dilsecure *secure;      /* secured vars (not saved) */
 
-   ubit16          intrcount; /* number of interrupts */
+   uint16_t          intrcount; /* number of interrupts */
    struct dilintr *intr;      /* interrupts */
 };
 
@@ -473,18 +473,18 @@ struct dilframe
 
 struct dilprg
 {
-   ubit8  flags;   /* Recall, copy, etc. */
-   ubit16 varcrc;  /* variable crc from compiler (saved) */
-   ubit16 corecrc; /* core crc from compiler (saved) */
+   uint8_t  flags;   /* Recall, copy, etc. */
+   uint16_t varcrc;  /* variable crc from compiler (saved) */
+   uint16_t corecrc; /* core crc from compiler (saved) */
 
-   ubit16           stacksz; /* stack size */
+   uint16_t           stacksz; /* stack size */
    struct dilframe *sp;      /* stack and pointer */
    struct dilframe *stack;   /* stack frames, #0 saved */
 
    struct spec_arg  *sarg;
    struct unit_data *owner;
 
-   sbit16 waitcmd; /* Command countdown */
+   int16_t waitcmd; /* Command countdown */
 
    struct dilprg *next; /* For global dilprg list (sendtoalldil) */
 };

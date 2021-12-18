@@ -39,7 +39,7 @@ int MAX(int a, int b);
 int number(int from, int to);
 int dice(int number, int size);
 
-char *sprintbit(char *buf, ubit32 vektor, const char *names[]);
+char *sprintbit(char *buf, uint32_t vektor, const char *names[]);
 char *sprinttype(char *buf, int type, const char *names[]);
 
 /* in game log stuff below */
@@ -60,7 +60,7 @@ class log_buffer
 
    char str[MAX_INPUT_LENGTH + 50];
    enum log_level level;
-   ubit8 wizinv_level;
+   uint8_t wizinv_level;
 };
 
 /* For the printing of obj_type information, as used by the identify spell and
@@ -69,7 +69,7 @@ class log_buffer
 struct obj_type_t
 {
   char *fmt;
-  ubit8 v[5];
+  uint8_t v[5];
 };
 
 char *stat_obj_data(struct unit_data *u, struct obj_type_t *obj_data);

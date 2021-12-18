@@ -140,7 +140,7 @@ void remove_from_unit_list(struct unit_data *unit)
    unit->gnext = unit->gprevious = nullptr;
 }
 
-auto find_fptr(struct unit_data *u, ubit16 idx) -> struct unit_fptr *
+auto find_fptr(struct unit_data *u, uint16_t idx) -> struct unit_fptr *
 {
    struct unit_fptr *tf;
 
@@ -155,7 +155,7 @@ auto find_fptr(struct unit_data *u, ubit16 idx) -> struct unit_fptr *
    return nullptr;
 }
 
-auto create_fptr(struct unit_data *u, ubit16 index, ubit16 beat, ubit16 flags, void *data) -> struct unit_fptr *
+auto create_fptr(struct unit_data *u, uint16_t index, uint16_t beat, uint16_t flags, void *data) -> struct unit_fptr *
 {
    struct unit_fptr *f;
 
@@ -187,7 +187,7 @@ void destroy_fptr(struct unit_data *u, struct unit_fptr *f)
    extern struct unit_function_array_type unit_function_array[];
 
    void register_destruct(int i, void *ptr);
-   void add_func_history(struct unit_data * u, ubit16, ubit16);
+   void add_func_history(struct unit_data * u, uint16_t, uint16_t);
 
    assert(f);
    assert(!is_destructed(DR_FUNC, f));
@@ -206,7 +206,7 @@ void destroy_fptr(struct unit_data *u, struct unit_fptr *f)
    sarg.fptr      = f;
    sarg.cmd       = &cmd_auto_extract;
    sarg.arg       = "";
-   sarg.mflags    = ((ubit16)0);
+   sarg.mflags    = ((uint16_t)0);
 
    (*(unit_function_array[f->index].func))(&sarg);
 
@@ -392,7 +392,7 @@ void recalc_dex_red(struct unit_data *ch)
 }
 */
 
-auto equipment(struct unit_data *ch, ubit8 pos) -> struct unit_data *
+auto equipment(struct unit_data *ch, uint8_t pos) -> struct unit_data *
 {
    struct unit_data *u;
 
@@ -411,7 +411,7 @@ auto equipment(struct unit_data *ch, ubit8 pos) -> struct unit_data *
 
 /* The following functions find armor / weapons on a person with     */
 /* type checks (i.e. trash does not protect!).                       */
-auto equipment_type(struct unit_data *ch, int pos, ubit8 type) -> struct unit_data *
+auto equipment_type(struct unit_data *ch, int pos, uint8_t type) -> struct unit_data *
 {
    struct unit_data *obj;
 
@@ -424,7 +424,7 @@ auto equipment_type(struct unit_data *ch, int pos, ubit8 type) -> struct unit_da
    return NULL;
 }
 
-void equip_char(struct unit_data *ch, struct unit_data *obj, ubit8 pos)
+void equip_char(struct unit_data *ch, struct unit_data *obj, uint8_t pos)
 {
    struct unit_affected_type *af;
    struct unit_affected_type  newaf;
@@ -489,7 +489,7 @@ auto unequip_object(struct unit_data *obj) -> struct unit_data *
    return obj;
 }
 
-auto unequip_char(struct unit_data *ch, ubit8 pos) -> struct unit_data *
+auto unequip_char(struct unit_data *ch, uint8_t pos) -> struct unit_data *
 {
    struct unit_data *obj;
 
@@ -553,14 +553,14 @@ auto unit_room(struct unit_data *unit) -> struct unit_data *
    return nullptr;
 }
 
-void intern_unit_up(struct unit_data *unit, ubit1 pile)
+void intern_unit_up(struct unit_data *unit, bool pile)
 {
    struct unit_data *u;
    struct unit_data *in;
    struct unit_data *toin;
    struct unit_data *extin;
-   sbit8             bright;
-   sbit8             selfb;
+   int8_t             bright;
+   int8_t             selfb;
 
    assert(UNIT_IN(unit));
 
@@ -643,13 +643,13 @@ void unit_from_unit(struct unit_data *unit)
    }
 }
 
-void intern_unit_down(struct unit_data *unit, struct unit_data *to, ubit1 pile)
+void intern_unit_down(struct unit_data *unit, struct unit_data *to, bool pile)
 {
    struct unit_data *u;
    struct unit_data *in;
    struct unit_data *extin;
-   sbit8             bright;
-   sbit8             selfb;
+   int8_t             bright;
+   int8_t             selfb;
 
    assert(UNIT_IN(unit) == UNIT_IN(to));
    assert(unit != to);
@@ -722,7 +722,7 @@ void unit_down(struct unit_data *unit, struct unit_data *to)
    intern_unit_down(unit, to, TRUE);
 }
 
-void intern_unit_to_unit(struct unit_data *unit, struct unit_data *to, ubit1 pile)
+void intern_unit_to_unit(struct unit_data *unit, struct unit_data *to, bool pile)
 {
    assert(to);
 

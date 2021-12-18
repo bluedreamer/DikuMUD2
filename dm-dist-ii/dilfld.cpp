@@ -45,7 +45,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
    class dilval v2;
    int          fldno;
 
-   fldno = bread_ubit8(&(p->sp->pc));
+   fldno = bread_uint8_t(&(p->sp->pc));
    eval_dil_exp(p, &v1); /* what to get index from */
    v2.type = DILV_NULL;
 
@@ -95,7 +95,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
          {
             v->atyp = DILA_EXP;
 
-            if(((ubit32)v2.val.num < ((class cNamelist *)v1.val.ptr)->Length()) && (v2.val.num >= 0))
+            if(((uint32_t)v2.val.num < ((class cNamelist *)v1.val.ptr)->Length()) && (v2.val.num >= 0))
             {
                v->atyp = DILA_NONE; // Dont dealloc!
                v->type = DILV_HASHSTR;
@@ -839,7 +839,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
             case DILV_UP:
                if(v1.val.ptr != nullptr)
                {
-                  /* ubit16 flags; */
+                  /* uint16_t flags; */
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT2R;
                   v->ref  = &UNIT_FLAGS((struct unit_data *)v1.val.ptr);
@@ -894,7 +894,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
             case DILV_UP:
                if(v1.val.ptr != nullptr)
                {
-                  /* ubit8 openflags */
+                  /* uint8_t openflags */
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
                   v->ref  = &UNIT_OPEN_FLAGS((struct unit_data *)v1.val.ptr);
@@ -1048,7 +1048,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
             case DILV_UP:
                if(v1.val.ptr != nullptr)
                {
-                  /* sbit32 hp; */
+                  /* int32_t hp; */
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT4R;
                   v->ref  = &UNIT_HIT((struct unit_data *)v1.val.ptr);
@@ -1130,7 +1130,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
             case DILV_UP:
                if(v1.val.ptr != nullptr)
                {
-                  /* sbit16 capacity */
+                  /* int16_t capacity */
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT2R;
                   v->ref  = &UNIT_CAPACITY((struct unit_data *)v1.val.ptr);
@@ -1158,7 +1158,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
             case DILV_UP:
                if(v1.val.ptr != nullptr)
                {
-                  /* sbit16 capacity */
+                  /* int16_t capacity */
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT2R;
                   v->ref  = &UNIT_ALIGNMENT((struct unit_data *)v1.val.ptr);

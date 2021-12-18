@@ -129,7 +129,7 @@ auto dil_effect(const char *pStr, struct spell_args *sa) -> int
 /* This procedure uses mana from a medium */
 /* returns TRUE if ok, and FALSE if there was not enough mana.  */
 /* wands and staffs uses one charge, no matter what 'mana' is. --HHS */
-auto use_mana(struct unit_data *medium, int mana) -> ubit1
+auto use_mana(struct unit_data *medium, int mana) -> bool
 {
    if(IS_CHAR(medium))
    {
@@ -164,7 +164,7 @@ auto use_mana(struct unit_data *medium, int mana) -> ubit1
 }
 
 /* Determines if healing combat mana should be cast?? */
-auto cast_magic_now(struct unit_data *ch, int mana) -> ubit1
+auto cast_magic_now(struct unit_data *ch, int mana) -> bool
 {
    int hleft;
    int sleft;
@@ -214,7 +214,7 @@ auto variation(int num, int d, int u) -> int
 
 /* See if unit is allowed to be transferred away from its surroundings */
 /* i.e. if a player is allowed to transfer out of jail, etc.           */
-auto may_teleport_away(struct unit_data *unit) -> ubit1
+auto may_teleport_away(struct unit_data *unit) -> bool
 {
    if(IS_SET(UNIT_FLAGS(unit), UNIT_FL_NO_TELEPORT))
    {
@@ -233,7 +233,7 @@ auto may_teleport_away(struct unit_data *unit) -> ubit1
 }
 
 /* See if unit is allowed to be transferred to 'dest' */
-auto may_teleport_to(struct unit_data *unit, struct unit_data *dest) -> ubit1
+auto may_teleport_to(struct unit_data *unit, struct unit_data *dest) -> bool
 {
    if(unit == dest || IS_SET(UNIT_FLAGS(dest), UNIT_FL_NO_TELEPORT) || (unit_recursive(unit, dest) != 0) ||
       UNIT_WEIGHT(unit) + UNIT_WEIGHT(dest) > UNIT_CAPACITY(dest))
@@ -253,9 +253,9 @@ auto may_teleport_to(struct unit_data *unit, struct unit_data *dest) -> ubit1
 }
 
 /* See if unit is allowed to be transferred to 'dest' */
-auto may_teleport(struct unit_data *unit, struct unit_data *dest) -> ubit1
+auto may_teleport(struct unit_data *unit, struct unit_data *dest) -> bool
 {
-   return (static_cast<ubit1>(may_teleport_away(unit) != 0u) && (may_teleport_to(unit, dest)) != 0u);
+   return (static_cast<bool>(may_teleport_away(unit) != 0u) && (may_teleport_to(unit, dest)) != 0u);
 }
 
 /* ===================================================================== */

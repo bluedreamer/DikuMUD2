@@ -84,7 +84,7 @@ class cSlwTimeout : public cTimer
    void Event(void);
 
    void TimerActivateMinimal(void);
-   void SetTimerEvent(cMyTime *sWhen, ubit32 n);
+   void SetTimerEvent(cMyTime *sWhen, uint32_t n);
 
    void TimerPiggyHandler(void);
    void TimerRetransHandler(void);
@@ -94,10 +94,10 @@ class cSlwTimeout : public cTimer
 
    // These timeouts could be changed dynamically at runtime when the acutal
    // RTT times are calculated.
-   ubit32  nTimeoutPiggy;
-   ubit32  nTimeoutRetrans;
+   uint32_t  nTimeoutPiggy;
+   uint32_t  nTimeoutRetrans;
 
-   ubit32  nEventCode;
+   uint32_t  nEventCode;
 };
 
 #endif

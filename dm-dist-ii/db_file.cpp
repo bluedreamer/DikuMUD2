@@ -51,7 +51,7 @@ int g_nCorrupt = 0; /* > 0 when a unit is corrupt       */
 CByteBuffer g_FileBuffer(16384);
 
 // int filbuffer_length = 0;             /* The length of filbuffer         */
-// ubit8 *filbuffer = 0;                 /* Buffer for read/write unit      */
+// uint8_t *filbuffer = 0;                 /* Buffer for read/write unit      */
 
 #ifdef DMSERVER
 extern struct unit_function_array_type unit_function_array[];
@@ -61,7 +61,7 @@ auto bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra) -> int
 {
    struct extra_descr_data *e;
    struct extra_descr_data *te;
-   ubit8                    i;
+   uint8_t                    i;
    char                    *c;
 
    *ppExtra = nullptr;
@@ -141,7 +141,7 @@ auto bread_swap(CByteBuffer *pBuf, struct unit_data *u) -> int
 auto bread_swap_skip(CByteBuffer *pBuf) -> int
 {
    int   i;
-   ubit8 t8;
+   uint8_t t8;
 
    pBuf->SkipString();
    pBuf->SkipString();
@@ -197,7 +197,7 @@ auto bread_diltemplate(CByteBuffer *pBuf) -> struct diltemplate *
 
    if(tmpl->argc != 0u)
    {
-      CREATE(tmpl->argt, ubit8, tmpl->argc);
+      CREATE(tmpl->argt, uint8_t, tmpl->argc);
 
       for(i = 0; i < tmpl->argc; i++)
       {
@@ -215,7 +215,7 @@ auto bread_diltemplate(CByteBuffer *pBuf) -> struct diltemplate *
 
    if(tmpl->varc != 0u)
    {
-      CREATE(tmpl->vart, ubit8, tmpl->varc);
+      CREATE(tmpl->vart, uint8_t, tmpl->varc);
 
       for(i = 0; i < tmpl->varc; i++)
       {
@@ -242,7 +242,7 @@ auto bread_diltemplate(CByteBuffer *pBuf) -> struct diltemplate *
 
          if(tmpl->xrefs[i].argc != 0u)
          {
-            CREATE(tmpl->xrefs[i].argt, ubit8, tmpl->xrefs[i].argc);
+            CREATE(tmpl->xrefs[i].argt, uint8_t, tmpl->xrefs[i].argc);
             for(j = 0; j < tmpl->xrefs[i].argc; j++)
             {
                pBuf->Read8(&tmpl->xrefs[i].argt[j]);
@@ -324,7 +324,7 @@ auto bread_diltemplate(CByteBuffer *pBuf) -> struct diltemplate *
 void bread_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
 {
    int    i;
-   ubit32 lab;
+   uint32_t lab;
 
    /* read interrupts */
    pBuf->Read16(&prg->stack[0].intrcount);
@@ -348,8 +348,8 @@ void bread_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
 
 void bwrite_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
 {
-   ubit16 i;
-   ubit32 lab;
+   uint16_t i;
+   uint32_t lab;
 
    pBuf->Append16(prg->stack[0].intrcount);
 
@@ -409,12 +409,12 @@ void bwrite_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
  *   lookup and typecheck of loaded template.
  *
  */
-auto bread_dil(CByteBuffer *pBuf, struct unit_data *owner, ubit8 version, struct unit_fptr *fptr) -> void *
+auto bread_dil(CByteBuffer *pBuf, struct unit_data *owner, uint8_t version, struct unit_fptr *fptr) -> void *
 {
    struct dilprg      *prg;
    struct diltemplate *tmpl     = nullptr;
-   ubit32              recallpc = 0;
-   ubit16              t16;
+   uint32_t              recallpc = 0;
+   uint16_t              t16;
    int                 i;
    int                 novar;
 #ifdef DMSERVER
@@ -645,15 +645,15 @@ auto bread_dil(CByteBuffer *pBuf, struct unit_data *owner, ubit8 version, struct
    return prg;
 }
 
-auto bread_func(CByteBuffer *pBuf, ubit8 version, struct unit_data *owner) -> struct unit_fptr *
+auto bread_func(CByteBuffer *pBuf, uint8_t version, struct unit_data *owner) -> struct unit_fptr *
 {
    struct unit_fptr *fptr;
    struct unit_fptr *head;
    int               cnt;
    int               i;
-   ubit8             t8;
-   ubit16            t16;
-   ubit32            t32;
+   uint8_t             t8;
+   uint16_t            t16;
+   uint32_t            t32;
 
    fptr = nullptr;
    head = nullptr;
@@ -729,7 +729,7 @@ auto bread_func(CByteBuffer *pBuf, ubit8 version, struct unit_data *owner) -> st
                   break;
 
                case DILV_INT:
-                  ubit32 i;
+                  uint32_t i;
                   pBuf->Read32(&i);
                   dilargs->dilarg[j].data.num = i;
                   break;
@@ -764,7 +764,7 @@ void bread_block(FILE *datafile, long file_pos, int length, void *buffer)
       assert(FALSE);
    }
 
-   if(!((int)fread(buffer, sizeof(ubit8), length, datafile) == length))
+   if(!((int)fread(buffer, sizeof(uint8_t), length, datafile) == length))
    {
       assert(FALSE);
    }
@@ -778,11 +778,11 @@ void bwrite_swap(CByteBuffer *pBuf, struct unit_data *u)
    UNIT_EXTRA_DESCR(u)->AppendBuffer(pBuf);
 }
 
-void bwrite_affect(CByteBuffer *pBuf, struct unit_affected_type *af, ubit8 version)
+void bwrite_affect(CByteBuffer *pBuf, struct unit_affected_type *af, uint8_t version)
 {
    int    i = 0;
-   ubit32 nPos;
-   ubit32 nOrgPos = pBuf->GetLength();
+   uint32_t nPos;
+   uint32_t nOrgPos = pBuf->GetLength();
 
    if(version <= 56)
    {
@@ -978,8 +978,8 @@ void bwrite_func(CByteBuffer *pBuf, struct unit_fptr *fptr)
    char  *data;
    int    cnt;
    int    i = 0;
-   ubit32 nPos;
-   ubit32 nOrgPos = pBuf->GetLength();
+   uint32_t nPos;
+   uint32_t nOrgPos = pBuf->GetLength();
    pBuf->Append8(0); /* Assume no affects by default */
 
    cnt = 0;
@@ -1078,7 +1078,7 @@ void bwrite_func(CByteBuffer *pBuf, struct unit_fptr *fptr)
 
 void bwrite_block(FILE *datafile, int length, void *buffer)
 {
-   if(fwrite(buffer, sizeof(ubit8), length, datafile) != (size_t)length)
+   if(fwrite(buffer, sizeof(uint8_t), length, datafile) != (size_t)length)
    {
       assert(FALSE);
    }
@@ -1088,11 +1088,11 @@ void bwrite_block(FILE *datafile, int length, void *buffer)
 auto write_unit_string(CByteBuffer *pBuf, struct unit_data *u) -> int
 {
    int   i;
-   ubit8 nVersion;
+   uint8_t nVersion;
 
    nVersion = 57;
 
-   ubit32 nPos = pBuf->GetLength();
+   uint32_t nPos = pBuf->GetLength();
 
    pBuf->Append8(nVersion); /* Version Number! */
 
@@ -1108,10 +1108,10 @@ auto write_unit_string(CByteBuffer *pBuf, struct unit_data *u) -> int
    pBuf->Append16(UNIT_WEIGHT(u));
    pBuf->Append16(UNIT_CAPACITY(u));
 
-   pBuf->Append32((ubit32)UNIT_MAX_HIT(u));
-   pBuf->Append32((ubit32)UNIT_HIT(u));
+   pBuf->Append32((uint32_t)UNIT_MAX_HIT(u));
+   pBuf->Append32((uint32_t)UNIT_HIT(u));
 
-   pBuf->Append16((ubit16)UNIT_ALIGNMENT(u));
+   pBuf->Append16((uint16_t)UNIT_ALIGNMENT(u));
 
    pBuf->Append8(UNIT_OPEN_FLAGS(u));
    pBuf->Append8(UNIT_LIGHTS(u));
@@ -1139,10 +1139,10 @@ auto write_unit_string(CByteBuffer *pBuf, struct unit_data *u) -> int
       {
 #ifdef DMSERVER
          inu = unit_room(u);
-      }
 #else
          assert(inu == nullptr);
 #endif
+      }
 
       if((inu != nullptr) && UNIT_FILE_INDEX(inu))
       {
@@ -1166,8 +1166,8 @@ auto write_unit_string(CByteBuffer *pBuf, struct unit_data *u) -> int
          pBuf->Append32(CHAR_EXP(u));
          pBuf->Append32(CHAR_FLAGS(u));
 
-         pBuf->Append16((ubit16)CHAR_MANA(u));
-         pBuf->Append16((ubit16)CHAR_ENDURANCE(u));
+         pBuf->Append16((uint16_t)CHAR_MANA(u));
+         pBuf->Append16((uint16_t)CHAR_ENDURANCE(u));
 
          pBuf->Append8(CHAR_NATURAL_ARMOUR(u));
          pBuf->Append8(CHAR_SPEED(u));
@@ -1221,18 +1221,18 @@ auto write_unit_string(CByteBuffer *pBuf, struct unit_data *u) -> int
                pBuf->Append32(PC_LASTHOST(u)[i]);
             }
 
-            pBuf->Append32((ubit32)PC_ID(u));
+            pBuf->Append32((uint32_t)PC_ID(u));
             pBuf->Append16(PC_CRACK_ATTEMPTS(u));
 
             pBuf->AppendString(PC_HOME(u));
             pBuf->AppendString(PC_GUILD(u));
 
-            pBuf->Append32((ubit32)PC_GUILD_TIME(u));
+            pBuf->Append32((uint32_t)PC_GUILD_TIME(u));
             pBuf->Append16(PC_VIRTUAL_LEVEL(u));
 
-            pBuf->Append32((ubit32)PC_TIME(u).creation);
-            pBuf->Append32((ubit32)PC_TIME(u).connect);
-            pBuf->Append32((ubit32)PC_TIME(u).birth);
+            pBuf->Append32((uint32_t)PC_TIME(u).creation);
+            pBuf->Append32((uint32_t)PC_TIME(u).connect);
+            pBuf->Append32((uint32_t)PC_TIME(u).birth);
             pBuf->Append32(PC_TIME(u).played);
 
             pBuf->AppendString(PC_BANK(u));
@@ -1364,11 +1364,11 @@ auto write_unit_string(CByteBuffer *pBuf, struct unit_data *u) -> int
 void write_unit(FILE *f, struct unit_data *u, char *fname)
 {
    CByteBuffer *pBuf;
-   ubit32       nSizeStart;
-   ubit32       nStart;
-   ubit32       nPos;
-   ubit32       length;
-   ubit32       crc;
+   uint32_t       nSizeStart;
+   uint32_t       nStart;
+   uint32_t       nPos;
+   uint32_t       length;
+   uint32_t       crc;
 
    pBuf = &g_FileBuffer;
    pBuf->Clear();
@@ -1387,7 +1387,7 @@ void write_unit(FILE *f, struct unit_data *u, char *fname)
    /* Calculate the CRC */
    crc = length;
 
-   for(ubit32 i = 0; i < length; i++)
+   for(uint32_t i = 0; i < length; i++)
    {
       crc += (pBuf->GetData()[nStart + i] << (i % 16));
    }
@@ -1412,11 +1412,11 @@ void write_unit(FILE *f, struct unit_data *u, char *fname)
 void write_diltemplate(FILE *f, struct diltemplate *tmpl)
 {
    CByteBuffer *pBuf;
-   ubit8       *b;
-   ubit8       *bstart;
-   ubit32       length;
-   ubit32       nStart;
-   ubit32       nPos;
+   uint8_t       *b;
+   uint8_t       *bstart;
+   uint32_t       length;
+   uint32_t       nStart;
+   uint32_t       nPos;
 
    pBuf = &g_FileBuffer;
    pBuf->Clear();

@@ -52,7 +52,7 @@ auto read_to_queue(int fd, cQueue *q) -> int
 
       if(thisround > 0)
       {
-         q->Append(new cQueueElem((ubit8 *)buf, (ubit32)thisround));
+         q->Append(new cQueueElem((uint8_t *)buf, (uint32_t)thisround));
       }
       else if(thisround == 0)
       {
@@ -77,11 +77,11 @@ auto read_to_queue(int fd, cQueue *q) -> int
 /* Create the standard header and send a close request to file             */
 /* file descriptor 'fd'. If fd is -1 then don't send anything.             */
 /* Return -1 on socket fail, 0 on amount fail, 1 on success                */
-void protocol_send_close(cHook *Hook, ubit16 id)
+void protocol_send_close(cHook *Hook, uint16_t id)
 {
    int    n;
-   ubit16 len = 0;
-   ubit8  buf[20];
+   uint16_t len = 0;
+   uint8_t  buf[20];
 
    if(Hook->IsHooked() == 0)
    {
@@ -98,11 +98,11 @@ void protocol_send_close(cHook *Hook, ubit16 id)
 /* Create the standard header and send a connection confirm to             */
 /* file descriptor 'fd'. If fd is -1 then don't send anything.             */
 /* Return -1 on socket fail, 0 on amount fail, 1 on success                */
-void protocol_send_confirm(cHook *Hook, ubit16 id)
+void protocol_send_confirm(cHook *Hook, uint16_t id)
 {
    int    n;
-   ubit16 len = 0;
-   ubit8  buf[20];
+   uint16_t len = 0;
+   uint8_t  buf[20];
 
    if(Hook->IsHooked() == 0)
    {
@@ -122,9 +122,9 @@ void protocol_send_confirm(cHook *Hook, ubit16 id)
 void protocol_send_request(cHook *Hook)
 {
    int    n;
-   ubit16 id  = 0;
-   ubit16 len = 0;
-   ubit8  buf[10];
+   uint16_t id  = 0;
+   uint16_t len = 0;
+   uint8_t  buf[10];
 
    if(Hook->IsHooked() == 0)
    {
@@ -141,14 +141,14 @@ void protocol_send_request(cHook *Hook)
 /* Create the standard header and send (from mplex to server) the host     */
 /* name information.     If fd is -1 then don't send anything.             */
 /* Return -1 on socket fail, 0 on amount fail, 1 on success                */
-void protocol_send_host(cHook *Hook, ubit16 id, char *host, ubit16 nPort, ubit8 nLine)
+void protocol_send_host(cHook *Hook, uint16_t id, char *host, uint16_t nPort, uint8_t nLine)
 {
    char   bufms[MAX_STRING_LENGTH] = "UNKNOWN HOST"; // MS2020
    int    n;
-   ubit16 len = 0;
-   ubit8  buf[80];
+   uint16_t len = 0;
+   uint8_t  buf[80];
    char  *ptext = nullptr; // MS2020
-   ubit8 *b;
+   uint8_t *b;
 
    if(Hook->IsHooked() == 0)
    {
@@ -171,10 +171,10 @@ void protocol_send_host(cHook *Hook, ubit16 id, char *host, ubit16 nPort, ubit8 
    memcpy(b, MULTI_HOST, 2);
    b += 2;
 
-   bwrite_ubit16(&b, id);
-   bwrite_ubit16(&b, len);
-   bwrite_ubit16(&b, nPort);
-   bwrite_ubit8(&b, nLine);
+   bwrite_uint16_t(&b, id);
+   bwrite_uint16_t(&b, len);
+   bwrite_uint16_t(&b, nPort);
+   bwrite_uint8_t(&b, nLine);
    bwrite_string(&b, ptext);
 
    Hook->Write(buf, b - buf);
@@ -185,14 +185,14 @@ void protocol_send_host(cHook *Hook, ubit16 id, char *host, ubit16 nPort, ubit8 
 /* 'type' is used to tell difference between normal text, page string text, */
 /* etc.                                                                     */
 /* Return -1 on socket fail, 0 on amount fail, 1 on success                 */
-void protocol_send_text(cHook *Hook, const ubit16 id, const char *text, const ubit8 type)
+void protocol_send_text(cHook *Hook, const uint16_t id, const char *text, const uint8_t type)
 {
 #define MAX_TEXT_LEN (4 * 1460 - 6)
 
    int    n;
-   ubit16 len;
-   ubit16 txlen;
-   ubit8  buf[6 + MAX_TEXT_LEN];
+   uint16_t len;
+   uint16_t txlen;
+   uint8_t  buf[6 + MAX_TEXT_LEN];
 
    assert(id != 0);
 
@@ -248,10 +248,10 @@ void protocol_send_text(cHook *Hook, const ubit16 id, const char *text, const ub
 /* file descriptor 'fd'. If fd is -1 then don't send anything.             */
 /* Return -1 on socket fail, 0 on amount fail, 1 on success                */
 
-void protocol_send_setup(cHook *Hook, ubit16 id, struct terminal_setup_type *setup)
+void protocol_send_setup(cHook *Hook, uint16_t id, struct terminal_setup_type *setup)
 {
-   ubit16 len;
-   ubit8  buf[sizeof(struct terminal_setup_type) + 6 + 4];
+   uint16_t len;
+   uint8_t  buf[sizeof(struct terminal_setup_type) + 6 + 4];
 
    assert(id != 0);
 
@@ -284,11 +284,11 @@ void protocol_send_setup(cHook *Hook, ubit16 id, struct terminal_setup_type *set
 /*      -2 on protocol fail                                                */
 /* or type on success                                                      */
 /*                                                                         */
-auto protocol_parse_incoming(cHook *Hook, ubit16 *pid, ubit16 *plen, char **str, ubit8 *text_type) -> int
+auto protocol_parse_incoming(cHook *Hook, uint16_t *pid, uint16_t *plen, char **str, uint8_t *text_type) -> int
 {
    int    n;
-   ubit16 id;
-   ubit16 len;
+   uint16_t id;
+   uint16_t len;
    char   buf[10];
    char  *data;
 
@@ -315,7 +315,7 @@ auto protocol_parse_incoming(cHook *Hook, ubit16 *pid, ubit16 *plen, char **str,
       return 0;
    }
 
-   Hook->qRX.Copy((ubit8 *)buf, 6);
+   Hook->qRX.Copy((uint8_t *)buf, 6);
 
    if(buf[0] != MULTI_UNIQUE_CHAR)
    {
@@ -323,8 +323,8 @@ auto protocol_parse_incoming(cHook *Hook, ubit16 *pid, ubit16 *plen, char **str,
       return -2;
    }
 
-   memcpy(&id, &(buf[2]), sizeof(ubit16));
-   memcpy(&len, &(buf[4]), sizeof(sbit16));
+   memcpy(&id, &(buf[2]), sizeof(uint16_t));
+   memcpy(&len, &(buf[4]), sizeof(int16_t));
 
    if(Hook->qRX.Bytes() - 6 < len)
    {
@@ -410,7 +410,7 @@ auto protocol_parse_incoming(cHook *Hook, ubit16 *pid, ubit16 *plen, char **str,
 
    CREATE(data, char, len + 1);
 
-   Hook->qRX.CutCopy((ubit8 *)data, len);
+   Hook->qRX.CutCopy((uint8_t *)data, len);
 
    data[len] = 0;
 

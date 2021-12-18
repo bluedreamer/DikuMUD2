@@ -36,10 +36,10 @@
 #define CODESIZE 16768     /* maximum expression size */
 
 struct exptype {
-   ubit8 dsl, typ, rtyp; /* static/dynamic/lvalue, type, req type */
-   ubit8 boolean;        /* if expression contains boolean op */
-   sbit32 num;           /* static value INT or field type */
-   ubit8 *code;          /* code / static value SP */
-   ubit8 *codep;         /* code write pointer */
+   uint8_t dsl, typ, rtyp; /* static/dynamic/lvalue, type, req type */
+   uint8_t boolean;        /* if expression contains boolean op */
+   int32_t num;           /* static value INT or field type */
+   uint8_t *code;          /* code / static value SP */
+   uint8_t *codep;         /* code write pointer */
 };
 #endif /* _MUD_DILPAR_H */

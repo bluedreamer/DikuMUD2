@@ -49,7 +49,7 @@ struct persist_type
 {
    char                    name[30];
    struct file_index_type *in;
-   sbit32                  weight;
+   int32_t                  weight;
 };
 
 cNamelist persist_namelist;
@@ -156,7 +156,7 @@ void persist_boot()
 
    auto base_load_contents(const char *pFileName, const struct unit_data *unit)->struct unit_data *;
 
-   for(ubit32 i = 0; i < persist_namelist.Length(); i++)
+   for(uint32_t i = 0; i < persist_namelist.Length(); i++)
    {
       strcpy(name, str_cc(libdir, PERSIST_DIR));
       strcat(name, persist_namelist.Name(i));

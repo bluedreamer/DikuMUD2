@@ -39,16 +39,16 @@ public:
 
    void AppendBuffer(CByteBuffer *pBuf);
    auto ReadBuffer(CByteBuffer *pBuf) -> int;
-   void bread(ubit8 **b);
+   void bread(uint8_t **b);
 
    void catnames(char *buf);
 
-   void Remove(ubit32 idx);
+   void Remove(uint32_t idx);
    void RemoveName(const char *name);
 
-   void Substitute(ubit32 idx, const char *newname);
-   auto Name(ubit32 idx = 0) -> const char *;
-   auto InstanceName(ubit32 idx = 0) -> cStringInstance *;
+   void Substitute(uint32_t idx, const char *newname);
+   auto Name(uint32_t idx = 0) -> const char *;
+   auto InstanceName(uint32_t idx = 0) -> cStringInstance *;
 
    void AppendName(const char *name);
    void PrependName(const char *name);
@@ -60,9 +60,9 @@ public:
    auto IsNameRaw(const char *name) -> const char *;
    auto IsName(const char *name) -> const char *;
 
-   inline auto Length() -> ubit32 const { return length; }
+   inline auto Length() -> uint32_t const { return length; }
 
 private:
    class cStringInstance **namelist;
-   ubit32                  length;
+   uint32_t                  length;
 };

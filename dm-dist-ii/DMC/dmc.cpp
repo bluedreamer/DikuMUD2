@@ -47,7 +47,7 @@
 #define BUFS     30
 
 int         sunlight       = 0;
-const sbit8 time_light[24] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+const int8_t time_light[24] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 struct zone_info zone;
 char             cur_filename[256], top_filename[256];
@@ -494,7 +494,7 @@ void dump_zone(char *prefix)
    struct reset_command *c;
    int                   no_rooms = 0;
    struct diltemplate   *tmpl;
-   ubit32                dummy;
+   uint32_t                dummy;
    void                  dmc_error(int fatal, const char *fmt, ...);
 
    /* Quinn, I do this to get all the sematic errors and info */

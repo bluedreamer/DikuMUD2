@@ -88,7 +88,7 @@ const char *month_name[MUD_YEAR] = {
    "Month of the Ancient Darkness" /* Fall   8 */
 };
 
-const sbit8 time_light[SUN_SET + 1] = {
+const int8_t time_light[SUN_SET + 1] = {
    -1, /* SUN_DARK  */
    0,  /* SUN_RISE  */
    1,  /* SUN_LIGHT */
@@ -142,7 +142,7 @@ const char *bodyparts[] = {"arms",       "left arm",  "right arm", "legs",      
                            "neck",       "butt",      "eyes",      "right eye", "left eye",   "mouth",     "ears", "right ear",
                            "left ear",   "teeth",     "tounge",    "nose",      "nostrils",   nullptr};
 
-const ubit8 bodyparts_cover[31][5] = {
+const uint8_t bodyparts_cover[31][5] = {
    {WEAR_ARMS, WEAR_UNUSED},                                    /* arms */
    {WEAR_ARMS, WEAR_UNUSED},                                    /* left arm */
    {WEAR_ARMS, WEAR_UNUSED},                                    /* right arm */

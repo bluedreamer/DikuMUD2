@@ -466,7 +466,7 @@ auto scavenger(struct spec_arg *sarg) -> int
    {
       for(max = 50, best_obj = nullptr, obj = UNIT_CONTAINS(UNIT_IN(sarg->owner)); obj != nullptr; obj = obj->next)
       {
-         if(IS_OBJ(obj) && (obj_trade_price(obj) > (sbit32)max) && !UNIT_CHARS(obj) && (char_can_get_unit(sarg->owner, obj) != 0))
+         if(IS_OBJ(obj) && (obj_trade_price(obj) > (int32_t)max) && !UNIT_CHARS(obj) && (char_can_get_unit(sarg->owner, obj) != 0))
          {
             best_obj = obj;
             max      = obj_trade_price(obj);

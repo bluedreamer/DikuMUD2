@@ -108,7 +108,7 @@ void free_extra_descr(struct extra_descr_data *ex);
 void free_extra_descr_list(struct extra_descr_data *ex);
 
 auto create_extra_descr() -> struct extra_descr_data *;
-auto create_unit(ubit8 type) -> struct unit_data *;
+auto create_unit(uint8_t type) -> struct unit_data *;
 
 /* --- The globals of db.c --- */
 

@@ -60,19 +60,19 @@ auto skill_text(const struct skill_interval *si, int skill) -> const char *;
 
 struct dice_type
 {
-   ubit16 reps;
-   ubit16 size;
+   uint16_t reps;
+   uint16_t size;
 };
 
 struct base_race_info_type
 {
-   ubit16           height;
+   uint16_t           height;
    struct dice_type height_dice;
 
-   ubit16           weight;
+   uint16_t           weight;
    struct dice_type weight_dice;
 
-   ubit16           lifespan;
+   uint16_t           lifespan;
    struct dice_type lifespan_dice;
 };
 
@@ -81,7 +81,7 @@ struct race_info_type
    struct base_race_info_type male;
    struct base_race_info_type female;
 
-   ubit16           age;
+   uint16_t           age;
    struct dice_type age_dice;
 };
 
@@ -107,7 +107,7 @@ struct damage_chart_type
 struct tree_type
 {
    int   parent;
-   ubit8 isleaf;
+   uint8_t isleaf;
 };
 
 /* Tree has a pointer to parent for each node. 0 pointer from root */
@@ -116,7 +116,7 @@ struct wpn_info_type
    int   hands;  /* 0=N/A, 1 = 1, 2 = 1.5, 3 = 2          */
    int   speed;  /* Speed modification by weapon 0..      */
    int   type;   /* Is the weapon slashing/piercing...    */
-   ubit8 shield; /* Shield method SHIELD_M_XXX            */
+   uint8_t shield; /* Shield method SHIELD_M_XXX            */
 };
 
 #define DEMIGOD_LEVEL_XP (40000000)
@@ -164,10 +164,10 @@ extern const char           *pc_races[PC_RACE_MAX + 1];
 extern const char           *pc_race_adverbs[PC_RACE_MAX + 1];
 
 extern struct damage_chart_type spell_chart[SPL_TREE_MAX];
-extern sbit8                    racial_ability[ABIL_TREE_MAX][PC_RACE_MAX];
-extern sbit8                    racial_weapons[WPN_TREE_MAX][PC_RACE_MAX];
-extern sbit8                    racial_skills[SKI_TREE_MAX][PC_RACE_MAX];
-extern sbit8                    racial_spells[SPL_TREE_MAX][PC_RACE_MAX];
+extern int8_t                    racial_ability[ABIL_TREE_MAX][PC_RACE_MAX];
+extern int8_t                    racial_weapons[WPN_TREE_MAX][PC_RACE_MAX];
+extern int8_t                    racial_skills[SKI_TREE_MAX][PC_RACE_MAX];
+extern int8_t                    racial_spells[SPL_TREE_MAX][PC_RACE_MAX];
 
 extern struct tree_type wpn_tree[WPN_TREE_MAX + 1];
 extern struct tree_type spl_tree[SPL_TREE_MAX + 1];

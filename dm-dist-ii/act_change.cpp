@@ -181,7 +181,7 @@ static void chg_columns(struct unit_data *ch, const char *arg)
 
    act("Your screen width is now $2d columns.", A_ALWAYS, ch, &width, nullptr, TO_CHAR);
 
-   PC_SETUP_WIDTH(ch) = (ubit8)width;
+   PC_SETUP_WIDTH(ch) = (uint8_t)width;
 
    MplexSendSetup(CHAR_DESCRIPTOR(ch));
 }
@@ -202,7 +202,7 @@ static void chg_rows(struct unit_data *ch, const char *arg)
       return;
    }
 
-   PC_SETUP_HEIGHT(ch) = (ubit8)height;
+   PC_SETUP_HEIGHT(ch) = (uint8_t)height;
 
    act("Your screen height is $2d rows.", A_ALWAYS, ch, &height, nullptr, TO_CHAR);
 
@@ -259,7 +259,7 @@ static void chg_telnet(struct unit_data *ch)
       return;
    }
 
-   PC_SETUP_TELNET(ch) = static_cast<ubit8>(!PC_SETUP_TELNET(ch));
+   PC_SETUP_TELNET(ch) = static_cast<uint8_t>(!PC_SETUP_TELNET(ch));
 
    if(PC_SETUP_TELNET(ch))
    {
@@ -281,7 +281,7 @@ static void chg_character_echo(struct unit_data *ch)
       return;
    }
 
-   PC_SETUP_ECHO(ch) = static_cast<ubit8>(!PC_SETUP_ECHO(ch));
+   PC_SETUP_ECHO(ch) = static_cast<uint8_t>(!PC_SETUP_ECHO(ch));
 
    if(PC_SETUP_ECHO(ch))
    {
@@ -303,7 +303,7 @@ static void chg_redraw_prompt(struct unit_data *ch)
       return;
    }
 
-   PC_SETUP_REDRAW(ch) = static_cast<ubit8>(!PC_SETUP_REDRAW(ch));
+   PC_SETUP_REDRAW(ch) = static_cast<uint8_t>(!PC_SETUP_REDRAW(ch));
 
    if(PC_SETUP_REDRAW(ch))
    {

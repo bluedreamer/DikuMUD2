@@ -40,10 +40,10 @@ class cZload;
 class cText : public cChannel
 {
   public:
-   cText(ubit8 nChn);
+   cText(uint8_t nChn);
    virtual ~cText(void);
 
-   void Receive(ubit8 *data, ubit32 len);
+   void Receive(uint8_t *data, uint32_t len);
    int SendString(char *pString);
 
    int Change(cBaseInteractive *pcNew);
@@ -66,11 +66,11 @@ class cBaseInteractive
   public:
    cBaseInteractive(cText *pcNew) { pcInteractive = pcNew; }
 
-   virtual void Receive(ubit8 *data, ubit32 len) = 0;
+   virtual void Receive(uint8_t *data, uint32_t len) = 0;
 
-   int SendString(char *str) { return Send((ubit8 *) str, strlen(str)); }
+   int SendString(char *str) { return Send((uint8_t *) str, strlen(str)); }
 
-   int Send(ubit8 *data, int len) { return pcInteractive->Send(data, len); }
+   int Send(uint8_t *data, int len) { return pcInteractive->Send(data, len); }
 
 
    virtual int Activate(void) { return 0; };
@@ -87,7 +87,7 @@ class cMud : public cBaseInteractive, public cHook
    virtual ~cMud(void);
 
    void Input(int nFlags);
-   void Receive(ubit8 *data, ubit32 nLen);
+   void Receive(uint8_t *data, uint32_t nLen);
 
    int Activate(void);
    int End(void);
@@ -101,7 +101,7 @@ class cMainMenu : public cBaseInteractive
   public:
    cMainMenu(cText *pcNew) : cBaseInteractive(pcNew) {};
 
-   void Receive(ubit8 *data, ubit32 len);
+   void Receive(uint8_t *data, uint32_t len);
    int Activate(void);
 
   protected:
@@ -113,7 +113,7 @@ class cZload : public cBaseInteractive
   public:
    cZload(cText *pcNew) : cBaseInteractive(pcNew) {};
 
-   void Receive(ubit8 *data, ubit32 len);
+   void Receive(uint8_t *data, uint32_t len);
    int Activate(void);
 
   protected:

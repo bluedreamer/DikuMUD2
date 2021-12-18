@@ -103,7 +103,7 @@ Mon Nov 14 17:19:47 MET 1994
        */
 struct alias_head
 {
-   ubit16            char_count;
+   uint16_t            char_count;
    struct trie_type *trie;
    char              owner[20];
 };
@@ -214,7 +214,7 @@ static auto parse_alias(char *src, char *arg) -> char *
          cnew++;
       }
 
-      if(cnew - buf >= (sbit32)sizeof(buf) / 2 - 1)
+      if(cnew - buf >= (int32_t)sizeof(buf) / 2 - 1)
       {
          return nullptr; /* we wrote too much, so abort */
       }
@@ -237,7 +237,7 @@ static auto push_alias(char *s, char *arg, struct trie_type *t, struct unit_data
    char           *c;
    struct alias_t *al;
 
-   static ubit8 check_count = 0;
+   static uint8_t check_count = 0;
 
    if(first)
    {
@@ -378,14 +378,14 @@ static auto del_alias(struct alias_head *ah, char *key) -> bool
  *  check_count makes sure that the user doesn't make nasty (!) computationally
  *  heavy (!!!) aliases that will bog the mud enormously.
  */
-static auto circle_alias(char *key, char *val, struct trie_type *t, bool first) -> ubit8
+static auto circle_alias(char *key, char *val, struct trie_type *t, bool first) -> uint8_t
 {
    char           *tmp;
    char           *sc;
    char            comm[MAX_INPUT_LENGTH + 2];
    struct alias_t *tmp_al      = nullptr;
-   ubit8           res         = 0;
-   static ubit8    check_count = 0;
+   uint8_t           res         = 0;
+   static uint8_t    check_count = 0;
 
    if(first)
    {
@@ -710,7 +710,7 @@ static auto local_dictionary(struct spec_arg *sarg) -> int
 {
    char                    *pcomm = NULL;
    char                    *cmd_array[256];
-   ubit8                    i;
+   uint8_t                    i;
    struct alias_t          *al = nullptr;
    struct alias_head       *alias_h;
    struct extra_descr_data *exd;

@@ -76,12 +76,12 @@
 
 struct field_type
 {
-   ubit8        utype;     /* type of unit to work on           */
-   ubit8        atype;     /* type of argument to expect        */
+   uint8_t        utype;     /* type of unit to work on           */
+   uint8_t        atype;     /* type of argument to expect        */
    const char **structure; /* structure of bit/type recognition */
-   ubit8        minself;   /* minimum level to modify self      */
-   ubit8        minother;  /* minimum level to modify other     */
-   ubit8        minplayer; /* minimum level to modify player    */
+   uint8_t        minself;   /* minimum level to modify self      */
+   uint8_t        minother;  /* minimum level to modify other     */
+   uint8_t        minplayer; /* minimum level to modify player    */
 };
 
 static const char *unit_field_names[MAX_SET_FIELDS + 1] = {

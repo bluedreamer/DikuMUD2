@@ -33,12 +33,12 @@ int main(int argc, char *argv[])
    time_t created, lastcrc, first_crc;
 
    char *msbuf = fgets(Buf, sizeof(Buf), stdin);
-   sscanf(Buf, "%08x%08x", (ubit32 *)&created, (ubit32 *)&lastcrc);
+   sscanf(Buf, "%08x%08x", (uint32_t *)&created, (uint32_t *)&lastcrc);
    first_crc = created;
    created ^= 0xAF876162;
 
-   printf("Account File Created at [%d] %s", (ubit32)created, ctime(&created));
-   printf("Initial CRC is [%08x]\n", (ubit32)first_crc);
+   printf("Account File Created at [%d] %s", (uint32_t)created, ctime(&created));
+   printf("Initial CRC is [%08x]\n", (uint32_t)first_crc);
 
    while(!feof(stdin))
    {
@@ -51,10 +51,10 @@ int main(int argc, char *argv[])
       if(feof(stdin))
          break;
 
-      sscanf(Buf, "%c %s %s %d %*01x%08x%08x%08x%08x%08x%08x%08x%08x\n", &action, name1, name2, &amount1, (ubit32 *)&mxor, (ubit32 *)&gid,
-             (ubit32 *)&crc, (ubit32 *)&pid, (ubit32 *)&amount, (ubit32 *)&total, (ubit32 *)&next_crc, (ubit32 *)&now);
+      sscanf(Buf, "%c %s %s %d %*01x%08x%08x%08x%08x%08x%08x%08x%08x\n", &action, name1, name2, &amount1, (uint32_t *)&mxor, (uint32_t *)&gid,
+             (uint32_t *)&crc, (uint32_t *)&pid, (uint32_t *)&amount, (uint32_t *)&total, (uint32_t *)&next_crc, (uint32_t *)&now);
 
-      check = gid + pid + total + amount + (ubit32)now;
+      check = gid + pid + total + amount + (uint32_t)now;
 
       mxor = ~mxor;
       next_crc ^= mxor;
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
          printf("\nCRC mismatch: %08x versus %08x\n", crc, check);
 
       if(first_crc != next_crc)
-         printf("Dependancy check [%08x] [%08x] [%08x] [%08x]!\n", (ubit32)first_crc, next_crc, (ubit32)first_crc ^ mxor, next_crc ^ mxor);
+         printf("Dependancy check [%08x] [%08x] [%08x] [%08x]!\n", (uint32_t)first_crc, next_crc, (uint32_t)first_crc ^ mxor, next_crc ^ mxor);
 
       first_crc = next_crc ^ mxor;
    }

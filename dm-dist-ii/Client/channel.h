@@ -46,17 +46,17 @@ extern cSlw *Slw;
 class cChannel
 {
   public:
-   cChannel(ubit8 n);
+   cChannel(uint8_t n);
    virtual ~cChannel();
 
-   ubit8 ChannelNo(void) { return nChannel; }
-   sbit32 Send(ubit8 *data, ubit32 len);
-   virtual void Receive(ubit8 *data, ubit32 len) = NULL;
+   uint8_t ChannelNo(void) { return nChannel; }
+   int32_t Send(uint8_t *data, uint32_t len);
+   virtual void Receive(uint8_t *data, uint32_t len) = NULL;
    virtual void Thread(void);
    virtual const char *Status(void);
 
   private:
-   ubit8 nChannel;
+   uint8_t nChannel;
 };
 
 
@@ -68,25 +68,25 @@ class cChannelManager
    friend class cChannel;
 
   public:
-   cChannelManager(ubit8 bArg);
-   cChannel *Set(ubit8 nService, ubit8 nChn, char *pData = NULL);
+   cChannelManager(uint8_t bArg);
+   cChannel *Set(uint8_t nService, uint8_t nChn, char *pData = NULL);
 
-   cChannel *Alloc(ubit8 nService, char *pData = NULL);
+   cChannel *Alloc(uint8_t nService, char *pData = NULL);
 
    void Close(void);
-   void Free(ubit8 nChannel);
+   void Free(uint8_t nChannel);
 
-   sbit32 MngrTX(ubit8 *data, ubit32 len, ubit8 nChn);
-   void MngrRX(ubit8 *data, ubit32 len);
-   void MngrRX(ubit8 *data, ubit32 len, ubit8 nChannel); // For direct connect
+   int32_t MngrTX(uint8_t *data, uint32_t len, uint8_t nChn);
+   void MngrRX(uint8_t *data, uint32_t len);
+   void MngrRX(uint8_t *data, uint32_t len, uint8_t nChannel); // For direct connect
    void WriteQueue(void);
 
    void Threads(void);
 
-   cChannel *ChannelPtr(ubit8 nChn);
+   cChannel *ChannelPtr(uint8_t nChn);
    
   private:
-   ubit8 bServer;  // TRUE if server (host), FALSE if client (caller)
+   uint8_t bServer;  // TRUE if server (host), FALSE if client (caller)
    class cChannel *BaseChannel[256];
    cQueue qTx;
 };

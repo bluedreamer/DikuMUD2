@@ -38,4 +38,4 @@ auto config_file_to_string(char *name, char *buf, int max_len) -> int;
 auto fread_num(FILE *fl) -> long;
 auto fopen_cache(char *name, const char *mode) -> FILE *;
 void fclose_cache();
-auto file_exists(const char *name) -> ubit1;
+auto file_exists(const char *name) -> bool;

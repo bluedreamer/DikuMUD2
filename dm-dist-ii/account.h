@@ -31,8 +31,8 @@
 struct flatrate_type
 {
    char  *pMessage;
-   ubit16 days;
-   ubit32 price;
+   uint16_t days;
+   uint32_t price;
 };
 
 class CAccountConfig
@@ -60,12 +60,12 @@ public:
 
 extern class CAccountConfig g_cAccountConfig;
 
-void account_flatrate_change(struct unit_data *god, struct unit_data *whom, sbit32 days);
+void account_flatrate_change(struct unit_data *god, struct unit_data *whom, int32_t days);
 
 void account_cclog(struct unit_data *ch, int amount);
 
-void account_insert(struct unit_data *god, struct unit_data *whom, ubit32 amount);
-void account_withdraw(struct unit_data *god, struct unit_data *whom, ubit32 amount);
+void account_insert(struct unit_data *god, struct unit_data *whom, uint32_t amount);
+void account_withdraw(struct unit_data *god, struct unit_data *whom, uint32_t amount);
 void account_global_stat(const struct unit_data *ch);
 void account_local_stat(const struct unit_data *ch, struct unit_data *u);
 

@@ -34,7 +34,7 @@
 #undef free
 
 int         sunlight       = 0;
-const sbit8 time_light[24] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+const int8_t time_light[24] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 #define TFSIZE 128
 #define MAXH   4000
@@ -56,24 +56,24 @@ FILE *fopen_cache(char *name, char *mode)
 
 char *gen_data(int len)
 {
-   ubit8       *ptr;
-   static ubit8 data[4 * TFSIZE];
+   uint8_t       *ptr;
+   static uint8_t data[4 * TFSIZE];
    static int   count = 0;
    int          i;
 
    ptr = data;
 
    for(i = 0; i < 4 * TFSIZE / 4; i++)
-      bwrite_ubit32(&ptr, len++);
+      bwrite_uint32_t(&ptr, len++);
 
    count++;
 
    return (char *)data;
 }
 
-void verify_data(ubit8 *data, int len)
+void verify_data(uint8_t *data, int len)
 {
-   ubit8 *ptr;
+   uint8_t *ptr;
    int    i, j;
 
    ptr = data;
@@ -81,7 +81,7 @@ void verify_data(ubit8 *data, int len)
 
    for(i = 0; i < len / 4; i++)
    {
-      i = bread_ubit32(&ptr);
+      i = bread_uint32_t(&ptr);
       if(i != j++)
          assert(FALSE);
    }
@@ -145,14 +145,14 @@ void new_data(BLK_FILE *tf, int no)
 
 void verify_read(BLK_FILE *tf)
 {
-   ubit8     *data;
+   uint8_t     *data;
    int        i;
    blk_length len;
 
    for(i = 0; i < MAXH; i++)
       if(h[i] != BLK_NULL)
       {
-         data = (ubit8 *)blk_read(tf, h[i], &len);
+         data = (uint8_t *)blk_read(tf, h[i], &len);
          verify_data(data, len);
       }
 }
