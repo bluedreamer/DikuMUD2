@@ -116,7 +116,8 @@ void boot_db(void);
   void srand48(long seedval);
 #endif
 
-int gettimeofday(struct timeval *tp, struct timezone *tzp);
+  // Don't need a prototype for this
+//int gettimeofday(struct timeval *tp, struct timezone *tzp);
 
 /* local functions */
 void run_the_game(void);
@@ -727,4 +728,3 @@ struct timeval timediff(struct timeval *a, struct timeval *b)
 
   return rslt;
 }
-
