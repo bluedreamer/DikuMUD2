@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : movement.h                                Part of Valhalla MUD *
  * Version: 1.50                                                           *
@@ -21,9 +22,6 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
-
-#ifndef _MUD_MOVEMENT_H
-#define _MUD_MOVEMENT_H
 
 #include "dijkstra.h"
 #include "interpreter.h"
@@ -76,5 +74,3 @@ void npc_set_visit(struct unit_data *npc, struct unit_data *dest_room, int what_
                    void *data, int non_tick_return);
 
 auto do_advanced_move(struct unit_data *ch, int direction, int following = FALSE) -> int;
-
-#endif /* _MUD_MOVEMENT_H */

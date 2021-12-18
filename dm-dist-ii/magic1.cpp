@@ -29,9 +29,7 @@
  *		    Rewrote spell_identify_1() to use the wstat system.
  */
 
-#include <cstdio>
-#include <cstdlib>
-
+#include "act_movement.h"
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
@@ -48,7 +46,10 @@
 #include "utility.h"
 #include "utils.h"
 #include "values.h"
+#include "zon_basis.h"
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
 
 /* Extern structures */
 

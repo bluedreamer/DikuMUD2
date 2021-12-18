@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : namelist.h                                Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -21,8 +22,6 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
-
-#pragma once
 
 #include "bytestring.h"
 #include "hashstring.h"

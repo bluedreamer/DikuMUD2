@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : protocol.h                                Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -21,9 +22,6 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
-
-#ifndef _MUD_PROTOCOL_H
-#define _MUD_PROTOCOL_H
 
 #include "essential.h"
 #include "select.h"
@@ -231,5 +229,3 @@ auto protocol_parse_incoming(cHook *Hook, ubit16 *pid, ubit16 *plen, char **str,
 #define CONTROL_BG_WHITE                                                                                                                   \
    "\x1B"                                                                                                                                  \
    "x"
-
-#endif

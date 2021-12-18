@@ -56,6 +56,7 @@
 #include "files.h"
 #include "handler.h"
 #include "main.h"
+#include "pcsave.h"
 #include "protocol.h"
 #include "str_parse.h"
 #include "structs.h"
@@ -94,8 +95,6 @@ void MplexSendSetup(struct descriptor_data *d)
 /* Call only once when creating a new char (guest)    */
 void init_char(struct unit_data *ch)
 {
-   auto new_player_id()->int;
-
    int i;
    int init_skills = 0;
 

@@ -87,17 +87,17 @@ cQueue::~cQueue()
    Flush();
 }
 
-auto cQueue::Size() -> ubit32 const
+auto cQueue::Size() const -> ubit32
 {
    return nEntries;
 }
 
-auto cQueue::Bytes() -> ubit32 const
+auto cQueue::Bytes() const -> ubit32
 {
    return nBytes;
 }
 
-auto cQueue::IsEmpty() -> int const
+auto cQueue::IsEmpty() const -> int
 {
    return static_cast<int>(nEntries == 0);
 }

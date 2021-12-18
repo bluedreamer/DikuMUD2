@@ -40,12 +40,14 @@
 #include "files.h"
 #include "handler.h"
 #include "money.h"
+#include "pcsave.h"
 #include "postoffice.h"
 #include "skills.h"
 #include "structs.h"
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include "zon_basis.h"
 
 auto save_contents(const char *pFileName, struct unit_data *unit, int fast, int bContainer) -> int;
 auto player_exists(const char *pName) -> int;
@@ -644,8 +646,6 @@ void cleanup_playerfile(int argc, char *argv[])
    char c;
 
    extern struct unit_data *entry_room;
-
-   auto read_player_id()->int;
 
    top_id = read_player_id();
    CREATE(ids, ubit8, top_id + 1);

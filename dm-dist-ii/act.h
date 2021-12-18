@@ -21,10 +21,6 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
-
-#ifndef _MUD_ACT_H
-#define _MUD_ACT_H
+#pragma once
 
 auto obj_wear_size(struct unit_data *ch, struct unit_data *obj, int keyword = -1) -> const char *;
-
-#endif

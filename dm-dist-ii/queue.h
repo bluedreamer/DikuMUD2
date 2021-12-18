@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : queue.h                                   Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -21,9 +22,6 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
-
-#ifndef _MUD_QUEUE_HCC
-#define _MUD_QUEUE_HCC
 
 #include "essential.h"
 
@@ -91,5 +89,3 @@ private:
    ubit32 nEntries;
    ubit32 nBytes;
 };
-
-#endif

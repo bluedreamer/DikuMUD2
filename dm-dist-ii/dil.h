@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : dil.h                                     Part of Valhalla MUD *
  * Version: 2.00                                                           *
@@ -23,9 +24,6 @@
  * *********************************************************************** */
 
 /* Wed Jan 22 14:57:30 PST 1997   HHS added paycheck dilfun DILE_PCK */
-
-#ifndef _MUD_DIL_H
-#define _MUD_DIL_H
 
 #include "essential.h"
 
@@ -497,5 +495,3 @@ extern struct dilprg *dil_list_nextdude;
 /* Function prototypes */
 void free_prg(struct dilprg *prg);
 void clear_prg(struct dilprg *prg);
-
-#endif /* _MUD_DIL_H */

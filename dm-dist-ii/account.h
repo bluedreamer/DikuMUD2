@@ -22,8 +22,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_ACCOUNT_H
-#define _MUD_ACCOUNT_H
+#pragma once
 
 #define MAX_FLATRATE 2
 
@@ -80,5 +79,3 @@ void account_overdue(const struct unit_data *ch);
 void account_paypoint(struct unit_data *ch);
 void account_closed(struct unit_data *ch);
 auto account_is_closed(struct unit_data *ch) -> int;
-
-#endif

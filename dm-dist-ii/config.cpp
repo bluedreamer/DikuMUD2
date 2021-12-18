@@ -76,7 +76,7 @@ CServerConfiguration::CServerConfiguration()
    m_pNewbie  = nullptr;
 }
 
-auto CServerConfiguration::FromLAN(char *pFromHost) -> int const
+auto CServerConfiguration::FromLAN(char *pFromHost) const -> int
 {
    struct in_addr sTmp;
 

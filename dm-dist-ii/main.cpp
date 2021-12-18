@@ -1,3 +1,4 @@
+#include "signals.h"
 /* *********************************************************************** *
  * File   : main.c                                    Part of Valhalla MUD *
  * Version: 1.10                                                           *
@@ -26,8 +27,10 @@
 /* Sun Jun 27 1993 HHS: made vars for world status                         */
 /* Tue Jul 6 1993 HHS: added exchangable lib dir                           */
 
+#include "nice.h"
 #include <cctype>
 #include <cerrno>
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -336,9 +339,9 @@ void run_the_game()
    extern char etext;
 #endif
 
-   void signal_setup();
-   auto load()->int;
-   void coma(int s);
+   //   void signal_setup();
+   //   auto load()->int;
+   //   void coma(int s);
 
    /*
     * If you want BOOT TIME included in the PROFILE, use
@@ -428,8 +431,12 @@ void run_the_game()
 
 static void event_process()
 {
-   struct eventq_elem  tmp_event{};
-   struct eventq_elem  tmp{};
+   struct eventq_elem tmp_event
+   {
+   };
+   struct eventq_elem tmp
+   {
+   };
    struct eventq_elem *newtop;
    struct eventq_elem *child;
    int                 child_index;
@@ -475,9 +482,13 @@ static void event_process()
 
 void game_loop()
 {
-   struct timeval now{};
-   struct timeval old{};
-   long           delay;
+   struct timeval now
+   {
+   };
+   struct timeval old
+   {
+   };
+   long delay;
 
    void clear_destructed();
 
@@ -630,8 +641,10 @@ void event_enq(int when, void (*func)(void *, void *), void *arg1, void *arg2)
 {
    struct eventq_elem *end;
    struct eventq_elem *parent;
-   struct eventq_elem  tmp{};
-   int                 parent_index;
+   struct eventq_elem  tmp
+   {
+   };
+   int parent_index;
 
    if(when <= 0)
    {
@@ -748,7 +761,9 @@ void check_reboot_event(void *p1, void *p2)
 /* utility procedure */
 auto timediff(struct timeval *a, struct timeval *b) -> struct timeval
 {
-   struct timeval rslt{};
+   struct timeval rslt
+   {
+   };
    struct timeval tmp;
 
    tmp = *a;

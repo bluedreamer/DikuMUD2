@@ -48,12 +48,12 @@ cHook::~cHook()
    Unhook();
 }
 
-auto cHook::tfd() -> int const
+auto cHook::tfd() const -> int
 {
    return fd;
 }
 
-auto cHook::IsHooked() -> int const
+auto cHook::IsHooked() const -> int
 {
    return static_cast<int>(fd != -1);
 }

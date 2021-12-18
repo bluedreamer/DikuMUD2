@@ -168,7 +168,7 @@ public:
    time_t      logon; /* Time of last connect              */
    cMultiHook *multi; /* Multi element pointer             */
    ubit16      id;    /* The ID for the multi              */
-   void (*fptr)(struct descriptor_data *, char *);
+   void (*fptr)(struct descriptor_data *, const char *);
    int    state;    /* Locally used in each fptr         */
    char   host[50]; /* hostname                          */
    ubit16 nPort;    /* Mplex port                        */

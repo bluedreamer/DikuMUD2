@@ -61,6 +61,7 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include "zon_basis.h"
 #include <climits>
 
 /* Structures */

@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : interpreter.h                             Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -22,17 +23,13 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_INTERPRETER_H
-#define _MUD_INTERPRETER_H
-
 #include "dil.h"
 #include "essential.h"
 
 auto char_is_playing(struct unit_data *u) -> int;
 auto descriptor_is_playing(struct descriptor_data *d) -> int;
-void set_descriptor_fptr(struct descriptor_data *d, void (*fptr)(struct descriptor_data *, char *), ubit1 call);
-void descriptor_interpreter(struct descriptor_data *d, char *arg);
-void interpreter_string_add(struct descriptor_data *d, char *str);
+void descriptor_interpreter(struct descriptor_data *d, const char *arg);
+void interpreter_string_add(struct descriptor_data *d, const char *str);
 
 struct spec_arg
 {
@@ -87,16 +84,17 @@ struct unit_function_array_type
    sbit16 tick;     /* Default tick count */
 };
 
-extern struct command_info cmd_auto_enter;
-extern struct command_info cmd_auto_tick;
-extern struct command_info cmd_auto_extract;
-extern struct command_info cmd_auto_death;
-extern struct command_info cmd_auto_combat;
-extern struct command_info cmd_auto_unknown;
-extern struct command_info cmd_auto_save;
-extern struct command_info cmd_auto_msg;
-extern struct command_info cmd_auto_damage;
-extern struct command_info cmd_a_social;
+extern struct command_info  cmd_auto_enter;
+extern struct command_info  cmd_auto_tick;
+extern struct command_info  cmd_auto_extract;
+extern struct command_info  cmd_auto_death;
+extern struct command_info *cmd_follow;
+extern struct command_info  cmd_auto_combat;
+extern struct command_info  cmd_auto_unknown;
+extern struct command_info  cmd_auto_save;
+extern struct command_info  cmd_auto_msg;
+extern struct command_info  cmd_auto_damage;
+extern struct command_info  cmd_a_social;
 
 /* To check for commands by string */
 auto is_command(const struct command_info *cmd, const char *str) -> ubit1;
@@ -106,7 +104,7 @@ auto cmd_is_abbrev(struct unit_data *ch, const struct command_info *cmd) -> ubit
 
 /* Interpreter routines */
 void wrong_position(struct unit_data *ch);
-void command_interpreter(struct unit_data *ch, char *argument);
+void command_interpreter(struct unit_data *ch, const char *arg);
 void argument_interpreter(const char *argument, char *first_arg, char *second_arg);
 void half_chop(char *string, char *arg1, char *arg2);
 
@@ -295,5 +293,3 @@ void do_kickit(struct unit_data *, char *, const struct command_info *);
 void do_corpses(struct unit_data *, char *, const struct command_info *);
 void do_inform(struct unit_data *, char *, const struct command_info *);
 void do_areas(struct unit_data *, char *, const struct command_info *);
-
-#endif /* _MUD_INTERPRETER_H */

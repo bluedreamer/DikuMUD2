@@ -474,11 +474,11 @@ void dump_debug_history()
 }
 #endif
 
-void command_interpreter(struct unit_data *ch, char *arg)
+void command_interpreter(struct unit_data *ch, const char *arg)
 {
    char                 cmd[MAX_INPUT_LENGTH + 10];
    char                 argstr[MAX_INPUT_LENGTH + 10];
-   char                *orgarg = arg;
+   const char          *orgarg = arg;
    struct command_info *cmd_ptr;
    int                  is_social = FALSE;
 
@@ -643,7 +643,7 @@ auto descriptor_is_playing(struct descriptor_data *d) -> int
    return (static_cast<int>(d != nullptr) && (d->character != nullptr) && (char_is_playing(d->character)) != 0);
 }
 
-void descriptor_interpreter(struct descriptor_data *d, char *arg)
+void descriptor_interpreter(struct descriptor_data *d, const char *arg)
 {
    assert(d->character);
    command_interpreter(d->character, arg);

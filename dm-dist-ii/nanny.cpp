@@ -1,3 +1,5 @@
+#include "interpreter.h"
+#include "pcsave.h"
 /* *********************************************************************** *
  * File   : nanny.c                                   Part of Valhalla MUD *
  * Version: 2.02                                                           *
@@ -59,6 +61,7 @@
 #include "main.h"
 #include "modify.h"
 #include "money.h"
+#include "nanny.h"
 #include "protocol.h"
 #include "structs.h"
 #include "system.h"
@@ -72,7 +75,6 @@
 
 void nanny_get_name(struct descriptor_data *d, char *arg);
 
-void nanny_menu(struct descriptor_data *d, const char *arg);
 void nanny_credit_card(struct descriptor_data *d, const char *arg);
 void nanny_new_pwd(struct descriptor_data *d, char *arg);
 void nanny_change_information(struct descriptor_data *d, const char *arg);
@@ -341,8 +343,6 @@ void enter_game(struct unit_data *ch)
 
       slog(LOG_BRIEF, 0, "%s[%s] (GUEST) has entered the game.", PC_FILENAME(ch), CHAR_DESCRIPTOR(ch)->host);
 
-      auto new_player_id()->int;
-
       PC_ID(ch) = new_player_id();
 
       start_player(ch);
@@ -388,7 +388,7 @@ void enter_game(struct unit_data *ch)
    start_all_special(ch); /* Activate fptr ticks   */
 }
 
-void set_descriptor_fptr(struct descriptor_data *d, void (*fptr)(struct descriptor_data *, char *), ubit1 call)
+void set_descriptor_fptr(struct descriptor_data *d, void (*fptr)(struct descriptor_data *, const char *), ubit1 call)
 {
    if(d->fptr == interpreter_string_add)
    {
@@ -446,7 +446,7 @@ auto nanny_help_check(struct descriptor_data *d, char *arg, char *def) -> int
    return TRUE;
 }
 
-void nanny_close(struct descriptor_data *d, char *arg)
+void nanny_close(struct descriptor_data *d, const char *arg)
 {
    if(STATE(d)++ == 0)
    {
@@ -892,7 +892,7 @@ auto base_string_add(struct descriptor_data *d, char *str) -> ubit1
 }
 
 /* Add user input to the 'current' string (as defined by d->str) */
-void interpreter_string_add(struct descriptor_data *d, char *str)
+void interpreter_string_add(struct descriptor_data *d, const char *str)
 {
    if(base_string_add(d, str) != 0u)
    {

@@ -39,11 +39,6 @@
 /* 11/08/94 gnort  : got rid of cras and shutdow                           */
 /* 10/02/95 gnort  : Made do_users dynamic                                 */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"
@@ -57,6 +52,7 @@
 #include "magic.h"
 #include "main.h"
 #include "money.h"
+#include "nanny.h"
 #include "skills.h"
 #include "spells.h"
 #include "structs.h"
@@ -64,7 +60,11 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include <cctype>
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 /*   external vars  */
 
@@ -117,8 +117,6 @@ void do_users(struct unit_data *ch, char *argument, const struct command_info *c
 {
    static char *buf      = nullptr;
    static int   cur_size = 1024;
-
-   auto available_connections()->int;
 
    struct descriptor_data *d;
    char                    tmp[256];

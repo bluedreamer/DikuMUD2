@@ -52,6 +52,7 @@
 #include "files.h"
 #include "handler.h"
 #include "interpreter.h"
+#include "nanny.h"
 #include "structs.h"
 #include "textutil.h"
 #include "utility.h"

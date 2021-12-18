@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : money.h                                   Part of Valhalla MUD *
  * Version: 2.12                                                           *
@@ -21,9 +22,6 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
-
-#ifndef _MUD_MONEY_H
-#define _MUD_MONEY_H
 
 #include "structs.h"
 
@@ -152,5 +150,3 @@ auto unit_can_hold_amount(struct unit_data *unit, struct unit_data *money) -> am
 #define MONEY_VALUE(obj) (MONEY_AMOUNT(obj) * MONEY_RELATIVE(obj))
 
 #define MONEY_WEIGHT_SUM(obj1, obj2) ((MONEY_AMOUNT(obj1) + MONEY_AMOUNT(obj2)) / MONEY_WEIGHT(obj1))
-
-#endif /* _MUD_MONEY_H */

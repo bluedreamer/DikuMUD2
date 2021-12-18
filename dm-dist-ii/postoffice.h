@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : postoffice.h                              Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -22,9 +23,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_POSTOFFICE_H
-#define _MUD_POSTOFFICE_H
-
 struct mail_file_info_type
 {
    time_t     date; /* Date of posting the letter      */
@@ -33,5 +31,3 @@ struct mail_file_info_type
    int        receipient; /* PC ID */
    ubit8      loaded;     /* Boolean, has player got a note? */
 };
-
-#endif /* _MUD_POSTOFFICE_H */

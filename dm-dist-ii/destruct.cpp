@@ -36,6 +36,8 @@
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
+#include "mobact.h"
+#include "nanny.h"
 #include "skills.h"
 #include "structs.h"
 #include "textutil.h"
@@ -84,17 +86,6 @@ void destruct_unit(struct unit_data *unit)
    int                     in_menu = FALSE;
 
    extern struct descriptor_data *descriptor_list;
-
-   void stop_all_special(struct unit_data * u);
-   void unswitchbody(struct unit_data * npc);
-   void unsnoop(struct unit_data * ch, int mode);
-   void die_follower(struct unit_data * ch);
-   void stop_fighting(struct unit_data * ch);
-   void unlink_affect(struct unit_data * u, struct unit_affected_type * af);
-   void nanny_menu(struct descriptor_data * d, char *arg);
-   void nanny_close(struct descriptor_data * d, char *arg);
-
-   void do_return(struct unit_data * ch, char *arg, struct command_info *cmd);
 
    /* Remove all snooping, snoopers and return from any body */
    if(IS_CHAR(unit))

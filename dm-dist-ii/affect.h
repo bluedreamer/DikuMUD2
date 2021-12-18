@@ -22,15 +22,14 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_AFFECT_H
-#define _MUD_AFFECT_H
-
+#pragma once
 #include "essential.h"
 
 void apply_affect(struct unit_data *unit);
 void start_affect(struct unit_data *unit);
 void stop_affect(struct unit_data *unit);
 auto affected_by_spell(const struct unit_data *unit, sbit16 id) -> struct unit_affected_type *;
+void unlink_affect(struct unit_data *u, struct unit_affected_type *af);
 
 void create_affect(struct unit_data *unit, struct unit_affected_type *orgaf);
 void destroy_affect(struct unit_affected_type *af);
@@ -50,5 +49,3 @@ struct tick_function_type
    const char *descr;
    void (*func)(struct unit_affected_type *af, struct unit_data *unit);
 };
-
-#endif /* _MUD_AFFECT_H */

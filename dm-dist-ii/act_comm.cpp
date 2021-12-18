@@ -42,6 +42,7 @@
 #include "spells.h"
 #include "textutil.h"
 
+#include "nanny.h"
 #include "utility.h"
 
 ubit8 g_nShout = 0;

@@ -118,7 +118,7 @@ enum log_level
       fprintf(stderr, a);                                                                                                                  \
    } while(0)
 
-#define isascii(ch) ((ch >= 32) && (ch <= 126))
+//#define isascii(ch) ((ch >= 32) && (ch <= 126))
 
 #ifndef HPUX
 using sbit8  = signed char;

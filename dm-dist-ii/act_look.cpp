@@ -1,3 +1,5 @@
+#include "act_movement.h"
+
 /* *********************************************************************** *
  * File   : act_look.c                                Part of Valhalla MUD *
  * Version: 2.00                                                           *

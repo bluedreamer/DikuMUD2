@@ -42,6 +42,7 @@
 #include "handler.h"
 #include "interpreter.h"
 #include "money.h"
+#include "nanny.h"
 #include "skills.h"
 #include "structs.h"
 #include "system.h"

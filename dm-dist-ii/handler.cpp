@@ -1,3 +1,5 @@
+#include "destruct.h"
+
 /* *********************************************************************** *
  * File   : handler.c                                 Part of Valhalla MUD *
  * Version: 2.24                                                           *
@@ -54,6 +56,7 @@
 #include "interpreter.h"
 #include "main.h"
 #include "money.h"
+#include "nanny.h"
 #include "skills.h"
 #include "textutil.h"
 #include "unixshit.h"

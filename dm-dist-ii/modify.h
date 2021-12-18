@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : modify.h                                  Part of Valhalla MUD *
  * Version: 1.11                                                           *
@@ -22,9 +23,4 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_MODIFY_H
-#define _MUD_MODIFY_H
-
 void edit_extra(struct descriptor_data *d);
-
-#endif

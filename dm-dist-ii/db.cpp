@@ -1,3 +1,5 @@
+#include "reception.h"
+
 /* *********************************************************************** *
  * File   : db.c                                      Part of Valhalla MUD *
  * Version: 1.25                                                           *
