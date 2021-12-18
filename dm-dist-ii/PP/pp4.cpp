@@ -67,8 +67,8 @@ addstr(char *old,char *limit,const char *msg, const char *snew)
 {
     static	const char	*origmsg = 0;
 
-    register char		*o;
-    register const char		*n;
+    char		*o;
+    const char		*n;
 
     if((old + strlen(snew)) >= limit)
     {
@@ -126,14 +126,14 @@ getnstoken(int f)
 int
 gettoken(int f)
 {
-    register char		ch;
-    register int		comment_level;
-    register int		fail;
-    register int		nt;
-    register int		numstate;
-    register char		*p;
-    register int		t;
-    register int		tmask;
+    char		ch;
+    int		comment_level;
+    int		fail;
+    int		nt;
+    int		numstate;
+    char		*p;
+    int		t;
+    int		tmask;
 
     int  strline;
     /*	Define numstate values:						*/
@@ -532,7 +532,7 @@ istype(int c,int v)
 /************************************************************************/
 
 void
-memmov(register char *f,register char *t,register unsigned l)
+memmov(char *f,char *t,unsigned l)
 {
     while(l--)
         *t++ = *f++;
@@ -700,4 +700,3 @@ type(int c)
     else
         return(c);
 }
-

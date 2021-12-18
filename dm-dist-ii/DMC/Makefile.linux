@@ -3,8 +3,8 @@
 
 SYSPORT		=	-DLINUX -DPOSIX
 
-CPP             =       g++
-CC		=	g++
+CPP             =       g++ -I..
+CC		=	g++ -I..
 LD		=	g++
 MKDPND		=	g++ -MM $(CFL)
 LEX		=	flex

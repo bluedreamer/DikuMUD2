@@ -102,8 +102,8 @@ class cPacketLayer : public cSerial
    cPcktErrors PcktError;
 
   private:
-   inline ubit16 UpdateCRC(register ubit8 c, register ubit16 crc);
-   inline void TransmitStuffCharacter(register ubit8 c);
+   inline ubit16 UpdateCRC( ubit8 c,  ubit16 crc);
+   inline void TransmitStuffCharacter( ubit8 c);
    void   FrameError(void);
    inline int FrameCheck(void);
    void   DeliverPacket(void);

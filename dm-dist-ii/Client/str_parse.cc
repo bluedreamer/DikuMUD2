@@ -112,9 +112,9 @@ int isfilename(char *fname)
 
 
 /* Allocate space for a copy of source */
-char *str_dup(register const char *source)
+char *str_dup( const char *source)
 {
-   register char *dest;
+    char *dest;
 
    if (source)
    {
@@ -224,10 +224,10 @@ char *str_cc(const char *s1, const char *s2)
  *  Return pointer to first occurence of ct in cs - or NULL
  *  Used to determine ei. "from" and "in"
  */
-char *str_cstr(register const char *cs, register const char *ct)
+char *str_cstr( const char *cs,  const char *ct)
 {
-   register char *si;
-   register char *ti;
+    char *si;
+    char *ti;
 
    do
    {
@@ -425,5 +425,3 @@ char **parse_match_namelist(char **pData, char *pMatch)
 
    return pNamelist;
 }
-
-

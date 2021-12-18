@@ -58,21 +58,21 @@ OPT	=	#-O6 	# -O might be a good idea, but we have a tough time
 SRCS	=	$(SERV_SRCS)
 
 # c-files for server
-SERV_SRCS = account.c act_change.c act_comm.c act_info.c act_movement.c\
-  act_obj1.c act_obj2.c act_obj3.c act_offensive.c act_other.c act_skills.c\
-  act_social.c act_wizard.c act_wstat.c affect.c apf_affect.c ban.c\
-  bank.c blkfile.c board.c comm.c common.c constants.c convert.c create.c db.c\
-  db_file.c db_utils.c demigod.c destruct.c dictionary.c dijkstra.c main.c \
-  eliza.c experience.c fight.c files.c guild.c handler.c help.c act_look.c \
-  hometown.c interpreter.c justice.c limits.c magic.c magic1.c magic2.c \
-  memory.c mobact.c modify.c money.c nanny.c nice.c pain.c pcsave.c \
-  postoffice.c protocol.c queue.c reception.c shop.c signals.c skills.c \
-  slime.c spec_assign.c spec_procs.c spell_parser.c str_parse.c string.c \
-  swap.c sysport.c system.c teach.c textutil.c tif_affect.c trie.c utility.c \
-  weather.c zon_basis.c zon_midgaard.c zon_wiz.c \
-  zone_boot.c zone_reset.c namelist.c structs.c dilfld.c extra.c \
-  dilinst.c dilexp.c dilrun.c dbfind.c competition.c unitfind.c combat.c \
-  select.c persist.c bytestring.c config.c connectionlog.c
+SERV_SRCS = account.cpp act_change.cpp act_comm.cpp act_info.cpp act_movement.cpp \
+  act_obj1.cpp act_obj2.cpp act_obj3.cpp act_offensive.cpp act_other.cpp act_skills.cpp \
+  act_social.cpp act_wizard.cpp act_wstat.cpp affect.cpp apf_affect.cpp ban.cpp \
+  bank.cpp blkfile.cpp board.cpp comm.cpp common.cpp constants.cpp convert.cpp create.cpp db.cpp \
+  db_file.cpp db_utils.cpp demigod.cpp destruct.cpp dictionary.cpp dijkstra.cpp main.cpp \
+  eliza.cpp experience.cpp fight.cpp files.cpp guild.cpp handler.cpp help.cpp act_look.cpp \
+  hometown.cpp interpreter.cpp justice.cpp limits.cpp magic.cpp magic1.cpp magic2.cpp \
+  memory.cpp mobact.cpp modify.cpp money.cpp nanny.cpp nice.cpp pain.cpp pcsave.cpp \
+  postoffice.cpp protocol.cpp queue.cpp reception.cpp shop.cpp signals.cpp skills.cpp \
+  slime.cpp spec_assign.cpp spec_procs.cpp spell_parser.cpp str_parse.cpp string.cpp \
+  swap.cpp sysport.cpp system.cpp teach.cpp textutil.cpp tif_affect.cpp trie.cpp utility.cpp \
+  weather.cpp zon_basis.cpp zon_midgaard.cpp zon_wiz.cpp \
+  zone_boot.cpp zone_reset.cpp namelist.cpp structs.cpp dilfld.cpp extra.cpp \
+  dilinst.cpp dilexp.cpp dilrun.cpp dbfind.cpp competition.cpp unitfind.cpp combat.cpp \
+  select.cpp persist.cpp bytestring.cpp config.cpp connectionlog.cpp
 
 # h-files for server
 SERV_HDRS = account.h affect.h ban.h blkfile.h comm.h common.h db.h db_file.h\
@@ -82,7 +82,7 @@ SERV_HDRS = account.h affect.h ban.h blkfile.h comm.h common.h db.h db_file.h\
 
 # OBJECTS
 
-SERV_OBJS =	$(SERV_SRCS:.c=.o)
+SERV_OBJS =	$(SERV_SRCS:.cpp=.o)
 
    # ------------------------------ oOoOoOo ------------------------------ #
 
@@ -99,7 +99,7 @@ $(SERVER):	$(SERV_OBJS)
 	$(LINK.cpp) $(SERV_OBJS) -lcrypt -o $@
 
 $(SERV_OBJS):
-	$(CPP) -D DMSERVER $(OPT) $(CFLAGS) -c $(@:.o=.c) -o $@
+	$(CPP) -D DMSERVER $(OPT) $(CFLAGS) -c $(@:.o=.cpp) -o $@
 
 clean:
 	-rm -f *.o *.dh dmserver

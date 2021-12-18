@@ -33,17 +33,18 @@ include $(MAKEFILE)
 
 LEXFILTER=	| perl lexfilter $(SYSPORT) # Got to filter lex for bad code
 
+CPPFLAGS=-I..
 LINK.cpp=	$(CPP) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS)
 LINK.c	=	$(LD) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
-DEBUG	=	-g # -O6
+DEBUG	=	-g -I..# -O6
 
 CFL	=	$(DEBUG) $(SYSPORT) $(SYSFLAGS) $(EXTRA_CFLAGS) 
-CFLAGS	=	-DDMC_SRC -I .. $(CFL) -pedantic -Wall -Wno-unused -Wno-variadic-macros -Wno-format-overflow -Wno-stringop-truncation
+CFLAGS	=	-DDMC_SRC -I.. $(CFL) -pedantic -Wall -Wno-unused -Wno-variadic-macros -Wno-format-overflow -Wno-stringop-truncation
 
 # (f)lex/yacc/bison generated c-files are notorious for their lousy C
 # hence, no warnings...
-CFLAGS2	= 	$(CFL)
+CFLAGS2	= 	$(CFL) -I..
 
 YFLAGS	=	-d -v 	# y.tab.h generator, and verbose output
 
@@ -59,12 +60,12 @@ OPT	=	#-O2 	# -O might be a good idea, but we have a tough time
 SRCS	=	$(SERV_SRCS) $(DMC_SRCS) $(DIL_SRCS) $(BLKT_SRCS) $(MPLEX_SRCS)
 
 # c-files for dmc
-DMC_SRCS = dmc.c dmc_process.c tmp_dmcpar.c \
-  tmp_dmclex.c utility.c string.c structs.c
+DMC_SRCS = dmc.cpp dmc_process.cpp tmp_dmcpar.cpp \
+  tmp_dmclex.cpp utility.cpp string.cpp structs.cpp
 
 # OBJECTS
 
-DMC_OBJS  =	$(DMC_SRCS:.c=.o)  dmc_db_file.o dmc_money.o
+DMC_OBJS  =	$(DMC_SRCS:.cpp=.o)  dmc_db_file.o dmc_money.o
 
    # ------------------------------ oOoOoOo ------------------------------ #
 
@@ -74,7 +75,7 @@ clean:
 	-rm -f *.o tmp_* dmc core
 
 # Need to get the tmp_*.c files into .depends as well
-depend:	tmp_dmcpar.c tmp_dmclex.c
+depend:	tmp_dmcpar.cpp tmp_dmclex.cpp
 	@echo Updating dependencies...
 	@$(MKDPND) -I .. $(SRCS) > .depends
 	@echo Done.
@@ -122,28 +123,27 @@ dmc:	$(DMC_OBJS)
 
 # All tmp_* files could/should be deleted along with *.o files
 
-tmp_dmcpar.c tmp_dmcpar.h:	dmcpar.y
+tmp_dmcpar.cpp tmp_dmcpar.h:	dmcpar.y
 	$(YACC) $(YFLAGS) dmcpar.y
 	@-if [ -f y.output ]; then mv y.output tmp_dmcpar.output; fi
-	@mv y.tab.c tmp_dmcpar.c
+	@mv y.tab.c tmp_dmcpar.cpp
 	@mv y.tab.h tmp_dmcpar.h
-tmp_dmcpar.o:	tmp_dmcpar.c
-	$(CC) -I .. $(OPT) $(CFLAGS2) -c tmp_dmcpar.c
-tmp_dmclex.c:	dmclex.l
-	$(LEX) -t dmclex.l $(LEXFILTER) > tmp_dmclex.c
-tmp_dmclex.o:	tmp_dmclex.c
-	$(CC) -I .. $(OPT) $(CFLAGS2) -c tmp_dmclex.c
+tmp_dmcpar.o:	tmp_dmcpar.cpp
+	$(CC) -I .. $(OPT) $(CFLAGS2) -c tmp_dmcpar.cpp
+tmp_dmclex.cpp:	dmclex.l
+	$(LEX) -t dmclex.l $(LEXFILTER) > tmp_dmclex.cpp
+tmp_dmclex.o:	tmp_dmclex.cpp
+	$(CC) -I .. $(OPT) $(CFLAGS2) -c tmp_dmclex.cpp
 
 # dmc_db_file.o is dependant on db_file.o to inherit its dependencies...
 # This may mean that db_file.c is compiled twice when not needed, but hey!
-dmc_db_file.o:	db_file.c
-	$(CC) $(OPT) $(CFLAGS) -c db_file.c -o $@
+dmc_db_file.o:	db_file.cpp
+	$(CC) $(OPT) $(CFLAGS) -c db_file.cpp -o $@
 
 # This version of money is different from money.o in that it is much smaller
-dmc_money.o:	money.c
-	$(CC) $(CFLAGS) -c money.c -o $@
+dmc_money.o:	money.cpp
+	$(CC) $(CFLAGS) -c money.cpp -o $@
 
 
 #.include ".depends"		# For `normal' make
 include .depends		# For gnu-make
-

@@ -25,7 +25,7 @@
 #ifndef _MUD_DMC_H
 #define _MUD_DMC_H
 
-#include "utils.h"
+#include "../utils.h"
 
 #define VERSION "v1.30"
 

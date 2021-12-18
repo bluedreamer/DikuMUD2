@@ -68,9 +68,9 @@ void dil_sub_secure(struct dilframe *frm, struct unit_data *sup,
 #endif
 int same_environment(struct unit_data *u1, struct unit_data *u2);
 void unhash_str(char **s);
-void dil_clear_non_secured(register struct dilprg *prg);
-void dil_clear_lost_reference(register struct dilframe *frm, void *ptr);
-void dil_test_secure(register struct dilprg *prg);
+void dil_clear_non_secured( struct dilprg *prg);
+void dil_clear_lost_reference( struct dilframe *frm, void *ptr);
+void dil_test_secure( struct dilprg *prg);
 int dil_destroy(char *name, struct unit_data *u);
 
 /* NULL fptr creates one...  */

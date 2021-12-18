@@ -45,7 +45,7 @@ OPT	=	#-O2 	# -O might be a good idea, but we have a tough time just getting the
 # SOURCES
 
 # c-files for the multiplexer
-MPLEX_SRCS = mplex.c network.c translate.c bytestring.c
+MPLEX_SRCS = mplex.cpp network.cpp translate.cpp bytestring.cpp
 
 # OBJECTS
 

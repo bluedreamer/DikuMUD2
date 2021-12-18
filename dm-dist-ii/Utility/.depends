@@ -1,10 +1,10 @@
-blktest.o: blktest.c ../structs.h ../essential.h ../values.h \
+blktest.o: blktest.cpp ../structs.h ../essential.h ../values.h \
  ../blkfile.h ../protocol.h ../select.h ../queue.h ../combat.h \
  ../hashstring.h ../extra.h ../namelist.h ../bytestring.h ../system.h \
- ../utils.h
-csv2guild.o: csv2guild.c
-header.o: header.c
-analyse.o: analyse.c
-tuborg.o: tuborg.c
-verify.o: verify.c ../essential.h
-conanalyze.o: conanalyze.c ../essential.h
+ ../utils.h ../structs.h ../bytestring.h ../blkfile.h
+csv2guild.o: csv2guild.cpp
+header.o: header.cpp
+analyse.o: analyse.cpp
+tuborg.o: tuborg.cpp
+verify.o: verify.cpp ../essential.h
+conanalyze.o: conanalyze.cpp ../essential.h

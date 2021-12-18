@@ -54,7 +54,7 @@ OPT	=	#-O2 	# -O might be a good idea, but we have a tough time
 # SOURCES
 
 # c-files for dil
-DIL_SRCS = tmp_dilpar.c tmp_dillex.c utility.c string.c structs.c
+DIL_SRCS = tmp_dilpar.c tmp_dillex.c utility.cpp string.cpp structs.cpp
 
 # OBJECTS
 
@@ -126,8 +126,8 @@ tmp_dillex.o:	tmp_dillex.c
 
 # dmc_db_file.o is dependant on db_file.o to inherit its dependencies...
 # This may mean that db_file.c is compiled twice when not needed, but hey!
-dmc_db_file.o:	db_file.c
-	$(CC) -DDMC $(OPT) $(CFLAGS) -c db_file.c -o $@
+dmc_db_file.o:	db_file.cpp
+	$(CC) -DDMC $(OPT) $(CFLAGS) -c db_file.cpp -o $@
 
 
 #.include ".depends"		# For `normal' make
