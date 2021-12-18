@@ -90,7 +90,7 @@ void do_line(char at_bol)
 {
    char         buf[TOKENSIZE + 1];
    char         filen[FILENAMESIZE + 1 + 3];
-   register int n;
+   int n;
 
    n = Tokenline - Outline; /* Difference in line #s */
 

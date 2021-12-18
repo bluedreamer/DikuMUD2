@@ -101,7 +101,7 @@ char *addstr(char *old, char *limit, const char *msg, const char *snew)
 
 int getnstoken(int f)
 {
-   register int t;
+    int t;
    while(istype(t = gettoken(f), C_W) && (t != '\n'))
       ;        /* Skip space tokens but ! newlines */
    return (t); /* Last token read */
@@ -578,7 +578,7 @@ void pbcstr(char *s)
 
 void pbstr(const char *in)
 {
-   register int i;
+    int i;
 
    for(i = strlen(in) - 1; i >= 0; i--)
       pushback(in[i] & 0xFF);
@@ -613,8 +613,8 @@ void pushback(int c)
 
 void puttoken(const char s[])
 {
-   register int         ch;
-   register const char *str;
+    int         ch;
+    const char *str;
    static int           lastoutc = '\n'; /* Last char written */
 
    str = s;
