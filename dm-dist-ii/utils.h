@@ -272,12 +272,14 @@ inline auto IS_CHAR(const unit_data *ptr) -> bool
 }
 /* ............................FILE INDEX STUFF..................... */
 
-#define FI_ZONENAME(fi) ((fi) ? (fi)->zone->name : "NO-ZONE")
-
+//#define FI_ZONENAME(fi) ((fi) ? (fi)->zone->name : "NO-ZONE")
+inline auto FI_ZONENAME(file_index_type *fi) -> const char * {
+   return fi != nullptr ? fi->zone->name : "NO-ZONE";
+}
 //#define FI_NAME(fi) ((fi) ? (fi)->name : "NO-NAME")
 inline auto FI_NAME(file_index_type *fi) -> const char *
 {
-   return fi ? fi->name : "NO-NAME";
+   return fi != nullptr ? fi->name : "NO-NAME";
 }
 
 /* ............................UNIT SUPERSTRUCTURES..................... */

@@ -1,5 +1,7 @@
 #pragma once
 #include <cstdint>
+#include "zone_type.h"
+
 class unit_data;
 
 /* A linked sorted list of all units within a zone file */
@@ -10,7 +12,7 @@ public:
    ~file_index_type();
 
    char            *name;     /* Unique within this list          */
-   class zone_type *zone;     /* Pointer to owner of structure    */
+    zone_type *zone;     /* Pointer to owner of structure    */
    file_index_type *next;     /* Next File Index                  */
    unit_data       *room_ptr; /* Pointer to room if is room       */
 
