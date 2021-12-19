@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : config.h                                  Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -22,10 +23,8 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_CONFIG_H
-#define _MUD_CONFIG_H
-
 #include "fight.h"
+#include "SFightColorSet.h"
 #include <arpa/inet.h>
 
 void ShowUsage(const char *c);
@@ -53,11 +52,11 @@ public:
 
    struct
    {
-      struct SFightColorSet sMeleeHit;
-      struct SFightColorSet sMeleeMiss;
-      struct SFightColorSet sMeleeNodam;
-      struct SFightColorSet sMeleeShield;
-      struct SFightColorSet sMeleeDeath;
+       SFightColorSet sMeleeHit;
+       SFightColorSet sMeleeMiss;
+       SFightColorSet sMeleeNodam;
+       SFightColorSet sMeleeShield;
+       SFightColorSet sMeleeDeath;
 
       const char *pDefault;
       const char *pPrompt;
@@ -85,5 +84,3 @@ public:
 };
 
 extern class CServerConfiguration g_cServerConfig;
-
-#endif // _MUD_CONFIG_H

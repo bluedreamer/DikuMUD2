@@ -23,26 +23,14 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "essential.h"
 #include "unit_data.h"
 
-#include "essential.h"
-
-struct SFightColorSet
-{
-   char *pAttacker;
-   char *pDefender;
-   char *pOthers;
-};
-
 auto raw_kill(unit_data *ch) -> unit_data *;
-
 auto provoked_attack(unit_data *victim, unit_data *ch) -> int;
-
 void update_pos(unit_data *victim);
-
 void damage(unit_data *ch, unit_data *victim, unit_data *medium, int damage, int attackcat, int weapontype, int hitloc,
             int bDisplay = static_cast<int>(TRUE));
-
 auto pk_test(unit_data *att, unit_data *def, int message) -> int;
 auto one_hit(unit_data *att, unit_data *def, int bonus, int wpn_type, int primary = static_cast<int>(TRUE)) -> int;
 auto simple_one_hit(unit_data *att, unit_data *def) -> int;
