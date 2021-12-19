@@ -10,6 +10,7 @@ set(MPLEX_SRC
         ../protocol.cpp
         ../cHook.cpp
         ../bytestring.cpp
+        ../cCaptainHook.cpp
         ../common.cpp)
 
 set(MPLEX_H mplex.h network.h)

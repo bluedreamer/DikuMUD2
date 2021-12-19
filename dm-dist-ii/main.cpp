@@ -1,4 +1,3 @@
-#include "signals.h"
 /* *********************************************************************** *
  * File   : main.c                                    Part of Valhalla MUD *
  * Version: 1.10                                                           *
@@ -26,11 +25,11 @@
 /* 29/1/93  HHS: Added GA (go ahead) for all prompts                       */
 /* Sun Jun 27 1993 HHS: made vars for world status                         */
 /* Tue Jul 6 1993 HHS: added exchangable lib dir                           */
-
+#include "cCaptainHook.h"
 #include "nice.h"
+#include "signals.h"
 #include <cctype>
 #include <cerrno>
-
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>

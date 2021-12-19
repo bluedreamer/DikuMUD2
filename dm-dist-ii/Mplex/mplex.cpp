@@ -23,6 +23,20 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "mplex.h"
+#include "cCaptainHook.h"
+#include "common.h"
+#include "db.h"
+#include "essential.h"
+#include "network.h"
+#include "protocol.h"
+#include "select.h"
+#include "structs.h"
+#include "textutil.h"
+#include "translate.h"
+#include "ttydef.h"
+#include "unixshit.h"
+#include "utility.h"
 #include <arpa/telnet.h>
 #include <assert.h>
 #include <ctype.h>
@@ -36,20 +50,6 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
-
-#include "common.h"
-#include "db.h"
-#include "essential.h"
-#include "mplex.h"
-#include "network.h"
-#include "protocol.h"
-#include "select.h"
-#include "structs.h"
-#include "textutil.h"
-#include "translate.h"
-#include "ttydef.h"
-#include "unixshit.h"
-#include "utility.h"
 
 void mud_went_down(void);
 void Idle(cConHook *con, const char *cmd);

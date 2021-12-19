@@ -42,13 +42,9 @@
    #include <sys/resource.h>
 #endif
 
-#include <arpa/inet.h>
-#include <cerrno>
-#include <fcntl.h>
-#include <netinet/in.h>
-
 #include "account.h"
 #include "ban.h"
+#include "cCaptainHook.h"
 #include "cMultiMaster.h"
 #include "comm.h"
 #include "common.h"
@@ -67,7 +63,11 @@
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+#include <arpa/inet.h>
+#include <cerrno>
 #include <climits>
+#include <fcntl.h>
+#include <netinet/in.h>
 
 /* extern vars */
 
