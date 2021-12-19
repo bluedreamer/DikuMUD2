@@ -53,18 +53,12 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "time_info_data.h"
 #include "utility.h"
 #include "utils.h"
+#include "weather.h"
 #include "zone_reset_cmd.h"
 #include <climits>
-
-/*   external vars  */
-
-/* from dikumud.c */
-
-/* external functs */
-auto age(unit_data *ch) -> struct time_info_data;
-auto real_time_passed(time_t t2, time_t t1) -> struct time_info_data;
 
 extern void stat_bank(const unit_data *ch, unit_data *u); /* bank.c */
 
@@ -1012,8 +1006,8 @@ static void stat_data(const unit_data *ch, unit_data *u)
       if(IS_PC(u))
       {
          /* Stat on a player  */
-         struct time_info_data tid1;
-         struct time_info_data tid2;
+         time_info_data tid1;
+         time_info_data tid2;
 
          tid1 = age(u);
          tid2 = real_time_passed((time_t)PC_TIME(u).played, 0);

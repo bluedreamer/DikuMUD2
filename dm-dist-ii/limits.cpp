@@ -44,15 +44,12 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include "weather.h"
 #include <climits>
 
 extern unit_data *unit_list;
 
 /* External procedures */
-
-/* common.c   */
-/* in fight.c */
-auto age(unit_data *ch) -> struct time_info_data;
 
 /* Count the number of items a unit contains */
 auto char_carry_n(unit_data *unit) -> int

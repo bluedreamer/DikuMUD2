@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : weather.h                                 Part of Valhalla MUD *
  * Version: 1.03                                                           *
@@ -22,22 +23,19 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_WEATHER
-#define _MUD_WEATHER
+#include "time_info_data.h"
 
 extern int sunlight;
 
 extern const time_t beginning_of_time;
 
 auto timetodate(time_t t) -> char *;
-auto real_time_passed(time_t t2, time_t t1) -> struct time_info_data;
-auto mud_date(time_t t) -> struct time_info_data;
-auto mud_time_passed(time_t t2, time_t t1) -> struct time_info_data;
-auto age(unit_data *ch) -> struct time_info_data;
-void weather_change(struct time_info_data time_data);
-void mudtime_strcpy(struct time_info_data *time, char *str);
+auto real_time_passed(time_t t2, time_t t1) -> time_info_data;
+auto mud_date(time_t t) -> time_info_data;
+auto mud_time_passed(time_t t2, time_t t1) -> time_info_data;
+auto age(unit_data *ch) -> time_info_data;
+void weather_change(time_info_data time_data);
+void mudtime_strcpy(time_info_data *time, char *str);
 
 void update_time_and_weather();
 void boot_time_and_weather();
-
-#endif

@@ -27,12 +27,6 @@
 /* 29/08/93 jubal  : Uses trade price                                      */
 /* 14-08-94 gnort  : finalized object money (sheesh, two years! ;-) )      */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
 #include "act.h"
 #include "comm.h"
 #include "common.h"
@@ -45,9 +39,15 @@
 #include "str_parse.h"
 #include "structs.h"
 #include "textutil.h"
+#include "time_info_data.h"
 #include "utility.h"
 #include "utils.h"
+#include <cctype>
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 struct shop_data
 {
@@ -90,8 +90,8 @@ auto obj_trade_price(unit_data *u) -> amount_t
 
 static auto is_ok(unit_data *keeper, unit_data *ch, struct shop_data *sd) -> bool
 {
-   char                  buf[512];
-   struct time_info_data time_info;
+   char           buf[512];
+   time_info_data time_info;
 
    auto mud_date(time_t t)->struct time_info_data;
 

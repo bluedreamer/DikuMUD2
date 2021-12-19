@@ -44,10 +44,12 @@
 #include "spec_assign.h"
 #include "structs.h"
 #include "textutil.h"
+#include "time_info_data.h"
 #include "trie.h"
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+#include "weather.h"
 
 /*
 
@@ -638,8 +640,7 @@ auto pain_trash(unit_data *npc, struct pain_type *pain) -> int
 /* 'W' command */
 auto pain_wait(unit_data *npc, struct pain_type *pain) -> int
 {
-   auto                  mud_date(time_t t)->struct time_info_data;
-   struct time_info_data time_info;
+   time_info_data time_info;
 
    time_info = mud_date(time(nullptr));
 

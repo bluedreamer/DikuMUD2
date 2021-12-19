@@ -36,6 +36,7 @@
 #include "interpreter.h"
 #include "main.h"
 #include "structs.h"
+#include "time_info_data.h"
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
@@ -56,10 +57,10 @@ auto timetodate(time_t t) -> char *
 }
 
 /* Calculate the REAL time passed over the last t2-t1 centuries (secs) */
-auto real_time_passed(time_t t2, time_t t1) -> struct time_info_data
+auto real_time_passed(time_t t2, time_t t1) -> time_info_data
 {
-   long                  secs;
-   struct time_info_data now;
+   long           secs;
+   time_info_data now;
 
    secs = (long)difftime(t2, t1);
 
@@ -119,9 +120,9 @@ auto mud_time_passed(time_t t2, time_t t1) -> struct time_info_data
    return now;
 }
 
-auto age(unit_data *ch) -> struct time_info_data
+auto age(unit_data *ch) ->  time_info_data
 {
-   static struct time_info_data player_age;
+   static time_info_data player_age;
 
    if(IS_PC(ch))
    {
@@ -136,8 +137,7 @@ auto age(unit_data *ch) -> struct time_info_data
 }
 
 /* Here comes the code */
-static void
-another_hour(struct time_info_data time_data)
+static void another_hour(struct time_info_data time_data)
 {
    switch(time_data.hours)
    {

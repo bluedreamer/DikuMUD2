@@ -51,9 +51,8 @@
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+#include "weather.h"
 #include <climits>
-
-auto mud_date(time_t t) -> struct time_info_data;
 
 /* ************************************************************************ */
 /* DIL-expressions							    */

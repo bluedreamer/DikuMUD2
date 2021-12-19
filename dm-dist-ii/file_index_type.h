@@ -1,6 +1,6 @@
 #pragma once
-#include <cstdint>
 #include "zone_type.h"
+#include <cstdint>
 
 class unit_data;
 
@@ -12,7 +12,7 @@ public:
    ~file_index_type();
 
    char            *name;     /* Unique within this list          */
-    zone_type *zone;     /* Pointer to owner of structure    */
+   zone_type       *zone;     /* Pointer to owner of structure    */
    file_index_type *next;     /* Next File Index                  */
    unit_data       *room_ptr; /* Pointer to room if is room       */
 

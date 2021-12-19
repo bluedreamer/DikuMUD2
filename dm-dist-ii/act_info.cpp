@@ -54,6 +54,7 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "time_info_data.h"
 #include "trie.h"
 #include "utility.h"
 #include "utils.h"
@@ -303,15 +304,15 @@ static void status_spells(unit_data *ch, uint8_t realm)
 
 void do_status(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   int                   idx;
-   int                   i;
-   int                   p;
-   int                   j;
-   struct time_info_data playing_time;
-   struct time_info_data years;
-   char                  buf[2 * MAX_STRING_LENGTH];
-   char                  tmpbuf[80];
-   char                 *b;
+   int            idx;
+   int            i;
+   int            p;
+   int            j;
+   time_info_data playing_time;
+   time_info_data years;
+   char           buf[2 * MAX_STRING_LENGTH];
+   char           tmpbuf[80];
+   char          *b;
 
    static const char *infos[] = {"weapons", "spells", "skills", nullptr};
 

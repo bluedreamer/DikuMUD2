@@ -43,6 +43,7 @@
 #include "postoffice.h"
 #include "structs.h"
 #include "textutil.h"
+#include "time_info_data.h"
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
@@ -153,13 +154,13 @@ auto read_mail(int16_t index) -> char *
 /* Save the letter pointed to by str in the mail file */
 void mail_mail(int receipient, char *rcv_name, unit_data *sender, const char *str)
 {
-   FILE                 *f;
-   int16_t               index;
-   blk_length            len;
-   char                  from[MAX_STRING_LENGTH];
-   char                 *b;
-   struct time_info_data t;
-   char                 *all;
+   FILE          *f;
+   int16_t        index;
+   blk_length     len;
+   char           from[MAX_STRING_LENGTH];
+   char          *b;
+   time_info_data t;
+   char          *all;
 
    void mudtime_strcpy(struct time_info_data * time, char *str);
    auto mud_date(time_t t)->struct time_info_data;

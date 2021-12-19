@@ -273,7 +273,8 @@ inline auto IS_CHAR(const unit_data *ptr) -> bool
 /* ............................FILE INDEX STUFF..................... */
 
 //#define FI_ZONENAME(fi) ((fi) ? (fi)->zone->name : "NO-ZONE")
-inline auto FI_ZONENAME(file_index_type *fi) -> const char * {
+inline auto FI_ZONENAME(file_index_type *fi) -> const char *
+{
    return fi != nullptr ? fi->zone->name : "NO-ZONE";
 }
 //#define FI_NAME(fi) ((fi) ? (fi)->name : "NO-NAME")
