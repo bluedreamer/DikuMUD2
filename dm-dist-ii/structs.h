@@ -30,6 +30,7 @@
 #include "hashstring.h"
 #include "protocol.h"
 #include "queue.h"
+#include "snoop_data.h"
 #include "system.h"
 #include "values.h"
 #include "zone_reset_cmd.h"
@@ -54,12 +55,6 @@
 /* ----------------- OTHER STRUCTURES ----------------------- */
 
 /* --------------------- DESCRIPTOR STRUCTURES -------------------- */
-
-struct snoop_data
-{
-   unit_data *snooping; /* Who is this char snooping        */
-   unit_data *snoop_by; /* And who is snooping on this char */
-};
 
 class descriptor_data
 {
@@ -90,13 +85,13 @@ public:
    void      *editref; /* pointer to "where we are editing"     */
                        /* when using (volatile) extras + boards */
 
-   int               prompt_mode;                    /* control of prompt-printing       */
-   char              last_cmd[MAX_INPUT_LENGTH + 1]; /* the last entered cmd_str         */
-   char              history[MAX_INPUT_LENGTH + 1];  /* simple command history           */
-   cQueue            qInput;                         /* q of unprocessed input           */
-   unit_data        *character;                      /* linked to char                   */
-   unit_data        *original;                       /* original char                    */
-   struct snoop_data snoop;                          /* to snoop people.                 */
+   int        prompt_mode;                    /* control of prompt-printing       */
+   char       last_cmd[MAX_INPUT_LENGTH + 1]; /* the last entered cmd_str         */
+   char       history[MAX_INPUT_LENGTH + 1];  /* simple command history           */
+   cQueue     qInput;                         /* q of unprocessed input           */
+   unit_data *character;                      /* linked to char                   */
+   unit_data *original;                       /* original char                    */
+   snoop_data snoop;                          /* to snoop people.                 */
 
    class descriptor_data *next; /* link to next descriptor          */
 };
