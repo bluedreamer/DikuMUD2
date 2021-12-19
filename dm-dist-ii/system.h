@@ -29,6 +29,7 @@
 #include <sys/time.h>
 
 #define MAX_MULTI 5 /* Maximum five multiconnects */
+#include "cHook.h"
 
 class cMultiHook : public cHook
 {

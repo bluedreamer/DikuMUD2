@@ -36,35 +36,8 @@ auto PipeWrite(int fd, char *buf, size_t count) -> int;
 #define SELECT_WRITE  0x02
 #define SELECT_EXCEPT 0x04
 
-class cCaptainHook;
+class cHook;
 
-class cHook
-{
-   friend cCaptainHook;
-
-public:
-   cHook();
-   virtual ~cHook();
-
-   [[nodiscard]] auto tfd() const -> int;
-   [[nodiscard]] auto IsHooked() const -> int;
-   void               Write(uint8_t *pData, uint32_t nLen, int bCopy = TRUE);
-
-   cQueue qRX;
-
-   void Unhook();
-
-protected:
-   void PushWrite();
-
-   virtual void Input(int nFlags) = 0;
-
-   cQueue qTX;
-
-private:
-   int fd;
-   int id;
-};
 
 class cCaptainHook
 {
