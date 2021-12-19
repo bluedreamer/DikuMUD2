@@ -37,6 +37,7 @@
 #include "justice.h"
 #include "magic.h"
 #include "skills.h"
+#include "spell_args.h"
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
@@ -48,7 +49,7 @@
 
 struct spell_info_type spell_info[SPL_TREE_MAX];
 
-void set_spellargs(struct spell_args *sa, unit_data *caster, unit_data *medium, unit_data *target, const char *arg, int hm)
+void set_spellargs(spell_args *sa, unit_data *caster, unit_data *medium, unit_data *target, const char *arg, int hm)
 {
    sa->caster  = caster;
    sa->medium  = medium;
@@ -238,7 +239,7 @@ auto spell_perform(int spell_no, int spell_type, unit_data *caster, unit_data *m
    }
    else if(spell_info[spell_no].spell_pointer != nullptr)
    {
-      struct spell_args sa;
+      spell_args sa;
 
       set_spellargs(&sa, caster, medium, target, argument, hm);
       sa.pEffect = pEffect;

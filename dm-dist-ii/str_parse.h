@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : str_parse.h                               Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -22,9 +23,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_STR_PARSE_H
-#define _MUD_STR_PARSE_H
-
 auto parse_match(char *pData, char *pMatch) -> char *;
 auto parse_name(char **pData) -> char *;
 auto parse_numlist(char **pData, int *count) -> int *;
@@ -34,5 +32,3 @@ auto parse_match_num(char **pData, const char *pMatch, int *pResult) -> int;
 auto parse_match_numlist(char **pData, const char *pMatch, int *count) -> int *;
 auto parse_match_name(char **pData, const char *pMatch) -> char *;
 auto parse_match_namelist(char **pData, const char *pMatch) -> char **;
-
-#endif

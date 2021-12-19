@@ -38,6 +38,7 @@
 #include "magic.h"
 #include "movement.h"
 #include "skills.h"
+#include "spell_args.h"
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
@@ -147,7 +148,7 @@ void summon_attack_npc(unit_data *caster, int n)
 
 void rift_failure(unit_data *caster, unit_data *target)
 {
-   struct spell_args sa;
+   spell_args sa;
 
    int i = number(1, 100);
 
@@ -208,7 +209,7 @@ void rift_failure(unit_data *caster, unit_data *target)
    }
 }
 
-void spell_clear_skies(struct spell_args *sa)
+void spell_clear_skies(spell_args *sa)
 {
    unit_data *room = unit_room(sa->caster);
 
@@ -224,7 +225,7 @@ void spell_clear_skies(struct spell_args *sa)
    act("You feel a warm breeze.", A_ALWAYS, sa->caster, nullptr, nullptr, TO_ALL);
 }
 
-void spell_storm_call(struct spell_args *sa)
+void spell_storm_call(spell_args *sa)
 {
    unit_data *room = unit_room(sa->caster);
 
@@ -240,7 +241,7 @@ void spell_storm_call(struct spell_args *sa)
    act("A cold wind chills you to the bone.", A_ALWAYS, sa->caster, nullptr, nullptr, TO_ALL);
 }
 
-void spell_random_teleport(struct spell_args *sa)
+void spell_random_teleport(spell_args *sa)
 {
    unit_data *room;
 
@@ -298,7 +299,7 @@ void spell_random_teleport(struct spell_args *sa)
    do_look(sa->target, mbuf, &cmd_auto_unknown);
 }
 
-void spell_transport(struct spell_args *sa)
+void spell_transport(spell_args *sa)
 {
    /* This spell is alot harder to get off successfull */
    unit_data *room;
@@ -363,7 +364,7 @@ void spell_transport(struct spell_args *sa)
    do_look(sa->caster, mbuf, &cmd_auto_unknown);
 }
 
-void spell_control_teleport(struct spell_args *sa)
+void spell_control_teleport(spell_args *sa)
 {
    /* This spell is alot harder to get off successfull */
    unit_data *room;
@@ -418,7 +419,7 @@ void spell_control_teleport(struct spell_args *sa)
    do_look(sa->caster, mbuf, &cmd_auto_unknown);
 }
 
-void spell_undead_door(struct spell_args *sa)
+void spell_undead_door(spell_args *sa)
 {
    /* This spell is alot harder to get off successfull */
    unit_data *roomf;
@@ -474,7 +475,7 @@ void spell_undead_door(struct spell_args *sa)
    do_look(sa->target, mbuf, &cmd_auto_unknown);
 }
 
-void spell_summon_char_1(struct spell_args *sa)
+void spell_summon_char_1(spell_args *sa)
 {
    unit_data *room;
 
@@ -550,7 +551,7 @@ void spell_summon_char_1(struct spell_args *sa)
    }
 }
 
-void spell_summon_char_2(struct spell_args *sa)
+void spell_summon_char_2(spell_args *sa)
 {
    unit_data *room;
 
@@ -621,7 +622,7 @@ void spell_summon_char_2(struct spell_args *sa)
    }
 }
 
-void spell_animate_dead(struct spell_args *sa)
+void spell_animate_dead(spell_args *sa)
 {
    extern file_index_type *zombie_fi;
    unit_data              *u;
@@ -657,7 +658,7 @@ void spell_animate_dead(struct spell_args *sa)
    extract_unit(sa->target);
 }
 
-void spell_control_undead(struct spell_args *sa)
+void spell_control_undead(spell_args *sa)
 {
    char buf[1024];
    if(!CHAR_IS_UNDEAD(sa->target))
@@ -680,22 +681,22 @@ void spell_control_undead(struct spell_args *sa)
    }
 }
 
-void spell_colourspray_1(struct spell_args *sa)
+void spell_colourspray_1(spell_args *sa)
 {
    sa->hm = spell_offensive(sa, SPL_COLOURSPRAY_1);
 }
 
-void spell_colourspray_2(struct spell_args *sa)
+void spell_colourspray_2(spell_args *sa)
 {
    sa->hm = spell_offensive(sa, SPL_COLOURSPRAY_2);
 }
 
-void spell_colourspray_3(struct spell_args *sa)
+void spell_colourspray_3(spell_args *sa)
 {
    sa->hm = spell_offensive(sa, SPL_COLOURSPRAY_3);
 }
 
-void spell_invisibility(struct spell_args *sa)
+void spell_invisibility(spell_args *sa)
 {
    unit_affected_type af;
 
@@ -731,7 +732,7 @@ void spell_invisibility(struct spell_args *sa)
    create_affect(sa->target, &af);
 }
 
-void spell_wizard_eye(struct spell_args *sa)
+void spell_wizard_eye(spell_args *sa)
 {
    unit_data *pOrgUnit;
    unit_data *pTo;
@@ -759,7 +760,7 @@ void spell_wizard_eye(struct spell_args *sa)
    unit_to_unit(sa->caster, pOrgUnit);
 }
 
-void spell_fear(struct spell_args *sa)
+void spell_fear(spell_args *sa)
 {
    unit_affected_type af;
 
@@ -786,7 +787,7 @@ void spell_fear(struct spell_args *sa)
    }
 }
 
-void spell_confusion(struct spell_args *sa)
+void spell_confusion(spell_args *sa)
 {
    unit_affected_type af;
 
@@ -809,7 +810,7 @@ void spell_confusion(struct spell_args *sa)
    create_affect(sa->target, &af);
 }
 
-void spell_xray_vision(struct spell_args *sa)
+void spell_xray_vision(spell_args *sa)
 {
    unit_data *u;
 
@@ -831,7 +832,7 @@ void spell_xray_vision(struct spell_args *sa)
    }
 }
 
-void spell_command(struct spell_args *sa)
+void spell_command(spell_args *sa)
 {
    char buf[MAX_INPUT_LENGTH];
 
@@ -860,82 +861,82 @@ void spell_command(struct spell_args *sa)
    }
 }
 
-void spell_fireball_1(struct spell_args *sa)
+void spell_fireball_1(spell_args *sa)
 {
    sa->hm = spell_offensive(sa, SPL_FIREBALL_1);
 }
 
-void spell_fireball_2(struct spell_args *sa)
+void spell_fireball_2(spell_args *sa)
 {
    sa->hm = spell_offensive(sa, SPL_FIREBALL_2);
 }
 
-void spell_fireball_3(struct spell_args *sa)
+void spell_fireball_3(spell_args *sa)
 {
    sa->hm = spell_offensive(sa, SPL_FIREBALL_3);
 }
 
-void spell_frostball_1(struct spell_args *sa)
+void spell_frostball_1(spell_args *sa)
 {
    sa->hm = spell_offensive(sa, SPL_FROSTBALL_1);
 }
 
-void spell_frostball_2(struct spell_args *sa)
+void spell_frostball_2(spell_args *sa)
 {
    sa->hm = spell_offensive(sa, SPL_FROSTBALL_2);
 }
 
-void spell_frostball_3(struct spell_args *sa)
+void spell_frostball_3(spell_args *sa)
 {
    sa->hm = spell_offensive(sa, SPL_FROSTBALL_3);
 }
 
-void spell_lightning_1(struct spell_args *sa)
+void spell_lightning_1(spell_args *sa)
 {
    sa->hm = spell_offensive(sa, SPL_LIGHTNING_1);
 }
 
-void spell_lightning_2(struct spell_args *sa)
+void spell_lightning_2(spell_args *sa)
 {
    sa->hm = spell_offensive(sa, SPL_LIGHTNING_2);
 }
 
-void spell_lightning_3(struct spell_args *sa)
+void spell_lightning_3(spell_args *sa)
 {
    sa->hm = spell_offensive(sa, SPL_LIGHTNING_3);
 }
 
-void spell_stinking_cloud_1(struct spell_args *sa)
+void spell_stinking_cloud_1(spell_args *sa)
 {
    sa->hm = spell_offensive(sa, SPL_STINKING_CLOUD_1);
 }
 
-void spell_stinking_cloud_2(struct spell_args *sa)
+void spell_stinking_cloud_2(spell_args *sa)
 {
    sa->hm = spell_offensive(sa, SPL_STINKING_CLOUD_2);
 }
 
-void spell_stinking_cloud_3(struct spell_args *sa)
+void spell_stinking_cloud_3(spell_args *sa)
 {
    sa->hm = spell_offensive(sa, SPL_STINKING_CLOUD_3);
 }
 
-void spell_acidball_1(struct spell_args *sa)
+void spell_acidball_1(spell_args *sa)
 {
    sa->hm = spell_offensive(sa, SPL_ACIDBALL_1);
 }
 
-void spell_acidball_2(struct spell_args *sa)
+void spell_acidball_2(spell_args *sa)
 {
    sa->hm = spell_offensive(sa, SPL_ACIDBALL_2);
 }
 
-void spell_acidball_3(struct spell_args *sa)
+void spell_acidball_3(spell_args *sa)
 {
    sa->hm = spell_offensive(sa, SPL_ACIDBALL_3);
 }
 
-void spell_mana_boost(struct spell_args *sa)
+void spell_mana_boost(spell_args *sa)
 {
    if(sa->hm > 0)
    {

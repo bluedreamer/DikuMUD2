@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : spelldef.h                                Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -20,8 +21,6 @@
  * reproduced, translated or reduced to any medium without the prior       *
  * written consent of Valhalla.                                            *
  * *********************************************************************** */
-#ifndef _MUD_SPELLDEF_H
-#define _MUD_SPELLDEF_H
 
 /* Different kind of weapon types */
 #define WPNT_NONE     -1
@@ -51,5 +50,3 @@
 #define MEDIA_STAFF     (1 << 3)
 #define MEDIA_SCROLL    (1 << 4)
 #define MEDIA_SELF_NONO (1 << 5) /* Used for staffs to exclude self */
-
-#endif

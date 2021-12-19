@@ -24,8 +24,6 @@
  * *********************************************************************** */
 
 /* Wed Jan 22 14:57:30 PST 1997   HHS added paycheck dilfun */
-#include <cstdarg> /* For type_check */
-#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
@@ -45,6 +43,7 @@
 #include "money.h"
 #include "movement.h"
 #include "skills.h"
+#include "spell_args.h"
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
@@ -161,7 +160,7 @@ void dilfe_atsp(struct dilprg *p, class dilval *v)
    if((is_in(v1.val.num, SPL_GROUP_MAX, SPL_TREE_MAX - 1) != 0) &&
       ((spell_info[v1.val.num].spell_pointer != nullptr) || (spell_info[v1.val.num].tmpl != nullptr)) && v->type == DILV_INT)
    {
-      struct spell_args sa;
+      spell_args sa;
 
       set_spellargs(&sa, (unit_data *)v2.val.ptr, (unit_data *)v3.val.ptr, (unit_data *)v4.val.ptr, nullptr, 0);
       sa.pEffect = nullptr;

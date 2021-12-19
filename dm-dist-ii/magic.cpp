@@ -42,6 +42,7 @@
 #include "interpreter.h"
 #include "magic.h"
 #include "skills.h"
+#include "spell_args.h"
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"

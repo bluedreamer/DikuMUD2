@@ -40,6 +40,7 @@
 #include "magic.h"
 #include "movement.h"
 #include "skills.h"
+#include "spell_args.h"
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
@@ -58,7 +59,7 @@
 
 void modify_hit(unit_data *ch, int hit);
 
-void spell_remove_curse(struct spell_args *sa)
+void spell_remove_curse(spell_args *sa)
 {
    /*
       Spell Remove Curse:
@@ -97,7 +98,7 @@ void spell_remove_curse(struct spell_args *sa)
    }
 }
 
-void spell_cause_wounds_1(struct spell_args *sa)
+void spell_cause_wounds_1(spell_args *sa)
 {
    /*
       Spell Cause Light Wounds
@@ -118,7 +119,7 @@ void spell_cause_wounds_1(struct spell_args *sa)
    }
 }
 
-void spell_cause_wounds_2(struct spell_args *sa)
+void spell_cause_wounds_2(spell_args *sa)
 {
    if(CHAR_IS_HUMANOID(sa->target) || CHAR_IS_MAMMAL(sa->target))
    {
@@ -134,7 +135,7 @@ void spell_cause_wounds_2(struct spell_args *sa)
    }
 }
 
-void spell_cause_wounds_3(struct spell_args *sa)
+void spell_cause_wounds_3(spell_args *sa)
 {
    if(CHAR_IS_HUMANOID(sa->target) || CHAR_IS_MAMMAL(sa->target))
    {
@@ -150,7 +151,7 @@ void spell_cause_wounds_3(struct spell_args *sa)
 }
 
 /* EVIL */
-void spell_dispel_evil(struct spell_args *sa)
+void spell_dispel_evil(spell_args *sa)
 {
    unit_affected_type *af;
 
@@ -172,7 +173,7 @@ void spell_dispel_evil(struct spell_args *sa)
 }
 
 /* EVIL */
-void spell_dispel_good(struct spell_args *sa)
+void spell_dispel_good(spell_args *sa)
 {
    unit_affected_type *af;
 
@@ -195,7 +196,7 @@ void spell_dispel_good(struct spell_args *sa)
    sa->hm = spell_offensive(sa, SPL_DISPEL_GOOD);
 }
 
-void spell_repel_undead_1(struct spell_args *sa)
+void spell_repel_undead_1(spell_args *sa)
 {
    unit_affected_type af;
 
@@ -223,7 +224,7 @@ void spell_repel_undead_1(struct spell_args *sa)
    }
 }
 
-void spell_repel_undead_2(struct spell_args *sa)
+void spell_repel_undead_2(spell_args *sa)
 {
    unit_data         *u;
    unit_affected_type af;
@@ -260,7 +261,7 @@ void spell_repel_undead_2(struct spell_args *sa)
    }
 }
 
-void spell_cure_blind(struct spell_args *sa)
+void spell_cure_blind(spell_args *sa)
 {
    unit_affected_type *af = nullptr;
 
@@ -277,7 +278,7 @@ void spell_cure_blind(struct spell_args *sa)
    }
 }
 
-void spell_sanctuary(struct spell_args *sa)
+void spell_sanctuary(spell_args *sa)
 {
    unit_affected_type af;
 
@@ -301,7 +302,7 @@ void spell_sanctuary(struct spell_args *sa)
    }
 }
 
-void spell_sustain(struct spell_args *sa)
+void spell_sustain(spell_args *sa)
 {
    unit_affected_type af;
 
@@ -326,7 +327,7 @@ void spell_sustain(struct spell_args *sa)
    }
 }
 
-void spell_lock(struct spell_args *sa)
+void spell_lock(spell_args *sa)
 {
    struct door_data *a_door = nullptr;
 
@@ -386,7 +387,7 @@ void spell_lock(struct spell_args *sa)
    }
 }
 
-void spell_unlock(struct spell_args *sa)
+void spell_unlock(spell_args *sa)
 {
    struct door_data *a_door = nullptr;
 
@@ -444,7 +445,7 @@ void spell_unlock(struct spell_args *sa)
    }
 }
 
-void spell_identify_1(struct spell_args *sa)
+void spell_identify_1(spell_args *sa)
 {
    static struct obj_type_t ident_obj_type[] = {
       {"Well, you shouldn't see this.\n\r"
@@ -557,7 +558,7 @@ void spell_identify_1(struct spell_args *sa)
    }
 }
 
-void spell_identify_2(struct spell_args *sa)
+void spell_identify_2(spell_args *sa)
 {
    struct extra_descr_data *exd;
    int                      i = 0;
