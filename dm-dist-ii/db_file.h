@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : db_file.h                                 Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -21,9 +22,6 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
-
-#ifndef _MUD_DB_FILE_H
-#define _MUD_DB_FILE_H
 
 #include "bytestring.h"
 #include "dil.h"
@@ -56,5 +54,3 @@ void bwrite_diltemplate(CByteBuffer *pBuf, struct diltemplate *tmpl);
 void write_unit(FILE *f, unit_data *u, char *fname);
 void write_diltemplate(FILE *f, struct diltemplate *tmpl);
 auto write_unit_string(CByteBuffer *pBuf, unit_data *u) -> int;
-
-#endif /* _MUD_DB_FILE_H */
