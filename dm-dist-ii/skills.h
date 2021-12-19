@@ -54,15 +54,7 @@ auto skill_text(const skill_interval *si, int skill) -> const char *;
 
 #define CHAR_IS_UNDEAD(ch) RACE_IS_UNDEAD(CHAR_RACE(ch))
 
-#include "base_race_info_type.h"
-struct race_info_type
-{
-    base_race_info_type male;
-    base_race_info_type female;
 
-   uint16_t         age;
-    dice_type age_dice;
-};
 
 struct damage_chart_element_type
 {
