@@ -67,19 +67,3 @@ void set_armour(unit_data *);
 #define HITPOINTS_BASE       125
 #define ABILITY_POINT_FACTOR (4) /* Abilitypoints multiplied by this */
 #define SKILL_POINT_FACTOR   (8) /* Skillpoints   multiplied by this */
-
-/* ..................................................................... */
-/*                           A R M O U R S                               */
-/* ..................................................................... */
-
-struct shi_info_type
-{
-   int melee; /* Protection against melee attacks */
-};
-
-struct arm_info_type
-{
-   int slash;
-   int bludgeon;
-   int pierce;
-};

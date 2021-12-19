@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : files.h                                   Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -22,7 +23,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#pragma once
 #include "CByteBuffer.h"
 #include "bytestring.h"
 #define FCACHE_MAX 100

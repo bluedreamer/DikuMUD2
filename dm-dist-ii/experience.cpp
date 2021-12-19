@@ -24,9 +24,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cstdio>
-#include <cstdlib>
-
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
@@ -36,12 +33,15 @@
 #include "justice.h"
 #include "magic.h"
 #include "movement.h"
+#include "shi_info_type.h"
 #include "skills.h"
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include <cstdio>
+#include <cstdlib>
 
 auto kludge_bonus(int level, int points) -> int
 {
@@ -94,8 +94,7 @@ auto shield_bonus(unit_data *att, unit_data *def, unit_data **pDef_shield) -> in
 
    if((def_shield = equipment_type(def, WEAR_SHIELD, ITEM_SHIELD)) != nullptr)
    {
-      int                         shield_bonus = 0;
-      extern struct shi_info_type shi_info[];
+      int shield_bonus = 0;
 
       if(is_in(OBJ_VALUE(def_shield, 0), SHIELD_SMALL, SHIELD_LARGE) == 0)
       {
