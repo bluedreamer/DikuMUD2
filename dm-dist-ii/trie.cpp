@@ -25,41 +25,42 @@
 /* Sep 1992: gnort:  Added del_trie                                        */
 /* Jul 1994: gnort:  Added free_trie                                       */
 
+#include "trie.h"
+#include "structs.h"
+#include "trie_entry.h"
+#include "trie_type.h"
+#include "utility.h"
+#include "utils.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-
-#include "structs.h"
-#include "trie.h"
-#include "utility.h"
-#include "utils.h"
 
 static int trie_size = 0, trie_nodes = 0;
 
 auto trie_src_cmp(const void *keyval, const void *datum) -> int
 {
-   return (((char *)keyval)[0] - ((struct trie_entry *)datum)->c);
+   return (((char *)keyval)[0] - ((trie_entry *)datum)->c);
 }
 
 auto trie_sort_cmp(const void *keyval, const void *datum) -> int
 {
-   return (((struct trie_entry *)keyval)->c - ((struct trie_entry *)datum)->c);
+   return (((trie_entry *)keyval)->c - ((trie_entry *)datum)->c);
 }
 
-auto triebindex(char c, struct trie_type *t) -> struct trie_entry *
+auto triebindex(char c, trie_type *t) -> trie_entry *
 {
    if(t->nexts != nullptr)
    {
-      return (struct trie_entry *)bsearch(&c, t->nexts, t->size, sizeof(struct trie_entry), trie_src_cmp);
+      return (trie_entry *)bsearch(&c, t->nexts, t->size, sizeof(trie_entry), trie_src_cmp);
    }
    return NULL;
 }
 
-void qsort_triedata(struct trie_type *t)
+void qsort_triedata(trie_type *t)
 {
    int i;
 
-   qsort(t->nexts, t->size, sizeof(struct trie_entry), trie_sort_cmp);
+   qsort(t->nexts, t->size, sizeof(trie_entry), trie_sort_cmp);
 
    for(i = 0; i < t->size; i++)
    {
@@ -67,7 +68,7 @@ void qsort_triedata(struct trie_type *t)
    }
 }
 
-auto trie_index(char c, struct trie_type *t) -> int
+auto trie_index(char c, trie_type *t) -> int
 {
    int i;
 
@@ -83,17 +84,17 @@ auto trie_index(char c, struct trie_type *t) -> int
    return i < t->size ? i : -1;
 }
 
-auto add_trienode(const char *s, struct trie_type *t) -> struct trie_type *
+auto add_trienode(const char *s, trie_type *t) -> trie_type *
 {
    int i;
 
    /* If no node is given, create one */
    if(t == nullptr)
    {
-      trie_size += sizeof(struct trie_type);
+      trie_size += sizeof(trie_type);
       trie_nodes++;
 
-      CREATE(t, struct trie_type, 1);
+      CREATE(t, trie_type, 1);
       t->data  = nullptr;
       t->nexts = nullptr;
       t->size  = 0;
@@ -105,15 +106,15 @@ auto add_trienode(const char *s, struct trie_type *t) -> struct trie_type *
 
       if(i == -1)
       {
-         trie_size += sizeof(struct trie_entry);
+         trie_size += sizeof(trie_entry);
 
          if(t->size == 0)
          {
-            CREATE(t->nexts, struct trie_entry, 1);
+            CREATE(t->nexts, trie_entry, 1);
          }
          else
          {
-            RECREATE(t->nexts, struct trie_entry, t->size + 1);
+            RECREATE(t->nexts, trie_entry, t->size + 1);
          }
 
          t->size++;
@@ -130,7 +131,7 @@ auto add_trienode(const char *s, struct trie_type *t) -> struct trie_type *
    return t;
 }
 
-void set_triedata(const char *s, struct trie_type *t, void *p, bool nonabbrev)
+void set_triedata(const char *s, trie_type *t, void *p, bool nonabbrev)
 {
    int i;
 
@@ -160,9 +161,9 @@ void set_triedata(const char *s, struct trie_type *t, void *p, bool nonabbrev)
 }
 
 /* It runs in nothing less than O(|s|), returns the data pointer */
-auto search_trie(const char *s, struct trie_type *t) -> void *
+auto search_trie(const char *s, trie_type *t) -> void *
 {
-   struct trie_entry *te;
+   trie_entry *te;
 
    for(; (*s != 0) && (t != nullptr); t = te->t, ++s)
    {
@@ -181,7 +182,7 @@ auto search_trie(const char *s, struct trie_type *t) -> void *
  */
 
 /* Free an entire trie */
-void free_trie(struct trie_type *t, void (*free_data)(void *))
+void free_trie(trie_type *t, void (*free_data)(void *))
 {
    uint8_t i;
 
@@ -192,7 +193,7 @@ void free_trie(struct trie_type *t, void (*free_data)(void *))
    }
 
    /* Subtract size of free'ed info */
-   trie_size -= (t->size * sizeof(struct trie_entry) + sizeof(struct trie_type));
+   trie_size -= (t->size * sizeof(trie_entry) + sizeof(trie_type));
    --trie_nodes;
 
    /* Walk through node-array, and call recursively */
@@ -219,7 +220,7 @@ void free_trie(struct trie_type *t, void (*free_data)(void *))
  *
  *  Overcommented due to non-trivialism :-)
  */
-auto del_trie(char *s, struct trie_type **t, void (*free_data)(void *)) -> bool
+auto del_trie(char *s, trie_type **t, void (*free_data)(void *)) -> bool
 {
    /* Any more string of keyword to delete? */
    if(*s != 0)
@@ -231,7 +232,7 @@ auto del_trie(char *s, struct trie_type **t, void (*free_data)(void *)) -> bool
       {
          if((*t)->size == 1) /* Yes.  Are we alone at this node? */
          {                   /* Yep, delete and confirm */
-            trie_size -= (sizeof(struct trie_entry) + sizeof(struct trie_type));
+            trie_size -= (sizeof(trie_entry) + sizeof(trie_type));
             trie_nodes--;
 
             free((*t)->nexts);
@@ -240,12 +241,12 @@ auto del_trie(char *s, struct trie_type **t, void (*free_data)(void *)) -> bool
             return TRUE;
          }
          /* No, so we have to clean up carefully */
-         trie_size -= sizeof(struct trie_entry);
+         trie_size -= sizeof(trie_entry);
 
          (*t)->size--;
          for(; i < (*t)->size; i++)
             (*t)->nexts[i] = (*t)->nexts[i + 1];
-         RECREATE((*t)->nexts, struct trie_entry, (*t)->size);
+         RECREATE((*t)->nexts, trie_entry, (*t)->size);
       }
    }
    /* No more string.  Is there data at this node? */
@@ -257,7 +258,7 @@ auto del_trie(char *s, struct trie_type **t, void (*free_data)(void *)) -> bool
       if((*t)->size == 0) /* Is this a leaf? */
       {                   /* Yep, delete it, and confirm */
          trie_nodes--;
-         trie_size -= sizeof(struct trie_type);
+         trie_size -= sizeof(trie_type);
          free(*t);
          *t = nullptr;
          return TRUE;
@@ -271,9 +272,9 @@ auto del_trie(char *s, struct trie_type **t, void (*free_data)(void *)) -> bool
  * This is how a build trie ought to look
  * Refer to interpreter.c for an example in use.
 
-struct trie_type *build_trie(char *strs[])
+trie_type *build_trie(char *strs[])
 {
-  struct trie_type *trie = NULL;
+  trie_type *trie = NULL;
   int i;
 
   for (i = 0; *strs[i]; i++)

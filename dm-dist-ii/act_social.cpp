@@ -28,10 +28,6 @@
  *			sprint_social!!!1!)
  */
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #include "comm.h"
 #include "db.h"
 #include "handler.h"
@@ -40,8 +36,12 @@
 #include "structs.h"
 #include "textutil.h"
 #include "trie.h"
+#include "trie_type.h"
 #include "utility.h"
 #include "utils.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 /* externs */
 extern char libdir[]; /* from dikumud.c */
@@ -71,7 +71,7 @@ struct social_msg
    char *others_auto;
 };
 
-static struct trie_type *soc_trie;
+static trie_type *soc_trie;
 
 static auto fread_action(FILE *fl) -> char *
 {
@@ -327,10 +327,10 @@ auto perform_social(unit_data *ch, char *arg, const command_info *cmd) -> bool
  * cur: The currently examined string
  * idx: Index to the permutable char of cur
  */
-static auto sprint_social(char *b, struct trie_type *t, int *no, char *cur, int idx) -> int
+static auto sprint_social(char *b, trie_type *t, int *no, char *cur, int idx) -> int
 {
    struct social_msg *sm;
-   struct trie_type  *t2;
+   trie_type         *t2;
    int                i;
    int                count = 0;
 

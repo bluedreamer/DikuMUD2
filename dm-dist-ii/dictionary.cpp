@@ -79,7 +79,7 @@ Mon Nov 14 17:19:47 MET 1994
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-
+#include "trie_type.h"
 #include "comm.h"
 #include "config.h"
 #include "db_file.h"
@@ -105,7 +105,7 @@ Mon Nov 14 17:19:47 MET 1994
 struct alias_head
 {
    uint16_t          char_count;
-   struct trie_type *trie;
+   trie_type *trie;
    char              owner[20];
 };
 
@@ -229,7 +229,7 @@ static auto parse_alias(char *src, char *arg) -> char *
  *  check_count makes sure that the user doesn't make nasty (!) computationally
  *  heavy (!!!) aliases that will bog the mud enormously.
  */
-static auto push_alias(char *s, char *arg, struct trie_type *t, unit_data *ch, bool first) -> int
+static auto push_alias(char *s, char *arg, trie_type *t, unit_data *ch, bool first) -> int
 {
    char            cmd[MAX_INPUT_LENGTH + 1];
    char            parsed[2 * MAX_INPUT_LENGTH + 2];
@@ -304,9 +304,9 @@ static void alias_to_char(struct alias_t *al, unit_data *ch)
 /*  Prints all defined aliases in `t' alphabetically to char by
  *  recursively walking the trie
  */
-static auto print_alias(struct trie_type *t, unit_data *ch) -> int
+static auto print_alias(trie_type *t, unit_data *ch) -> int
 {
-   struct trie_type *t2;
+   trie_type *t2;
    struct alias_t   *al;
    int               i;
    int               count = 0;
@@ -379,7 +379,7 @@ static auto del_alias(struct alias_head *ah, char *key) -> bool
  *  check_count makes sure that the user doesn't make nasty (!) computationally
  *  heavy (!!!) aliases that will bog the mud enormously.
  */
-static auto circle_alias(char *key, char *val, struct trie_type *t, bool first) -> uint8_t
+static auto circle_alias(char *key, char *val, trie_type *t, bool first) -> uint8_t
 {
    char           *tmp;
    char           *sc;
@@ -527,7 +527,7 @@ static auto alias_is_ok(struct alias_head *ah, char *key, char *val, unit_data *
 /*  This walks the trie recursively to note down the aliases in the buffer
  *  pointed to by bufp
  */
-static void rec_alias_to_str(struct trie_type *t, char **bufp)
+static void rec_alias_to_str(trie_type *t, char **bufp)
 {
    int             i;
    struct alias_t *al;
