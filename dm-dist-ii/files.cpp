@@ -45,11 +45,11 @@ auto file_exists(const char *name) -> bool
 }
 
 /* create a file if it doesn't exist. if error, terminate */
-void touch_file(char *name)
+void touch_file(const char *name)
 {
    FILE *fp;
 
-   if(static_cast<unsigned int>(file_exists(name)) != 0U)
+   if(file_exists(name) != false)
    {
       return;
    }
@@ -57,7 +57,7 @@ void touch_file(char *name)
    if((fp = fopen(name, "w")) == nullptr)
    {
       fprintf(stderr, "touch_file(): Couldn't create %s...\n", name);
-      assert(FALSE);
+      assert(false);
    }
    fclose(fp);
 }

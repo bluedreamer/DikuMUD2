@@ -628,15 +628,16 @@ auto search_block_abbrevs(const char *oarg, const char **list, const char **end)
 }
 
 /* returns a pointer to a (static) string wich contains s1 and s2 */
-auto str_cc(const char *s1, const char *s2) -> char *
-{
-   static char buf[1024];
-
-   strncpy(buf, s1, sizeof(buf) - 1);
-   strncat(buf, s2, sizeof(buf) - 1 - strlen(buf));
-
-   return buf;
-}
+// TODO horrible function - ugh
+//auto str_cc(const char *s1, const char *s2) -> char *
+//{
+//   static char buf[1024];
+//
+//   strncpy(buf, s1, sizeof(buf) - 1);
+//   strncat(buf, s2, sizeof(buf) - 1 - strlen(buf));
+//
+//   return buf;
+//}
 
 /* =================================================================== */
 /* Insert the string "str" at the first position in the "itxt" string. */

@@ -4,74 +4,74 @@
 #include "config.h"
 #include "dbfind.h"
 
-#define MUD_NAME "Valhalla" /* For ease of localization */
+#include <string>
 
-#define DFLT_DIR    "lib/"     // Default data directory
-#define ZONE_DIR    "zon/"     // Default zone directory
-#define PLAY_DIR    "ply/"     // Default player directory
-#define UNIT_DIR    "units/"   // Directory for DIL store / restore units
-#define PERSIST_DIR "persist/" // Directory for persistant units
-#define BBS_DIR     "bbs/"     // Default BBS shared directory
+const std::string MUD_NAME{"Valhalla"}; /* For ease of localization */
 
-#define BASIS_ZONE "basis"
+const std::string DFLT_DIR{"lib/"};        // Default data directory
+const std::string ZONE_DIR{"zon/"};        // Default zone directory
+const std::string PLAY_DIR{"ply/"};        // Default player directory
+const std::string UNIT_DIR{"units/"};      // Directory for DIL store / restore units
+const std::string PERSIST_DIR{"persist/"}; // Directory for persistant units
+const std::string BBS_DIR{"bbs/"};         // Default BBS shared directory
+
+const std::string BASIS_ZONE{"basis"};
 
 /* Data files (LIB) used by the game system */
 
-#define RACE_DEFS    "races.dat"
-#define ABILITY_DEFS "abilities.dat"
-#define SPELL_DEFS   "spells.dat"
-#define WEAPON_DEFS  "weapons.dat"
-#define SKILL_DEFS   "skills.dat"
+const std::string RACE_DEFS{"races.dat"};
+const std::string ABILITY_DEFS{"abilities.dat"};
+const std::string SPELL_DEFS{"spells.dat"};
+const std::string WEAPON_DEFS{"weapons.dat"};
+const std::string SKILL_DEFS{"skills.dat"};
 
-#define SERVER_CONFIG "server.cfg"
+const std::string SERVER_CONFIG{"server.cfg"};
 
-#define EXECUTE_FILE      "execute.dat"
-#define STATISTIC_FILE    "connectionsnew.dat"
-#define COMMAND_FILE      "commands"
-#define COMPETITION_FILE  "competition"
-#define ACCOUNT_FILE      "account"
-#define ACCOUNT_LOG       "account.log"
-#define CREDITFILE_LOG    "ccinfo.log"
-#define STATISTICS_FILE   "statis.dat"
-#define SLIME_FILE        "slime"
-#define CRIME_NUM_FILE    "crime_nr"
-#define CRIME_ACCUSE_FILE "crime"
-#define PLAYER_ID_NAME    "players.id"
-#define MAIL_FILE_NAME    "mailbox.idx"
-#define MAIL_BLOCK_NAME   "mailbox.blk"
-#define CREDITS_FILE      "credits" /* for the 'credits' command  */
-#define NEWS_FILE         "news"    /* for the 'news' command     */
-#define MOTD_FILE         "motd"    /* messages of today          */
-#define LOGO_FILE         "logo"
-#define WELCOME_FILE      "welcome"
-#define GOODBYE_FILE      "goodbye"
-#define NEWBIE_FILE       "newbie"
-#define IDEA_FILE         "ideas"      /* for the 'idea'-command     */
-#define TYPO_FILE         "typos"      /*         'typo'             */
-#define BUG_FILE          "bugs"       /*         'bug'              */
-#define MESS_FILE         "messages"   /* damage message             */
-#define SOCMESS_FILE      "actions"    /* messgs for social acts     */
-#define HELP_FILE         "help"       /* for HELP <keyword>         */
-#define HELP_FILE_WIZ     "help.wiz"   /* for HELP <keyword>         */
-#define HELP_FILE_LOCAL   "help.local" /* for HELP <keyword>         */
-#define WIZLIST_FILE      "wizlist"    /* for WIZLIST                */
-#define POSEMESS_FILE     "poses"      /* for 'pose'-command         */
+const std::string EXECUTE_FILE{"execute.dat"};
+const std::string STATISTIC_FILE{"connectionsnew.dat"};
+const std::string COMMAND_FILE{"commands"};
+const std::string COMPETITION_FILE{"competition"};
+const std::string ACCOUNT_FILE{"account"};
+const std::string ACCOUNT_LOG{"account.log"};
+const std::string CREDITFILE_LOG{"ccinfo.log"};
+const std::string STATISTICS_FILE{"statis.dat"};
+const std::string SLIME_FILE{"slime"};
+const std::string CRIME_NUM_FILE{"crime_nr"};
+const std::string CRIME_ACCUSE_FILE{"crime"};
+const std::string PLAYER_ID_NAME{"players.id"};
+const std::string MAIL_FILE_NAME{"mailbox.idx"};
+const std::string MAIL_BLOCK_NAME{"mailbox.blk"};
+const std::string CREDITS_FILE{"credits"}; /* for the 'credits' command  */
+const std::string NEWS_FILE{"news"};       /* for the 'news' command     */
+const std::string MOTD_FILE{"motd"};       /* messages of today          */
+const std::string LOGO_FILE{"logo"};
+const std::string WELCOME_FILE{"welcome"};
+const std::string GOODBYE_FILE{"goodbye"};
+const std::string NEWBIE_FILE{"newbie"};
+const std::string IDEA_FILE{"ideas"};            /* for the 'idea'-command     */
+const std::string TYPO_FILE{"typos"};            /*         'typo'             */
+const std::string BUG_FILE{"bugs"};              /*         'bug'              */
+const std::string MESS_FILE{"messages"};         /* damage message             */
+const std::string SOCMESS_FILE{"actions"};       /* messgs for social acts     */
+const std::string HELP_FILE{"help"};             /* for HELP <keyword>         */
+const std::string HELP_FILE_WIZ{"help.wiz"};     /* for HELP <keyword>         */
+const std::string HELP_FILE_LOCAL{"help.local"}; /* for HELP <keyword>         */
+const std::string WIZLIST_FILE{"wizlist"};       /* for WIZLIST                */
+const std::string POSEMESS_FILE{"poses"};        /* for 'pose'-command         */
+const std::string MONEYDEF_FILE{"money"};        /* For definition of money    */
+const std::string ZONE_FILE_LIST{"zonelist"};
 
-#define MONEYDEF_FILE "money" /* For definition of money    */
+auto                  read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom) -> unit_data *;
+void                  read_unit_file(file_index_type *org_fi, CByteBuffer *pBuf);
+auto                  read_unit(file_index_type *fi) -> unit_data *;
+void                  free_unit(unit_data *ch);
+void                  free_extra_descr(extra_descr_data *ex);
+void                  free_extra_descr_list(extra_descr_data *ex);
 
-#define ZONE_FILE_LIST "zonelist"
-
-auto              read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom) -> unit_data *;
-void              read_unit_file(file_index_type *org_fi, CByteBuffer *pBuf);
-auto              read_unit(file_index_type *fi) -> unit_data *;
-void              free_unit(unit_data *ch);
-void              free_extra_descr(extra_descr_data *ex);
-void              free_extra_descr_list(extra_descr_data *ex);
-
-auto              create_extra_descr() -> extra_descr_data *;
-auto              create_unit(uint8_t type) -> unit_data *;
+auto                  create_extra_descr() -> extra_descr_data *;
+auto                  create_unit(uint8_t type) -> unit_data *;
 
 /* --- The globals of db.c --- */
 
-extern int        room_number;
-extern unit_data *unit_list;
+extern int            room_number;
+extern unit_data     *unit_list;

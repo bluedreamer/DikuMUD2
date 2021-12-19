@@ -6,16 +6,17 @@
 #include "utils.h"
 
 #include <cmath> /* floor and pow */
+#incldue <string>
 
-char        libdir[64]          = DFLT_DIR;
+const std::string libdir              = DFLT_DIR;
 
-const char *fillwords[]         = {"a", "an", "at", "from", "in", "on", "of", "the", "to", "with", "into", nullptr};
+const char       *fillwords[]         = {"a", "an", "at", "from", "in", "on", "of", "the", "to", "with", "into", nullptr};
 
 /* Used for converting general direction in dmc! */
-const char *dirs[]              = {"north", "east", "south", "west", "up", "down", nullptr};
+const char       *dirs[]              = {"north", "east", "south", "west", "up", "down", nullptr};
 
 /* Used for sanity check in dmc! */
-const char *drinks[LIQ_MAX + 2] = {"water",
+const char       *drinks[LIQ_MAX + 2] = {"water",
                                    "beer",
                                    "wine",
                                    "ale",
@@ -42,7 +43,7 @@ const char *drinks[LIQ_MAX + 2] = {"water",
 /* Example: A character is about to raise from level 2 to 3. Add       */
 /*          ability_point_gain(3) to his ability points                */
 
-auto        ability_point_gain() -> int
+auto              ability_point_gain() -> int
 {
    return AVERAGE_SKILL_COST * ABILITY_POINT_FACTOR;
 }

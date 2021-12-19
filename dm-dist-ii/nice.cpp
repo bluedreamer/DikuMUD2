@@ -45,7 +45,7 @@ void night_watchman()
       if(t_info->tm_min > 50)
       {
          slog(LOG_ALL, 0, "Leaving the scene for the serious folks.");
-         send_to_all("Closing down. Thank you for flying " MUD_NAME ".\n\r");
+         send_to_all("Closing down. Thank you for flying " + MUD_NAME+ ".\n\r");
          mud_shutdown = 1;
       }
       else if(t_info->tm_min > 40)

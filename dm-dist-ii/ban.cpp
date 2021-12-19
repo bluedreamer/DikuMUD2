@@ -1,6 +1,8 @@
 #include "ban.h"
 
+#include "ban_t.h"
 #include "comm.h"
+#include "common.h"
 #include "files.h"
 #include "interpreter.h"
 #include "structs.h"
@@ -12,29 +14,15 @@
 #include <cstdio>
 #include <cstring>
 #include <ctime>
+#include <fstream>
+#include <sstream>
 
-#ifndef DOS
-/* Kindly left out of time.h by <Insert_Unix_Vendor> */
+ban_t *ban_list = nullptr;
 
-#endif
-
-extern char libdir[]; /* from dikumud.c */
-
-#define BAN_SAVE str_cc(libdir, BAN_FILE)
-
-struct ban_t
+void BanFile::save_ban()
 {
-   char         *site;
-   char          type;
-   time_t        until;
-   char         *textfile;
-   struct ban_t *next;
-} *ban_list = nullptr;
-
-void save_ban()
-{
-   struct ban_t *tmp;
-   FILE         *bf = fopen(BAN_SAVE, "w");
+   ban_t *tmp;
+   FILE  *bf = fopen(filename.c_str(), "w");
    assert(bf);
 
    for(tmp = ban_list; tmp != nullptr; tmp = tmp->next)
@@ -45,33 +33,27 @@ void save_ban()
    fclose(bf);
 }
 
-void load_ban()
+void BanFile::load_ban()
 {
-   FILE         *bf;
-   struct ban_t *tmp;
-   char          buf[256];
-   char          site[256];
-   char          textfile[256];
+   std::ifstream in(filename_);
 
-   touch_file(BAN_SAVE);
-
-   bf = fopen(BAN_SAVE, "r");
-   assert(bf);
-
-   while(fgets(buf, sizeof buf, bf) != nullptr)
+   std::string line;
+   while(getline(in, line))
    {
-      CREATE(tmp, struct ban_t, 1);
-      sscanf(buf, "%s %c %ld %s\n", site, &tmp->type, &tmp->until, textfile);
+      std::string site{};
+      std::string textfile{};
+      char type{};
+      time_t until{0};
+      std::istringstream strm(line);
+      strm >> site >> (char)type >> until >> textfile;
       tmp->site     = str_dup(site);
       tmp->textfile = str_dup(textfile);
       tmp->next     = ban_list;
       ban_list      = tmp;
    }
-
-   fclose(bf);
 }
 
-auto ban_timer(char *arg) -> time_t
+auto BanFile::ban_timer(char *arg) -> time_t
 {
    time_t now = time(nullptr);
 
@@ -79,7 +61,7 @@ auto ban_timer(char *arg) -> time_t
    {
       int mult = 0;
 
-      arg      = skip_spaces(arg);
+      arg = skip_spaces(arg);
       while(isdigit(*arg) != 0)
       {
          mult = 10 * mult + (*arg++ - '0');
@@ -106,11 +88,11 @@ auto ban_timer(char *arg) -> time_t
    return now;
 }
 
-void add_ban(unit_data *ch, char *site, char type, time_t *until, char *textfile)
+void BanFile::add_ban(unit_data *ch, char *site, char type, time_t *until, char *textfile)
 {
-   struct ban_t *entry;
-   char          d[50];
-   char          buf[MAX_STRING_LENGTH];
+   ban_t *entry;
+   char   d[50];
+   char   buf[MAX_STRING_LENGTH];
 
    for(entry = ban_list; entry != nullptr; entry = entry->next)
    {
@@ -122,7 +104,7 @@ void add_ban(unit_data *ch, char *site, char type, time_t *until, char *textfile
 
    if(entry == nullptr)
    {
-      CREATE(entry, struct ban_t, 1);
+      CREATE(entry, ban_t, 1);
       entry->site = str_dup(site);
       if(static_cast<unsigned int>(str_is_empty(textfile)) == 0U)
       {
@@ -161,7 +143,7 @@ void add_ban(unit_data *ch, char *site, char type, time_t *until, char *textfile
    save_ban();
 }
 
-void kill_entry(struct ban_t *entry)
+void BanFile::kill_entry(ban_t *entry)
 {
    if(entry == ban_list)
    {
@@ -169,7 +151,7 @@ void kill_entry(struct ban_t *entry)
    }
    else
    {
-      struct ban_t *tmp;
+      ban_t *tmp;
 
       for(tmp = ban_list; tmp != nullptr; tmp = tmp->next)
       {
@@ -191,9 +173,9 @@ void kill_entry(struct ban_t *entry)
    save_ban();
 }
 
-void del_ban(unit_data *ch, char *site)
+void BanFile::del_ban(unit_data *ch, char *site)
 {
-   struct ban_t *entry;
+   ban_t *entry;
 
    for(entry = ban_list; entry != nullptr; entry = entry->next)
    {
@@ -214,7 +196,7 @@ void del_ban(unit_data *ch, char *site)
    }
 }
 
-void show_site(unit_data *ch, struct ban_t *entry)
+void BanFile::show_site(unit_data *ch, ban_t *entry)
 {
    char buf[200];
    char d[40];
@@ -231,14 +213,14 @@ void show_site(unit_data *ch, struct ban_t *entry)
    send_to_char(buf, ch);
 }
 
-void do_ban(unit_data *ch, char *arg, const struct command_info *cmd)
+void BanFile::do_ban(unit_data *ch, char *arg, const command_info *cmd)
 {
-   struct ban_t *tmp;
-   char          site[MAX_INPUT_LENGTH];
-   char          textfile[MAX_INPUT_LENGTH];
-   char          mode;
-   char          type;
-   time_t        until = 0;
+   ban_t *tmp;
+   char   site[MAX_INPUT_LENGTH];
+   char   textfile[MAX_INPUT_LENGTH];
+   char   mode;
+   char   type;
+   time_t until = 0;
 
    if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
@@ -294,7 +276,7 @@ void do_ban(unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* Complex little recursive bugger */
-auto ban_check(char *ban, char *site) -> bool /* TRUE, if banned */
+auto BanFile::ban_check(char *ban, char *site) -> bool /* TRUE, if banned */
 {
    if(*ban == '\0' && *site == '\0')
    {
@@ -332,11 +314,11 @@ auto ban_check(char *ban, char *site) -> bool /* TRUE, if banned */
    }
 }
 
-auto site_banned(char *cur_site) -> char
+auto BanFile::site_banned(char *cur_site) -> char
 {
-   struct ban_t *entry;
-   struct ban_t *next_entry;
-   time_t        now = time(nullptr);
+   ban_t *entry;
+   ban_t *next_entry;
+   time_t now = time(nullptr);
 
    for(entry = ban_list; entry != nullptr; entry = next_entry)
    {
@@ -355,11 +337,11 @@ auto site_banned(char *cur_site) -> char
    return NO_BAN;
 }
 
-void show_ban_text(char *site, descriptor_data *d)
+void BanFile::show_ban_text(char *site, descriptor_data *d)
 {
-   struct ban_t *entry;
-   char          bantext[MAX_STRING_LENGTH];
-   char          formtext[MAX_STRING_LENGTH];
+   ban_t *entry;
+   char   bantext[MAX_STRING_LENGTH];
+   char   formtext[MAX_STRING_LENGTH];
 
    for(entry = ban_list; entry != nullptr; entry = entry->next)
    {
@@ -377,4 +359,8 @@ void show_ban_text(char *site, descriptor_data *d)
          return;
       }
    }
+}
+BanFile::BanFile()
+   : filename_(libdir + BAN_FILE)
+{
 }

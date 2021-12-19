@@ -14,7 +14,7 @@
 
 static void ConnectionWrite(uint32_t nId, uint32_t nLogon, uint32_t nLogoff, uint32_t nLanPay)
 {
-   FILE *f = fopen_cache(str_cc(libdir, STATISTIC_FILE), "ab+");
+   FILE *f = fopen_cache(str_cc(libdir, STATISTIC_FILE.c_str()), "ab+");
 
    assert(f);
 

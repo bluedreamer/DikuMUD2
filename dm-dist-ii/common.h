@@ -2,13 +2,14 @@
 
 #include "essential.h"
 #include "unit_data.h"
+#include <string>
 
 extern const char *fillwords[];
 
 extern const char *drinks[];
 extern const char *dirs[];
 
-extern char        libdir[64];
+extern const std::string  libdir;
 
 auto               required_xp(int level) -> int;
 auto               level_xp(int level) -> int;

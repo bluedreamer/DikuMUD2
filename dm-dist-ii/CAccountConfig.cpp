@@ -52,11 +52,11 @@ void CAccountConfig::Boot()
 
    slog(LOG_OFF, 0, "Booting account system.");
 
-   if(static_cast<unsigned int>(file_exists(str_cc(libdir, ACCOUNT_LOG))) == 0U)
+   if(static_cast<unsigned int>(file_exists(str_cc(libdir, ACCOUNT_LOG.c_str()))) == 0U)
    {
       time_t now = time(nullptr);
 
-      f          = fopen(str_cc(libdir, ACCOUNT_LOG), "wb");
+      f          = fopen(str_cc(libdir, ACCOUNT_LOG.c_str()), "wb");
 
       if(f == nullptr)
       {

@@ -46,7 +46,7 @@ auto search_block(const char *arg, const char **list, bool exact) -> int;
 auto search_block_length(const char *arg, int length, const char **list, bool exact) -> int;
 auto fill_word(const char *argument) -> int;
 auto is_abbrev(const char *arg1, const char *arg2) -> bool;
-auto str_cc(const char *s1, const char *s2) -> char *;
+//auto str_cc(const char *s1, const char *s2) -> char *;
 auto add_name(const char *name, char **namelist) -> char **;
 auto del_name(const char *name, char **namelist) -> char **;
 auto create_namelist() -> char **;

@@ -318,7 +318,7 @@ set(DMSERVER_SRC
         zone_type.cpp
         zone_type.h
         constants.cpp
-        )
+        ban_t.cpp ban_t.h)
 
 add_compile_definitions(DMSERVER MEMORY_DEBUG MUD_DEBUG)
 add_executable(dmserver ${DMSERVER_SRC})
