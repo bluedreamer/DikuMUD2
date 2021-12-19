@@ -61,6 +61,7 @@
 #include "utility.h"
 #include "utils.h"
 #include "zon_basis.h"
+#include "wpn_info_type.h"
 #include <climits>
 #include <cstdio>
 #include <cstdlib>

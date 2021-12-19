@@ -40,6 +40,7 @@
 #include "trie.h"
 #include "utility.h"
 #include "utils.h"
+#include "wpn_info_type.h"
 #include <cstdio>
 #include <cstdlib>
 
@@ -84,7 +85,6 @@ int8_t      racial_ability[ABIL_TREE_MAX][PC_RACE_MAX];
 
 const char          *wpn_text[WPN_TREE_MAX + 1];
 int8_t               racial_weapons[WPN_TREE_MAX][PC_RACE_MAX];
-struct wpn_info_type wpn_info[WPN_TREE_MAX];
 
 /* ===================================================================== */
 

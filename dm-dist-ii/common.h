@@ -28,7 +28,6 @@
 
 extern const char *fillwords[];
 
-extern struct wpn_info_type wpn_info[];
 
 extern const char *drinks[];
 extern const char *dirs[];

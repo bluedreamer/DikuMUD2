@@ -25,11 +25,6 @@
 /* 09/07/92 seifert: Corrected a few wear related bugs                     */
 /* 30/01/93 gnort  : Changed various things in wear/remove                 */
 /* 26/08/94 gnort  : Moved equipment stuff to act_obj3.c                   */
-
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #include "act.h"
 #include "affect.h"
 #include "comm.h"
@@ -44,6 +39,10 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include "wpn_info_type.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 /* Return 0 = No hands used                      */
 /*        1 = One hand used                      */
@@ -312,7 +311,7 @@ auto obj_wear_size(unit_data *ch, unit_data *obj, int keyword) -> const char *
    return nullptr;
 }
 
-auto wear(unit_data *ch, unit_data *obj, int keyword, bool err, const struct command_info *cmd, char *arg) -> bool
+auto wear(unit_data *ch, unit_data *obj, int keyword, bool err, const command_info *cmd, char *arg) -> bool
 {
    const char *errstr = nullptr;
    const char *c;
@@ -847,7 +846,7 @@ auto wear(unit_data *ch, unit_data *obj, int keyword, bool err, const struct com
    return FALSE;
 }
 
-void do_wear(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wear(unit_data *ch, char *arg, const command_info *cmd)
 {
    static const char *keywords[] = {"finger", "neck",  "body",   "head",  "legs", "feet", "hands", "arms", "about",
                                     "waist",  "wrist", "shield", "chest", "back", "ear",  "ankle", nullptr};
@@ -926,7 +925,7 @@ void do_wear(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_wield(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wield(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *obj;
    char      *oarg = arg;
@@ -968,7 +967,7 @@ void do_wield(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_grab(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_grab(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *obj;
    char      *oarg = arg;
@@ -991,7 +990,7 @@ void do_grab(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-auto remove_equip(unit_data *ch, unit_data *obj, const struct command_info *cmd, char *arg) -> bool
+auto remove_equip(unit_data *ch, unit_data *obj, const command_info *cmd, char *arg) -> bool
 {
    if(IS_SET(OBJ_FLAGS(obj), OBJ_NO_UNEQUIP))
    {
@@ -1009,7 +1008,7 @@ auto remove_equip(unit_data *ch, unit_data *obj, const struct command_info *cmd,
    return TRUE;
 }
 
-void do_remove(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_remove(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *obj;
    char      *oarg = arg;
