@@ -29,12 +29,7 @@
 /* 22/01/93 hhs: corrected drop bug in blow away                           */
 /* 02/08/94 gnort: Fixed a bug in force_move; added support for 2nd string */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <unistd.h>
-
+#include "command_info.h"
 #include "common.h"
 #include "db.h"
 #include "files.h"
@@ -45,6 +40,11 @@
 #include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <unistd.h>
 
 struct persist_type
 {
@@ -120,7 +120,7 @@ void persist_recreate(unit_data *u, char *name)
 }
 
 /* Corpses rely on this.... */
-auto persist_intern(struct spec_arg *sarg) -> int
+auto persist_intern(spec_arg *sarg) -> int
 {
    auto *pt = (struct persist_type *)sarg->fptr->data;
 

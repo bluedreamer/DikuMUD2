@@ -54,8 +54,6 @@ auto skill_text(const skill_interval *si, int skill) -> const char *;
 
 #define CHAR_IS_UNDEAD(ch) RACE_IS_UNDEAD(CHAR_RACE(ch))
 
-
-
 #define DEMIGOD_LEVEL_XP (40000000)
 
 auto        object_two_handed(unit_data *obj) -> int;
