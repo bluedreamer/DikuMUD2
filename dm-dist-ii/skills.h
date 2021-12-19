@@ -97,10 +97,10 @@ void check_fitting(unit_data *u);
 extern const char *pc_races[PC_RACE_MAX + 1];
 extern const char *pc_race_adverbs[PC_RACE_MAX + 1];
 
-extern int8_t                   racial_ability[ABIL_TREE_MAX][PC_RACE_MAX];
-extern int8_t                   racial_weapons[WPN_TREE_MAX][PC_RACE_MAX];
-extern int8_t                   racial_skills[SKI_TREE_MAX][PC_RACE_MAX];
-extern int8_t                   racial_spells[SPL_TREE_MAX][PC_RACE_MAX];
+extern int8_t racial_ability[ABIL_TREE_MAX][PC_RACE_MAX];
+extern int8_t racial_weapons[WPN_TREE_MAX][PC_RACE_MAX];
+extern int8_t racial_skills[SKI_TREE_MAX][PC_RACE_MAX];
+extern int8_t racial_spells[SPL_TREE_MAX][PC_RACE_MAX];
 
 extern int hit_location_table[];
 

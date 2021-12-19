@@ -22,7 +22,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-//#include "interpreter.h"
 #include "spec_arg.h"
 
 auto accuse(spec_arg *sarg) -> int;

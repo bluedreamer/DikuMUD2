@@ -1,6 +1,6 @@
+#include "cQueue.h"
 #include <algorithm>
 #include <cstring>
-#include "cQueue.h"
 cQueue::cQueue()
 {
    pHead    = nullptr;

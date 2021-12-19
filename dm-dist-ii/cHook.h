@@ -1,6 +1,6 @@
 #pragma once
-#include "essential.h"
 #include "cQueue.h"
+#include "essential.h"
 #include <cstdint>
 
 class cCaptainHook;

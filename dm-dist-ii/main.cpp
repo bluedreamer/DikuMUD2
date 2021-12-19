@@ -553,7 +553,7 @@ void game_event()
       if(--(point->wait) <= 0 && (point->qInput.IsEmpty() == 0))
       {
          cQueueElem *qe = point->qInput.GetHead();
-         pcomm                 = (char *)qe->Data();
+         pcomm          = (char *)qe->Data();
          qe->SetNull();
          delete qe;
 

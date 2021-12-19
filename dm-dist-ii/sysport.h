@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : sysport.h                                 Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -22,9 +23,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_SYSPORT_H
-#define _MUD_SYSPORT_H
-
 #ifdef AMIGA1
 void CloseTimer(void);
 int  OpenTimer(void);
@@ -37,5 +35,3 @@ int  WaitForPulse(void);
    #define AMIGA_PLAY_WINDOW "CON:0/14/664/197/DikuMUD Window/CLOSE"
 
 #endif /* AMIGA */
-
-#endif /* _MUD_SYSPORT_H */

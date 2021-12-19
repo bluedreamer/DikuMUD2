@@ -72,4 +72,4 @@ struct obj_type_t
    uint8_t     v[5];
 };
 
-auto stat_obj_data(unit_data *u, struct obj_type_t *obj_data) -> char *;
+auto stat_obj_data(unit_data *u, obj_type_t *obj_data) -> char *;

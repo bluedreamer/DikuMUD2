@@ -28,7 +28,6 @@
 
 extern const char *fillwords[];
 
-
 extern const char *drinks[];
 extern const char *dirs[];
 

@@ -83,8 +83,8 @@ int8_t      racial_skills[SKI_TREE_MAX][PC_RACE_MAX];
 const char *abil_text[ABIL_TREE_MAX + 1];
 int8_t      racial_ability[ABIL_TREE_MAX][PC_RACE_MAX];
 
-const char          *wpn_text[WPN_TREE_MAX + 1];
-int8_t               racial_weapons[WPN_TREE_MAX][PC_RACE_MAX];
+const char *wpn_text[WPN_TREE_MAX + 1];
+int8_t      racial_weapons[WPN_TREE_MAX][PC_RACE_MAX];
 
 /* ===================================================================== */
 

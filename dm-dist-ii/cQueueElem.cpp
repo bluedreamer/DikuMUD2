@@ -1,6 +1,6 @@
-#include <cstring>
-#include <cassert>
 #include "cQueueElem.h"
+#include <cassert>
+#include <cstring>
 
 cQueueElem::cQueueElem(char *c, bool bCopy)
 {

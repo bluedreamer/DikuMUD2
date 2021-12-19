@@ -74,8 +74,8 @@ Mon Nov 14 17:19:47 MET 1994
    by 400 bytes as I dont want to search though this code... *shiver*
 
 */
-#include "cQueueElem.h"
 #include "CServerConfiguration.h"
+#include "cQueueElem.h"
 #include "comm.h"
 #include "config.h"
 #include "db_file.h"

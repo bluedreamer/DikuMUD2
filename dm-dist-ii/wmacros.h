@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : wmacros.h                                 Part of Valhalla MUD *
  * Version: 1.07                                                           *
@@ -22,9 +23,6 @@
  * reproduced, translated or reduced to any medium without the prior       *
  * written consent of Valhalla.                                            *
  * *********************************************************************** */
-
-#ifndef _MUD_WMACROS_H
-#define _MUD_WMACROS_H
 
 #include <values.h>
 
@@ -360,5 +358,3 @@
 #define MSET_SPELL(div, pro, det, sum, cre, min, hea, col, cel, int, ext)                                                                  \
    spell[SPL_DIVINE] div spell[SPL_PROTECTION] pro spell[SPL_DETECTION] det spell[SPL_SUMMONING] sum spell[SPL_CREATION] cre               \
       spell[SPL_MIND] min spell[SPL_HEAT] hea spell[SPL_COLD] col spell[SPL_CELL] cel spell[SPL_INTERNAL] int spell[SPL_EXTERNAL] ext
-
-#endif /* _MUD_WMACROS_H */
