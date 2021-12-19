@@ -29,13 +29,6 @@
 /* 11-Aug-94 gnort : Changed idea/bug/typo to one command (duh)            */
 /* 12-Aug-94 gnort : Unimplemented-spells-on-scrolls crash-bug fixed       */
 
-#include <cctype>
-#include <climits>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
 #include "account.h"
 #include "affect.h"
 #include "blkfile.h"
@@ -47,6 +40,7 @@
 #include "files.h"
 #include "handler.h"
 #include "interpreter.h"
+#include "race_info_type.h"
 #include "skills.h"
 #include "spells.h"
 #include "structs.h"
@@ -55,7 +49,12 @@
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
+#include <cctype>
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 /* extern variables */
 /* fom dikumud.c */

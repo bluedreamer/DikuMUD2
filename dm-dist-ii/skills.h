@@ -56,18 +56,12 @@ auto skill_text(const skill_interval *si, int skill) -> const char *;
 
 
 
-struct damage_chart_element_type
-{
-   int offset;  /* When does damage start         */
-   int basedam; /* The damage given at 'offset'   */
-   int alpha;   /* Step size of damage as 1/alpha */
-};
-
+#include "damage_chart_element_type.h"
 struct damage_chart_type
 {
    int fumble; /* from 01 - fuble => fumble      */
 
-   struct damage_chart_element_type element[5];
+   damage_chart_element_type element[5];
 };
 
 
@@ -121,7 +115,6 @@ auto av_howmuch(int av) -> int;
 auto av_makes(int av) -> int;
 void check_fitting(unit_data *u);
 
-extern struct race_info_type race_info[PC_RACE_MAX];
 extern const char           *pc_races[PC_RACE_MAX + 1];
 extern const char           *pc_race_adverbs[PC_RACE_MAX + 1];
 

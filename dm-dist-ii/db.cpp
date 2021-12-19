@@ -1,5 +1,3 @@
-#include "reception.h"
-
 /* *********************************************************************** *
  * File   : db.c                                      Part of Valhalla MUD *
  * Version: 1.25                                                           *
@@ -31,24 +29,20 @@
 /* 12/09/94 gnort   : cleaned up a bit                                     */
 /* 01/07/95 HHS     : added template loading and checking                  */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
+#include "db.h"
 #include "account.h"
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
 #include "connectionlog.h"
-#include "db.h"
 #include "db_file.h"
 #include "dil.h"
 #include "dilrun.h"
 #include "files.h"
 #include "handler.h"
 #include "money.h"
+#include "race_info_type.h"
+#include "reception.h"
 #include "skills.h"
 #include "structs.h"
 #include "textutil.h"
@@ -57,7 +51,12 @@
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
+#include <cctype>
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 int        room_number;         /* For counting numbers in rooms */
 unit_data *unit_list = nullptr; /* The global unit_list          */

@@ -31,6 +31,7 @@
 #include "db.h"
 #include "files.h"
 #include "interpreter.h"
+#include "race_info_type.h"
 #include "spelldef.h"
 #include "structs.h"
 #include "textutil.h"
@@ -72,9 +73,8 @@ const char              *spl_text[SPL_TREE_MAX + 1];
 int8_t                   racial_spells[SPL_TREE_MAX][PC_RACE_MAX];
 struct damage_chart_type spell_chart[SPL_TREE_MAX];
 
-const char           *pc_races[PC_RACE_MAX + 1];
-const char           *pc_race_adverbs[PC_RACE_MAX + 1];
-struct race_info_type race_info[PC_RACE_MAX];
+const char *pc_races[PC_RACE_MAX + 1];
+const char *pc_race_adverbs[PC_RACE_MAX + 1];
 
 const char *ski_text[SKI_TREE_MAX + 1];
 int8_t      racial_skills[SKI_TREE_MAX][PC_RACE_MAX];
