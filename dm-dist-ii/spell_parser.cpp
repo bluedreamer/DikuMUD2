@@ -22,6 +22,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "damage_chart_type.h"
 #include "comm.h"
 #include "common.h"
 #include "db.h"

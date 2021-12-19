@@ -39,3 +39,4 @@ void melee_violence(unit_data *ch, int primary);
 auto melee_bonus(unit_data *att, unit_data *def, int hit_loc, int *pAtt_weapon_type, unit_data **pAtt_weapon, int *pDef_armour_type,
                  unit_data **pDef_armour, int primary = static_cast<int>(TRUE)) -> int;
 auto shield_bonus(unit_data *att, unit_data *def, unit_data **pDef_shield) -> int;
+void damage_object(unit_data *ch, unit_data *obj, int dam);

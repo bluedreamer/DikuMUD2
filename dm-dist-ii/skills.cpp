@@ -28,6 +28,7 @@
 #include "skills.h"
 #include "comm.h"
 #include "common.h"
+#include "damage_chart_type.h"
 #include "db.h"
 #include "files.h"
 #include "interpreter.h"
@@ -69,9 +70,8 @@ int hit_location_table[] =                       /* Determine by using 2d8 */
     WEAR_LEGS, WEAR_LEGS,  WEAR_LEGS, WEAR_FEET, /* 15..16 => 4.68% for feet   */
     WEAR_FEET};
 
-const char              *spl_text[SPL_TREE_MAX + 1];
-int8_t                   racial_spells[SPL_TREE_MAX][PC_RACE_MAX];
-struct damage_chart_type spell_chart[SPL_TREE_MAX];
+const char *spl_text[SPL_TREE_MAX + 1];
+int8_t      racial_spells[SPL_TREE_MAX][PC_RACE_MAX];
 
 const char *pc_races[PC_RACE_MAX + 1];
 const char *pc_race_adverbs[PC_RACE_MAX + 1];
@@ -82,10 +82,9 @@ int8_t      racial_skills[SKI_TREE_MAX][PC_RACE_MAX];
 const char *abil_text[ABIL_TREE_MAX + 1];
 int8_t      racial_ability[ABIL_TREE_MAX][PC_RACE_MAX];
 
-const char              *wpn_text[WPN_TREE_MAX + 1];
-int8_t                   racial_weapons[WPN_TREE_MAX][PC_RACE_MAX];
-struct damage_chart_type weapon_chart[WPN_TREE_MAX];
-struct wpn_info_type     wpn_info[WPN_TREE_MAX];
+const char          *wpn_text[WPN_TREE_MAX + 1];
+int8_t               racial_weapons[WPN_TREE_MAX][PC_RACE_MAX];
+struct wpn_info_type wpn_info[WPN_TREE_MAX];
 
 /* ===================================================================== */
 
@@ -204,7 +203,7 @@ auto object_two_handed(unit_data *obj) -> int
    return static_cast<int>(FALSE);
 }
 
-auto chart_damage(int roll, struct damage_chart_element_type *element) -> int
+auto chart_damage(int roll, damage_chart_element_type *element) -> int
 {
    if(element->alpha == 0)
    {
@@ -220,7 +219,7 @@ auto chart_damage(int roll, struct damage_chart_element_type *element) -> int
 }
 
 /* Size is for natural attacks to limit max damage for such */
-auto chart_size_damage(int roll, struct damage_chart_element_type *element, int lbs) -> int
+auto chart_size_damage(int roll, damage_chart_element_type *element, int lbs) -> int
 {
    if(element->alpha == 0)
    {

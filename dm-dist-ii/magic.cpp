@@ -27,16 +27,17 @@
 /* 08/09/93 HHS    : use_mana added for easy use                           */
 /* 31/08/94 gnort  : Fixed infite loop in may_teleport()   (!!!!!!!!)      */
 /* 13/09/94 seifert: No you didn't - you made an infinite loop (!)         */
-
 #include "magic.h"
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
+#include "damage_chart_type.h"
 #include "dbfind.h"
 #include "dil.h"
 #include "dilprg.h"
 #include "dilrun.h"
 #include "dilvar.h"
+#include "experience.h"
 #include "fight.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -440,7 +441,7 @@ auto spell_cast_check(unit_data *att, int spell) -> int
 /* nessecary work for you                                    */
 /* Qty is 1 for small, 2 for medium and 3 for large versions */
 /* of each spell                                             */
-auto spell_offensive(struct spell_args *sa, int spell_number, int bonus) -> int
+auto spell_offensive(spell_args *sa, int spell_number, int bonus) -> int
 {
    int        def_shield_bonus;
    int        armour_type;
@@ -448,11 +449,6 @@ auto spell_offensive(struct spell_args *sa, int spell_number, int bonus) -> int
    int        roll;
    int        bEffect;
    unit_data *def_shield;
-
-   auto spell_bonus(unit_data * att, unit_data * medium, unit_data * def, int hit_loc, int spell_number, int *pDef_armour_type,
-                    unit_data **pDef_armour)
-      ->int;
-   void damage_object(unit_data * ch, unit_data * obj, int dam);
 
    /* Does the spell perhaps only hit head / body? All?? Right now I
       do it randomly */
