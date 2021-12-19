@@ -29,12 +29,6 @@
 /* 22/01/93 hhs: corrected drop bug in blow away                           */
 /* 02/08/94 gnort: Fixed a bug in force_move; added support for 2nd string */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
 #include "affect.h"
 #include "comm.h"
 #include "db.h"
@@ -54,9 +48,15 @@
 #include "textutil.h"
 #include "trie.h"
 #include "unit_fptr.h"
+#include "unit_vector_data.h"
 #include "utility.h"
 #include "utils.h"
+#include <cctype>
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 /*   external vars  */
 

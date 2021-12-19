@@ -23,11 +23,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
+#include "justice.h"
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"
@@ -38,7 +34,6 @@
 #include "files.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "justice.h"
 #include "money.h"
 #include "movement.h"
 #include "skills.h"
@@ -46,8 +41,13 @@
 #include "textutil.h"
 #include "unit_affected_type.h"
 #include "unit_fptr.h"
+#include "unit_vector_data.h"
 #include "utility.h"
 #include "utils.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 /* These are constant for all guards.                            */
 

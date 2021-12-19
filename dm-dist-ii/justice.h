@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : justice.h                                 Part of Valhalla MUD *
  * Version: 1.01                                                           *
@@ -21,9 +22,7 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
-
-#ifndef _MUD_JUSTICE_H
-#define _MUD_JUSTICE_H
+#include "unit_data.h"
 
 #define CRIME_LIFE 12 /* Remember crime for (5 mins * CRIME_LIFE)    */
 
@@ -38,5 +37,3 @@ void offend_legal_state(unit_data *ch, unit_data *victim);
 void log_crime(unit_data *criminal, unit_data *victim, uint8_t crime_type, int active = TRUE);
 
 void set_reward_char(unit_data *ch, int crimes);
-
-#endif /* _MUD_JUSTICE_H */

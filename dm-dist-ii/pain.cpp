@@ -26,13 +26,6 @@
 
 /* 16/03/94 MS: Corrected 'i' bug which made program continue...           */
 
-#include <cctype>
-#include <cstdarg> /* va_args in pain_error()        */
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
 #include "comm.h"
 #include "common.h"
 #include "db.h"
@@ -47,10 +40,17 @@
 #include "time_info_data.h"
 #include "trie.h"
 #include "unit_fptr.h"
+#include "unit_vector_data.h"
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
+#include <cctype>
+#include <cstdarg> /* va_args in pain_error()        */
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 /*
 

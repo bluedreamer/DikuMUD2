@@ -22,16 +22,16 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cctype>
-#include <ctime>
-
+#include "unitfind.h"
 #include "common.h"
 #include "db.h"
 #include "handler.h"
 #include "textutil.h"
-#include "unitfind.h"
+#include "unit_vector_data.h"
 #include "utility.h"
 #include "utils.h"
+#include <cctype>
+#include <ctime>
 
 /* Assumes UNIT_IN(room) == NULL */
 static auto same_surroundings_room(unit_data *room, unit_data *u2) -> bool
@@ -734,8 +734,6 @@ auto find_symbolic(char *zone, char *name) -> unit_data *
 {
    return find_symbolic_instance(find_file_index(zone, name));
 }
-
-struct unit_vector_data unit_vector;
 
 /* Init the unit_vector for FIRST use */
 static void init_unit_vector()

@@ -23,12 +23,6 @@
  * *********************************************************************** */
 /* 12-Jan-95 Gnort:  Fixed security-hole in admin-obj...                   */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
@@ -46,9 +40,16 @@
 #include "structs.h"
 #include "textutil.h"
 #include "unit_fptr.h"
+#include "unit_vector_data.h"
 #include "utility.h"
 #include "utils.h"
+
+#include <cctype>
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #define DEFAULT_ENTRY_ZONE "udgaard"
 #define DEFAULT_ENTRY_NAME "temple"

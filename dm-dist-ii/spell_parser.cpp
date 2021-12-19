@@ -22,10 +22,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #include "comm.h"
 #include "common.h"
 #include "db.h"
@@ -43,8 +39,12 @@
 #include "structs.h"
 #include "textutil.h"
 #include "trie.h"
+#include "unit_vector_data.h"
 #include "utility.h"
 #include "utils.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 /* Extern data */
 

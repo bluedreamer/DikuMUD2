@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : skills.h                                  Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -22,19 +23,12 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_SKILLS_H
-#define _MUD_SKILLS_H
-
 #include "unit_data.h"
 #include "values.h"
 
-struct skill_interval
-{
-   const int   skill;
-   const char *descr;
-};
+#include "skill_interval.h"
 
-auto skill_text(const struct skill_interval *si, int skill) -> const char *;
+auto skill_text(const skill_interval *si, int skill) -> const char *;
 
 /* ---------------- COMBAT MESSAGE SYSTEM -------------------- */
 
@@ -181,5 +175,3 @@ extern const char *wpn_text[WPN_TREE_MAX + 1];
 extern const char *spl_text[SPL_TREE_MAX + 1];
 extern const char *ski_text[SKI_TREE_MAX + 1];
 extern const char *abil_text[ABIL_TREE_MAX + 1];
-
-#endif /* _MUD_SKILLS_H */

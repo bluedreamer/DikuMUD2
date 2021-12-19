@@ -45,6 +45,7 @@
 #include "structs.h"
 #include "textutil.h"
 #include "unit_affected_type.h"
+#include "unit_vector_data.h"
 #include "utility.h"
 #include "utils.h"
 #include "values.h"

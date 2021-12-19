@@ -25,18 +25,6 @@
 
 #include "unit_data.h"
 
-#define UVI(i) (unit_vector.units[i])
-#define UVITOP (unit_vector.top)
-
-struct unit_vector_data
-{
-   unit_data **units;
-   int         size;
-   int         top;
-};
-
-extern struct unit_vector_data unit_vector;
-
 auto same_surroundings(unit_data *u1, unit_data *u2) -> bool;
 void scan4_unit_room(unit_data *room, uint8_t type);
 void scan4_unit(unit_data *ch, uint8_t type);

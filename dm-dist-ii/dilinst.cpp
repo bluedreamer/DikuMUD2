@@ -23,12 +23,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cstdarg> /* For type_check */
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
+#include "dilinst.h"
 #include "account.h"
 #include "affect.h"
 #include "comm.h"
@@ -36,7 +31,6 @@
 #include "db.h"
 #include "db_file.h"
 #include "dil.h"
-#include "dilinst.h"
 #include "dilrun.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -51,10 +45,16 @@
 #include "trie.h"
 #include "unit_affected_type.h"
 #include "unit_fptr.h"
+#include "unit_vector_data.h"
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
 #include <climits>
+#include <cstdarg> /* For type_check */
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 /* report error in instruction */
 void dil_insterr(struct dilprg *p, const char *where)

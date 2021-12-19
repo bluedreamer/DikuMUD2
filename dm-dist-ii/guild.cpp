@@ -44,6 +44,7 @@
 #include "structs.h"
 #include "textutil.h"
 #include "unit_fptr.h"
+#include "unit_vector_data.h"
 #include "utility.h"
 #include "utils.h"
 #include <climits>
