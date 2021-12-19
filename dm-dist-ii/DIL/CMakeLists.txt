@@ -8,6 +8,7 @@ set(DIL_SRC
         ../structs.cpp
         ../textutil.cpp
         ../common.cpp
+        ../cNamelist.cpp
         ../namelist.cpp
         ../bytestring.cpp
         ../CByteBuffer.cpp

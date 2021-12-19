@@ -18,6 +18,7 @@ set(DMC_SRC
         ../pc_data.cpp
         ../unit_data.cpp
         ../obj_data.cpp
+        ../cNamelist.cpp
         ../npc_data.cpp
         ../char_data.cpp
         ../room_direction_data.cpp

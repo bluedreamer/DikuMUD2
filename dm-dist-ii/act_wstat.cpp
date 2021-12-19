@@ -348,10 +348,10 @@ static void stat_creators(unit_data *ch, char *arg)
 // MS2020 modified to get rid of warnings
 static void stat_dil(const unit_data *ch, const struct zone_type *zone)
 {
-   char                buf[MAX_STRING_LENGTH];
-   char                buf2[MAX_STRING_LENGTH];
+   char         buf[MAX_STRING_LENGTH];
+   char         buf2[MAX_STRING_LENGTH];
    diltemplate *tmpl;
-   int                 i;
+   int          i;
 
    sprintf(buf, "List of DIL in zone %s:\n\r", zone->name);
    send_to_char(buf, ch);
@@ -384,9 +384,9 @@ static void stat_dil(const unit_data *ch, const struct zone_type *zone)
 #ifdef MS2020
 static void stat_dil(const unit_data *ch, const struct zone_type *zone)
 {
-   char                buf[MAX_STRING_LENGTH];
+   char         buf[MAX_STRING_LENGTH];
    diltemplate *tmpl;
-   int                 i;
+   int          i;
 
    sprintf(buf, "List of DIL in zone %s:\n\r", zone->name);
    send_to_char(buf, ch);

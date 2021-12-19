@@ -546,9 +546,9 @@ void execute_append(unit_data *pc, char *str)
 
 auto admin_obj(struct spec_arg *sarg) -> int
 {
-   char                     buf[512];
-   int                      zonelist;
-   struct zone_type        *zone;
+   char              buf[512];
+   int               zonelist;
+   struct zone_type *zone;
    extra_descr_data *exdp;
 
    if(sarg->cmd->no != CMD_AUTO_UNKNOWN)

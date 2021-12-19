@@ -1,4 +1,5 @@
 #include "zone_type.h"
+#include "essential.h"
 #include "file_index_type.h"
 #include "zone_reset_cmd.h"
 

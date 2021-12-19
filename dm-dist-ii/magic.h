@@ -25,8 +25,8 @@
 
 /* #define MAGIC_POWER(ch)  \
    MAX(CHAR_MAG(ch), CHAR_DIV(ch)) */
-#include "unit_data.h"
 #include "spell_args.h"
+#include "unit_data.h"
 
 auto dil_effect(const char *pStr, spell_args *sa) -> int;
 auto object_power(unit_data *unit) -> int;

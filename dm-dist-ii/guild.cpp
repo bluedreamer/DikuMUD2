@@ -74,7 +74,7 @@ auto find_quest(char *word, unit_data *unit) -> extra_descr_data *
 
 auto char_guild_level(unit_data *ch) -> int
 {
-   uint32_t                 i;
+   uint32_t          i;
    extra_descr_data *exd;
 
    assert(IS_CHAR(ch));
@@ -391,7 +391,7 @@ void leave_guild(unit_data *player)
 
 void guild_banish_player(unit_data *ch)
 {
-   char                    *c;
+   char             *c;
    extra_descr_data *pExd;
 
    if(!IS_PC(ch))
@@ -749,8 +749,8 @@ auto guild_title(struct spec_arg *sarg) -> int
 
 void do_guild(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   char                     buf[MAX_STRING_LENGTH];
-   int                      found = static_cast<int>(FALSE);
+   char              buf[MAX_STRING_LENGTH];
+   int               found = static_cast<int>(FALSE);
    extra_descr_data *exd;
 
    if(!IS_PC(ch))

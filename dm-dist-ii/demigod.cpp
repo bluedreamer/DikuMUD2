@@ -48,7 +48,7 @@ void save_player_file(unit_data *pc);
 
 void add_sacrifice_info(unit_data *demi, unit_data *ch, long power)
 {
-   char                     Buf[200];
+   char              Buf[200];
    extra_descr_data *exd;
 
    sprintf(Buf, "$S%s", UNIT_NAME(ch));
@@ -541,7 +541,7 @@ auto demi_stuff(spec_arg *sarg) -> int
    unit_data               *pVict, *paper;
    char                     Buf[MAX_STRING_LENGTH];
    int                      loaded = FALSE;
-   extra_descr_data *exd;
+   extra_descr_data        *exd;
 
    if(cmd->no == CMD_LEVEL)
    {

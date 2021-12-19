@@ -109,7 +109,7 @@ void offend_legal_state(unit_data *ch, unit_data *victim)
 auto npc_visit_room(struct spec_arg *sarg) -> int
 {
    visit_data *vd;
-   int                i;
+   int         i;
 
    vd = (visit_data *)sarg->fptr->data;
 
@@ -165,13 +165,12 @@ auto npc_visit_room(struct spec_arg *sarg) -> int
 /* return to its original room                                      */
 /* The *data may be any datapointer which what_now can use          */
 /*                                                                  */
-void npc_set_visit(unit_data *npc, unit_data *dest_room, int what_now(const unit_data *, visit_data *), void *data,
-                   int non_tick_return)
+void npc_set_visit(unit_data *npc, unit_data *dest_room, int what_now(const unit_data *, visit_data *), void *data, int non_tick_return)
 {
-   unit_data         *u;
+   unit_data  *u;
    visit_data *vd;
-   unit_fptr         *fp1;
-   unit_fptr         *fp2;
+   unit_fptr  *fp1;
+   unit_fptr  *fp2;
 
    assert(IS_ROOM(dest_room));
 
@@ -395,7 +394,7 @@ auto crime_victim_name(int crime_no, int id) -> const char *
    return "";
 }
 
-void log_crime(unit_data *criminal, unit_data *victim, uint8_t crime_type, int active)
+void log_crime(unit_data *criminal, unit_data *victim, uint8_t crime_type, bool active)
 {
    int i;
    int j;
@@ -770,7 +769,7 @@ void activate_accuse(unit_data *npc, uint8_t crime_type, const char *cname)
    struct npc_accuse_data *nad;
    unit_data              *prison;
    unit_fptr              *fptr;
-   visit_data      *vd;
+   visit_data             *vd;
 
    /* GEN: get accuse room in here */
    /* How to find the nearest accuse room? */

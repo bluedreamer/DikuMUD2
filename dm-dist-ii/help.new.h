@@ -23,7 +23,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-
 class help_index_type
 {
 public:

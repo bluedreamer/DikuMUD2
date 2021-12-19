@@ -641,7 +641,7 @@ void check_namelist(struct unit_data *unit, class cNamelist *nl)
 
 void process_unit(struct unit_data *u)
 {
-   int                      i;
+   int               i;
    extra_descr_data *exd;
 
    extern int         verbose;

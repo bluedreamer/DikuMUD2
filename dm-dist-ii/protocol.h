@@ -26,6 +26,7 @@
 #include "cHook.h"
 #include "essential.h"
 #include "select.h"
+#include "terminal_setup_type.h"
 
 /* Use these Super Colour defines, so that we can easilly change the
    default colours */
@@ -42,22 +43,12 @@
 #define TERM_VT100    3
 #define TERM_INTERNAL 4
 
-struct terminal_setup_type
-{
-   uint8_t redraw;         /* Redraw the users prompt? */
-   uint8_t echo;           /* Echo chars to user?      */
-   uint8_t width, height;  /* The colour of his nose   */
-   uint8_t emulation;      /* TERM_XXX                 */
-   uint8_t telnet;         /* Is telnet used?          */
-   uint8_t colour_convert; /* Colour conversion (mapping) used */
-};
-
 auto read_to_queue(int fd, cQueue *q) -> int;
 void protocol_send_close(cHook *Hook, uint16_t id);
 void protocol_send_confirm(cHook *Hook, uint16_t id);
 void protocol_send_request(cHook *Hook);
 void protocol_send_text(cHook *Hook, uint16_t id, const char *text, uint8_t type);
-void protocol_send_setup(cHook *Hook, uint16_t id, struct terminal_setup_type *setup);
+void protocol_send_setup(cHook *Hook, uint16_t id, terminal_setup_type *setup);
 void protocol_send_host(cHook *Hook, uint16_t id, char *host, uint16_t nPort, uint8_t nLine);
 
 auto protocol_parse_incoming(cHook *Hook, uint16_t *pid, uint16_t *plen, char **str, uint8_t *text_type) -> int;

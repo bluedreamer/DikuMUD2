@@ -1,5 +1,8 @@
 #pragma once
+
+#include "essential.h"
 #include "unit_data.h"
+
 class cCombat
 {
    friend class cCombatList;

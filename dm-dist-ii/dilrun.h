@@ -22,8 +22,8 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include "unit_data.h"
 #include "dil_func_type.h"
+#include "unit_data.h"
 
 /* Maximum number of consecutive instructions allowed in one tick */
 #define WAITCMD_FINISH    -100 /* Stop program execution until next event */

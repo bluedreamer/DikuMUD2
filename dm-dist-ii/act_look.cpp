@@ -198,7 +198,7 @@ auto single_unit_messg(unit_data *unit, const char *type, const char *pSubStr, c
 void unit_messg(unit_data *ch, unit_data *unit, const char *type, const char *mesg_s, const char *mesg_o)
 {
    extra_descr_data *exd = nullptr;
-   const char              *c;
+   const char       *c;
 
    c = single_unit_messg(unit, str_cc(type, "_s"), "", mesg_s);
 
@@ -799,7 +799,7 @@ void list_contents(unit_data *ch, unit_data *unit, int show)
 
 static void look_dir(unit_data *ch, int keyword_no)
 {
-   unit_data               *room = UNIT_IN(ch);
+   unit_data        *room = UNIT_IN(ch);
    extra_descr_data *pExd;
 
    if(!IS_ROOM(room))
@@ -949,13 +949,13 @@ static void look_in(unit_data *ch, char *arg, const struct command_info *cmd)
 
 static void look_at(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   unit_data               *unit;
+   unit_data        *unit;
    extra_descr_data *ed;
-   char                    *b = arg;
-   char                    *c;
-   int                      i;
-   int                      j;
-   int                      fnd;
+   char             *b = arg;
+   char             *c;
+   int               i;
+   int               j;
+   int               fnd;
 
    if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {

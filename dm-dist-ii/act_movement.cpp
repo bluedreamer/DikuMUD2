@@ -35,7 +35,6 @@
 /* 23/08/93 jubal  : Fixed messages in do_sail                             */
 /* 23/08/93 jubal  : Added messages to leader when start/stop follow       */
 /* 23/08/93 jubal  : Fixed (nearly - still acttrouble) msgs around open etc*/
-#include "door_data.h"
 #include "CServerConfiguration.h"
 #include "account.h"
 #include "affect.h"
@@ -43,6 +42,7 @@
 #include "common.h"
 #include "constants.h"
 #include "db.h"
+#include "door_data.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "main.h"
@@ -903,11 +903,11 @@ auto low_find_door(unit_data *ch, char *doorstr, int err_msg, int check_hidden) 
 
 auto locate_lock(unit_data *ch, char *arg) -> door_data *
 {
-   unit_data              *thing;
-   unit_data              *other_room;
-   unit_data              *back = nullptr;
+   unit_data       *thing;
+   unit_data       *other_room;
+   unit_data       *back = nullptr;
    static door_data a_door;
-   int                     door;
+   int              door;
 
 #ifdef SUSPEKT
    /* Check if person is inside something he is trying to open */
@@ -1061,7 +1061,7 @@ void do_knock(unit_data *ch, char *argument, const struct command_info *cmd)
 
 void do_open(unit_data *ch, char *aaa, const struct command_info *cmd)
 {
-   char             *argument = (char *)aaa;
+   char      *argument = (char *)aaa;
    door_data *a_door;
 
    if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)

@@ -28,11 +28,11 @@
  * 14-Apr-95 HHS:   Added for and foreach, break and continue
  */
 
-#include "dilargstype.h"
 #include "db_file.h"
 #include "bytestring.h"
 #include "db.h"
 #include "dil.h"
+#include "dilargstype.h"
 #include "dilrun.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -56,13 +56,12 @@ CByteBuffer g_FileBuffer(16384);
 // int filbuffer_length = 0;             /* The length of filbuffer         */
 // uint8_t *filbuffer = 0;                 /* Buffer for read/write unit      */
 
-
 auto bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra) -> int
 {
    extra_descr_data *e;
    extra_descr_data *te;
-   uint8_t                  i;
-   char                    *c;
+   uint8_t           i;
+   char             *c;
 
    *ppExtra = nullptr;
    te       = nullptr;
@@ -175,8 +174,8 @@ auto bread_diltemplate(CByteBuffer *pBuf) -> diltemplate *
    extern int mud_bootzone;
    int        valid;
 #endif
-   int                 i;
-   int                 j;
+   int          i;
+   int          j;
    diltemplate *tmpl;
 
    /* read a template */
@@ -411,12 +410,12 @@ void bwrite_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
  */
 auto bread_dil(CByteBuffer *pBuf, unit_data *owner, uint8_t version, unit_fptr *fptr) -> void *
 {
-   struct dilprg      *prg;
-   diltemplate *tmpl     = nullptr;
-   uint32_t            recallpc = 0;
-   uint16_t            t16;
-   int                 i;
-   int                 novar;
+   struct dilprg *prg;
+   diltemplate   *tmpl     = nullptr;
+   uint32_t       recallpc = 0;
+   uint16_t       t16;
+   int            i;
+   int            novar;
 #ifdef DMSERVER
    char buf[255];
    char name[255];
@@ -899,7 +898,7 @@ void bwrite_diltemplate(CByteBuffer *pBuf, diltemplate *tmpl)
  */
 void bwrite_dil(CByteBuffer *pBuf, struct dilprg *prg)
 {
-   int                 i;
+   int          i;
    diltemplate *tmpl;
 
    /* write new version */

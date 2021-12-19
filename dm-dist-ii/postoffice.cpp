@@ -27,20 +27,15 @@
  * *********************************************************************** */
 /* Tue Jul 6 1993 HHS: added exchangable lib dir                           */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
+#include "postoffice.h"
 #include "blkfile.h"
 #include "comm.h"
 #include "db.h"
 #include "files.h"
 #include "handler.h"
 #include "interpreter.h"
+#include "mail_file_info_type.h"
 #include "money.h"
-#include "postoffice.h"
 #include "structs.h"
 #include "textutil.h"
 #include "time_info_data.h"
@@ -48,13 +43,18 @@
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #define MAIL_MAX_AGE    SECS_PER_REAL_DAY * 90 /* 90 days lifetime */
 #define MAIL_BLOCK_SIZE 128
 
 extern char libdir[]; /* from dikumud.c */
 
-struct mail_file_info_type *mailfile_info = nullptr;
+mail_file_info_type *mailfile_info = nullptr;
 
 int16_t   top_of_mailfile = 0;
 BLK_FILE *mbf; /* Mail Block File */
@@ -62,12 +62,12 @@ auto      find_player_id(char *pName) -> int;
 
 void read_mail_block(FILE *f, int16_t index)
 {
-   if(fseek(f, index * sizeof(struct mail_file_info_type), SEEK_SET) != 0)
+   if(fseek(f, index * sizeof(mail_file_info_type), SEEK_SET) != 0)
    {
       assert(FALSE);
    }
 
-   if(fread(&mailfile_info[index], sizeof(struct mail_file_info_type), 1, f) != 1)
+   if(fread(&mailfile_info[index], sizeof(mail_file_info_type), 1, f) != 1)
    {
       assert(FALSE);
    }
@@ -75,12 +75,12 @@ void read_mail_block(FILE *f, int16_t index)
 
 void write_mail_block(FILE *f, int16_t index)
 {
-   if(fseek(f, index * sizeof(struct mail_file_info_type), SEEK_SET) != 0)
+   if(fseek(f, index * sizeof(mail_file_info_type), SEEK_SET) != 0)
    {
       assert(FALSE);
    }
 
-   if(fwrite(&mailfile_info[index], sizeof(struct mail_file_info_type), 1, f) != 1)
+   if(fwrite(&mailfile_info[index], sizeof(mail_file_info_type), 1, f) != 1)
    {
       assert(FALSE);
    }
@@ -102,11 +102,11 @@ auto find_free_index() -> int16_t
    /* We need make larger array, remember to alloc more disk-space */
    if(top_of_mailfile == 0)
    {
-      CREATE(mailfile_info, struct mail_file_info_type, 1);
+      CREATE(mailfile_info, mail_file_info_type, 1);
    }
    else
    {
-      RECREATE(mailfile_info, struct mail_file_info_type, top_of_mailfile + 1);
+      RECREATE(mailfile_info, mail_file_info_type, top_of_mailfile + 1);
    }
 
    mailfile_info[top_of_mailfile].handle = BLK_NULL;
@@ -226,12 +226,12 @@ auto player_has_mail(unit_data *ch) -> uint8_t
 
 void mail_boot()
 {
-   long                       size;
-   uint32_t                   now;
-   int16_t                    index;
-   int16_t                    wi;
-   FILE                      *f;
-   struct mail_file_info_type maildata;
+   long                size;
+   uint32_t            now;
+   int16_t             index;
+   int16_t             wi;
+   FILE               *f;
+   mail_file_info_type maildata;
 
    touch_file(str_cc(libdir, MAIL_BLOCK_NAME));
    touch_file(str_cc(libdir, MAIL_FILE_NAME));
@@ -243,11 +243,11 @@ void mail_boot()
       assert(FALSE);
    }
 
-   size = fsize(f) / sizeof(struct mail_file_info_type);
+   size = fsize(f) / sizeof(mail_file_info_type);
 
    if(size >= 1)
    {
-      CREATE(mailfile_info, struct mail_file_info_type, size);
+      CREATE(mailfile_info, mail_file_info_type, size);
       top_of_mailfile = size;
    }
    rewind(f);
@@ -256,7 +256,7 @@ void mail_boot()
 
    for(index = 0;; index++)
    {
-      if(fread(&maildata, sizeof(struct mail_file_info_type), 1, f) != 1)
+      if(fread(&maildata, sizeof(mail_file_info_type), 1, f) != 1)
       {
          break;
       }
@@ -309,17 +309,17 @@ auto eat_and_delete(struct spec_arg *sarg) -> int
 
 auto postman(struct spec_arg *sarg) -> int
 {
-   char                    *b;
-   char                    *arg = (char *)sarg->arg;
+   char             *b;
+   char             *arg = (char *)sarg->arg;
    extra_descr_data *exd;
-   descriptor_data         *d;
-   unit_data               *letter;
-   char                     tmpname[MAX_INPUT_LENGTH];
-   int16_t                  index;
-   int16_t                 *tmp;
-   long                     rcp;
-   currency_t               currency = local_currency(sarg->owner);
-   amount_t                 postage;
+   descriptor_data  *d;
+   unit_data        *letter;
+   char              tmpname[MAX_INPUT_LENGTH];
+   int16_t           index;
+   int16_t          *tmp;
+   long              rcp;
+   currency_t        currency = local_currency(sarg->owner);
+   amount_t          postage;
 
    extern file_index_type *letter_fi;
 

@@ -904,7 +904,7 @@ void interpreter_string_add(descriptor_data *d, const char *str)
 void nanny_fix_descriptions(unit_data *u)
 {
    extra_descr_data *exd;
-   char                     buf[1024];
+   char              buf[1024];
 
    for(exd = UNIT_EXTRA_DESCR(u); exd != nullptr; exd = exd->next)
    {
@@ -1007,8 +1007,8 @@ void list_body_parts(descriptor_data *d)
 
 void nanny_describe_bodypart(descriptor_data *d, char *arg)
 {
-   char                     Buf[1000];
-   int                      i;
+   char              Buf[1000];
+   int               i;
    extra_descr_data *exd;
 
    STATE(d)++;
@@ -1567,9 +1567,9 @@ void nanny_change_terminal(descriptor_data *d, const char *arg)
 
 void nanny_view_descriptions(descriptor_data *d, char *arg)
 {
-   char                     Buf[1000];
+   char              Buf[1000];
    extra_descr_data *exd;
-   int                      i;
+   int               i;
 
    STATE(d)++;
 

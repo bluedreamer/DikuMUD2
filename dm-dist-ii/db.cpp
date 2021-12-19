@@ -115,11 +115,11 @@ void generate_bin_arrays()
 /* Resolves DIL templates loaded boottime */
 void resolve_templates()
 {
-   class zone_type    *z;
-   diltemplate *tmpl;
-   int                 i;
-   int                 j;
-   int                 valid;
+   class zone_type *z;
+   diltemplate     *tmpl;
+   int              i;
+   int              j;
+   int              valid;
 
    /* all zones */
    for(z = zone_info.zone_list; z != nullptr; z = z->next)
@@ -170,10 +170,10 @@ auto generate_templates(FILE *f, struct zone_type *zone) -> diltemplate *
 {
    diltemplate *tmpllist;
    diltemplate *tmpl;
-   CByteBuffer         Buf;
-   uint32_t            tmplsize = 0;
-   char                nBuf[256];
-   char                zBuf[256];
+   CByteBuffer  Buf;
+   uint32_t     tmplsize = 0;
+   char         nBuf[256];
+   char         zBuf[256];
 
    tmpllist = nullptr;
 

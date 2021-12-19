@@ -22,17 +22,18 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
-#include "CServerConfiguration.h"
 #include "dilinst.h"
+#include "CServerConfiguration.h"
 #include "account.h"
-#include "dilval.h"
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
 #include "db.h"
 #include "db_file.h"
 #include "dil.h"
+#include "dilintr.h"
 #include "dilrun.h"
+#include "dilval.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "justice.h"
@@ -50,7 +51,6 @@
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
-#include "dilintr.h"
 #include <climits>
 #include <cstdarg> /* For type_check */
 #include <cstdio>
@@ -77,7 +77,7 @@ void dil_insterr(dilprg *p, const char *where)
 void dilfi_foe(dilprg *p, dilval *v)
 {
    dilval v1;
-   int          i;
+   int    i;
 
    if(v != nullptr)
    {
@@ -128,10 +128,10 @@ void dilfi_foe(dilprg *p, dilval *v)
 /* foreach - next */
 void dilfi_fon(dilprg *p, dilval *v)
 {
-   dilval v1;
-   unit_data   *u;
-   uint32_t     adr;
-   int          i;
+   dilval     v1;
+   unit_data *u;
+   uint32_t   adr;
+   int        i;
 
    if(v != nullptr)
    {
@@ -178,7 +178,7 @@ void dilfi_fon(dilprg *p, dilval *v)
 void dilfi_stor(dilprg *p, dilval *v)
 {
    dilval v1;
-   int          dif;
+   int    dif;
 
    if(v != nullptr)
    {
@@ -210,7 +210,7 @@ void dilfi_sbt(dilprg *p, dilval *v)
 {
    dilval v1;
    dilval v2;
-   int          dif;
+   int    dif;
 
    if(v != nullptr)
    {
@@ -282,7 +282,7 @@ void dilfi_swt(dilprg *p, dilval *v)
 {
    dilval v1;
    dilval v2;
-   int          dif;
+   int    dif;
 
    if(v != nullptr)
    {
@@ -426,8 +426,8 @@ void dilfi_rts(dilprg *p, dilval *v)
 void dilfi_rtf(dilprg *p, dilval *v)
 {
    dilframe *cfrm;
-   dilval     v1;
-   int              i;
+   dilval    v1;
+   int       i;
 
    if(v != nullptr)
    {
@@ -503,7 +503,7 @@ void dil_pop_frame(dilprg *p)
 
 void dil_push_frame(dilprg *p, diltemplate *rtmpl, dilval *av)
 {
-   int              i;
+   int       i;
    dilframe *frm;
 
    i = p->sp - p->stack;
@@ -612,11 +612,11 @@ void dil_push_frame(dilprg *p, diltemplate *rtmpl, dilval *av)
 /* Remote procedure call */
 void dilfi_rproc(dilprg *p, dilval *v)
 {
-   int                 xrefi;
-   int                 i;
+   int          xrefi;
+   int          i;
    diltemplate *ctmpl;
-   dilval        av[255];
-   uint16_t            argcnt;
+   dilval       av[255];
+   uint16_t     argcnt;
 
    if(v != nullptr)
    {
@@ -660,12 +660,12 @@ void dilfi_rproc(dilprg *p, dilval *v)
 /* Remote symbolic procedure call */
 void dilfi_rsproc(dilprg *p, dilval *v)
 {
-   int                 i;
+   int          i;
    diltemplate *ctmpl;
    diltemplate *ntmpl;
-   dilval        av[255];
-   dilval        v1;
-   uint8_t             argcnt;
+   dilval       av[255];
+   dilval       v1;
+   uint8_t      argcnt;
 
    if(v != nullptr)
    {
@@ -754,12 +754,12 @@ void dilfi_rsproc(dilprg *p, dilval *v)
 /* Remote function call */
 void dilfi_rfunc(dilprg *p, dilval *v)
 {
-   int                 xrefi;
-   int                 vari;
-   int                 i;
+   int          xrefi;
+   int          vari;
+   int          i;
    diltemplate *ctmpl;
-   dilval        av[255];
-   uint16_t            argcnt;
+   dilval       av[255];
+   uint16_t     argcnt;
 
    if(v != nullptr)
    {
@@ -807,13 +807,13 @@ void dilfi_rfunc(dilprg *p, dilval *v)
 /* Remote symbolic function call */
 void dilfi_rsfunc(dilprg *p, dilval *v)
 {
-   int                 vari;
-   int                 i;
+   int          vari;
+   int          i;
    diltemplate *ctmpl;
    diltemplate *ntmpl;
-   dilval        av[255];
-   dilval        v1;
-   uint8_t             argcnt;
+   dilval       av[255];
+   dilval       v1;
+   uint8_t      argcnt;
 
    if(v != nullptr)
    {
@@ -1271,9 +1271,9 @@ void dilfi_sete(dilprg *p, dilval *v)
 /* Set one char to follow another unconditionally */
 void dilfi_folo(dilprg *p, dilval *v)
 {
-   dilval v1;
-   dilval v2;
-   int32_t      value = 0;
+   dilval  v1;
+   dilval  v2;
+   int32_t value = 0;
 
    if(v != nullptr)
    {
@@ -1306,10 +1306,10 @@ void dilfi_folo(dilprg *p, dilval *v)
 /* logcrime */
 void dilfi_lcri(dilprg *p, dilval *v)
 {
-   dilval v1;
-   dilval v2;
-   dilval v3;
-   int32_t      value = 0;
+   dilval  v1;
+   dilval  v2;
+   dilval  v3;
+   int32_t value = 0;
 
    if(v != nullptr)
    {
@@ -1338,9 +1338,9 @@ void dilfi_lcri(dilprg *p, dilval *v)
 /* Assign EXP to player */
 void dilfi_exp(dilprg *p, dilval *v)
 {
-   dilval v1;
-   dilval v2;
-   int32_t      value = 0;
+   dilval  v1;
+   dilval  v2;
+   int32_t value = 0;
 
    if(v != nullptr)
    {
@@ -1379,8 +1379,8 @@ void dilfi_exp(dilprg *p, dilval *v)
 /* Branch on expression */
 void dilfi_if(dilprg *p, dilval *v)
 {
-   dilval v1;
-   uint32_t     coreptr;
+   dilval   v1;
+   uint32_t coreptr;
 
    if(v != nullptr)
    {
@@ -1724,9 +1724,9 @@ void dilfi_dst(dilprg *p, dilval *v)
 /* Make NPC walk to room */
 void dilfi_walk(dilprg *p, dilval *v)
 {
-   dilval v1;
-   uint16_t     i;
-   uint8_t     *oldpc;
+   dilval   v1;
+   uint16_t i;
+   uint8_t *oldpc;
 
    if(v != nullptr)
    {
@@ -1814,7 +1814,7 @@ void dilfi_exec(dilprg *p, dilval *v)
 
       if(IS_IMMORTAL((unit_data *)v2.val.ptr))
       {
-         char                 buf[MAX_INPUT_LENGTH];
+         char          buf[MAX_INPUT_LENGTH];
          command_info *cmd_ptr;
 
          extern struct trie_type *intr_trie;
@@ -1853,9 +1853,9 @@ void dilfi_exec(dilprg *p, dilval *v)
 /* Wait */
 void dilfi_wit(dilprg *p, dilval *v)
 {
-   dilval v1;
-   dilval v2;
-   uint8_t     *oldpc;
+   dilval   v1;
+   dilval   v2;
+   uint8_t *oldpc;
 
    if(v != nullptr)
    {
@@ -1977,10 +1977,10 @@ void dilfi_goto(dilprg *p, dilval *v)
 /* Goto new command */
 void dilfi_on(dilprg *p, dilval *v)
 {
-   dilval v1;
-   uint32_t     adr;
-   uint16_t     maxlab;
-   uint8_t     *brkptr;
+   dilval   v1;
+   uint32_t adr;
+   uint16_t maxlab;
+   uint8_t *brkptr;
 
    if(v != nullptr)
    {
@@ -2023,8 +2023,8 @@ void dilfi_on(dilprg *p, dilval *v)
 /* Substract affect from unit */
 void dilfi_sua(dilprg *p, dilval *v)
 {
-   dilval        v1;
-   dilval        v2;
+   dilval              v1;
+   dilval              v2;
    unit_affected_type *af;
 
    if(v != nullptr)
@@ -2396,8 +2396,8 @@ void dilfi_log(dilprg *p, dilval *v)
 /* Secure */
 void dilfi_sec(dilprg *p, dilval *v)
 {
-   dilval v1;  /* unit */
-   uint32_t     adr; /* address */
+   dilval   v1;  /* unit */
+   uint32_t adr; /* address */
 
    if(v != nullptr)
    {
@@ -2569,13 +2569,13 @@ void dilfi_pup(dilprg *p, dilval *v)
 
 void dilfi_cast(dilprg *p, dilval *v)
 {
-   dilval v1;
-   dilval v2;
-   dilval v3;
-   dilval v4;
-   unit_data   *caster = nullptr;
-   unit_data   *medium = nullptr;
-   unit_data   *target = nullptr;
+   dilval     v1;
+   dilval     v2;
+   dilval     v3;
+   dilval     v4;
+   unit_data *caster = nullptr;
+   unit_data *medium = nullptr;
+   unit_data *target = nullptr;
 
    if(v != nullptr)
    {

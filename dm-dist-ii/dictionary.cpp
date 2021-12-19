@@ -711,12 +711,12 @@ static void cmd_claim(unit_data *ch, char *arg, unit_data *obj, struct alias_hea
 
 static auto local_dictionary(struct spec_arg *sarg) -> int
 {
-   char                    *pcomm = nullptr;
-   char                    *cmd_array[256];
-   uint8_t                  i;
-   struct alias_t          *al = nullptr;
-   struct alias_head       *alias_h;
-   extra_descr_data *exd;
+   char              *pcomm = nullptr;
+   char              *cmd_array[256];
+   uint8_t            i;
+   struct alias_t    *al = nullptr;
+   struct alias_head *alias_h;
+   extra_descr_data  *exd;
 
    /* specproc initialization */
    if((alias_h = (struct alias_head *)sarg->fptr->data) == nullptr)

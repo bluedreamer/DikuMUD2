@@ -1063,14 +1063,14 @@ struct mercenary_data
 
 auto mercenary_hire(struct spec_arg *sarg) -> int
 {
-   char                    *arg = (char *)sarg->arg;
-   char                     buf2[MAX_INPUT_LENGTH];
-   unit_data               *u;
-   unit_data               *victim;
-   struct mercenary_data   *md;
-   extra_descr_data *exd;
-   amount_t                 price;
-   currency_t               currency = local_currency(sarg->owner);
+   char                  *arg = (char *)sarg->arg;
+   char                   buf2[MAX_INPUT_LENGTH];
+   unit_data             *u;
+   unit_data             *victim;
+   struct mercenary_data *md;
+   extra_descr_data      *exd;
+   amount_t               price;
+   currency_t             currency = local_currency(sarg->owner);
 
    void start_special(unit_data * u, unit_fptr * fptr);
 

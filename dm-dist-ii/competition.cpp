@@ -214,9 +214,9 @@ static void competition_recalc(int idx, unit_data *pc, int xp, int secs)
 static auto competition_points(unit_data *pc, int idx) -> int
 {
    extra_descr_data *exd;
-   double                   xp;
-   double                   secs;
-   double                   points = 0.0;
+   double            xp;
+   double            secs;
+   double            points = 0.0;
 
    if((exd = competition_find(competition[idx].name, PC_QUEST(pc))) != nullptr)
    {
@@ -240,9 +240,9 @@ static auto competition_points(unit_data *pc, int idx) -> int
 void competition_update(unit_data *pc)
 {
    extra_descr_data *exd;
-   int                      i;
-   int                      xp;
-   int                      secs;
+   int               i;
+   int               xp;
+   int               secs;
 
    for(i = 0; i < competition_top; i++)
    {
@@ -261,10 +261,10 @@ void competition_update(unit_data *pc)
 
 void competition_enroll(unit_data *pc)
 {
-   int                      i;
+   int               i;
    extra_descr_data *exd;
    extra_descr_data *pexd;
-   const char              *names[2] = {"$competition", nullptr};
+   const char       *names[2] = {"$competition", nullptr};
 
    for(i = 0; i < competition_top; i++)
    {

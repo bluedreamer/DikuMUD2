@@ -1,7 +1,7 @@
 #pragma once
 
-#include "cNamelist.h"
 #include "CByteBuffer.h"
+#include "cNamelist.h"
 
 class extra_descr_data
 {

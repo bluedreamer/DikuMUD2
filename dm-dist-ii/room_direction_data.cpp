@@ -1,4 +1,5 @@
 #include "room_direction_data.h"
+
 room_direction_data::room_direction_data()
 {
    key       = nullptr;

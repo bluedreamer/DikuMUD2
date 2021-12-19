@@ -6,7 +6,6 @@
    the user to enter the : dilcopy prg@zon(arg, arg, arg); instead of the
    stupid string format */
 
-
 struct dilargstype
 {
    uint8_t    no;

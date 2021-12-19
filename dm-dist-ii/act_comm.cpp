@@ -54,7 +54,7 @@ extern descriptor_data *descriptor_list;
 auto is_ignored(unit_data *ch, unit_data *victim) -> int
 {
    extra_descr_data *pexd;
-   char                     tmp[128];
+   char              tmp[128];
 
    if(!IS_PC(ch) || !IS_PC(victim))
    {
@@ -747,8 +747,8 @@ void do_ask(unit_data *ch, char *aaa, const struct command_info *cmd)
 void do_write(unit_data *ch, char *aaa, const struct command_info *cmd)
 {
    extra_descr_data *exd;
-   unit_data               *paper    = nullptr;
-   char                    *argument = (char *)aaa;
+   unit_data        *paper    = nullptr;
+   char             *argument = (char *)aaa;
 
    if(CHAR_DESCRIPTOR(ch) == nullptr)
    {

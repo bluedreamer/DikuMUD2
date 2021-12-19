@@ -15,6 +15,6 @@ public:
    inline auto Length() -> const uint32_t { return pConst != nullptr ? pConst->nStrLen : 0; }
 
 private:
-   void                   Make(const char *str);
+   void             Make(const char *str);
    cStringConstant *pConst;
 };

@@ -1,5 +1,6 @@
 #include "cMultiHook.h"
 #include "CServerConfiguration.h"
+#include "bytestring.h"
 #include "cMultiMaster.h"
 #include "comm.h"
 #include "config.h"

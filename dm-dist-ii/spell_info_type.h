@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cstdint>
 #include "diltemplate.h"
+#include <cstdint>
 
 struct spell_info_type
 {

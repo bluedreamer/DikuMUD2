@@ -685,9 +685,9 @@ auto dil_type_check(const char *f, struct dilprg *p, int tot, ...) -> int
 
 void dil_free_prg(struct dilprg *prg)
 {
-   diltemplate *tmpl;
-   struct dilframe    *frm;
-   struct dilprg      *tp;
+   diltemplate     *tmpl;
+   struct dilframe *frm;
+   struct dilprg   *tp;
 
    assert(dil_list);
 
@@ -1043,8 +1043,8 @@ auto dil_direct_init(struct spec_arg *sarg) -> int
 
    if(sarg->cmd->no != CMD_AUTO_EXTRACT)
    {
-      struct dilprg      *prg;
-      diltemplate *tmpl;
+      struct dilprg *prg;
+      diltemplate   *tmpl;
 
       tmpl = find_dil_template(dilargs->name);
 
@@ -1276,14 +1276,14 @@ void dil_loadtime_activate(unit_data *u)
 
 auto dil_copy(char *name, unit_data *u) -> struct dilprg *
 {
-   char                buf[MAX_STRING_LENGTH];
-   struct dilprg      *prg;
-   diltemplate *tmpl;
-   char               *tmplname;
-   char               *farg;
-   int                 narg;
-   int                 i;
-   char               *args[256];
+   char           buf[MAX_STRING_LENGTH];
+   struct dilprg *prg;
+   diltemplate   *tmpl;
+   char          *tmplname;
+   char          *farg;
+   int            narg;
+   int            i;
+   char          *args[256];
 
    assert(name);
    assert(strlen(name) < sizeof(buf));
@@ -1402,7 +1402,7 @@ auto dil_copy(char *name, unit_data *u) -> struct dilprg *
 
 auto dil_find(const char *name, unit_data *u) -> unit_fptr *
 {
-   unit_fptr          *fptr;
+   unit_fptr   *fptr;
    diltemplate *tmpl;
 
    if((tmpl = find_dil_template(name)) != nullptr)

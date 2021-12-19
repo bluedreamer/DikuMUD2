@@ -218,7 +218,7 @@ auto get(unit_data *ch, unit_data *obj, unit_data *from_obj, const struct comman
 auto extra_get(unit_data *ch, char *argument) -> int
 {
    extra_descr_data *p;
-   unit_data               *room = UNIT_IN(ch);
+   unit_data        *room = UNIT_IN(ch);
 
    if(!IS_ROOM(room) && UNIT_IS_TRANSPARENT(room))
    {

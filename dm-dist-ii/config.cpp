@@ -33,7 +33,6 @@
 #include "str_parse.h"
 #include "textutil.h"
 
-
 void ShowUsage(const char *name)
 {
    fprintf(stderr,
