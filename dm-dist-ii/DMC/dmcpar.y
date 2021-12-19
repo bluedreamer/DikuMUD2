@@ -39,8 +39,9 @@
 %{
 #include <stdio.h>
 #include <ctype.h>
-
 #include "dmc.h"
+#include "dilargstype.h"
+#include "dilargtype.h"
 #include "dil.h"
 #include "utils.h"
 #include "textutil.h"
@@ -81,7 +82,7 @@ char empty_ref[] = {'\0', '\0'};
 int istemplate;
 char **tmplnames=NULL;
 
-struct dilargstype dilargs;
+dilargstype dilargs;
 int dilarg_top;
 
 /* Temporary data for moneylists */
@@ -633,9 +634,9 @@ unit_field	: NAMES stringlist
 		       }
                 | DILCOPY reference '(' dilargs ')' ';'
                        {
-			  struct dilargstype *argcopy;
+			  dilargstype *argcopy;
 
-			  CREATE(argcopy, struct dilargstype, 1);
+			  CREATE(argcopy, dilargstype, 1);
 
 			  *argcopy = *($4);
 			  argcopy->name = $2;
@@ -906,30 +907,30 @@ dilargs         : /*empty */
 
 dilarg          : hardstringlist
                 {
-		   struct dilargtype *dat;
+		   dilargtype *dat;
 
-		   dat = (struct dilargtype *)
-		     mmalloc(sizeof(struct dilargtype));
+		   dat = (dilargtype *)
+		     mmalloc(sizeof(dilargtype));
 		   dat->type = DILV_SLP;
 		   dat->data.stringlist = $1;
 		   $$ = dat;
                 }
                 | stringcomp
                 {
-		   struct dilargtype *dat;
+		   dilargtype *dat;
 
-		   dat = (struct dilargtype *)
-		     mmalloc(sizeof(struct dilargtype));
+		   dat = (dilargtype *)
+		     mmalloc(sizeof(dilargtype));
 		   dat->type = DILV_SP;
 		   dat->data.string = $1;
 		   $$ = dat;
                 }
                 | number
                 {
-		   struct dilargtype *dat;
+		   dilargtype *dat;
 
-		   dat = (struct dilargtype *)
-		     mmalloc(sizeof(struct dilargtype));
+		   dat = (dilargtype *)
+		     mmalloc(sizeof(dilargtype));
 		   dat->type = DILV_INT;
 		   dat->data.num = $1;
 		   $$ = dat;

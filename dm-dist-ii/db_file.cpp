@@ -28,6 +28,7 @@
  * 14-Apr-95 HHS:   Added for and foreach, break and continue
  */
 
+#include "dilargstype.h"
 #include "db_file.h"
 #include "bytestring.h"
 #include "db.h"
@@ -703,7 +704,7 @@ auto bread_func(CByteBuffer *pBuf, uint8_t version, unit_data *owner) -> unit_fp
          char  name[256];
          char *c;
 
-         struct dilargstype *dilargs;
+         dilargstype *dilargs;
 
          CREATE(dilargs, struct dilargstype, 1);
 

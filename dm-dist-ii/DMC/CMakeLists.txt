@@ -23,7 +23,11 @@ set(DMC_SRC
         ../room_direction_data.cpp
         ../extra.cpp
         ../common.cpp
-        ../unit_data.cpp)
+        ../unit_data.cpp
+        ../dilargstype.cpp
+        ../dilargtype.cpp
+        )
+
 set(DMC_H dmc.h dmctok.h)
 
 include_directories(.)

@@ -48,6 +48,7 @@
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+#include "dilargstype.h"
 #include <climits>
 
 /* *********************************************************************** *
@@ -1048,7 +1049,7 @@ auto dil_init(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-static void dil_free_dilargs(struct dilargstype *dilargs)
+static void dil_free_dilargs(dilargstype *dilargs)
 {
    free(dilargs->name);
 
@@ -1077,7 +1078,7 @@ static void dil_free_dilargs(struct dilargstype *dilargs)
 
 auto dil_direct_init(struct spec_arg *sarg) -> int
 {
-   auto *dilargs = (struct dilargstype *)sarg->fptr->data;
+   auto *dilargs = (dilargstype *)sarg->fptr->data;
 
    assert(dilargs);
 
