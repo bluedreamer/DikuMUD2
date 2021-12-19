@@ -311,7 +311,7 @@ auto postman(struct spec_arg *sarg) -> int
    char                    *b;
    char                    *arg = (char *)sarg->arg;
    struct extra_descr_data *exd;
-   struct descriptor_data  *d;
+   descriptor_data         *d;
    unit_data               *letter;
    char                     tmpname[MAX_INPUT_LENGTH];
    int16_t                  index;

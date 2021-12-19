@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : system.h                                  Part of Valhalla MUD *
  * Version: 1.21                                                           *
@@ -22,8 +23,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_SYSTEM_H
-#define _MUD_SYSTEM_H
+#include "descriptor_data.h"
 
 #include "select.h"
 #include <sys/time.h>
@@ -56,8 +56,8 @@ extern class cMultiMaster Multi;
 #define MAX_HOSTNAME 256
 
 void init_mother(int nPort);
-void descriptor_close(struct descriptor_data *d, int bSendClose = TRUE);
-void MplexSendSetup(struct descriptor_data *d);
+void descriptor_close(descriptor_data *d, int bSendClose = TRUE);
+void MplexSendSetup(descriptor_data *d);
 
 #if defined(SUNOS4)
 void bzero(char *b, int length);
@@ -76,7 +76,6 @@ auto multi_process_input(struct multi_element *pm) -> int;
 
 auto write_to_descriptor(int desc, char *txt) -> int;
 auto read_from_descriptor(int desc, char *txt) -> int;
+void init_char(unit_data *ch);
 
 #define SNOOP_PROMPT "% " /* probably not very nice to have here, but hey! */
-
-#endif /* _MUD_SYSTEM_H */

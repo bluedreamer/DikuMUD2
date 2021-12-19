@@ -118,10 +118,10 @@ void do_users(unit_data *ch, char *argument, const struct command_info *cmd)
    static char *buf      = nullptr;
    static int   cur_size = 1024;
 
-   struct descriptor_data *d;
-   char                    tmp[256];
-   int                     len;
-   int                     users = 0;
+   descriptor_data *d;
+   char             tmp[256];
+   int              len;
+   int              users = 0;
 
    if(buf == nullptr)
    {
@@ -433,8 +433,8 @@ void base_trans(unit_data *ch, unit_data *victim)
 
 void do_trans(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct descriptor_data *i;
-   unit_data              *victim;
+   descriptor_data *i;
+   unit_data       *victim;
 
    if(!IS_PC(ch))
    {
@@ -695,7 +695,7 @@ void do_reboot(unit_data *ch, char *argument, const struct command_info *cmd)
       return;
    }
 
-   struct descriptor_data *pDes;
+   descriptor_data *pDes;
 
    for(pDes = descriptor_list; pDes != nullptr; pDes = pDes->next)
    {
@@ -854,8 +854,8 @@ void base_force(unit_data *ch, unit_data *victim, char *arg)
 
 void do_force(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct descriptor_data *i;
-   unit_data              *victim;
+   descriptor_data *i;
+   unit_data       *victim;
 
    if(!IS_PC(ch))
    {
@@ -1085,12 +1085,12 @@ void do_delete(unit_data *ch, char *arg, const struct command_info *cmd)
 /* clean a room of all mobiles and objects */
 void do_purge(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   char                    buf[MAX_INPUT_LENGTH];
-   unit_data              *thing;
-   unit_data              *next_thing;
-   struct descriptor_data *d;
+   char             buf[MAX_INPUT_LENGTH];
+   unit_data       *thing;
+   unit_data       *next_thing;
+   descriptor_data *d;
 
-   void close_socket(struct descriptor_data * d);
+   void close_socket(descriptor_data * d);
 
    if(!IS_PC(ch))
    {
@@ -1674,7 +1674,7 @@ void do_message(unit_data *ch, char *arg, const struct command_info *cmd)
 
 void do_broadcast(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct descriptor_data *d;
+   descriptor_data *d;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -1694,10 +1694,10 @@ void do_broadcast(unit_data *ch, char *arg, const struct command_info *cmd)
 
 void list_wizards(unit_data *ch, bool value)
 {
-   struct descriptor_data *d;
-   bool                    any = FALSE;
-   char                    buf[MAX_STRING_LENGTH];
-   char                   *s = buf;
+   descriptor_data *d;
+   bool             any = FALSE;
+   char             buf[MAX_STRING_LENGTH];
+   char            *s = buf;
 
    sprintf(s, "Wizards %sline:\n\r", value ? "on" : "off");
    TAIL(s);
@@ -1728,10 +1728,10 @@ void list_wizards(unit_data *ch, bool value)
 
 void do_wiz(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct descriptor_data *d;
-   char                    tmp[MAX_INPUT_LENGTH];
-   bool                    emote = FALSE;
-   int                     level;
+   descriptor_data *d;
+   char             tmp[MAX_INPUT_LENGTH];
+   bool             emote = FALSE;
+   int              level;
 
    if(!CHAR_DESCRIPTOR(ch))
    {

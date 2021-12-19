@@ -369,7 +369,7 @@ auto site_banned(char *cur_site) -> char
    return NO_BAN;
 }
 
-void show_ban_text(char *site, struct descriptor_data *d)
+void show_ban_text(char *site, descriptor_data *d)
 {
    struct ban_t *entry;
    char          bantext[MAX_STRING_LENGTH];

@@ -77,10 +77,10 @@ struct eventq_elem
 };
 
 /* constants */
-struct eventq_elem     *event_heap = nullptr;
-int                     heapspace = 0, events = 0;
-struct descriptor_data *descriptor_list = nullptr;
-struct descriptor_data *next_to_process = nullptr;
+struct eventq_elem *event_heap = nullptr;
+int                 heapspace = 0, events = 0;
+descriptor_data    *descriptor_list = nullptr;
+descriptor_data    *next_to_process = nullptr;
 
 /* For multi-connectors */
 class cMultiMaster Multi;
@@ -108,7 +108,7 @@ const char *compile_date = __DATE__;
 const char *compile_time = __TIME__;
 
 /* external functions */
-void string_add(struct descriptor_data *d, char *str);
+void string_add(descriptor_data *d, char *str);
 
 void boot_db();
 
@@ -529,11 +529,11 @@ void game_loop()
 /* Accept new connects, relay commands, and call 'heartbeat-functs' */
 void game_event()
 {
-   int                     i;
-   char                   *pcomm = nullptr;
-   struct descriptor_data *point;
-   static char             buf[80];
-   static struct timeval   null_time = {0, 0};
+   int                   i;
+   char                 *pcomm = nullptr;
+   descriptor_data      *point;
+   static char           buf[80];
+   static struct timeval null_time = {0, 0};
 
    void multi_close(struct multi_element * pe);
    void multi_clear();

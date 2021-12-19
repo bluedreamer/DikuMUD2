@@ -848,15 +848,15 @@ constexpr int ULTIMATE_LEVEL      = 255;
    ABIL_XXX refers to the abilitity. Use 'ability[ABIL_XXX] = yyy' in
             the zone, or use predefined macros.
 */
-#define ABIL_MAG      0
-#define ABIL_DIV      1
-#define ABIL_STR      2
-#define ABIL_DEX      3
-#define ABIL_CON      4
-#define ABIL_CHA      5
-#define ABIL_BRA      6
-#define ABIL_HP       7
-#define ABIL_TREE_MAX 8 /* Do not use */
+constexpr size_t ABIL_MAG      = 0;
+constexpr size_t ABIL_DIV      = 1;
+constexpr size_t ABIL_STR      = 2;
+constexpr size_t ABIL_DEX      = 3;
+constexpr size_t ABIL_CON      = 4;
+constexpr size_t ABIL_CHA      = 5;
+constexpr size_t ABIL_BRA      = 6;
+constexpr size_t ABIL_HP       = 7;
+constexpr size_t ABIL_TREE_MAX = 8; /* Do not use */
 
 /* All the nodes in the weapon tree
 

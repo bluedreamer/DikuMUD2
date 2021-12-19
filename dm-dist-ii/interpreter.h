@@ -23,13 +23,14 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "descriptor_data.h"
 #include "dil.h"
 #include "essential.h"
 
 auto char_is_playing(unit_data *u) -> int;
-auto descriptor_is_playing(struct descriptor_data *d) -> int;
-void descriptor_interpreter(struct descriptor_data *d, const char *arg);
-void interpreter_string_add(struct descriptor_data *d, const char *str);
+auto descriptor_is_playing(descriptor_data *d) -> int;
+void descriptor_interpreter(descriptor_data *d, const char *arg);
+void interpreter_string_add(descriptor_data *d, const char *str);
 
 struct spec_arg
 {

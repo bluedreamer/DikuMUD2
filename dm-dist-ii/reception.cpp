@@ -362,9 +362,9 @@ auto ContentsFileName(const char *pName) -> char *
 /* Container = 1 if container should be saved also                    */
 void basic_save_contents(const char *pFileName, unit_data *unit, int fast, int bContainer)
 {
-   struct descriptor_data *tmp_descr = nullptr;
-   FILE                   *pFile;
-   char                    TmpName[MAX_INPUT_LENGTH + 1];
+   descriptor_data *tmp_descr = nullptr;
+   FILE            *pFile;
+   char             TmpName[MAX_INPUT_LENGTH + 1];
 
    fast = 1; /* MAJOR BUG IN DIFF CAUSING BAD PLAYERS! WITH TOO MUCH */
    /* INVENTORY, THE PLAYER INDEX WILL GET FUCKED UP!      */
@@ -438,19 +438,19 @@ auto save_contents(const char *pFileName, unit_data *unit, int fast, int bContai
 
 auto base_load_contents(const char *pFileName, const unit_data *unit) -> unit_data *
 {
-   struct objheader        h;
-   file_index_type        *fi;
-   unit_data              *pnew;
-   unit_data              *pstack[25];
-   int                     len;
-   int                     init;
-   int                     frame;
-   int                     plen;
-   int                     n;
-   struct descriptor_data *tmp_descr = nullptr;
-   int                     equip_ok;
-   FILE                   *pFile;
-   unit_data              *topu = nullptr;
+   struct objheader h;
+   file_index_type *fi;
+   unit_data       *pnew;
+   unit_data       *pstack[25];
+   int              len;
+   int              init;
+   int              frame;
+   int              plen;
+   int              n;
+   descriptor_data *tmp_descr = nullptr;
+   int              equip_ok;
+   FILE            *pFile;
+   unit_data       *topu = nullptr;
 
    CByteBuffer InvBuf;
    InvBuf.Clear();

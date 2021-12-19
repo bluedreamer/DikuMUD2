@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : handler.h                                 Part of Valhalla MUD *
  * Version: 2.02                                                           *
@@ -22,12 +23,11 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_HANDLER_H
-#define _MUD_HANDLER_H
+#include "descriptor_data.h"
 #include "essential.h"
 #include "unitfind.h"
 
-auto unit_is_edited(unit_data *u) -> struct descriptor_data *;
+auto unit_is_edited(unit_data *u) -> descriptor_data *;
 
 void unit_messg(unit_data *ch, unit_data *unit, const char *type, const char *mesg_s, const char *mesg_o);
 
@@ -81,5 +81,3 @@ void weight_change_unit(unit_data *unit, int weight);
 
 auto find_unit_in_list_num(int num, unit_data *list) -> unit_data *;
 auto find_unit_num(int num) -> unit_data *;
-
-#endif /* _MUD_HANDLER_H */

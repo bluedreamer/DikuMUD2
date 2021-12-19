@@ -166,7 +166,7 @@ struct field_type unit_field_data[MAX_SET_FIELDS + 1] = {
 };
 
 // Post-porcessing of adding-extra descriptions.
-void edit_extra(struct descriptor_data *d)
+void edit_extra(descriptor_data *d)
 {
    struct extra_descr_data *exd;
 
@@ -185,7 +185,7 @@ void edit_extra(struct descriptor_data *d)
 }
 
 // Post-porcessing of adding-extra descriptions.
-void edit_info(struct descriptor_data *d)
+void edit_info(descriptor_data *d)
 {
    struct extra_descr_data *exd;
 
@@ -203,12 +203,12 @@ void edit_info(struct descriptor_data *d)
    }
 }
 
-void edit_outside_descr(struct descriptor_data *d)
+void edit_outside_descr(descriptor_data *d)
 {
    UNIT_OUT_DESCR(d->editing).Reassign(d->localstr);
 }
 
-void edit_inside_descr(struct descriptor_data *d)
+void edit_inside_descr(descriptor_data *d)
 {
    UNIT_IN_DESCR(d->editing).Reassign(d->localstr);
 }

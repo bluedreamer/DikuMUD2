@@ -38,11 +38,11 @@
 #include "utility.h"
 #include "utils.h"
 
-extern struct descriptor_data *descriptor_list;
+extern descriptor_data *descriptor_list;
 
-auto find_descriptor(const char *name, struct descriptor_data *except) -> struct descriptor_data *
+auto find_descriptor(const char *name, descriptor_data *except) -> descriptor_data *
 {
-   struct descriptor_data *d;
+   descriptor_data *d;
 
    /* Check if already playing */
    for(d = descriptor_list; d != nullptr; d = d->next)

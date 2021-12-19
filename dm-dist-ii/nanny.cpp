@@ -73,12 +73,10 @@
 
 #define STATE(d) ((d)->state)
 
-void nanny_get_name(struct descriptor_data *d, char *arg);
-
-void nanny_credit_card(struct descriptor_data *d, const char *arg);
-void nanny_new_pwd(struct descriptor_data *d, char *arg);
-void nanny_change_information(struct descriptor_data *d, const char *arg);
-void nanny_change_terminal(struct descriptor_data *d, const char *arg);
+void nanny_credit_card(descriptor_data *d, const char *arg);
+void nanny_new_pwd(descriptor_data *d, char *arg);
+void nanny_change_information(descriptor_data *d, const char *arg);
+void nanny_change_terminal(descriptor_data *d, const char *arg);
 void multi_close(struct multi_element *pe);
 auto player_exists(const char *pName) -> int;
 void save_player_file(unit_data *ch);
@@ -135,9 +133,9 @@ auto _parse_name(const char *arg, char *name) -> int
 /* for idle time for any descriptors                                      */
 void check_idle()
 {
-   struct descriptor_data *d;
-   struct descriptor_data *next_d;
-   time_t                  now = time(nullptr);
+   descriptor_data *d;
+   descriptor_data *next_d;
+   time_t           now = time(nullptr);
 
    for(d = descriptor_list; d != nullptr; d = next_d)
    {
@@ -216,7 +214,7 @@ void disconnect_game(unit_data *pc)
    no_players--;
 }
 
-void reconnect_game(struct descriptor_data *d, unit_data *ch)
+void reconnect_game(descriptor_data *d, unit_data *ch)
 {
    assert(UNIT_IN(ch));
    assert(!UNIT_IN(d->character));
@@ -272,10 +270,10 @@ void update_lasthost(unit_data *pc, uint32_t s_addr)
 /*   game, and his inventory loaded.                              */
 void enter_game(unit_data *ch)
 {
-   unit_data              *load_room;
-   struct descriptor_data *i;
-   char                    buf[256];
-   time_t                  last_connect = PC_TIME(ch).connect;
+   unit_data       *load_room;
+   descriptor_data *i;
+   char             buf[256];
+   time_t           last_connect = PC_TIME(ch).connect;
 
    extern struct command_info cmd_info[];
 
@@ -388,7 +386,7 @@ void enter_game(unit_data *ch)
    start_all_special(ch); /* Activate fptr ticks   */
 }
 
-void set_descriptor_fptr(struct descriptor_data *d, void (*fptr)(struct descriptor_data *, const char *), bool call)
+void set_descriptor_fptr(descriptor_data *d, void (*fptr)(descriptor_data *, const char *), bool call)
 {
    if(d->fptr == interpreter_string_add)
    {
@@ -417,11 +415,11 @@ void set_descriptor_fptr(struct descriptor_data *d, void (*fptr)(struct descript
 }
 
 /* Return TRUE if help is given (found)... */
-auto nanny_help_check(struct descriptor_data *d, char *arg, char *def) -> int
+auto nanny_help_check(descriptor_data *d, char *arg, char *def) -> int
 {
    char buf[200 + MAX_INPUT_LENGTH];
 
-   auto help_base(struct descriptor_data * d, char *arg)->int;
+   auto help_base(descriptor_data * d, char *arg)->int;
 
    arg = skip_spaces(arg);
 
@@ -446,7 +444,7 @@ auto nanny_help_check(struct descriptor_data *d, char *arg, char *def) -> int
    return TRUE;
 }
 
-void nanny_close(struct descriptor_data *d, const char *arg)
+void nanny_close(descriptor_data *d, const char *arg)
 {
    if(STATE(d)++ == 0)
    {
@@ -458,7 +456,7 @@ void nanny_close(struct descriptor_data *d, const char *arg)
    descriptor_close(d);
 }
 
-void nanny_motd(struct descriptor_data *d, char *arg)
+void nanny_motd(descriptor_data *d, char *arg)
 {
    if(STATE(d)++ == 0)
    {
@@ -470,7 +468,7 @@ void nanny_motd(struct descriptor_data *d, char *arg)
    set_descriptor_fptr(d, nanny_menu, TRUE);
 }
 
-void nanny_newbie(struct descriptor_data *d, char *arg)
+void nanny_newbie(descriptor_data *d, char *arg)
 {
    if((str_is_empty(g_cServerConfig.m_pNewbie) == 0u) && STATE(d)++ == 0)
    {
@@ -482,10 +480,10 @@ void nanny_newbie(struct descriptor_data *d, char *arg)
    set_descriptor_fptr(d, nanny_motd, TRUE);
 }
 
-void nanny_throw(struct descriptor_data *d, const char *arg)
+void nanny_throw(descriptor_data *d, const char *arg)
 {
-   struct descriptor_data *td;
-   unit_data              *u;
+   descriptor_data *td;
+   unit_data       *u;
 
    if(STATE(d)++ == 0)
    {
@@ -544,7 +542,7 @@ void nanny_throw(struct descriptor_data *d, const char *arg)
       send_to_descriptor("Please type Yes or No: ", d);
 }
 
-void nanny_dil(struct descriptor_data *d, char *arg)
+void nanny_dil(descriptor_data *d, char *arg)
 {
    class extra_descr_data *exd;
 
@@ -594,7 +592,7 @@ void nanny_dil(struct descriptor_data *d, char *arg)
    }
 }
 
-void nanny_pwd_confirm(struct descriptor_data *d, char *arg)
+void nanny_pwd_confirm(descriptor_data *d, char *arg)
 {
    unit_data *u;
 
@@ -631,7 +629,7 @@ void nanny_pwd_confirm(struct descriptor_data *d, char *arg)
    set_descriptor_fptr(d, nanny_dil, TRUE);
 }
 
-auto check_pwd(struct descriptor_data *d, char *pwd) -> int
+auto check_pwd(descriptor_data *d, char *pwd) -> int
 {
    int i;
    int bA;
@@ -688,7 +686,7 @@ auto check_pwd(struct descriptor_data *d, char *pwd) -> int
    return TRUE;
 }
 
-void nanny_new_pwd(struct descriptor_data *d, char *arg)
+void nanny_new_pwd(descriptor_data *d, char *arg)
 {
    if(STATE(d)++ == 0)
    {
@@ -714,9 +712,9 @@ void nanny_new_pwd(struct descriptor_data *d, char *arg)
    set_descriptor_fptr(d, nanny_pwd_confirm, TRUE);
 }
 
-void nanny_change_pwd_confirm(struct descriptor_data *d, char *arg)
+void nanny_change_pwd_confirm(descriptor_data *d, char *arg)
 {
-   void nanny_change_pwd(struct descriptor_data * d, char *arg);
+   void nanny_change_pwd(descriptor_data * d, char *arg);
 
    if(STATE(d)++ == 0)
    {
@@ -737,7 +735,7 @@ void nanny_change_pwd_confirm(struct descriptor_data *d, char *arg)
    set_descriptor_fptr(d, nanny_change_terminal, TRUE);
 }
 
-void nanny_change_pwd(struct descriptor_data *d, char *arg)
+void nanny_change_pwd(descriptor_data *d, char *arg)
 {
    if(STATE(d)++ == 0)
    {
@@ -760,7 +758,7 @@ void nanny_change_pwd(struct descriptor_data *d, char *arg)
    set_descriptor_fptr(d, nanny_change_pwd_confirm, TRUE);
 }
 
-void nanny_kill_confirm(struct descriptor_data *d, char *arg)
+void nanny_kill_confirm(descriptor_data *d, char *arg)
 {
    unit_data *u;
 
@@ -821,7 +819,7 @@ void nanny_kill_confirm(struct descriptor_data *d, char *arg)
 }
 
 /* Return TRUE when done... */
-auto base_string_add(struct descriptor_data *d, char *str) -> bool
+auto base_string_add(descriptor_data *d, char *str) -> bool
 {
    char *scan;
    int   terminator = 0;
@@ -892,7 +890,7 @@ auto base_string_add(struct descriptor_data *d, char *str) -> bool
 }
 
 /* Add user input to the 'current' string (as defined by d->str) */
-void interpreter_string_add(struct descriptor_data *d, const char *str)
+void interpreter_string_add(descriptor_data *d, const char *str)
 {
    if(base_string_add(d, str) != 0u)
    {
@@ -937,7 +935,7 @@ void nanny_fix_descriptions(unit_data *u)
 }
 
 /* Add user input to the 'current' string (as defined by d->str) */
-void nanny_string_add(struct descriptor_data *d, char *str)
+void nanny_string_add(descriptor_data *d, char *str)
 {
    if(base_string_add(d, str) != 0u)
    {
@@ -946,7 +944,7 @@ void nanny_string_add(struct descriptor_data *d, char *str)
    }
 }
 
-void nanny_wizi(struct descriptor_data *d, char *arg)
+void nanny_wizi(descriptor_data *d, char *arg)
 {
    if(STATE(d)++ == 0)
    {
@@ -963,7 +961,7 @@ void nanny_wizi(struct descriptor_data *d, char *arg)
    set_descriptor_fptr(d, nanny_menu, TRUE);
 }
 
-void nanny_background(struct descriptor_data *d, char *arg)
+void nanny_background(descriptor_data *d, char *arg)
 {
    /*
       if (STATE(d)++ == 0)
@@ -976,7 +974,7 @@ void nanny_background(struct descriptor_data *d, char *arg)
    set_descriptor_fptr(d, nanny_menu, TRUE);
 }
 
-void list_body_parts(struct descriptor_data *d)
+void list_body_parts(descriptor_data *d)
 {
    char  Buf[MAX_STRING_LENGTH];
    char *c = Buf;
@@ -1002,7 +1000,7 @@ void list_body_parts(struct descriptor_data *d)
    send_to_descriptor(Buf, d);
 }
 
-void nanny_describe_bodypart(struct descriptor_data *d, char *arg)
+void nanny_describe_bodypart(descriptor_data *d, char *arg)
 {
    char                     Buf[1000];
    int                      i;
@@ -1074,7 +1072,7 @@ void nanny_describe_bodypart(struct descriptor_data *d, char *arg)
    set_descriptor_fptr(d, nanny_string_add, TRUE);
 }
 
-void nanny_change_width(struct descriptor_data *d, char *arg)
+void nanny_change_width(descriptor_data *d, char *arg)
 {
    int i;
 
@@ -1098,7 +1096,7 @@ void nanny_change_width(struct descriptor_data *d, char *arg)
    set_descriptor_fptr(d, nanny_change_terminal, TRUE);
 }
 
-void nanny_change_height(struct descriptor_data *d, char *arg)
+void nanny_change_height(descriptor_data *d, char *arg)
 {
    int i;
 
@@ -1122,7 +1120,7 @@ void nanny_change_height(struct descriptor_data *d, char *arg)
    set_descriptor_fptr(d, nanny_change_terminal, TRUE);
 }
 
-void nanny_charge_confirm(struct descriptor_data *d, char *arg)
+void nanny_charge_confirm(descriptor_data *d, char *arg)
 {
    assert(!PC_IS_UNSAVED(d->character));
 
@@ -1226,7 +1224,7 @@ void nanny_charge_confirm(struct descriptor_data *d, char *arg)
    set_descriptor_fptr(d, nanny_menu, TRUE);
 }
 
-void nanny_charge(struct descriptor_data *d, char *arg)
+void nanny_charge(descriptor_data *d, char *arg)
 {
    char  buf[1024];
    int   i;
@@ -1298,7 +1296,7 @@ void nanny_charge(struct descriptor_data *d, char *arg)
    set_descriptor_fptr(d, nanny_charge_confirm, TRUE);
 }
 
-void nanny_credit_card(struct descriptor_data *d, const char *arg)
+void nanny_credit_card(descriptor_data *d, const char *arg)
 {
    char Buf[200];
 
@@ -1425,7 +1423,7 @@ void nanny_credit_card(struct descriptor_data *d, const char *arg)
    }
 }
 
-void nanny_change_terminal(struct descriptor_data *d, const char *arg)
+void nanny_change_terminal(descriptor_data *d, const char *arg)
 {
    int n;
 
@@ -1562,7 +1560,7 @@ void nanny_change_terminal(struct descriptor_data *d, const char *arg)
    }
 }
 
-void nanny_view_descriptions(struct descriptor_data *d, char *arg)
+void nanny_view_descriptions(descriptor_data *d, char *arg)
 {
    char                     Buf[1000];
    struct extra_descr_data *exd;
@@ -1608,7 +1606,7 @@ void nanny_view_descriptions(struct descriptor_data *d, char *arg)
    }
 }
 
-void nanny_change_information(struct descriptor_data *d, const char *arg)
+void nanny_change_information(descriptor_data *d, const char *arg)
 {
    struct extra_descr_data *exd;
 
@@ -1674,7 +1672,7 @@ void nanny_change_information(struct descriptor_data *d, const char *arg)
    }
 }
 
-void nanny_menu(struct descriptor_data *d, const char *arg)
+void nanny_menu(descriptor_data *d, const char *arg)
 {
    static int wizi_level = 0;
 
@@ -1762,11 +1760,11 @@ void nanny_menu(struct descriptor_data *d, const char *arg)
    set_descriptor_fptr(d, nanny_menu, TRUE);
 }
 
-void nanny_existing_pwd(struct descriptor_data *d, char *arg)
+void nanny_existing_pwd(descriptor_data *d, char *arg)
 {
-   char                    buf[200];
-   struct descriptor_data *td;
-   unit_data              *u;
+   char             buf[200];
+   descriptor_data *td;
+   unit_data       *u;
 
    /* PC_ID(d->character) can be -1 when a newbie is in the game and
       someone logins with the same name! */
@@ -1866,7 +1864,7 @@ void nanny_existing_pwd(struct descriptor_data *d, char *arg)
    set_descriptor_fptr(d, nanny_motd, TRUE);
 }
 
-void nanny_name_confirm(struct descriptor_data *d, char *arg)
+void nanny_name_confirm(descriptor_data *d, char *arg)
 {
    if(STATE(d)++ == 0)
    {
@@ -1911,11 +1909,11 @@ void nanny_name_confirm(struct descriptor_data *d, char *arg)
    }
 }
 
-void nanny_get_name(struct descriptor_data *d, char *arg)
+void nanny_get_name(descriptor_data *d, char *arg)
 {
-   char                    tmp_name[100];
-   struct descriptor_data *td;
-   int                     n;
+   char             tmp_name[100];
+   descriptor_data *td;
+   int              n;
 
    if(str_is_empty(arg) != 0u)
    {

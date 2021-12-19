@@ -48,8 +48,8 @@
 #define REBOOT_AT 10 /* 0-23, time of optional reboot if -e lib/reboot */
 
 /* extrenal vars */
-extern int                     tics; /* number of tics since boot-time */
-extern struct descriptor_data *descriptor_list, *next_to_process;
+extern int              tics; /* number of tics since boot-time */
+extern descriptor_data *descriptor_list, *next_to_process;
 
 /* external procs */
 #if !defined(DOS) && !defined(AMIGA)

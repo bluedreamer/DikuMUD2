@@ -79,7 +79,7 @@ auto player_exists(const char *pName) -> int
 
 auto find_player(char *name) -> unit_data *
 {
-   struct descriptor_data *d;
+   descriptor_data *d;
 
    d = find_descriptor(name, nullptr);
 
@@ -227,13 +227,13 @@ void save_player_disk(const char *pName, char *pPassword, int id, int nPlyLen, c
 /* Save the player 'pc' (no inventory) */
 void save_player_file(unit_data *pc)
 {
-   static bool             locked = FALSE;
-   blk_length              nPlyLen;
-   int                     tmp_i;
-   unit_data              *tmp_u;
-   unit_data              *list = NULL;
-   struct descriptor_data *tmp_descr;
-   CByteBuffer            *pBuf = &g_FileBuffer;
+   static bool      locked = FALSE;
+   blk_length       nPlyLen;
+   int              tmp_i;
+   unit_data       *tmp_u;
+   unit_data       *list = NULL;
+   descriptor_data *tmp_descr;
+   CByteBuffer     *pBuf = &g_FileBuffer;
 
    pBuf->Clear();
 

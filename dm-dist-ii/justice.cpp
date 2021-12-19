@@ -544,7 +544,7 @@ static void update_criminal(const unit_data *deputy, const char *pPlyName, int p
 
    if(loaded != 0)
    {
-      struct descriptor_data *d = find_descriptor(pPlyName, nullptr);
+      descriptor_data *d = find_descriptor(pPlyName, nullptr);
 
       if((d != nullptr) && (d->character != nullptr))
       {

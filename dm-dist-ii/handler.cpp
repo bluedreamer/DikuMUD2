@@ -69,9 +69,9 @@ extern unit_data *combat_list;
 
 void stop_special(unit_data *u, struct unit_fptr *fptr);
 
-auto unit_is_edited(unit_data *u) -> struct descriptor_data *
+auto unit_is_edited(unit_data *u) -> descriptor_data *
 {
-   struct descriptor_data *d;
+   descriptor_data *d;
 
    for(d = descriptor_list; d != nullptr; d = d->next)
    {
@@ -841,11 +841,11 @@ void unswitchbody(unit_data *npc)
 /* Extracts recursively                              */
 void extract_unit(unit_data *unit)
 {
-   struct descriptor_data *d;
+   descriptor_data *d;
 
    extern unit_data *destroy_room;
 
-   void nanny_menu(struct descriptor_data * d, char *arg);
+   void nanny_menu(descriptor_data * d, char *arg);
    void stop_all_special(unit_data * u);
 
    /* Prevent recursive calling on extracted units. */

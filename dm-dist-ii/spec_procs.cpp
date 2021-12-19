@@ -59,8 +59,8 @@
 
 /*   external vars  */
 
-extern struct descriptor_data *descriptor_list;
-extern char                   *dirs[];
+extern descriptor_data *descriptor_list;
+extern char            *dirs[];
 
 /* extern procedures */
 

@@ -443,7 +443,7 @@ void reset_all_zones()
 
 auto zone_is_empty(struct zone_type *zone) -> bool
 {
-   struct descriptor_data *d;
+   descriptor_data *d;
 
    for(d = descriptor_list; d != nullptr; d = d->next)
    {

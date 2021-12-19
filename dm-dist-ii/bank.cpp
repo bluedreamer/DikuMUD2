@@ -454,8 +454,8 @@ static auto move_money_up(unit_data *ch, unit_data *u) -> bool
 
 void tax_player(unit_data *ch)
 {
-   amount_t                limit = 50 * PLATINUM_MULT;
-   struct descriptor_data *d     = CHAR_DESCRIPTOR(ch);
+   amount_t         limit = 50 * PLATINUM_MULT;
+   descriptor_data *d     = CHAR_DESCRIPTOR(ch);
 
    amount_t holds;
    amount_t holds_sum;

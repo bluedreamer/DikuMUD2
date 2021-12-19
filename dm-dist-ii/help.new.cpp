@@ -85,7 +85,7 @@ auto search_help_cmp(const void *keyval, const void *datum) -> int
 }
 
 /* Returns TRUE if help was presented */
-static auto help(struct help_file_type *hlp, struct descriptor_data *d, char *arg) -> int
+static auto help(struct help_file_type *hlp, descriptor_data *d, char *arg) -> int
 {
    char                    buf[MAX_STRING_LENGTH];
    char                    line[256];
@@ -137,7 +137,7 @@ static auto help(struct help_file_type *hlp, struct descriptor_data *d, char *ar
 
 /* Returns TRUE if help was found and displayed */
 
-auto help_base(struct descriptor_data *d, char *arg) -> int
+auto help_base(descriptor_data *d, char *arg) -> int
 {
    uint8_t bHelp = FALSE;
 

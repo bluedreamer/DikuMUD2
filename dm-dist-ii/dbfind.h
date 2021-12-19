@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : dbfind.h                                  Part of Valhalla MUD *
  * Version: 1.05                                                           *
@@ -22,10 +23,9 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_DBFIND_H
-#define _MUD_DBFIND_H
+#include "descriptor_data.h"
 
-auto find_descriptor(const char *name, struct descriptor_data *except) -> struct descriptor_data *;
+auto find_descriptor(const char *name, descriptor_data *except) -> descriptor_data *;
 auto find_zone(const char *zonename) -> struct zone_type *;
 auto find_file_index(const char *zonename, const char *name) -> file_index_type *;
 auto find_dil_index(char *zonename, char *name) -> struct diltemplate *;
@@ -34,5 +34,3 @@ auto find_dil_template(const char *name) -> struct diltemplate *;
 
 auto str_to_file_index(const char *str) -> file_index_type *;
 auto pc_str_to_file_index(const unit_data *ch, const char *str) -> file_index_type *;
-
-#endif

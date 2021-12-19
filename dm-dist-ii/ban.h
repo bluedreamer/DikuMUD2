@@ -23,8 +23,10 @@
  * *********************************************************************** */
 
 #pragma once
+#include "descriptor_data.h"
+
 auto site_banned(char *cur_site) -> char;
-void show_ban_text(char *site, struct descriptor_data *d);
+void show_ban_text(char *site, descriptor_data *d);
 
 #define NO_BAN        '0'
 #define BAN_NEW_CHARS 'n' /* if(until == 0) ban is forever, otherwise      */

@@ -46,7 +46,7 @@
 
 /*   external vars  */
 
-extern struct descriptor_data *descriptor_list;
+extern descriptor_data *descriptor_list;
 
 /* extern procedures */
 auto obj_trade_price(unit_data *u) -> amount_t;

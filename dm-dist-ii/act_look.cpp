@@ -64,7 +64,7 @@
 
 /* extern variables */
 
-extern struct descriptor_data *descriptor_list;
+extern descriptor_data *descriptor_list;
 
 extern char *credits;
 extern char *news;

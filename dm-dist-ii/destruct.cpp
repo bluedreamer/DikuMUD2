@@ -82,10 +82,10 @@
 /* May only be called by clear_destuct! */
 void destruct_unit(unit_data *unit)
 {
-   struct descriptor_data *d;
-   int                     in_menu = FALSE;
+   descriptor_data *d;
+   int              in_menu = FALSE;
 
-   extern struct descriptor_data *descriptor_list;
+   extern descriptor_data *descriptor_list;
 
    /* Remove all snooping, snoopers and return from any body */
    if(IS_CHAR(unit))

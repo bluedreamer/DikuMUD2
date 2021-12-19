@@ -89,7 +89,7 @@ struct board_info
 };
 
 /* globals */
-extern struct descriptor_data *descriptor_list;
+extern descriptor_data *descriptor_list;
 
 struct board_info *board_list = nullptr; /* Linked list of boards           */
 
@@ -218,7 +218,7 @@ struct board_save_info
 
 void compact_board(struct board_info *tb);
 
-void edit_board(struct descriptor_data *d)
+void edit_board(descriptor_data *d)
 {
    /* Oh God, I hate this :-)  /gnort */
    /* Dont worry, I have fixed it... MS */
@@ -251,9 +251,9 @@ void edit_board(struct descriptor_data *d)
 
 void compact_board(struct board_info *tb)
 {
-   struct descriptor_data *d;
-   int                     index;
-   int                     compacted = FALSE;
+   descriptor_data *d;
+   int              index;
+   int              compacted = FALSE;
 
    for(index = 0; index < MAX_MSGS - 1; index++)
    {
@@ -310,8 +310,8 @@ void compact_board(struct board_info *tb)
 
 void write_board(unit_data *ch, struct board_info *tb, char *arg, unit_data *board)
 {
-   int                     i;
-   struct descriptor_data *d;
+   int              i;
+   descriptor_data *d;
 
    for(i = 0; i < MAX_MSGS; i++)
    {

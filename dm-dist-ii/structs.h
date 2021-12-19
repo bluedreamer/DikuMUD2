@@ -56,46 +56,6 @@
 
 /* --------------------- DESCRIPTOR STRUCTURES -------------------- */
 
-class descriptor_data
-{
-public:
-   descriptor_data(cMultiHook *pe);
-   ~descriptor_data();
-
-   void CreateBBS();
-   void RemoveBBS() const;
-
-   time_t      logon; /* Time of last connect              */
-   cMultiHook *multi; /* Multi element pointer             */
-   uint16_t    id;    /* The ID for the multi              */
-   void (*fptr)(struct descriptor_data *, const char *);
-   int      state;    /* Locally used in each fptr         */
-   char     host[50]; /* hostname                          */
-   uint16_t nPort;    /* Mplex port                        */
-   uint8_t  nLine;    /* Serial Line                       */
-   int      wait;     /* wait for how many loops           */
-   uint16_t timer;    /* num of hours idleness for mortals */
-   uint32_t replyid;  /* Used for 'tell reply'             */
-
-   /* For the 'modify-string' system.       */
-   char *localstr; /* This string is expanded while editing */
-
-   void (*postedit)(struct descriptor_data *);
-   unit_data *editing;
-   void      *editref; /* pointer to "where we are editing"     */
-                       /* when using (volatile) extras + boards */
-
-   int        prompt_mode;                    /* control of prompt-printing       */
-   char       last_cmd[MAX_INPUT_LENGTH + 1]; /* the last entered cmd_str         */
-   char       history[MAX_INPUT_LENGTH + 1];  /* simple command history           */
-   cQueue     qInput;                         /* q of unprocessed input           */
-   unit_data *character;                      /* linked to char                   */
-   unit_data *original;                       /* original char                    */
-   snoop_data snoop;                          /* to snoop people.                 */
-
-   class descriptor_data *next; /* link to next descriptor          */
-};
-
 /* ----------------- ROOM SPECIFIC STRUCTURES ----------------------- */
 
 class room_direction_data
@@ -281,7 +241,7 @@ public:
                  *  Converted to real money when pc/npc is loaded.
                  */
 
-   struct descriptor_data *descriptor;
+   descriptor_data *descriptor;
 
    struct char_point_data points;
 

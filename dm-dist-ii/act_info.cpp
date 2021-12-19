@@ -62,7 +62,7 @@
 
 /* extern variables */
 
-extern struct descriptor_data *descriptor_list;
+extern descriptor_data *descriptor_list;
 
 static void add_to_string(char **buf, int *size, int len, const char *str)
 {
@@ -722,9 +722,9 @@ void do_wizlist(unit_data *ch, char *arg, const struct command_info *cmd)
 
 void player_where(unit_data *ch, char *arg)
 {
-   char                    buf[160];
-   struct descriptor_data *d;
-   int                     any = FALSE;
+   char             buf[160];
+   descriptor_data *d;
+   int              any = FALSE;
 
    for(d = descriptor_list; d != nullptr; d = d->next)
    {
@@ -753,14 +753,14 @@ void player_where(unit_data *ch, char *arg)
 
 void do_where(unit_data *ch, char *aaa, const struct command_info *cmd)
 {
-   char                   *buf = NULL;
-   char                    buf1[1024];
-   char                    buf2[512];
-   unit_data              *i;
-   struct descriptor_data *d;
-   int                     len;
-   int                     cur_size = 2048;
-   char                   *arg      = (char *)aaa;
+   char            *buf = NULL;
+   char             buf1[1024];
+   char             buf2[512];
+   unit_data       *i;
+   descriptor_data *d;
+   int              len;
+   int              cur_size = 2048;
+   char            *arg      = (char *)aaa;
 
    if(IS_MORTAL(ch))
    {
@@ -829,10 +829,10 @@ void do_who(unit_data *ch, char *arg, const struct command_info *cmd)
    static char *buf      = nullptr;
    static int   cur_size = 1024;
 
-   struct descriptor_data *d;
-   char                    tmp[256];
-   char                    tmp2[512];
-   int                     len;
+   descriptor_data *d;
+   char             tmp[256];
+   char             tmp2[512];
+   int              len;
 
    if(buf != nullptr)
    {

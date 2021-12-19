@@ -29,8 +29,8 @@ void event_enq(int when, void (*func)(void *, void *), void *arg1, void *arg2);
 void event_deenq(void (*func)(void *, void *), void *arg1, void *arg2);
 void event_deenq_relaxed(void (*func)(void *, void *), void *arg1, void *arg2);
 
-extern struct descriptor_data *descriptor_list;
-extern struct descriptor_data *next_to_process;
+extern descriptor_data *descriptor_list;
+extern descriptor_data *next_to_process;
 
 extern int mud_bootzone;
 extern int no_connections;

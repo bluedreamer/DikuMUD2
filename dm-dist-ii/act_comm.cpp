@@ -49,7 +49,7 @@ uint8_t g_nShout = 0;
 
 /* extern variables */
 
-extern struct descriptor_data *descriptor_list;
+extern descriptor_data *descriptor_list;
 
 auto is_ignored(unit_data *ch, unit_data *victim) -> int
 {
@@ -211,10 +211,10 @@ void do_say(unit_data *ch, char *argument, const struct command_info *cmd)
 
 void do_shout(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct descriptor_data *i;
-   const char             *me     = "You shout '$3t'";
-   const char             *others = COLOUR_COMM "$1n shouts '$2t'" COLOUR_NORMAL;
-   int                     endcost;
+   descriptor_data *i;
+   const char      *me     = "You shout '$3t'";
+   const char      *others = COLOUR_COMM "$1n shouts '$2t'" COLOUR_NORMAL;
+   int              endcost;
 
    if(IS_PC(ch) && (CHAR_LEVEL(ch) < g_nShout))
    {
@@ -381,7 +381,7 @@ void do_tell(unit_data *ch, char *aaa, const struct command_info *cmd)
    {
       if(IS_PC(vict) && CHAR_DESCRIPTOR(vict) == nullptr)
       {
-         struct descriptor_data *d;
+         descriptor_data *d;
 
          for(d = descriptor_list; d != nullptr; d = d->next)
          {

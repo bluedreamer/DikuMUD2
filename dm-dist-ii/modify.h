@@ -23,4 +23,4 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-void edit_extra(struct descriptor_data *d);
+void edit_extra(descriptor_data *d);

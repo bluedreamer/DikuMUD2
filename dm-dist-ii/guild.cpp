@@ -212,9 +212,9 @@ auto guild_master_init(struct spec_arg *sarg) -> int
 /* Message will never be sent to 'nonmember'                           */
 void act_to_guild(const char *msg, char *guild, unit_data *member, unit_data *nonmember)
 {
-   struct descriptor_data *d;
+   descriptor_data *d;
 
-   extern struct descriptor_data *descriptor_list;
+   extern descriptor_data *descriptor_list;
 
    if(guild == nullptr || *guild == '\0')
    {

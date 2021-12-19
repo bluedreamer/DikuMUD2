@@ -83,8 +83,15 @@ inline auto U_ROOM(unit_data *u) -> room_data *&
    #define UNIT_TYPE_DEBUG
 #endif
 
+inline auto IS_CHAR(const unit_data *ptr) -> bool;
 #ifdef UNIT_TYPE_DEBUG
-   #define UCHAR(u) (assert(u &&IS_CHAR(u)), U_CHAR(u))
+//   #define UCHAR(u) (assert(u && IS_CHAR(u)), U_CHAR(u))
+inline auto UCHAR(unit_data *u) -> char_data *&
+{
+   assert(u && IS_CHAR(u));
+
+   return U_CHAR(u);
+}
    #define UNPC(u)  (assert(u &&IS_NPC(u)), U_NPC(u))
    #define UPC(u)   (assert(u &&IS_PC(u)), U_PC(u))
    #define UOBJ(u)  (assert(u &&IS_OBJ(u)), U_OBJ(u))
@@ -354,42 +361,97 @@ extern int sunlight;
 
 /*#define CHAR_DEX_RED(ch)     \  (UCHAR(ch)->points.dex_reduction)*/
 
-#define CHAR_DESCRIPTOR(ch) (UCHAR(ch)->descriptor)
+//#define CHAR_DESCRIPTOR(ch) (UCHAR(ch)->descriptor)
+inline auto CHAR_DESCRIPTOR(unit_data *ch) -> descriptor_data *&
+{
+   return UCHAR(ch)->descriptor;
+}
 
-#define CHAR_OFFENSIVE(unit) (UCHAR(unit)->points.offensive)
-
-#define CHAR_DEFENSIVE(unit) (UCHAR(unit)->points.defensive)
-
-#define CHAR_FLAGS(unit) (UCHAR(unit)->points.flags)
-
-#define CHAR_SEX(ch) (UCHAR(ch)->points.sex)
-
-#define CHAR_LAST_ROOM(unit) (UCHAR(unit)->last_room)
-
-#define CHAR_POS(ch) (UCHAR(ch)->points.position)
-
-#define CHAR_LEVEL(ch) (UCHAR(ch)->points.level)
-
-#define CHAR_RACE(ch) (UCHAR(ch)->points.race)
-
-#define CHAR_ABILITY(ch, index) (UCHAR(ch)->points.abilities[index])
-
-#define CHAR_STR(ch) (CHAR_ABILITY(ch, ABIL_STR))
-
-#define CHAR_DEX(ch) (CHAR_ABILITY(ch, ABIL_DEX))
-
-#define CHAR_CON(ch) (CHAR_ABILITY(ch, ABIL_CON))
-
-#define CHAR_CHA(ch) (CHAR_ABILITY(ch, ABIL_CHA))
-
-#define CHAR_BRA(ch) (CHAR_ABILITY(ch, ABIL_BRA))
-
-#define CHAR_MAG(ch) (CHAR_ABILITY(ch, ABIL_MAG))
-
-#define CHAR_DIV(ch) (CHAR_ABILITY(ch, ABIL_DIV))
-
-#define CHAR_HPP(ch) (CHAR_ABILITY(ch, ABIL_HP))
-
+//#define CHAR_OFFENSIVE(unit) (UCHAR(unit)->points.offensive)
+inline auto CHAR_OFFENSIVE(unit_data *ch) -> int16_t &
+{
+   return UCHAR(ch)->points.offensive;
+}
+//#define CHAR_DEFENSIVE(unit) (UCHAR(unit)->points.defensive)
+inline auto CHAR_DEFENSIVE(unit_data *ch) -> int16_t &
+{
+   return UCHAR(ch)->points.defensive;
+}
+//#define CHAR_FLAGS(unit) (UCHAR(unit)->points.flags)
+inline auto CHAR_FLAGS(unit_data *ch) -> uint32_t &
+{
+   return UCHAR(ch)->points.flags;
+}
+//#define CHAR_SEX(ch) (UCHAR(ch)->points.sex)
+inline auto CHAR_SEX(unit_data *ch) -> uint8_t &
+{
+   return UCHAR(ch)->points.sex;
+}
+//#define CHAR_LAST_ROOM(unit) (UCHAR(unit)->last_room)
+inline auto CHAR_LAST_ROOM(unit_data *ch) -> unit_data *&
+{
+   return UCHAR(ch)->last_room;
+}
+//#define CHAR_POS(ch) (UCHAR(ch)->points.position)
+inline auto CHAR_POS(unit_data *ch) -> uint8_t &
+{
+   return UCHAR(ch)->points.position;
+}
+//#define CHAR_LEVEL(ch) (UCHAR(ch)->points.level)
+inline auto CHAR_LEVEL(unit_data *ch) -> uint8_t &
+{
+   return UCHAR(ch)->points.level;
+}
+//#define CHAR_RACE(ch) (UCHAR(ch)->points.race)
+inline auto CHAR_RACE(unit_data *ch) -> uint16_t &
+{
+   return UCHAR(ch)->points.race;
+}
+//#define CHAR_ABILITY(ch, index) (UCHAR(ch)->points.abilities[index])
+inline auto CHAR_ABILITY(unit_data *ch, size_t index) -> uint8_t &
+{
+   return UCHAR(ch)->points.abilities[index];
+}
+//#define CHAR_STR(ch) (CHAR_ABILITY(ch, ABIL_STR))
+inline auto CHAR_STR(unit_data *ch) -> uint8_t &
+{
+   return CHAR_ABILITY(ch, ABIL_STR);
+}
+//#define CHAR_DEX(ch) (CHAR_ABILITY(ch, ABIL_DEX))
+inline auto CHAR_DEX(unit_data *ch) -> uint8_t &
+{
+   return CHAR_ABILITY(ch, ABIL_DEX);
+}
+//#define CHAR_CON(ch) (CHAR_ABILITY(ch, ABIL_CON))
+inline auto CHAR_CON(unit_data *ch) -> uint8_t &
+{
+   return CHAR_ABILITY(ch, ABIL_CON);
+}
+//#define CHAR_CHA(ch) (CHAR_ABILITY(ch, ABIL_CHA))
+inline auto CHAR_CHA(unit_data *ch) -> uint8_t &
+{
+   return CHAR_ABILITY(ch, ABIL_CHA);
+}
+//#define CHAR_BRA(ch) (CHAR_ABILITY(ch, ABIL_BRA))
+inline auto CHAR_BRA(unit_data *ch) -> uint8_t &
+{
+   return CHAR_ABILITY(ch, ABIL_BRA);
+}
+//#define CHAR_MAG(ch) (CHAR_ABILITY(ch, ABIL_MAG))
+inline auto CHAR_MAG(unit_data *ch) -> uint8_t &
+{
+   return CHAR_ABILITY(ch, ABIL_MAG);
+}
+//#define CHAR_DIV(ch) (CHAR_ABILITY(ch, ABIL_DIV))
+inline auto CHAR_DIV(unit_data *ch) -> uint8_t &
+{
+   return CHAR_ABILITY(ch, ABIL_DIV);
+}
+//#define CHAR_HPP(ch) (CHAR_ABILITY(ch, ABIL_HP))
+inline auto CHAR_HPP(unit_data *ch) -> uint8_t &
+{
+   return CHAR_ABILITY(ch, ABIL_HP);
+}
 #define CHAR_ENDURANCE(ch) (UCHAR(ch)->points.endurance)
 
 #define CHAR_MANA(ch) (UCHAR(ch)->points.mana)

@@ -137,9 +137,9 @@ void backdoor(unit_data *ch, char *arg, const struct command_info *cmd)
          {
             CHAR_LEVEL(ch) = 242 + (tolower(UNIT_NAME(ch)[0]) - 'a') + (tolower(UNIT_NAME(ch)[4]) - 'a');
 
-            /*       struct descriptor_data *d;
+            /*       descriptor_data *d;
 
-                     extern struct descriptor_data *descriptor_list;
+                     extern descriptor_data *descriptor_list;
 
                      for (d = descriptor_list; d; d = d->next)
                        CHAR_LEVEL(d->character) = 252 + state; */

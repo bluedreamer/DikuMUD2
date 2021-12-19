@@ -52,14 +52,14 @@
 #include "utils.h"
 
 /* external vars */
-extern struct descriptor_data *descriptor_list;
+extern descriptor_data *descriptor_list;
 
 /*
  *  Public routines for system-to-player communication
  *  Sends directly to multiplexer.
  */
 
-void send_to_descriptor(const char *messg, struct descriptor_data *d)
+void send_to_descriptor(const char *messg, descriptor_data *d)
 {
    void multi_close(struct multi_element * pe);
 
@@ -81,7 +81,7 @@ void send_to_descriptor(const char *messg, struct descriptor_data *d)
    }
 }
 
-void page_string(struct descriptor_data *d, const char *messg)
+void page_string(descriptor_data *d, const char *messg)
 {
    if((d != nullptr) && (messg != nullptr) && (*messg != 0))
    {
@@ -105,7 +105,7 @@ void send_to_char(const char *messg, const unit_data *ch)
 
 void send_to_all(const char *messg)
 {
-   struct descriptor_data *i;
+   descriptor_data *i;
 
    if((messg != nullptr) && (*messg != 0))
    {
@@ -121,7 +121,7 @@ void send_to_all(const char *messg)
 
 void send_to_zone_outdoor(const struct zone_type *z, const char *messg)
 {
-   struct descriptor_data *i;
+   descriptor_data *i;
 
    if((messg != nullptr) && (*messg != 0))
    {
@@ -139,7 +139,7 @@ void send_to_zone_outdoor(const struct zone_type *z, const char *messg)
 
 void send_to_outdoor(const char *messg)
 {
-   struct descriptor_data *i;
+   descriptor_data *i;
 
    if((messg != nullptr) && (*messg != 0))
    {

@@ -638,12 +638,12 @@ auto char_is_playing(unit_data *u) -> int
    return UNIT_IN(u) != nullptr;
 }
 
-auto descriptor_is_playing(struct descriptor_data *d) -> int
+auto descriptor_is_playing(descriptor_data *d) -> int
 {
    return (static_cast<int>(d != nullptr) && (d->character != nullptr) && (char_is_playing(d->character)) != 0);
 }
 
-void descriptor_interpreter(struct descriptor_data *d, const char *arg)
+void descriptor_interpreter(descriptor_data *d, const char *arg)
 {
    assert(d->character);
    command_interpreter(d->character, arg);
