@@ -55,6 +55,7 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include "zone_reset_cmd.h"
 #include <climits>
 
 /*   external vars  */
@@ -157,7 +158,7 @@ static void stat_world(unit_data *ch)
 
 static char *stat_buffer, *stat_p;
 
-static void stat_zone_reset(char *indnt, struct zone_reset_cmd *zrip, unit_data *ch)
+static void stat_zone_reset(char *indnt, zone_reset_cmd *zrip, unit_data *ch)
 {
    static const char *nums[] = {"max", "zonemax", "local"};
 

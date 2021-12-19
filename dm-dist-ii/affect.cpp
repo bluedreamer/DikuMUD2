@@ -238,9 +238,9 @@ void affect_clear_unit(unit_data *unit)
 
 auto affected_by_spell(const unit_data *unit, int16_t id) -> struct unit_affected_type *
 {
-    unit_affected_type *af;
+   unit_affected_type *af;
 
-   for(af = UNIT_AFFECTED(const_cast<unit_data*>(unit)); af != nullptr; af = af->next)
+   for(af = UNIT_AFFECTED(const_cast<unit_data *>(unit)); af != nullptr; af = af->next)
    {
       if(af->id == id)
       {

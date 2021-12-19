@@ -22,6 +22,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "bin_search_type.h"
 #include "blkfile.h"
 #include "combat.h"
 #include "essential.h"
@@ -30,8 +31,8 @@
 #include "protocol.h"
 #include "queue.h"
 #include "system.h"
-#include "bin_search_type.h"
 #include "values.h"
+#include "zone_reset_cmd.h"
 
 #define FI_MAX_ZONENAME 30 /* Max length of any zone-name    */
 #define FI_MAX_UNITNAME 15 /* Max length of any unit-name    */
@@ -50,19 +51,6 @@
 
 /* ----------------- DATABASE STRUCTURES ----------------------- */
 
-/* A linked list of commands to execute */
-struct zone_reset_cmd
-{
-   uint8_t cmd_no; /* Index to array of func() ptrs */
-   uint8_t cmpl;   /* Complete flag                 */
-
-   file_index_type *fi[2];
-   int16_t          num[3];
-
-   struct zone_reset_cmd *next;
-   struct zone_reset_cmd *nested;
-};
-
 /* A linked/sorted list of all the zones in the game */
 class zone_type
 {
@@ -77,14 +65,13 @@ public:
    char           *help;     /* User-Help to zone                */
    char           *filename; /* The filename of this file        */
 
-   file_index_type        *fi; /* Pointer to list of file-index's  */
-    bin_search_type *ba; /* Pointer to binarray of type      */
+   file_index_type  *fi;   /* Pointer to list of file-index's  */
+   bin_search_type  *ba;   /* Pointer to binarray of type      */
+   zone_reset_cmd   *zri;  /* List of Zone reset commands      */
+   struct zone_type *next; /* Next Zone                        */
 
-   struct zone_reset_cmd *zri;  /* List of Zone reset commands      */
-   struct zone_type      *next; /* Next Zone                        */
-
-   struct diltemplate     *tmpl;   /* DIL templates in zone            */
-    bin_search_type *tmplba; /* Pointer to binarray of type      */
+   struct diltemplate *tmpl;   /* DIL templates in zone            */
+   bin_search_type    *tmplba; /* Pointer to binarray of type      */
 
    uint8_t **spmatrix; /* Shortest Path Matrix             */
 
