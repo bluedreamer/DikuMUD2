@@ -562,8 +562,11 @@ inline auto CHAR_HPP(unit_data *ch) -> uint8_t &
 
 #define CHAR_SPEED(ch) (UCHAR(ch)->points.speed)
 
-#define CHAR_COMBAT(ch) (UCHAR(ch)->Combat)
-
+//#define CHAR_COMBAT(ch) (UCHAR(ch)->Combat)
+inline auto CHAR_COMBAT(unit_data *ch) -> cCombat *&
+{
+   return UCHAR(ch)->Combat;
+}
 #define CHAR_FIGHTING(ch) (UCHAR(ch)->Combat ? CHAR_COMBAT(ch)->Melee() : (unit_data *)NULL)
 
 #define CHAR_MASTER(ch) (UCHAR(ch)->master)

@@ -25,8 +25,6 @@
 
 #include "essential.h"
 
-
-
 auto bread_uint8_t(uint8_t **buf) -> uint8_t;
 auto bread_uint16_t(uint8_t **buf) -> uint16_t;
 auto bread_uint32_t(uint8_t **buf) -> uint32_t;

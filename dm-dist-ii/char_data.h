@@ -2,6 +2,7 @@
 #include "char_follow_type.h"
 #include "char_point_data.h"
 #include "descriptor_data.h"
+#include "cCombat.h"
 
 class char_data
 {
@@ -23,7 +24,7 @@ public:
 
    char_point_data points;
 
-   class cCombat *Combat;
+   cCombat *Combat;
 
    struct char_follow_type *followers;
    unit_data               *master; /* Must be a char */
