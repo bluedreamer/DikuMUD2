@@ -25,10 +25,6 @@
 /* 02/09/92 seifert: You can now specify an amount to practice, for        */
 /*                   example 'practice 20 hand sword'                      */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-
 #include "comm.h"
 #include "common.h"
 #include "guild.h"
@@ -36,6 +32,7 @@
 #include "interpreter.h"
 #include "money.h"
 #include "skills.h"
+#include "spell_info_type.h"
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
@@ -43,7 +40,10 @@
 #include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
+#include <cctype>
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
 
 #define PRACTICE_COST_LEVEL (START_LEVEL + 5)
 

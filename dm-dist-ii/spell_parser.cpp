@@ -38,6 +38,7 @@
 #include "magic.h"
 #include "skills.h"
 #include "spell_args.h"
+#include "spell_info_type.h"
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
@@ -46,8 +47,6 @@
 #include "utils.h"
 
 /* Extern data */
-
-struct spell_info_type spell_info[SPL_TREE_MAX];
 
 void set_spellargs(spell_args *sa, unit_data *caster, unit_data *medium, unit_data *target, const char *arg, int hm)
 {

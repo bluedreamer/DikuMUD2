@@ -50,6 +50,7 @@
 #include "magic.h"
 #include "main.h"
 #include "skills.h"
+#include "spell_info_type.h"
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
