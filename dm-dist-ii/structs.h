@@ -54,17 +54,9 @@
 
 /* ------------------  PC SPECIFIC STRUCTURES ------------------------ */
 
-struct pc_account_data
-{
-   float    credit;       /* How many coin units are left on account?       */
-   uint32_t credit_limit; /* In coin units (i.e. cents / oerer)             */
-   uint32_t total_credit; /* Accumulated credit to date (coin units)        */
-   int16_t  last4;        /* The last four digits of his credit card, or -1 */
-   uint8_t  cracks;       /* Crack-attempts on CC last4                     */
-   uint8_t  discount;     /* 0 - 100% discount                              */
-   uint32_t flatrate;     /* The expiration date of a flat rate service     */
-};
+#include "pc_account_data.h"
 #include "pc_time_data.h"
+
 class pc_data
 {
 public:
@@ -73,8 +65,8 @@ public:
 
    struct terminal_setup_type setup;
 
-   pc_time_data           time;    /* PCs time info  */
-   struct pc_account_data account; /* Accounting     */
+   pc_time_data    time;    /* PCs time info  */
+   pc_account_data account; /* Accounting     */
 
    char *guild;    /* Which guild is the player a member of?  */
    char *bank;     /* How much money in bank?                 */

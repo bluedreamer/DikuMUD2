@@ -19,7 +19,7 @@ set(DMSERVER_SRC account.cpp act_change.cpp act_comm.cpp act_info.cpp act_moveme
         base.h config.h dil.h guild.h main.h select.h system.h utils.h
         blkfile.h connectionlog.h dilinst.h handler.h modify.h skills.h textutil.h values.h
         bytestring.h constants.h dilrun.h hashstring.h money.h spec_assign.h translate.h weather.h
-        combat.h db_file.h essential.h help.new.h movement.h spelldef.h trie.h wmacros.h act_movement.h zon_basis.h nice.h signals.h reception.h destruct.h pcsave.h nanny.h mobact.h unit_data.cpp unit_data.h file_index_type.cpp file_index_type.h bin_search_type.cpp bin_search_type.h zone_reset_cmd.cpp zone_reset_cmd.h zone_type.cpp zone_type.h time_info_data.cpp time_info_data.h snoop_data.cpp snoop_data.h descriptor_data.cpp descriptor_data.h room_direction_data.cpp room_direction_data.h room_data.cpp room_data.h obj_data.cpp obj_data.h pc_time_data.cpp pc_time_data.h)
+        combat.h db_file.h essential.h help.new.h movement.h spelldef.h trie.h wmacros.h act_movement.h zon_basis.h nice.h signals.h reception.h destruct.h pcsave.h nanny.h mobact.h unit_data.cpp unit_data.h file_index_type.cpp file_index_type.h bin_search_type.cpp bin_search_type.h zone_reset_cmd.cpp zone_reset_cmd.h zone_type.cpp zone_type.h time_info_data.cpp time_info_data.h snoop_data.cpp snoop_data.h descriptor_data.cpp descriptor_data.h room_direction_data.cpp room_direction_data.h room_data.cpp room_data.h obj_data.cpp obj_data.h pc_time_data.cpp pc_time_data.h pc_account_data.cpp pc_account_data.h)
 
 add_compile_definitions(DMSERVER MEMORY_DEBUG MUD_DEBUG)
 add_executable(dmserver ${DMSERVER_SRC})
