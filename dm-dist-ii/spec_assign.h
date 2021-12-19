@@ -50,6 +50,7 @@ auto bank(struct spec_arg *sarg) -> int;
 auto dump(struct spec_arg *sarg) -> int;
 auto fido(struct spec_arg *sarg) -> int;
 auto janitor(struct spec_arg *sarg) -> int;
+auto spec_unused(struct spec_arg *sarg) -> int;
 
 auto teach_init(struct spec_arg *sarg) -> int;
 auto teaching(struct spec_arg *sarg) -> int;

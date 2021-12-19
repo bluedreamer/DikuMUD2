@@ -22,9 +22,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cstdio>
-#include <cstdlib>
-
 #include "comm.h"
 #include "db.h"
 #include "handler.h"
@@ -33,8 +30,11 @@
 #include "skills.h"
 #include "structs.h"
 #include "unit_fptr.h"
+#include "unit_function_array_type.h"
 #include "utility.h"
 #include "utils.h"
+#include <cstdio>
+#include <cstdlib>
 
 void special_event(void *p1, void *p2);
 void event_enq(int when, void (*func)(), void *arg1, void *arg2);
@@ -72,13 +72,12 @@ void ResetFptrTimer(unit_data *u, unit_fptr *fptr)
 
 void special_event(void *p1, void *p2)
 {
-   auto *u    = (unit_data *)p1;
-   auto *fptr = (unit_fptr *)p2;
-
-   uint32_t        ret = SFR_SHARE;
-   uint32_t        ticks;
-   unit_fptr      *ftmp;
-   struct spec_arg sarg;
+   auto      *u    = (unit_data *)p1;
+   auto      *fptr = (unit_fptr *)p2;
+   uint32_t   ret  = SFR_SHARE;
+   uint32_t   ticks;
+   unit_fptr *ftmp;
+   spec_arg   sarg;
 
    void add_func_history(unit_data * u, uint16_t, uint16_t);
 

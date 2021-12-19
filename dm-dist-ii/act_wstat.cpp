@@ -49,6 +49,7 @@
 #include "tree_type.h"
 #include "unit_affected_type.h"
 #include "unit_fptr.h"
+#include "unit_function_array_type.h"
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"

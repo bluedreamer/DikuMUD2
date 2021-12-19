@@ -29,27 +29,27 @@
 /* Aug 11 1994 gnort: got rid of do_qui & co.                               */
 /* Aug 14 1994 gnort: Inserted new social-command system                    */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
+#include "interpreter.h"
 #include "comm.h"
 #include "common.h"
 #include "constants.h"
 #include "db.h"
 #include "dilrun.h"
 #include "files.h"
-#include "interpreter.h"
 #include "skills.h"
 #include "structs.h"
 #include "textutil.h"
 #include "trie.h"
 #include "unit_fptr.h"
+#include "unit_function_array_type.h"
 #include "unitfind.h"
 #include "utility.h"
 #include "utils.h"
+#include <cctype>
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 /* external fcntls */
 extern struct unit_function_array_type unit_function_array[];

@@ -1,5 +1,3 @@
-#include "destruct.h"
-
 /* *********************************************************************** *
  * File   : handler.c                                 Part of Valhalla MUD *
  * Version: 2.24                                                           *
@@ -39,20 +37,14 @@
 /* 14/09/94 gnort   : Made unit_vector dynamic rather than static (blegh)  */
 /* 11/01/95 gnort   : Moved find_raw_ex_descr() from act_info.c over here  */
 
-#include <cctype>
-#include <cstdarg>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
+#include "handler.h"
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"
 #include "db.h"
+#include "destruct.h"
 #include "dilrun.h"
 #include "files.h"
-#include "handler.h"
 #include "interpreter.h"
 #include "main.h"
 #include "money.h"
@@ -61,9 +53,16 @@
 #include "textutil.h"
 #include "unit_affected_type.h"
 #include "unit_fptr.h"
+#include "unit_function_array_type.h"
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+#include <cctype>
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 extern unit_data *combat_list;
 
@@ -183,12 +182,8 @@ auto create_fptr(unit_data *u, uint16_t index, uint16_t beat, uint16_t flags, vo
 /* Does not free 'f' - it is done by clear_destruct by comm.c */
 void destroy_fptr(unit_data *u, unit_fptr *f)
 {
-   unit_fptr      *tf;
-   struct spec_arg sarg;
-
-   extern struct unit_function_array_type unit_function_array[];
-
-   void add_func_history(unit_data * u, uint16_t, uint16_t);
+   unit_fptr *tf;
+   spec_arg   sarg;
 
    assert(f);
    assert(!is_destructed(DR_FUNC, f));

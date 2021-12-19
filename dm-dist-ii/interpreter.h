@@ -23,30 +23,19 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "command_info.h"
 #include "descriptor_data.h"
 #include "dil.h"
-#include "command_info.h"
 #include "essential.h"
 
 auto char_is_playing(unit_data *u) -> int;
 auto descriptor_is_playing(descriptor_data *d) -> int;
 void descriptor_interpreter(descriptor_data *d, const char *arg);
 void interpreter_string_add(descriptor_data *d, const char *str);
-
+void add_func_history(unit_data *u, uint16_t idx, uint16_t flags);
 
 /* Bitmasks to determine what kind of messages is to be send
    to a special function. */
-
-struct unit_function_array_type
-{
-   const char *name;
-   int (*func)(struct spec_arg *sarg);
-   int      save_w_d; /* May it be saved if it has data? True/false */
-   uint16_t sfb;      /* what kind of messages should be send */
-   int16_t  tick;     /* Default tick count */
-};
-
-
 
 /* To check for commands by string */
 auto is_command(const command_info *cmd, const char *str) -> bool;

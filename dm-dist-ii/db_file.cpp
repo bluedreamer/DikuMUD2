@@ -28,14 +28,9 @@
  * 14-Apr-95 HHS:   Added for and foreach, break and continue
  */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
+#include "db_file.h"
 #include "bytestring.h"
 #include "db.h"
-#include "db_file.h"
 #include "dil.h"
 #include "dilrun.h"
 #include "handler.h"
@@ -44,9 +39,14 @@
 #include "textutil.h"
 #include "unit_affected_type.h"
 #include "unit_fptr.h"
+#include "unit_function_array_type.h"
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 int g_nCorrupt = 0; /* > 0 when a unit is corrupt       */
 
