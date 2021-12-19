@@ -29,10 +29,11 @@
 /* Aug 11 1994 gnort: got rid of do_qui & co.                               */
 /* Aug 14 1994 gnort: Inserted new social-command system                    */
 #include "interpreter.h"
-#include "CServerConfiguration.h"
+
 #include "comm.h"
 #include "common.h"
 #include "constants.h"
+#include "CServerConfiguration.h"
 #include "db.h"
 #include "dilrun.h"
 #include "files.h"
@@ -45,6 +46,7 @@
 #include "unitfind.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cctype>
 #include <climits>
 #include <cstdio>
@@ -54,12 +56,12 @@
 /* external fcntls */
 extern struct unit_function_array_type unit_function_array[];
 
-auto cmd_is_a_social(char *cmd, int complete) -> bool;
-auto perform_social(unit_data *, char *, const command_info *) -> bool;
+auto                                   cmd_is_a_social(char *cmd, int complete) -> bool;
+auto                                   perform_social(unit_data *, char *, const command_info *) -> bool;
 
-struct trie_type *intr_trie = nullptr;
+struct trie_type                      *intr_trie     = nullptr;
 
-struct command_info cmd_info[] = {{0, 0, "north", CMD_NORTH, POSITION_SITTING, do_move, 0},
+struct command_info                    cmd_info[]    = {{0, 0, "north", CMD_NORTH, POSITION_SITTING, do_move, 0},
                                   {0, 0, "east", CMD_EAST, POSITION_SITTING, do_move, 0},
                                   {0, 0, "south", CMD_SOUTH, POSITION_SITTING, do_move, 0},
                                   {0, 0, "west", CMD_WEST, POSITION_SITTING, do_move, 0},
@@ -317,48 +319,102 @@ struct command_info cmd_info[] = {{0, 0, "north", CMD_NORTH, POSITION_SITTING, d
 /* { 0, 0, "verify",CMD_VERIFY,POSITION_DEAD,do_verify,250}, */
 /* { 0, 0, "kickit",CMD_KICKIT,POSITION_DEAD,do_kickit,230}, */
 
-struct command_info cmd_auto_tick = {
-   0, 0, nullptr, CMD_AUTO_TICK, POSITION_DEAD, nullptr, 0,
+struct command_info                    cmd_auto_tick = {
+   0,
+   0,
+   nullptr,
+   CMD_AUTO_TICK,
+   POSITION_DEAD,
+   nullptr,
+   0,
 };
 
 struct command_info cmd_auto_enter = {
-   0, 0, nullptr, CMD_AUTO_ENTER, POSITION_STANDING, nullptr, 0,
+   0,
+   0,
+   nullptr,
+   CMD_AUTO_ENTER,
+   POSITION_STANDING,
+   nullptr,
+   0,
 };
 
 struct command_info cmd_auto_extract = {
-   0, 0, nullptr, CMD_AUTO_EXTRACT, POSITION_DEAD, nullptr, 0,
+   0,
+   0,
+   nullptr,
+   CMD_AUTO_EXTRACT,
+   POSITION_DEAD,
+   nullptr,
+   0,
 };
 
 struct command_info cmd_auto_death = {
-   0, 0, nullptr, CMD_AUTO_DEATH, POSITION_DEAD, nullptr, 0,
+   0,
+   0,
+   nullptr,
+   CMD_AUTO_DEATH,
+   POSITION_DEAD,
+   nullptr,
+   0,
 };
 
 struct command_info cmd_auto_combat = {
-   0, 0, nullptr, CMD_AUTO_COMBAT, POSITION_DEAD, nullptr, 0,
+   0,
+   0,
+   nullptr,
+   CMD_AUTO_COMBAT,
+   POSITION_DEAD,
+   nullptr,
+   0,
 };
 
 struct command_info cmd_auto_unknown = {
-   0, 0, nullptr, CMD_AUTO_UNKNOWN, POSITION_DEAD, nullptr, 0,
+   0,
+   0,
+   nullptr,
+   CMD_AUTO_UNKNOWN,
+   POSITION_DEAD,
+   nullptr,
+   0,
 };
 
 struct command_info cmd_auto_save = {
-   0, 0, nullptr, CMD_AUTO_SAVE, POSITION_DEAD, nullptr, 0,
+   0,
+   0,
+   nullptr,
+   CMD_AUTO_SAVE,
+   POSITION_DEAD,
+   nullptr,
+   0,
 };
 
 struct command_info cmd_auto_msg = {
-   0, 0, nullptr, CMD_AUTO_MSG, POSITION_DEAD, nullptr, 0,
+   0,
+   0,
+   nullptr,
+   CMD_AUTO_MSG,
+   POSITION_DEAD,
+   nullptr,
+   0,
 };
 
 /* This is so that we can distuinguish socials and unknowns... */
 struct command_info cmd_a_social = {
-   0, 0, nullptr, CMD_A_SOCIAL, POSITION_DEAD, nullptr, 0,
+   0,
+   0,
+   nullptr,
+   CMD_A_SOCIAL,
+   POSITION_DEAD,
+   nullptr,
+   0,
 };
 
-struct command_info cmd_auto_damage = {0, 0, nullptr, CMD_AUTO_DAMAGE, POSITION_DEAD, nullptr, 0};
+struct command_info  cmd_auto_damage = {0, 0, nullptr, CMD_AUTO_DAMAGE, POSITION_DEAD, nullptr, 0};
 
-struct command_info *cmd_follow = nullptr;
+struct command_info *cmd_follow      = nullptr;
 
-void wrong_position(unit_data *ch)
+void                 wrong_position(unit_data *ch)
 {
    static const char *strings[] = {
       "Lie still; you are DEAD!!! :-( \n\r",                               /* Dead     */
@@ -395,7 +451,7 @@ public:
    file_index_type *fi;
 } command_history_data[MAX_DEBUG_HISTORY];
 
-static int command_history_pos = 0;
+static int  command_history_pos = 0;
 
 static void add_command_history(unit_data *u, char *str)
 {
@@ -411,7 +467,7 @@ static void add_command_history(unit_data *u, char *str)
    strcpy(command_history_data[command_history_pos].str, str);
    command_history_data[command_history_pos].fi = UNIT_FILE_INDEX(u);
 
-   command_history_pos = (command_history_pos + 1) % MAX_DEBUG_HISTORY;
+   command_history_pos                          = (command_history_pos + 1) % MAX_DEBUG_HISTORY;
 }
 
 static void dump_command_history()
@@ -420,10 +476,13 @@ static void dump_command_history()
    int j;
    for(j = 0, i = command_history_pos; j < MAX_DEBUG_HISTORY; j++)
    {
-      slog(LOG_ALL, 0, "CMD %s@%s [%s]",
+      slog(LOG_ALL,
+           0,
+           "CMD %s@%s [%s]",
            command_history_data[i].pcname != nullptr ? command_history_data[i].pcname : FI_NAME(command_history_data[i].fi),
 
-           command_history_data[i].pcname != nullptr ? "" : FI_ZONENAME(command_history_data[i].fi), command_history_data[i].str);
+           command_history_data[i].pcname != nullptr ? "" : FI_ZONENAME(command_history_data[i].fi),
+           command_history_data[i].str);
       i = (i + 1) % MAX_DEBUG_HISTORY;
    }
 }
@@ -444,13 +503,13 @@ public:
 
 static int func_history_pos = 0;
 
-void add_func_history(unit_data *u, uint16_t idx, uint16_t flags)
+void       add_func_history(unit_data *u, uint16_t idx, uint16_t flags)
 {
    func_history_data[func_history_pos].idx   = idx;
    func_history_data[func_history_pos].flags = flags;
    func_history_data[func_history_pos].fi    = UNIT_FILE_INDEX(u);
 
-   func_history_pos = (func_history_pos + 1) % MAX_DEBUG_HISTORY;
+   func_history_pos                          = (func_history_pos + 1) % MAX_DEBUG_HISTORY;
 }
 
 static void dump_func_history()
@@ -461,9 +520,15 @@ static void dump_func_history()
 
    for(j = 0, i = func_history_pos; j < MAX_DEBUG_HISTORY; j++)
    {
-      slog(LOG_ALL, 0, "FUNC %s@%s: '%s (%d) %s (%d)'", FI_NAME(func_history_data[i].fi), FI_ZONENAME(func_history_data[i].fi),
-           unit_function_array[func_history_data[i].idx].name, func_history_data[i].idx,
-           sprintbit(buf2, func_history_data[i].flags, sfb_flags), func_history_data[i].flags);
+      slog(LOG_ALL,
+           0,
+           "FUNC %s@%s: '%s (%d) %s (%d)'",
+           FI_NAME(func_history_data[i].fi),
+           FI_ZONENAME(func_history_data[i].fi),
+           unit_function_array[func_history_data[i].idx].name,
+           func_history_data[i].idx,
+           sprintbit(buf2, func_history_data[i].flags, sfb_flags),
+           func_history_data[i].flags);
       i = (i + 1) % MAX_DEBUG_HISTORY;
    }
 }
@@ -610,8 +675,8 @@ void command_interpreter(unit_data *ch, const char *arg)
    {
       struct dilprg *prg;
 
-      prg          = dil_copy_template(cmd_ptr->tmpl, ch, nullptr);
-      prg->waitcmd = WAITCMD_MAXINST - 1; // The usual hack, see db_file
+      prg                         = dil_copy_template(cmd_ptr->tmpl, ch, nullptr);
+      prg->waitcmd                = WAITCMD_MAXINST - 1; // The usual hack, see db_file
 
       prg->sp->vars[0].val.string = str_dup(argstr);
 
@@ -725,7 +790,7 @@ auto unit_function_scan(unit_data *u, struct spec_arg *sarg) -> int
    {
       next = sarg->fptr->next; /* Next dude trick */
 
-      res = function_activate(u, sarg);
+      res  = function_activate(u, sarg);
 
       if(res != SFR_SHARE)
       {
@@ -969,15 +1034,20 @@ auto send_save_to(unit_data *from, unit_data *to) -> int
    return unit_function_scan(to, &sarg);
 }
 
-auto send_ack(unit_data *activator, unit_data *medium, unit_data *target, int *i, const struct command_info *cmd, const char *arg,
-              unit_data *extra_target) -> int
+auto send_ack(unit_data                 *activator,
+              unit_data                 *medium,
+              unit_data                 *target,
+              int                       *i,
+              const struct command_info *cmd,
+              const char                *arg,
+              unit_data                 *extra_target) -> int
 {
    struct spec_arg sarg;
    int             j = 0;
 
-   sarg.activator = activator;
-   sarg.medium    = medium;
-   sarg.target    = target;
+   sarg.activator    = activator;
+   sarg.medium       = medium;
+   sarg.target       = target;
 
    if(i != nullptr)
    {
@@ -994,8 +1064,13 @@ auto send_ack(unit_data *activator, unit_data *medium, unit_data *target, int *i
    return basic_special(activator, &sarg, SFB_PRE, extra_target);
 }
 
-void send_done(unit_data *activator, unit_data *medium, unit_data *target, int i, const struct command_info *cmd, const char *arg,
-               unit_data *extra_target)
+void send_done(unit_data                 *activator,
+               unit_data                 *medium,
+               unit_data                 *target,
+               int                        i,
+               const struct command_info *cmd,
+               const char                *arg,
+               unit_data                 *extra_target)
 {
    struct spec_arg sarg;
 

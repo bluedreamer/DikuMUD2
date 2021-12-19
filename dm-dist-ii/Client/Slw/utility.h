@@ -33,11 +33,11 @@
    #undef MAX
 #endif
 
-int MIN(int a, int b);
-int MAX(int a, int b);
+int   MIN(int a, int b);
+int   MAX(int a, int b);
 
-int number(int from, int to);
-int dice(int number, int size);
+int   number(int from, int to);
+int   dice(int number, int size);
 
 char *sprintbit(char *buf, uint32_t vektor, const char *names[]);
 char *sprinttype(char *buf, int type, const char *names[]);
@@ -49,7 +49,7 @@ char *sprinttype(char *buf, int type, const char *names[]);
 #define HERE __FILE__, __LINE__
 
 /* Use like this:  error(HERE, "Something went wrong: %s", buf); */
-void error(char *file, int line, char *fmt, ...);
+void              error(char *file, int line, char *fmt, ...);
 
 struct unit_data *hometown_unit(char *str);
 

@@ -1,6 +1,8 @@
 #include "cNamelist.h"
+
 #include "bytestring.h"
 #include "textutil.h"
+
 #include <cstring>
 #include <locale>
 

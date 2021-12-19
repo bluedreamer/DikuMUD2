@@ -26,6 +26,7 @@
 /* 10/08/94 gnort  : Fixed some ANSI time_t violations                     */
 
 #include "weather.h"
+
 #include "comm.h"
 #include "db.h"
 #include "handler.h"
@@ -36,6 +37,7 @@
 #include "utility.h"
 #include "utils.h"
 #include "zone_info_type.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -49,7 +51,7 @@ const time_t beginning_of_time = 650336715; /* Sat Aug 11 01:05:15 1990 */
  *								/gnort
  */
 
-auto timetodate(time_t t) -> char *
+auto         timetodate(time_t t) -> char *
 {
    static char d[20];
    strftime(d, 20, "%a %b %d", localtime(&t));
@@ -62,7 +64,7 @@ auto real_time_passed(time_t t2, time_t t1) -> time_info_data
    long           secs;
    time_info_data now;
 
-   secs = (long)difftime(t2, t1);
+   secs      = (long)difftime(t2, t1);
 
    now.hours = (secs / SECS_PER_REAL_HOUR) % 24; /* 0..23 hours */
    secs -= SECS_PER_REAL_HOUR * now.hours;
@@ -82,7 +84,7 @@ auto mud_date(time_t t) -> struct time_info_data
    struct time_info_data mdate;
    long                  p;
 
-   p = (long)difftime(t, beginning_of_time);
+   p           = (long)difftime(t, beginning_of_time);
 
    mdate.hours = (p / SECS_PER_MUD_HOUR) % 24; /* 0..23 hours */
    p -= SECS_PER_MUD_HOUR * mdate.hours;
@@ -104,7 +106,7 @@ auto mud_time_passed(time_t t2, time_t t1) -> struct time_info_data
    long                  secs;
    struct time_info_data now;
 
-   secs = (long)difftime(t2, t1);
+   secs      = (long)difftime(t2, t1);
 
    now.hours = (secs / SECS_PER_MUD_HOUR) % 24; /* 0..23 hours */
    secs -= SECS_PER_MUD_HOUR * now.hours;
@@ -198,7 +200,7 @@ static void weather_change(struct zone_type *zone, struct time_info_data time_da
    zone->weather.pressure = MIN(zone->weather.pressure, 1050);
    zone->weather.pressure = MAX(zone->weather.pressure, 950);
 
-   change = 0;
+   change                 = 0;
 
    switch(zone->weather.sky)
    {
@@ -353,18 +355,20 @@ void update_time_and_weather()
 /* Convert 'time' into text, and copy it into str */
 void mudtime_strcpy(struct time_info_data *time, char *str)
 {
-   char       *b;
-   const char *suf;
-   char        buf[500];
-   char        tmp[500];
-   int         weekday;
-   int         day;
+   char              *b;
+   const char        *suf;
+   char               buf[500];
+   char               tmp[500];
+   int                weekday;
+   int                day;
 
    extern const char *weekdays[];
    extern const char *month_name[];
 
    b = buf;
-   sprintf(b, "%d o'clock %s, on ", ((time->hours % 12 == 0) ? 12 : ((time->hours) % 12)),
+   sprintf(b,
+           "%d o'clock %s, on ",
+           ((time->hours % 12 == 0) ? 12 : ((time->hours) % 12)),
            (((time->hours > 12) || (time->hours == 0)) ? "after Noon" : "past Midnight"));
    TAIL(b);
 
@@ -425,7 +429,7 @@ static void weather_and_time_event(void *p1, void *p2)
 /* reset the time in the game from file */
 void boot_time_and_weather()
 {
-   struct zone_type *z;
+   struct zone_type     *z;
 
    struct time_info_data time_info;
    time_t                now = time(nullptr);

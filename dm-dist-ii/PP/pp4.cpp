@@ -66,8 +66,8 @@ auto addstr(char *old, const char *limit, const char *msg, const char *snew) -> 
 {
    static const char *origmsg = nullptr;
 
-   char       *o;
-   const char *n;
+   char              *o;
+   const char        *n;
 
    if((old + strlen(snew)) >= limit)
    {
@@ -132,7 +132,7 @@ auto gettoken(int f) -> int
    int   t;
    int   tmask;
 
-   int strline;
+   int   strline;
    /*	Define numstate values:						*/
 #define F_INTPART 0 /* numstate for integer part	*/
 #define F_FRAC    1 /* fractional part		*/
@@ -145,9 +145,9 @@ auto gettoken(int f) -> int
       printf("gettoken: ");
 #endif /* PPDEBUG */
 
-   p        = Token;
-   t        = nextch();
-   Token[0] = t;
+   p         = Token;
+   t         = nextch();
+   Token[0]  = t;
 
    Tokenfile = Filelevel; /* Remember file number and	*/
    Tokenline = LLine;     /* Line number for this token	*/
@@ -612,7 +612,7 @@ void pbcstr(char *s)
    Pbbufp->pb_type       = PB_STRING;
    Pbbufp->pb_val.pb_str = cp;
 
-   Nextch = gchpb;
+   Nextch                = gchpb;
 }
 
 /************************************************************************/
@@ -651,7 +651,7 @@ void pushback(int c)
    Pbbufp->pb_type        = PB_CHAR;
    Pbbufp->pb_val.pb_char = c;
 
-   Nextch = gchpb;
+   Nextch                 = gchpb;
 }
 
 /************************************************************************/
@@ -668,7 +668,7 @@ void puttoken(const char s[])
    const char *str;
    static int  lastoutc = '\n'; /* Last char written */
 
-   str = s;
+   str                  = s;
 
 #if PPDEBUG
    if(PPDEBUG)

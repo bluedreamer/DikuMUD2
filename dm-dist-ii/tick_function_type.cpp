@@ -1,4 +1,5 @@
 #include "tick_function_type.h"
+
 #include "tif_affect.h"
 
 tick_function_type tif[] = {{"Decay Corpse", tif_decay_corpse},

@@ -15,7 +15,7 @@ public:
    void status(const unit_data *ch) const;
 
 private:
-   void Sort();
+   void      Sort();
 
    cCombat **pElems;
    int       nMaxTop; // No of allocated elements

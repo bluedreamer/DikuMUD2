@@ -30,16 +30,17 @@
 /* 12/09/94 gnort  : Added const'ness to various functions' string args    */
 /* 14/09/94 seifert: Optimized and split is_name (is_name_raw)             */
 
+#include "textutil.h"
+
+#include "common.h"
+#include "structs.h"
+#include "utility.h"
+#include "utils.h"
+
 #include <cctype>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-
-#include "common.h"
-#include "structs.h"
-#include "textutil.h"
-#include "utility.h"
-#include "utils.h"
 
 /*  From char * input stream 'str' copy characters into 'buf' until
  *  end of string or newline. Returns position of 'str' after copied
@@ -115,7 +116,8 @@ auto str_lower(const char *s, char *d, int nBufSize) -> int
    }
    else
    {
-      slog(LOG_ALL, 0,
+      slog(LOG_ALL,
+           0,
            "ERROR: str_lower destination buffer too "
            "small! Advise Papi.");
       *(d - 1) = 0;
@@ -616,7 +618,7 @@ auto search_block_abbrevs(const char *oarg, const char **list, const char **end)
    int         match;
    int         bestidx;
 
-   i = str_lower(skip_spaces(oarg), arg, sizeof(arg));
+   i       = str_lower(skip_spaces(oarg), arg, sizeof(arg));
 
    bestidx = -1;
    bestpos = nullptr;
@@ -1051,7 +1053,7 @@ void split_fi_ref(const char *str, char *zone, char *name)
       strncpy(name, str, l);
       name[l] = '\0';
 
-      l = MIN(strlen(c + 1), FI_MAX_ZONENAME);
+      l       = MIN(strlen(c + 1), FI_MAX_ZONENAME);
       if((t = strchr(c + 1, ' ')) != nullptr)
       {
          l = MIN(l, t - (c + 1));
@@ -1065,7 +1067,7 @@ void split_fi_ref(const char *str, char *zone, char *name)
       strncpy(zone, str, l);
       zone[l] = '\0';
 
-      l = MIN(strlen(c + 1), FI_MAX_UNITNAME);
+      l       = MIN(strlen(c + 1), FI_MAX_UNITNAME);
       if((t = strchr(c + 1, ' ')) != nullptr)
       {
          l = MIN(l, t - (c + 1));

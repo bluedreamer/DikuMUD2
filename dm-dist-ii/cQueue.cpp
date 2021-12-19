@@ -1,4 +1,5 @@
 #include "cQueue.h"
+
 #include <algorithm>
 #include <cstring>
 cQueue::cQueue()

@@ -33,11 +33,11 @@ public:
 
    ~cTimerInstance(void) { bActive = FALSE; };
 
-   void insert(void) { bActive = TRUE; }
+   void    insert(void) { bActive = TRUE; }
 
-   void remove(void) { bActive = FALSE; }
+   void    remove(void) { bActive = FALSE; }
 
-   int is_empty(void) { return !bActive; }
+   int     is_empty(void) { return !bActive; }
 
    cMyTime sTime;
 
@@ -54,34 +54,34 @@ public:
    virtual void EventPiggybackTimeout(void)  = 0;
    virtual void EventRetransmitTimeout(void) = 0;
 
-   void TimeoutSuspend(void) { SuspendEvent(); }
-   void TimeoutResume(void);
-   void TimeoutClear(void);
+   void         TimeoutSuspend(void) { SuspendEvent(); }
+   void         TimeoutResume(void);
+   void         TimeoutClear(void);
 
-   void RegisterPiggyTimer(void);
-   void UnregisterPiggyTimer(void);
+   void         RegisterPiggyTimer(void);
+   void         UnregisterPiggyTimer(void);
 
-   void RegisterRetransTimer(void);
-   void UnregisterRetransTimer(void);
+   void         RegisterRetransTimer(void);
+   void         UnregisterRetransTimer(void);
 
 private:
-   void Event(void);
+   void           Event(void);
 
-   void TimerActivateMinimal(void);
-   void SetTimerEvent(cMyTime *sWhen, uint32_t n);
+   void           TimerActivateMinimal(void);
+   void           SetTimerEvent(cMyTime *sWhen, uint32_t n);
 
-   void TimerPiggyHandler(void);
-   void TimerRetransHandler(void);
+   void           TimerPiggyHandler(void);
+   void           TimerRetransHandler(void);
 
    cTimerInstance sRetrans;
    cTimerInstance sPiggy;
 
    // These timeouts could be changed dynamically at runtime when the acutal
    // RTT times are calculated.
-   uint32_t nTimeoutPiggy;
-   uint32_t nTimeoutRetrans;
+   uint32_t       nTimeoutPiggy;
+   uint32_t       nTimeoutRetrans;
 
-   uint32_t nEventCode;
+   uint32_t       nEventCode;
 };
 
 #endif

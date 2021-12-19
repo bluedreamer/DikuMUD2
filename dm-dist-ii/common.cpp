@@ -22,28 +22,45 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cmath> /* floor and pow */
-#include <cstdio>
-#include <cstdlib>
-
 #include "common.h"
+
 #include "db.h"
 #include "skills.h"
 #include "structs.h"
 #include "utility.h"
 #include "utils.h"
 
-char libdir[64] = DFLT_DIR;
+#include <cmath> /* floor and pow */
+#include <cstdio>
+#include <cstdlib>
 
-const char *fillwords[] = {"a", "an", "at", "from", "in", "on", "of", "the", "to", "with", "into", nullptr};
+char        libdir[64]          = DFLT_DIR;
+
+const char *fillwords[]         = {"a", "an", "at", "from", "in", "on", "of", "the", "to", "with", "into", nullptr};
 
 /* Used for converting general direction in dmc! */
-const char *dirs[] = {"north", "east", "south", "west", "up", "down", nullptr};
+const char *dirs[]              = {"north", "east", "south", "west", "up", "down", nullptr};
 
 /* Used for sanity check in dmc! */
-const char *drinks[LIQ_MAX + 2] = {
-   "water", "beer",   "wine",  "ale",        "dark ale", "whisky", "lemonade", "firebreather", "local speciality", "slime", "milk",
-   "tea",   "coffee", "blood", "salt water", "coke",     "vodka",  "brandy",   nullptr};
+const char *drinks[LIQ_MAX + 2] = {"water",
+                                   "beer",
+                                   "wine",
+                                   "ale",
+                                   "dark ale",
+                                   "whisky",
+                                   "lemonade",
+                                   "firebreather",
+                                   "local speciality",
+                                   "slime",
+                                   "milk",
+                                   "tea",
+                                   "coffee",
+                                   "blood",
+                                   "salt water",
+                                   "coke",
+                                   "vodka",
+                                   "brandy",
+                                   nullptr};
 
 /* PS Algorithm 2                                                      */
 /* This algorithm returns the amount of points gained at a particular  */
@@ -52,7 +69,7 @@ const char *drinks[LIQ_MAX + 2] = {
 /* Example: A character is about to raise from level 2 to 3. Add       */
 /*          ability_point_gain(3) to his ability points                */
 
-auto ability_point_gain() -> int
+auto        ability_point_gain() -> int
 {
    return AVERAGE_SKILL_COST * ABILITY_POINT_FACTOR;
 }

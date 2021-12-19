@@ -1,6 +1,7 @@
 #pragma once
 
 #include "essential.h"
+
 #include <cstdint>
 
 class cQueueElem

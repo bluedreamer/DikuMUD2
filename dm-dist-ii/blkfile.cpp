@@ -29,11 +29,8 @@
 /*                   handles - but incompatible with old system.           */
 /* 16/07/94 seifert: The free list uses much less memory now.              */
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #include "blkfile.h"
+
 #include "db.h"
 #include "db_file.h"
 #include "files.h"
@@ -42,6 +39,10 @@
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #define BLK_RESERVED 0 /* Reserved block for special exceptions */
 #define BLK_FREE     -1
@@ -183,7 +184,7 @@ static auto blk_extract_data(BLK_FILE *bf, void *blk_start, void *data, blk_leng
    used = (uint8_t *)blk_start - (uint8_t *)bf->buf;
    no   = bf->bsize - used;
 
-   no = MIN(*len, no); /* Make sure we don't copy too much */
+   no   = MIN(*len, no); /* Make sure we don't copy too much */
 
    if(no < 0)
    {
@@ -245,13 +246,14 @@ void blk_delete(BLK_FILE *bf, blk_handle index)
    {
       blk_read_block(bf, index); /* Read the block to find next block */
 
-      b = (uint8_t *)bf->buf;
+      b          = (uint8_t *)bf->buf;
 
       next_block = (blk_handle)bread_uint16_t(&b);
 
       if(next_block == BLK_FREE)
       {
-         slog(LOG_ALL, 0,
+         slog(LOG_ALL,
+              0,
               "BLK_DELETE: Attempt to access free disk "
               "or mem block!");
          return;
@@ -261,7 +263,8 @@ void blk_delete(BLK_FILE *bf, blk_handle index)
       {
          if(next_block != BLK_START_V1)
          {
-            slog(LOG_ALL, 0,
+            slog(LOG_ALL,
+                 0,
                  "BLK_DELETE: Illegal delete handle "
                  "in '%s'",
                  bf->name);
@@ -315,7 +318,8 @@ auto blk_read(BLK_FILE *bf, blk_handle index, blk_length *blen) -> void *
 
       if(next_block == BLK_FREE)
       {
-         slog(LOG_ALL, 0,
+         slog(LOG_ALL,
+              0,
               "BLK_READ: Attempt to access free "
               "block in '%s'",
               bf->name);
@@ -330,7 +334,8 @@ auto blk_read(BLK_FILE *bf, blk_handle index, blk_length *blen) -> void *
       {
          if(next_block != BLK_START_V1)
          {
-            slog(LOG_ALL, 0,
+            slog(LOG_ALL,
+                 0,
                  "BLK_READ: Illegal read handle "
                  "in '%s'.",
                  bf->name);
@@ -344,7 +349,7 @@ auto blk_read(BLK_FILE *bf, blk_handle index, blk_length *blen) -> void *
          /* This was the first block, now read the real next_block */
          next_block = bread_uint16_t((uint8_t **)&blk_ptr);
 
-         len = bread_uint32_t((uint8_t **)&blk_ptr);
+         len        = bread_uint32_t((uint8_t **)&blk_ptr);
          if(len > 0)
          {
             CREATE(data, uint8_t, len); /* Alloc space for the buffer */
@@ -360,7 +365,7 @@ auto blk_read(BLK_FILE *bf, blk_handle index, blk_length *blen) -> void *
          }
       }
 
-      data = blk_extract_data(bf, blk_ptr, data, &len);
+      data  = blk_extract_data(bf, blk_ptr, data, &len);
 
       index = next_block;
    } while(index != BLK_END);
@@ -390,7 +395,7 @@ auto blk_write(BLK_FILE *bf, const void *data, blk_length len) -> blk_handle
 
    first_block = index = find_occupy_free_blk(bf);
 
-   org = data;
+   org                 = data;
 
    do
    {
@@ -501,7 +506,7 @@ auto blk_open(const char *name, blk_length block_size) -> BLK_FILE *
 {
    blk_handle index;
 
-   BLK_FILE *bf;
+   BLK_FILE  *bf;
 
    if(block_size < BLK_MIN_SIZE)
    {

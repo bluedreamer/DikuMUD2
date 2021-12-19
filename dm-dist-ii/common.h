@@ -31,30 +31,30 @@ extern const char *fillwords[];
 extern const char *drinks[];
 extern const char *dirs[];
 
-extern char libdir[64];
+extern char        libdir[64];
 
-auto required_xp(int level) -> int;
-auto level_xp(int level) -> int;
+auto               required_xp(int level) -> int;
+auto               level_xp(int level) -> int;
 
-auto is_in(int a, int from, int to) -> int;
-void set_hits(unit_data *obj, int craftsmanship);
+auto               is_in(int a, int from, int to) -> int;
+void               set_hits(unit_data *obj, int craftsmanship);
 
-auto skill_point_gain() -> int;
-auto ability_point_gain() -> int;
-auto ability_point_total(int level) -> int;
-auto skill_point_total(int level) -> int;
-auto damage_str(int strength) -> double;
+auto               skill_point_gain() -> int;
+auto               ability_point_gain() -> int;
+auto               ability_point_total(int level) -> int;
+auto               skill_point_total(int level) -> int;
+auto               damage_str(int strength) -> double;
 
-auto distribute_points(uint8_t *skills, int max, int points, int level) -> int;
-auto buy_points(int points, int level, int *error) -> int;
+auto               distribute_points(uint8_t *skills, int max, int points, int level) -> int;
+auto               buy_points(int points, int level, int *error) -> int;
 
-auto apply_quality(int num, int quality) -> int;
+auto               apply_quality(int num, int quality) -> int;
 
-auto hitpoint_total(int hpp) -> int;
+auto               hitpoint_total(int hpp) -> int;
 
-void set_weapon(unit_data *);
-void set_shield(unit_data *);
-void set_armour(unit_data *);
+void               set_weapon(unit_data *);
+void               set_shield(unit_data *);
+void               set_armour(unit_data *);
 
 /* ..................................................................... */
 /*                           A B I L I T I E S                           */

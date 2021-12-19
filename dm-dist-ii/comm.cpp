@@ -33,6 +33,7 @@
 /*                   player input is NEVER fed directly to act             */
 
 #include "comm.h"
+
 #include "cHook.h"
 #include "constants.h"
 #include "handler.h"
@@ -45,6 +46,7 @@
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cctype>
 #include <cerrno>
 #include <cstdio>
@@ -59,7 +61,7 @@ extern descriptor_data *descriptor_list;
  *  Sends directly to multiplexer.
  */
 
-void send_to_descriptor(const char *messg, descriptor_data *d)
+void                    send_to_descriptor(const char *messg, descriptor_data *d)
 {
    void multi_close(struct multi_element * pe);
 
@@ -187,7 +189,7 @@ void act_generate(char *buf, const char *str, int show_type, const void *arg1, c
 
    int uppercase = static_cast<int>(FALSE);
 
-   *buf = 0;
+   *buf          = 0;
 
    if(!IS_CHAR(to) || (CHAR_DESCRIPTOR(to) == nullptr) || arg1 == nullptr)
    {
@@ -336,7 +338,7 @@ void act_generate(char *buf, const char *str, int show_type, const void *arg1, c
 
    /* Cap the first letter, but skip all colour and control codes! */
 
-   point = buf;
+   point        = buf;
    while(*point == CONTROL_CHAR)
    {
       point += 2;

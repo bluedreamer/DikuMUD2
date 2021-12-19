@@ -22,16 +22,17 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cstdio>
-#include <cstring>
+#include "config.h"
 
 #include "common.h"
-#include "config.h"
 #include "db.h"
 #include "essential.h"
 #include "files.h"
 #include "str_parse.h"
 #include "textutil.h"
+
+#include <cstdio>
+#include <cstring>
 
 void ShowUsage(const char *name)
 {

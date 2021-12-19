@@ -22,14 +22,15 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cctype>
-#include <cstdio>
-
 #include "files.h"
+
 #include "textutil.h"
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+
+#include <cctype>
+#include <cstdio>
 
 /* Returns the size of a file in bytes */
 auto fsize(FILE *f) -> long
@@ -265,7 +266,7 @@ auto fread_num(FILE *fl) -> long
 {
    long tmp;
 
-   int ms2020 = fscanf(fl, " %ld ", &tmp);
+   int  ms2020 = fscanf(fl, " %ld ", &tmp);
    return (tmp);
 }
 
@@ -361,8 +362,8 @@ auto fopen_cache(char *name, const char *mode) -> FILE *
    static int pure_hits = 0;
    static int purge     = 0;
 
-   min_i = number(0, FCACHE_MAX - 1); /* In case many are equal */
-   hit_i = -1;
+   min_i                = number(0, FCACHE_MAX - 1); /* In case many are equal */
+   hit_i                = -1;
 
    for(i = 0; i < FCACHE_MAX; i++)
    {

@@ -22,14 +22,14 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
 #include "blkfile.h"
 #include "bytestring.h"
 #include "structs.h"
 #include "utils.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 #undef free
 

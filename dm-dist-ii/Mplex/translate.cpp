@@ -24,14 +24,14 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "mplex.h"
+#include "ttydef.h"
+
 #include <arpa/telnet.h>
 #include <assert.h>
 #include <cstring>
 #include <stdio.h>
 #include <strings.h>
-
-#include "mplex.h"
-#include "ttydef.h"
 
 static uint8_t default_colours[3][24] = {
    /* Default (no change in table) */
@@ -343,26 +343,26 @@ void translate_init(void)
       for(i = 0; i < 256; i++)
          control_code[j][i] = NULL;
 
-   control_code[TERM_TTY][CONTROL_ECHO_OFF_CHAR] = Control_TTY_Echo_Off;
-   control_code[TERM_TTY][CONTROL_ECHO_ON_CHAR]  = Control_TTY_Echo_On;
-   control_code[TERM_TTY][CONTROL_RESET_CHAR]    = Control_TTY_Echo_On;
+   control_code[TERM_TTY][CONTROL_ECHO_OFF_CHAR]     = Control_TTY_Echo_Off;
+   control_code[TERM_TTY][CONTROL_ECHO_ON_CHAR]      = Control_TTY_Echo_On;
+   control_code[TERM_TTY][CONTROL_RESET_CHAR]        = Control_TTY_Echo_On;
 
-   control_code[TERM_ANSI][CONTROL_ECHO_OFF_CHAR] = Control_ANSI_Echo_Off;
-   control_code[TERM_ANSI][CONTROL_ECHO_ON_CHAR]  = Control_ANSI_Reset;
-   control_code[TERM_ANSI][CONTROL_RESET_CHAR]    = Control_ANSI_Reset;
-   control_code[TERM_ANSI][CONTROL_HOME_CHAR]     = Control_ANSI_Home;
+   control_code[TERM_ANSI][CONTROL_ECHO_OFF_CHAR]    = Control_ANSI_Echo_Off;
+   control_code[TERM_ANSI][CONTROL_ECHO_ON_CHAR]     = Control_ANSI_Reset;
+   control_code[TERM_ANSI][CONTROL_RESET_CHAR]       = Control_ANSI_Reset;
+   control_code[TERM_ANSI][CONTROL_HOME_CHAR]        = Control_ANSI_Home;
 
-   control_code[TERM_ANSI][CONTROL_BOLD_CHAR]    = Control_ANSI_Bold;
-   control_code[TERM_ANSI][CONTROL_REVERSE_CHAR] = Control_ANSI_Reverse;
+   control_code[TERM_ANSI][CONTROL_BOLD_CHAR]        = Control_ANSI_Bold;
+   control_code[TERM_ANSI][CONTROL_REVERSE_CHAR]     = Control_ANSI_Reverse;
 
-   control_code[TERM_ANSI][CONTROL_FG_BLACK_CHAR]   = Control_ANSI_Fg_Black;
-   control_code[TERM_ANSI][CONTROL_FG_RED_CHAR]     = Control_ANSI_Fg_Red;
-   control_code[TERM_ANSI][CONTROL_FG_GREEN_CHAR]   = Control_ANSI_Fg_Green;
-   control_code[TERM_ANSI][CONTROL_FG_YELLOW_CHAR]  = Control_ANSI_Fg_Yellow;
-   control_code[TERM_ANSI][CONTROL_FG_BLUE_CHAR]    = Control_ANSI_Fg_Blue;
-   control_code[TERM_ANSI][CONTROL_FG_MAGENTA_CHAR] = Control_ANSI_Fg_Magenta;
-   control_code[TERM_ANSI][CONTROL_FG_CYAN_CHAR]    = Control_ANSI_Fg_Cyan;
-   control_code[TERM_ANSI][CONTROL_FG_WHITE_CHAR]   = Control_ANSI_Fg_White;
+   control_code[TERM_ANSI][CONTROL_FG_BLACK_CHAR]    = Control_ANSI_Fg_Black;
+   control_code[TERM_ANSI][CONTROL_FG_RED_CHAR]      = Control_ANSI_Fg_Red;
+   control_code[TERM_ANSI][CONTROL_FG_GREEN_CHAR]    = Control_ANSI_Fg_Green;
+   control_code[TERM_ANSI][CONTROL_FG_YELLOW_CHAR]   = Control_ANSI_Fg_Yellow;
+   control_code[TERM_ANSI][CONTROL_FG_BLUE_CHAR]     = Control_ANSI_Fg_Blue;
+   control_code[TERM_ANSI][CONTROL_FG_MAGENTA_CHAR]  = Control_ANSI_Fg_Magenta;
+   control_code[TERM_ANSI][CONTROL_FG_CYAN_CHAR]     = Control_ANSI_Fg_Cyan;
+   control_code[TERM_ANSI][CONTROL_FG_WHITE_CHAR]    = Control_ANSI_Fg_White;
 
    control_code[TERM_ANSI][CONTROL_FGB_BLACK_CHAR]   = Control_ANSI_Fgb_Black;
    control_code[TERM_ANSI][CONTROL_FGB_RED_CHAR]     = Control_ANSI_Fgb_Red;
@@ -371,17 +371,17 @@ void translate_init(void)
    control_code[TERM_ANSI][CONTROL_FGB_BLUE_CHAR]    = Control_ANSI_Fgb_Blue;
    control_code[TERM_ANSI][CONTROL_FGB_MAGENTA_CHAR] = Control_ANSI_Fgb_Magenta;
 
-   control_code[TERM_ANSI][CONTROL_FGB_CYAN_CHAR]  = Control_ANSI_Fgb_Cyan;
-   control_code[TERM_ANSI][CONTROL_FGB_WHITE_CHAR] = Control_ANSI_Fgb_White;
+   control_code[TERM_ANSI][CONTROL_FGB_CYAN_CHAR]    = Control_ANSI_Fgb_Cyan;
+   control_code[TERM_ANSI][CONTROL_FGB_WHITE_CHAR]   = Control_ANSI_Fgb_White;
 
-   control_code[TERM_ANSI][CONTROL_BG_BLACK_CHAR]   = Control_ANSI_Bg_Black;
-   control_code[TERM_ANSI][CONTROL_BG_RED_CHAR]     = Control_ANSI_Bg_Red;
-   control_code[TERM_ANSI][CONTROL_BG_GREEN_CHAR]   = Control_ANSI_Bg_Green;
-   control_code[TERM_ANSI][CONTROL_BG_YELLOW_CHAR]  = Control_ANSI_Bg_Yellow;
-   control_code[TERM_ANSI][CONTROL_BG_BLUE_CHAR]    = Control_ANSI_Bg_Blue;
-   control_code[TERM_ANSI][CONTROL_BG_MAGENTA_CHAR] = Control_ANSI_Bg_Magenta;
-   control_code[TERM_ANSI][CONTROL_BG_CYAN_CHAR]    = Control_ANSI_Bg_Cyan;
-   control_code[TERM_ANSI][CONTROL_BG_WHITE_CHAR]   = Control_ANSI_Bg_White;
+   control_code[TERM_ANSI][CONTROL_BG_BLACK_CHAR]    = Control_ANSI_Bg_Black;
+   control_code[TERM_ANSI][CONTROL_BG_RED_CHAR]      = Control_ANSI_Bg_Red;
+   control_code[TERM_ANSI][CONTROL_BG_GREEN_CHAR]    = Control_ANSI_Bg_Green;
+   control_code[TERM_ANSI][CONTROL_BG_YELLOW_CHAR]   = Control_ANSI_Bg_Yellow;
+   control_code[TERM_ANSI][CONTROL_BG_BLUE_CHAR]     = Control_ANSI_Bg_Blue;
+   control_code[TERM_ANSI][CONTROL_BG_MAGENTA_CHAR]  = Control_ANSI_Bg_Magenta;
+   control_code[TERM_ANSI][CONTROL_BG_CYAN_CHAR]     = Control_ANSI_Bg_Cyan;
+   control_code[TERM_ANSI][CONTROL_BG_WHITE_CHAR]    = Control_ANSI_Bg_White;
 
    for(i = 0; i < 256; i++)
       control_code[TERM_INTERNAL][i] = Control_Copy;

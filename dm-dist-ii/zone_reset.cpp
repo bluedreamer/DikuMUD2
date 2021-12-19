@@ -40,6 +40,7 @@
 #include "utility.h"
 #include "utils.h"
 #include "zone_info_type.h"
+
 #include <cctype>
 #include <climits>
 #include <cstdio>
@@ -47,12 +48,12 @@
 #include <cstring>
 #include <ctime>
 
-void event_enq(int when, void (*func)(), void *arg1, void *arg2);
+void              event_enq(int when, void (*func)(), void *arg1, void *arg2);
 
 struct zone_type *boot_zone = nullptr; /* Points to the zone currently booted */
 
 /* No Operation */
-auto zone_nop(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
+auto              zone_nop(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
 {
    /* Return TRUE - NOP always succeedes */
 
@@ -252,7 +253,8 @@ auto zone_equip(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
                szonelog(UNIT_FI_ZONE(u),
                         "%s@%s: Weapon NOT equipped "
                         "on best skill",
-                        UNIT_FI_NAME(u), UNIT_FI_ZONENAME(u));
+                        UNIT_FI_NAME(u),
+                        UNIT_FI_ZONENAME(u));
          }
 #endif
          equip_char(u, loaded, cmd->num[1]);
@@ -369,8 +371,8 @@ auto zone_follow(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
    return loaded;
 }
 
-unit_data *(*exec_zone_cmd[])(unit_data *, struct zone_reset_cmd *) = {zone_nop,   zone_load,   zone_equip,  zone_door,
-                                                                       zone_purge, zone_remove, zone_follow, zone_random};
+unit_data *(*exec_zone_cmd[])(unit_data *, struct zone_reset_cmd *) = {
+   zone_nop, zone_load, zone_equip, zone_door, zone_purge, zone_remove, zone_follow, zone_random};
 
 auto low_reset_zone(unit_data *u, struct zone_reset_cmd *cmd) -> bool
 {
@@ -417,7 +419,7 @@ void reset_all_zones()
    int               n;
    struct zone_type *zone;
 
-   void zone_event(void * /*p1*/, void * /*p2*/);
+   void              zone_event(void              */*p1*/, void              */*p2*/);
 
    for(n = j = 0; j <= 255; j++)
    {

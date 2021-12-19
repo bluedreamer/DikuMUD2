@@ -1,6 +1,8 @@
 #include "CByteBuffer.h"
+
 #include "essential.h"
 #include "textutil.h"
+
 #include <cassert>
 #include <cstdlib>
 #include <cstring>

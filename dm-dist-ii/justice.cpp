@@ -24,6 +24,7 @@
  * *********************************************************************** */
 
 #include "justice.h"
+
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"
@@ -44,6 +45,7 @@
 #include "unit_vector_data.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -67,11 +69,11 @@ static int crime_serial_no = 0;
 
 struct char_crime_data
 {
-   uint32_t crime_nr;            /* global unique crime number  */
-   uint8_t  ticks_to_neutralize; /* ticks before crime deletes  */
+   uint32_t                crime_nr;            /* global unique crime number  */
+   uint8_t                 ticks_to_neutralize; /* ticks before crime deletes  */
 
-   int  id;                         /* id of offender PC           */
-   char name_criminal[PC_MAX_NAME]; /* Name of offender            */
+   int                     id;                         /* id of offender PC           */
+   char                    name_criminal[PC_MAX_NAME]; /* Name of offender            */
 
    char                    victim[31]; /* name of victim              */
    uint8_t                 crime_type; /* what crime? (kill, theft..) */
@@ -81,7 +83,7 @@ struct char_crime_data
 
 struct char_crime_data *crime_list = nullptr;
 
-void offend_legal_state(unit_data *ch, unit_data *victim)
+void                    offend_legal_state(unit_data *ch, unit_data *victim)
 {
    if(!IS_SET(CHAR_FLAGS(ch), CHAR_SELF_DEFENCE))
    {
@@ -260,7 +262,7 @@ void set_reward_char(unit_data *ch, int crimes)
    int                 xp   = 0;
    int                 gold = 0;
 
-   auto lose_exp(unit_data * ch)->int;
+   auto                lose_exp(unit_data * ch)->int;
 
    /* Just to make sure in case anyone gets randomly rewarded */
    REMOVE_BIT(CHAR_FLAGS(ch), CHAR_PROTECTED);
@@ -291,9 +293,9 @@ void set_reward_char(unit_data *ch, int crimes)
    af.lastf_i  = TIF_REWARD_OFF;
    af.applyf_i = APF_NONE;
 
-   af.data[0] = xp;
-   af.data[1] = gold;
-   af.data[2] = 1;
+   af.data[0]  = xp;
+   af.data[1]  = gold;
+   af.data[2]  = 1;
 
    create_affect(ch, &af);
 }
@@ -302,7 +304,7 @@ void set_witness(unit_data *criminal, unit_data *witness, int no, int type, int 
 {
    unit_affected_type af;
 
-   void activate_accuse(unit_data * npc, uint8_t crime_type, const char *cname);
+   void               activate_accuse(unit_data * npc, uint8_t crime_type, const char *cname);
 
    if(!IS_PC(criminal))
    {
@@ -367,8 +369,8 @@ void add_crime(unit_data *criminal, unit_data *victim, int type)
 
    /* add new crime crime_list */
    CREATE(crime, struct char_crime_data, 1);
-   crime->next = crime_list;
-   crime_list  = crime;
+   crime->next     = crime_list;
+   crime_list      = crime;
 
    crime->crime_nr = new_crime_serial_no();
    crime->id       = PC_ID(criminal);
@@ -462,8 +464,16 @@ void save_accusation(struct char_crime_data *crime, const unit_data *accuser)
 
    time_t t = time(nullptr);
 
-   fprintf(file, "%5u  %4d  %4d %1d [%s]  [%s]   %12lu %s", crime->crime_nr, crime->id, crime->crime_type, crime->reported,
-           UNIT_NAME((unit_data *)accuser), crime->victim, t, ctime(&t));
+   fprintf(file,
+           "%5u  %4d  %4d %1d [%s]  [%s]   %12lu %s",
+           crime->crime_nr,
+           crime->id,
+           crime->crime_type,
+           crime->reported,
+           UNIT_NAME((unit_data *)accuser),
+           crime->victim,
+           t,
+           ctime(&t));
    fflush(file);
    /* Was fclose(file) */
 }
@@ -505,7 +515,7 @@ static void update_criminal(const unit_data *deputy, const char *pPlyName, int p
    int        loaded   = static_cast<int>(FALSE);
    int        incr;
 
-   void save_player_file(unit_data * pc);
+   void       save_player_file(unit_data * pc);
 
    /* Modified find_descriptor */
    for(criminal = unit_list; criminal != nullptr; criminal = criminal->gnext)
@@ -562,12 +572,12 @@ auto accuse(struct spec_arg *sarg) -> int
    unit_affected_type     *af;
    struct char_crime_data *crime;
 
-   int  crime_type = 0; /* {CRIME_MURDER,CRIME_STEALING} */
-   char arg1[80];
-   char arg2[80]; /* will hold accused and crime    */
-   int  pid;
+   int                     crime_type = 0; /* {CRIME_MURDER,CRIME_STEALING} */
+   char                    arg1[80];
+   char                    arg2[80]; /* will hold accused and crime    */
+   int                     pid;
 
-   auto find_player_id(char *)->int;
+   auto                    find_player_id(char *)->int;
 
    /* legal command ? */
    if(static_cast<unsigned int>(is_command(sarg->cmd, "accuse")) == 0U)
@@ -1010,7 +1020,7 @@ auto whistle(struct spec_arg *sarg) -> int
 
 auto reward_give(struct spec_arg *sarg) -> int
 {
-   void gain_exp(unit_data * ch, int gain);
+   void                gain_exp(unit_data * ch, int gain);
 
    unit_data          *u;
    unit_affected_type *paf;
@@ -1082,8 +1092,11 @@ auto reward_board(struct spec_arg *sarg) -> int
             sprintf(buf,
                     "%s (%s) wanted dead for %d xp "
                     "and %s (%d crimes).\n\r",
-                    UNIT_NAME(u), IS_PC(u) ? "Player" : "Monster", af->data[0],
-                    money_string(af->data[1], local_currency(sarg->owner), FALSE), af->data[2]);
+                    UNIT_NAME(u),
+                    IS_PC(u) ? "Player" : "Monster",
+                    af->data[0],
+                    money_string(af->data[1], local_currency(sarg->owner), FALSE),
+                    af->data[2]);
             send_to_char(buf, sarg->activator);
          }
          else if(IS_SET(CHAR_FLAGS(u), CHAR_OUTLAW) && IS_SET(CHAR_FLAGS(u), CHAR_PROTECTED))

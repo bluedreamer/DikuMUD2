@@ -115,7 +115,7 @@ void                *mmalloc(int size);
 void                 mem_reset(void);
 void                 mem_init(void);
 
-void process_unit(struct unit_data *u);
+void                 process_unit(struct unit_data *u);
 
 #define MCREATE(result, type, number) ((result) = (type *)mmalloc(sizeof(type) * number))
 

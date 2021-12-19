@@ -26,11 +26,6 @@
 
 /* 23/03/94 seifert: Fixed bug, no more destroy_affect, unlink_aff instead */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #include "affect.h"
 #include "comm.h"
 #include "db.h"
@@ -44,6 +39,11 @@
 #include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
+
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 /*
    This method is possible since we know that the only problem occurs when:
@@ -83,8 +83,8 @@
 /* May only be called by clear_destuct! */
 void destruct_unit(unit_data *unit)
 {
-   descriptor_data *d;
-   int              in_menu = static_cast<int>(FALSE);
+   descriptor_data        *d;
+   int                     in_menu = static_cast<int>(FALSE);
 
    extern descriptor_data *descriptor_list;
 
@@ -186,15 +186,15 @@ void destruct_unit(unit_data *unit)
 /* Used lots of places        */
 
 /* 3 Arrays of registered destructed things     */
-void **destructed[3] = {nullptr, nullptr, nullptr};
+void **destructed[3]     = {nullptr, nullptr, nullptr};
 
 /* 3 Arrays which indicate size of above arrays */
-int destructed_top[3] = {-1, -1, -1};
+int    destructed_top[3] = {-1, -1, -1};
 
 /* 3 Arrays which point to first free entry     */
-int destructed_idx[3] = {-1, -1, -1};
+int    destructed_idx[3] = {-1, -1, -1};
 
-void destruct_resize(int i)
+void   destruct_resize(int i)
 {
    if(destructed_top[i] == -1)
    {

@@ -22,11 +22,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
@@ -43,20 +38,25 @@
 #include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
+
+#include <cctype>
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 /*   external vars  */
 
 extern descriptor_data *descriptor_list;
 
 /* extern procedures */
-auto obj_trade_price(unit_data *u) -> amount_t;
+auto                    obj_trade_price(unit_data *u) -> amount_t;
 
 /* ------------------------------------------------------------------------- */
 /*                     M O B I L E   R O U T I N E S                         */
 /* ------------------------------------------------------------------------- */
 
-auto fido(struct spec_arg *sarg) -> int
+auto                    fido(struct spec_arg *sarg) -> int
 {
    unit_data *i;
    unit_data *temp;
@@ -162,13 +162,17 @@ auto evaluate(struct spec_arg *sarg) -> int
       return SFR_BLOCK;
    }
 
-   cost = sarg->fptr->data != nullptr ? atoi((char *)sarg->fptr->data) : 50;
+   cost     = sarg->fptr->data != nullptr ? atoi((char *)sarg->fptr->data) : 50;
 
    currency = local_currency(sarg->owner);
 
    if(static_cast<unsigned int>(char_can_afford(sarg->activator, cost, currency)) == 0U)
    {
-      act("$1n says, 'The cost is merely $2t, get them first.'", A_SOMEONE, sarg->owner, money_string(cost, currency, TRUE), nullptr,
+      act("$1n says, 'The cost is merely $2t, get them first.'",
+          A_SOMEONE,
+          sarg->owner,
+          money_string(cost, currency, TRUE),
+          nullptr,
           TO_ROOM);
       return SFR_BLOCK;
    }

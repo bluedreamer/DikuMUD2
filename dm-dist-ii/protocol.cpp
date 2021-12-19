@@ -22,21 +22,22 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "protocol.h"
+
+#include "cHook.h"
+#include "cQueueElem.h"
+#include "db_file.h"
+#include "essential.h"
+#include "select.h"
+#include "unixshit.h"
+#include "utility.h"
+
 #include <cassert>
 #include <cerrno>
 #include <cstdio>
 #include <cstring>
 #include <sys/types.h>
 #include <unistd.h>
-
-#include "cHook.h"
-#include "cQueueElem.h"
-#include "db_file.h"
-#include "essential.h"
-#include "protocol.h"
-#include "select.h"
-#include "unixshit.h"
-#include "utility.h"
 
 // Read as much as we can...
 // -1 on error, 0 on ok.
@@ -168,7 +169,7 @@ void protocol_send_host(cHook *Hook, uint16_t id, char *host, uint16_t nPort, ui
 
    len = strlen(ptext) + 4;
 
-   b = buf;
+   b   = buf;
 
    memcpy(b, MULTI_HOST, 2);
    b += 2;
@@ -203,7 +204,7 @@ void protocol_send_text(cHook *Hook, const uint16_t id, const char *text, const 
       return;
    }
 
-   len = strlen(text) + 1;
+   len   = strlen(text) + 1;
 
    txlen = MIN(MAX_TEXT_LEN, len);
 
@@ -416,7 +417,7 @@ auto protocol_parse_incoming(cHook *Hook, uint16_t *pid, uint16_t *plen, char **
 
    data[len] = 0;
 
-   *str = data;
+   *str      = data;
 
    return buf[1];
 }

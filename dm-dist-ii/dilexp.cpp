@@ -25,6 +25,7 @@
 
 /* Wed Jan 22 14:57:30 PST 1997   HHS added paycheck dilfun */
 #include "dilexp.h"
+
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
@@ -51,6 +52,7 @@
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
+
 #include <climits>
 #include <cstdlib>
 #include <cstring>
@@ -62,7 +64,9 @@
 
 void dilfe_illegal(struct dilprg *p, dilval *v)
 {
-   szonelog(UNIT_FI_ZONE(p->sarg->owner), "DIL %s@%s, Illegal Expression/Instruction Node.\n", UNIT_FI_NAME(p->sarg->owner),
+   szonelog(UNIT_FI_ZONE(p->sarg->owner),
+            "DIL %s@%s, Illegal Expression/Instruction Node.\n",
+            UNIT_FI_NAME(p->sarg->owner),
             UNIT_FI_ZONENAME(p->sarg->owner));
    p->waitcmd = WAITCMD_QUIT;
    if(v != nullptr)
@@ -266,8 +270,8 @@ void dilfe_cast2(struct dilprg *p, dilval *v)
    {
       /* cast the spell */
       char mbuf[MAX_INPUT_LENGTH] = {0};
-      v->val.num = spell_perform(v1.val.num, MEDIA_SPELL, (unit_data *)v2.val.ptr, (unit_data *)v3.val.ptr, (unit_data *)v4.val.ptr, mbuf,
-                                 (char *)v5.val.ptr);
+      v->val.num                  = spell_perform(
+         v1.val.num, MEDIA_SPELL, (unit_data *)v2.val.ptr, (unit_data *)v3.val.ptr, (unit_data *)v4.val.ptr, mbuf, (char *)v5.val.ptr);
       dil_test_secure(p);
    }
 }
@@ -277,7 +281,7 @@ void dilfe_rest(struct dilprg *p, dilval *v)
    dilval v1;
    dilval v2;
 
-   auto restore_unit(char *zonename, char *unitname)->unit_data *;
+   auto   restore_unit(char *zonename, char *unitname)->unit_data *;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -783,9 +787,9 @@ void dilfe_spli(struct dilprg *p, dilval *v)
    *((uint32_t *)v7.ref) = spell_info[v1.val.num].media;
    *((uint32_t *)v8.ref) = spell_info[v1.val.num].targets;
 
-   v->type    = DILV_SP;
-   v->atyp    = DILA_EXP;
-   v->val.ptr = str_dup(spl_text[v1.val.num] == nullptr ? "" : spl_text[v1.val.num]);
+   v->type               = DILV_SP;
+   v->atyp               = DILA_EXP;
+   v->val.ptr            = str_dup(spl_text[v1.val.num] == nullptr ? "" : spl_text[v1.val.num]);
 }
 
 /* contents of purse */
@@ -953,8 +957,8 @@ void dilfe_path(struct dilprg *p, dilval *v)
    {
       unit_data *u1;
       unit_data *u2;
-      u1 = unit_room((unit_data *)v1.val.ptr);
-      u2 = unit_room((unit_data *)v2.val.ptr);
+      u1         = unit_room((unit_data *)v1.val.ptr);
+      u2         = unit_room((unit_data *)v2.val.ptr);
 
       v->val.num = move_to(u1, u2);
    }
@@ -1111,8 +1115,13 @@ void dilfe_trmo(struct dilprg *p, dilval *v)
    {
       if(v1.val.ptr == nullptr)
       {
-         slog(LOG_ALL, 0, "%s was given %d old gold pieces by DIL %s@%s.", UNIT_NAME((unit_data *)v2.val.ptr), v3.val.num,
-              UNIT_FI_NAME(p->sarg->owner), UNIT_FI_ZONENAME(p->sarg->owner));
+         slog(LOG_ALL,
+              0,
+              "%s was given %d old gold pieces by DIL %s@%s.",
+              UNIT_NAME((unit_data *)v2.val.ptr),
+              v3.val.num,
+              UNIT_FI_NAME(p->sarg->owner),
+              UNIT_FI_ZONENAME(p->sarg->owner));
          money_transfer(nullptr, (unit_data *)v2.val.ptr, v3.val.num, local_currency((unit_data *)v2.val.ptr));
          v->val.num = 1;
       }
@@ -1200,9 +1209,9 @@ void dilfe_fits(struct dilprg *p, dilval *v)
 
    if(v->type == DILV_SP)
    {
-      auto obj_wear_size(unit_data * ch, unit_data * obj, int keyword)->char *;
+      auto  obj_wear_size(unit_data * ch, unit_data * obj, int keyword)->char *;
 
-      char *c = obj_wear_size((unit_data *)v1.val.ptr, (unit_data *)v2.val.ptr, v3.val.num);
+      char *c    = obj_wear_size((unit_data *)v1.val.ptr, (unit_data *)v2.val.ptr, v3.val.num);
 
       v->atyp    = DILA_EXP;
       v->val.ptr = str_dup(c == nullptr ? "" : c);
@@ -1215,8 +1224,8 @@ void dilfe_intr(struct dilprg *p, dilval *v)
    uint16_t intnum;
    uint8_t *lab;
 
-   dilval v1;
-   dilval v2;
+   dilval   v1;
+   dilval   v2;
 
    eval_dil_exp(p, &v1);
    lab = p->sp->pc;
@@ -1496,10 +1505,10 @@ void dilfe_getws(struct dilprg *p, dilval *v)
          {
             auto *words = new cNamelist;
 
-            v->atyp = DILA_EXP;
-            v->type = DILV_SLP;
+            v->atyp     = DILA_EXP;
+            v->type     = DILV_SLP;
 
-            tmp = str_dup((char *)v1.val.ptr);
+            tmp         = str_dup((char *)v1.val.ptr);
             for(c = strtok(tmp, " "); (c != nullptr) && (*c != 0); c = strtok(nullptr, " "))
             {
                words->AppendName(c);
@@ -2142,8 +2151,8 @@ void dilfe_fnds2(struct dilprg *p, dilval *v)
    dilval v2;
    dilval v3;
 
-   char buf1[MAX_STRING_LENGTH];
-   char buf2[MAX_STRING_LENGTH];
+   char   buf1[MAX_STRING_LENGTH];
+   char   buf2[MAX_STRING_LENGTH];
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -3038,7 +3047,7 @@ void dilfe_fndu(struct dilprg *p, dilval *v)
 
    if((v->type == DILV_UP) && IS_CHAR((unit_data *)v1.val.ptr))
    {
-      char *c = (char *)v2.val.ptr;
+      char *c    = (char *)v2.val.ptr;
 
       v->atyp    = DILA_NORM;
       v->val.ptr = find_unit((unit_data *)v1.val.ptr, &c, (unit_data *)v4.val.ptr, v3.val.num);
@@ -3153,8 +3162,8 @@ void dilfe_fndru(struct dilprg *p, dilval *v)
 void dilfe_fs(struct dilprg *p, dilval *v)
 {
    /* A Fixed String */
-   v->type = DILV_SP;
-   v->atyp = DILA_NORM;
+   v->type    = DILV_SP;
+   v->atyp    = DILA_NORM;
 
    /* Reference directly into the core */
    /* assumes bwrite_string is same format */
@@ -3172,8 +3181,8 @@ void dilfe_fsl(struct dilprg *p, dilval *v)
    auto *namelist = new cNamelist;
    /* A Fixed String list */
 
-   v->atyp = DILA_EXP; /* no other way, copy namelist from core */
-   v->type = DILV_SLP;
+   v->atyp        = DILA_EXP; /* no other way, copy namelist from core */
+   v->type        = DILV_SLP;
 
    namelist->bread(&(p->sp->pc));
    v->val.ptr = namelist;
@@ -3324,8 +3333,8 @@ void dilfe_powe(struct dilprg *p, dilval *v)
 
    static int dummy = 0;
 
-   v->type = DILV_SINT4R;
-   v->atyp = DILA_NONE;
+   v->type          = DILV_SINT4R;
+   v->atyp          = DILA_NONE;
 
    if(p->sarg->pInt != nullptr)
    {
@@ -3478,7 +3487,7 @@ void dilfe_pck(struct dilprg *p, dilval *v)
 
 void dilfe_act(struct dilprg *p, dilval *v)
 {
-   char buf[1024];
+   char   buf[1024];
    /* Conversion of integers to strings */
    dilval v1;
    dilval v2;
@@ -3496,9 +3505,39 @@ void dilfe_act(struct dilprg *p, dilval *v)
 
    v->type = DILV_FAIL;
 
-   if(dil_type_check("act", p, 6, &v1, TYPEFAIL_NULL, 1, DILV_SP, &v2, TYPEFAIL_NULL, 1, DILV_INT, &v3, TYPEFAIL_NULL, 3, DILV_UP, DILV_SP,
-                     DILV_NULL, &v4, TYPEFAIL_NULL, 3, DILV_UP, DILV_SP, DILV_NULL, &v5, TYPEFAIL_NULL, 3, DILV_UP, DILV_SP, DILV_NULL, &v6,
-                     TYPEFAIL_NULL, 1, DILV_INT) < 0)
+   if(dil_type_check("act",
+                     p,
+                     6,
+                     &v1,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_SP,
+                     &v2,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_INT,
+                     &v3,
+                     TYPEFAIL_NULL,
+                     3,
+                     DILV_UP,
+                     DILV_SP,
+                     DILV_NULL,
+                     &v4,
+                     TYPEFAIL_NULL,
+                     3,
+                     DILV_UP,
+                     DILV_SP,
+                     DILV_NULL,
+                     &v5,
+                     TYPEFAIL_NULL,
+                     3,
+                     DILV_UP,
+                     DILV_SP,
+                     DILV_NULL,
+                     &v6,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_INT) < 0)
    {
       return;
    }

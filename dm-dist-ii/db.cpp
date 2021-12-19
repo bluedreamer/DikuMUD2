@@ -30,9 +30,10 @@
 /* 01/07/95 HHS     : added template loading and checking                  */
 
 #include "db.h"
-#include "CAccountConfig.h"
+
 #include "account.h"
 #include "affect.h"
+#include "CAccountConfig.h"
 #include "comm.h"
 #include "common.h"
 #include "connectionlog.h"
@@ -53,6 +54,7 @@
 #include "utils.h"
 #include "weather.h"
 #include "zone_info_type.h"
+
 #include <cctype>
 #include <climits>
 #include <cstdio>
@@ -60,18 +62,18 @@
 #include <cstring>
 #include <ctime>
 
-int        room_number;         /* For counting numbers in rooms */
-unit_data *unit_list = nullptr; /* The global unit_list          */
+int             room_number;         /* For counting numbers in rooms */
+unit_data      *unit_list = nullptr; /* The global unit_list          */
 
 extern char     zondir[];
 extern uint32_t memory_total_alloc;
 
-auto create_direction_data() -> room_direction_data *;
+auto            create_direction_data() -> room_direction_data *;
 
 /*  Generate array of bin_search_type for the zone_list, and for each
  *  zone's file_index's.
  */
-void generate_bin_arrays()
+void            generate_bin_arrays()
 {
    file_index_type *fi;
    class zone_type *z;
@@ -450,7 +452,7 @@ void generate_zone_indexes()
       z->filename = str_dup(zone);
 
       fstrcpy(&cBuf, f);
-      z->name = str_dup((char *)cBuf.GetData());
+      z->name      = str_dup((char *)cBuf.GetData());
 
       int ms_tmp   = fread(&z->weather.base, sizeof(int), 1, f);
       z->access    = access;
@@ -488,8 +490,8 @@ void generate_zone_indexes()
       }
 
       /* read templates */
-      z->no_tmpl = 0;
-      z->tmpl    = generate_templates(f, z);
+      z->no_tmpl  = 0;
+      z->tmpl     = generate_templates(f, z);
 
       z->no_of_fi = 0;
       z->zri      = nullptr;
@@ -569,7 +571,7 @@ auto bread_affect(CByteBuffer *pBuf, unit_data *u, uint8_t nVersion) -> int
    uint8_t            t8;
    uint16_t           t16;
 
-   auto link_alloc_affect(unit_data * unit, unit_affected_type * orgaf)->unit_affected_type *;
+   auto               link_alloc_affect(unit_data * unit, unit_affected_type * orgaf)->unit_affected_type *;
 
    if(nVersion <= 56)
    {
@@ -656,10 +658,10 @@ auto bread_affect(CByteBuffer *pBuf, unit_data *u, uint8_t nVersion) -> int
 
 struct zone_type *unit_error_zone = nullptr;
 
-extern int memory_pc_alloc;
-extern int memory_npc_alloc;
-extern int memory_obj_alloc;
-extern int memory_room_alloc;
+extern int        memory_pc_alloc;
+extern int        memory_npc_alloc;
+extern int        memory_obj_alloc;
+extern int        memory_room_alloc;
 
 /*  Room directions points to file_indexes instead of units
  *  after a room has been read, due to initialization considerations
@@ -668,7 +670,7 @@ extern int memory_room_alloc;
  * whom is an error message to be printed when something goes wrong.
  * bSwapin is TRUE if the swap information should be read.
  */
-auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom) -> unit_data *
+auto              read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom) -> unit_data *
 {
    void            *ptr;
    unit_data       *u;
@@ -702,7 +704,7 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
       return nullptr;
    }
 
-   u = new(unit_data)(type);
+   u      = new(unit_data)(type);
 
    nStart = pBuf->GetReadPosition();
    g_nCorrupt += pBuf->Read8(&unit_version);
@@ -711,11 +713,13 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
 
    if(unit_version > 57)
    {
-      slog(LOG_EXTENSIVE, 0,
+      slog(LOG_EXTENSIVE,
+           0,
            "FATAL: Attempted to read '%s' but found "
            "version number %d which was NEWER than this implementation "
            "can handle! Aborting server.",
-           whom, unit_version);
+           whom,
+           unit_version);
       assert(FALSE);
    }
 
@@ -1205,7 +1209,7 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
                   g_nCorrupt += pBuf->ReadStringCopy(zone, sizeof(zone));
                   g_nCorrupt += pBuf->ReadStringCopy(name, sizeof(name));
 
-                  ROOM_EXIT(u, i)->key = find_file_index(zone, name);
+                  ROOM_EXIT(u, i)->key     = find_file_index(zone, name);
 
                   /* NOT fi->room_ptr! Done later */
                   ROOM_EXIT(u, i)->to_room = (unit_data *)fi;
@@ -1329,7 +1333,7 @@ void read_unit_file(file_index_type *org_fi, CByteBuffer *pBuf)
  */
 auto read_unit(file_index_type *org_fi) -> unit_data *
 {
-   auto is_slimed(file_index_type * sp)->int;
+   auto       is_slimed(file_index_type * sp)->int;
 
    unit_data *u;
 
@@ -1378,8 +1382,8 @@ auto read_unit(file_index_type *org_fi) -> unit_data *
 
 void read_all_rooms()
 {
-   struct zone_type *z;
-   file_index_type  *fi;
+   struct zone_type        *z;
+   file_index_type         *fi;
 
    extern struct zone_type *boot_zone;
 
@@ -1441,7 +1445,12 @@ void normalize_world()
 
          if(unit_recursive(u, tmpu) != 0)
          {
-            slog(LOG_ALL, 0, "Error: %s@%s was recursively in %s@%s!", UNIT_FI_NAME(u), UNIT_FI_ZONENAME(u), UNIT_FI_NAME(tmpu),
+            slog(LOG_ALL,
+                 0,
+                 "Error: %s@%s was recursively in %s@%s!",
+                 UNIT_FI_NAME(u),
+                 UNIT_FI_ZONENAME(u),
+                 UNIT_FI_NAME(tmpu),
                  UNIT_FI_ZONENAME(tmpu));
          }
          else
@@ -1459,7 +1468,7 @@ void normalize_world()
 /* For local error purposes */
 static struct zone_type *read_zone_error = nullptr;
 
-auto read_zone(FILE *f, struct zone_reset_cmd *cmd_list) -> struct zone_reset_cmd *
+auto                     read_zone(FILE *f, struct zone_reset_cmd *cmd_list) -> struct zone_reset_cmd *
 {
    struct zone_reset_cmd *cmd;
    struct zone_reset_cmd *tmp_cmd;
@@ -1654,34 +1663,34 @@ extern int memory_roomread_alloc;
 extern int memory_zoneidx_alloc;
 extern int memory_zonereset_alloc;
 
-void boot_db()
+void       boot_db()
 {
-   void competition_boot();
-   void mail_boot();
-   void create_dijkstra();
-   void player_file_index();
-   void reception_boot();
-   void load_messages();
-   void boot_social_messages();
-   void boot_pose_messages();
-   void assign_command_pointers();
-   void assign_spell_pointers();
-   void reset_all_zones();
-   void boot_justice();
-   void load_ban();
-   void boot_money();
-   void zone_boot();
-   void slime_boot();
-   void boot_help();
-   void boot_swap();
-   void boot_spell();
-   void boot_skill();
-   void boot_weapon();
-   void boot_ability();
-   void boot_race();
-   void boot_interpreter();
-   void interpreter_dil_check();
-   void persist_boot();
+   void       competition_boot();
+   void       mail_boot();
+   void       create_dijkstra();
+   void       player_file_index();
+   void       reception_boot();
+   void       load_messages();
+   void       boot_social_messages();
+   void       boot_pose_messages();
+   void       assign_command_pointers();
+   void       assign_spell_pointers();
+   void       reset_all_zones();
+   void       boot_justice();
+   void       load_ban();
+   void       boot_money();
+   void       zone_boot();
+   void       slime_boot();
+   void       boot_help();
+   void       boot_swap();
+   void       boot_spell();
+   void       boot_skill();
+   void       boot_weapon();
+   void       boot_ability();
+   void       boot_race();
+   void       boot_interpreter();
+   void       interpreter_dil_check();
+   void       persist_boot();
 
    void       cleanup_playerfile(int argc, char *argv[]);
    extern int player_convert;

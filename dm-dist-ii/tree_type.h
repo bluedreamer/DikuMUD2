@@ -1,6 +1,7 @@
 #pragma once
 
 #include "values.h"
+
 #include <cstdint>
 
 #define TREE_PARENT(tree, node)      (tree[node].parent)

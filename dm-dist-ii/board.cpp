@@ -39,12 +39,6 @@
 /* Jan 9, 1995 gnort: Changed the way filenames are used...                 */
 /* Mar 2, 1995 seif : Fixed nasty free bug in write / remove                */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
 #include "blkfile.h"
 #include "comm.h"
 #include "db.h"
@@ -59,6 +53,12 @@
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
+
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #define MAX_MSGS 50 /* Maximum number of messages      */
 /* Bugger, I just realized that this value can't be modified without
@@ -92,7 +92,7 @@ struct board_info
 /* globals */
 extern descriptor_data *descriptor_list;
 
-struct board_info *board_list = nullptr; /* Linked list of boards           */
+struct board_info      *board_list = nullptr; /* Linked list of boards           */
 
 #ifndef DOS
 /* extern fncts */
@@ -185,8 +185,9 @@ auto show_board(const unit_data *ch, unit_data *board, struct board_info *tb, ch
 
    act("$1n studies $2n.", A_HIDEINV, ch, board, nullptr, TO_ROOM);
 
-   strcpy(buf, "This is a bulletin board.\n\r"
-               "Usage: READ/REPLY/REMOVE <msg #>, WRITE <header>\n\r");
+   strcpy(buf,
+          "This is a bulletin board.\n\r"
+          "Usage: READ/REPLY/REMOVE <msg #>, WRITE <header>\n\r");
 
    for(i = 0; i < MAX_MSGS; i++)
    {
@@ -196,7 +197,12 @@ auto show_board(const unit_data *ch, unit_data *board, struct board_info *tb, ch
       }
       shown = TRUE;
 
-      sprintf(tmp, "%2d - %s : %-*s (%s)\n\r", i + 1, timetodate(tb->msgs[i].time), 55 - (int)strlen(tb->msgs[i].owner), tb->msgs[i].header,
+      sprintf(tmp,
+              "%2d - %s : %-*s (%s)\n\r",
+              i + 1,
+              timetodate(tb->msgs[i].time),
+              55 - (int)strlen(tb->msgs[i].owner),
+              tb->msgs[i].header,
               tb->msgs[i].owner);
       strcat(buf, tmp);
    }
@@ -381,8 +387,8 @@ void write_board(unit_data *ch, struct board_info *tb, char *arg, unit_data *boa
 
    CREATE(bsi, struct board_save_info, 1);
 
-   bsi->tb    = tb;
-   bsi->index = i;
+   bsi->tb                       = tb;
+   bsi->index                    = i;
 
    CHAR_DESCRIPTOR(ch)->postedit = edit_board;
    CHAR_DESCRIPTOR(ch)->editing  = board;
@@ -465,7 +471,11 @@ auto read_board(unit_data *ch, struct board_info *tb, char *arg) -> int
 
    load_board_msg(tb, msg - 1, TRUE);
 
-   sprintf(buf, "Message %d : %s (%s)\n\r\n\r%s", msg, tb->msgs[msg - 1].header, tb->msgs[msg - 1].owner,
+   sprintf(buf,
+           "Message %d : %s (%s)\n\r\n\r%s",
+           msg,
+           tb->msgs[msg - 1].header,
+           tb->msgs[msg - 1].owner,
            tb->msgs[msg - 1].text != nullptr ? tb->msgs[msg - 1].text : "");
 
    if(tb->msgs[msg - 1].text != nullptr)

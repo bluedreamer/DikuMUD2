@@ -23,6 +23,7 @@
  * *********************************************************************** */
 
 #include "dbfind.h"
+
 #include "db.h"
 #include "dil.h"
 #include "handler.h"
@@ -32,6 +33,7 @@
 #include "utility.h"
 #include "utils.h"
 #include "zone_info_type.h"
+
 #include <cctype>
 #include <cstdio>
 #include <cstdlib>
@@ -40,7 +42,7 @@
 
 extern descriptor_data *descriptor_list;
 
-auto find_descriptor(const char *name, descriptor_data *except) -> descriptor_data *
+auto                    find_descriptor(const char *name, descriptor_data *except) -> descriptor_data *
 {
    descriptor_data *d;
 

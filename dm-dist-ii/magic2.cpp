@@ -43,6 +43,7 @@
 #include "utility.h"
 #include "utils.h"
 #include "zone_info_type.h"
+
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
@@ -148,9 +149,9 @@ void summon_attack_npc(unit_data *caster, int n)
 
 void rift_failure(unit_data *caster, unit_data *target)
 {
-   spell_args sa;
+   spell_args        sa;
 
-   int i = number(1, 100);
+   int               i = number(1, 100);
 
    extern unit_data *void_room;
 
@@ -425,8 +426,8 @@ void spell_undead_door(spell_args *sa)
    unit_data *roomf;
    unit_data *roomt;
 
-   roomf = unit_room(sa->caster);
-   roomt = unit_room(sa->target);
+   roomf  = unit_room(sa->caster);
+   roomt  = unit_room(sa->target);
 
    sa->hm = spell_resistance(sa->medium, roomf, SPL_UNDEAD_DOOR);
 
@@ -523,7 +524,12 @@ void spell_summon_char_1(spell_args *sa)
 
    if(IS_PC(sa->caster) && IS_PC(sa->target))
    {
-      slog(LOG_ALL, 0, "%s was summoned by %s to %s@%s.", UNIT_NAME(sa->target), UNIT_NAME(sa->caster), UNIT_FI_NAME(room),
+      slog(LOG_ALL,
+           0,
+           "%s was summoned by %s to %s@%s.",
+           UNIT_NAME(sa->target),
+           UNIT_NAME(sa->caster),
+           UNIT_FI_NAME(room),
            UNIT_FI_ZONENAME(room));
    }
 
@@ -594,7 +600,12 @@ void spell_summon_char_2(spell_args *sa)
 
    if(IS_PC(sa->caster) && IS_PC(sa->target))
    {
-      slog(LOG_ALL, 0, "%s was summoned by %s to %s@%s.", UNIT_NAME(sa->target), UNIT_NAME(sa->caster), UNIT_FI_NAME(room),
+      slog(LOG_ALL,
+           0,
+           "%s was summoned by %s to %s@%s.",
+           UNIT_NAME(sa->target),
+           UNIT_NAME(sa->caster),
+           UNIT_FI_NAME(room),
            UNIT_FI_ZONENAME(room));
    }
 
@@ -724,11 +735,11 @@ void spell_invisibility(spell_args *sa)
    af.data[0]  = UNIT_FL_INVISIBLE;
    af.data[1] = af.data[2] = 0;
 
-   af.firstf_i = TIF_INVISIBILITY_ON;
-   af.tickf_i  = TIF_NONE;
-   af.lastf_i  = TIF_INVISIBILITY_OFF;
+   af.firstf_i             = TIF_INVISIBILITY_ON;
+   af.tickf_i              = TIF_NONE;
+   af.lastf_i              = TIF_INVISIBILITY_OFF;
 
-   af.applyf_i = APF_MOD_UNIT_FLAGS;
+   af.applyf_i             = APF_MOD_UNIT_FLAGS;
 
    create_affect(sa->target, &af);
 }
@@ -779,10 +790,10 @@ void spell_fear(spell_args *sa)
       af.beat     = WAIT_SEC * 30;
       af.data[0] = af.data[1] = af.data[2] = 0;
 
-      af.firstf_i = TIF_FEAR_CHECK;
-      af.tickf_i  = TIF_FEAR_CHECK;
-      af.lastf_i  = TIF_NONE;
-      af.applyf_i = APF_NONE;
+      af.firstf_i                          = TIF_FEAR_CHECK;
+      af.tickf_i                           = TIF_FEAR_CHECK;
+      af.lastf_i                           = TIF_NONE;
+      af.applyf_i                          = APF_NONE;
 
       create_affect(sa->target, &af);
    }
@@ -803,10 +814,10 @@ void spell_confusion(spell_args *sa)
    af.beat     = WAIT_SEC * 15;
    af.data[0] = af.data[1] = af.data[2] = 0;
 
-   af.firstf_i = TIF_CONFUSION_ON;
-   af.tickf_i  = TIF_CONFUSION_TICK;
-   af.lastf_i  = TIF_CONFUSION_OFF;
-   af.applyf_i = APF_NONE;
+   af.firstf_i                          = TIF_CONFUSION_ON;
+   af.tickf_i                           = TIF_CONFUSION_TICK;
+   af.lastf_i                           = TIF_CONFUSION_OFF;
+   af.applyf_i                          = APF_NONE;
 
    create_affect(sa->target, &af);
 }

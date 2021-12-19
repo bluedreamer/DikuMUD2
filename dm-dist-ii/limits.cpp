@@ -27,10 +27,6 @@
 /* 10/04/94 seifert: Mana gain relative to Charisma & level!               */
 /* 6/12/94  bombman: Demigods neen no food or drink                        */
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #include "comm.h"
 #include "common.h"
 #include "constants.h"
@@ -45,14 +41,18 @@
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
+
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 extern unit_data *unit_list;
 
 /* External procedures */
 
 /* Count the number of items a unit contains */
-auto char_carry_n(unit_data *unit) -> int
+auto              char_carry_n(unit_data *unit) -> int
 {
    int i;
 
@@ -501,11 +501,11 @@ void point_update()
       {
          if(CHAR_POS(u) >= POSITION_STUNNED)
          {
-            CHAR_MANA(u) = MIN(CHAR_MANA(u) + mana_gain(u), mana_limit(u));
+            CHAR_MANA(u)      = MIN(CHAR_MANA(u) + mana_gain(u), mana_limit(u));
 
             CHAR_ENDURANCE(u) = MIN(CHAR_ENDURANCE(u) + move_gain(u), move_limit(u));
 
-            hgain = hit_gain(u);
+            hgain             = hit_gain(u);
             if(hgain >= 0)
             {
                UNIT_HIT(u) = MIN(UNIT_HIT(u) + hgain, hit_limit(u));

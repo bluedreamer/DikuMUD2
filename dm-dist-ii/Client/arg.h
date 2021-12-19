@@ -30,26 +30,26 @@
 
 struct arg_type
 {
-   int nConnections;
-   int nPort;
-   int bModem;
-   int nBaud;
+   int    nConnections;
+   int    nPort;
+   int    bModem;
+   int    nBaud;
 
-   char *pcAddress;
+   char  *pcAddress;
 
-   char *pExt;
-   char *pHeader;
-   char *pDevice;
-   char *pHomeDir;
-   char *pFtpDir;
+   char  *pExt;
+   char  *pHeader;
+   char  *pDevice;
+   char  *pHomeDir;
+   char  *pFtpDir;
 
    char **ppInit[4];
 
-   char *pLogName;
-   char *pActivityName;
+   char  *pLogName;
+   char  *pActivityName;
 };
 
-int ParseArg(int argc, char *argv[]);
+int                    ParseArg(int argc, char *argv[]);
 
 extern struct arg_type arg;
 

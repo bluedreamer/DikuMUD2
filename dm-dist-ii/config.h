@@ -24,6 +24,7 @@
  * *********************************************************************** */
 
 #include "fight.h"
+
 #include <arpa/inet.h>
 
 void ShowUsage(const char *c);

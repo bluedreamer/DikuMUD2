@@ -38,6 +38,7 @@
 /* 11/01/95 gnort   : Moved find_raw_ex_descr() from act_info.c over here  */
 
 #include "handler.h"
+
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"
@@ -57,6 +58,7 @@
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cctype>
 #include <cstdarg>
 #include <cstdio>
@@ -68,9 +70,9 @@ extern unit_data *combat_list;
 
 /* External procedures */
 
-void stop_special(unit_data *u, unit_fptr *fptr);
+void              stop_special(unit_data *u, unit_fptr *fptr);
 
-auto unit_is_edited(unit_data *u) -> descriptor_data *
+auto              unit_is_edited(unit_data *u) -> descriptor_data *
 {
    descriptor_data *d;
 
@@ -160,7 +162,7 @@ auto create_fptr(unit_data *u, uint16_t index, uint16_t beat, uint16_t flags, vo
 {
    unit_fptr *f;
 
-   void start_special(unit_data * u, unit_fptr * fptr);
+   void       start_special(unit_data * u, unit_fptr * fptr);
 
    CREATE(f, unit_fptr, 1);
    assert(f);
@@ -171,8 +173,8 @@ auto create_fptr(unit_data *u, uint16_t index, uint16_t beat, uint16_t flags, vo
    f->flags      = flags;
    f->data       = data;
 
-   f->next      = UNIT_FUNC(u);
-   UNIT_FUNC(u) = f;
+   f->next       = UNIT_FUNC(u);
+   UNIT_FUNC(u)  = f;
 
    start_special(u, f);
 
@@ -824,8 +826,8 @@ void unswitchbody(unit_data *npc)
       CHAR_DESCRIPTOR(CHAR_DESCRIPTOR(npc)->snoop.snoop_by)->snoop.snooping = CHAR_ORIGINAL(npc);
    }
 
-   CHAR_DESCRIPTOR(npc)->character = CHAR_ORIGINAL(npc);
-   CHAR_DESCRIPTOR(npc)->original  = nullptr;
+   CHAR_DESCRIPTOR(npc)->character                  = CHAR_ORIGINAL(npc);
+   CHAR_DESCRIPTOR(npc)->original                   = nullptr;
 
    CHAR_DESCRIPTOR(CHAR_DESCRIPTOR(npc)->character) = CHAR_DESCRIPTOR(npc);
    CHAR_DESCRIPTOR(npc)                             = nullptr;
@@ -835,12 +837,12 @@ void unswitchbody(unit_data *npc)
 /* Extracts recursively                              */
 void extract_unit(unit_data *unit)
 {
-   descriptor_data *d;
+   descriptor_data  *d;
 
    extern unit_data *destroy_room;
 
-   void nanny_menu(descriptor_data * d, char *arg);
-   void stop_all_special(unit_data * u);
+   void              nanny_menu(descriptor_data * d, char *arg);
+   void              stop_all_special(unit_data * u);
 
    /* Prevent recursive calling on extracted units. */
    /* This happens on for example corpses. When the */
@@ -978,8 +980,8 @@ void szonelog(struct zone_type *zone, const char *fmt, ...)
    va_list args;
    FILE   *f;
 
-   time_t now   = time(nullptr);
-   char  *tmstr = ctime(&now);
+   time_t  now              = time(nullptr);
+   char   *tmstr            = ctime(&now);
 
    tmstr[strlen(tmstr) - 1] = '\0';
 

@@ -41,11 +41,12 @@
 /* 23/08/93 jubal  : Moved breaking to procedure, which removes affs, too  */
 
 #include "fight.h"
-#include "CServerConfiguration.h"
+
 #include "affect.h"
 #include "combat.h"
 #include "comm.h"
 #include "common.h"
+#include "CServerConfiguration.h"
 #include "db.h"
 #include "files.h"
 #include "handler.h"
@@ -62,6 +63,7 @@
 #include "utils.h"
 #include "wpn_info_type.h"
 #include "zon_basis.h"
+
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
@@ -78,17 +80,17 @@ struct combat_single_msg
 
 struct combat_msg_packet
 {
-   struct combat_single_msg cmiss;
-   struct combat_single_msg shield;
-   struct combat_single_msg nodam;
-   struct combat_single_msg entire;
-   struct combat_single_msg head;
-   struct combat_single_msg hand;
-   struct combat_single_msg arm;
-   struct combat_single_msg body;
-   struct combat_single_msg legs;
-   struct combat_single_msg feet;
-   struct combat_single_msg die;
+   struct combat_single_msg  cmiss;
+   struct combat_single_msg  shield;
+   struct combat_single_msg  nodam;
+   struct combat_single_msg  entire;
+   struct combat_single_msg  head;
+   struct combat_single_msg  hand;
+   struct combat_single_msg  arm;
+   struct combat_single_msg  body;
+   struct combat_single_msg  legs;
+   struct combat_single_msg  feet;
+   struct combat_single_msg  die;
 
    struct combat_msg_packet *next;
 };
@@ -109,13 +111,13 @@ struct combat_msg_list fight_messages[COM_MAX_MSGS];
 
 /* External procedures */
 
-void stop_follower(unit_data *ch);
+void                   stop_follower(unit_data *ch);
 
 /* Returns TRUE if combat is not allowed, and FALSE if combat is allowed */
 /* Also used for steal, etc.                                             */
 /* If message is true, then a message is sent to the 'att'               */
 
-auto pk_test(unit_data *att, unit_data *def, int message) -> int
+auto                   pk_test(unit_data *att, unit_data *def, int message) -> int
 {
    if(IS_PC(att) && IS_PC(def) && att != def)
    {
@@ -154,13 +156,21 @@ auto pk_test(unit_data *att, unit_data *def, int message) -> int
          {
             act("You are not allowed to do this unless you sign the "
                 "book of blood.",
-                A_ALWAYS, att, nullptr, def, TO_CHAR);
+                A_ALWAYS,
+                att,
+                nullptr,
+                def,
+                TO_CHAR);
          }
          else
          {
             act("You are not allowed to do this until $3n signs the "
                 "book of blood.",
-                A_ALWAYS, att, nullptr, def, TO_CHAR);
+                A_ALWAYS,
+                att,
+                nullptr,
+                def,
+                TO_CHAR);
          }
       }
       return static_cast<int>(TRUE);
@@ -235,7 +245,7 @@ auto load_msg_prehead(FILE *f1, struct combat_msg_list *msg) -> int
    char shit[100];
 
    /* A group of -1 indicates end */
-   int ms2020 = fscanf(f1, " %d", &grp);
+   int  ms2020 = fscanf(f1, " %d", &grp);
 
    if(grp == -1)
    {
@@ -251,7 +261,7 @@ auto load_msg_prehead(FILE *f1, struct combat_msg_list *msg) -> int
 
    no[pos - 1] = -1;
 
-   ms2020 = fscanf(f1, " %[^\n\r] ", shit); /* Skip any remark */
+   ms2020      = fscanf(f1, " %[^\n\r] ", shit); /* Skip any remark */
 
    CREATE(msg->no, int, pos);
    for(pos--; pos >= 0; pos--)
@@ -307,8 +317,8 @@ void load_messages()
       fight_messages[i].no_of_msgs++;
       fight_messages[i].group = grp;
       /* fight_messages[i].no already set in load_msg_prehead */
-      messages->next        = fight_messages[i].msg;
-      fight_messages[i].msg = messages;
+      messages->next          = fight_messages[i].msg;
+      fight_messages[i].msg   = messages;
 
       fread_single(f1, &(messages->cmiss));
       fread_single(f1, &(messages->shield));
@@ -376,69 +386,165 @@ auto sub_damage(char *str, char *col, int damage, int max_hp) -> char *
    char       *cp;
 
    /* We can always make more/new blocks */
-   const char *damage_blocks[16][9] = {{"ineptly",                         /*       A       */
-                                        "awkwardly", "clumsily", "simply", /* How it appears/looks */
-                                        "competently", "smoothly", "elegantly", "expertly", "superbly"},
+   const char *damage_blocks[16][9] = {{"ineptly", /*       A       */
+                                        "awkwardly",
+                                        "clumsily",
+                                        "simply", /* How it appears/looks */
+                                        "competently",
+                                        "smoothly",
+                                        "elegantly",
+                                        "expertly",
+                                        "superbly"},
 
-                                       {"meekly",                         /*       B      */
-                                        "tamely", "gently", "moderately", /* The temper/mood of the attacker */
-                                        "boldly", "cruelly", "grimly", "viciously", "savagely"},
+                                       {"meekly", /*       B      */
+                                        "tamely",
+                                        "gently",
+                                        "moderately", /* The temper/mood of the attacker */
+                                        "boldly",
+                                        "cruelly",
+                                        "grimly",
+                                        "viciously",
+                                        "savagely"},
 
-                                       {"caress",                   /*       C       */
-                                        "tickle", "scratch", "cut", /*   Cut and Slash Weaponry 1 */
-                                        "chop", "gash", "lacerate", "mangle", "mutilate"},
+                                       {"caress", /*       C       */
+                                        "tickle",
+                                        "scratch",
+                                        "cut", /*   Cut and Slash Weaponry 1 */
+                                        "chop",
+                                        "gash",
+                                        "lacerate",
+                                        "mangle",
+                                        "mutilate"},
 
-                                       {"caresses",                     /*       D       */
-                                        "tickles", "scratches", "cuts", /*   Cut and Slash Weaponry 2 */
-                                        "chops", "gashes", "lacerates", "mangles", "mutilates"},
+                                       {"caresses", /*       D       */
+                                        "tickles",
+                                        "scratches",
+                                        "cuts", /*   Cut and Slash Weaponry 2 */
+                                        "chops",
+                                        "gashes",
+                                        "lacerates",
+                                        "mangles",
+                                        "mutilates"},
 
-                                       {"caressed",                    /*       E       */
-                                        "tickled", "scratched", "cut", /*   Cut and Slash Weaponry 1 */
-                                        "chopped", "gashed", "lacerated", "mangled", "mutilated"},
+                                       {"caressed", /*       E       */
+                                        "tickled",
+                                        "scratched",
+                                        "cut", /*   Cut and Slash Weaponry 1 */
+                                        "chopped",
+                                        "gashed",
+                                        "lacerated",
+                                        "mangled",
+                                        "mutilated"},
 
-                                       {"comb",                    /*       F       */
-                                        "shave", "scratch", "rip", /*   Cut and Slash Weaponry 3 */
-                                        "slash", "rend", "incise", "rupture", "mince"},
+                                       {"comb", /*       F       */
+                                        "shave",
+                                        "scratch",
+                                        "rip", /*   Cut and Slash Weaponry 3 */
+                                        "slash",
+                                        "rend",
+                                        "incise",
+                                        "rupture",
+                                        "mince"},
 
-                                       {"combs",                       /*       G       */
-                                        "shaves", "scratches", "rips", /*   Cut and Slash Weaponry 4 */
-                                        "slashes", "rends", "incises", "ruptures", "minces"},
+                                       {"combs", /*       G       */
+                                        "shaves",
+                                        "scratches",
+                                        "rips", /*   Cut and Slash Weaponry 4 */
+                                        "slashes",
+                                        "rends",
+                                        "incises",
+                                        "ruptures",
+                                        "minces"},
 
-                                       {"combed",                        /*       H       */
-                                        "shaved", "scratched", "ripped", /*   Cut and Slash Weaponry 3 */
-                                        "slashed", "rended", "incised", "ruptured", "minced"},
+                                       {"combed", /*       H       */
+                                        "shaved",
+                                        "scratched",
+                                        "ripped", /*   Cut and Slash Weaponry 3 */
+                                        "slashed",
+                                        "rended",
+                                        "incised",
+                                        "ruptured",
+                                        "minced"},
 
-                                       {"nudge",                  /*       I       */
-                                        "graze", "whack", "beat", /*   Bludgeon Weaponry   */
-                                        "thump", "flog", "pound", "slam", "batter"},
+                                       {"nudge", /*       I       */
+                                        "graze",
+                                        "whack",
+                                        "beat", /*   Bludgeon Weaponry   */
+                                        "thump",
+                                        "flog",
+                                        "pound",
+                                        "slam",
+                                        "batter"},
 
-                                       {"nudges",                    /*       J      */
-                                        "grazes", "whacks", "beats", /*   Bludgeon Weaponry   */
-                                        "thumps", "flogs", "pounds", "slams", "batters"},
+                                       {"nudges", /*       J      */
+                                        "grazes",
+                                        "whacks",
+                                        "beats", /*   Bludgeon Weaponry   */
+                                        "thumps",
+                                        "flogs",
+                                        "pounds",
+                                        "slams",
+                                        "batters"},
 
-                                       {"nudged",                      /*       K       */
-                                        "grazed", "whacked", "beaten", /*   Bludgeon Weaponry   */
-                                        "thumped", "flogged", "pounded", "slammed", "battered"},
+                                       {"nudged", /*       K       */
+                                        "grazed",
+                                        "whacked",
+                                        "beaten", /*   Bludgeon Weaponry   */
+                                        "thumped",
+                                        "flogged",
+                                        "pounded",
+                                        "slammed",
+                                        "battered"},
 
-                                       {"poke",                   /*       L      */
-                                        "sting", "prick", "stab", /*   Piercing Weaponry   */
-                                        "pierce", "spike", "penetrate", "lance", "impale"},
+                                       {"poke", /*       L      */
+                                        "sting",
+                                        "prick",
+                                        "stab", /*   Piercing Weaponry   */
+                                        "pierce",
+                                        "spike",
+                                        "penetrate",
+                                        "lance",
+                                        "impale"},
 
-                                       {"pokes",                     /*       M      */
-                                        "stings", "pricks", "stabs", /*   Piercing Weaponry   */
-                                        "pierces", "spikes", "penetrates", "lances", "impales"},
+                                       {"pokes", /*       M      */
+                                        "stings",
+                                        "pricks",
+                                        "stabs", /*   Piercing Weaponry   */
+                                        "pierces",
+                                        "spikes",
+                                        "penetrates",
+                                        "lances",
+                                        "impales"},
 
-                                       {"poked",                       /*       N      */
-                                        "stung", "pricked", "stabbed", /*   Piercing Weaponry   */
-                                        "pierced", "spiked", "penetrated", "lanced", "impaled"},
+                                       {"poked", /*       N      */
+                                        "stung",
+                                        "pricked",
+                                        "stabbed", /*   Piercing Weaponry   */
+                                        "pierced",
+                                        "spiked",
+                                        "penetrated",
+                                        "lanced",
+                                        "impaled"},
 
-                                       {"insignificantly",               /*       O      */
-                                        "slightly", "lightly", "fairly", /*   Adverbes   */
-                                        "seriously", "severely", "gravely", "critically", "fatally"},
+                                       {"insignificantly", /*       O      */
+                                        "slightly",
+                                        "lightly",
+                                        "fairly", /*   Adverbes   */
+                                        "seriously",
+                                        "severely",
+                                        "gravely",
+                                        "critically",
+                                        "fatally"},
 
-                                       {"nudge",                  /*       P       */
-                                        "graze", "bump", "knock", /*   Fist        */
-                                        "strike", "thump", "batter", "redesign", "shatter"}};
+                                       {"nudge", /*       P       */
+                                        "graze",
+                                        "bump",
+                                        "knock", /*   Fist        */
+                                        "strike",
+                                        "thump",
+                                        "batter",
+                                        "redesign",
+                                        "shatter"}};
 
    assert(str);
 
@@ -476,8 +582,8 @@ auto sub_damage(char *str, char *col, int damage, int max_hp) -> char *
    return buf;
 }
 
-static void combat_send(struct SFightColorSet *sColors, struct combat_single_msg *msg, unit_data *arg1, unit_data *arg2, unit_data *arg3,
-                        int dam)
+static void
+combat_send(struct SFightColorSet *sColors, struct combat_single_msg *msg, unit_data *arg1, unit_data *arg2, unit_data *arg3, int dam)
 {
    if(msg->to_char != nullptr)
    {
@@ -622,7 +728,7 @@ static void change_alignment(unit_data *slayer, unit_data *victim)
    int adjust = 0;
    int diff   = 0;
 
-   diff = UNIT_ALIGNMENT(slayer) - UNIT_ALIGNMENT(victim);
+   diff       = UNIT_ALIGNMENT(slayer) - UNIT_ALIGNMENT(victim);
 
    if(UNIT_IS_GOOD(slayer))
    {
@@ -752,7 +858,7 @@ static void exp_align_gain(unit_data *ch, unit_data *victim)
    unit_data               *head;
    struct char_follow_type *f;
 
-   auto experience_modification(unit_data * att, unit_data * def)->int;
+   auto                     experience_modification(unit_data * att, unit_data * def)->int;
 
    maxlevel = CHAR_LEVEL(ch);
 
@@ -876,8 +982,12 @@ static void death_cry(unit_data *ch)
       {
          if(CHAR_CAN_GO(ch, door) && (UNIT_CONTAINS(ROOM_EXIT(UNIT_IN(ch), door)->to_room) != nullptr))
          {
-            act("Your blood freezes as you hear someones death cry.", A_SOMEONE, UNIT_CONTAINS(ROOM_EXIT(UNIT_IN(ch), door)->to_room),
-                nullptr, nullptr, TO_ALL);
+            act("Your blood freezes as you hear someones death cry.",
+                A_SOMEONE,
+                UNIT_CONTAINS(ROOM_EXIT(UNIT_IN(ch), door)->to_room),
+                nullptr,
+                nullptr,
+                TO_ALL);
          }
       }
    }
@@ -914,12 +1024,12 @@ void RemoveReward(unit_data *ch)
 
 auto raw_kill(unit_data *ch) -> unit_data *
 {
-   unit_data *death_obj;
-   unit_data *corpse = nullptr;
+   unit_data              *death_obj;
+   unit_data              *corpse = nullptr;
 
    extern file_index_type *deathobj_fi;
 
-   auto make_corpse(unit_data * ch)->unit_data *;
+   auto                    make_corpse(unit_data * ch)->unit_data *;
 
 #ifdef DEMIGOD
    if(CHAR_ORIGINAL(ch) && IS_DEMIGOD(CHAR_ORIGINAL(ch)))
@@ -1029,7 +1139,7 @@ auto lose_exp(unit_data *ch) -> int
    loss = MAX(loss, level_xp(PC_VIRTUAL_LEVEL(ch)) / 5);
 
    /* This line takes care of newbies, setting the lower bound... */
-   i = MAX(0, (CHAR_EXP(ch) - required_xp(START_LEVEL)) / 2);
+   i    = MAX(0, (CHAR_EXP(ch) - required_xp(START_LEVEL)) / 2);
 
    if(loss > i)
    {
@@ -1051,7 +1161,8 @@ void die(unit_data *ch)
       if(IS_SET(PC_FLAGS(ch), PC_SPIRIT))
       {
          send_to_char("Please report spirit mess to implementors.\n\r", ch);
-         slog(LOG_EXTENSIVE, 0,
+         slog(LOG_EXTENSIVE,
+              0,
               "VERY SERIOUS ERROR: Someone who was spirit"
               " got killed? trans?");
          unit_from_unit(ch);
@@ -1145,8 +1256,8 @@ void modify_hit(unit_data *ch, int hit)
    }
 }
 
-void damage(unit_data *ch, unit_data *victim, unit_data *medium, int dam, int attack_group, int attack_number, int hit_location,
-            int bDisplay)
+void damage(
+   unit_data *ch, unit_data *victim, unit_data *medium, int dam, int attack_group, int attack_number, int hit_location, int bDisplay)
 {
    int                 max_hit;
    unit_affected_type *paf;
@@ -1378,7 +1489,11 @@ void damage(unit_data *ch, unit_data *victim, unit_data *medium, int dam, int at
 
       if(!IS_NPC(victim))
       {
-         slog(LOG_EXTENSIVE, MAX(UNIT_MINV(ch), UNIT_MINV(victim)), "%s killed by %s at %s", STR(UNIT_NAME(victim)), TITLENAME(ch),
+         slog(LOG_EXTENSIVE,
+              MAX(UNIT_MINV(ch), UNIT_MINV(victim)),
+              "%s killed by %s at %s",
+              STR(UNIT_NAME(victim)),
+              TITLENAME(ch),
               STR(TITLENAME(UNIT_IN(ch))));
       }
 
@@ -1505,13 +1620,13 @@ void damage_object(unit_data *ch, unit_data *obj, int dam)
 
 auto one_hit(unit_data *att, unit_data *def, int bonus, int att_weapon_type, int primary) -> int
 {
-   int dam;
-   int hm;
-   int hit_loc;
-   int roll;
+   int        dam;
+   int        hm;
+   int        hit_loc;
+   int        roll;
 
-   int def_armour_type;
-   int def_shield_bonus;
+   int        def_armour_type;
+   int        def_shield_bonus;
 
    unit_data *att_weapon;
    unit_data *def_armour;
@@ -1551,7 +1666,7 @@ auto one_hit(unit_data *att, unit_data *def, int bonus, int att_weapon_type, int
 
    hit_loc = hit_location(att, def);
 
-   hm = melee_bonus(att, def, hit_loc, &att_weapon_type, &att_weapon, &def_armour_type, &def_armour, primary);
+   hm      = melee_bonus(att, def, hit_loc, &att_weapon_type, &att_weapon, &def_armour_type, &def_armour, primary);
 
    hm += bonus;
 

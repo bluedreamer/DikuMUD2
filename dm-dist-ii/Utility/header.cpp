@@ -29,64 +29,64 @@
 
 #define MAX_SIZE 8192
 
-float version       = 1.0;
-char  file[1024]    = "UNKNOWN";
-char  author[1024]  = " * Author : Unknown.                                                       *";
-char  purpose[1024] = " * Purpose: Unknown.                                                       *";
-char  bugs[1024]    = " * Bugs   : Unknown.                                                       *";
-char  status[1024]  = " * Status : Unpublished.                                                   *";
+float       version       = 1.0;
+char        file[1024]    = "UNKNOWN";
+char        author[1024]  = " * Author : Unknown.                                                       *";
+char        purpose[1024] = " * Purpose: Unknown.                                                       *";
+char        bugs[1024]    = " * Bugs   : Unknown.                                                       *";
+char        status[1024]  = " * Status : Unpublished.                                                   *";
 
-const char *notice1 = " * Copyright (C) Valhalla (This work is unpublished).                      *"
-                      "\n"
-                      " *                                                                         *"
-                      "\n"
-                      " * This work is a property of:                                             *"
-                      "\n"
-                      " *                                                                         *"
-                      "\n"
-                      " *        Valhalla I/S                                                     *"
-                      "\n"
-                      " *        Noerre Soegade 37A, 4th floor                                    *"
-                      "\n"
-                      " *        1370 Copenhagen K.                                               *"
-                      "\n"
-                      " *        Denmark                                                          *"
-                      "\n"
-                      " *                                                                         *"
-                      "\n"
-                      " * This is an unpublished work containing Valhalla confidential and        *"
-                      "\n"
-                      " * proprietary information. Disclosure, use or reproduction without        *"
-                      "\n"
-                      " * authorization of Valhalla is prohobited.                                *";
+const char *notice1       = " * Copyright (C) Valhalla (This work is unpublished).                      *"
+                            "\n"
+                            " *                                                                         *"
+                            "\n"
+                            " * This work is a property of:                                             *"
+                            "\n"
+                            " *                                                                         *"
+                            "\n"
+                            " *        Valhalla I/S                                                     *"
+                            "\n"
+                            " *        Noerre Soegade 37A, 4th floor                                    *"
+                            "\n"
+                            " *        1370 Copenhagen K.                                               *"
+                            "\n"
+                            " *        Denmark                                                          *"
+                            "\n"
+                            " *                                                                         *"
+                            "\n"
+                            " * This is an unpublished work containing Valhalla confidential and        *"
+                            "\n"
+                            " * proprietary information. Disclosure, use or reproduction without        *"
+                            "\n"
+                            " * authorization of Valhalla is prohobited.                                *";
 
-const char *notice2 = " * Copyright (C) 1994 - 1996 by Valhalla (This work is published).         *"
-                      "\n"
-                      " *                                                                         *"
-                      "\n"
-                      " * This work is a property of:                                             *"
-                      "\n"
-                      " *                                                                         *"
-                      "\n"
-                      " *        Valhalla I/S                                                     *"
-                      "\n"
-                      " *        Noerre Soegade 37A, 4th floor                                    *"
-                      "\n"
-                      " *        1370 Copenhagen K.                                               *"
-                      "\n"
-                      " *        Denmark                                                          *"
-                      "\n"
-                      " *                                                                         *"
-                      "\n"
-                      " * This work is copyrighted. No part of this work may be copied,           *"
-                      "\n"
-                      " * reproduced, translated or reduced to any medium without the prior       *"
-                      "\n"
-                      " * written consent of Valhalla.                                            *";
+const char *notice2       = " * Copyright (C) 1994 - 1996 by Valhalla (This work is published).         *"
+                            "\n"
+                            " *                                                                         *"
+                            "\n"
+                            " * This work is a property of:                                             *"
+                            "\n"
+                            " *                                                                         *"
+                            "\n"
+                            " *        Valhalla I/S                                                     *"
+                            "\n"
+                            " *        Noerre Soegade 37A, 4th floor                                    *"
+                            "\n"
+                            " *        1370 Copenhagen K.                                               *"
+                            "\n"
+                            " *        Denmark                                                          *"
+                            "\n"
+                            " *                                                                         *"
+                            "\n"
+                            " * This work is copyrighted. No part of this work may be copied,           *"
+                            "\n"
+                            " * reproduced, translated or reduced to any medium without the prior       *"
+                            "\n"
+                            " * written consent of Valhalla.                                            *";
 
-char notice[4096];
+char        notice[4096];
 
-void write_header(FILE *output)
+void        write_header(FILE *output)
 {
    fprintf(output,
            "/* *********************************************************************** *"
@@ -111,7 +111,13 @@ void write_header(FILE *output)
            "\n"
            " * *********************************************************************** */"
            "\n",
-           file, version, author, purpose, bugs, status, notice);
+           file,
+           version,
+           author,
+           purpose,
+           bugs,
+           status,
+           notice);
 }
 
 int main(int argc, char *argv[])

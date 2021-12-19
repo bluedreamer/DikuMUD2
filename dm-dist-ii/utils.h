@@ -31,6 +31,7 @@
 #include "pc_data.h"
 #include "room_data.h"
 #include "structs.h"
+
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
@@ -39,8 +40,8 @@ extern const int8_t time_light[];
 
 /* ..................................................................... */
 
-constexpr bool PK_RELAXED = false;
-constexpr bool PK_STRICT  = true;
+constexpr bool      PK_RELAXED = false;
+constexpr bool      PK_STRICT  = true;
 
 #define IS_BEGINNER(ch)      (CHAR_LEVEL(ch) <= START_LEVEL)
 #define IS_MORTAL(ch)        (CHAR_LEVEL(ch) < IMMORTAL_LEVEL)

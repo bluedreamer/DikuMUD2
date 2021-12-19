@@ -22,12 +22,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
@@ -47,11 +41,17 @@
 #include "unit_vector_data.h"
 #include "utility.h"
 #include "utils.h"
+
+#include <cctype>
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 struct guild_type
 {
-   char *pGuildName;
+   char  *pGuildName;
 
    char **ppLeaveQuest;
    int    nLeaveCost;
@@ -107,8 +107,8 @@ void advance_guild_level(unit_data *ch)
 {
    extra_descr_data *exd;
 
-   int      lvl = char_guild_level(ch);
-   uint32_t i;
+   int               lvl = char_guild_level(ch);
+   uint32_t          i;
 
    if(!IS_PC(ch))
    {
@@ -167,7 +167,7 @@ static auto parse_guild_data(unit_data *npc, char *pStr) -> struct guild_type *
 
    CREATE(pG, struct guild_type, 1);
 
-   pTmp1 = pStr;
+   pTmp1            = pStr;
 
    pG->pGuildName   = parse_match_name(&pTmp1, "Guild");
    pG->ppEnterQuest = parse_match_namelist(&pTmp1, "Guild Enter Quest");
@@ -214,7 +214,7 @@ auto guild_master_init(struct spec_arg *sarg) -> int
 /* Message will never be sent to 'nonmember'                           */
 void act_to_guild(const char *msg, char *guild, unit_data *member, unit_data *nonmember)
 {
-   descriptor_data *d;
+   descriptor_data        *d;
 
    extern descriptor_data *descriptor_list;
 
@@ -293,7 +293,7 @@ auto guard_guild_way(struct spec_arg *sarg) -> int
    char *guild_no;
    int   guild_cmp;
 
-   auto charname_in_list(unit_data * ch, char *arg)->int;
+   auto  charname_in_list(unit_data * ch, char *arg)->int;
 
    if(((str = (char *)sarg->fptr->data) != nullptr) && (sarg->cmd->no == (*str - '0')) && CHAR_IS_READY(sarg->owner))
    {
@@ -447,7 +447,11 @@ auto can_leave_guild(struct guild_type *pG, unit_data *master, unit_data *ch) ->
 
       if(static_cast<unsigned int>(char_can_afford(ch, pG->nLeaveCost, currency)) == 0U)
       {
-         act("$1n says, 'You can't afford the cost of $2t, $3n.'", A_SOMEONE, master, money_string(pG->nLeaveCost, currency, TRUE), ch,
+         act("$1n says, 'You can't afford the cost of $2t, $3n.'",
+             A_SOMEONE,
+             master,
+             money_string(pG->nLeaveCost, currency, TRUE),
+             ch,
              TO_ROOM);
          return static_cast<int>(FALSE);
       }
@@ -470,7 +474,7 @@ void join_guild(unit_data *ch, char *guild_name)
    PC_GUILD(ch)      = str_dup(guild_name);
    PC_GUILD_TIME(ch) = PC_TIME(ch).played;
 
-   exd = quest_add(ch, str_cc("$", PC_GUILD(ch)), itoa(time(nullptr)));
+   exd               = quest_add(ch, str_cc("$", PC_GUILD(ch)), itoa(time(nullptr)));
    exd->names.AppendName("0");
    exd->names.AppendName("$guild");
 }
@@ -495,7 +499,11 @@ auto can_join_guild(struct guild_type *pG, unit_data *master, unit_data *ch) -> 
       {
          act("$1n says, 'You must first break your ties with your current"
              " guild, $3n'",
-             A_SOMEONE, master, nullptr, ch, TO_ROOM);
+             A_SOMEONE,
+             master,
+             nullptr,
+             ch,
+             TO_ROOM);
       }
       return static_cast<int>(FALSE);
    }
@@ -515,7 +523,11 @@ auto can_join_guild(struct guild_type *pG, unit_data *master, unit_data *ch) -> 
       {
          act("$1n says, 'Don't you think we remeber how you acted last "
              "time, $3n? ",
-             A_SOMEONE, master, nullptr, ch, TO_ROOM);
+             A_SOMEONE,
+             master,
+             nullptr,
+             ch,
+             TO_ROOM);
          return static_cast<int>(FALSE);
       }
 
@@ -525,15 +537,23 @@ auto can_join_guild(struct guild_type *pG, unit_data *master, unit_data *ch) -> 
          {
             act("$1n says, 'We will never be able to accept you as a "
                 "member due to the $2t quest, $3n'",
-                A_SOMEONE, master, *p, ch, TO_ROOM);
+                A_SOMEONE,
+                master,
+                *p,
+                ch,
+                TO_ROOM);
             return static_cast<int>(FALSE);
          }
       }
 
       if(static_cast<unsigned int>(char_can_afford(ch, pG->nEnterCost, currency)) == 0U)
       {
-         act("$1n says, 'You can't afford the entry cost of $2t, $3n.'", A_SOMEONE, master, money_string(pG->nEnterCost, currency, TRUE),
-             ch, TO_ROOM);
+         act("$1n says, 'You can't afford the entry cost of $2t, $3n.'",
+             A_SOMEONE,
+             master,
+             money_string(pG->nEnterCost, currency, TRUE),
+             ch,
+             TO_ROOM);
          return static_cast<int>(FALSE);
       }
    }
@@ -592,7 +612,11 @@ auto guild_master(struct spec_arg *sarg) -> int
       {
          act("$1n says, 'You must first break your ties with your current"
              " guild, $3n'",
-             A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_ROOM);
+             A_SOMEONE,
+             sarg->owner,
+             nullptr,
+             sarg->activator,
+             TO_ROOM);
       }
       return SFR_BLOCK;
    }
@@ -607,7 +631,11 @@ auto guild_master(struct spec_arg *sarg) -> int
       {
          act("$1n says, 'Do that again $3n and I will kick you out of this "
              "guild.'",
-             A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_ROOM);
+             A_SOMEONE,
+             sarg->owner,
+             nullptr,
+             sarg->activator,
+             TO_ROOM);
          pc_pos = PC_ID(sarg->activator);
       }
       else /* Match! */

@@ -26,13 +26,6 @@
 /* 01-Feb-95 gnort: Removed logging of new password in do_set              */
 /* Tue Dec 16 1997 God: added age and lifespan                             */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-#include <unistd.h>
-
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"
@@ -50,6 +43,13 @@
 #include "trie.h"
 #include "utility.h"
 #include "utils.h"
+
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <unistd.h>
 
 #define UT_ROOM (1 << 0)
 #define UT_OBJ  (1 << 1)
@@ -290,7 +290,10 @@ void show_fields(unit_data *ch)
 
    for(*string = '\0', i = 0, c = string; i < MAX_SET_FIELDS; i++)
    {
-      sprintf(c, "%18s : on %5s. : %21s\n\r", unit_field_names[i], GET_FIELD_UT(unit_field_data[i].utype),
+      sprintf(c,
+              "%18s : on %5s. : %21s\n\r",
+              unit_field_names[i],
+              GET_FIELD_UT(unit_field_data[i].utype),
               GET_FIELD_AT(unit_field_data[i].atype));
       TAIL(c);
    }
@@ -359,14 +362,14 @@ auto get_type(char *typdef, const char *structure[]) -> int
 /* modification of anything in units */
 void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   char arg[MAX_STRING_LENGTH];
-   char buf[MAX_STRING_LENGTH];
-   int  type;
+   char                arg[MAX_STRING_LENGTH];
+   char                buf[MAX_STRING_LENGTH];
+   int                 type;
 
-   char     strarg[MAX_STRING_LENGTH];
-   int      typarg = 0;
-   long int valarg = 0;
-   long int bitarg = 0;
+   char                strarg[MAX_STRING_LENGTH];
+   int                 typarg = 0;
+   long int            valarg = 0;
+   long int            bitarg = 0;
 
    file_index_type    *untarg = nullptr;
    extra_descr_data   *ed;
@@ -443,7 +446,7 @@ void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
       return;
    }
 
-   argument = skip_spaces(argument);
+   argument                    = skip_spaces(argument);
 
    char mbuf[MAX_INPUT_LENGTH] = {0};
 
@@ -1288,7 +1291,7 @@ void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
 
 static const char *skill_field_names[] = {"skill", "spell", "weapon", nullptr};
 
-void do_setskill(unit_data *ch, char *argument, const struct command_info *cmd)
+void               do_setskill(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    int        type;
    int        skillarg;

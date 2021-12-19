@@ -1,5 +1,7 @@
 #include "cHook.h"
+
 #include "cCaptainHook.h"
+
 #include <algorithm>
 #include <cerrno>
 #include <unistd.h>

@@ -306,8 +306,8 @@ void coma(int s)
    static struct timeval timeout = {60, 0};
    int                   conn;
 
-   int workhours(void);
-   int load(void);
+   int                   workhours(void);
+   int                   load(void);
 
    slog(LOG_ALL, "Entering comatose state.");
 
@@ -401,12 +401,13 @@ void gr(int s)
    char        *txt         = 0, buf[1024];
    int          ld          = 0;
    static char *warnings[3] = {"If things don't look better within 3 minutes, the game will pause.\n\r",
-                               "The game will close temporarily 2 minutes from now.\n\r", "WARNING: The game will close in 1 minute.\n\r"};
+                               "The game will close temporarily 2 minutes from now.\n\r",
+                               "WARNING: The game will close in 1 minute.\n\r"};
    static int   wnr         = 0;
 
-   extern int slow_death, mud_shutdown;
+   extern int   slow_death, mud_shutdown;
 
-   void coma(int s);
+   void         coma(int s);
 
    if(((ld = load()) >= 6) || (txt = nogames()) || slow_death)
    {

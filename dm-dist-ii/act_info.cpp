@@ -30,12 +30,12 @@
 /* 23/08/93 jubal  : Added 'right beside you' in where                     */
 /* 23/08/93 jubal  : Allow imms to see hidden thingys                      */
 /* 10/02/94 gnort  : Rewrote do_who to be smaller and dynamic.             */
-#include "CServerConfiguration.h"
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"
 #include "common.h"
 #include "constants.h"
+#include "CServerConfiguration.h"
 #include "db.h"
 #include "files.h"
 #include "guild.h"
@@ -55,6 +55,7 @@
 #include "utility.h"
 #include "utils.h"
 #include "zone_info_type.h"
+
 #include <cctype>
 #include <climits>
 #include <cstdio>
@@ -66,7 +67,7 @@
 
 extern descriptor_data *descriptor_list;
 
-static void add_to_string(char **buf, int *size, int len, const char *str)
+static void             add_to_string(char **buf, int *size, int len, const char *str)
 {
    if(*buf == nullptr)
    {
@@ -106,14 +107,14 @@ auto in_string(unit_data *ch, unit_data *u) -> char *
 
 void do_exits(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   int        door;
-   char       buf[MAX_STRING_LENGTH];
-   char      *b;
-   unit_data *room;
+   int         door;
+   char        buf[MAX_STRING_LENGTH];
+   char       *b;
+   unit_data  *room;
 
    const char *exits[] = {"North", "East ", "South", "West ", "Up   ", "Down "};
 
-   auto has_found_door(unit_data * pc, int dir)->int;
+   auto        has_found_door(unit_data * pc, int dir)->int;
 
    send_to_char("Obvious exits:\n\r", ch);
 
@@ -247,7 +248,7 @@ static void status_spells(unit_data *ch, uint8_t realm)
    char  tmpbuf[80];
    char *b;
 
-   b = buf;
+   b  = buf;
 
    *b = 0;
 
@@ -304,20 +305,20 @@ static void status_spells(unit_data *ch, uint8_t realm)
 
 void do_status(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   int            idx;
-   int            i;
-   int            p;
-   int            j;
-   time_info_data playing_time;
-   time_info_data years;
-   char           buf[2 * MAX_STRING_LENGTH];
-   char           tmpbuf[80];
-   char          *b;
+   int                idx;
+   int                i;
+   int                p;
+   int                j;
+   time_info_data     playing_time;
+   time_info_data     years;
+   char               buf[2 * MAX_STRING_LENGTH];
+   char               tmpbuf[80];
+   char              *b;
 
    static const char *infos[] = {"weapons", "spells", "skills", nullptr};
 
-   auto age(unit_data * ch)->struct time_info_data;
-   auto real_time_passed(time_t t2, time_t t1)->struct time_info_data;
+   auto               age(unit_data * ch)->struct time_info_data;
+   auto               real_time_passed(time_t t2, time_t t1)->struct time_info_data;
 
    if(!IS_PC(ch))
    {
@@ -398,13 +399,23 @@ void do_status(unit_data *ch, char *arg, const struct command_info *cmd)
 
    /* Normal Condition */
 
-   sprintf(b, "%s%s%s (%s alignment (%d))\n\r", UNIT_NAME(ch), *UNIT_TITLE_STRING(ch) == ',' ? "" : " ", UNIT_TITLE_STRING(ch),
-           UNIT_IS_GOOD(ch) ? "Good" : (UNIT_IS_EVIL(ch) ? "Evil" : "Neutral"), UNIT_ALIGNMENT(ch));
+   sprintf(b,
+           "%s%s%s (%s alignment (%d))\n\r",
+           UNIT_NAME(ch),
+           *UNIT_TITLE_STRING(ch) == ',' ? "" : " ",
+           UNIT_TITLE_STRING(ch),
+           UNIT_IS_GOOD(ch) ? "Good" : (UNIT_IS_EVIL(ch) ? "Evil" : "Neutral"),
+           UNIT_ALIGNMENT(ch));
    TAIL(b);
 
    years = age(ch);
-   sprintf(b, "You are a %d year old %s %s at level %d. %s\n\r", years.year, char_sex[CHAR_SEX(ch)], pc_races[CHAR_RACE(ch)],
-           CHAR_LEVEL(ch), years.month == 0 && years.day == 0 ? "It is your birthday today!" : "");
+   sprintf(b,
+           "You are a %d year old %s %s at level %d. %s\n\r",
+           years.year,
+           char_sex[CHAR_SEX(ch)],
+           pc_races[CHAR_RACE(ch)],
+           CHAR_LEVEL(ch),
+           years.month == 0 && years.day == 0 ? "It is your birthday today!" : "");
 
    TAIL(b);
 
@@ -422,11 +433,17 @@ void do_status(unit_data *ch, char *arg, const struct command_info *cmd)
    sprintf(b,
            "Str %3d, Dex %3d, Con %3d, Cha %3d, "
            "Bra %3d, Mag %3d, Div %3d\n\r",
-           CHAR_STR(ch), CHAR_DEX(ch), CHAR_CON(ch), CHAR_CHA(ch), CHAR_BRA(ch), CHAR_MAG(ch), CHAR_DIV(ch));
+           CHAR_STR(ch),
+           CHAR_DEX(ch),
+           CHAR_CON(ch),
+           CHAR_CHA(ch),
+           CHAR_BRA(ch),
+           CHAR_MAG(ch),
+           CHAR_DIV(ch));
    TAIL(b);
 
-   sprintf(b, "You have %ld ability, and %ld skill practice points.\n\r", (signed long)PC_ABILITY_POINTS(ch),
-           (signed long)PC_SKILL_POINTS(ch));
+   sprintf(
+      b, "You have %ld ability, and %ld skill practice points.\n\r", (signed long)PC_ABILITY_POINTS(ch), (signed long)PC_SKILL_POINTS(ch));
    TAIL(b);
 
    if(IS_SET(CHAR_FLAGS(ch), CHAR_WIMPY))
@@ -517,7 +534,7 @@ void do_score(unit_data *ch, char *arg, const struct command_info *cmd)
    struct char_follow_type *f;
    int                      members = static_cast<int>(FALSE);
 
-   auto age(const unit_data *ch)->struct time_info_data;
+   auto                     age(const unit_data *ch)->struct time_info_data;
 
    if(!IS_PC(ch))
    {
@@ -539,8 +556,15 @@ void do_score(unit_data *ch, char *arg, const struct command_info *cmd)
 
       if(vict != ch && IS_SET(CHAR_FLAGS(vict), CHAR_GROUP))
       {
-         sprintf(b, "%s %ld(%ld) hit, %d(%d) mana and %d(%d) endurance.\n\r", UNIT_NAME(vict), (signed long)UNIT_HIT(vict),
-                 (signed long)UNIT_MAX_HIT(vict), CHAR_MANA(vict), mana_limit(vict), CHAR_ENDURANCE(vict), move_limit(vict));
+         sprintf(b,
+                 "%s %ld(%ld) hit, %d(%d) mana and %d(%d) endurance.\n\r",
+                 UNIT_NAME(vict),
+                 (signed long)UNIT_HIT(vict),
+                 (signed long)UNIT_MAX_HIT(vict),
+                 CHAR_MANA(vict),
+                 mana_limit(vict),
+                 CHAR_ENDURANCE(vict),
+                 move_limit(vict));
          TAIL(b);
          members = static_cast<int>(TRUE);
       }
@@ -549,8 +573,14 @@ void do_score(unit_data *ch, char *arg, const struct command_info *cmd)
       {
          if(ch != f->follower && IS_SET(CHAR_FLAGS(f->follower), CHAR_GROUP))
          {
-            sprintf(b, "%s %ld(%ld) hit, %d(%d) mana and %d(%d) endurance.\n\r", UNIT_NAME(f->follower), (signed long)UNIT_HIT(f->follower),
-                    (signed long)UNIT_MAX_HIT(f->follower), CHAR_MANA(f->follower), mana_limit(f->follower), CHAR_ENDURANCE(f->follower),
+            sprintf(b,
+                    "%s %ld(%ld) hit, %d(%d) mana and %d(%d) endurance.\n\r",
+                    UNIT_NAME(f->follower),
+                    (signed long)UNIT_HIT(f->follower),
+                    (signed long)UNIT_MAX_HIT(f->follower),
+                    CHAR_MANA(f->follower),
+                    mana_limit(f->follower),
+                    CHAR_ENDURANCE(f->follower),
                     move_limit(f->follower));
             TAIL(b);
             members = static_cast<int>(TRUE);
@@ -569,7 +599,11 @@ void do_score(unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   sprintf(b, "%s%s%s (%s)\n\r", UNIT_NAME(ch), *UNIT_TITLE_STRING(ch) == ',' ? "" : " ", UNIT_TITLE_STRING(ch),
+   sprintf(b,
+           "%s%s%s (%s)\n\r",
+           UNIT_NAME(ch),
+           *UNIT_TITLE_STRING(ch) == ',' ? "" : " ",
+           UNIT_TITLE_STRING(ch),
            UNIT_IS_GOOD(ch) ? "Good" : (UNIT_IS_EVIL(ch) ? "Evil" : "Neutral"));
    TAIL(b);
 
@@ -609,7 +643,9 @@ void do_score(unit_data *ch, char *arg, const struct command_info *cmd)
       else
 #endif
       {
-         sprintf(b, "You have %ld experience and need %ld for next level.\n\r", (signed long)CHAR_EXP(ch),
+         sprintf(b,
+                 "You have %ld experience and need %ld for next level.\n\r",
+                 (signed long)CHAR_EXP(ch),
                  (signed long)required_xp(PC_VIRTUAL_LEVEL(ch) + 1) - CHAR_EXP(ch));
          TAIL(b);
       }
@@ -625,7 +661,12 @@ void do_score(unit_data *ch, char *arg, const struct command_info *cmd)
    sprintf(b,
            "You have %ld(%ld) hit, %d(%d) mana "
            "and %d(%d) endurance points.\n\r",
-           (signed long)UNIT_HIT(ch), (signed long)UNIT_MAX_HIT(ch), CHAR_MANA(ch), mana_limit(ch), CHAR_ENDURANCE(ch), move_limit(ch));
+           (signed long)UNIT_HIT(ch),
+           (signed long)UNIT_MAX_HIT(ch),
+           CHAR_MANA(ch),
+           mana_limit(ch),
+           CHAR_ENDURANCE(ch),
+           move_limit(ch));
    TAIL(b);
 
    strcpy(b, own_position(ch));
@@ -684,12 +725,12 @@ void do_time(unit_data *ch, char *arg, const struct command_info *cmd)
    char                  buf[200];
    struct time_info_data game_time;
 
-   void mudtime_strcpy(struct time_info_data * time, char *str);
-   auto mud_date(time_t t)->struct time_info_data;
+   void                  mudtime_strcpy(struct time_info_data * time, char *str);
+   auto                  mud_date(time_t t)->struct time_info_data;
 
    game_time = mud_date(time(nullptr));
 
-   b = buf;
+   b         = buf;
    strcpy(b, "It is ");
    TAIL(b);
 
@@ -789,8 +830,12 @@ void do_where(unit_data *ch, char *aaa, const struct command_info *cmd)
                buf2[0] = '\0';
             }
 
-            sprintf(buf1, "%-20s - %s [%s]%s\n\r", UNIT_NAME(CHAR_ORIGINAL(d->character)), UNIT_SEE_TITLE(ch, UNIT_IN(d->character)),
-                    in_string(ch, d->character), buf2);
+            sprintf(buf1,
+                    "%-20s - %s [%s]%s\n\r",
+                    UNIT_NAME(CHAR_ORIGINAL(d->character)),
+                    UNIT_SEE_TITLE(ch, UNIT_IN(d->character)),
+                    in_string(ch, d->character),
+                    buf2);
             len += strlen(buf1);
             add_to_string(&buf, &cur_size, len, buf1);
          }
@@ -827,8 +872,8 @@ void do_where(unit_data *ch, char *aaa, const struct command_info *cmd)
 
 void do_who(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   static char *buf      = nullptr;
-   static int   cur_size = 1024;
+   static char     *buf      = nullptr;
+   static int       cur_size = 1024;
 
    descriptor_data *d;
    char             tmp[256];
@@ -849,8 +894,11 @@ void do_who(unit_data *ch, char *arg, const struct command_info *cmd)
    {
       if(descriptor_is_playing(d) != 0)
       {
-         sprintf(tmp, g_cServerConfig.m_sColor.pWhoElem, UNIT_NAME(CHAR_ORIGINAL(d->character)),
-                 *UNIT_TITLE_STRING(CHAR_ORIGINAL(d->character)) == ',' ? "" : " ", UNIT_TITLE_STRING(CHAR_ORIGINAL(d->character)),
+         sprintf(tmp,
+                 g_cServerConfig.m_sColor.pWhoElem,
+                 UNIT_NAME(CHAR_ORIGINAL(d->character)),
+                 *UNIT_TITLE_STRING(CHAR_ORIGINAL(d->character)) == ',' ? "" : " ",
+                 UNIT_TITLE_STRING(CHAR_ORIGINAL(d->character)),
                  PC_GUILD(CHAR_ORIGINAL(d->character)) ? " (" : "",
                  PC_GUILD(CHAR_ORIGINAL(d->character)) ? PC_GUILD(CHAR_ORIGINAL(d->character)) : "",
                  PC_GUILD(CHAR_ORIGINAL(d->character)) ? ")" : "");

@@ -22,13 +22,8 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
 #include "ban.h"
+
 #include "comm.h"
 #include "db.h"
 #include "db_file.h"
@@ -38,6 +33,12 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #ifndef DOS
 /* Kindly left out of time.h by <Insert_Unix_Vendor> */
@@ -105,7 +106,7 @@ auto ban_timer(char *arg) -> time_t
    {
       int mult = 0;
 
-      arg = skip_spaces(arg);
+      arg      = skip_spaces(arg);
       while(isdigit(*arg) != 0)
       {
          mult = 10 * mult + (*arg++ - '0');

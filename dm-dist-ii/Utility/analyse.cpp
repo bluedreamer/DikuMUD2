@@ -117,10 +117,19 @@ int main(int argc, char *argv[])
          if(((month == -1) || (tm_on.tm_mon == month) || (tm_off.tm_mon == month)) && ((year == -1) || (tm_on.tm_year == year)))
 
          {
-            printf("%2d:%2d:%2d (%d/%d/%d) / %2d:%2d:%2d (%d/%d)\n", tm_on.tm_hour, tm_on.tm_min, tm_on.tm_sec, tm_on.tm_mday, tm_on.tm_mon,
+            printf("%2d:%2d:%2d (%d/%d/%d) / %2d:%2d:%2d (%d/%d)\n",
+                   tm_on.tm_hour,
+                   tm_on.tm_min,
+                   tm_on.tm_sec,
+                   tm_on.tm_mday,
+                   tm_on.tm_mon,
                    tm_on.tm_year,
 
-                   tm_off.tm_hour, tm_off.tm_min, tm_off.tm_sec, tm_off.tm_mday, tm_off.tm_mon);
+                   tm_off.tm_hour,
+                   tm_off.tm_min,
+                   tm_off.tm_sec,
+                   tm_off.tm_mday,
+                   tm_off.tm_mon);
 
             update(&tm_on, &tm_off);
          }

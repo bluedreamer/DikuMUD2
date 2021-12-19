@@ -24,6 +24,7 @@
  * *********************************************************************** */
 
 #include "mplex.h"
+
 #include "cCaptainHook.h"
 #include "common.h"
 #include "db.h"
@@ -37,6 +38,7 @@
 #include "ttydef.h"
 #include "unixshit.h"
 #include "utility.h"
+
 #include <arpa/telnet.h>
 #include <assert.h>
 #include <ctype.h>
@@ -54,9 +56,9 @@
 void mud_went_down(void);
 void Idle(cConHook *con, const char *cmd);
 
-int connections_left = 0;
+int  connections_left = 0;
 
-int bHadAlarm = FALSE;
+int  bHadAlarm        = FALSE;
 
 void dumbPlayLoop(cConHook *con, const char *cmd)
 {
@@ -110,10 +112,13 @@ public:
          else
          {
             extern uint32_t memory_total_alloc;
-            slog(LOG_OFF, 0,
+            slog(LOG_OFF,
+                 0,
                  "Connection from [%s] (%d left) (%d bytes "
                  "allocated).",
-                 con->m_aHost, connections_left, memory_total_alloc);
+                 con->m_aHost,
+                 connections_left,
+                 memory_total_alloc);
             con->m_pFptr(con, "");
          }
       }
@@ -125,7 +130,7 @@ class cMotherHook MotherHook;
 class cMudHook : public cHook
 {
 public:
-   int read_mud(void);
+   int  read_mud(void);
 
    void Input(int nFlags)
    {
@@ -177,16 +182,16 @@ struct arg_type
       }                                                                                                                                    \
    } while(0);
 
-int g_bModeANSI   = FALSE;
-int g_bModeEcho   = FALSE;
-int g_bModeRedraw = FALSE;
-int g_bModeTelnet = FALSE;
+int             g_bModeANSI     = FALSE;
+int             g_bModeEcho     = FALSE;
+int             g_bModeRedraw   = FALSE;
+int             g_bModeTelnet   = FALSE;
 
 class cConHook *connection_list = NULL;
 
-char Outbuf[32768];
+char            Outbuf[32768];
 
-void ShowUsage(char *name)
+void            ShowUsage(char *name)
 {
    fprintf(stderr, "Usage: %s [-a] [-h] [-c] [-e] [-r] [-t] [-p <num>] [-d <path>] [-s <port>] [-a <address>]\n", name);
    fprintf(stderr, "  -h  This help screen.\n");
@@ -336,8 +341,8 @@ char cConHook::AddInputChar(uint8_t c)
 
    m_nEscapeCode = 0;
 
-   *cp++ = c;
-   *cp   = 0;
+   *cp++         = c;
+   *cp           = 0;
 
    if((c < ' ') || (c == 255) || (m_sSetup.telnet && (c > 127)))
       *(cp - 1) = 0;
@@ -605,22 +610,22 @@ void cConHook::SequenceCompare(uint8_t *pBuf, int *pnLen)
 
 cConHook::cConHook(void)
 {
-   m_nEscapeCode  = 0;
-   m_aOutput[0]   = 0;
-   m_aInputBuf[0] = 0;
-   m_nState       = 0;
+   m_nEscapeCode      = 0;
+   m_aOutput[0]       = 0;
+   m_aInputBuf[0]     = 0;
+   m_nState           = 0;
 
    m_nSequenceCompare = 0;
    m_nId              = 0;
    m_nFirst           = 0;
    m_nLine            = 255;
 
-   m_nPromptMode = 0;
-   m_nPromptLen  = 0;
+   m_nPromptMode      = 0;
+   m_nPromptLen       = 0;
 
-   m_sSetup.echo   = g_bModeEcho;
-   m_sSetup.redraw = g_bModeRedraw;
-   m_sSetup.telnet = g_bModeTelnet;
+   m_sSetup.echo      = g_bModeEcho;
+   m_sSetup.redraw    = g_bModeRedraw;
+   m_sSetup.telnet    = g_bModeTelnet;
 
    if(g_bModeANSI)
       m_sSetup.emulation = TERM_ANSI;
@@ -632,8 +637,8 @@ cConHook::cConHook(void)
    m_sSetup.colour_convert = 0;
    m_nBgColor              = CONTROL_BG_BLACK_CHAR;
 
-   m_pNext         = connection_list;
-   connection_list = this;
+   m_pNext                 = connection_list;
+   connection_list         = this;
 
    int                fd;
    socklen_t          size;
@@ -646,7 +651,7 @@ cConHook::cConHook(void)
    assert(MotherHook.IsHooked());
 
    socklen_t j;
-   j = sizeof(conaddr);
+   j  = sizeof(conaddr);
    // slog(LOG_OFF, 0, "accept() before.");
    fd = accept(MotherHook.tfd(), (struct sockaddr *)&conaddr, &j);
    // slog(LOG_OFF, 0, "accept() after.");
@@ -667,7 +672,7 @@ cConHook::cConHook(void)
    m_pFptr       = dumbMenuSelect;
    m_nPromptMode = 0;
 
-   size = sizeof(sock);
+   size          = sizeof(sock);
    if(getpeername(fd, (struct sockaddr *)&sock, &size) == -1)
    {
       slog(LOG_OFF, 0, "getpeername: socket %d error no %d.", fd, errno);
@@ -833,7 +838,7 @@ void cConHook::Input(int nFlags)
       char   *c;
       uint8_t buf[1024];
 
-      int n = read(this->tfd(), buf, sizeof(buf) - 1);
+      int     n = read(this->tfd(), buf, sizeof(buf) - 1);
 
       if(n == -1)
       {
@@ -1040,14 +1045,14 @@ void cConHook::ShowChunk(void)
    const int max_lines = m_sSetup.height;
    int       lines     = 0;
 
-   scan = buffer;
+   scan                = buffer;
 
    if(m_qPaged.IsEmpty())
       return;
 
    cQueueElem *qe = m_qPaged.GetHead();
 
-   point = (char *)qe->Data();
+   point          = (char *)qe->Data();
 
    for(;;)
    {
@@ -1335,7 +1340,8 @@ void bye_signal(int signal)
 {
    CaptainHook.Close();
 
-   slog(LOG_OFF, 0,
+   slog(LOG_OFF,
+        0,
         "Received signal #%d (SIGQUIT, SIGHUP, SIGINT or SIGTERM)."
         "  Shutting down",
         signal);

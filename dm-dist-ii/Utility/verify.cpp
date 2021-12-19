@@ -21,18 +21,18 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "essential.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
-#include "essential.h"
 
 int main(int argc, char *argv[])
 {
    char   Buf[1000];
    time_t created, lastcrc, first_crc;
 
-   char *msbuf = fgets(Buf, sizeof(Buf), stdin);
+   char  *msbuf = fgets(Buf, sizeof(Buf), stdin);
    sscanf(Buf, "%08x%08x", (uint32_t *)&created, (uint32_t *)&lastcrc);
    first_crc = created;
    created ^= 0xAF876162;
@@ -47,17 +47,28 @@ int main(int argc, char *argv[])
       int    amount1, mxor, gid, pid, crc, amount, total, next_crc, check;
       time_t now;
 
-      char *msbuf2 = fgets(Buf, sizeof(Buf), stdin);
+      char  *msbuf2 = fgets(Buf, sizeof(Buf), stdin);
       if(feof(stdin))
          break;
 
-      sscanf(Buf, "%c %s %s %d %*01x%08x%08x%08x%08x%08x%08x%08x%08x\n", &action, name1, name2, &amount1, (uint32_t *)&mxor,
-             (uint32_t *)&gid, (uint32_t *)&crc, (uint32_t *)&pid, (uint32_t *)&amount, (uint32_t *)&total, (uint32_t *)&next_crc,
+      sscanf(Buf,
+             "%c %s %s %d %*01x%08x%08x%08x%08x%08x%08x%08x%08x\n",
+             &action,
+             name1,
+             name2,
+             &amount1,
+             (uint32_t *)&mxor,
+             (uint32_t *)&gid,
+             (uint32_t *)&crc,
+             (uint32_t *)&pid,
+             (uint32_t *)&amount,
+             (uint32_t *)&total,
+             (uint32_t *)&next_crc,
              (uint32_t *)&now);
 
       check = gid + pid + total + amount + (uint32_t)now;
 
-      mxor = ~mxor;
+      mxor  = ~mxor;
       next_crc ^= mxor;
 
       gid ^= mxor;
@@ -79,8 +90,8 @@ int main(int argc, char *argv[])
          printf("\nCRC mismatch: %08x versus %08x\n", crc, check);
 
       if(first_crc != next_crc)
-         printf("Dependancy check [%08x] [%08x] [%08x] [%08x]!\n", (uint32_t)first_crc, next_crc, (uint32_t)first_crc ^ mxor,
-                next_crc ^ mxor);
+         printf(
+            "Dependancy check [%08x] [%08x] [%08x] [%08x]!\n", (uint32_t)first_crc, next_crc, (uint32_t)first_crc ^ mxor, next_crc ^ mxor);
 
       first_crc = next_crc ^ mxor;
    }

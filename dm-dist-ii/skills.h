@@ -23,11 +23,10 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include "unit_data.h"
-#include "values.h"
-
 #include "dice_type.h"
 #include "skill_interval.h"
+#include "unit_data.h"
+#include "values.h"
 
 auto skill_text(const skill_interval *si, int skill) -> const char *;
 
@@ -64,45 +63,45 @@ inline auto open100() -> int
    return open_ended_roll(100, 5);
 }
 
-auto resistance_skill_check(int att_skill1, int def_skill1, int att_skill2, int def_skill2) -> int;
-auto resistance_level_check(int att_level, int def_level, int att_skill, int def_skill) -> int;
-auto skill_duration(int howmuch) -> int;
+auto               resistance_skill_check(int att_skill1, int def_skill1, int att_skill2, int def_skill2) -> int;
+auto               resistance_level_check(int att_level, int def_level, int att_skill, int def_skill) -> int;
+auto               skill_duration(int howmuch) -> int;
 
-auto weapon_fumble(unit_data *weapon, int roll) -> int;
-auto chart_damage(int roll, struct damage_chart_element_type *element) -> int;
-auto chart_size_damage(int roll, struct damage_chart_element_type *element, int lbs) -> int;
-auto weapon_damage(int roll, int weapon_type, int armour_type) -> int;
-auto natural_damage(int roll, int weapon_type, int armour_type, int lbs) -> int;
+auto               weapon_fumble(unit_data *weapon, int roll) -> int;
+auto               chart_damage(int roll, struct damage_chart_element_type *element) -> int;
+auto               chart_size_damage(int roll, struct damage_chart_element_type *element, int lbs) -> int;
+auto               weapon_damage(int roll, int weapon_type, int armour_type) -> int;
+auto               natural_damage(int roll, int weapon_type, int armour_type, int lbs) -> int;
 
-auto basic_char_tgh_absorb(unit_data *ch) -> int;
-auto basic_armor_absorb(unit_data *armour, int att_type) -> int;
-auto basic_char_absorb(unit_data *ch, unit_data *armor, int att_type) -> int;
+auto               basic_char_tgh_absorb(unit_data *ch) -> int;
+auto               basic_armor_absorb(unit_data *armour, int att_type) -> int;
+auto               basic_char_absorb(unit_data *ch, unit_data *armor, int att_type) -> int;
 
-auto basic_char_weapon_dam(unit_data *ch, unit_data *weapon) -> int;
-auto basic_char_hand_dam(unit_data *ch) -> int;
-auto char_weapon_dam(unit_data *ch, unit_data *weapon) -> int;
-auto char_hand_dam(unit_data *ch) -> int;
+auto               basic_char_weapon_dam(unit_data *ch, unit_data *weapon) -> int;
+auto               basic_char_hand_dam(unit_data *ch) -> int;
+auto               char_weapon_dam(unit_data *ch, unit_data *weapon) -> int;
+auto               char_hand_dam(unit_data *ch) -> int;
 
-auto relative_level(int l1, int l2) -> int;
-auto weapon_defense_skill(unit_data *ch, int skill) -> int;
-auto weapon_attack_skill(unit_data *ch, int skill) -> int;
-auto hit_location(unit_data *att, unit_data *def) -> int;
-auto effective_dex(unit_data *ch) -> int;
+auto               relative_level(int l1, int l2) -> int;
+auto               weapon_defense_skill(unit_data *ch, int skill) -> int;
+auto               weapon_attack_skill(unit_data *ch, int skill) -> int;
+auto               hit_location(unit_data *att, unit_data *def) -> int;
+auto               effective_dex(unit_data *ch) -> int;
 
-auto av_value(int abila, int abilb, int skilla, int skillb) -> int;
-auto av_howmuch(int av) -> int;
-auto av_makes(int av) -> int;
-void check_fitting(unit_data *u);
+auto               av_value(int abila, int abilb, int skilla, int skillb) -> int;
+auto               av_howmuch(int av) -> int;
+auto               av_makes(int av) -> int;
+void               check_fitting(unit_data *u);
 
 extern const char *pc_races[PC_RACE_MAX + 1];
 extern const char *pc_race_adverbs[PC_RACE_MAX + 1];
 
-extern int8_t racial_ability[ABIL_TREE_MAX][PC_RACE_MAX];
-extern int8_t racial_weapons[WPN_TREE_MAX][PC_RACE_MAX];
-extern int8_t racial_skills[SKI_TREE_MAX][PC_RACE_MAX];
-extern int8_t racial_spells[SPL_TREE_MAX][PC_RACE_MAX];
+extern int8_t      racial_ability[ABIL_TREE_MAX][PC_RACE_MAX];
+extern int8_t      racial_weapons[WPN_TREE_MAX][PC_RACE_MAX];
+extern int8_t      racial_skills[SKI_TREE_MAX][PC_RACE_MAX];
+extern int8_t      racial_spells[SPL_TREE_MAX][PC_RACE_MAX];
 
-extern int hit_location_table[];
+extern int         hit_location_table[];
 
 extern const char *wpn_text[WPN_TREE_MAX + 1];
 extern const char *spl_text[SPL_TREE_MAX + 1];

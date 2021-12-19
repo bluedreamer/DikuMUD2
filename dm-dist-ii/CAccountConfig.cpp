@@ -1,13 +1,15 @@
 #include "CAccountConfig.h"
-#include "CServerConfiguration.h"
+
 #include "account.h"
 #include "common.h"
 #include "config.h"
+#include "CServerConfiguration.h"
 #include "db.h"
 #include "essential.h"
 #include "files.h"
 #include "str_parse.h"
 #include "textutil.h"
+
 #include <cstring>
 #include <ctime>
 
@@ -54,7 +56,7 @@ void CAccountConfig::Boot()
    {
       time_t now = time(nullptr);
 
-      f = fopen(str_cc(libdir, ACCOUNT_LOG), "wb");
+      f          = fopen(str_cc(libdir, ACCOUNT_LOG), "wb");
 
       if(f == nullptr)
       {
@@ -70,7 +72,7 @@ void CAccountConfig::Boot()
       fclose(f);
    }
 
-   f = fopen_cache(str_cc(libdir, ACCOUNT_LOG), "rb");
+   f         = fopen_cache(str_cc(libdir, ACCOUNT_LOG), "rb");
 
    // MS2020: fscanf(f, "%*08x%08x", &next_crc); warning
    int m_err = fscanf(f, "%*08x%08x", &next_crc);
@@ -79,7 +81,7 @@ void CAccountConfig::Boot()
 
    config_file_to_string(str_cc(libdir, ACCOUNT_FILE), Buf, sizeof(Buf));
 
-   c = Buf;
+   c           = Buf;
 
    m_pCoinName = parse_match_name(&c, "Coinage Name");
 

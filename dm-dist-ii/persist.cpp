@@ -40,6 +40,7 @@
 #include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cctype>
 #include <cstdio>
 #include <cstdlib>
@@ -55,7 +56,7 @@ struct persist_type
 
 cNamelist persist_namelist;
 
-void persist_save(unit_data *u, struct persist_type *pt)
+void      persist_save(unit_data *u, struct persist_type *pt)
 {
    void basic_save_contents(const char *pFileName, unit_data *unit, int fast, int bContainer);
 
@@ -155,7 +156,7 @@ void persist_boot()
    char       name[50];
    unit_data *u;
 
-   auto base_load_contents(const char *pFileName, const unit_data *unit)->unit_data *;
+   auto       base_load_contents(const char *pFileName, const unit_data *unit)->unit_data *;
 
    for(uint32_t i = 0; i < persist_namelist.Length(); i++)
    {

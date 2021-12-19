@@ -25,11 +25,6 @@
  *			sacrifice characters.
  */
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
 #include "affect.h"
 #include "comm.h"
 #include "db.h"
@@ -42,7 +37,12 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 void save_player_file(unit_data *pc);
 
@@ -70,13 +70,13 @@ void do_manifest(unit_data *ch, char *arg, const struct command_info *cmd)
 #ifndef DEMIGOD
    send_to_char("This command has been removed.\r\n", ch);
 #else
-   unit_data *player;
-   unit_data *monster;
+   unit_data              *player;
+   unit_data              *monster;
 
    extern file_index_type *demigod_fi;
 
-   void switchbody(unit_data * ch, unit_data * victim);
-   void unswitchbody(unit_data * npc);
+   void                    switchbody(unit_data * ch, unit_data * victim);
+   void                    unswitchbody(unit_data * npc);
 
    if(!CHAR_DESCRIPTOR(ch))
       return;
@@ -483,7 +483,11 @@ void banish_demigod(unit_data *ch)
        "with striking pain from inside. Your head seems to be filled with "
        "deamons from another plane as your body dissolves into the "
        "elements of time and space itself. You loose your rank as immortal.",
-       A_ALWAYS, ch, 0, 0, TO_CHAR);
+       A_ALWAYS,
+       ch,
+       0,
+       0,
+       TO_CHAR);
 
    CHAR_LEVEL(ch) = 150;
    CHAR_EXP(ch)   = required_xp(150);
@@ -516,7 +520,11 @@ void make_demigod(unit_data *ch)
    act("$1n glows with a divine aura and disappears.", A_ALWAYS, ch, 0, 0, TO_ROOM);
    act("You are filled with immense power and raise to the ranks of "
        "immortality. You are teleported to your new world.",
-       A_ALWAYS, ch, 0, 0, TO_CHAR);
+       A_ALWAYS,
+       ch,
+       0,
+       0,
+       TO_CHAR);
    CHAR_LEVEL(ch) = DEMIGOD_LEVEL;
    CHAR_EXP(ch)   = 0;
    if(PC_HOME(ch))
@@ -646,7 +654,11 @@ auto demi_stuff(spec_arg *sarg) -> int
 
          act("The group of gods leaded by $1n chants '$2n' and makes "
              "$2m immortal!",
-             A_SOMEONE, ch, pVict, 0, TO_ROOM);
+             A_SOMEONE,
+             ch,
+             pVict,
+             0,
+             TO_ROOM);
          act("You chant the name of '$2n' and grant $2m eternal life.", A_SOMEONE, ch, pVict, 0, TO_CHAR);
          make_demigod(pVict);
       }

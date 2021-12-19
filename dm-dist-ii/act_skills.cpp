@@ -51,6 +51,7 @@
 #include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cctype>
 #include <climits>
 #include <cstdio>
@@ -92,7 +93,7 @@ void do_turn(unit_data *ch, char *arg, const struct command_info *cmd)
    skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_TURN_UNDEAD) : CHAR_DIV(ch);
    skilld = IS_PC(vict) ? PC_SKI_SKILL(vict, SKI_TURN_UNDEAD) : CHAR_DIV(vict);
 
-   hm = resistance_skill_check(CHAR_DIV(ch), CHAR_DIV(vict), skilla, skilld);
+   hm     = resistance_skill_check(CHAR_DIV(ch), CHAR_DIV(vict), skilla, skilld);
 
    if(hm >= 0 && CHAR_IS_UNDEAD(vict))
    {
@@ -220,7 +221,7 @@ void do_recite(unit_data *ch, char *arg, const struct command_info *cmd)
    skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_SCROLL_USE) : CHAR_BRA(ch);
    abila  = CHAR_BRA(ch);
 
-   hm = resistance_skill_check(2 * abila, object_power(scroll), 2 * skilla, object_power(scroll));
+   hm     = resistance_skill_check(2 * abila, object_power(scroll), 2 * skilla, object_power(scroll));
    if(hm < -50)
    {
       act("You failed to recite the scroll properly.", A_SOMEONE, ch, nullptr, nullptr, TO_CHAR);
@@ -451,7 +452,7 @@ void do_appraise(unit_data *ch, char *arg, const struct command_info *cmd)
    {
       float f;
 
-      f = -hm / 100.0;
+      f   = -hm / 100.0;
 
       val = (int)((float)val * f);
    }
@@ -507,9 +508,9 @@ void do_ventriloquate(unit_data *ch, char *arg, const struct command_info *cmd)
 
    /* vict gets to save for the ventriloquate */
 
-   hm = resistance_skill_check(abila, abilb, skilla, skillb);
+   hm     = resistance_skill_check(abila, abilb, skilla, skillb);
 
-   arg = skip_spaces(arg);
+   arg    = skip_spaces(arg);
    if(hm >= 0)
    {
       act("$1n says '$2t'", A_HIDEINV, vict, arg, ch, TO_NOTVICT);
@@ -533,10 +534,10 @@ void do_weather(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    static const char *sky_look[] = {"cloudless", "cloudy", "rainy", "lit by flashes of lightning"};
 
-   static char buf[100];
-   int         hm;
-   int         chng;
-   int         skilla;
+   static char        buf[100];
+   int                hm;
+   int                chng;
+   int                skilla;
 
    if(!UNIT_IS_OUTSIDE(ch) || IS_SET(UNIT_FLAGS(unit_room(ch)), UNIT_FL_NO_WEATHER))
    {
@@ -552,7 +553,7 @@ void do_weather(unit_data *ch, char *arg, const struct command_info *cmd)
 
       if(skilla > 0)
       {
-         hm = resistance_skill_check(CHAR_BRA(ch), 35, skilla, 50);
+         hm   = resistance_skill_check(CHAR_BRA(ch), 35, skilla, 50);
 
          chng = unit_zone(ch)->weather.change;
          chng += MIN(0, hm) * chng * SGN(number(-1, 0));
@@ -579,8 +580,8 @@ void do_flee(unit_data *ch, char *arg, const struct command_info *cmd)
    unit_data *predator;
    unit_data *u;
 
-   void set_hunting(unit_data * p, unit_data * v, int legal);
-   auto do_simple_move(unit_data * ch, int direction, int following)->int;
+   void       set_hunting(unit_data * p, unit_data * v, int legal);
+   auto       do_simple_move(unit_data * ch, int direction, int following)->int;
 
    if(CHAR_POS(ch) < POSITION_FIGHTING)
    {
@@ -613,7 +614,9 @@ void do_flee(unit_data *ch, char *arg, const struct command_info *cmd)
 
    if(CHAR_FIGHTING(ch))
    {
-      hm = resistance_skill_check(CHAR_DEX(ch), CHAR_DEX(CHAR_FIGHTING(ch)) / 2, IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_FLEE) : CHAR_DEX(ch),
+      hm = resistance_skill_check(CHAR_DEX(ch),
+                                  CHAR_DEX(CHAR_FIGHTING(ch)) / 2,
+                                  IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_FLEE) : CHAR_DEX(ch),
                                   IS_PC(CHAR_FIGHTING(ch)) ? PC_SKI_SKILL(CHAR_FIGHTING(ch), SKI_FLEE) : CHAR_DEX(CHAR_FIGHTING(ch)));
    }
    else
@@ -621,12 +624,12 @@ void do_flee(unit_data *ch, char *arg, const struct command_info *cmd)
       hm = resistance_skill_check(CHAR_DEX(ch), 0, IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_FLEE) : CHAR_DEX(ch), 0);
    }
 
-   die = static_cast<int>(FALSE);
+   die          = static_cast<int>(FALSE);
 
    opos         = CHAR_POS(ch);
    CHAR_POS(ch) = POSITION_STANDING;
 
-   legal = IS_SET(CHAR_FLAGS(ch), CHAR_LEGAL_TARGET);
+   legal        = IS_SET(CHAR_FLAGS(ch), CHAR_LEGAL_TARGET);
 
    /* if you are inside something you try to get out/exit */
    if(hm >= 0)
@@ -719,10 +722,10 @@ void do_sneak(unit_data *ch, char *arg, const struct command_info *cmd)
    af.data[0]  = CHAR_SNEAK;
    af.data[1] = af.data[2] = 0;
 
-   af.firstf_i = TIF_SNEAK_ON;
-   af.lastf_i  = TIF_SNEAK_OFF;
-   af.tickf_i  = TIF_SNEAK_TICK;
-   af.applyf_i = APF_MOD_CHAR_FLAGS;
+   af.firstf_i             = TIF_SNEAK_ON;
+   af.lastf_i              = TIF_SNEAK_OFF;
+   af.tickf_i              = TIF_SNEAK_TICK;
+   af.applyf_i             = APF_MOD_CHAR_FLAGS;
 
    create_affect(ch, &af);
 }
@@ -891,9 +894,9 @@ void do_hide(unit_data *ch, char *arg, const struct command_info *cmd)
    /* if the hide fails, you will still get messages, but they will */
    /* tell you something else eventually                            */
 
-   skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_HIDE) : (CHAR_DEX(ch) + CHAR_BRA(ch)) / 2;
+   skilla      = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_HIDE) : (CHAR_DEX(ch) + CHAR_BRA(ch)) / 2;
 
-   hm = resistance_skill_check((CHAR_DEX(ch) + CHAR_BRA(ch)) / 2, 20, skilla, 50);
+   hm          = resistance_skill_check((CHAR_DEX(ch) + CHAR_BRA(ch)) / 2, 20, skilla, 50);
 
    af.id       = ID_HIDE;
    af.duration = 5;
@@ -929,7 +932,7 @@ void do_aid(unit_data *ch, char *arg, const struct command_info *cmd)
    int        skilla;
    int        hm;
 
-   void modify_hit(unit_data * ch, int hit);
+   void       modify_hit(unit_data * ch, int hit);
 
    skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_FIRST_AID) : (CHAR_BRA(ch) + CHAR_DIV(ch)) / 2;
    if(skilla == 0)
@@ -994,7 +997,7 @@ void do_pick(unit_data *ch, char *arg, const struct command_info *cmd)
    door_data *a_door;
    char      *oarg = arg;
 
-   auto locate_lock(unit_data * ch, char *arg)->door_data *;
+   auto       locate_lock(unit_data * ch, char *arg)->door_data *;
 
    skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_PICK_LOCK) : (CHAR_DEX(ch) + CHAR_BRA(ch)) / 2;
 
@@ -1011,7 +1014,7 @@ void do_pick(unit_data *ch, char *arg, const struct command_info *cmd)
 
    prot = spell_attack_ability(a_door->thing != nullptr ? a_door->thing : UNIT_IN(ch), SPL_PROTECTION);
 
-   hm = resistance_skill_check((CHAR_DEX(ch) + CHAR_BRA(ch)) / 2, prot, skilla, prot);
+   hm   = resistance_skill_check((CHAR_DEX(ch) + CHAR_BRA(ch)) / 2, prot, skilla, prot);
 
    if((a_door->flags == nullptr) || !IS_SET(*a_door->flags, EX_OPEN_CLOSE))
    {
@@ -1065,8 +1068,12 @@ void do_pick(unit_data *ch, char *arg, const struct command_info *cmd)
          }
       }
 
-      send_done(ch, nullptr, a_door->thing != nullptr ? a_door->thing : a_door->room, a_door->thing != nullptr ? -1 : a_door->direction,
-                cmd, oarg);
+      send_done(ch,
+                nullptr,
+                a_door->thing != nullptr ? a_door->thing : a_door->room,
+                a_door->thing != nullptr ? -1 : a_door->direction,
+                cmd,
+                oarg);
    }
 }
 
@@ -1084,7 +1091,7 @@ void do_steal(unit_data *ch, char *arg, const struct command_info *cmd)
    int        skilla;
    int        skillb;
 
-   auto hands_used(unit_data * ch)->int;
+   auto       hands_used(unit_data * ch)->int;
 
    if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
@@ -1183,7 +1190,7 @@ void do_steal(unit_data *ch, char *arg, const struct command_info *cmd)
    skillb = IS_PC(vict) ? PC_SKI_SKILL(vict, SKI_STEAL) : CHAR_BRA(vict);
 
    /* Builtin advantage for defender */
-   hm = resistance_skill_check(CHAR_DEX(ch), CHAR_BRA(vict), skilla, skillb) - 10;
+   hm     = resistance_skill_check(CHAR_DEX(ch), CHAR_BRA(vict), skilla, skillb) - 10;
 
    if(OBJ_EQP_POS(obj) != 0u)
    {
@@ -1223,7 +1230,11 @@ void do_steal(unit_data *ch, char *arg, const struct command_info *cmd)
       {
          act("You clumsilly make everyone aware that you are trying to steal "
              "from $3n,",
-             A_SOMEONE, ch, nullptr, vict, TO_CHAR);
+             A_SOMEONE,
+             ch,
+             nullptr,
+             vict,
+             TO_CHAR);
       }
 
       if(IS_SET(UNIT_FLAGS(vict), UNIT_FL_INVISIBLE))
@@ -1345,7 +1356,7 @@ void base_rescue(unit_data *ch, unit_data *vict)
 
    skillb = IS_PC(tmp_ch) ? PC_SKI_SKILL(tmp_ch, SKI_RESCUE) : (CHAR_DEX(tmp_ch) + CHAR_CHA(tmp_ch)) / 2;
 
-   hm = resistance_skill_check(CHAR_CHA(ch), CHAR_CHA(tmp_ch), skilla, skillb);
+   hm     = resistance_skill_check(CHAR_CHA(ch), CHAR_CHA(tmp_ch), skilla, skillb);
 
    if(hm < 0)
    {
@@ -1354,7 +1365,11 @@ void base_rescue(unit_data *ch, unit_data *vict)
                    ch);
       act("$1n bulge in from the left...\n\r..."
           "and continues out to the right.",
-          A_SOMEONE, ch, nullptr, vict, TO_VICT);
+          A_SOMEONE,
+          ch,
+          nullptr,
+          vict,
+          TO_VICT);
       act("$1n makes a feeble attempt to rescue $3n.", A_SOMEONE, ch, nullptr, vict, TO_NOTVICT);
       return;
    }
@@ -1426,7 +1441,7 @@ void do_bash(unit_data *ch, char *arg, const struct command_info *cmd)
    int        def_skill;
    char      *oarg = arg;
 
-   att_skill = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_BASH) : CHAR_STR(ch);
+   att_skill       = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_BASH) : CHAR_STR(ch);
 
    if(att_skill <= 0)
    {
@@ -1476,7 +1491,7 @@ void do_bash(unit_data *ch, char *arg, const struct command_info *cmd)
 
    def_skill = IS_PC(vict) ? PC_SKI_SKILL(vict, SKI_BASH) : effective_dex(vict);
 
-   hm = resistance_skill_check(effective_dex(ch), effective_dex(vict), att_skill, def_skill);
+   hm        = resistance_skill_check(effective_dex(ch), effective_dex(vict), att_skill, def_skill);
 
    if(hm < 0)
    {

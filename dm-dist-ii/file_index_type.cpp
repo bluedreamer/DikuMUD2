@@ -1,4 +1,5 @@
 #include "file_index_type.h"
+
 #include <cstdlib>
 file_index_type::file_index_type()
 {

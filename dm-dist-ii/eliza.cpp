@@ -22,8 +22,8 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include "CServerConfiguration.h"
 #include "comm.h"
+#include "CServerConfiguration.h"
 #include "db.h"
 #include "files.h"
 #include "handler.h"
@@ -34,6 +34,7 @@
 #include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cassert>
 #include <cctype>
 #include <cstdio>
@@ -74,10 +75,10 @@ struct keyword_type
    char **keyword;  /* What shall we react on? */
    char   priority; /* how important is keywd: 0 worst, 9 best */
    int    subjno;
-} *eliza_keyword      = nullptr;
-int eliza_maxkeywords = 0;
+} *eliza_keyword              = nullptr;
+int         eliza_maxkeywords = 0;
 
-int eliza_booted = static_cast<int>(FALSE);
+int         eliza_booted      = static_cast<int>(FALSE);
 
 static char words[400];
 
@@ -85,7 +86,7 @@ extern char libdir[];
 
 /* ============================================================= */
 
-void preprocess_string(char *str, struct oracle_data *od)
+void        preprocess_string(char *str, struct oracle_data *od)
 {
    str_lower(str);
    str_rem(str, '\'');
@@ -534,7 +535,7 @@ auto eliza_process(struct oracle_data *od, char *s) -> char *
 
    words[0] = 0;
 
-   i = trytempl(s);
+   i        = trytempl(s);
    if(i >= 0)
    {
       return response(od, eliza_template[i].subjno);
@@ -590,7 +591,7 @@ void eliza_log(unit_data *who, const char *str, int comms)
    static int   idx = -1;
    static char *buf[MAX_ELIBUF];
 
-   FILE *f;
+   FILE        *f;
 
    if(idx == -1)
    {
@@ -653,7 +654,7 @@ auto oracle(struct spec_arg *sarg) -> int
    struct oracle_data *od;
    int                 i;
 
-   void eliza_boot();
+   void                eliza_boot();
 
    od = (struct oracle_data *)sarg->fptr->data;
 
@@ -763,7 +764,7 @@ auto oracle(struct spec_arg *sarg) -> int
       unit_data *u;
       char      *c = (char *)sarg->arg;
 
-      u = find_unit(sarg->activator, &c, nullptr, FIND_UNIT_SURRO);
+      u            = find_unit(sarg->activator, &c, nullptr, FIND_UNIT_SURRO);
       if(u != sarg->owner)
       {
          return SFR_SHARE;
@@ -894,7 +895,7 @@ void eliza_get_keyword(char *buf, int subjno, int priority)
 {
    struct keyword_type *kwd;
 
-   kwd = eliza_find_keyword(subjno);
+   kwd           = eliza_find_keyword(subjno);
 
    kwd->priority = priority;
    kwd->keyword  = add_name(buf, kwd->keyword);
@@ -981,8 +982,8 @@ void eliza_get_subjects(FILE *f)
          break;
       }
 
-      char *ms2020         = fgets(buf, 240, f);
-      buf[strlen(buf) - 1] = 0; /* Destroy the newline from fgets */
+      char *ms2020                                  = fgets(buf, 240, f);
+      buf[strlen(buf) - 1]                          = 0; /* Destroy the newline from fgets */
 
       eliza_subjects[eliza_maxsubjects - 1].replies = add_name(buf, eliza_subjects[eliza_maxsubjects - 1].replies);
    }
@@ -1036,7 +1037,11 @@ void eliza_integrity()
 
          if(k != -1)
          {
-            slog(LOG_ALL, 0, "Eliza Keyword '%s' may be shadowed by '%s/%s'", buf, STR(eliza_template[k].exp[0]),
+            slog(LOG_ALL,
+                 0,
+                 "Eliza Keyword '%s' may be shadowed by '%s/%s'",
+                 buf,
+                 STR(eliza_template[k].exp[0]),
                  STR(eliza_template[k].exp[1]));
          }
       }

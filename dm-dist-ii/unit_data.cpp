@@ -1,4 +1,5 @@
 #include "unit_data.h"
+
 #include "file_index_type.h"
 #include "handler.h"
 #include "room_data.h"
@@ -7,7 +8,7 @@
 
 unit_data::unit_data(uint8_t type)
 {
-   status = type;
+   status      = type;
 
    data.ch     = nullptr;
    func        = nullptr;
@@ -77,7 +78,7 @@ unit_data::~unit_data()
 
    uint8_t type;
 
-   void unlink_affect(unit_data * u, unit_affected_type * af);
+   void    unlink_affect(unit_data * u, unit_affected_type * af);
 
    /* Sanity due to wierd bug I saw (MS, 30/05-95) */
 

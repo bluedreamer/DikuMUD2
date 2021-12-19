@@ -29,10 +29,6 @@
 /* 26/10/94 gnort  : Fixed a couple of money-related bugs                  */
 /* Fri May 12 17:22:23 bombman : added extra ger description to do_get     */
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #include "comm.h"
 #include "db.h"
 #include "handler.h"
@@ -44,7 +40,11 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 /* Returns: 0 if the object was picked up.                               */
 /*          1 if the object was not picked up, but more may be picked up */
@@ -298,7 +298,7 @@ void do_get(unit_data *ch, char *argument, const struct command_info *cmd)
       bool       ok   = TRUE;
       bool       pick = FALSE;
 
-      thing = from_unit != nullptr ? UNIT_CONTAINS(from_unit) : UNIT_CONTAINS(UNIT_IN(ch));
+      thing           = from_unit != nullptr ? UNIT_CONTAINS(from_unit) : UNIT_CONTAINS(UNIT_IN(ch));
 
       for(; ok && (thing != nullptr); thing = next_unit)
       {
@@ -329,7 +329,7 @@ void do_get(unit_data *ch, char *argument, const struct command_info *cmd)
       bool       ok   = TRUE;
       bool       pick = FALSE;
 
-      thing = from_unit != nullptr ? UNIT_CONTAINS(from_unit) : UNIT_CONTAINS(UNIT_IN(ch));
+      thing           = from_unit != nullptr ? UNIT_CONTAINS(from_unit) : UNIT_CONTAINS(UNIT_IN(ch));
 
       for(; ok && (thing != nullptr); thing = next_unit)
       {
@@ -584,8 +584,12 @@ auto put(unit_data *ch, unit_data *unit, unit_data *tounit, const struct command
 
    if(IS_MONEY(unit))
    {
-      act(UNIT_IN(tounit) == ch ? "$1n puts some $2t into $1s $3N." : "$1n puts some $2t into the $3N.", A_HIDEINV, ch,
-          money_pluralis(unit), tounit, TO_ROOM);
+      act(UNIT_IN(tounit) == ch ? "$1n puts some $2t into $1s $3N." : "$1n puts some $2t into the $3N.",
+          A_HIDEINV,
+          ch,
+          money_pluralis(unit),
+          tounit,
+          TO_ROOM);
    }
    else
    {

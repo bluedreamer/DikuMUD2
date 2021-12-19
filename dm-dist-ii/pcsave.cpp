@@ -28,12 +28,6 @@
 /* 09/09/93 seifert: Deletes player data after new has been written.       */
 /* 30/03/94 seifert: find_player returns BLK_NULL if no player data        */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
 #include "account.h"
 #include "affect.h"
 #include "blkfile.h"
@@ -53,13 +47,19 @@
 #include "utility.h"
 #include "utils.h"
 
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+
 int32_t            player_id       = 1;
 static const char *tmp_player_name = PLAY_DIR "player.tmp";
 
-extern char libdir[];
-extern char plydir[];
+extern char        libdir[];
+extern char        plydir[];
 
-auto PlayerFileName(const char *pName) -> char *
+auto               PlayerFileName(const char *pName) -> char *
 {
    static char Buf[MAX_INPUT_LENGTH + 1];
    char        TmpBuf[MAX_INPUT_LENGTH + 1];
@@ -314,7 +314,7 @@ void save_player_file(unit_data *pc)
 
    CHAR_DESCRIPTOR(pc) = tmp_descr; /* Turn msgs back on */
 
-   locked = FALSE;
+   locked              = FALSE;
 }
 
 /* If 'fast' is false compression is used for inventory.       */
@@ -326,7 +326,7 @@ void save_player_contents(unit_data *pc, int fast)
    amount_t    daily_cost;
    currency_t  cur = local_currency(pc);
 
-   auto save_contents(const char *pFileName, unit_data *unit, int fast, int bContainer)->int;
+   auto        save_contents(const char *pFileName, unit_data *unit, int fast, int bContainer)->int;
 
    assert(IS_PC(pc));
 
@@ -336,7 +336,7 @@ void save_player_contents(unit_data *pc, int fast)
       return;
    }
 
-   locked = TRUE;
+   locked      = TRUE;
 
    /* Too much log in convert
    slog(LOG_ALL, "Saving %s [len %d of %d].", PC_FILENAME(pc), len,
@@ -346,7 +346,7 @@ void save_player_contents(unit_data *pc, int fast)
    t0          = time(nullptr);
    keep_period = t0;
 
-   daily_cost = save_contents(PC_FILENAME(pc), pc, fast, static_cast<int>(FALSE));
+   daily_cost  = save_contents(PC_FILENAME(pc), pc, fast, static_cast<int>(FALSE));
 
    if(daily_cost <= 0)
    {
@@ -380,8 +380,8 @@ void save_player_contents(unit_data *pc, int fast)
       }
       else
       {
-         act("You can't afford to keep your inventory (cost is $3t).", A_ALWAYS, pc, nullptr, money_string(daily_cost, cur, FALSE),
-             TO_CHAR);
+         act(
+            "You can't afford to keep your inventory (cost is $3t).", A_ALWAYS, pc, nullptr, money_string(daily_cost, cur, FALSE), TO_CHAR);
       }
    }
 
@@ -488,7 +488,7 @@ auto load_player(const char *pName) -> unit_data *
    FILE      *pFile;
    unit_data *pc;
 
-   void stop_all_special(unit_data * u);
+   void       stop_all_special(unit_data * u);
 
    if(static_cast<unsigned int>(str_is_empty(pName)) != 0U)
    {

@@ -58,8 +58,14 @@ int main(int argc, char *argv[])
          if((month == -1) || (tm_when.tm_mon == month))
          {
             drunk++;
-            printf("%s %2d:%2d:%2d (%d/%d) year %d\n", pName, tm_when.tm_hour, tm_when.tm_min, tm_when.tm_sec, 1 + tm_when.tm_mday,
-                   1 + tm_when.tm_mon, tm_when.tm_year);
+            printf("%s %2d:%2d:%2d (%d/%d) year %d\n",
+                   pName,
+                   tm_when.tm_hour,
+                   tm_when.tm_min,
+                   tm_when.tm_sec,
+                   1 + tm_when.tm_mday,
+                   1 + tm_when.tm_mon,
+                   tm_when.tm_year);
          }
       }
    }

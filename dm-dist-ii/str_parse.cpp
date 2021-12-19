@@ -22,13 +22,13 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "essential.h"
+#include "textutil.h"
+
 #include <cassert>
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
-
-#include "essential.h"
-#include "textutil.h"
 
 auto parse_match(char *pData, const char *pMatch) -> char *
 {
@@ -64,7 +64,7 @@ auto parse_name(char **pData) -> char *
 
    Buf[0] = 0;
 
-   pTmp1 = skip_blanks(*pData);
+   pTmp1  = skip_blanks(*pData);
    if(*pTmp1 != '~')
    {
       return nullptr;
@@ -88,7 +88,7 @@ auto parse_name(char **pData) -> char *
    memcpy(Buf, pTmp1, pTmp2 - pTmp1);
    Buf[pTmp2 - pTmp1] = 0;
 
-   *pData = pTmp1 + (1 + pTmp2 - pTmp1); /* +1 to skip the last ~ */
+   *pData             = pTmp1 + (1 + pTmp2 - pTmp1); /* +1 to skip the last ~ */
 
    return str_dup(Buf);
 }
@@ -161,7 +161,7 @@ auto parse_namelist(char **pData) -> char **
    char  *pTmp2;
    char **pNamelist;
 
-   pTmp1 = *pData;
+   pTmp1     = *pData;
 
    pNamelist = create_namelist();
 
@@ -218,7 +218,7 @@ auto parse_match_numlist(char **pData, const char *pMatch, int *count) -> int *
       return nullptr;
    }
 
-   i = parse_numlist(&pTmp, count);
+   i      = parse_numlist(&pTmp, count);
 
    *pData = pTmp;
 
@@ -236,7 +236,7 @@ auto parse_match_name(char **pData, const char *pMatch) -> char *
       return nullptr;
    }
 
-   pName = parse_name(&pTmp);
+   pName  = parse_name(&pTmp);
 
    *pData = pTmp;
 
@@ -256,7 +256,7 @@ auto parse_match_namelist(char **pData, const char *pMatch) -> char **
 
    pNamelist = parse_namelist(&pTmp);
 
-   *pData = pTmp;
+   *pData    = pTmp;
 
    return pNamelist;
 }

@@ -23,11 +23,11 @@
 #ifndef TIMER_H
 #define TIMER_H
 
+#include "mytime.h"
+
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
-
-#include "mytime.h"
 
 // An attempt to create a general purpose timer interface which is
 // equivalent between DOS and UNIX.
@@ -40,20 +40,20 @@ public:
    cTimer();
    virtual ~cTimer();
 
-   void SetEvent(cMyTime *psWhen); // , pfTimerEvent fptr);
-   void ClearEvent(void);          // Call to clear any pending timeout
+   void         SetEvent(cMyTime *psWhen); // , pfTimerEvent fptr);
+   void         ClearEvent(void);          // Call to clear any pending timeout
 
-   void SuspendEvent(void); // Call to suspend timeouts
-   void ResumeEvent(void);  // Call when allowed again, possibly releasing one
+   void         SuspendEvent(void); // Call to suspend timeouts
+   void         ResumeEvent(void);  // Call when allowed again, possibly releasing one
 
    virtual void Event(void) {} // Inherit this to catch the timeout events.
 
 private:
-   void InternEvent(void);
+   void             InternEvent(void);
 
-   uint8_t bSuspended;
-   uint8_t bActive;
-   uint8_t bPending;
+   uint8_t          bSuspended;
+   uint8_t          bActive;
+   uint8_t          bPending;
 
    struct itimerval itimer;
 

@@ -45,6 +45,7 @@
 #include "unit_vector_data.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -117,8 +118,8 @@ void say_spell(unit_data *ch, unit_data *target, int si)
    }
 }
 
-auto spell_perform(int spell_no, int spell_type, unit_data *caster, unit_data *medium, unit_data *target, char *argument, char *pEffect,
-                   int bonus) -> int
+auto spell_perform(
+   int spell_no, int spell_type, unit_data *caster, unit_data *medium, unit_data *target, char *argument, char *pEffect, int bonus) -> int
 {
    static struct command_info *cmd = nullptr;
    int                         hm  = -1;
@@ -174,7 +175,11 @@ auto spell_perform(int spell_no, int spell_type, unit_data *caster, unit_data *m
                    "be there! Please report.\n\r",
                    caster);
 
-      szonelog(UNIT_FI_ZONE(medium), "Illegal spell type (%d/%d): used on (%s@%s)!", spell_no, spell_type, UNIT_FI_NAME(medium),
+      szonelog(UNIT_FI_ZONE(medium),
+               "Illegal spell type (%d/%d): used on (%s@%s)!",
+               spell_no,
+               spell_type,
+               UNIT_FI_NAME(medium),
                UNIT_FI_ZONENAME(medium));
       return -1;
    }
@@ -225,8 +230,8 @@ auto spell_perform(int spell_no, int spell_type, unit_data *caster, unit_data *m
    {
       dilprg *prg;
 
-      prg          = dil_copy_template(spell_info[spell_no].tmpl, caster, nullptr);
-      prg->waitcmd = WAITCMD_MAXINST - 1; // The usual hack, see db_file
+      prg                          = dil_copy_template(spell_info[spell_no].tmpl, caster, nullptr);
+      prg->waitcmd                 = WAITCMD_MAXINST - 1; // The usual hack, see db_file
 
       prg->sp->vars[0].val.unitptr = medium;
       prg->sp->vars[1].val.unitptr = target;
@@ -355,7 +360,7 @@ void do_cast(unit_data *ch, char *argument, const struct command_info *cmd)
    target_ok = FALSE;
    unit      = nullptr;
 
-   orgarg = argument;
+   orgarg    = argument;
 
    if(!IS_SET(spell_info[spl].targets, TAR_IGNORE))
    {
@@ -781,12 +786,12 @@ static void spell_read()
          int  i3;
          int  idx2 = -1;
 
-         pCh = str_next_word(pCh, tmp);
-         i1  = atoi(tmp);
-         pCh = str_next_word(pCh, tmp);
-         i2  = atoi(tmp);
-         pCh = str_next_word(pCh, tmp);
-         i3  = atoi(tmp);
+         pCh       = str_next_word(pCh, tmp);
+         i1        = atoi(tmp);
+         pCh       = str_next_word(pCh, tmp);
+         i2        = atoi(tmp);
+         pCh       = str_next_word(pCh, tmp);
+         i3        = atoi(tmp);
 
          if(i3 <= 0)
          {
@@ -852,7 +857,7 @@ static void spell_init()
       spell_info[i].toselfroom = nullptr;
       spell_info[i].acttype    = A_SOMEONE;
 
-      spl_tree[i].parent = SPL_ALL;
+      spl_tree[i].parent       = SPL_ALL;
 
       if(i < SPL_GROUP_MAX)
       {
@@ -875,7 +880,7 @@ static void spell_init()
       spell_info[i].tmpl             = nullptr;
       spell_info[i].shield           = SHIELD_M_USELESS;
 
-      spl_text[i] = nullptr;
+      spl_text[i]                    = nullptr;
 
       /* Racial spells are all zero */
       for(int j = 0; j < PC_RACE_MAX; j++)

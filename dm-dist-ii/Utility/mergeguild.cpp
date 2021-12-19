@@ -70,7 +70,7 @@ char *mystrtok(char *s, char delim)
 
    cp2 = cp;
 
-   cp = strchr(cp, delim);
+   cp  = strchr(cp, delim);
    if(cp == NULL)
    {
       cp = NULL;
@@ -89,7 +89,7 @@ void convert(int idx)
    char *code;
    int   i, section = 0;
 
-   int costs[5][3] = {{5, 10, 15}, {8, 16, 24}, {10, 20, 30}, {15, 30, 45}, {20, 40, 60}};
+   int   costs[5][3] = {{5, 10, 15}, {8, 16, 24}, {10, 20, 30}, {15, 30, 45}, {20, 40, 60}};
 
    while(!feof(stdin))
    {
@@ -121,16 +121,16 @@ void convert(int idx)
             int   nums;
             char *nc;
 
-            nc = strtok(code, "/");
+            nc    = strtok(code, "/");
 
-            cost = nc[0] - 'A';
-            nums = nc[1] - '0';
+            cost  = nc[0] - 'A';
+            nums  = nc[1] - '0';
 
             nc    = strtok(NULL, "/");
             level = atoi(nc);
 
-            nc  = strtok(NULL, "/");
-            max = atoi(nc);
+            nc    = strtok(NULL, "/");
+            max   = atoi(nc);
 
             fprintf(stdout, "%d %2d; %4d; %-30s; %4d; %4d; ", section, level, max, name, (cost + 1) * 50, (cost + 1) * 500);
 

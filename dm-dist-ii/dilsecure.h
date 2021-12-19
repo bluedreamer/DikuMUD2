@@ -1,6 +1,7 @@
 #pragma once
 
 #include "unit_data.h"
+
 #include <cstdint>
 
 /* structure for securing unit pointers */

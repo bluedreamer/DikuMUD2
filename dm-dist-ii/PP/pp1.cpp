@@ -44,10 +44,10 @@ auto pp_main(const char *filename) -> int
    {
       fatal("Unable to open input file");
    }
-   ifile = TRUE; /* Got an input file */
+   ifile   = TRUE; /* Got an input file */
 
-   Output = stdout;
-   Nextch = A_trigraph != 0 ? trigraph : gchbuf; /* Next char source */
+   Output  = stdout;
+   Nextch  = A_trigraph != 0 ? trigraph : gchbuf; /* Next char source */
 
    Do_name = TRUE; /* Force name output on #line */
    if(iInit == 0)
@@ -254,7 +254,7 @@ void init()
    Asmexpand = FALSE; /* Disabled inside asm/endasm */
 #endif                /* (TARGET == T_QC) OR (TARGET == T_QCX) OR (TARGET == T_TCX) */
 
-   Outline = 1; /* Line number of next output line */
+   Outline   = 1; /* Line number of next output line */
 
    Filelevel = -1; /* Current file level */
    if(iInit == 0)
@@ -267,17 +267,17 @@ void init()
       out_of_memory();
    }
 
-   Pbbufp->pb_type = PB_TOS; /* Top of stack marker */
+   Pbbufp->pb_type    = PB_TOS; /* Top of stack marker */
 
-   A_astring     =        /* Replace args within strings	*/
-      A_crecurse =        /* No recursive comments	*/
-      A_rescan   =        /* No macro gen'd directives	*/
-      A_trigraph = FALSE; /* No Trigraph translation	*/
+   A_astring          =        /* Replace args within strings	*/
+      A_crecurse      =        /* No recursive comments	*/
+      A_rescan        =        /* No macro gen'd directives	*/
+      A_trigraph      = FALSE; /* No Trigraph translation	*/
 
-   Nsyms      =    /* Number of symbols generated	*/
-      Errors  =    /* Zero the error counter	*/
-      Iflevel =    /* #if stack pointer		*/
-      Unique  = 0; /* Zero unique # counter	*/
+   Nsyms              =    /* Number of symbols generated	*/
+      Errors          =    /* Zero the error counter	*/
+      Iflevel         =    /* #if stack pointer		*/
+      Unique          = 0; /* Zero unique # counter	*/
 
    A_stack            = TRUE;             /* No stacking of macro def's	*/
    A_eolcomment       = TRUE;             /* No eol comments		*/
@@ -390,22 +390,30 @@ void usage(int v)
 #else  /* !PPDEBUG */
       "Usage: pp <input> -[cdeilotuv?]\n%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 #endif /* PPDEBUG */
-      "   -c 0|1|2|3|4|5|6 Enable the desired configuration option:\n", "              0 -> Replace macro arguments in strings.\n",
-      "              1 -> Expand macros inside #pragma asm.\n", "              2 -> Allow recursive comments.\n",
-      "              3 -> Rescan macro expansions for directives.\n", "              4 -> Allow macro defs and undefs to stack/unstack.\n",
-      "              5 -> Perform Trigraph input character translation.\n", "              6 -> Permit C++ style \"//\" eol comments.\n",
-      "   -d s[=v] Define symbol <s> to have value <v> (default 1).\n", "   -e       Don't abort on error.\n",
-      "   -i       Set path for #include files.\n", "   -l a|l|n Specify #line output mode (abbrev/long/none).\n",
+      "   -c 0|1|2|3|4|5|6 Enable the desired configuration option:\n",
+      "              0 -> Replace macro arguments in strings.\n",
+      "              1 -> Expand macros inside #pragma asm.\n",
+      "              2 -> Allow recursive comments.\n",
+      "              3 -> Rescan macro expansions for directives.\n",
+      "              4 -> Allow macro defs and undefs to stack/unstack.\n",
+      "              5 -> Perform Trigraph input character translation.\n",
+      "              6 -> Permit C++ style \"//\" eol comments.\n",
+      "   -d s[=v] Define symbol <s> to have value <v> (default 1).\n",
+      "   -e       Don't abort on error.\n",
+      "   -i       Set path for #include files.\n",
+      "   -l a|l|n Specify #line output mode (abbrev/long/none).\n",
       "   -o file  Specify output file name.\n",
 #if PPDEBUG
       "   -s       Generate statistics summary at end.\n",
 #endif /* PPDEBUG */
-      "   -t str   Add/remove LETTER chars (Accc or Rccc).\n", "   -u s     Undefine an initial symbol.\n",
+      "   -t str   Add/remove LETTER chars (Accc or Rccc).\n",
+      "   -u s     Undefine an initial symbol.\n",
       "   -v       Verbose mode toggle.\n",
 #if PPDEBUG
       "   -z       Output PPDEBUG messages.\n",
 #endif /* PPDEBUG */
-      "   -?       Output this message.\n", " Output file, if not specified, is <input>.pp\n");
+      "   -?       Output this message.\n",
+      " Output file, if not specified, is <input>.pp\n");
 
    exit(v);
 }

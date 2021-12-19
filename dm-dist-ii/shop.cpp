@@ -43,6 +43,7 @@
 #include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cctype>
 #include <climits>
 #include <cstdio>
@@ -94,7 +95,7 @@ static auto is_ok(unit_data *keeper, unit_data *ch, struct shop_data *sd) -> boo
    char           buf[512];
    time_info_data time_info;
 
-   auto mud_date(time_t t)->struct time_info_data;
+   auto           mud_date(time_t t)->struct time_info_data;
 
    if(IS_GOD(ch))
    { /* Gods can always shop :) */
@@ -115,7 +116,11 @@ static auto is_ok(unit_data *keeper, unit_data *ch, struct shop_data *sd) -> boo
       sprintf(buf,
               "We are open from %d to %d, and %d to %d - "
               "it is now %d o'clock.",
-              sd->time1[0], sd->time1[1], sd->time2[0], sd->time2[1], time_info.hours);
+              sd->time1[0],
+              sd->time1[1],
+              sd->time2[0],
+              sd->time2[1],
+              time_info.hours);
 
       act("$1n says '$2t'", A_SOMEONE, keeper, buf, ch, TO_ROOM);
 
@@ -450,7 +455,10 @@ static void shopping_list(char *arg, unit_data *ch, unit_data *keeper, struct sh
 
          if(OBJ_TYPE(temp1) == ITEM_DRINKCON)
          {
-            sprintf(buf2, "%s%s%s", STR(UNIT_TITLE_STRING(temp1)), OBJ_VALUE(temp1, 1) != 0 ? " of " : "",
+            sprintf(buf2,
+                    "%s%s%s",
+                    STR(UNIT_TITLE_STRING(temp1)),
+                    OBJ_VALUE(temp1, 1) != 0 ? " of " : "",
                     OBJ_VALUE(temp1, 1) != 0 ? drinks[OBJ_VALUE(temp1, 2)] : "");
          }
          else if(OBJ_TYPE(temp1) == ITEM_WEAPON)
@@ -679,7 +687,7 @@ static auto parse_shop(unit_data *keeper, char *data) -> struct shop_data *
     * He will normally work with the 1st currency.
     * array is { DEF_CURRENCY } if none
     */
-   sd->currencies = parse_match_numlist(&data, "Currencies", &sd->currencycount);
+   sd->currencies  = parse_match_numlist(&data, "Currencies", &sd->currencycount);
 
    if(sd->currencycount == 0)
    {
@@ -722,7 +730,10 @@ static auto parse_shop(unit_data *keeper, char *data) -> struct shop_data *
          }
          else
          {
-            szonelog(UNIT_FI_ZONE(keeper), "SHOP-ERROR (%s@%s): Illegal file-index: %s", UNIT_FI_NAME(keeper), UNIT_FI_ZONENAME(keeper),
+            szonelog(UNIT_FI_ZONE(keeper),
+                     "SHOP-ERROR (%s@%s): Illegal file-index: %s",
+                     UNIT_FI_NAME(keeper),
+                     UNIT_FI_ZONENAME(keeper),
                      names[i]);
          }
       }
@@ -817,7 +828,9 @@ auto shop_init(struct spec_arg *sarg) -> int
 
       if(sd == nullptr)
       {
-         szonelog(UNIT_FI_ZONE(sarg->owner), "Shop-keeper destroyed due to error in data: %s@%s", UNIT_FI_NAME(sarg->owner),
+         szonelog(UNIT_FI_ZONE(sarg->owner),
+                  "Shop-keeper destroyed due to error in data: %s@%s",
+                  UNIT_FI_NAME(sarg->owner),
                   UNIT_FI_ZONENAME(sarg->owner));
          destroy_fptr(sarg->owner, sarg->fptr);
       }

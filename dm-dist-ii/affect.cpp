@@ -26,6 +26,7 @@
 /* 02/08/92 seifert: Checks for destructed in various places               */
 
 #include "affect.h"
+
 #include "apply_function_type.h"
 #include "main.h"
 #include "structs.h"
@@ -33,19 +34,20 @@
 #include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cstdio>
 #include <cstdlib>
 
 unit_affected_type *affected_list = nullptr; /* Global list pointer       */
 unit_affected_type *next_affected_dude;      /* dirty - very dirty indeed */
 
-void register_destruct(int i, void *ptr);
-void clear_destruct(int i);
+void                register_destruct(int i, void *ptr);
+void                clear_destruct(int i);
 
-void affect_beat(void * /*p1*/, void * /*p2*/);
+void                affect_beat(void                */*p1*/, void                */*p2*/);
 
 /* Link an affected structure into the units affected structure */
-void link_affect(unit_data *unit, unit_affected_type *af)
+void                link_affect(unit_data *unit, unit_affected_type *af)
 {
    /*if (af->id > ID_TOP_IDX)
      error(HERE, "%s@%s (%s) linked affect ID %d > max value.",
@@ -64,7 +66,7 @@ void link_affect(unit_data *unit, unit_affected_type *af)
       af->gnext = nullptr;
    }
 
-   affected_list = af;
+   affected_list       = af;
 
    af->next            = UNIT_AFFECTED(unit);
    UNIT_AFFECTED(unit) = af;

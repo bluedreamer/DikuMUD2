@@ -1,5 +1,6 @@
 #pragma once
 #include "values.h"
+
 #include <cstdint>
 
 class npc_data

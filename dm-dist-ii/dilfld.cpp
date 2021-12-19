@@ -23,9 +23,9 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include "CServerConfiguration.h"
 #include "common.h"
 #include "config.h"
+#include "CServerConfiguration.h"
 #include "db_file.h"
 #include "dil.h"
 #include "dilexp.h"
@@ -37,6 +37,7 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <climits>
 
 void dilfe_fld(dilprg *p, dilval *v)
@@ -2709,8 +2710,11 @@ void dilfe_fld(dilprg *p, dilval *v)
          break;
 
       default:
-         szonelog(UNIT_FI_ZONE(p->sarg->owner), "DIL %s@%s, unknown field type: %d\n", UNIT_FI_NAME(p->sarg->owner),
-                  UNIT_FI_ZONENAME(p->sarg->owner), fldno);
+         szonelog(UNIT_FI_ZONE(p->sarg->owner),
+                  "DIL %s@%s, unknown field type: %d\n",
+                  UNIT_FI_NAME(p->sarg->owner),
+                  UNIT_FI_ZONENAME(p->sarg->owner),
+                  fldno);
          p->waitcmd = WAITCMD_QUIT;
          v->type    = DILV_ERR;
          break;

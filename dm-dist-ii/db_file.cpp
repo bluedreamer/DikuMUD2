@@ -29,6 +29,7 @@
  */
 
 #include "db_file.h"
+
 #include "bytestring.h"
 #include "db.h"
 #include "dil.h"
@@ -44,19 +45,20 @@
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cctype>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
-int g_nCorrupt = 0; /* > 0 when a unit is corrupt       */
+int         g_nCorrupt = 0; /* > 0 when a unit is corrupt       */
 
 CByteBuffer g_FileBuffer(16384);
 
 // int filbuffer_length = 0;             /* The length of filbuffer         */
 // uint8_t *filbuffer = 0;                 /* Buffer for read/write unit      */
 
-auto bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra) -> int
+auto        bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra) -> int
 {
    extra_descr_data *e;
    extra_descr_data *te;
@@ -695,10 +697,10 @@ auto bread_func(CByteBuffer *pBuf, uint8_t version, unit_data *owner) -> unit_fp
       }
       else if(fptr->index == SFUN_DILCOPY_INTERNAL)
       {
-         char *zname;
-         char *uname;
-         char  name[256];
-         char *c;
+         char        *zname;
+         char        *uname;
+         char         name[256];
+         char        *c;
 
          dilargstype *dilargs;
 
@@ -1089,7 +1091,7 @@ auto write_unit_string(CByteBuffer *pBuf, unit_data *u) -> int
    int     i;
    uint8_t nVersion;
 
-   nVersion = 57;
+   nVersion      = 57;
 
    uint32_t nPos = pBuf->GetLength();
 
@@ -1384,7 +1386,7 @@ void write_unit(FILE *f, unit_data *u, char *fname)
    length = write_unit_string(pBuf, u);
 
    /* Calculate the CRC */
-   crc = length;
+   crc    = length;
 
    for(uint32_t i = 0; i < length; i++)
    {
@@ -1428,7 +1430,7 @@ void write_diltemplate(FILE *f, diltemplate *tmpl)
    /* We are now finished, and are positioned just beyond last data byte */
    length = pBuf->GetLength() - nStart;
 
-   nPos = pBuf->GetLength();
+   nPos   = pBuf->GetLength();
 
    pBuf->SetLength(0);
    pBuf->Append32(length);

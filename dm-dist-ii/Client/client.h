@@ -26,6 +26,7 @@
 
 #include "essential.h"
 #include "slide.h"
+
 #include <assert.h>
 
 extern int bDirectConnect;

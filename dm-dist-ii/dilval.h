@@ -1,6 +1,7 @@
 #pragma once
 
 #include "dil.h"
+
 #include <cstdint>
 
 /* DIL evaluation result. */

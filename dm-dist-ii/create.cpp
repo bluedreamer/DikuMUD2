@@ -34,13 +34,14 @@
 #include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
 extern file_index_type *corpse_fi;
 
-auto make_corpse(unit_data *ch) -> unit_data *
+auto                    make_corpse(unit_data *ch) -> unit_data *
 {
    char                buf[MAX_INPUT_LENGTH];
    unit_data          *corpse;
@@ -49,7 +50,7 @@ auto make_corpse(unit_data *ch) -> unit_data *
    unit_affected_type  af;
    unit_affected_type *taf1;
 
-   void persist_create(unit_data * u);
+   void                persist_create(unit_data * u);
 
    corpse = read_unit(corpse_fi);
 
@@ -64,9 +65,9 @@ auto make_corpse(unit_data *ch) -> unit_data *
    UNIT_WEIGHT(corpse)      = UNIT_BASE_WEIGHT(ch);
    UNIT_BASE_WEIGHT(corpse) = UNIT_WEIGHT(corpse);
 
-   OBJ_TYPE(corpse)      = ITEM_CONTAINER;
-   OBJ_PRICE(corpse)     = 0;
-   OBJ_PRICE_DAY(corpse) = 0;
+   OBJ_TYPE(corpse)         = ITEM_CONTAINER;
+   OBJ_PRICE(corpse)        = 0;
+   OBJ_PRICE_DAY(corpse)    = 0;
 
    /* *** pointers *** */
 

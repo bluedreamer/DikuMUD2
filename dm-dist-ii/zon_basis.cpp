@@ -67,12 +67,12 @@
 #define PC_DEATHOBJ_NAME "death_seq"
 #define DESTROY_ROOM     "destroy_room"
 
-unit_data *void_room    = nullptr;
-unit_data *destroy_room = nullptr;
-unit_data *heaven_room  = nullptr;
-unit_data *seq_room     = nullptr;
-unit_data *time_room    = nullptr;
-unit_data *entry_room   = nullptr;
+unit_data       *void_room     = nullptr;
+unit_data       *destroy_room  = nullptr;
+unit_data       *heaven_room   = nullptr;
+unit_data       *seq_room      = nullptr;
+unit_data       *time_room     = nullptr;
+unit_data       *entry_room    = nullptr;
 
 file_index_type *demigod_fi    = nullptr; /* Default demigod shape */
 file_index_type *zombie_fi     = nullptr;
@@ -82,7 +82,7 @@ file_index_type *head_fi       = nullptr;
 file_index_type *deathobj_fi   = nullptr;
 file_index_type *beginner_note = nullptr;
 
-void basis_boot()
+void             basis_boot()
 {
    void_room = world_room(BASIS_ZONE, VOID_ROOM);
    assert(void_room);
@@ -404,7 +404,7 @@ auto death_room(struct spec_arg *sarg) -> int
 
 extern struct log_buffer log_buf[];
 
-auto log_object(struct spec_arg *sarg) -> int
+auto                     log_object(struct spec_arg *sarg) -> int
 {
    uint8_t       *ip;
    enum log_level lev = LOG_OFF;
@@ -414,7 +414,7 @@ auto log_object(struct spec_arg *sarg) -> int
    if(sarg->fptr->data == nullptr)
    {
       CREATE(ip, uint8_t, 1);
-      *ip = 0;
+      *ip                       = 0;
 
       OBJ_VALUE(sarg->owner, 0) = 'b';
       sarg->fptr->data          = ip;
@@ -493,12 +493,15 @@ auto log_object(struct spec_arg *sarg) -> int
             }
             else
             {
-               act("Current log level is `$2t'.", A_ALWAYS, ch,
+               act("Current log level is `$2t'.",
+                   A_ALWAYS,
+                   ch,
                    c == 'o'   ? "off"
                    : c == 'b' ? "brief"
                    : c == 'a' ? "all"
                               : "extensive",
-                   nullptr, TO_CHAR);
+                   nullptr,
+                   TO_CHAR);
                return SFR_BLOCK;
             }
 

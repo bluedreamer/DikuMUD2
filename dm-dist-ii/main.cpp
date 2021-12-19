@@ -25,12 +25,13 @@
 /* 29/1/93  HHS: Added GA (go ahead) for all prompts                       */
 /* Sun Jun 27 1993 HHS: made vars for world status                         */
 /* Tue Jul 6 1993 HHS: added exchangable lib dir                           */
-#include "CServerConfiguration.h"
 #include "cCaptainHook.h"
 #include "cCombatList.h"
 #include "cQueueElem.h"
+#include "CServerConfiguration.h"
 #include "nice.h"
 #include "signals.h"
+
 #include <cctype>
 #include <cerrno>
 #include <cstdio>
@@ -48,8 +49,6 @@ struct timezone
 };
 #endif
 
-#include "sysport.h"
-
 #include "comm.h"
 #include "db.h"
 #include "files.h"
@@ -57,12 +56,12 @@ struct timezone
 #include "interpreter.h"
 #include "main.h"
 #include "structs.h"
+#include "sysport.h"
 #include "system.h"
 #include "textutil.h"
+#include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
-
-#include "unixshit.h"
 
 extern uint32_t memory_total_alloc;
 
@@ -81,35 +80,35 @@ struct eventq_elem
 /* constants */
 struct eventq_elem *event_heap = nullptr;
 int                 heapspace = 0, events = 0;
-descriptor_data    *descriptor_list = nullptr;
-descriptor_data    *next_to_process = nullptr;
+descriptor_data    *descriptor_list    = nullptr;
+descriptor_data    *next_to_process    = nullptr;
 
 /* The global server configuration */
 
-int mud_bootzone   = 1; /* Used when booting & resolving DIL templts */
-int no_players     = 0; /* Statistics                                */
-int max_no_players = 0; /* Statistics                                */
-int player_convert = static_cast<int>(FALSE);
-int slow_death     = 0; /* Shut her down, Martha, she's sucking mud */
-int mud_shutdown   = 0; /* clean shutdown */
-int mud_reboot     = 0; /* reboot the game after a shutdown */
-int wizlock        = 0; /* no mortals on now */
-int tics           = 0; /* number of tics since boot-time */
+int                 mud_bootzone       = 1; /* Used when booting & resolving DIL templts */
+int                 no_players         = 0; /* Statistics                                */
+int                 max_no_players     = 0; /* Statistics                                */
+int                 player_convert     = static_cast<int>(FALSE);
+int                 slow_death         = 0; /* Shut her down, Martha, she's sucking mud */
+int                 mud_shutdown       = 0; /* clean shutdown */
+int                 mud_reboot         = 0; /* reboot the game after a shutdown */
+int                 wizlock            = 0; /* no mortals on now */
+int                 tics               = 0; /* number of tics since boot-time */
 
-char world_boottime[64] = ""; /* boottime of world */
+char                world_boottime[64] = ""; /* boottime of world */
 
 /* Had to move libdir to common.c /gnort */
-extern char libdir[];              /* directory for libraryfiles */
-char        zondir[64] = ZONE_DIR; /* directory for zonefiles    */
-char        plydir[64] = PLAY_DIR; /* Directory for players */
+extern char         libdir[];                /* directory for libraryfiles */
+char                zondir[64]   = ZONE_DIR; /* directory for zonefiles    */
+char                plydir[64]   = PLAY_DIR; /* Directory for players */
 
-const char *compile_date = __DATE__;
-const char *compile_time = __TIME__;
+const char         *compile_date = __DATE__;
+const char         *compile_time = __TIME__;
 
 /* external functions */
-void string_add(descriptor_data *d, char *str);
+void                string_add(descriptor_data *d, char *str);
 
-void boot_db();
+void                boot_db();
 
 /* external functions in lib */
 #ifdef GENERIC_BSD
@@ -170,10 +169,10 @@ void type_validate()
 
 auto main(int argc, char **argv) -> int
 {
-   void cleanup_playerfile(int argc, char *argv[]);
+   void             cleanup_playerfile(int argc, char *argv[]);
 
-   int pos = 1;
-   int sp;
+   int              pos = 1;
+   int              sp;
 
    extern char    **player_name_list;
    extern cNamelist persist_namelist;
@@ -512,7 +511,7 @@ void game_loop()
 
       delay = OPT_USEC - (1000000L * (now.tv_sec - old.tv_sec) + (now.tv_usec - old.tv_usec));
 
-      old = now;
+      old   = now;
 
       if(delay > 0)
       {
@@ -534,8 +533,8 @@ void game_event()
    static char           buf[80];
    static struct timeval null_time = {0, 0};
 
-   void multi_close(struct multi_element * pe);
-   void multi_clear();
+   void                  multi_close(struct multi_element * pe);
+   void                  multi_clear();
 
    i = CaptainHook.Wait(&null_time);
 
@@ -608,7 +607,10 @@ void game_event()
                   }
                   else
                   {
-                     sprintf(buf, g_cServerConfig.m_sColor.pPrompt, CHAR_MANA(point->character), CHAR_ENDURANCE(point->character),
+                     sprintf(buf,
+                             g_cServerConfig.m_sColor.pPrompt,
+                             CHAR_MANA(point->character),
+                             CHAR_ENDURANCE(point->character),
                              (signed long)UNIT_HIT(point->character));
                   }
                }
@@ -661,11 +663,11 @@ void event_enq(int when, void (*func)(void *, void *), void *arg1, void *arg2)
          RECREATE(event_heap, struct eventq_elem, heapspace += HEAPSPACE_INCREMENT);
       }
    }
-   end       = event_heap + events;
-   end->when = tics + when;
-   end->func = func;
-   end->arg1 = arg1;
-   end->arg2 = arg2;
+   end          = event_heap + events;
+   end->when    = tics + when;
+   end->func    = func;
+   end->arg1    = arg1;
+   end->arg2    = arg2;
    /* roll event into its proper place in da heap */
    parent_index = events;
    for(;;)

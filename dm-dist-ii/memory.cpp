@@ -27,19 +27,19 @@
 /* 29/09/94 seifert: Added overhead count and changed CRC to one byte.     */
 /*                   This makes the system more shaky, but less mem hungry */
 
+#include "essential.h"
+
 #include <cassert>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-
-#include "essential.h"
 
 #define CRC_SIZE 4
 #define RAN_SIZE 4
 
 #ifdef MEMORY_DEBUG /* Endif is at the very bottom! */
 
-uint32_t memory_total_limit = 64L * 1024L * 1024L;
+uint32_t memory_total_limit     = 64L * 1024L * 1024L;
 
 uint32_t memory_total_alloc     = 0L;
 uint32_t memory_total_overhead  = 0L;
@@ -69,15 +69,25 @@ void memory_status(char *Buf)
            "   %8d bytes used by NPC alloc (very approx).\n\r"
            "   %8d bytes used by OBJ alloc (very approx).\n\r"
            "   %8d bytes used by ROOM alloc (very approx).\n\r",
-           memory_total_limit, memory_total_overhead, memory_total_overhead * (RAN_SIZE + CRC_SIZE), memory_total_alloc,
-           memory_dijkstra_alloc, memory_zoneidx_alloc, memory_roomread_alloc, memory_zonereset_alloc, memory_pc_alloc, memory_npc_alloc,
-           memory_obj_alloc, memory_room_alloc);
+           memory_total_limit,
+           memory_total_overhead,
+           memory_total_overhead * (RAN_SIZE + CRC_SIZE),
+           memory_total_alloc,
+           memory_dijkstra_alloc,
+           memory_zoneidx_alloc,
+           memory_roomread_alloc,
+           memory_zonereset_alloc,
+           memory_pc_alloc,
+           memory_npc_alloc,
+           memory_obj_alloc,
+           memory_room_alloc);
 }
 #else
 void memory_status(char *Buf)
 {
-   sprintf(Buf, "\n\rMemory Status:\n\r"
-                "   Memory debug is off.\n\r");
+   sprintf(Buf,
+           "\n\rMemory Status:\n\r"
+           "   Memory debug is off.\n\r");
 }
 #endif
 
@@ -104,9 +114,9 @@ void safe_set_info(void *p, uint32_t len)
       assert(FALSE);
    }
 
-   crc = len ^ 0xAAAAAAAA;
+   crc  = len ^ 0xAAAAAAAA;
 
-   ptr = (uint8_t *)p;
+   ptr  = (uint8_t *)p;
 
    low  = crc & 0xFFFF;
    high = crc >> 16 & 0xFFFF;

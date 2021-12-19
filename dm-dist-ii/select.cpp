@@ -21,6 +21,11 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "select.h"
+
+#include "cHook.h"
+#include "utility.h"
+
 #include <cassert>
 #include <cerrno>
 #include <csignal>
@@ -28,10 +33,6 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
-
-#include "cHook.h"
-#include "select.h"
-#include "utility.h"
 
 /* ------------------------------------------------------------------- */
 /*                            CAPTAIN HOOK                             */

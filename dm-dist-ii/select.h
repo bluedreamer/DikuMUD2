@@ -26,8 +26,8 @@
 
 extern int bPipeSignal;
 
-auto PipeRead(int fd, char *buf, size_t count) -> int;
-auto PipeWrite(int fd, char *buf, size_t count) -> int;
+auto       PipeRead(int fd, char *buf, size_t count) -> int;
+auto       PipeWrite(int fd, char *buf, size_t count) -> int;
 
 #define SELECT_READ   0x01
 #define SELECT_WRITE  0x02

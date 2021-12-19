@@ -23,12 +23,6 @@
  * *********************************************************************** */
 /* 28-Aug gnort: hometown_unit didn't test if str was NULL! */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
 #include "comm.h"
 #include "db.h"
 #include "db_file.h"
@@ -37,6 +31,12 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 /* ----- FUNCTIONS ----- */
 

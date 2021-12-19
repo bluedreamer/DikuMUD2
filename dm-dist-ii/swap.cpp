@@ -31,6 +31,7 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <strings.h>
 
 #define SWAP_FILE_NAME  "swap.blk"
@@ -41,11 +42,11 @@ static int       nSwapNoRooms = 0;
 static int       nSwapNoNpcs  = 0;
 static int       nSwapNoObjs  = 0;
 
-static int nSwapOut    = 0;
-static int nSwapIn     = 0;
-static int nSwapSumLen = 0;
+static int       nSwapOut     = 0;
+static int       nSwapIn      = 0;
+static int       nSwapSumLen  = 0;
 
-void swap_in(unit_data *u)
+void             swap_in(unit_data *u)
 {
    /*
 CByteBuffer Buf;

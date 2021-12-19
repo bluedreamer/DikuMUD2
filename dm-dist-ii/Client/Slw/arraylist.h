@@ -24,6 +24,7 @@
 #define ARRAYLIST_H
 
 #include "essential.h"
+
 #include <string.h>
 
 template<class Type>
@@ -44,21 +45,21 @@ public:
    ArrayList(int i);
    virtual ~ArrayList();
 
-   inline int is_empty(void);
-   inline int is_full(void);
-   inline int size(void); // Total size of the array.
-   inline int used(void); // Currently used in the array.
+   inline int    is_empty(void);
+   inline int    is_full(void);
+   inline int    size(void); // Total size of the array.
+   inline int    used(void); // Currently used in the array.
 
-   Type *insert(void);   // Make room for element and returns ref for it.
-   void  remove(Type *); // Remove oldest element.
+   Type         *insert(void);   // Make room for element and returns ref for it.
+   void          remove(Type *); // Remove oldest element.
 
-   Type *head(void); // Makes this class obscure... what the hex.
+   Type         *head(void); // Makes this class obscure... what the hex.
 
    virtual Type *find(int i); // Function to find an object. NULL if not found
 
 protected:
-   int nSize; // Total size of the array
-   int nUsed; // How many elements currently in the array
+   int   nSize; // Total size of the array
+   int   nUsed; // How many elements currently in the array
 
    Type *pArray;
    int  *pIdx;
@@ -67,8 +68,8 @@ protected:
 template<class Type>
 ArrayList<Type>::ArrayList(int nSz)
 {
-   nSize = nSz;
-   nUsed = 0;
+   nSize  = nSz;
+   nUsed  = 0;
 
    pArray = new Type[nSize];
    assert(pArray != NULL);

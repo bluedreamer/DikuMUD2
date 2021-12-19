@@ -16,18 +16,18 @@ public:
       class npc_data *npc;
    } specific;
 
-   char *money; /*  Money transfer from db-files.
-                 *  Converted to real money when pc/npc is loaded.
-                 */
+   char                    *money; /*  Money transfer from db-files.
+                                    *  Converted to real money when pc/npc is loaded.
+                                    */
 
-   descriptor_data *descriptor;
+   descriptor_data         *descriptor;
 
-   char_point_data points;
+   char_point_data          points;
 
-   cCombat *Combat;
+   cCombat                 *Combat;
 
    struct char_follow_type *followers;
    unit_data               *master; /* Must be a char */
 
-   unit_data *last_room; /* Last location of character */
+   unit_data               *last_room; /* Last location of character */
 };

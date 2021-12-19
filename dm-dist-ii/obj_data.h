@@ -11,8 +11,8 @@ public:
    uint32_t cost;         /* Value when sold (gp.)               */
    uint32_t cost_per_day; /* Cost to keep pr. real day           */
 
-   uint8_t flags;      /* Various special object flags        */
-   uint8_t type;       /* Type of item (ITEM_XXX)             */
-   uint8_t equip_pos;  /* 0 or position of item in equipment  */
-   uint8_t resistance; /* Magic resistance                    */
+   uint8_t  flags;      /* Various special object flags        */
+   uint8_t  type;       /* Type of item (ITEM_XXX)             */
+   uint8_t  equip_pos;  /* 0 or position of item in equipment  */
+   uint8_t  resistance; /* Magic resistance                    */
 };

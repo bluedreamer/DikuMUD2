@@ -22,9 +22,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cstdio>
-#include <cstring>
-
 #include "comm.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -33,12 +30,15 @@
 #include "utility.h"
 #include "utils.h"
 
-static int INTEREST = 5;
+#include <cstdio>
+#include <cstring>
+
+static int      INTEREST = 5;
 
 static amount_t balance[MAX_CURRENCY + 1];
 static bool     changed_balance;
 
-static auto init_bank(const unit_data *pc, unit_data *clerk, bool init) -> bool
+static auto     init_bank(const unit_data *pc, unit_data *clerk, bool init) -> bool
 {
    if((clerk != nullptr) && !CHAR_IS_READY(clerk))
    {
@@ -168,7 +168,7 @@ static void cmd_deposit(const unit_data *pc, unit_data *clerk, char *s)
          return;
       }
 
-      thing = split_money(thing, amount);
+      thing       = split_money(thing, amount);
 
       old_balance = balance[cur];
       balance[cur] += ((100 - INTEREST) * MONEY_VALUE(thing)) / 100;
@@ -242,7 +242,7 @@ static void cmd_exchange(const unit_data *pc, unit_data *clerk, char *s)
       return;
    }
 
-   thing = split_money(thing, amount);
+   thing  = split_money(thing, amount);
 
    cur    = MONEY_CURRENCY(thing);
    amount = ((100 - INTEREST) * MONEY_VALUE(thing)) / 100;
@@ -457,15 +457,15 @@ void tax_player(unit_data *ch)
    amount_t         limit = 50 * PLATINUM_MULT;
    descriptor_data *d     = CHAR_DESCRIPTOR(ch);
 
-   amount_t holds;
-   amount_t holds_sum;
+   amount_t         holds;
+   amount_t         holds_sum;
 
-   char  buf[MAX_STRING_LENGTH];
-   char *b;
-   bool  tmp_bool = FALSE;
-   int   i;
+   char             buf[MAX_STRING_LENGTH];
+   char            *b;
+   bool             tmp_bool = FALSE;
+   int              i;
 
-   *(b = buf) = '\0';
+   *(b = buf)          = '\0';
 
    CHAR_DESCRIPTOR(ch) = nullptr; /* To avoid getting text output to the player */
 
@@ -488,8 +488,9 @@ void tax_player(unit_data *ch)
 
    if(tmp_bool)
    {
-      strcpy(b, "The holdings of your bank account was moved into your"
-                " purse.\n\r");
+      strcpy(b,
+             "The holdings of your bank account was moved into your"
+             " purse.\n\r");
       TAIL(b);
    }
 
@@ -532,13 +533,21 @@ void tax_player(unit_data *ch)
              " subjected to a taxing, as reported below.  You will have to "
              "believe that, what is good for the game, is indeed good for you."
              "\n\r$2t",
-             A_ALWAYS, ch, buf, nullptr, TO_CHAR);
+             A_ALWAYS,
+             ch,
+             buf,
+             nullptr,
+             TO_CHAR);
       }
       else
       {
          act("Your money has has moved around a bit, but you weren't taxed."
              "  Congratulations!\n\r$2t",
-             A_ALWAYS, ch, buf, nullptr, TO_CHAR);
+             A_ALWAYS,
+             ch,
+             buf,
+             nullptr,
+             TO_CHAR);
       }
    }
 }

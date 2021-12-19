@@ -6,6 +6,7 @@
 #include "files.h"
 #include "str_parse.h"
 #include "textutil.h"
+
 #include <cstring>
 
 CServerConfiguration g_cServerConfig;
@@ -53,7 +54,7 @@ auto CServerConfiguration::ValidMplex(struct sockaddr_in *isa) -> int
 {
    struct in_addr sTmp;
 
-   int i;
+   int            i;
 
    for(i = 0; i < 10; i++)
    {
@@ -286,8 +287,8 @@ void CServerConfiguration::Boot()
 
    m_sColor.pDefault = str_escape_format("&cw");
 
-   d                = parse_match_name(&c, "color prompt");
-   m_sColor.pPrompt = d != nullptr ? str_escape_format(d) : "";
+   d                 = parse_match_name(&c, "color prompt");
+   m_sColor.pPrompt  = d != nullptr ? str_escape_format(d) : "";
    free(d);
 
    d                  = parse_match_name(&c, "color who");

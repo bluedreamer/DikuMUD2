@@ -23,16 +23,18 @@
  * *********************************************************************** */
 
 #include "connectionlog.h"
-#include "CAccountConfig.h"
-#include "CServerConfiguration.h"
+
 #include "account.h"
+#include "CAccountConfig.h"
 #include "common.h"
+#include "CServerConfiguration.h"
 #include "db.h"
 #include "essential.h"
 #include "files.h"
 #include "textutil.h"
 #include "utils.h"
 #include "values.h"
+
 #include <cstdio>
 #include <ctime>
 
@@ -62,7 +64,7 @@ void ConnectionBegin(unit_data *pc)
 
 void ConnectionLog(unit_data *pc)
 {
-   time_t t0 = time(nullptr);
+   time_t   t0      = time(nullptr);
 
    uint32_t nLanPay = 0;
 

@@ -39,6 +39,7 @@
 #include "trie_type.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -55,27 +56,27 @@ struct social_msg
    uint8_t level;       /* Is this a restricted social? (silly concept) */
 
    /* No argument was supplied */
-   char *char_no_arg;
-   char *others_no_arg;
+   char   *char_no_arg;
+   char   *others_no_arg;
 
    /* An argument was there, and a victim was found */
-   char *char_found; /* if NULL, read no further, ignore args */
-   char *others_found;
-   char *vict_found;
+   char   *char_found; /* if NULL, read no further, ignore args */
+   char   *others_found;
+   char   *vict_found;
 
    /* An argument was there, but no victim was found */
-   char *not_found;
+   char   *not_found;
 
    /* The victim turned out to be the character */
-   char *char_auto;
-   char *others_auto;
+   char   *char_auto;
+   char   *others_auto;
 };
 
 static trie_type *soc_trie;
 
-static auto fread_action(FILE *fl) -> char *
+static auto       fread_action(FILE *fl) -> char *
 {
-   char buf[512];
+   char  buf[512];
 
    char *m_tmp = fgets(buf, sizeof buf, fl);
 
@@ -165,13 +166,13 @@ static auto soc_sort_cmp(struct social_msg *dat1, struct social_msg *dat2) -> in
  */
 void boot_social_messages()
 {
-   FILE *fl;
-   char  cmd[80];
-   char  hide[80];
-   char  min_pos[80];
-   char  vic_min_pos[80];
-   char  buf[256];
-   int   level;
+   FILE              *fl;
+   char               cmd[80];
+   char               hide[80];
+   char               min_pos[80];
+   char               vic_min_pos[80];
+   char               buf[256];
+   int                level;
 
    struct social_msg *list      = nullptr;
    int                list_elms = 0;
@@ -238,16 +239,16 @@ void boot_social_messages()
          RECREATE(list, struct social_msg, list_size);
       }
 
-      list[list_elms].cmd_str     = str_dup(cmd);
-      list[list_elms].hide_flag   = str_to_hide_flag(hide);
-      list[list_elms].min_pos     = str_to_min_pos(min_pos);
-      list[list_elms].vic_min_pos = str_to_min_pos(vic_min_pos);
-      list[list_elms].level       = MIN(255, level);
+      list[list_elms].cmd_str       = str_dup(cmd);
+      list[list_elms].hide_flag     = str_to_hide_flag(hide);
+      list[list_elms].min_pos       = str_to_min_pos(min_pos);
+      list[list_elms].vic_min_pos   = str_to_min_pos(vic_min_pos);
+      list[list_elms].level         = MIN(255, level);
 
       list[list_elms].char_no_arg   = fread_action(fl);
       list[list_elms].others_no_arg = fread_action(fl);
 
-      list[list_elms].char_found = fread_action(fl);
+      list[list_elms].char_found    = fread_action(fl);
 
       /* if no char_found, the rest is to be ignored */
       if(list[list_elms].char_found != nullptr)
@@ -280,7 +281,7 @@ auto perform_social(unit_data *ch, char *arg, const command_info *cmd) -> bool
    struct social_msg *action;
    char              *oarg = arg;
 
-   action = (struct social_msg *)search_trie(cmd->cmd_str, soc_trie);
+   action                  = (struct social_msg *)search_trie(cmd->cmd_str, soc_trie);
 
    if((action == nullptr) || (action->level > CHAR_LEVEL(ch)))
    {
@@ -476,7 +477,7 @@ struct pose_type
 
 static struct pose_type pose_messages[MAX_POSES];
 
-void boot_pose_messages()
+void                    boot_pose_messages()
 {
    FILE   *fl;
    int16_t counter;

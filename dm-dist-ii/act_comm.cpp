@@ -25,33 +25,31 @@
 /* 24 Aug 1993, gnort:  Introduced more interesting communication.         */
 /*                      You can now continue writing on non-full notes     */
 
+#include "comm.h"
+#include "db.h"
+#include "handler.h"
+#include "interpreter.h"
+#include "modify.h"
+#include "nanny.h"
+#include "protocol.h"
+#include "spells.h"
+#include "structs.h"
+#include "textutil.h"
+#include "utility.h"
+#include "utils.h"
+
 #include <cctype>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
-#include "comm.h"
-#include "db.h"
-#include "handler.h"
-#include "interpreter.h"
-#include "protocol.h"
-#include "structs.h"
-#include "utils.h"
-
-#include "modify.h"
-#include "spells.h"
-#include "textutil.h"
-
-#include "nanny.h"
-#include "utility.h"
-
-uint8_t g_nShout = 0;
+uint8_t                 g_nShout = 0;
 
 /* extern variables */
 
 extern descriptor_data *descriptor_list;
 
-auto is_ignored(unit_data *ch, unit_data *victim) -> int
+auto                    is_ignored(unit_data *ch, unit_data *victim) -> int
 {
    extra_descr_data *pexd;
    char              tmp[128];
@@ -92,7 +90,7 @@ auto drunk_speech(unit_data *ch, const char *str) -> char *
 
    for(c = result; *str != 0; str++)
    {
-      b = tolower(*str);
+      b    = tolower(*str);
 
       *c++ = b;
 
@@ -814,7 +812,7 @@ void do_write(unit_data *ch, char *aaa, const struct command_info *cmd)
    act("You begin to jot down a note on $2n.", A_ALWAYS, ch, paper, nullptr, TO_CHAR);
    act("$1n begins to jot down a note.", A_HIDEINV, ch, nullptr, nullptr, TO_ROOM);
 
-   UNIT_EXTRA_DESCR(paper) = UNIT_EXTRA_DESCR(paper)->add((char *)nullptr, nullptr);
+   UNIT_EXTRA_DESCR(paper)       = UNIT_EXTRA_DESCR(paper)->add((char *)nullptr, nullptr);
 
    CHAR_DESCRIPTOR(ch)->editref  = UNIT_EXTRA_DESCR(paper);
    CHAR_DESCRIPTOR(ch)->postedit = edit_extra;

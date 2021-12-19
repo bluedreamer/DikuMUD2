@@ -25,10 +25,6 @@
 /* 23/07/92 seifert: Fixed grave bug in reordering af ticks                */
 /* 23/08/83 jubal  : Crimes are zeroed at death                            */
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #include "affect.h"
 #include "comm.h"
 #include "db.h"
@@ -43,7 +39,11 @@
 #include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 /* Extern Functions */
 
@@ -765,9 +765,9 @@ void tif_valhalla_ret(unit_affected_type *af, unit_data *unit)
    PC_COND(unit, THIRST) = 24;
    PC_COND(unit, DRUNK)  = 0;
 
-   CHAR_MANA(unit)      = mana_limit(unit);
-   CHAR_ENDURANCE(unit) = move_limit(unit);
-   UNIT_HIT(unit)       = UNIT_MAX_HIT(unit);
+   CHAR_MANA(unit)       = mana_limit(unit);
+   CHAR_ENDURANCE(unit)  = move_limit(unit);
+   UNIT_HIT(unit)        = UNIT_MAX_HIT(unit);
 
    if(is_destructed(DR_UNIT, unit) == 0)
    {

@@ -23,11 +23,12 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 #include "dilinst.h"
-#include "CServerConfiguration.h"
+
 #include "account.h"
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
+#include "CServerConfiguration.h"
 #include "db.h"
 #include "db_file.h"
 #include "dil.h"
@@ -51,6 +52,7 @@
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <climits>
 #include <cstdarg> /* For type_check */
 #include <cstdio>
@@ -64,8 +66,11 @@ void dil_insterr(dilprg *p, const char *where)
    /* instruction called as an expression! */
    /* This is serous! mess-up in the core.. stop the program */
 
-   szonelog(UNIT_FI_ZONE(p->sarg->owner), "DIL %s@%s, Instruction error in %s\n", UNIT_FI_NAME(p->sarg->owner),
-            UNIT_FI_ZONENAME(p->sarg->owner), where);
+   szonelog(UNIT_FI_ZONE(p->sarg->owner),
+            "DIL %s@%s, Instruction error in %s\n",
+            UNIT_FI_NAME(p->sarg->owner),
+            UNIT_FI_ZONENAME(p->sarg->owner),
+            where);
    p->waitcmd = WAITCMD_QUIT;
 }
 
@@ -301,7 +306,7 @@ void dilfi_swt(dilprg *p, dilval *v)
 
    if(v1.val.ptr != nullptr)
    {
-      dif = v2.val.num - UNIT_BASE_WEIGHT((unit_data *)v1.val.ptr);
+      dif                                       = v2.val.num - UNIT_BASE_WEIGHT((unit_data *)v1.val.ptr);
 
       /* set new baseweight */
       UNIT_BASE_WEIGHT((unit_data *)v1.val.ptr) = v2.val.num;
@@ -447,15 +452,15 @@ void dilfi_rtf(dilprg *p, dilval *v)
       return;
    }
 
-   i = p->sp - p->stack - 1;
+   i     = p->sp - p->stack - 1;
 
-   cfrm = p->sp;
+   cfrm  = p->sp;
 
    /* pop stack frame */
    p->sp = &p->stack[i];
 
    /* copy return variable */
-   i = p->sp->ret;
+   i     = p->sp->ret;
 
    dil_free_var(&p->sp->vars[i]);
 
@@ -514,8 +519,8 @@ void dil_push_frame(dilprg *p, diltemplate *rtmpl, dilval *av)
       RECREATE(p->stack, dilframe, p->stacksz);
    }
 
-   frm   = &p->stack[i + 1];
-   p->sp = frm;
+   frm              = &p->stack[i + 1];
+   p->sp            = frm;
 
    frm->tmpl        = rtmpl;
    frm->pc          = rtmpl->core;
@@ -523,7 +528,7 @@ void dil_push_frame(dilprg *p, diltemplate *rtmpl, dilval *av)
    frm->securecount = 0;
    frm->secure      = nullptr;
 
-   frm->intrcount = rtmpl->intrcount;
+   frm->intrcount   = rtmpl->intrcount;
 
    if(rtmpl->intrcount != 0U)
    {
@@ -642,8 +647,8 @@ void dilfi_rproc(dilprg *p, dilval *v)
        * stop the DIL program executing,
        * write error, but do not slime it.
        */
-      szonelog(UNIT_FI_ZONE(p->sarg->owner), "DIL %s@%s, Error in remote call\n", UNIT_FI_NAME(p->sarg->owner),
-               UNIT_FI_ZONENAME(p->sarg->owner));
+      szonelog(
+         UNIT_FI_ZONE(p->sarg->owner), "DIL %s@%s, Error in remote call\n", UNIT_FI_NAME(p->sarg->owner), UNIT_FI_ZONENAME(p->sarg->owner));
       p->waitcmd = WAITCMD_STOP;
       return;
    }
@@ -786,8 +791,8 @@ void dilfi_rfunc(dilprg *p, dilval *v)
        * stop the DIL program executing,
        * write error, but do not slime it.
        */
-      szonelog(UNIT_FI_ZONE(p->sarg->owner), "DIL %s@%s, Error in remote call\n", UNIT_FI_NAME(p->sarg->owner),
-               UNIT_FI_ZONENAME(p->sarg->owner));
+      szonelog(
+         UNIT_FI_ZONE(p->sarg->owner), "DIL %s@%s, Error in remote call\n", UNIT_FI_NAME(p->sarg->owner), UNIT_FI_ZONENAME(p->sarg->owner));
       p->waitcmd = WAITCMD_STOP;
       return;
    }
@@ -1370,7 +1375,12 @@ void dilfi_exp(dilprg *p, dilval *v)
 
       value = MIN(level_xp(CHAR_LEVEL((unit_data *)v2.val.ptr)), value);
 
-      slog(LOG_ALL, 0, "%s gained %d experience from unit %s@%s.", UNIT_NAME((unit_data *)v2.val.ptr), value, UNIT_FI_NAME(p->sarg->owner),
+      slog(LOG_ALL,
+           0,
+           "%s gained %d experience from unit %s@%s.",
+           UNIT_NAME((unit_data *)v2.val.ptr),
+           value,
+           UNIT_FI_NAME(p->sarg->owner),
            UNIT_FI_ZONENAME(p->sarg->owner));
       gain_exp((unit_data *)v2.val.ptr, value);
    }
@@ -1808,14 +1818,18 @@ void dilfi_exec(dilprg *p, dilval *v)
 
       if(strlen((char *)v1.val.ptr) > MAX_INPUT_LENGTH)
       {
-         slog(LOG_ALL, 0, "DIL %s@%s issued command which was too long: %s", UNIT_FI_NAME(p->sarg->owner), UNIT_FI_ZONENAME(p->sarg->owner),
+         slog(LOG_ALL,
+              0,
+              "DIL %s@%s issued command which was too long: %s",
+              UNIT_FI_NAME(p->sarg->owner),
+              UNIT_FI_ZONENAME(p->sarg->owner),
               cmd);
       }
 
       if(IS_IMMORTAL((unit_data *)v2.val.ptr))
       {
-         char          buf[MAX_INPUT_LENGTH];
-         command_info *cmd_ptr;
+         char                     buf[MAX_INPUT_LENGTH];
+         command_info            *cmd_ptr;
 
          extern struct trie_type *intr_trie;
 
@@ -1825,10 +1839,14 @@ void dilfi_exec(dilprg *p, dilval *v)
          {
             if(cmd_ptr->minimum_level >= IMMORTAL_LEVEL)
             {
-               slog(LOG_EXTENSIVE, 0,
+               slog(LOG_EXTENSIVE,
+                    0,
                     "DIL %s on %s tried "
                     "to make %s do: %s",
-                    p->sp->tmpl->prgname, STR(UNIT_NAME(p->sarg->owner)), UNIT_NAME((unit_data *)v2.val.ptr), cmd);
+                    p->sp->tmpl->prgname,
+                    STR(UNIT_NAME(p->sarg->owner)),
+                    UNIT_NAME((unit_data *)v2.val.ptr),
+                    cmd);
             }
             else
             {
@@ -1928,9 +1946,39 @@ void dilfi_act(dilprg *p, dilval *v)
 
    p->waitcmd--;
 
-   if(dil_type_check("act", p, 6, &v1, TYPEFAIL_NULL, 1, DILV_SP, &v2, TYPEFAIL_NULL, 1, DILV_INT, &v3, TYPEFAIL_NULL, 3, DILV_UP, DILV_SP,
-                     DILV_NULL, &v4, TYPEFAIL_NULL, 3, DILV_UP, DILV_SP, DILV_NULL, &v5, TYPEFAIL_NULL, 3, DILV_UP, DILV_SP, DILV_NULL, &v6,
-                     TYPEFAIL_NULL, 1, DILV_INT) < 0)
+   if(dil_type_check("act",
+                     p,
+                     6,
+                     &v1,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_SP,
+                     &v2,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_INT,
+                     &v3,
+                     TYPEFAIL_NULL,
+                     3,
+                     DILV_UP,
+                     DILV_SP,
+                     DILV_NULL,
+                     &v4,
+                     TYPEFAIL_NULL,
+                     3,
+                     DILV_UP,
+                     DILV_SP,
+                     DILV_NULL,
+                     &v5,
+                     TYPEFAIL_NULL,
+                     3,
+                     DILV_UP,
+                     DILV_SP,
+                     DILV_NULL,
+                     &v6,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_INT) < 0)
    {
       return;
    }
@@ -2089,10 +2137,53 @@ void dilfi_ada(dilprg *p, dilval *v)
    eval_dil_exp(p, &v10);
    eval_dil_exp(p, &v11);
 
-   if(dil_type_check("addaff", p, 11, &v1, TYPEFAIL_NULL, 1, DILV_UP, &v2, TYPEFAIL_NULL, 1, DILV_INT, &v3, TYPEFAIL_NULL, 1, DILV_INT, &v4,
-                     TYPEFAIL_NULL, 1, DILV_INT, &v5, TYPEFAIL_NULL, 1, DILV_INT, &v6, TYPEFAIL_NULL, 1, DILV_INT, &v7, TYPEFAIL_NULL, 1,
-                     DILV_INT, &v8, TYPEFAIL_NULL, 1, DILV_INT, &v9, TYPEFAIL_NULL, 1, DILV_INT, &v10, TYPEFAIL_NULL, 1, DILV_INT, &v11,
-                     TYPEFAIL_NULL, 1, DILV_INT) < 0)
+   if(dil_type_check("addaff",
+                     p,
+                     11,
+                     &v1,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_UP,
+                     &v2,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_INT,
+                     &v3,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_INT,
+                     &v4,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_INT,
+                     &v5,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_INT,
+                     &v6,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_INT,
+                     &v7,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_INT,
+                     &v8,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_INT,
+                     &v9,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_INT,
+                     &v10,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_INT,
+                     &v11,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_INT) < 0)
    {
       return;
    }
@@ -2114,9 +2205,9 @@ void dilfi_ada(dilprg *p, dilval *v)
          af.duration = v3.val.num;
          af.beat     = v4.val.num;
 
-         af.data[0] = v5.val.num;
-         af.data[1] = v6.val.num;
-         af.data[2] = v7.val.num;
+         af.data[0]  = v5.val.num;
+         af.data[1]  = v6.val.num;
+         af.data[2]  = v7.val.num;
 
          af.firstf_i = v8.val.num;
          af.tickf_i  = v9.val.num;
@@ -2266,10 +2357,10 @@ void dilfi_snta(dilprg *p, dilval *v)
          sarg.pInt      = nullptr;
          sarg.fptr      = nullptr; /* Set by unit_function_scan */
 
-         sarg.fptr   = nullptr;
-         sarg.cmd    = &cmd_auto_msg;
-         sarg.arg    = (char *)v1.val.ptr;
-         sarg.mflags = SFB_MSG;
+         sarg.fptr      = nullptr;
+         sarg.cmd       = &cmd_auto_msg;
+         sarg.arg       = (char *)v1.val.ptr;
+         sarg.mflags    = SFB_MSG;
 
          for(u = unit_list; u != nullptr; u = u->gnext)
          {
@@ -2353,9 +2444,9 @@ void dilfi_sntadil(dilprg *p, dilval *v)
                sarg.pInt      = nullptr;
                sarg.fptr      = fptr;
 
-               sarg.cmd    = &cmd_auto_msg;
-               sarg.arg    = (char *)v1.val.ptr;
-               sarg.mflags = SFB_MSG;
+               sarg.cmd       = &cmd_auto_msg;
+               sarg.arg       = (char *)v1.val.ptr;
+               sarg.mflags    = SFB_MSG;
 
                function_activate(tp->owner, &sarg);
             }
@@ -2538,7 +2629,7 @@ void dilfi_pup(dilprg *p, dilval *v)
 {
    dilval v1;
 
-   void die(unit_data * ch);
+   void   die(unit_data * ch);
 
    if(v != nullptr)
    {
@@ -2591,8 +2682,25 @@ void dilfi_cast(dilprg *p, dilval *v)
 
    p->waitcmd--;
 
-   if(dil_type_check("cast", p, 4, &v1, TYPEFAIL_NULL, 1, DILV_INT, &v2, TYPEFAIL_NULL, 1, DILV_UP, &v3, TYPEFAIL_NULL, 1, DILV_UP, &v4,
-                     TYPEFAIL_NULL, 1, DILV_UP) < 0)
+   if(dil_type_check("cast",
+                     p,
+                     4,
+                     &v1,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_INT,
+                     &v2,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_UP,
+                     &v3,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_UP,
+                     &v4,
+                     TYPEFAIL_NULL,
+                     1,
+                     DILV_UP) < 0)
    {
       return;
    }

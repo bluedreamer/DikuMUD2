@@ -1,4 +1,5 @@
 #include "cCombat.h"
+
 #include "cCombatList.h"
 #include "comm.h"
 #include "fight.h"
@@ -10,11 +11,11 @@ cCombat::cCombat(unit_data *owner, int bMelee)
 {
    assert(owner);
 
-   pOwner = owner;
-   pMelee = nullptr;
+   pOwner       = owner;
+   pMelee       = nullptr;
 
-   nWhen  = SPEED_DEFAULT;
-   cmd[0] = 0;
+   nWhen        = SPEED_DEFAULT;
+   cmd[0]       = 0;
 
    pOpponents   = nullptr;
    nNoOpponents = 0;
@@ -206,7 +207,10 @@ void cCombat::status(const unit_data *ch)
            "Combat Speed [%d]  Turn [%d]\n\r"
            "Melee Opponent '%s'\n\r"
            "Total of %d Opponents:\n\r",
-           STR(UNIT_NAME(pOwner)), CHAR_SPEED(pOwner), nWhen, CHAR_FIGHTING(pOwner) ? STR(UNIT_NAME(CHAR_FIGHTING(pOwner))) : "NONE",
+           STR(UNIT_NAME(pOwner)),
+           CHAR_SPEED(pOwner),
+           nWhen,
+           CHAR_FIGHTING(pOwner) ? STR(UNIT_NAME(CHAR_FIGHTING(pOwner))) : "NONE",
            nNoOpponents);
 
    send_to_char(buf, ch);

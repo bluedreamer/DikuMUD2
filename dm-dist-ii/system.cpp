@@ -27,6 +27,7 @@
  *			  server, and into mplex'er			   */
 
 #include "CServerConfiguration.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -62,6 +63,7 @@
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <arpa/inet.h>
 #include <cerrno>
 #include <climits>
@@ -79,7 +81,7 @@ public:
 
 class cMotherHook MotherHook;
 
-void MplexSendSetup(descriptor_data *d)
+void              MplexSendSetup(descriptor_data *d)
 {
    assert(d);
 
@@ -95,8 +97,8 @@ void MplexSendSetup(descriptor_data *d)
 /* Call only once when creating a new char (guest)    */
 void init_char(unit_data *ch)
 {
-   int i;
-   int init_skills = 0;
+   int            i;
+   int            init_skills = 0;
 
    extern int32_t player_id;
 
@@ -130,22 +132,22 @@ void init_char(unit_data *ch)
    PC_HOME(ch)          = nullptr;
    PC_GUILD(ch)         = nullptr;
 
-   CHAR_POS(ch)   = POSITION_STANDING;
-   CHAR_SPEED(ch) = SPEED_DEFAULT;
-   CHAR_RACE(ch)  = RACE_HUMAN;
-   CHAR_SEX(ch)   = SEX_MALE;
+   CHAR_POS(ch)         = POSITION_STANDING;
+   CHAR_SPEED(ch)       = SPEED_DEFAULT;
+   CHAR_RACE(ch)        = RACE_HUMAN;
+   CHAR_SEX(ch)         = SEX_MALE;
 
    PC_TIME(ch).connect = PC_TIME(ch).birth = PC_TIME(ch).creation = time(nullptr);
    PC_TIME(ch).played                                             = 0;
    PC_LIFESPAN(ch)                                                = 100;
 
-   CHAR_EXP(ch)   = 0;
-   CHAR_LEVEL(ch) = 0;
-   PC_ID(ch)      = -1;
-   PC_CRIMES(ch)  = 0;
+   CHAR_EXP(ch)                                                   = 0;
+   CHAR_LEVEL(ch)                                                 = 0;
+   PC_ID(ch)                                                      = -1;
+   PC_CRIMES(ch)                                                  = 0;
 
-   PC_ABILITY_POINTS(ch) = 0;
-   PC_SKILL_POINTS(ch)   = 0;
+   PC_ABILITY_POINTS(ch)                                          = 0;
+   PC_SKILL_POINTS(ch)                                            = 0;
 
    /* *** if this is our first player --- he be God *** */
    if(player_id == -7)
@@ -154,14 +156,14 @@ void init_char(unit_data *ch)
       CHAR_EXP(ch)   = required_xp(255);
       CHAR_LEVEL(ch) = 255;
 
-      init_skills = 200;
+      init_skills    = 200;
 
-      CHAR_RACE(ch) = RACE_HUMAN;
-      CHAR_SEX(ch)  = SEX_MALE; /* God is male ;-) */
+      CHAR_RACE(ch)  = RACE_HUMAN;
+      CHAR_SEX(ch)   = SEX_MALE; /* God is male ;-) */
 
-      player_id = 1;
+      player_id      = 1;
 
-      PC_ID(ch) = new_player_id();
+      PC_ID(ch)      = new_player_id();
    }
 
    for(i = 0; i < SPL_TREE_MAX; i++)
@@ -196,11 +198,11 @@ void init_char(unit_data *ch)
    /* UNIT_TGH(ch) = 0; */
    UNIT_HIT(ch) = UNIT_MAX_HIT(ch) = 1;
 
-   CHAR_MANA(ch)      = mana_limit(ch);
-   CHAR_ENDURANCE(ch) = move_limit(ch);
-   CHAR_LAST_ROOM(ch) = nullptr;
+   CHAR_MANA(ch)                   = mana_limit(ch);
+   CHAR_ENDURANCE(ch)              = move_limit(ch);
+   CHAR_LAST_ROOM(ch)              = nullptr;
 
-   CHAR_FLAGS(ch) = 0;
+   CHAR_FLAGS(ch)                  = 0;
    SET_BIT(CHAR_FLAGS(ch), CHAR_PROTECTED);
 
    for(i = 0; i < 3; i++)
@@ -213,8 +215,8 @@ void init_char(unit_data *ch)
    set_title(ch);
 }
 
-int no_connections     = 0; /* No of used descriptors                    */
-int max_no_connections = 0; /* Statistics                                */
+int  no_connections     = 0; /* No of used descriptors                    */
+int  max_no_connections = 0; /* Statistics                                */
 
 /* Pass the multi-fd which is to be associated with this new descriptor */
 /* Note that id zero signifies that mplex descriptor has no mplex'er    */
@@ -233,8 +235,8 @@ void descriptor_close(descriptor_data *d, int bSendClose)
    descriptor_data  *tmp;
    class cMultiHook *multi = nullptr;
 
-   void unsnoop(unit_data * ch, int mode);
-   void unswitchbody(unit_data * npc);
+   void              unsnoop(unit_data * ch, int mode);
+   void              unswitchbody(unit_data * npc);
 
    assert(d->character);
 
@@ -464,7 +466,7 @@ void init_mother(int nPort)
    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
    server_addr.sin_port        = htons(nPort);
 
-   fdMother = socket(AF_INET, SOCK_STREAM, 0);
+   fdMother                    = socket(AF_INET, SOCK_STREAM, 0);
 
    if(fdMother == -1)
    {
@@ -550,7 +552,11 @@ void system_memory(unit_data *ch)
               "Shared memory size  %8ld\n\r"
               "Unshared data size  %8ld\n\r"
               "Unshared stack size %8ld\n\r\n\r",
-              rusage_data.ru_nvcsw, rusage_data.ru_maxrss, rusage_data.ru_ixrss, rusage_data.ru_isrss, rusage_data.ru_idrss);
+              rusage_data.ru_nvcsw,
+              rusage_data.ru_maxrss,
+              rusage_data.ru_ixrss,
+              rusage_data.ru_isrss,
+              rusage_data.ru_idrss);
       send_to_char(Buf, ch);
    }
 #endif

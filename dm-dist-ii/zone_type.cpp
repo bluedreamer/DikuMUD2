@@ -1,4 +1,5 @@
 #include "zone_type.h"
+
 #include "essential.h"
 #include "file_index_type.h"
 #include "zone_reset_cmd.h"
@@ -10,18 +11,18 @@ zone_type::zone_type()
    help     = nullptr;
    filename = nullptr;
 
-   fi = nullptr;
-   ba = nullptr;
+   fi       = nullptr;
+   ba       = nullptr;
 
-   zri  = nullptr;
-   next = nullptr;
+   zri      = nullptr;
+   next     = nullptr;
 
-   tmpl   = nullptr;
-   tmplba = nullptr;
+   tmpl     = nullptr;
+   tmplba   = nullptr;
 
    spmatrix = nullptr;
 
-   access = 255;
+   access   = 255;
 }
 
 zone_type::~zone_type()

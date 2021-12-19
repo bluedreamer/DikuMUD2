@@ -41,6 +41,7 @@
 #include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cctype>
 #include <climits>
 #include <cstdio>
@@ -196,8 +197,17 @@ auto teaches_index(struct skill_teach_type *teaches_skills, int node) -> int
    return -1;
 }
 
-void info_show_one(unit_data *teacher, unit_data *pupil, uint8_t current_points, uint8_t max_level, int next_point, int gold,
-                   const char *text, int indent, uint8_t isleaf, uint8_t level_type, int min_level)
+void info_show_one(unit_data  *teacher,
+                   unit_data  *pupil,
+                   uint8_t     current_points,
+                   uint8_t     max_level,
+                   int         next_point,
+                   int         gold,
+                   const char *text,
+                   int         indent,
+                   uint8_t     isleaf,
+                   uint8_t     level_type,
+                   int         min_level)
 {
    char buf[256];
 
@@ -232,8 +242,15 @@ void info_show_one(unit_data *teacher, unit_data *pupil, uint8_t current_points,
 
          if(IS_SET(PC_FLAGS(pupil), PC_EXPERT))
          {
-            sprintf(buf, "%s%-20s [%3d%% of %3d%%, points %2d, guild level %2d, %s]\n\r", spc(4 * indent), text, current_points, max_level,
-                    next_point, min_level, money_string(money_round(TRUE, gold, currency, 1), currency, FALSE));
+            sprintf(buf,
+                    "%s%-20s [%3d%% of %3d%%, points %2d, guild level %2d, %s]\n\r",
+                    spc(4 * indent),
+                    text,
+                    current_points,
+                    max_level,
+                    next_point,
+                    min_level,
+                    money_string(money_round(TRUE, gold, currency, 1), currency, FALSE));
          }
          else
          {
@@ -249,8 +266,15 @@ void info_show_one(unit_data *teacher, unit_data *pupil, uint8_t current_points,
    send_to_char(buf, pupil);
 }
 
-void info_show_roots(unit_data *teacher, unit_data *pupil, struct skill_teach_type *teaches_skills, struct tree_type *tree,
-                     const char *text[], uint8_t level_type, uint8_t pc_values[], uint8_t pc_lvl[], int8_t pc_cost[])
+void info_show_roots(unit_data               *teacher,
+                     unit_data               *pupil,
+                     struct skill_teach_type *teaches_skills,
+                     struct tree_type        *tree,
+                     const char              *text[],
+                     uint8_t                  level_type,
+                     uint8_t                  pc_values[],
+                     uint8_t                  pc_lvl[],
+                     int8_t                   pc_cost[])
 {
    int i;
    int cost;
@@ -261,20 +285,36 @@ void info_show_roots(unit_data *teacher, unit_data *pupil, struct skill_teach_ty
       if((!TREE_ISROOT(tree, teaches_skills[i].node) && !TREE_ISLEAF(tree, teaches_skills[i].node)) ||
          ((TREE_ISROOT(tree, teaches_skills[i].node) && TREE_ISLEAF(tree, teaches_skills[i].node))))
       {
-         lvl = actual_training_level(pc_lvl[teaches_skills[i].node], teaches_skills[i].costs);
+         lvl  = actual_training_level(pc_lvl[teaches_skills[i].node], teaches_skills[i].costs);
 
          cost = actual_cost(teaches_skills[i].costs[lvl], pc_cost[teaches_skills[i].node]);
 
-         info_show_one(teacher, pupil, pc_values[teaches_skills[i].node], teaches_skills[i].max_skill, cost,
-                       gold_cost(&teaches_skills[i], pc_values[teaches_skills[i].node]), text[teaches_skills[i].node], 0,
-                       TREE_ISLEAF(tree, teaches_skills[i].node), level_type, teaches_skills[i].min_level);
+         info_show_one(teacher,
+                       pupil,
+                       pc_values[teaches_skills[i].node],
+                       teaches_skills[i].max_skill,
+                       cost,
+                       gold_cost(&teaches_skills[i], pc_values[teaches_skills[i].node]),
+                       text[teaches_skills[i].node],
+                       0,
+                       TREE_ISLEAF(tree, teaches_skills[i].node),
+                       level_type,
+                       teaches_skills[i].min_level);
       }
    }
 }
 
-void info_one_skill(unit_data *teacher, unit_data *pupil, struct skill_teach_type *teaches_skills, struct tree_type *tree,
-                    const char *text[], uint8_t pc_values[], uint8_t pc_lvl[], int8_t pc_cost[], int teach_index, uint8_t level_type,
-                    struct teacher_msg *msgs)
+void info_one_skill(unit_data               *teacher,
+                    unit_data               *pupil,
+                    struct skill_teach_type *teaches_skills,
+                    struct tree_type        *tree,
+                    const char              *text[],
+                    uint8_t                  pc_values[],
+                    uint8_t                  pc_lvl[],
+                    int8_t                   pc_cost[],
+                    int                      teach_index,
+                    uint8_t                  level_type,
+                    struct teacher_msg      *msgs)
 
 {
    int indent;
@@ -288,7 +328,7 @@ void info_one_skill(unit_data *teacher, unit_data *pupil, struct skill_teach_typ
 
    if(TREE_ISLEAF(tree, teaches_skills[teach_index].node) && !TREE_ISROOT(tree, teaches_skills[teach_index].node))
    {
-      i = TREE_PARENT(tree, teaches_skills[teach_index].node);
+      i           = TREE_PARENT(tree, teaches_skills[teach_index].node);
 
       teach_index = teaches_index(teaches_skills, i);
    }
@@ -308,9 +348,17 @@ void info_one_skill(unit_data *teacher, unit_data *pupil, struct skill_teach_typ
       lvl  = actual_training_level(pc_lvl[i], teaches_skills[teach_index].costs);
       cost = actual_cost(teaches_skills[teach_index].costs[lvl], pc_cost[i]);
 
-      info_show_one(teacher, pupil, pc_values[i], teaches_skills[teach_index].max_skill, cost,
-                    gold_cost(&teaches_skills[teach_index], pc_values[i]), text[i], indent++,
-                    TREE_ISLEAF(tree, teaches_skills[teach_index].node), level_type, teaches_skills[teach_index].min_level);
+      info_show_one(teacher,
+                    pupil,
+                    pc_values[i],
+                    teaches_skills[teach_index].max_skill,
+                    cost,
+                    gold_cost(&teaches_skills[teach_index], pc_values[i]),
+                    text[i],
+                    indent++,
+                    TREE_ISLEAF(tree, teaches_skills[teach_index].node),
+                    level_type,
+                    teaches_skills[teach_index].min_level);
 
       /* Show children of teach_index category */
       for(j = 0; teaches_skills[j].node != -1; j++)
@@ -321,8 +369,17 @@ void info_one_skill(unit_data *teacher, unit_data *pupil, struct skill_teach_typ
             i    = teaches_skills[j].node;
             lvl  = actual_training_level(pc_lvl[i], teaches_skills[j].costs);
             cost = actual_cost(teaches_skills[j].costs[lvl], pc_cost[i]);
-            info_show_one(teacher, pupil, pc_values[i], teaches_skills[j].max_skill, cost, gold_cost(&teaches_skills[j], pc_values[i]),
-                          text[i], indent, TREE_ISLEAF(tree, teaches_skills[j].node), level_type, teaches_skills[j].min_level);
+            info_show_one(teacher,
+                          pupil,
+                          pc_values[i],
+                          teaches_skills[j].max_skill,
+                          cost,
+                          gold_cost(&teaches_skills[j], pc_values[i]),
+                          text[i],
+                          indent,
+                          TREE_ISLEAF(tree, teaches_skills[j].node),
+                          level_type,
+                          teaches_skills[j].min_level);
          }
       }
    }
@@ -338,8 +395,17 @@ void info_one_skill(unit_data *teacher, unit_data *pupil, struct skill_teach_typ
             lvl  = actual_training_level(pc_lvl[i], teaches_skills[j].costs);
             cost = actual_cost(teaches_skills[j].costs[lvl], pc_cost[i]);
 
-            info_show_one(teacher, pupil, pc_values[i], teaches_skills[j].max_skill, cost, gold_cost(&teaches_skills[j], pc_values[i]),
-                          text[i], indent, TREE_ISLEAF(tree, teaches_skills[j].node), level_type, teaches_skills[j].min_level);
+            info_show_one(teacher,
+                          pupil,
+                          pc_values[i],
+                          teaches_skills[j].max_skill,
+                          cost,
+                          gold_cost(&teaches_skills[j], pc_values[i]),
+                          text[i],
+                          indent,
+                          TREE_ISLEAF(tree, teaches_skills[j].node),
+                          level_type,
+                          teaches_skills[j].min_level);
          }
       }
    }
@@ -399,8 +465,15 @@ auto pupil_magic(unit_data *pupil) -> int
    return static_cast<int>(FALSE);
 }
 
-auto practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type *tree, const char *text[], uint8_t pc_values[],
-              uint8_t pc_lvl[], int8_t pc_cost[], int32_t *practice_points, int teach_index) -> int
+auto practice(struct spec_arg     *sarg,
+              struct teach_packet *pckt,
+              struct tree_type    *tree,
+              const char          *text[],
+              uint8_t              pc_values[],
+              uint8_t              pc_lvl[],
+              int8_t               pc_cost[],
+              int32_t             *practice_points,
+              int                  teach_index) -> int
 {
    int        current_points;
    int        cost;
@@ -418,7 +491,8 @@ auto practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type
               "The category is there to prevent you from being flooded with information.\n\r"
               "Try the command: 'info %s' on the category itself,\n\r"
               "to see which skills it contains.\n\r",
-              text[pckt->teaches[teach_index].node], text[pckt->teaches[teach_index].node]);
+              text[pckt->teaches[teach_index].node],
+              text[pckt->teaches[teach_index].node]);
       send_to_char(buf, sarg->activator);
       return static_cast<int>(TRUE);
    }
@@ -436,7 +510,8 @@ auto practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type
          sprintf(buf,
                  "You need to be at least guild level %d to practice "
                  "%s.\n\r",
-                 pckt->teaches[teach_index].min_level, text[pckt->teaches[teach_index].node]);
+                 pckt->teaches[teach_index].min_level,
+                 text[pckt->teaches[teach_index].node]);
          send_to_char(buf, sarg->activator);
          return static_cast<int>(TRUE);
       }
@@ -445,7 +520,9 @@ auto practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type
    {
       if(pckt->teaches[teach_index].min_level > CHAR_LEVEL(sarg->activator))
       {
-         sprintf(buf, "You need to be at least level %d to practice %s.\n\r", pckt->teaches[teach_index].min_level,
+         sprintf(buf,
+                 "You need to be at least level %d to practice %s.\n\r",
+                 pckt->teaches[teach_index].min_level,
                  text[pckt->teaches[teach_index].node]);
          send_to_char(buf, sarg->activator);
          return static_cast<int>(TRUE);
@@ -454,15 +531,19 @@ auto practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type
 
    current_points = pc_values[pckt->teaches[teach_index].node];
 
-   lvl = actual_training_level(pc_lvl[pckt->teaches[teach_index].node], pckt->teaches[teach_index].costs);
+   lvl            = actual_training_level(pc_lvl[pckt->teaches[teach_index].node], pckt->teaches[teach_index].costs);
 
-   cost = actual_cost(pckt->teaches[teach_index].costs[lvl], pc_cost[pckt->teaches[teach_index].node]);
+   cost           = actual_cost(pckt->teaches[teach_index].costs[lvl], pc_cost[pckt->teaches[teach_index].node]);
 
    if(cost == 0)
    {
       act("$1n tells you, 'You've learned all you can about $2t at "
           "this level.'",
-          A_ALWAYS, sarg->owner, text[pckt->teaches[teach_index].node], sarg->activator, TO_VICT);
+          A_ALWAYS,
+          sarg->owner,
+          text[pckt->teaches[teach_index].node],
+          sarg->activator,
+          TO_VICT);
       return static_cast<int>(TRUE);
    }
 
@@ -641,20 +722,38 @@ auto teach_basis(struct spec_arg *sarg, struct teach_packet *pckt) -> int
 
    if(sarg->cmd->no == CMD_INFO)
    {
-      info_one_skill(sarg->owner, sarg->activator, pckt->teaches, pckt->tree, pckt->text, pc_values, pc_lvl, pc_cost, index,
-                     pckt->level_type, &pckt->msgs);
+      info_one_skill(sarg->owner,
+                     sarg->activator,
+                     pckt->teaches,
+                     pckt->tree,
+                     pckt->text,
+                     pc_values,
+                     pc_lvl,
+                     pc_cost,
+                     index,
+                     pckt->level_type,
+                     &pckt->msgs);
       sprintf(buf, "\n\rYou have %lu practice points left.\n\r", (unsigned long)*practice_points);
       send_to_char(buf, sarg->activator);
    }
    else /* Practice! */
    {
-      stop = practice(sarg, pckt, pckt->tree, pckt->text, pc_values, pc_lvl, pc_cost, practice_points, index);
+      stop                          = practice(sarg, pckt, pckt->tree, pckt->text, pc_values, pc_lvl, pc_cost, practice_points, index);
 
       /* If hpp changed, then update no of maximum hitpoints */
       UNIT_MAX_HIT(sarg->activator) = hit_limit(sarg->activator);
 
-      info_one_skill(sarg->owner, sarg->activator, pckt->teaches, pckt->tree, pckt->text, pc_values, pc_lvl, pc_cost, index,
-                     pckt->level_type, &pckt->msgs);
+      info_one_skill(sarg->owner,
+                     sarg->activator,
+                     pckt->teaches,
+                     pckt->tree,
+                     pckt->text,
+                     pc_values,
+                     pc_lvl,
+                     pc_cost,
+                     index,
+                     pckt->level_type,
+                     &pckt->msgs);
       sprintf(buf, "\n\rYou have %lu practice points left.\n\r", (unsigned long)*practice_points);
       send_to_char(buf, sarg->activator);
    }
@@ -763,7 +862,7 @@ auto teach_init(struct spec_arg *sarg) -> int
    struct teach_packet    *packet;
    struct skill_teach_type a_skill;
 
-   static const char *teach_types[] = {"abilities", "spells", "skills", "weapons", nullptr};
+   static const char      *teach_types[] = {"abilities", "spells", "skills", "weapons", nullptr};
 
    if(sarg->cmd->no < CMD_NORTH)
    {
@@ -772,8 +871,8 @@ auto teach_init(struct spec_arg *sarg) -> int
 
    if((c = (char *)sarg->fptr->data) == nullptr)
    {
-      szonelog(UNIT_FI_ZONE(sarg->owner), "%s@%s: No text data for teacher-init!", UNIT_FI_NAME(sarg->owner),
-               UNIT_FI_ZONENAME(sarg->owner));
+      szonelog(
+         UNIT_FI_ZONE(sarg->owner), "%s@%s: No text data for teacher-init!", UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
       destroy_fptr(sarg->owner, sarg->fptr);
       return SFR_BLOCK;
    }
@@ -785,7 +884,8 @@ auto teach_init(struct spec_arg *sarg) -> int
       szonelog(UNIT_FI_ZONE(sarg->owner),
                "%s@%s: Illegal teach type in "
                "teacher init!",
-               UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
+               UNIT_FI_NAME(sarg->owner),
+               UNIT_FI_ZONENAME(sarg->owner));
       destroy_fptr(sarg->owner, sarg->fptr);
       return SFR_BLOCK;
    }
@@ -819,7 +919,8 @@ auto teach_init(struct spec_arg *sarg) -> int
          szonelog(UNIT_FI_ZONE(sarg->owner),
                   "%s@%s: Illegal type in "
                   "teacher-init",
-                  UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
+                  UNIT_FI_NAME(sarg->owner),
+                  UNIT_FI_ZONENAME(sarg->owner));
          break;
    }
 
@@ -833,7 +934,8 @@ auto teach_init(struct spec_arg *sarg) -> int
       szonelog(UNIT_FI_ZONE(sarg->owner),
                "%s@%s: Illegal level-type in "
                "teacher-init.",
-               UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
+               UNIT_FI_NAME(sarg->owner),
+               UNIT_FI_ZONENAME(sarg->owner));
       packet->level_type = 0;
    }
 
@@ -852,7 +954,7 @@ auto teach_init(struct spec_arg *sarg) -> int
    c                                    = get_next_str(c, buf);
    packet->msgs.remove_inventory        = str_dup(buf);
 
-   count = 1;
+   count                                = 1;
    CREATE(packet->teaches, struct skill_teach_type, 1);
 
    for(;;)
@@ -869,7 +971,9 @@ auto teach_init(struct spec_arg *sarg) -> int
          szonelog(UNIT_FI_ZONE(sarg->owner),
                   "%s@%s: Minimum level expected "
                   "between 1 - 150 (is %s)",
-                  UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner), buf);
+                  UNIT_FI_NAME(sarg->owner),
+                  UNIT_FI_ZONENAME(sarg->owner),
+                  buf);
          c = str_line(c, buf);
          continue;
       }
@@ -887,7 +991,9 @@ auto teach_init(struct spec_arg *sarg) -> int
          szonelog(UNIT_FI_ZONE(sarg->owner),
                   "%s@%s: Maximum skill expected "
                   "between 1 - 100 (is %s)",
-                  UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner), buf);
+                  UNIT_FI_NAME(sarg->owner),
+                  UNIT_FI_ZONENAME(sarg->owner),
+                  buf);
          c = str_line(c, buf);
          continue;
       }
@@ -905,7 +1011,9 @@ auto teach_init(struct spec_arg *sarg) -> int
          szonelog(UNIT_FI_ZONE(sarg->owner),
                   "%s@%s: Illegal teacher-init "
                   "skill: %s",
-                  UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner), buf);
+                  UNIT_FI_NAME(sarg->owner),
+                  UNIT_FI_ZONENAME(sarg->owner),
+                  buf);
          c = str_line(c, buf);
          continue;
       }
@@ -922,7 +1030,9 @@ auto teach_init(struct spec_arg *sarg) -> int
             szonelog(UNIT_FI_ZONE(sarg->owner),
                      "%s@%s: Differing realms in "
                      "%s",
-                     UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner), spl_text[i]);
+                     UNIT_FI_NAME(sarg->owner),
+                     UNIT_FI_ZONENAME(sarg->owner),
+                     spl_text[i]);
             c = str_line(c, buf);
             continue;
          }
@@ -936,7 +1046,8 @@ auto teach_init(struct spec_arg *sarg) -> int
          szonelog(UNIT_FI_ZONE(sarg->owner),
                   "%s@%s: Premature ending of "
                   "teacher-init! (expected cost)",
-                  UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
+                  UNIT_FI_NAME(sarg->owner),
+                  UNIT_FI_ZONENAME(sarg->owner));
          c = str_line(c, buf);
          continue;
       }
@@ -947,19 +1058,22 @@ auto teach_init(struct spec_arg *sarg) -> int
          szonelog(UNIT_FI_ZONE(sarg->owner),
                   "%s@%s: Illegal min cost amount "
                   "in teacher init (be > 0): %s",
-                  UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner), buf);
+                  UNIT_FI_NAME(sarg->owner),
+                  UNIT_FI_ZONENAME(sarg->owner),
+                  buf);
          c = str_line(c, buf);
          continue;
       }
       a_skill.min_cost_per_point = i;
 
-      c = get_next_str(c, buf);
+      c                          = get_next_str(c, buf);
       if(*buf == 0)
       {
          szonelog(UNIT_FI_ZONE(sarg->owner),
                   "%s@%s: Premature ending of "
                   "teacher-init! (expected cost)",
-                  UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
+                  UNIT_FI_NAME(sarg->owner),
+                  UNIT_FI_ZONENAME(sarg->owner));
          break;
       }
 
@@ -969,7 +1083,9 @@ auto teach_init(struct spec_arg *sarg) -> int
          szonelog(UNIT_FI_ZONE(sarg->owner),
                   "%s@%s: Illegal max cost amount "
                   "in teacher init (be > 0): %s",
-                  UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner), buf);
+                  UNIT_FI_NAME(sarg->owner),
+                  UNIT_FI_ZONENAME(sarg->owner),
+                  buf);
          c = str_line(c, buf);
          continue;
       }
@@ -980,7 +1096,9 @@ auto teach_init(struct spec_arg *sarg) -> int
          szonelog(UNIT_FI_ZONE(sarg->owner),
                   "%s@%s: Max amount is <= "
                   "min amount... must be error!: %s",
-                  UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner), buf);
+                  UNIT_FI_NAME(sarg->owner),
+                  UNIT_FI_ZONENAME(sarg->owner),
+                  buf);
          c = str_line(c, buf);
          continue;
       }
@@ -995,7 +1113,8 @@ auto teach_init(struct spec_arg *sarg) -> int
             szonelog(UNIT_FI_ZONE(sarg->owner),
                      "%s@%s: Premature ending of "
                      "teacher-init! (expected point)",
-                     UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
+                     UNIT_FI_NAME(sarg->owner),
+                     UNIT_FI_ZONENAME(sarg->owner));
             c = str_line(c, buf);
             continue;
          }
@@ -1014,7 +1133,8 @@ auto teach_init(struct spec_arg *sarg) -> int
          szonelog(UNIT_FI_ZONE(sarg->owner),
                   "%s@%s: Premature ending of "
                   "teacher-init! (expected points cost)",
-                  UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
+                  UNIT_FI_NAME(sarg->owner),
+                  UNIT_FI_ZONENAME(sarg->owner));
          c = str_line(c, buf);
          continue;
       }
@@ -1063,8 +1183,8 @@ auto teach_init(struct spec_arg *sarg) -> int
    packet->teaches[count - 1].min_cost_per_point = -1;
    packet->teaches[count - 1].max_cost_per_point = -1;
 
-   sarg->fptr->index      = SFUN_TEACHING;
-   sarg->fptr->heart_beat = 0;
+   sarg->fptr->index                             = SFUN_TEACHING;
+   sarg->fptr->heart_beat                        = 0;
    free(sarg->fptr->data); /* Free the text string! */
    sarg->fptr->data = packet;
 

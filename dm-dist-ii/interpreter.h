@@ -57,10 +57,16 @@ auto function_activate(unit_data *u, struct spec_arg *sarg) -> int;
 auto basic_special(unit_data *ch, struct spec_arg *sarg, uint16_t mflt, unit_data *extra_target = nullptr) -> int;
 #endif
 auto send_preprocess(unit_data *ch, const command_info *cmd, const char *arg) -> int;
-void send_done(unit_data *activator, unit_data *medium, unit_data *target, int i, const command_info *cmd, const char *arg,
-               unit_data *extra_target = nullptr);
-auto send_ack(unit_data *activator, unit_data *medium, unit_data *target, int *i, const command_info *cmd, const char *arg,
-              unit_data *extra_target) -> int;
+void send_done(unit_data          *activator,
+               unit_data          *medium,
+               unit_data          *target,
+               int                 i,
+               const command_info *cmd,
+               const char         *arg,
+               unit_data          *extra_target = nullptr);
+auto send_ack(
+   unit_data *activator, unit_data *medium, unit_data *target, int *i, const command_info *cmd, const char *arg, unit_data *extra_target)
+   -> int;
 auto send_message(unit_data *ch, const char *arg) -> int;
 auto send_death(unit_data *ch) -> int;
 auto send_combat(unit_data *ch) -> int;

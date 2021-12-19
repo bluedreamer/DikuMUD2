@@ -1,6 +1,7 @@
 #pragma once
 
 #include "file_index_type.h"
+
 #include <cstdint>
 
 using currency_t = int16_t;

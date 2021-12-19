@@ -24,10 +24,11 @@
 
 /* #define ACCOUNT_DEBUG */
 #include "account.h"
+
 #include "CAccountConfig.h"
-#include "CServerConfiguration.h"
 #include "comm.h"
 #include "common.h"
+#include "CServerConfiguration.h"
 #include "db.h"
 #include "files.h"
 #include "handler.h"
@@ -37,6 +38,7 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -46,9 +48,9 @@
 
 int32_t day_charge[7][TIME_GRANULARITY];
 
-int next_crc = 0;
+int     next_crc = 0;
 
-void account_cclog(unit_data *ch, int amount)
+void    account_cclog(unit_data *ch, int amount)
 {
    FILE *f;
 
@@ -162,10 +164,14 @@ void account_local_stat(const unit_data *ch, unit_data *u)
               "Discount       : %3d%%\n\r"
               "Flat Rate      : %s%s"
               "Crack counter  : %3d\n\r",
-              (float)PC_ACCOUNT(u).credit / 100.0, (float)PC_ACCOUNT(u).credit_limit / 100.0, (float)PC_ACCOUNT(u).total_credit / 100.0,
-              PC_ACCOUNT(u).last4 == -1 ? "NONE" : "REGISTERED", PC_ACCOUNT(u).discount,
+              (float)PC_ACCOUNT(u).credit / 100.0,
+              (float)PC_ACCOUNT(u).credit_limit / 100.0,
+              (float)PC_ACCOUNT(u).total_credit / 100.0,
+              PC_ACCOUNT(u).last4 == -1 ? "NONE" : "REGISTERED",
+              PC_ACCOUNT(u).discount,
               PC_ACCOUNT(u).flatrate < (uint32_t)now ? "Expired" : "Expires on ",
-              PC_ACCOUNT(u).flatrate < (uint32_t)now ? " (none)\n\r" : pTmstr, PC_ACCOUNT(u).cracks);
+              PC_ACCOUNT(u).flatrate < (uint32_t)now ? " (none)\n\r" : pTmstr,
+              PC_ACCOUNT(u).cracks);
    }
    else
    {
@@ -200,7 +206,9 @@ void account_global_stat(const unit_data *ch)
            "  Currency Name   : %s\n\r"
            "  Default limit   : %.2f\n\r"
            "  Default start   : %.2f\n\r\n\r",
-           g_cAccountConfig.m_nFreeFromLevel, g_cAccountConfig.m_pCoinName, (float)g_cAccountConfig.m_nAccountLimit / 100.0,
+           g_cAccountConfig.m_nFreeFromLevel,
+           g_cAccountConfig.m_pCoinName,
+           (float)g_cAccountConfig.m_nAccountLimit / 100.0,
            (float)g_cAccountConfig.m_nAccountFree / 100.0);
 
    send_to_char(buf, ch);
@@ -239,7 +247,7 @@ void account_overdue(const unit_data *ch)
 
    if(g_cServerConfig.m_bAccounting != 0)
    {
-      char Buf[256];
+      char     Buf[256];
 
       uint32_t discount = PC_ACCOUNT(ch).discount;
       uint32_t lcharge  = ((100 - discount) * g_cAccountConfig.m_nHourlyRate) / 100;
@@ -260,8 +268,12 @@ void account_overdue(const unit_data *ch)
               "Your account is overdue by %.2f %s with a "
               "limit of %.2f %s.\n\r"
               "The account will expire in %d hours and %d minutes.\n\r\n\r",
-              (float)-PC_ACCOUNT(ch).credit / 100.0, g_cAccountConfig.m_pCoinName, (float)PC_ACCOUNT(ch).credit_limit / 100.0,
-              g_cAccountConfig.m_pCoinName, i, j);
+              (float)-PC_ACCOUNT(ch).credit / 100.0,
+              g_cAccountConfig.m_pCoinName,
+              (float)PC_ACCOUNT(ch).credit_limit / 100.0,
+              g_cAccountConfig.m_pCoinName,
+              i,
+              j);
 
       send_to_char(Buf, ch);
       send_to_char(g_cAccountConfig.m_pOverdueMessage, ch);
@@ -377,7 +389,16 @@ static void account_calc(unit_data *pc, tm *b, tm *e)
       sprintf(buf,
               "%d:%d.%d (%d) to %d:%d.%d (%d) = %d -- "
               "charge %d / %.2f\n\r",
-              b->tm_hour, b->tm_min, b->tm_sec, b->tm_wday, t.tm_hour, t.tm_min, t.tm_sec, e->tm_wday, secs, day_charge[b->tm_wday][bidx],
+              b->tm_hour,
+              b->tm_min,
+              b->tm_sec,
+              b->tm_wday,
+              t.tm_hour,
+              t.tm_min,
+              t.tm_sec,
+              e->tm_wday,
+              secs,
+              day_charge[b->tm_wday][bidx],
               (((float)secs) * ((float)day_charge[b->tm_wday][bidx]) / 3600.0));
       send_to_char(buf, pc);
    }
@@ -502,7 +523,10 @@ static void account_status(const unit_data *ch)
 
          i = (int)(((float)PC_ACCOUNT(ch).credit_limit / (float)(lcharge)));
 
-         sprintf(Buf, "Your credit limit is %d hours (%.2f %s).\n\r", i, (float)PC_ACCOUNT(ch).credit_limit / 100.0,
+         sprintf(Buf,
+                 "Your credit limit is %d hours (%.2f %s).\n\r",
+                 i,
+                 (float)PC_ACCOUNT(ch).credit_limit / 100.0,
                  g_cAccountConfig.m_pCoinName);
          send_to_char(Buf, ch);
       }
@@ -519,8 +543,12 @@ static void account_status(const unit_data *ch)
                  "Your account is overdue by %.2f %s with a "
                  "limit of %.2f %s.\n\r"
                  "The account will expire in %d hours and %d minutes.\n\r",
-                 (float)-PC_ACCOUNT(ch).credit / 100.0, g_cAccountConfig.m_pCoinName, (float)PC_ACCOUNT(ch).credit_limit / 100.0,
-                 g_cAccountConfig.m_pCoinName, i, j);
+                 (float)-PC_ACCOUNT(ch).credit / 100.0,
+                 g_cAccountConfig.m_pCoinName,
+                 (float)PC_ACCOUNT(ch).credit_limit / 100.0,
+                 g_cAccountConfig.m_pCoinName,
+                 i,
+                 j);
          send_to_char(Buf, ch);
       }
       else
@@ -582,7 +610,7 @@ void account_flatrate_change(unit_data *god, unit_data *whom, int32_t days)
    char    Buf[256];
    int32_t add = days * SECS_PER_REAL_DAY;
 
-   time_t now = time(nullptr);
+   time_t  now = time(nullptr);
 
    if(days > 0)
    {
@@ -620,15 +648,15 @@ void account_flatrate_change(unit_data *god, unit_data *whom, int32_t days)
 
 void do_account(unit_data *ch, char *arg, const command_info *cmd)
 {
-   char       Buf[256];
-   char       word[MAX_INPUT_LENGTH];
-   unit_data *u;
-   unit_data *note;
-   char      *c = (char *)arg;
+   char                    Buf[256];
+   char                    word[MAX_INPUT_LENGTH];
+   unit_data              *u;
+   unit_data              *note;
+   char                   *c            = (char *)arg;
 
-   const char *operations[] = {"insert", "withdraw", "limit", "discount", "flatrate", nullptr};
-   int         i;
-   int         amount;
+   const char             *operations[] = {"insert", "withdraw", "limit", "discount", "flatrate", nullptr};
+   int                     i;
+   int                     amount;
 
    extern file_index_type *letter_fi;
 
@@ -652,18 +680,18 @@ void do_account(unit_data *ch, char *arg, const command_info *cmd)
    {
       struct tm btm, etm;
 
-      char bhr[200], bmi[200], bse[200], bda[200];
-      char ehr[200], emi[200], ese[200], eda[200];
+      char      bhr[200], bmi[200], bse[200], bda[200];
+      char      ehr[200], emi[200], ese[200], eda[200];
 
-      c = str_next_word_copy(c, bhr);
-      c = str_next_word_copy(c, bmi);
-      c = str_next_word_copy(c, bse);
-      c = str_next_word_copy(c, bda);
+      c           = str_next_word_copy(c, bhr);
+      c           = str_next_word_copy(c, bmi);
+      c           = str_next_word_copy(c, bse);
+      c           = str_next_word_copy(c, bda);
 
-      c = str_next_word_copy(c, ehr);
-      c = str_next_word_copy(c, emi);
-      c = str_next_word_copy(c, ese);
-      c = str_next_word_copy(c, eda);
+      c           = str_next_word_copy(c, ehr);
+      c           = str_next_word_copy(c, emi);
+      c           = str_next_word_copy(c, ese);
+      c           = str_next_word_copy(c, eda);
 
       btm.tm_hour = atoi(bhr);
       btm.tm_min  = atoi(bmi);
@@ -702,7 +730,7 @@ void do_account(unit_data *ch, char *arg, const command_info *cmd)
       return;
    }
 
-   c = str_next_word(c, word);
+   c      = str_next_word(c, word);
 
    amount = atoi(word);
 
@@ -841,19 +869,25 @@ void charge_sanity(uint8_t b_hr, uint8_t b_min, uint8_t e_hr, uint8_t e_min, int
 
    if(b_min % MINUTE_GRANULARITY != 0)
    {
-      slog(LOG_ALL, 0,
+      slog(LOG_ALL,
+           0,
            "Account error: Begin time (%d:%d), minute not "
            "divisible by %d.",
-           b_hr, b_min, MINUTE_GRANULARITY);
+           b_hr,
+           b_min,
+           MINUTE_GRANULARITY);
       exit(0);
    }
 
    if(e_min % MINUTE_GRANULARITY != (MINUTE_GRANULARITY - 1))
    {
-      slog(LOG_ALL, 0,
+      slog(LOG_ALL,
+           0,
            "Account error: End time (%d:%d), minute not "
            "at border to %d.",
-           e_hr, e_min, MINUTE_GRANULARITY);
+           e_hr,
+           e_min,
+           MINUTE_GRANULARITY);
       exit(0);
    }
 }

@@ -24,6 +24,7 @@
  * *********************************************************************** */
 
 #include "dilrun.h"
+
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
@@ -45,6 +46,7 @@
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <climits>
 #include <cstdarg> /* For type_check */
 #include <cstdio>
@@ -137,7 +139,7 @@
 struct dilprg *dil_list          = nullptr;
 struct dilprg *dil_list_nextdude = nullptr;
 
-void dil_intr_remove(struct dilprg *p, int idx)
+void           dil_intr_remove(struct dilprg *p, int idx)
 {
    if((idx >= 0) && (idx < p->sp->intrcount))
    {
@@ -606,8 +608,8 @@ void dil_typeerr(struct dilprg *p, const char *where)
    /* returned value not of expected type */
    /* This is serous! mess-up in the core.. stop the program */
 
-   szonelog(UNIT_FI_ZONE(p->sarg->owner), "DIL %s@%s, Type error in %s\n", UNIT_FI_NAME(p->sarg->owner), UNIT_FI_ZONENAME(p->sarg->owner),
-            where);
+   szonelog(
+      UNIT_FI_ZONE(p->sarg->owner), "DIL %s@%s, Type error in %s\n", UNIT_FI_NAME(p->sarg->owner), UNIT_FI_ZONENAME(p->sarg->owner), where);
    p->waitcmd = WAITCMD_QUIT;
 }
 
@@ -635,15 +637,15 @@ auto dil_type_check(const char *f, struct dilprg *p, int tot, ...) -> int
    {
       v[idx] = va_arg(args, class dilval *);
 
-      flag = va_arg(args, int);
-      cnt  = va_arg(args, int);
+      flag   = va_arg(args, int);
+      cnt    = va_arg(args, int);
 
       /* Gnort made a big bug here! Caused nasty crashes... be careful
          with those dreaded va_args... */
 
-      val = dil_getval(v[idx]);
+      val    = dil_getval(v[idx]);
 
-      any = FALSE;
+      any    = FALSE;
       while((cnt--) != 0)
       {
          if(val == va_arg(args, int))
@@ -720,7 +722,7 @@ void dil_free_prg(struct dilprg *prg)
    }
    prg->next = nullptr;
 
-   tmpl = prg->stack[0].tmpl;
+   tmpl      = prg->stack[0].tmpl;
 
    for(frm = prg->stack; frm <= (prg->sp); frm++)
    {
@@ -747,11 +749,11 @@ static auto check_interrupt(struct dilprg *prg) -> int
          int          oldwaitcmd = prg->waitcmd;
          uint8_t     *oldpc      = prg->sp->pc;
 
-         prg->sp->pc = prg->sp->intr[i].lab;
+         prg->sp->pc             = prg->sp->intr[i].lab;
 
          eval_dil_exp(prg, &v1);
 
-         adr = bread_uint32_t(&(prg->sp->pc));
+         adr          = bread_uint32_t(&(prg->sp->pc));
 
          prg->waitcmd = oldwaitcmd;
 
@@ -945,7 +947,9 @@ auto run_dil(struct spec_arg *sarg) -> int
       szonelog(UNIT_FI_ZONE(sarg->owner),
                "DIL %s in unit %s@%s had "
                "endless loop.",
-               prg->sp->tmpl->prgname, UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
+               prg->sp->tmpl->prgname,
+               UNIT_FI_NAME(sarg->owner),
+               UNIT_FI_ZONENAME(sarg->owner));
       destroy_fptr(sarg->owner, sarg->fptr);
       return SFR_SHARE;
    }
@@ -999,8 +1003,8 @@ auto dil_init(struct spec_arg *sarg) -> int
       }
       else
       {
-         szonelog(UNIT_FI_ZONE(sarg->owner), "Template '(null)' not found: %s@%s", UNIT_FI_NAME(sarg->owner),
-                  UNIT_FI_ZONENAME(sarg->owner));
+         szonelog(
+            UNIT_FI_ZONE(sarg->owner), "Template '(null)' not found: %s@%s", UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
       }
       destroy_fptr(sarg->owner, sarg->fptr);
    }
@@ -1050,13 +1054,20 @@ auto dil_direct_init(struct spec_arg *sarg) -> int
 
       if(tmpl == nullptr)
       {
-         szonelog(UNIT_FI_ZONE(sarg->owner), "Template '%s' not found: %s@%s", dilargs->name, UNIT_FI_NAME(sarg->owner),
+         szonelog(UNIT_FI_ZONE(sarg->owner),
+                  "Template '%s' not found: %s@%s",
+                  dilargs->name,
+                  UNIT_FI_NAME(sarg->owner),
                   UNIT_FI_ZONENAME(sarg->owner));
       }
       else if(tmpl->argc != dilargs->no)
       {
-         szonelog(UNIT_FI_ZONE(sarg->owner), "Template '%s' had mismatching argument count %d: %s@%s", dilargs->name, dilargs->no,
-                  UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
+         szonelog(UNIT_FI_ZONE(sarg->owner),
+                  "Template '%s' had mismatching argument count %d: %s@%s",
+                  dilargs->name,
+                  dilargs->no,
+                  UNIT_FI_NAME(sarg->owner),
+                  UNIT_FI_ZONENAME(sarg->owner));
       }
       else
       {
@@ -1074,7 +1085,10 @@ auto dil_direct_init(struct spec_arg *sarg) -> int
             szonelog(UNIT_FI_ZONE(sarg->owner),
                      "Template '%s' had argument "
                      "mismatch for argument %d: %s@%s",
-                     dilargs->name, i, UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
+                     dilargs->name,
+                     i,
+                     UNIT_FI_NAME(sarg->owner),
+                     UNIT_FI_ZONENAME(sarg->owner));
          }
          else
          {
@@ -1174,7 +1188,7 @@ auto dil_copy_template(diltemplate *tmpl, unit_data *u, unit_fptr **pfptr) -> st
    prg->waitcmd  = WAITCMD_MAXINST - 1;
    frm->pc       = tmpl->core;
 
-   frm->ret = DILV_NULL; /* ignored, 1.frame */
+   frm->ret      = DILV_NULL; /* ignored, 1.frame */
 
    if(tmpl->varc != 0U)
    {
@@ -1200,7 +1214,7 @@ auto dil_copy_template(diltemplate *tmpl, unit_data *u, unit_fptr **pfptr) -> st
    {
       frm->intr = nullptr;
    }
-   frm->intrcount = tmpl->intrcount;
+   frm->intrcount   = tmpl->intrcount;
 
    frm->securecount = 0;
    frm->secure      = nullptr;
@@ -1293,15 +1307,15 @@ auto dil_copy(char *name, unit_data *u) -> struct dilprg *
    tmplname = strtok(buf, " (");
    farg     = strtok(nullptr, ")");
 
-   narg = 0;
+   narg     = 0;
 
    if(farg != nullptr)
    {
       /* To avoid "(,25) giving no arg as 1 - do -1 and set to ' '. */
 
       farg--;
-      *farg = ' ';
-      farg  = str_dup(farg);
+      *farg   = ' ';
+      farg    = str_dup(farg);
 
       args[0] = strtok(farg, ",");
 
@@ -1336,8 +1350,8 @@ auto dil_copy(char *name, unit_data *u) -> struct dilprg *
    /* check argument count and types */
    if(tmpl->argc != narg)
    {
-      szonelog(UNIT_FI_ZONE(u), "Template '%s' had mismatching argument count %d: %s@%s", tmplname, narg, UNIT_FI_NAME(u),
-               UNIT_FI_ZONENAME(u));
+      szonelog(
+         UNIT_FI_ZONE(u), "Template '%s' had mismatching argument count %d: %s@%s", tmplname, narg, UNIT_FI_NAME(u), UNIT_FI_ZONENAME(u));
       if(farg != nullptr)
       {
          free(farg);
@@ -1362,7 +1376,11 @@ auto dil_copy(char *name, unit_data *u) -> struct dilprg *
          }
       }
 
-      szonelog(UNIT_FI_ZONE(u), "Template '%s' had mismatching argument mismatch for %d: %s@%s", tmplname, i, UNIT_FI_NAME(u),
+      szonelog(UNIT_FI_ZONE(u),
+               "Template '%s' had mismatching argument mismatch for %d: %s@%s",
+               tmplname,
+               i,
+               UNIT_FI_NAME(u),
                UNIT_FI_ZONENAME(u));
       if(farg != nullptr)
       {

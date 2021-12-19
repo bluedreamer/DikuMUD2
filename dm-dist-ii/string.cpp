@@ -22,16 +22,16 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cassert>
-#include <cctype>
-#include <cstdio>
-#include <cstring>
-
 #include "comm.h"
 #include "hashstring.h"
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+
+#include <cassert>
+#include <cctype>
+#include <cstdio>
+#include <cstring>
 
 #define STATISTICS 1
 
@@ -228,7 +228,7 @@ void cStringInstance::Make(const char *str)
    uint32_t h   = Hash.Hash(str);
    uint32_t len = strlen(str);
 
-   pConst = Hash.Lookup(str, len, h);
+   pConst       = Hash.Lookup(str, len, h);
 
    if(pConst == nullptr)
    {
@@ -308,7 +308,13 @@ void string_statistics(unit_data *ch)
            "  %lu allocated bytes (plus overhead %d = %lu bytes),\n\r"
            "  potentially allocated string-memory: %lu.\n\r"
            "  saved memory: %ld bytes\n\r",
-           alloced_strings, referenced_strings, alloced_memory, overhead, usage, potential_memory, (long int)(potential_memory - usage));
+           alloced_strings,
+           referenced_strings,
+           alloced_memory,
+           overhead,
+           usage,
+           potential_memory,
+           (long int)(potential_memory - usage));
 
    #else
    char *buf = "  Not available.\n\r";

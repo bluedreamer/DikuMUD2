@@ -22,6 +22,7 @@
  * *********************************************************************** */
 
 #include "extra.h"
+
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"

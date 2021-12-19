@@ -42,16 +42,16 @@
  * + #endif
  */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-
 #include "comm.h"
 #include "handler.h"
 #include "structs.h"
 #include "system.h"
 #include "utility.h"
 #include "utils.h"
+
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
 
 #ifdef DOS
 char *crypt(char *salt, char *password)
@@ -84,14 +84,12 @@ double difftime(time_t t1, time_t t2)
       #undef CMD_WRITE
    #endif
 
-   #include <devices/timer.h>
-   #include <time.h>
-
-   #include <exec/memory.h>
-   #include <exec/semaphores.h>
-
    #include <clib/alib_protos.h>
    #include <clib/exec_protos.h>
+   #include <devices/timer.h>
+   #include <exec/memory.h>
+   #include <exec/semaphores.h>
+   #include <time.h>
 
 /* Routines specifically for the Amiga version */
 
@@ -99,7 +97,7 @@ struct timerequest *tr = NULL;
 struct timeval      tval;
 time_t              oldtime, newtime;
 
-char *crypt(char *text, char *key)
+char               *crypt(char *text, char *key)
 {
    return text;
 }

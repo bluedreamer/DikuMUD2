@@ -24,12 +24,12 @@
 #ifndef INTERACTIVE_H
 #define INTERACTIVE_H
 
-#include <netinet/in.h>
-#include <string.h>
-
 #include "channel.h"
 #include "essential.h"
 #include "select.h"
+
+#include <netinet/in.h>
+#include <string.h>
 
 class cBaseInteractive;
 class cMud;
@@ -42,16 +42,16 @@ public:
    cText(uint8_t nChn);
    virtual ~cText(void);
 
-   void Receive(uint8_t *data, uint32_t len);
-   int  SendString(char *pString);
+   void              Receive(uint8_t *data, uint32_t len);
+   int               SendString(char *pString);
 
-   int Change(cBaseInteractive *pcNew);
+   int               Change(cBaseInteractive *pcNew);
 
    cBaseInteractive *pcCurrent;
 
-   cMud      *pcMud;
-   cMainMenu *pcMainMenu;
-   cZload    *pcZload;
+   cMud             *pcMud;
+   cMainMenu        *pcMainMenu;
+   cZload           *pcZload;
 };
 
 // Interactive classes must inherit the Channel Base, such that each will
@@ -65,14 +65,14 @@ public:
 
    virtual void Receive(uint8_t *data, uint32_t len) = 0;
 
-   int SendString(char *str) { return Send((uint8_t *)str, strlen(str)); }
+   int          SendString(char *str) { return Send((uint8_t *)str, strlen(str)); }
 
-   int Send(uint8_t *data, int len) { return pcInteractive->Send(data, len); }
+   int          Send(uint8_t *data, int len) { return pcInteractive->Send(data, len); }
 
-   virtual int Activate(void) { return 0; };
-   virtual int End(void) { return 0; };
+   virtual int  Activate(void) { return 0; };
+   virtual int  End(void) { return 0; };
 
-   cText *pcInteractive;
+   cText       *pcInteractive;
 };
 
 class cMud : public cBaseInteractive, public cHook
@@ -85,8 +85,8 @@ public:
    void Input(int nFlags);
    void Receive(uint8_t *data, uint32_t nLen);
 
-   int Activate(void);
-   int End(void);
+   int  Activate(void);
+   int  End(void);
 
 private:
    struct sockaddr_in server_addr;

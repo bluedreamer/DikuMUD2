@@ -69,8 +69,8 @@
 
 auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *
 {
-   static char mbomsg[]       = "Macro body overflow";
-   static char toggle_token[] = {(char)TOGGLE_EXPAND, '\0'};
+   static char    mbomsg[]       = "Macro body overflow";
+   static char    toggle_token[] = {(char)TOGGLE_EXPAND, '\0'};
 
    int            addit;
    char          *body;
@@ -98,7 +98,7 @@ auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *
    if((pp = p->s_params) != nullptr)
    {
       /* This macro has parameters: see if present on this call */
-      had_ws = FALSE;
+      had_ws   = FALSE;
 
       expand   = TRUE;
       nl_count = 0;
@@ -748,7 +748,7 @@ auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *
 
 auto _docall(char *line, char *internal, char *internal_limit) -> char *
 {
-   static char mbomsg[] = "Macro body overflow";
+   static char   mbomsg[] = "Macro body overflow";
 
    struct ppdir *d;
    int           had_ws;
@@ -861,7 +861,7 @@ auto _docall(char *line, char *internal, char *internal_limit) -> char *
 
 void dodefine(int mactype, int ixzy, const char *ixzz)
 {
-   static char mtlmsg[] = "Macro too long";
+   static char    mtlmsg[] = "Macro too long";
 
    char           body[MACROSIZE]; /* Body of def	*/
    char          *bodyp;           /* Pointer into body		*/
@@ -1159,12 +1159,12 @@ auto getparams() -> struct param *
 {
    static const char *iffmsg = "Invalid formal parameter flag: ";
 
-   int           flags;
-   struct param *lh;
-   struct param *lt;
-   struct param *p;
-   char          pname[TOKENSIZE];
-   int           t;
+   int                flags;
+   struct param      *lh;
+   struct param      *lt;
+   struct param      *p;
+   char               pname[TOKENSIZE];
+   int                t;
 
    lh = nullptr;
    lt = nullptr; /* For lint */
@@ -1423,10 +1423,10 @@ void sbind(const char *sym, const char *defn, struct param *params)
 
    /* Add to symbol table */
 
-   i = pphash(sym) & (NUMBUCKETS - 1); /* Hash value for symbol */
+   i           = pphash(sym) & (NUMBUCKETS - 1); /* Hash value for symbol */
 
-   p->s_link = Macros[i];
-   Macros[i] = p; /* Link in to list */
+   p->s_link   = Macros[i];
+   Macros[i]   = p; /* Link in to list */
 
    if(++Nsyms > Maxsyms)
    {
@@ -1463,7 +1463,7 @@ auto strize(char *result, char *limit, char *msg, char *snew) -> char *
 
    *result++ = '"'; /* Leading " for string */
 
-   had_ws = FALSE; /* TRUE if accumulating whitespace */
+   had_ws    = FALSE; /* TRUE if accumulating whitespace */
    while((c = *snew++) != '\0')
    {
       if(c == EOF)

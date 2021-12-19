@@ -22,11 +22,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #include "affect.h"
 #include "comm.h"
 #include "db.h"
@@ -40,7 +35,12 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+
+#include <cctype>
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 auto ball(struct spec_arg *sarg) -> int
 {
@@ -100,8 +100,14 @@ auto ball(struct spec_arg *sarg) -> int
       {
          if(top[i] != nullptr)
          {
-            sprintf(buf, "%4ld %-15s@%-15s  IN  %s [%s@%s]\n\r", (signed long)OBJ_VALUE(top[i], v2), UNIT_FI_NAME(top[i]),
-                    UNIT_FI_ZONENAME(top[i]), UNIT_NAME(UNIT_IN(top[i])), UNIT_FI_NAME(UNIT_IN(top[i])), UNIT_FI_ZONENAME(UNIT_IN(top[i])));
+            sprintf(buf,
+                    "%4ld %-15s@%-15s  IN  %s [%s@%s]\n\r",
+                    (signed long)OBJ_VALUE(top[i], v2),
+                    UNIT_FI_NAME(top[i]),
+                    UNIT_FI_ZONENAME(top[i]),
+                    UNIT_NAME(UNIT_IN(top[i])),
+                    UNIT_FI_NAME(UNIT_IN(top[i])),
+                    UNIT_FI_ZONENAME(UNIT_IN(top[i])));
             send_to_char(buf, sarg->activator);
          }
       }

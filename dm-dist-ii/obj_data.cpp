@@ -1,4 +1,5 @@
 #include "obj_data.h"
+
 #include <cstring>
 
 extern int world_noobjects;

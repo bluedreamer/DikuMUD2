@@ -40,6 +40,7 @@
 #include "utility.h"
 #include "utils.h"
 #include "wpn_info_type.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -626,7 +627,11 @@ auto wear(unit_data *ch, unit_data *obj, int keyword, bool err, const command_in
             equip_char(ch, obj, WEAR_WIELD);
             if(IS_PC(ch) && OBJ_TYPE(obj) == ITEM_WEAPON)
             {
-               act("You are $3t at fighting with $2n.", A_SOMEONE, ch, obj, skill_text(weapon_skills, PC_WPN_SKILL(ch, OBJ_VALUE(obj, 0))),
+               act("You are $3t at fighting with $2n.",
+                   A_SOMEONE,
+                   ch,
+                   obj,
+                   skill_text(weapon_skills, PC_WPN_SKILL(ch, OBJ_VALUE(obj, 0))),
                    TO_CHAR);
             }
          }
@@ -848,14 +853,43 @@ auto wear(unit_data *ch, unit_data *obj, int keyword, bool err, const command_in
 
 void do_wear(unit_data *ch, char *arg, const command_info *cmd)
 {
-   static const char *keywords[] = {"finger", "neck",  "body",   "head",  "legs", "feet", "hands", "arms", "about",
-                                    "waist",  "wrist", "shield", "chest", "back", "ear",  "ankle", nullptr};
+   static const char *keywords[] = {"finger",
+                                    "neck",
+                                    "body",
+                                    "head",
+                                    "legs",
+                                    "feet",
+                                    "hands",
+                                    "arms",
+                                    "about",
+                                    "waist",
+                                    "wrist",
+                                    "shield",
+                                    "chest",
+                                    "back",
+                                    "ear",
+                                    "ankle",
+                                    nullptr};
 
-   static int keytrans[] = {WEAR_FINGER_L, WEAR_NECK_1, WEAR_BODY,    WEAR_HEAD,   WEAR_LEGS,  WEAR_FEET, WEAR_HANDS, WEAR_ARMS,
-                            WEAR_ABOUT,    WEAR_WAIST,  WEAR_WRIST_L, WEAR_SHIELD, WEAR_CHEST, WEAR_BACK, WEAR_EAR_L, WEAR_ANKLE_L};
+   static int         keytrans[] = {WEAR_FINGER_L,
+                            WEAR_NECK_1,
+                            WEAR_BODY,
+                            WEAR_HEAD,
+                            WEAR_LEGS,
+                            WEAR_FEET,
+                            WEAR_HANDS,
+                            WEAR_ARMS,
+                            WEAR_ABOUT,
+                            WEAR_WAIST,
+                            WEAR_WRIST_L,
+                            WEAR_SHIELD,
+                            WEAR_CHEST,
+                            WEAR_BACK,
+                            WEAR_EAR_L,
+                            WEAR_ANKLE_L};
 
-   unit_data *obj;
-   char      *oarg = arg;
+   unit_data         *obj;
+   char              *oarg = arg;
 
    if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
@@ -906,7 +940,7 @@ void do_wear(unit_data *ch, char *arg, const command_info *cmd)
       char buf[MAX_INPUT_LENGTH];
       int  keyword;
 
-      arg = one_argument(arg, buf);
+      arg     = one_argument(arg, buf);
 
       keyword = search_block(buf, keywords, FALSE); /* Partial Match */
 

@@ -24,10 +24,10 @@
 #ifndef _MS_SERIAL_H
 #define _MS_SERIAL_H
 
-#include <termios.h>
-
 #include "interfc.h"
 #include "select.h"
+
+#include <termios.h>
 
 class cSerial : public cNetInterface, public cHook
 {
@@ -36,33 +36,33 @@ public:
    cSerial(char *pDev);
    virtual ~cSerial();
 
-   int Open(char *cpDev, int nBaud = 38400);
-   int Close(void);
+   int          Open(char *cpDev, int nBaud = 38400);
+   int          Close(void);
 
-   int Online(void);
-   int Hangup(void);
-   int ModemInit(char **init_string[]);
+   int          Online(void);
+   int          Hangup(void);
+   int          ModemInit(char **init_string[]);
 
-   int Send(uint8_t data);
-   int Send(const uint8_t *pData, uint32_t nLen);
+   int          Send(uint8_t data);
+   int          Send(const uint8_t *pData, uint32_t nLen);
 
    int          SendString(char *pStr);
    virtual void Receive(uint8_t *pChunk, uint32_t nSize) = 0;
 
-   void Poll(void);
-   int  WaitOnline(void); // Wait for modem to become active
-   int  Flush(void);
+   void         Poll(void);
+   int          WaitOnline(void); // Wait for modem to become active
+   int          Flush(void);
 
 private:
-   int ReadBlock(uint8_t *pChunk, uint32_t nSize);
-   int DisplayStatus(void);
-   int Status(void);
-   int Break(void);
-   int SetRaw(void);
-   int SetNormal(void);
-   int SetMode(int baud, char par, char bits);
-   int WaitFor(char *pStr, int nTimeOutSecs);
-   int Command(char *txStr);
+   int            ReadBlock(uint8_t *pChunk, uint32_t nSize);
+   int            DisplayStatus(void);
+   int            Status(void);
+   int            Break(void);
+   int            SetRaw(void);
+   int            SetNormal(void);
+   int            SetMode(int baud, char par, char bits);
+   int            WaitFor(char *pStr, int nTimeOutSecs);
+   int            Command(char *txStr);
 
    struct termios org_tty;
    struct termios raw_tty;

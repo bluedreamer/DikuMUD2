@@ -26,6 +26,7 @@
 /* 29/08/92 seifert: Added damage_variation routine.                       */
 
 #include "skills.h"
+
 #include "comm.h"
 #include "common.h"
 #include "damage_chart_type.h"
@@ -41,6 +42,7 @@
 #include "utility.h"
 #include "utils.h"
 #include "wpn_info_type.h"
+
 #include <cstdio>
 #include <cstdlib>
 
@@ -62,13 +64,21 @@ auto skill_text(const struct skill_interval *si, int skill) -> const char *
    return "UNDEFINED";
 }
 
-int hit_location_table[] =                       /* Determine by using 2d8 */
-   {WEAR_HEAD,                                   /* 2..3   =>  4.68% for Head  */
-    WEAR_HEAD, WEAR_HANDS,                       /* 4      =>  4.69% for Hands */
-    WEAR_ARMS,                                   /* 5..7   => 23.43% for Arms  */
-    WEAR_ARMS, WEAR_ARMS,  WEAR_BODY,            /* 8..10  => 34.38% for Body  */
-    WEAR_BODY, WEAR_BODY,  WEAR_LEGS,            /* 11..14 => 28.12% for legs  */
-    WEAR_LEGS, WEAR_LEGS,  WEAR_LEGS, WEAR_FEET, /* 15..16 => 4.68% for feet   */
+int hit_location_table[] = /* Determine by using 2d8 */
+   {WEAR_HEAD,             /* 2..3   =>  4.68% for Head  */
+    WEAR_HEAD,
+    WEAR_HANDS, /* 4      =>  4.69% for Hands */
+    WEAR_ARMS,  /* 5..7   => 23.43% for Arms  */
+    WEAR_ARMS,
+    WEAR_ARMS,
+    WEAR_BODY, /* 8..10  => 34.38% for Body  */
+    WEAR_BODY,
+    WEAR_BODY,
+    WEAR_LEGS, /* 11..14 => 28.12% for legs  */
+    WEAR_LEGS,
+    WEAR_LEGS,
+    WEAR_LEGS,
+    WEAR_FEET, /* 15..16 => 4.68% for feet   */
     WEAR_FEET};
 
 const char *spl_text[SPL_TREE_MAX + 1];
@@ -88,7 +98,7 @@ int8_t      racial_weapons[WPN_TREE_MAX][PC_RACE_MAX];
 
 /* ===================================================================== */
 
-void roll_description(unit_data *att, const char *text, int roll)
+void        roll_description(unit_data *att, const char *text, int roll)
 {
    if(roll >= 200)
    {
@@ -445,8 +455,8 @@ static void race_read()
       }
       else if(strncmp(pTmp, "height male", 11) == 0)
       {
-         pCh                        = str_next_word(pCh, tmp);
-         race_info[idx].male.height = atoi(tmp);
+         pCh                                  = str_next_word(pCh, tmp);
+         race_info[idx].male.height           = atoi(tmp);
 
          pCh                                  = str_next_word(pCh, tmp);
          race_info[idx].male.height_dice.reps = atoi(tmp);
@@ -456,8 +466,8 @@ static void race_read()
       }
       else if(strncmp(pTmp, "height female", 13) == 0)
       {
-         pCh                          = str_next_word(pCh, tmp);
-         race_info[idx].female.height = atoi(tmp);
+         pCh                                    = str_next_word(pCh, tmp);
+         race_info[idx].female.height           = atoi(tmp);
 
          pCh                                    = str_next_word(pCh, tmp);
          race_info[idx].female.height_dice.reps = atoi(tmp);
@@ -467,8 +477,8 @@ static void race_read()
       }
       else if(strncmp(pTmp, "weight male", 11) == 0)
       {
-         pCh                        = str_next_word(pCh, tmp);
-         race_info[idx].male.weight = atoi(tmp);
+         pCh                                  = str_next_word(pCh, tmp);
+         race_info[idx].male.weight           = atoi(tmp);
 
          pCh                                  = str_next_word(pCh, tmp);
          race_info[idx].male.weight_dice.reps = atoi(tmp);
@@ -478,8 +488,8 @@ static void race_read()
       }
       else if(strncmp(pTmp, "weight female", 13) == 0)
       {
-         pCh                          = str_next_word(pCh, tmp);
-         race_info[idx].female.weight = atoi(tmp);
+         pCh                                    = str_next_word(pCh, tmp);
+         race_info[idx].female.weight           = atoi(tmp);
 
          pCh                                    = str_next_word(pCh, tmp);
          race_info[idx].female.weight_dice.reps = atoi(tmp);
@@ -489,8 +499,8 @@ static void race_read()
       }
       else if(strncmp(pTmp, "lifespan male", 13) == 0)
       {
-         pCh                          = str_next_word(pCh, tmp);
-         race_info[idx].male.lifespan = atoi(tmp);
+         pCh                                    = str_next_word(pCh, tmp);
+         race_info[idx].male.lifespan           = atoi(tmp);
 
          pCh                                    = str_next_word(pCh, tmp);
          race_info[idx].male.lifespan_dice.reps = atoi(tmp);
@@ -500,8 +510,8 @@ static void race_read()
       }
       else if(strncmp(pTmp, "lifespan female", 15) == 0)
       {
-         pCh                            = str_next_word(pCh, tmp);
-         race_info[idx].female.lifespan = atoi(tmp);
+         pCh                                      = str_next_word(pCh, tmp);
+         race_info[idx].female.lifespan           = atoi(tmp);
 
          pCh                                      = str_next_word(pCh, tmp);
          race_info[idx].female.lifespan_dice.reps = atoi(tmp);
@@ -511,8 +521,8 @@ static void race_read()
       }
       else if(strncmp(pTmp, "age", 3) == 0)
       {
-         pCh                = str_next_word(pCh, tmp);
-         race_info[idx].age = atoi(tmp);
+         pCh                          = str_next_word(pCh, tmp);
+         race_info[idx].age           = atoi(tmp);
 
          pCh                          = str_next_word(pCh, tmp);
          race_info[idx].age_dice.reps = atoi(tmp);
@@ -532,7 +542,7 @@ static void race_read()
 diltemplate *playerinit_tmpl;
 diltemplate *nanny_dil_tmpl;
 
-static void race_init()
+static void  race_init()
 {
    int i;
 
@@ -547,7 +557,7 @@ static void race_init()
    pc_races[PC_RACE_MAX]        = nullptr;
    pc_race_adverbs[PC_RACE_MAX] = nullptr;
 
-   playerinit_tmpl = find_dil_template("playerinit@basis");
+   playerinit_tmpl              = find_dil_template("playerinit@basis");
    if(playerinit_tmpl == nullptr)
    {
       slog(LOG_ALL, 0, "No 'playerinit@basis' DIL template.");
@@ -837,12 +847,12 @@ static void weapon_read()
          int  i3;
          int  idx2 = -1;
 
-         pCh = str_next_word(pCh, tmp);
-         i1  = atoi(tmp);
-         pCh = str_next_word(pCh, tmp);
-         i2  = atoi(tmp);
-         pCh = str_next_word(pCh, tmp);
-         i3  = atoi(tmp);
+         pCh       = str_next_word(pCh, tmp);
+         i1        = atoi(tmp);
+         pCh       = str_next_word(pCh, tmp);
+         i2        = atoi(tmp);
+         pCh       = str_next_word(pCh, tmp);
+         i3        = atoi(tmp);
 
          if(i3 <= 0)
          {
@@ -1109,7 +1119,7 @@ static void skill_init()
       ski_tree[i].parent = i;
       ski_tree[i].isleaf = static_cast<uint8_t>(TRUE);
 
-      ski_text[i] = nullptr;
+      ski_text[i]        = nullptr;
 
       /* Racial skills are all zero */
       for(int j = 0; j < PC_RACE_MAX; j++)

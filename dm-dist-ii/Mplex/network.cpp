@@ -21,22 +21,22 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "network.h"
+
+#include "protocol.h"
+#include "textutil.h"
+#include "unixshit.h"
+
+#include <errno.h>
+#include <fcntl.h>
 #include <netinet/tcp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include <errno.h>
-#include <fcntl.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/un.h>
 #include <unistd.h>
-
-#include "network.h"
-#include "protocol.h"
-#include "textutil.h"
-#include "unixshit.h"
 
 #if defined(MARCEL) || defined(AMIGA)
    #include <machine/endian.h>
@@ -53,7 +53,7 @@ int OpenMother(int nPort)
    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
    server_addr.sin_port        = htons(nPort);
 
-   fdMother = socket(AF_INET, SOCK_STREAM, 0);
+   fdMother                    = socket(AF_INET, SOCK_STREAM, 0);
 
    if(fdMother == -1)
    {
@@ -123,7 +123,7 @@ int OpenNetwork(int nPort, const char *pcAddress)
    server_addr.sin_addr.s_addr = inet_addr(pcAddress);
    server_addr.sin_port        = htons(nPort);
 
-   fdClient = socket(AF_INET, SOCK_STREAM, 0);
+   fdClient                    = socket(AF_INET, SOCK_STREAM, 0);
 
    if(fdClient == -1)
    {

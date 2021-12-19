@@ -28,7 +28,7 @@
 void *blkalloc_start = nullptr;
 void *blkalloc_end   = nullptr;
 
-auto blkalloc(size_t size) -> void *
+auto  blkalloc(size_t size) -> void *
 {
    void *res = nullptr;
 

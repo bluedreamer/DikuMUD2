@@ -14,12 +14,12 @@
 /*
  *	pp1.c
  */
-int   pp_main(const char *filename);
-char *getnext(char *cp, int *argc, char ***argv, int swvalid);
-void  init();
-void  usage(int v);
-void  output_adds(char *s);
-void  output_addc(int s);
+int            pp_main(const char *filename);
+char          *getnext(char *cp, int *argc, char ***argv, int swvalid);
+void           init();
+void           usage(int v);
+void           output_adds(char *s);
+void           output_addc(int s);
 
 /*
  *	pp2.c
@@ -46,92 +46,92 @@ void           unsbind(char *sym);
 /*
  *	pp3.c
  */
-void  cur_user();
-void  do_line(char at_bol);
-void  doinclude(int izxx = 0, int izxy = 0, const char *izxz = 0);
-void  doline(int izxx = 0, int izxy = 0, const char *izxz = 0);
-int   gchbuf();
-int   gchfile();
-int   gchpb();
-int   getchn();
-int   inc_open(const char *incfile);
-void  init_path();
-int   popfile();
-char *readline(char *buf, int bufsize, int flags);
-void  scaneol();
-void  set_user();
-int   trigraph();
+void           cur_user();
+void           do_line(char at_bol);
+void           doinclude(int izxx = 0, int izxy = 0, const char *izxz = 0);
+void           doline(int izxx = 0, int izxy = 0, const char *izxz = 0);
+int            gchbuf();
+int            gchfile();
+int            gchpb();
+int            getchn();
+int            inc_open(const char *incfile);
+void           init_path();
+int            popfile();
+char          *readline(char *buf, int bufsize, int flags);
+void           scaneol();
+void           set_user();
+int            trigraph();
 
 /*
  *	pp4.c
  */
-char *addstr(char *old, const char *limit, const char *msg, const char *snew);
-int   getnstoken(int f);
-int   gettoken(int f);
-void  memmov(char *f, char *t, unsigned l);
-void  pbcstr(char *s);
-void  pbstr(const char *in);
-void  pushback(int c);
-void  puttoken(const char s[]);
-int   type(int c);
+char          *addstr(char *old, const char *limit, const char *msg, const char *snew);
+int            getnstoken(int f);
+int            gettoken(int f);
+void           memmov(char *f, char *t, unsigned l);
+void           pbcstr(char *s);
+void           pbstr(const char *in);
+void           pushback(int c);
+void           puttoken(const char s[]);
+int            type(int c);
 
 /*
  *	pp5.c
  */
-void doelse(int elif, int izxy = 0, const char *izxz = 0);
-void doendif(int izxy, int ixy = 0, const char *izxz = 0);
-void doif(int izxy, int ixy = 0, const char *izxz = 0);
-void doifs(int t, int izxy = 0, const char *izxz = 0);
+void           doelse(int elif, int izxy = 0, const char *izxz = 0);
+void           doendif(int izxy, int ixy = 0, const char *izxz = 0);
+void           doif(int izxy, int ixy = 0, const char *izxz = 0);
+void           doifs(int t, int izxy = 0, const char *izxz = 0);
 
 /*
  *	pp6.c
  */
-void dopragma(int izxy, int izy = 0, const char *izxz = 0);
-void pragendm(int izxy = 0, int izy = 0, const char *izxz = 0);
-void pragerror(int izxy = 0, int izy = 0, const char *izxz = 0);
-void pragmsg(int izxy = 0, int izy = 0, const char *izxz = 0);
-void pragopt(int dummy, int no_flag, const char *name);
-void pragvalue(int izxy = 0, int izy = 0, const char *izxz = 0);
+void           dopragma(int izxy, int izy = 0, const char *izxz = 0);
+void           pragendm(int izxy = 0, int izy = 0, const char *izxz = 0);
+void           pragerror(int izxy = 0, int izy = 0, const char *izxz = 0);
+void           pragmsg(int izxy = 0, int izy = 0, const char *izxz = 0);
+void           pragopt(int dummy, int no_flag, const char *name);
+void           pragvalue(int izxy = 0, int izy = 0, const char *izxz = 0);
 
 /*
  *	pp7.c
  */
-void end_of_file();
-void fatal(const char *s1, const char *s2 = "");
-void illegal_symbol();
-void non_fatal(const char *s1, const char *s2);
-void out_of_memory();
-void prmsg(const char *s1, const char *s2, const char *s3);
-void warning(const char *s1, const char *s2);
+void           end_of_file();
+void           fatal(const char *s1, const char *s2 = "");
+void           illegal_symbol();
+void           non_fatal(const char *s1, const char *s2);
+void           out_of_memory();
+void           prmsg(const char *s1, const char *s2, const char *s3);
+void           warning(const char *s1, const char *s2);
 
 /*
  *	pp8.c
  */
-EVALINT eval();
-EVALINT evaltern();
-EVALINT evallor();
-EVALINT evalland();
-EVALINT evalbor();
-EVALINT evalbxor();
-EVALINT evalband();
-EVALINT evaleq();
-EVALINT evalrel();
-EVALINT evalsh();
-EVALINT evalsum();
-EVALINT evalmdr();
-EVALINT evalfuns();
-EVALINT evalucom();
-EVALINT evalunot();
-EVALINT evalumin();
-EVALINT evalval();
-EVALINT hexbin(char ch);
-int     ishex(char ch);
-int     isoct(char ch);
-int     item(int(fun)(int), int f);
-int     look(const char *str);
-int     match(char *tbuf, const char *str);
-char   *readexpline(char *buf, int bufsize);
-int     test(const char *str);
+EVALINT        eval();
+EVALINT        evaltern();
+EVALINT        evallor();
+EVALINT        evalland();
+EVALINT        evalbor();
+EVALINT        evalbxor();
+EVALINT        evalband();
+EVALINT        evaleq();
+EVALINT        evalrel();
+EVALINT        evalsh();
+EVALINT        evalsum();
+EVALINT        evalmdr();
+EVALINT        evalfuns();
+EVALINT        evalucom();
+EVALINT        evalunot();
+EVALINT        evalumin();
+EVALINT        evalval();
+EVALINT        hexbin(char ch);
+int            ishex(char ch);
+int            isoct(char ch);
+int            item(int(fun)(int), int f);
+int            look(const char *str);
+int            match(char *tbuf, const char *str);
+char          *readexpline(char *buf, int bufsize);
+int            test(const char *str);
 
 #define PP_VERSION "VMC PreProcessor v1.0" /* Version info */
 #ifdef MAIN
@@ -241,39 +241,135 @@ int     test(const char *str);
 
 #ifdef MAIN
 char typetab[] = {
-   (char)(C_C | C_N),                          /* EOF         */
-   0, 0, 0, 0,                                 /* ^@ ^A ^B ^C */
-   0, 0, 0, 0,                                 /* ^D ^E ^F ^G */
-   0, C_W, C_C, 0,                             /* ^H ^I ^J ^K */
-   C_W, C_W | C_C, 0, 0,                       /* ^L ^M ^N ^O */
-   0, 0, 0, 0,                                 /* ^P ^Q ^R ^S */
-   0, 0, 0, 0,                                 /* ^T ^U ^V ^W */
-   0, 0, 0, 0,                                 /* ^X ^Y ^Z ESC*/
-   0, 0, 0, 0,                                 /* FS GS RS VS */
-   C_W, 0, 0, 0,                               /* Sp !  "  #  */
-   0, 0, 0, 0,                                 /* $  %  &  '  */
-   0, 0, 0, 0,                                 /* (  )  *  +  */
-   0, 0, 0, 0,                                 /* ,  -  .  /  */
-   C_D | C_X, C_D | C_X, C_D | C_X, C_D | C_X, /* 0  1  2  3  */
-   C_D | C_X, C_D | C_X, C_D | C_X, C_D | C_X, /* 4  5  6  7  */
-   C_D | C_X, C_D | C_X, 0, 0,                 /* 8  9  :  ;  */
-   0, 0, 0, 0,                                 /* <  =  >  ?  */
-   0, C_L | C_X, C_L | C_X, C_L | C_X,         /* @  A  B  C  */
-   C_L | C_X, C_L | C_X, C_L | C_X, C_L,       /* D  E  F  G  */
-   C_L, C_L, C_L, C_L,                         /* H  I  J  K  */
-   C_L, C_L, C_L, C_L,                         /* L  M  N  O  */
-   C_L, C_L, C_L, C_L,                         /* P  Q  R  S  */
-   C_L, C_L, C_L, C_L,                         /* T  U  V  W  */
-   C_L, C_L, C_L, 0,                           /* X  Y  Z  [  */
-   C_C, 0, 0, C_L,                             /* \  ]  ^  _  */
-   0, C_L | C_X, C_L | C_X, C_L | C_X,         /* `  a  b  c  */
-   C_L | C_X, C_L | C_X, C_L | C_X, C_L,       /* d  e  f  g  */
-   C_L, C_L, C_L, C_L,                         /* h  i  j  k  */
-   C_L, C_L, C_L, C_L,                         /* l  m  n  o  */
-   C_L, C_L, C_L, C_L,                         /* p  q  r  s  */
-   C_L, C_L, C_L, C_L,                         /* t  u  v  w  */
-   C_L, C_L, C_L, 0,                           /* x  y  z  {  */
-   0, 0, 0, 0,                                 /* |  }  ~  Rub*/
+   (char)(C_C | C_N), /* EOF         */
+   0,
+   0,
+   0,
+   0, /* ^@ ^A ^B ^C */
+   0,
+   0,
+   0,
+   0, /* ^D ^E ^F ^G */
+   0,
+   C_W,
+   C_C,
+   0, /* ^H ^I ^J ^K */
+   C_W,
+   C_W | C_C,
+   0,
+   0, /* ^L ^M ^N ^O */
+   0,
+   0,
+   0,
+   0, /* ^P ^Q ^R ^S */
+   0,
+   0,
+   0,
+   0, /* ^T ^U ^V ^W */
+   0,
+   0,
+   0,
+   0, /* ^X ^Y ^Z ESC*/
+   0,
+   0,
+   0,
+   0, /* FS GS RS VS */
+   C_W,
+   0,
+   0,
+   0, /* Sp !  "  #  */
+   0,
+   0,
+   0,
+   0, /* $  %  &  '  */
+   0,
+   0,
+   0,
+   0, /* (  )  *  +  */
+   0,
+   0,
+   0,
+   0, /* ,  -  .  /  */
+   C_D | C_X,
+   C_D | C_X,
+   C_D | C_X,
+   C_D | C_X, /* 0  1  2  3  */
+   C_D | C_X,
+   C_D | C_X,
+   C_D | C_X,
+   C_D | C_X, /* 4  5  6  7  */
+   C_D | C_X,
+   C_D | C_X,
+   0,
+   0, /* 8  9  :  ;  */
+   0,
+   0,
+   0,
+   0, /* <  =  >  ?  */
+   0,
+   C_L | C_X,
+   C_L | C_X,
+   C_L | C_X, /* @  A  B  C  */
+   C_L | C_X,
+   C_L | C_X,
+   C_L | C_X,
+   C_L, /* D  E  F  G  */
+   C_L,
+   C_L,
+   C_L,
+   C_L, /* H  I  J  K  */
+   C_L,
+   C_L,
+   C_L,
+   C_L, /* L  M  N  O  */
+   C_L,
+   C_L,
+   C_L,
+   C_L, /* P  Q  R  S  */
+   C_L,
+   C_L,
+   C_L,
+   C_L, /* T  U  V  W  */
+   C_L,
+   C_L,
+   C_L,
+   0, /* X  Y  Z  [  */
+   C_C,
+   0,
+   0,
+   C_L, /* \  ]  ^  _  */
+   0,
+   C_L | C_X,
+   C_L | C_X,
+   C_L | C_X, /* `  a  b  c  */
+   C_L | C_X,
+   C_L | C_X,
+   C_L | C_X,
+   C_L, /* d  e  f  g  */
+   C_L,
+   C_L,
+   C_L,
+   C_L, /* h  i  j  k  */
+   C_L,
+   C_L,
+   C_L,
+   C_L, /* l  m  n  o  */
+   C_L,
+   C_L,
+   C_L,
+   C_L, /* p  q  r  s  */
+   C_L,
+   C_L,
+   C_L,
+   C_L, /* t  u  v  w  */
+   C_L,
+   C_L,
+   C_L,
+   0, /* x  y  z  {  */
+   0,
+   0,
+   0,
+   0, /* |  }  ~  Rub*/
    /* Special token chars 0x80 - 0x??	*/
    (char)(C_M | C_N), /* END_MACRO token */
    (char)(C_M | C_N), /* END_ARG token   */
@@ -384,9 +480,9 @@ EXTERN int LLine   I_ZERO; /* Last line number			*/
 EXTERN int (*Nextch)();    /* Next char function           */
 #define nextch (*Nextch)   /* Macro to rd chars via Nextch	*/
 
-EXTERN struct file  *Filestack[FILESTACKSIZE + 1] I_BRZERO;
-EXTERN int Filelevel I_ZERO; /* Include level	*/
-EXTERN int Do_name   I_ZERO; /* True to put name on #line	*/
+EXTERN struct file           *Filestack[FILESTACKSIZE + 1] I_BRZERO;
+EXTERN int Filelevel          I_ZERO; /* Include level	*/
+EXTERN int Do_name            I_ZERO; /* True to put name on #line	*/
 
 EXTERN char                   Outfile[FILENAMESIZE + 1] I_BRZERO;
 EXTERN char                   Token[TOKENSIZE + 1] I_BRZERO; /* Token buffer	*/
@@ -448,16 +544,22 @@ struct ppdir pptab[] = {
    #if(TARGET == T_QC) OR(TARGET == T_QCX) OR(TARGET == T_TCX)
    {"asm", NO, doasm, TRUE},
    #endif /* (TARGET == T_QC) OR (TARGET == T_QCX) OR (TARGET == T_TCX) */
-   {"define", NO, dodefine, FALSE},  {"elif", YES, doelse, TRUE},
+   {"define", NO, dodefine, FALSE},
+   {"elif", YES, doelse, TRUE},
    {"else", YES, doelse, FALSE},
    #if(TARGET == T_QC) OR(TARGET == T_QCX) OR(TARGET == T_TCX)
    {"endasm", NO, doasm, FALSE},
    #endif /* (TARGET == T_QC) OR (TARGET == T_QCX) OR (TARGET == T_TCX) */
-   {"endif", YES, doendif, EMPTY},   {"error", NO, doerror, EMPTY},
-   {"if", YES, doif, EMPTY},         {"ifdef", YES, doifs, TRUE},
-   {"ifndef", YES, doifs, FALSE},    {"include", NO, doinclude, EMPTY},
-   {"line", NO, doline, EMPTY},      {"undef", NO, doundef, EMPTY},
-   {"pragma", YES, dopragma, EMPTY}, {NULL} /* The end */
+   {"endif", YES, doendif, EMPTY},
+   {"error", NO, doerror, EMPTY},
+   {"if", YES, doif, EMPTY},
+   {"ifdef", YES, doifs, TRUE},
+   {"ifndef", YES, doifs, FALSE},
+   {"include", NO, doinclude, EMPTY},
+   {"line", NO, doline, EMPTY},
+   {"undef", NO, doundef, EMPTY},
+   {"pragma", YES, dopragma, EMPTY},
+   {NULL} /* The end */
 };
 
 struct ppdir pragtab[] = {
@@ -499,9 +601,9 @@ EXTERN int A_rescan     I_ZERO; /* TRUE/direct. from macro's	*/
 EXTERN int A_stack      I_ZERO; /* TRUE/macro def's stack	*/
 EXTERN int A_trigraph   I_ZERO; /* TRUE/trigraphs active*/
 
-EXTERN struct symtab *Macros[NUMBUCKETS] I_BRZERO; /* Ptr/macro chains*/
-EXTERN int Nsyms      I_ZERO;                      /* Number of symbols in table	*/
-EXTERN int Maxsyms    I_ZERO;                      /* Max number of symbols used	*/
+EXTERN struct symtab   *Macros[NUMBUCKETS] I_BRZERO; /* Ptr/macro chains*/
+EXTERN int Nsyms        I_ZERO;                      /* Number of symbols in table	*/
+EXTERN int Maxsyms      I_ZERO;                      /* Max number of symbols used	*/
 
 #define NO_PARAMS (struct param *)NULL /* For sbind of 0 params*/
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "dice_type.h"
+
 #include <cstdint>
 
 struct base_race_info_type

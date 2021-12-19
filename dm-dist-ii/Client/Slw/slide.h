@@ -35,7 +35,7 @@
 class cSlwErrors
 {
 public:
-   int AnyActivity(void) { return (nTxPackets > 0) || (nRxPackets > 0); }
+   int  AnyActivity(void) { return (nTxPackets > 0) || (nRxPackets > 0); }
 
    void Reset(void)
    {
@@ -54,7 +54,11 @@ public:
               "\nSliding Windows Layer\n"
               "        TX: %5ld   RX: %5ld   Ack: %5ld   Nak: %5ld\n"
               "Errors: Packet Layer %5ld\n",
-              (signed long)nTxPackets, (signed long)nRxPackets, (signed long)nAckPackets, (signed long)nNakPackets, (signed long)nCrcError);
+              (signed long)nTxPackets,
+              (signed long)nRxPackets,
+              (signed long)nAckPackets,
+              (signed long)nNakPackets,
+              (signed long)nCrcError);
    }
 
    uint32_t nRxPackets;
@@ -78,7 +82,7 @@ struct rx_frame_type
 
 struct tx_frame_type
 {
-   int nSeq; // Sanity checking for the timer.
+   int     nSeq; // Sanity checking for the timer.
 
    uint8_t nLen;
    uint8_t aData[SLW_HEADER + SLW_MAX_DATA];
@@ -96,21 +100,21 @@ public:
    cSlw(char *logfile = NULL);
    ~cSlw(void);
 
-   int Open(char *pDevice, int nBaud = 38400, pfSlwReceive pfRcv = NULL);
+   int        Open(char *pDevice, int nBaud = 38400, pfSlwReceive pfRcv = NULL);
 
-   void SetArrivalFunction(pfSlwReceive pfNLE);
+   void       SetArrivalFunction(pfSlwReceive pfNLE);
 
-   int  isActive(void) { return bActive; }
-   void Activate(void);
-   void Deactivate(void);
-   void Input(int nFlags);
+   int        isActive(void) { return bActive; }
+   void       Activate(void);
+   void       Deactivate(void);
+   void       Input(int nFlags);
 
-   void Poll(void) { cSerial::Poll(); }
+   void       Poll(void) { cSerial::Poll(); }
 
    // Call when you have data to transmit. Returns -1 if there is no more
    // room (i.e. ENOBUFS), -2 on error, 0 on success.
    //
-   int Transmit(const uint8_t *pData, uint32_t nLen);
+   int        Transmit(const uint8_t *pData, uint32_t nLen);
 
    cSlwErrors SlwError;
 
@@ -118,8 +122,8 @@ public:
    // Called from the packet layer when a damage frame arrives.
    // Only called between successful reception of a packet.
    //
-   void    EventPacketError(void);
-   int32_t nBuffered(void);
+   void       EventPacketError(void);
+   int32_t    nBuffered(void);
 
 protected:
    // ------------------ TIMEOUT INTERFACE --------------------
@@ -135,29 +139,29 @@ protected:
    void EventFrameArrival(uint8_t *data, uint32_t len);
 
 private:
-   void Reset(void);
-   void SendACK(void);
-   void SendNAK(int nSeq);
-   void SendNaks(void);
-   void SendData(int nFrameNo);
-   void ArrivedUpdateAck(uint8_t ack);
-   void ArrivedData(uint8_t *data, int len);
-   void ArrivedAck(uint8_t seq, int len);
-   void ArrivedNak(uint8_t seq, int len);
+   void                 Reset(void);
+   void                 SendACK(void);
+   void                 SendNAK(int nSeq);
+   void                 SendNaks(void);
+   void                 SendData(int nFrameNo);
+   void                 ArrivedUpdateAck(uint8_t ack);
+   void                 ArrivedData(uint8_t *data, int len);
+   void                 ArrivedAck(uint8_t seq, int len);
+   void                 ArrivedNak(uint8_t seq, int len);
 
    struct rx_frame_type aRxBuf[NO_BUFS];
    struct tx_frame_type aTxBuf[NO_BUFS];
    cQueue               SlwFifo;
    pfSlwReceive         pfNetworkLayerEvent;
 
-   int     nTxLowWin;   // Low edge of senders window
-   int     nTxHighWin;  // Upper edge of senders window + 1
-   int32_t nNoBuffered; // How many output buffers currently used?
+   int                  nTxLowWin;   // Low edge of senders window
+   int                  nTxHighWin;  // Upper edge of senders window + 1
+   int32_t              nNoBuffered; // How many output buffers currently used?
 
-   int nRxLowWin;  // Low edge of receivers window
-   int nRxHighWin; // Upper edge of receivers window + 1
-   int nRxTop;     // Sequence of highest window frame
-   int bActive;    // TRUE when the sliding windows is active
+   int                  nRxLowWin;  // Low edge of receivers window
+   int                  nRxHighWin; // Upper edge of receivers window + 1
+   int                  nRxTop;     // Sequence of highest window frame
+   int                  bActive;    // TRUE when the sliding windows is active
 };
 
 #endif

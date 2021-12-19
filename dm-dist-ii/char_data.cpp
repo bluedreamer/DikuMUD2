@@ -1,4 +1,5 @@
 #include "char_data.h"
+
 #include <cstring>
 extern int world_nochars;
 

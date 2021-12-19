@@ -23,15 +23,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <ctype.h>
-#include <stdarg.h> /* va_args in dmc_error() */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-
 #include "common.h"
-
 #include "dmc.h"
 #include "money.h"
 #include "skills.h"
@@ -40,6 +32,13 @@
 #include "unixshit.h"
 #include "utility.h"
 
+#include <ctype.h>
+#include <stdarg.h> /* va_args in dmc_error() */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
 extern struct arm_info_type shi_info[];
 
 /* PS Algorithm 3                                                      */
@@ -47,7 +46,7 @@ extern struct arm_info_type shi_info[];
 /* 'hpp' hit-point-points is current.                                  */
 /* Example: hitpoint_total(4) returns total amount of hitpoints when   */
 /*          hpp == 4                                                   */
-int hitpoint_total(int hpp)
+int                         hitpoint_total(int hpp)
 {
    return 10 + 3 * hpp;
 }
@@ -55,14 +54,14 @@ int hitpoint_total(int hpp)
 const char *error_zone_name = "";
 
 /* if fatal is 2, it will NEVER be fatal */
-void dmc_error(int fatal, const char *fmt, ...)
+void        dmc_error(int fatal, const char *fmt, ...)
 {
    extern int fatal_warnings;
 
-   char    buf[512];
-   char    filename[128];
-   va_list args;
-   FILE   *f;
+   char       buf[512];
+   char       filename[128];
+   va_list    args;
+   FILE      *f;
 
    extern int errcon;
 
@@ -351,8 +350,17 @@ void show_info(struct unit_data *npc)
       first = TRUE;
    }
 
-   fprintf(stderr, "%-20s %4d %4d %4d %4d %4d %4d %4d %4d\n\r", UNIT_IDENT(npc), CHAR_STR(npc), CHAR_DEX(npc), CHAR_CON(npc),
-           UNIT_MAX_HIT(npc), CHAR_BRA(npc), CHAR_CHA(npc), CHAR_MAG(npc), CHAR_DIV(npc));
+   fprintf(stderr,
+           "%-20s %4d %4d %4d %4d %4d %4d %4d %4d\n\r",
+           UNIT_IDENT(npc),
+           CHAR_STR(npc),
+           CHAR_DEX(npc),
+           CHAR_CON(npc),
+           UNIT_MAX_HIT(npc),
+           CHAR_BRA(npc),
+           CHAR_CHA(npc),
+           CHAR_MAG(npc),
+           CHAR_DIV(npc));
 }
 
 void process_affects(unit_data *pUnit)
@@ -567,7 +575,8 @@ void process_funcs(unit_data *u)
                       "%s: Heartbeat in function is only "
                       "%.1f seconds! You'll use too much CPU "
                       "(use minimum 3 seconds).",
-                      UNIT_IDENT(u), (float)fptr->heart_beat / (float)PULSE_SEC);
+                      UNIT_IDENT(u),
+                      (float)fptr->heart_beat / (float)PULSE_SEC);
             fptr->heart_beat = PULSE_SEC * 10;
          }
          else if(fptr->heart_beat > 60000)
@@ -575,7 +584,8 @@ void process_funcs(unit_data *u)
             dmc_error(TRUE,
                       "%s: Heartbeat in function is "
                       "%.1f seconds! That's probably an error?",
-                      UNIT_IDENT(u), (float)fptr->heart_beat / (float)PULSE_SEC);
+                      UNIT_IDENT(u),
+                      (float)fptr->heart_beat / (float)PULSE_SEC);
             fptr->heart_beat = PULSE_SEC * 60 * 60;
          }
       }
@@ -631,7 +641,8 @@ void check_namelist(struct unit_data *unit, class cNamelist *nl)
                dmc_error(TRUE,
                          "Name order error (or matching names) "
                          "for '%s' in %s@",
-                         nl->Name(i), UNIT_IDENT(unit));
+                         nl->Name(i),
+                         UNIT_IDENT(unit));
             }
             tmp.AppendName(nl->Name(i));
          }
@@ -641,8 +652,8 @@ void check_namelist(struct unit_data *unit, class cNamelist *nl)
 
 void process_unit(struct unit_data *u)
 {
-   int               i;
-   extra_descr_data *exd;
+   int                i;
+   extra_descr_data  *exd;
 
    extern int         verbose;
    extern const char *drinks[];
@@ -748,7 +759,8 @@ void process_unit(struct unit_data *u)
                   dmc_error(2,
                             "Drinkcontainer '%s' has less than two names. "
                             "Last name must be the liquid-type name (%s).",
-                            UNIT_IDENT(u), drinks[OBJ_VALUE(u, 2)]);
+                            UNIT_IDENT(u),
+                            drinks[OBJ_VALUE(u, 2)]);
                }
                else
                {
@@ -758,7 +770,9 @@ void process_unit(struct unit_data *u)
                                "Drinkcontainer '%s' has last name "
                                "'%s' which is different from expected "
                                "liquid-type name '%s'.",
-                               UNIT_IDENT(u), UNIT_NAMES(u).Name(UNIT_NAMES(u).Length() - 1), drinks[OBJ_VALUE(u, 2)]);
+                               UNIT_IDENT(u),
+                               UNIT_NAMES(u).Name(UNIT_NAMES(u).Length() - 1),
+                               drinks[OBJ_VALUE(u, 2)]);
                   }
                }
                break;
@@ -789,7 +803,8 @@ void process_unit(struct unit_data *u)
             dmc_error(TRUE,
                       "%s: Illegal experience bonus %d: substantially above "
                       " the 100 default!",
-                      UNIT_IDENT(u), CHAR_EXP(u));
+                      UNIT_IDENT(u),
+                      CHAR_EXP(u));
             CHAR_EXP(u) = 100;
          }
          else if(CHAR_EXP(u) < -500)
@@ -797,7 +812,8 @@ void process_unit(struct unit_data *u)
             dmc_error(TRUE,
                       "%s: Illegal experience penalty %d is less than "
                       "-500 XP.",
-                      UNIT_IDENT(u), CHAR_EXP(u));
+                      UNIT_IDENT(u),
+                      CHAR_EXP(u));
             CHAR_EXP(u) = -500;
          }
 
@@ -806,7 +822,8 @@ void process_unit(struct unit_data *u)
             dmc_error(TRUE,
                       "%s: Illegal offensive bonus %d%%"
                       " (expected -1000 .. +1000).",
-                      UNIT_IDENT(u), CHAR_OFFENSIVE(u));
+                      UNIT_IDENT(u),
+                      CHAR_OFFENSIVE(u));
          }
 
          if(!is_in(CHAR_DEFENSIVE(u), -1000, 1000))
@@ -814,7 +831,8 @@ void process_unit(struct unit_data *u)
             dmc_error(TRUE,
                       "%s: Illegal defensive bonus %d%%"
                       " (expected -1000 .. +1000).",
-                      UNIT_IDENT(u), CHAR_DEFENSIVE(u));
+                      UNIT_IDENT(u),
+                      CHAR_DEFENSIVE(u));
          }
 
          if(legal_amount(u) < (unsigned long)convert_money(CHAR_MONEY(u)))
@@ -822,8 +840,11 @@ void process_unit(struct unit_data *u)
             char buf[512];
             sprintf(buf, "%s", money_string(legal_amount(u), local_currency(u), TRUE));
 
-            dmc_error(FALSE, "Too much money on %s.  (%s vs %s)", UNIT_IDENT(u),
-                      money_string(convert_money(CHAR_MONEY(u)), local_currency(u), TRUE), buf);
+            dmc_error(FALSE,
+                      "Too much money on %s.  (%s vs %s)",
+                      UNIT_IDENT(u),
+                      money_string(convert_money(CHAR_MONEY(u)), local_currency(u), TRUE),
+                      buf);
 
             /* Eventually (?):
             free(CHAR_MONEY(u));

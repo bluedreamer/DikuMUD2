@@ -1,6 +1,7 @@
 #pragma once
 
 #include "trie_entry.h"
+
 #include <cstdint>
 
 struct trie_type

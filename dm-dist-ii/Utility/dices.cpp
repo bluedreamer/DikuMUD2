@@ -66,8 +66,14 @@ int main(int argc, char *argv[])
       accum += res;
       rev_accum -= old_res;
 
-      printf(" %3d   %6d   %6.2f%%   %6d   %6.2f%%   %6d   %6.2f%%\n", i, res, (double)((100.0 * res) / potens), accum,
-             (double)((100.0 * accum) / potens), rev_accum, (double)((100.0 * rev_accum) / potens));
+      printf(" %3d   %6d   %6.2f%%   %6d   %6.2f%%   %6d   %6.2f%%\n",
+             i,
+             res,
+             (double)((100.0 * res) / potens),
+             accum,
+             (double)((100.0 * accum) / potens),
+             rev_accum,
+             (double)((100.0 * rev_accum) / potens));
       old_res = res;
    }
 

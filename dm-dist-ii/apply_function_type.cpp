@@ -1,4 +1,5 @@
 #include "apply_function_type.h"
+
 #include "apf_affect.h"
 
 apply_function_type apf[] = {{"Ability Adjustment", apf_ability_adj},

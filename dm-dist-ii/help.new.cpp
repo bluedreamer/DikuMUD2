@@ -22,20 +22,21 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
+#include "help.h"
 
 #include "comm.h"
 #include "db.h"
 #include "files.h"
 #include "handler.h"
-#include "help.h"
 #include "interpreter.h"
 #include "structs.h"
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
 
 /*  Help-file contained 468 keywords on 12-Sep-94
  *  Potential waste: 8 * (HELP_INCREMENT - 1) bytes
@@ -73,9 +74,9 @@ help_file_type::~help_file_type(void)
 
 static class help_file_type help_file[3];
 
-extern char libdir[]; /* from dikumud.c        */
+extern char                 libdir[]; /* from dikumud.c        */
 
-auto search_help_cmp(const void *keyval, const void *datum) -> int
+auto                        search_help_cmp(const void *keyval, const void *datum) -> int
 {
    if(is_abbrev((char *)keyval, ((struct help_index_type *)datum)->keyword) != 0u)
    {
@@ -141,7 +142,7 @@ auto help_base(descriptor_data *d, char *arg) -> int
 {
    uint8_t bHelp = static_cast<uint8_t>(FALSE);
 
-   arg = skip_spaces(arg);
+   arg           = skip_spaces(arg);
    str_lower(arg);
 
    if((CHAR_LEVEL(d->character) >= IMMORTAL_LEVEL) && help(&help_file[2], d, arg))
@@ -185,7 +186,7 @@ auto one_word(char *arg, char *first_arg) -> char *
    {
       int look_at = 0;
 
-      arg = skip_spaces(arg);
+      arg         = skip_spaces(arg);
 
       if(*arg == '\"') /* is it a quote " */
       {
@@ -243,7 +244,7 @@ void help_file_type::generate_help_idx(char *name)
       buf[sizeof buf - 1]  = '\0'; /* Just in case... */
       buf[strlen(buf) - 1] = '\0'; /* Cut off trailing newline */
 
-      scan = buf;
+      scan                 = buf;
 
       for(;;)
       {

@@ -24,10 +24,6 @@
 
 /* 23/07/92 seifert: Fixed grave bug in reordering af ticks                */
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
@@ -42,7 +38,11 @@
 #include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 auto raw_destruct_affect(unit_affected_type *af) -> bool
 {

@@ -74,10 +74,10 @@ Mon Nov 14 17:19:47 MET 1994
    by 400 bytes as I dont want to search though this code... *shiver*
 
 */
-#include "CServerConfiguration.h"
-#include "cQueueElem.h"
 #include "comm.h"
 #include "config.h"
+#include "cQueueElem.h"
+#include "CServerConfiguration.h"
 #include "db_file.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -88,6 +88,7 @@ Mon Nov 14 17:19:47 MET 1994
 #include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cctype>
 #include <cstdio>
 #include <cstdlib>
@@ -238,7 +239,7 @@ static auto push_alias(char *s, char *arg, trie_type *t, unit_data *ch, bool fir
    char           *c;
    struct alias_t *al;
 
-   static uint8_t check_count = 0;
+   static uint8_t  check_count = 0;
 
    if(first)
    {
@@ -448,7 +449,7 @@ static auto alias_is_ok(struct alias_head *ah, char *key, char *val, unit_data *
    struct alias_t *al = nullptr;
    int             count;
 
-   extern int bModeBBS;
+   extern int      bModeBBS;
 
    if(strlen(key) > MAX_ALIAS_LENGTH)
    {
@@ -589,7 +590,7 @@ static auto str_to_alias(const char *str) -> struct alias_head *
       if(sscanf(str, "%19s", ah->owner) == 1 && ah->owner[strlen(ah->owner) - 1] == '~')
       {
          str += strlen(ah->owner);
-         str = skip_spaces(str);
+         str                              = skip_spaces(str);
 
          ah->owner[strlen(ah->owner) - 1] = '\0'; /* Cut of tilde */
       }
@@ -811,8 +812,8 @@ static auto local_dictionary(struct spec_arg *sarg) -> int
    /* Check if this dictionary belongs to user */
    if(str_ccmp(UNIT_NAME(sarg->activator), alias_h->owner) != 0)
    {
-      act("You can't use the alias `$2t' before you type `claim $3N'.", A_ALWAYS, sarg->activator, sarg->cmd->cmd_str, sarg->owner,
-          TO_CHAR);
+      act(
+         "You can't use the alias `$2t' before you type `claim $3N'.", A_ALWAYS, sarg->activator, sarg->cmd->cmd_str, sarg->owner, TO_CHAR);
       return SFR_BLOCK;
    }
 

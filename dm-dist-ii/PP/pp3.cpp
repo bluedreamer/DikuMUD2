@@ -95,7 +95,9 @@ void do_line(char at_bol)
    n = Tokenline - Outline; /* Difference in line #s */
 
    sprintf(filen, " \"%s\"", Filestack[Tokenfile]->f_name);
-   sprintf(buf, "%s#%s %d%s\n", at_bol == 0 ? "\n" : "", /* Emit a \n if needed */
+   sprintf(buf,
+           "%s#%s %d%s\n",
+           at_bol == 0 ? "\n" : "", /* Emit a \n if needed */
            Lineopt == LINE_EXP ? "line" : "",
 #if TARGET == T_QC
            Tokenline - 1, /* QC bug */
@@ -890,7 +892,7 @@ return (TRUE); /* All is ok -- return success */
 
 auto readline(char *buf, int bufsize, int flags) -> char *
 {
-   static char rbo[] = "Read buffer overflow";
+   static char    rbo[] = "Read buffer overflow";
 
    char          *bufp;
    struct symtab *sy;

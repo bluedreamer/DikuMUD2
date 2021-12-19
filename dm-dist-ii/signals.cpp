@@ -81,7 +81,8 @@ void shutdown_request(int signal_no)
 /* kick out players etc */
 void hupsig(int signal)
 {
-   slog(LOG_ALL, 0,
+   slog(LOG_ALL,
+        0,
         "Received signal #%d (SIGHUP, SIGINT, or SIGTERM). "
         "Shutting down",
         signal);

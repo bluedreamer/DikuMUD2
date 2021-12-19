@@ -38,6 +38,7 @@
 #include "utility.h"
 #include "utils.h"
 #include "zone_info_type.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -70,8 +71,8 @@ struct izone_type
    uint8_t    dir;
 };
 
-struct izone_type **iz = nullptr; /* Global for ease of use :)
-                                  I know it's nasty */
+struct izone_type     **iz = nullptr; /* Global for ease of use :)
+                                      I know it's nasty */
 
 static struct dir_array d_array[MAX_EXITS];
 
@@ -130,7 +131,7 @@ static void hob_shift_up(int x, struct hob *h)
 
    while((x != 0) && (HOB_KEY(h->array[x]) < HOB_KEY(h->array[p])))
    {
-      tmp = h->array[p];
+      tmp         = h->array[p];
 
       h->array[p] = h->array[x];
       h->array[x] = tmp;
@@ -175,7 +176,7 @@ static void hob_shift_down(int x, struct hob *h)
 
    while((b != -1) && (HOB_KEY(h->array[b]) < HOB_KEY(h->array[x])))
    {
-      tmp = h->array[b];
+      tmp         = h->array[b];
 
       h->array[b] = h->array[x];
       h->array[x] = tmp;
@@ -270,10 +271,10 @@ void add_exit(struct graph *g, struct graph_vertice *v, unit_data *to, int *idx,
 
    if(UNIT_FILE_INDEX(v->room)->zone == UNIT_FILE_INDEX(to)->zone)
    {
-      d_array[*idx].weight = weight; /* Perhaps adjust for movement type */
+      d_array[*idx].weight     = weight; /* Perhaps adjust for movement type */
 
       /* Calculate array entry for vertice of graph */
-      j = UNIT_FILE_INDEX(to)->room_no;
+      j                        = UNIT_FILE_INDEX(to)->room_no;
 
       d_array[*idx].to_vertice = &g->array[j];
       d_array[*idx].direction  = dir;
@@ -353,7 +354,7 @@ void dijkstra(struct graph *g, struct graph_vertice *source)
    struct graph_vertice *w;
    int                   j;
 
-   h = hob_create(g);
+   h                 = hob_create(g);
 
    source->dist      = 0;
    source->direction = DIR_HERE; /* We're at the goal */
@@ -524,14 +525,20 @@ void stat_dijkstraa(unit_data *ch, struct zone_type *z)
 
          if(is_in(iz[z->zone_no][i].dir, 0, 5) != 0)
          {
-            sprintf(b, "To %s via %s@%s to %s@%s\n\r", z2->name, UNIT_FI_NAME(iz[z->zone_no][i].room),
+            sprintf(b,
+                    "To %s via %s@%s to %s@%s\n\r",
+                    z2->name,
+                    UNIT_FI_NAME(iz[z->zone_no][i].room),
                     UNIT_FI_ZONENAME(iz[z->zone_no][i].room),
                     UNIT_FI_NAME(ROOM_EXIT(iz[z->zone_no][i].room, iz[z->zone_no][i].dir)->to_room),
                     UNIT_FI_ZONENAME(ROOM_EXIT(iz[z->zone_no][i].room, iz[z->zone_no][i].dir)->to_room));
          }
          else
          {
-            sprintf(b, "To %s via %s@%s (enter / leave / here) \n\r", z2->name, UNIT_FI_NAME(iz[z->zone_no][i].room),
+            sprintf(b,
+                    "To %s via %s@%s (enter / leave / here) \n\r",
+                    z2->name,
+                    UNIT_FI_NAME(iz[z->zone_no][i].room),
                     UNIT_FI_ZONENAME(iz[z->zone_no][i].room));
          }
          send_to_char(buf, ch);

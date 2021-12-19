@@ -29,8 +29,8 @@
 
 extern int bPipeSignal;
 
-int PipeRead(int fd, char *buf, size_t count);
-int PipeWrite(int fd, char *buf, size_t count);
+int        PipeRead(int fd, char *buf, size_t count);
+int        PipeWrite(int fd, char *buf, size_t count);
 
 #define SELECT_READ   0x01
 #define SELECT_WRITE  0x02
@@ -46,20 +46,20 @@ public:
    cHook(void);
    virtual ~cHook(void);
 
-   int  tfd(void);
-   int  IsHooked(void);
-   void Write(uint8_t *pData, uint32_t nLen, int bCopy = TRUE);
+   int    tfd(void);
+   int    IsHooked(void);
+   void   Write(uint8_t *pData, uint32_t nLen, int bCopy = TRUE);
 
    cQueue qRX;
 
-   void Unhook(void);
+   void   Unhook(void);
 
 protected:
-   void PushWrite(void);
+   void         PushWrite(void);
 
    virtual void Input(int nFlags) = NULL;
 
-   cQueue qTX;
+   cQueue       qTX;
 
 private:
    int fd;
@@ -79,15 +79,15 @@ public:
    int  Wait(struct timeval *timeout);
 
 private:
-   void Unhook(cHook *hook);
+   void   Unhook(cHook *hook);
 
    fd_set read_set, write_set;
 
    cHook *pfHook[256];
 
-   int nIdx[256];
-   int nMax;
-   int nTop;
+   int    nIdx[256];
+   int    nMax;
+   int    nTop;
 };
 
 extern cCaptainHook CaptainHook;

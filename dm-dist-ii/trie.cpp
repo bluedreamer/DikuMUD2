@@ -26,18 +26,20 @@
 /* Jul 1994: gnort:  Added free_trie                                       */
 
 #include "trie.h"
+
 #include "structs.h"
 #include "trie_entry.h"
 #include "trie_type.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
 static int trie_size = 0, trie_nodes = 0;
 
-auto trie_src_cmp(const void *keyval, const void *datum) -> int
+auto       trie_src_cmp(const void *keyval, const void *datum) -> int
 {
    return (((char *)keyval)[0] - ((trie_entry *)datum)->c);
 }

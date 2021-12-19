@@ -24,10 +24,10 @@
 #ifndef PCKT_H
 #define PCKT_H
 
-#include <stdio.h>
-
 #include "essential.h"
 #include "serial.h"
+
+#include <stdio.h>
 
 class cPcktErrors
 {
@@ -50,7 +50,11 @@ public:
               "        TX: %5ld   RX:    %5ld\n"
               "Errors: CRC %5ld   Length %5ld   Garbled %5ld\n",
 
-              (signed long)nTxPackets, (signed long)nRxPackets, (signed long)nCrcError, (signed long)nLengthError, (signed long)nEscError);
+              (signed long)nTxPackets,
+              (signed long)nRxPackets,
+              (signed long)nCrcError,
+              (signed long)nLengthError,
+              (signed long)nEscError);
    }
 
    uint32_t nTxPackets;
@@ -67,14 +71,14 @@ public:
    cPacketLayer(void);
    ~cPacketLayer(void);
 
-   void Activate(void);
-   void Deactivate(void);
+   void         Activate(void);
+   void         Deactivate(void);
 
    // Called from the sliding layer, when a frame is to be transmitted.
    // Operation is blocking, not released until frame is placed in the
    // "hardware" (or system) buffers for transmission.
    //
-   int TransmitFrame(const uint8_t *data, uint32_t len);
+   int          TransmitFrame(const uint8_t *data, uint32_t len);
 
    // Called when error occurs in this layer...
    //
@@ -91,12 +95,12 @@ public:
    //   if bPcktRXBlocked is FALSE
    //      Called with a data character read from the incoming data stream.
    //
-   inline void ReceiveCharacter(uint8_t c);
+   inline void  ReceiveCharacter(uint8_t c);
 
    // Virtual From NetInterface
-   void Receive(uint8_t *pData, uint32_t nLen);
+   void         Receive(uint8_t *pData, uint32_t nLen);
 
-   cPcktErrors PcktError;
+   cPcktErrors  PcktError;
 
 private:
    inline uint16_t UpdateCRC(uint8_t c, uint16_t crc);
@@ -110,13 +114,13 @@ private:
    // huge overheads in processing.
    //
 
-   uint8_t bActive;
-   uint8_t bHadError;
-   uint8_t bEscaped;
+   uint8_t         bActive;
+   uint8_t         bHadError;
+   uint8_t         bEscaped;
 
-   uint32_t nLength;
-   uint16_t nCrc;
-   uint8_t *pData;
+   uint32_t        nLength;
+   uint16_t        nCrc;
+   uint8_t        *pData;
 };
 
 // The maximum amount of data in a packet (excl. header).

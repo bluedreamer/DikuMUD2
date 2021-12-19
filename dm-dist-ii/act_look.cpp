@@ -31,13 +31,13 @@
 /* 23/08/93 jubal  : Allow imms to see hidden thingys                      */
 /* 10/02/94 gnort  : Rewrote do_who to be smaller and dynamic.             */
 
-#include "CServerConfiguration.h"
 #include "act_movement.h"
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"
 #include "common.h"
 #include "constants.h"
+#include "CServerConfiguration.h"
 #include "db.h"
 #include "dilrun.h"
 #include "files.h"
@@ -54,6 +54,7 @@
 #include "trie.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cctype>
 #include <climits>
 #include <cstdio>
@@ -65,10 +66,10 @@
 
 extern descriptor_data *descriptor_list;
 
-extern char *credits;
-extern char *news;
-extern char *info;
-extern char *wizlist;
+extern char            *credits;
+extern char            *news;
+extern char            *info;
+extern char            *wizlist;
 
 struct looklist_type
 {
@@ -1007,7 +1008,7 @@ static void look_at(unit_data *ch, char *arg, const struct command_info *cmd)
             unit_data *eq = nullptr;
 
             /* now generate relevant equip descr. */
-            fnd = 0;
+            fnd           = 0;
             if(IS_CHAR(unit))
             {
                /* Is this a body part at all ? */
@@ -1269,11 +1270,11 @@ static void look_exits(unit_data *ch)
       return;
    }
 
-   int        door;
-   int        found                  = static_cast<int>(FALSE);
-   char       buf[MAX_STRING_LENGTH] = "";
-   char      *b                      = buf;
-   unit_data *room;
+   int         door;
+   int         found                  = static_cast<int>(FALSE);
+   char        buf[MAX_STRING_LENGTH] = "";
+   char       *b                      = buf;
+   unit_data  *room;
 
    const char *exits[] = {"North", "East", "South", "West", "Up", "Down"};
 
@@ -1338,21 +1339,26 @@ static void look_blank(unit_data *ch, const struct command_info *cmd)
    { /* inside a room, no upward recursion */
       if(IS_IMMORTAL(ch))
       {
-         sprintf(buffer, "%s%s%s [%s@%s]\n\r", g_cServerConfig.m_sColor.pRoomTitle, UNIT_TITLE_STRING(UNIT_IN(ch)),
-                 g_cServerConfig.m_sColor.pDefault, UNIT_FI_NAME(UNIT_IN(ch)), UNIT_FI_ZONENAME(UNIT_IN(ch)));
+         sprintf(buffer,
+                 "%s%s%s [%s@%s]\n\r",
+                 g_cServerConfig.m_sColor.pRoomTitle,
+                 UNIT_TITLE_STRING(UNIT_IN(ch)),
+                 g_cServerConfig.m_sColor.pDefault,
+                 UNIT_FI_NAME(UNIT_IN(ch)),
+                 UNIT_FI_ZONENAME(UNIT_IN(ch)));
       }
       else
       {
-         sprintf(buffer, "%s%s%s\n\r", g_cServerConfig.m_sColor.pRoomTitle, UNIT_TITLE_STRING(UNIT_IN(ch)),
-                 g_cServerConfig.m_sColor.pDefault);
+         sprintf(
+            buffer, "%s%s%s\n\r", g_cServerConfig.m_sColor.pRoomTitle, UNIT_TITLE_STRING(UNIT_IN(ch)), g_cServerConfig.m_sColor.pDefault);
       }
 
       send_to_char(buffer, ch);
 
       if(!(IS_PC(ch) && IS_SET(PC_FLAGS(ch), PC_BRIEF) && cmd->no >= CMD_NORTH && cmd->no <= CMD_DOWN))
       {
-         sprintf(buffer, "%s%s%s\n\r", g_cServerConfig.m_sColor.pRoomText, UNIT_IN_DESCR_STRING(UNIT_IN(ch)),
-                 g_cServerConfig.m_sColor.pDefault);
+         sprintf(
+            buffer, "%s%s%s\n\r", g_cServerConfig.m_sColor.pRoomText, UNIT_IN_DESCR_STRING(UNIT_IN(ch)), g_cServerConfig.m_sColor.pDefault);
          send_to_char(buffer, ch);
       }
 
@@ -1419,7 +1425,10 @@ static void look_blank(unit_data *ch, const struct command_info *cmd)
             else
             {
                /* Inside an object/char */
-               sprintf(buffer, "%s is %s $2n, which %s", IS_OBJ(UNIT_IN(ch)) ? "The $1N" : "$1n", IS_OBJ(room) ? "inside" : "carried by",
+               sprintf(buffer,
+                       "%s is %s $2n, which %s",
+                       IS_OBJ(UNIT_IN(ch)) ? "The $1N" : "$1n",
+                       IS_OBJ(room) ? "inside" : "carried by",
                        IS_OBJ(room) ? "contains" : "carries");
 
                act(buffer, A_SOMEONE, UNIT_IN(ch), UNIT_IN(UNIT_IN(ch)), ch, TO_VICT);
@@ -1464,11 +1473,19 @@ void do_look(unit_data *ch, char *aaa, const struct command_info *cmd)
    }
    else
    {
-      static const char *keywords[] = {"north", "east", "south", "west", "up", "down", "in", "at", "", /* Look at '' case (8) */
+      static const char *keywords[] = {"north",
+                                       "east",
+                                       "south",
+                                       "west",
+                                       "up",
+                                       "down",
+                                       "in",
+                                       "at",
+                                       "", /* Look at '' case (8) */
                                        nullptr};
 
-      char arg1[MAX_INPUT_LENGTH];
-      int  keyword_no;
+      char               arg1[MAX_INPUT_LENGTH];
+      int                keyword_no;
 
       str_next_word(arg, arg1);
       keyword_no = search_block(arg1, keywords, FALSE); /* Partiel Match */
@@ -1486,7 +1503,7 @@ void do_look(unit_data *ch, char *aaa, const struct command_info *cmd)
       {
          char *pOrgArg = arg;
 
-         arg = str_next_word(arg, arg1);
+         arg           = str_next_word(arg, arg1);
          if((keyword_no >= 0) && (keyword_no <= 5))
          {
             if(static_cast<unsigned int>(str_is_empty(arg)) == 0U)
@@ -1579,7 +1596,7 @@ void do_examine(unit_data *ch, char *aaa, const struct command_info *cmd)
       return;
    }
 
-   b = arg;
+   b    = arg;
 
    unit = find_unit(ch, &arg, nullptr, FIND_UNIT_HERE);
 

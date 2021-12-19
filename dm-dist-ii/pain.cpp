@@ -45,6 +45,7 @@
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
+
 #include <cctype>
 #include <cstdarg> /* va_args in pain_error()        */
 #include <cstdio>
@@ -320,7 +321,7 @@ struct pain_type
    uint16_t              idx; /* Current command pointer */
    struct pain_cmd_type *cmds;
 
-   void *vars[1]; /* Global Working Variable! */
+   void                 *vars[1]; /* Global Working Variable! */
 };
 
 struct pain_cmd_type
@@ -339,7 +340,7 @@ static unit_data *p_error_unit = nullptr;
 /*                      P A I N   F U N C T I O N S                       */
 /* ---------------------------------------------------------------------- */
 
-void pain_error(const char *str, ...)
+void              pain_error(const char *str, ...)
 {
    char    buf[MAX_STRING_LENGTH];
    va_list args;
@@ -619,7 +620,7 @@ auto pain_trash(unit_data *npc, struct pain_type *pain) -> int
 {
    unit_data *u;
 
-   auto obj_trade_price(unit_data * u)->amount_t;
+   auto       obj_trade_price(unit_data * u)->amount_t;
 
    for(u = UNIT_CONTAINS(UNIT_IN(npc)); u != nullptr; u = u->next)
    {
@@ -856,31 +857,31 @@ auto translate_line(int top, int sym, struct line_no_convert *line_numbers) -> i
 
 auto pain_doinit(unit_data *npc, char *text) -> struct pain_type *
 {
-   int               i;
-   int               j;
-   int               top;
-   int               error;
-   char              buf[MAX_STRING_LENGTH];
-   char              zone[80];
-   char              name[80];
-   char             *b = nullptr;
-   struct pain_type *pain;
+   int                      i;
+   int                      j;
+   int                      top;
+   int                      error;
+   char                     buf[MAX_STRING_LENGTH];
+   char                     zone[80];
+   char                     name[80];
+   char                    *b = nullptr;
+   struct pain_type        *pain;
 
-   struct pain_cmd_type   *cmd_list     = nullptr;
-   struct line_no_convert *line_numbers = nullptr;
+   struct pain_cmd_type    *cmd_list     = nullptr;
+   struct line_no_convert  *line_numbers = nullptr;
 
-   struct pain_cmd_type   cmd;
-   struct line_no_convert line_no = {-1, -1};
-   struct command_info   *cmd_ptr;
-   char                 **namelist = nullptr;
+   struct pain_cmd_type     cmd;
+   struct line_no_convert   line_no = {-1, -1};
+   struct command_info     *cmd_ptr;
+   char                   **namelist = nullptr;
 
    extern struct trie_type *intr_trie;
 
-   static const char *specmsg[] = {"_dead", "_combat", "_unknown", nullptr};
+   static const char       *specmsg[] = {"_dead", "_combat", "_unknown", nullptr};
 
-   top   = 0;
-   i     = 0;
-   error = static_cast<int>(FALSE);
+   top                                = 0;
+   i                                  = 0;
+   error                              = static_cast<int>(FALSE);
 
    while((*text != 0) && (error == 0))
    {
@@ -897,7 +898,7 @@ auto pain_doinit(unit_data *npc, char *text) -> struct pain_type *
       cmd.func                = nullptr;
 
       /* Read symbolic line number */
-      text = pi_getnum(text, &i);
+      text                    = pi_getnum(text, &i);
       if(i == -1)
       {
          error = static_cast<int>(TRUE);

@@ -26,12 +26,6 @@
                    free_unit, caused by wrongly nested if-else's           */
 /* Sun Jun 27 1993 HHS applied world status update */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"
@@ -43,7 +37,13 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+
+#include <cctype>
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 /************************************************************************
  *  Memory Handling Procedures Below this line                          *

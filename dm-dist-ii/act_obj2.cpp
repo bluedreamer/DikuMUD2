@@ -28,10 +28,6 @@
 /* 28/03/94 seifert: Fixed bug in drinkcon names remove                    */
 /* 26/08/94 gnort  : Moved equipment stuff to act_obj3.c                   */
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
@@ -46,6 +42,10 @@
 #include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
+
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 /* Remove the last name from the drink container */
 void name_from_drinkcon(unit_data *obj)
@@ -88,8 +88,8 @@ static void apply_poison(unit_data *ch, int poison, int amount)
 /* Return TRUE if something was eaten/drunk */
 auto drink_eat(unit_data *ch, unit_data *obj, int amount, const struct command_info *cmd, char *arg) -> bool
 {
-   int extract = static_cast<int>(FALSE);
-   int poison  = 0; /* No poison */
+   int  extract = static_cast<int>(FALSE);
+   int  poison  = 0; /* No poison */
 
    void gain_condition(unit_data * ch, int condition, int value);
 

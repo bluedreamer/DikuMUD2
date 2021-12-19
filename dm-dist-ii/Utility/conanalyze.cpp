@@ -21,16 +21,16 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "essential.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
-#include "essential.h"
-
 long hours[24];
 
-int update(struct tm *ptm_on, struct tm *ptm_off)
+int  update(struct tm *ptm_on, struct tm *ptm_off)
 {
    int secs = 0;
 
@@ -108,10 +108,10 @@ int main(int argc, char *argv[])
    int       error = FALSE;
    uint32_t  count = 1;
 
-   int day   = -1;
-   int week  = -1;
-   int month = -1;
-   int year  = -1;
+   int       day   = -1;
+   int       week  = -1;
+   int       month = -1;
+   int       year  = -1;
 
    if(argc >= 2)
    {
@@ -179,8 +179,8 @@ int main(int argc, char *argv[])
          exit(1);
       }
 
-      tm_on  = *localtime((time_t *)&on);
-      tm_off = *localtime((time_t *)&off);
+      tm_on          = *localtime((time_t *)&on);
+      tm_off         = *localtime((time_t *)&off);
 
       tm_on.tm_wday  = (tm_on.tm_yday / 7) + 1; // 1..53
       tm_off.tm_wday = (tm_off.tm_yday / 7) + 1;
@@ -194,9 +194,19 @@ int main(int argc, char *argv[])
       {
          printf("%5d) ID %5d   %2d:%2d:%2d (%2d/%2d) / "
                 "%2d:%2d:%2d (%2d/%2d) =",
-                count++, id, tm_on.tm_hour, tm_on.tm_min, tm_on.tm_sec, tm_on.tm_mday, tm_on.tm_mon + 1,
+                count++,
+                id,
+                tm_on.tm_hour,
+                tm_on.tm_min,
+                tm_on.tm_sec,
+                tm_on.tm_mday,
+                tm_on.tm_mon + 1,
 
-                tm_off.tm_hour, tm_off.tm_min, tm_off.tm_sec, tm_off.tm_mday, tm_off.tm_mon + 1);
+                tm_off.tm_hour,
+                tm_off.tm_min,
+                tm_off.tm_sec,
+                tm_off.tm_mday,
+                tm_off.tm_mon + 1);
 
          int secs = update(&tm_on, &tm_off);
          printf("%5d secs\n", secs);

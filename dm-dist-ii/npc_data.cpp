@@ -1,4 +1,5 @@
 #include "npc_data.h"
+
 #include <cstring>
 extern int world_nonpc;
 

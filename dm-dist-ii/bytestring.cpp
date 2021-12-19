@@ -22,13 +22,14 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "bytestring.h"
+
+#include "essential.h"
+#include "textutil.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-
-#include "bytestring.h"
-#include "essential.h"
-#include "textutil.h"
 
 /* =================================================================== */
 /* =================================================================== */

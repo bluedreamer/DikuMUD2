@@ -13,8 +13,8 @@ class cStringConstant
 private:
    cStringConstant(const char *c, uint32_t len, uint32_t h);
    ~cStringConstant();
-   inline auto String() -> const char * { return pStr; }
-   inline auto Next() -> cStringConstant * { return pNext; }
+   inline auto      String() -> const char      *{ return pStr; }
+   inline auto      Next() -> cStringConstant      *{ return pNext; }
 
    char            *pStr;
    uint32_t         nReferences;

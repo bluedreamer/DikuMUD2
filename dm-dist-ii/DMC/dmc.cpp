@@ -27,49 +27,48 @@
  * HHS : added DIL template writing
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
-#include <sys/stat.h>
-#include <sys/types.h>
+#include "dmc.h"
 
 #include "../utils.h"
 #include "common.h"
 #include "db_file.h"
 #include "dil.h"
-#include "dmc.h"
 #include "textutil.h"
 #include "unit_affected_type.h"
 #include "utility.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 #define MEMBLOCK 65536
 #define BUFS     30
 
-int          sunlight       = 0;
-const int8_t time_light[24] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+int              sunlight       = 0;
+const int8_t     time_light[24] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 struct zone_info zone;
 char             cur_filename[256], top_filename[256];
 
-void boot_money(void);
-void fix(const char *file);
-void zone_reset(char *default_name);
-void init_unit(struct unit_data *u);
-void dump_zone(char *prefix);
-long stat_mtime(const char *name);
+void             boot_money(void);
+void             fix(const char *file);
+void             zone_reset(char *default_name);
+void             init_unit(struct unit_data *u);
+void             dump_zone(char *prefix);
+long             stat_mtime(const char *name);
 
-int make          = 0, /* cmp mod-times of files before compiling */
-   nooutput       = 0, /* suppress output */
-   verbose        = 0, /* be talkative */
-   fatal_warnings = 0; /* allow warnings */
+int              make = 0, /* cmp mod-times of files before compiling */
+   nooutput           = 0, /* suppress output */
+   verbose            = 0, /* be talkative */
+   fatal_warnings     = 0; /* allow warnings */
 
 extern int   errcon;
 extern char *error_zone_name;
 
-char **ident_names = NULL; /* Used to check unique ident */
+char       **ident_names = NULL; /* Used to check unique ident */
 
 struct mem
 {
@@ -81,7 +80,7 @@ struct mem
 const char *inc_dirs[16]; /* Must be enough :-) */
 int         inc_count = 0;
 
-void ShowUsage(char *name)
+void        ShowUsage(char *name)
 {
    fprintf(stderr, "Usage: %s [-msvlh] [-Idir ..] zonefile ...\n", name);
    fprintf(stderr, "   -m Compile only changed zones.\n");
@@ -173,8 +172,8 @@ void fix(const char *file)
    FILE *cpp;
    int   i, result, compressed = 0;
 
-   void init_lex(FILE * file);
-   int  yyparse(void);
+   void  init_lex(FILE * file);
+   int   yyparse(void);
 
    /* Examine filename */
 
@@ -367,9 +366,9 @@ void mem_reset()
 
    ident_names = create_namelist();
 
-   mm.buf  = 0;
-   mm.free = 0;
-   mm.buf  = 0;
+   mm.buf      = 0;
+   mm.free     = 0;
+   mm.buf      = 0;
 }
 
 void *mmalloc(int size)
@@ -419,7 +418,7 @@ struct room_direction_data *mcreate_exit(void)
 {
    struct room_direction_data *rslt;
 
-   rslt = new(struct room_direction_data);
+   rslt            = new(struct room_direction_data);
 
    rslt->open_name = 0;
    rslt->exit_info = 0;

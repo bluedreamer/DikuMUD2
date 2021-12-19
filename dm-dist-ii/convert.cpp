@@ -25,14 +25,6 @@
 /* 09/09/93 seifert : Changed to accomodate blkfile V2                     */
 /*          seifert : Changed to accomodate single player files.           */
 
-#include <cctype>
-#include <climits>
-#include <cmath>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
 #include "affect.h"
 #include "blkfile.h"
 #include "common.h"
@@ -49,11 +41,19 @@
 #include "utils.h"
 #include "zon_basis.h"
 
-auto save_contents(const char *pFileName, unit_data *unit, int fast, int bContainer) -> int;
-auto player_exists(const char *pName) -> int;
-auto delete_player(const char *pName) -> int;
-auto delete_inventory(const char *pName) -> int;
-void save_player_file(unit_data *pc);
+#include <cctype>
+#include <climits>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+
+auto     save_contents(const char *pFileName, unit_data *unit, int fast, int bContainer) -> int;
+auto     player_exists(const char *pName) -> int;
+auto     delete_player(const char *pName) -> int;
+auto     delete_inventory(const char *pName) -> int;
+void     save_player_file(unit_data *pc);
 
 char   **player_name_list = nullptr;
 int      max_id           = -1;
@@ -228,10 +228,10 @@ void convert_player(unit_data *pc)
    extra_descr_data *exd;
    extra_descr_data *nextexd;
 
-   int lvl;
+   int               lvl;
 
-   void race_cost(unit_data * ch);
-   void reroll(unit_data * victim);
+   void              race_cost(unit_data * ch);
+   void              reroll(unit_data * victim);
 
    assert(IS_PC(pc));
 
@@ -461,7 +461,10 @@ void list()
          continue;
       }
 
-      printf("Id [%4d]  Lvl [%3d]  %-3s (%3d days)", PC_ID(pc), CHAR_LEVEL(pc), IS_MORTAL(pc) ? "   " : (IS_GOD(pc) ? "GOD" : "DEM"),
+      printf("Id [%4d]  Lvl [%3d]  %-3s (%3d days)",
+             PC_ID(pc),
+             CHAR_LEVEL(pc),
+             IS_MORTAL(pc) ? "   " : (IS_GOD(pc) ? "GOD" : "DEM"),
              days_old(PC_TIME(pc).connect));
 
       if(ids[PC_ID(pc)] != 0U)
@@ -642,7 +645,7 @@ void cleanup()
 
 void cleanup_playerfile(int argc, char *argv[])
 {
-   char c;
+   char              c;
 
    extern unit_data *entry_room;
 

@@ -22,16 +22,10 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-#include <dirent.h>
+#include "competition.h"
 
 #include "comm.h"
 #include "common.h"
-#include "competition.h"
 #include "db.h"
 #include "files.h"
 #include "handler.h"
@@ -41,6 +35,13 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <dirent.h>
 
 #define MAX_TOP_TEN (11)
 
@@ -61,19 +62,19 @@ struct top_ten_type
 
 static struct competition_data
 {
-   char *name;
-   char *descr;
-   int   ongoing;
-   int   start;
-   int   stop;
+   char               *name;
+   char               *descr;
+   int                 ongoing;
+   int                 start;
+   int                 stop;
 
    struct top_ten_type top_ten;
 
-} *competition = nullptr;
+} *competition             = nullptr;
 
 static int competition_top = 0;
 
-auto competition_find(char *name, extra_descr_data *pexd) -> extra_descr_data *
+auto       competition_find(char *name, extra_descr_data *pexd) -> extra_descr_data *
 {
    class extra_descr_data *exd;
 
@@ -220,8 +221,8 @@ static auto competition_points(unit_data *pc, int idx) -> int
 
    if((exd = competition_find(competition[idx].name, PC_QUEST(pc))) != nullptr)
    {
-      xp   = CHAR_EXP(pc) - atoi(exd->names.Name(2));
-      secs = PC_TIME(pc).played - atoi(exd->names.Name(3));
+      xp     = CHAR_EXP(pc) - atoi(exd->names.Name(2));
+      secs   = PC_TIME(pc).played - atoi(exd->names.Name(3));
 
       points = xp * secs;
       if(competition[idx].top_ten.max_secs > 0)
@@ -400,8 +401,13 @@ static void show_competition(unit_data *ch, const int i)
    char buf[256];
    int  found = static_cast<int>(FALSE);
 
-   sprintf(buf, COLOUR_MENU "%s%s" COLOUR_NORMAL " (Level %d to %d with %d competitors)\n\r", competition[i].descr,
-           competition[i].ongoing != 0 ? "" : " [ENDED]", competition[i].start, competition[i].stop, competition[i].top_ten.competitors);
+   sprintf(buf,
+           COLOUR_MENU "%s%s" COLOUR_NORMAL " (Level %d to %d with %d competitors)\n\r",
+           competition[i].descr,
+           competition[i].ongoing != 0 ? "" : " [ENDED]",
+           competition[i].start,
+           competition[i].stop,
+           competition[i].top_ten.competitors);
 
    send_to_char(buf, ch);
 
@@ -412,8 +418,8 @@ static void show_competition(unit_data *ch, const int i)
       if(competition[i].top_ten.entry[j].name[0] != 0)
       {
          found = static_cast<int>(TRUE);
-         sprintf(buf, "   %2d. %-15s  (%8d points)\n\r", j + 1, competition[i].top_ten.entry[j].name,
-                 competition[i].top_ten.entry[j].points);
+         sprintf(
+            buf, "   %2d. %-15s  (%8d points)\n\r", j + 1, competition[i].top_ten.entry[j].name, competition[i].top_ten.entry[j].points);
          send_to_char(buf, ch);
       }
    }

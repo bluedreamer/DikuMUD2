@@ -93,7 +93,7 @@ unsigned rnd(unsigned low, unsigned high);
  * Main code ...
  */
 
-int main(int argc, char *argv[])
+int      main(int argc, char *argv[])
 {
    int   group_number, number;
    char *count;

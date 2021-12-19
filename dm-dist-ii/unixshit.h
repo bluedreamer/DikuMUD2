@@ -60,24 +60,24 @@ void perror(const char *s);
 typedef char *va_list;
 int           sscanf(const char *s, const char *format, ...);
 /* int vsprintf(char *s, const char *format, va_list ap); */
-size_t fread(void *ptr, size_t size, size_t nobj, FILE *stream);
-size_t fwrite(const void *ptr, size_t size, size_t nobj, FILE *stream);
-int    ungetc(int c, FILE *stream);
+size_t        fread(void *ptr, size_t size, size_t nobj, FILE *stream);
+size_t        fwrite(const void *ptr, size_t size, size_t nobj, FILE *stream);
+int           ungetc(int c, FILE *stream);
 
-int  fseek(FILE *stream, long offset, int origin);
-int  fclose(FILE *stream);
-void rewind(FILE *stream);
+int           fseek(FILE *stream, long offset, int origin);
+int           fclose(FILE *stream);
+void          rewind(FILE *stream);
 
-int fscanf(FILE *stream, const char *format, ...);
-int fprintf(FILE *stream, const char *format, ...);
+int           fscanf(FILE *stream, const char *format, ...);
+int           fprintf(FILE *stream, const char *format, ...);
 
 /* int sprintf(char *s, const char *format, ...); */
-int printf(const char *format, ...);
+int           printf(const char *format, ...);
 
-int fflush(FILE *stream);
-int fgetc(FILE *stream);
-int fputc(int c, FILE *stream);
-int fputs(const char *s, FILE *stream);
+int           fflush(FILE *stream);
+int           fgetc(FILE *stream);
+int           fputc(int c, FILE *stream);
+int           fputs(const char *s, FILE *stream);
 #endif
 
 #if defined(DOS)

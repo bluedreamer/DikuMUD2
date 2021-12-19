@@ -22,12 +22,13 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cstdio>
+#include "spec_assign.h"
 
 #include "handler.h"
 #include "interpreter.h"
-#include "spec_assign.h"
 #include "utils.h"
+
+#include <cstdio>
 
 auto spec_unused(struct spec_arg *sarg) -> int
 {

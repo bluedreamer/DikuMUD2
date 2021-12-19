@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cStringConstant.h"
+
 #include <cstdint>
 
 class cStringInstance

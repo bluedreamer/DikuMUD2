@@ -55,6 +55,7 @@
 #include "weather.h"
 #include "zone_info_type.h"
 #include "zone_reset_cmd.h"
+
 #include <arpa/inet.h>
 #include <cctype>
 #include <climits>
@@ -113,12 +114,12 @@ static void stat_swap(unit_data *ch)
 
 static void stat_memory(unit_data *ch)
 {
-   char buf[MAX_STRING_LENGTH];
+   char       buf[MAX_STRING_LENGTH];
 
    extern int events;
 
-   void memory_status(char *buf);
-   void system_memory(unit_data * ch);
+   void       memory_status(char *buf);
+   void       system_memory(unit_data * ch);
 
    sprintf(buf, "Event queue entries: %d\n\r\n\r", events);
    send_to_char(buf, ch);
@@ -133,10 +134,10 @@ static void stat_world(unit_data *ch)
    extern int world_nonpc;
    extern int world_nopc;
 
-   char   buf[MAX_STRING_LENGTH];
-   time_t now = time(nullptr);
+   char       buf[MAX_STRING_LENGTH];
+   time_t     now   = time(nullptr);
 
-   char *p          = ctime(&now);
+   char      *p     = ctime(&now);
    p[strlen(p) - 1] = '\0';
 
    sprintf(buf,
@@ -148,21 +149,34 @@ static void stat_world(unit_data *ch)
            "#connections [%2d / peak %2d]\n\r"
            "#players     [%2d / peak %2d]\n\r"
            "Boottime: %s\n\rTime now: %s\n\r",
-           compile_date, compile_time, tics, world_norooms, world_noobjects, world_nochars, world_nonpc, world_nopc,
-           world_norooms + world_noobjects + world_nochars, world_nozones, no_connections, max_no_connections, no_players, max_no_players,
-           world_boottime, p);
+           compile_date,
+           compile_time,
+           tics,
+           world_norooms,
+           world_noobjects,
+           world_nochars,
+           world_nonpc,
+           world_nopc,
+           world_norooms + world_noobjects + world_nochars,
+           world_nozones,
+           no_connections,
+           max_no_connections,
+           no_players,
+           max_no_players,
+           world_boottime,
+           p);
 
    send_to_char(buf, ch);
 }
 
 static char *stat_buffer, *stat_p;
 
-static void stat_zone_reset(char *indnt, zone_reset_cmd *zrip, unit_data *ch)
+static void  stat_zone_reset(char *indnt, zone_reset_cmd *zrip, unit_data *ch)
 {
    static const char *nums[] = {"max", "zonemax", "local"};
 
-   char buf[100];
-   int  i;
+   char               buf[100];
+   int                i;
 
    *stat_p = 0;
 
@@ -245,11 +259,11 @@ static void stat_zone(unit_data *ch, struct zone_type *zone)
 {
    static const char *reset_modes[] = {"Never Reset", "Reset When Empty", "Reset Always", "UNKNOWN"};
 
-   char tmp[128];
-   char buf[MAX_STRING_LENGTH];
-   bool errors;
-   bool info;
-   int  reset_mode = zone->reset_mode;
+   char               tmp[128];
+   char               buf[MAX_STRING_LENGTH];
+   bool               errors;
+   bool               info;
+   int                reset_mode = zone->reset_mode;
 
    if(is_in(reset_mode, 0, 2) == 0)
    {
@@ -273,9 +287,23 @@ static void stat_zone(unit_data *ch, struct zone_type *zone)
            "Pressure [%d] Change [%d] Sky [%d] Base [%d]\n\r\n\r"
            "Authors Mud Mail: %s\n\r\n\r%s\n\r\n\r"
            "%s\n\r%s\n\r",
-           zone->name, zone->filename, zone->access, zone->title != nullptr ? zone->title : "", zone->loadlevel, zone->payonly,
-           zone->no_of_fi, zone->no_rooms, reset_modes[reset_mode], reset_mode, zone->zone_time, zone->weather.pressure,
-           zone->weather.change, zone->weather.sky, zone->weather.base, tmp, zone->notes,
+           zone->name,
+           zone->filename,
+           zone->access,
+           zone->title != nullptr ? zone->title : "",
+           zone->loadlevel,
+           zone->payonly,
+           zone->no_of_fi,
+           zone->no_rooms,
+           reset_modes[reset_mode],
+           reset_mode,
+           zone->zone_time,
+           zone->weather.pressure,
+           zone->weather.change,
+           zone->weather.sky,
+           zone->weather.base,
+           tmp,
+           zone->notes,
            errors ? "Errors in zone (stat zone error)" : "No errors registered in zone.",
            info ? "User info feedback in zone (stat zone info)." : "No user info (feedback) in zone.");
 
@@ -296,7 +324,7 @@ static void stat_creators(unit_data *ch, char *arg)
       return;
    }
 
-   b = buf;
+   b   = buf;
 
    arg = one_argument(arg, tmp);
 
@@ -415,21 +443,21 @@ static void stat_dil(const unit_data *ch, const struct zone_type *zone)
 
 static void extra_stat_zone(unit_data *ch, char *arg, struct zone_type *zone)
 {
-   char             buf[MAX_STRING_LENGTH];
-   char             filename[128];
-   int              argno;
-   file_index_type *fi;
-   int              search_type = 0;
-   int              i;
+   char               buf[MAX_STRING_LENGTH];
+   char               filename[128];
+   int                argno;
+   file_index_type   *fi;
+   int                search_type = 0;
+   int                i;
 
-   void stat_dijkstraa(unit_data * ch, struct zone_type * z);
+   void               stat_dijkstraa(unit_data * ch, struct zone_type * z);
 
-   static const char *zone_args[] = {"mobiles", "objects", "rooms", "reset", "errors", "info", "path", "dil", nullptr};
+   static const char *zone_args[]    = {"mobiles", "objects", "rooms", "reset", "errors", "info", "path", "dil", nullptr};
 
-   static int search_types[] = {UNIT_ST_NPC, UNIT_ST_OBJ, UNIT_ST_ROOM};
+   static int         search_types[] = {UNIT_ST_NPC, UNIT_ST_OBJ, UNIT_ST_ROOM};
 
-   arg   = one_argument(arg, buf);
-   argno = search_block(buf, zone_args, 0);
+   arg                               = one_argument(arg, buf);
+   argno                             = search_block(buf, zone_args, 0);
 
    if(argno == -1) /* Asked for a specific zone? */
    {
@@ -587,15 +615,23 @@ static void stat_spell(const unit_data *ch, unit_data *u)
          }
       }
 
-      sprintf(tmpbuf2, "%s %s (%s)",
+      sprintf(tmpbuf2,
+              "%s %s (%s)",
               spell_info[i].cast_type == SPLCST_CHECK ? "CHECK " : (spell_info[i].cast_type == SPLCST_RESIST ? "RESIST" : "OTHER "),
-              spl_text[i], tmpbuf1);
+              spl_text[i],
+              tmpbuf1);
 
-      sprintf(b, "%c%c%c%c%c] %3d%%/%d %c %-50s [%3dC]\n\r", IS_SET(spell_info[i].media, MEDIA_SPELL) ? 'C' : '-',
-              IS_SET(spell_info[i].media, MEDIA_SCROLL) ? 'S' : '-', IS_SET(spell_info[i].media, MEDIA_POTION) ? 'P' : '-',
-              IS_SET(spell_info[i].media, MEDIA_WAND) ? 'W' : '-', IS_SET(spell_info[i].media, MEDIA_STAFF) ? 'R' : '-',
-              IS_NPC(u) ? NPC_SPL_SKILL(u, i) : PC_SPL_SKILL(u, i), IS_NPC(u) ? 0 : PC_SPL_LVL(u, i),
-              spell_info[i].realm == ABIL_DIV ? 'D' : (spell_info[i].realm == ABIL_MAG ? 'M' : '!'), tmpbuf2,
+      sprintf(b,
+              "%c%c%c%c%c] %3d%%/%d %c %-50s [%3dC]\n\r",
+              IS_SET(spell_info[i].media, MEDIA_SPELL) ? 'C' : '-',
+              IS_SET(spell_info[i].media, MEDIA_SCROLL) ? 'S' : '-',
+              IS_SET(spell_info[i].media, MEDIA_POTION) ? 'P' : '-',
+              IS_SET(spell_info[i].media, MEDIA_WAND) ? 'W' : '-',
+              IS_SET(spell_info[i].media, MEDIA_STAFF) ? 'R' : '-',
+              IS_NPC(u) ? NPC_SPL_SKILL(u, i) : PC_SPL_SKILL(u, i),
+              IS_NPC(u) ? 0 : PC_SPL_LVL(u, i),
+              spell_info[i].realm == ABIL_DIV ? 'D' : (spell_info[i].realm == ABIL_MAG ? 'M' : '!'),
+              tmpbuf2,
               IS_NPC(u) ? 0 : PC_SPL_COST(u, i));
       TAIL(b);
    }
@@ -653,8 +689,12 @@ static void stat_wskill(const unit_data *ch, unit_data *u)
 
    for(i = 0; i < max; i++)
    {
-      sprintf(b, "%20s : %3d%% Lvl %3d Cost %3d\n\r", wpn_text[i], IS_NPC(u) ? NPC_WPN_SKILL(u, i) : PC_WPN_SKILL(u, i),
-              IS_NPC(u) ? 0 : PC_WPN_LVL(u, i), IS_NPC(u) ? 0 : PC_WPN_COST(u, i));
+      sprintf(b,
+              "%20s : %3d%% Lvl %3d Cost %3d\n\r",
+              wpn_text[i],
+              IS_NPC(u) ? NPC_WPN_SKILL(u, i) : PC_WPN_SKILL(u, i),
+              IS_NPC(u) ? 0 : PC_WPN_LVL(u, i),
+              IS_NPC(u) ? 0 : PC_WPN_COST(u, i));
       TAIL(b);
    }
    page_string(CHAR_DESCRIPTOR(ch), buf);
@@ -675,19 +715,25 @@ static void stat_affect(const unit_data *ch, unit_data *u)
 
    for(af = UNIT_AFFECTED(u); af != nullptr; af = af->next)
    {
-      sprintf(
-         buf,
-         "----------------------------------------------------\n\r"
-         "Id [%d]   Duration [%d]   Beat [%d] Data [%d] [%d] [%d]\n\r"
-         "First f() %s\n\r"
-         "Tick  f() %s\n\r"
-         "Last  f() %s\n\r"
-         "Apply f() %s\n\r"
-         "%s",
-         af->id, af->duration, af->beat, af->data[0], af->data[1], af->data[2],
-         af->firstf_i >= 0 ? STR(tif[af->firstf_i].descr) : "Not used (-1)",
-         af->tickf_i >= 0 ? STR(tif[af->tickf_i].descr) : "Not used (-1)", af->lastf_i >= 0 ? STR(tif[af->lastf_i].descr) : "Not used (-1)",
-         af->applyf_i >= 0 ? STR(apf[af->applyf_i].descr) : "Not used (-1)", u == af->owner ? "" : "Serious fuck up in owner pointer!\n\r");
+      sprintf(buf,
+              "----------------------------------------------------\n\r"
+              "Id [%d]   Duration [%d]   Beat [%d] Data [%d] [%d] [%d]\n\r"
+              "First f() %s\n\r"
+              "Tick  f() %s\n\r"
+              "Last  f() %s\n\r"
+              "Apply f() %s\n\r"
+              "%s",
+              af->id,
+              af->duration,
+              af->beat,
+              af->data[0],
+              af->data[1],
+              af->data[2],
+              af->firstf_i >= 0 ? STR(tif[af->firstf_i].descr) : "Not used (-1)",
+              af->tickf_i >= 0 ? STR(tif[af->tickf_i].descr) : "Not used (-1)",
+              af->lastf_i >= 0 ? STR(tif[af->lastf_i].descr) : "Not used (-1)",
+              af->applyf_i >= 0 ? STR(apf[af->applyf_i].descr) : "Not used (-1)",
+              u == af->owner ? "" : "Serious fuck up in owner pointer!\n\r");
 
       send_to_char(buf, ch);
    }
@@ -697,9 +743,9 @@ static void stat_func(const unit_data *ch, unit_data *u)
 {
    extern struct unit_function_array_type unit_function_array[];
 
-   char       buf[4096];
-   char       buf2[512];
-   unit_fptr *f;
+   char                                   buf[4096];
+   char                                   buf2[512];
+   unit_fptr                             *f;
 
    if(UNIT_FUNC(u) == nullptr)
    {
@@ -717,7 +763,9 @@ static void stat_func(const unit_data *ch, unit_data *u)
 
          if((prg = (struct dilprg *)f->data) != nullptr)
          {
-            sprintf(buf, "DIL Name: %s@%s\n\r", prg->stack[0].tmpl->prgname,
+            sprintf(buf,
+                    "DIL Name: %s@%s\n\r",
+                    prg->stack[0].tmpl->prgname,
                     prg->stack[0].tmpl->zone != nullptr ? prg->stack[0].tmpl->zone->name : "IDLE");
 
             send_to_char(buf, ch);
@@ -727,7 +775,10 @@ static void stat_func(const unit_data *ch, unit_data *u)
       sprintf(buf,
               "%s Flags [%s] Index [%d] Beat [%d]\n\r"
               "%s\n\r\n\r",
-              unit_function_array[f->index].name, sprintbit(buf2, f->flags, sfb_flags), f->index, f->heart_beat,
+              unit_function_array[f->index].name,
+              sprintbit(buf2, f->flags, sfb_flags),
+              f->index,
+              f->heart_beat,
               f->data != nullptr ? unit_function_array[f->index].save_w_d == SD_ASCII ? (char *)f->data : "Has raw data." : "No data.");
       send_to_char(buf, ch);
    }
@@ -751,10 +802,15 @@ static void stat_normal(unit_data *ch, unit_data *u)
            "Title: \"%s\"\n\rOutside_descr:\n\r\"%s\"\n\r"
            "Inside_descr:\n\r\"%s\"\n\r",
 
-           sprintbit(tmpbuf2, UNIT_TYPE(u), unit_status), UNIT_FI_NAME(u), UNIT_FI_ZONENAME(u),
+           sprintbit(tmpbuf2, UNIT_TYPE(u), unit_status),
+           UNIT_FI_NAME(u),
+           UNIT_FI_ZONENAME(u),
            UNIT_FILE_INDEX(u) != nullptr ? UNIT_FILE_INDEX(u)->no_in_mem : -1,
-           UNIT_FILE_INDEX(u) != nullptr ? (unsigned long)UNIT_FILE_INDEX(u)->crc : 0, tmpbuf1, STR(UNIT_TITLE_STRING(u)),
-           STR(UNIT_OUT_DESCR_STRING(u)), STR(UNIT_IN_DESCR_STRING(u)));
+           UNIT_FILE_INDEX(u) != nullptr ? (unsigned long)UNIT_FILE_INDEX(u)->crc : 0,
+           tmpbuf1,
+           STR(UNIT_TITLE_STRING(u)),
+           STR(UNIT_OUT_DESCR_STRING(u)),
+           STR(UNIT_IN_DESCR_STRING(u)));
    send_to_char(buf, ch);
 
    sprintf(buf,
@@ -765,18 +821,30 @@ static void stat_normal(unit_data *ch, unit_data *u)
            "Flags: %s\n\r"
            "Hitpoints/max: [%ld/%ld]  Alignment: [%d]\n\r",
 
-           UNIT_LIGHTS(u), UNIT_BRIGHT(u), UNIT_ILLUM(u), UNIT_CHARS(u), UNIT_MINV(u),
-           UNIT_IN(u) != nullptr ? STR(TITLENAME(UNIT_IN(u))) : "Nothing", UNIT_CONTAINS(u) != nullptr ? "has contents" : "is empty",
-           sprintbit(tmpbuf2, UNIT_MANIPULATE(u), unit_manipulate), sprintbit(tmpbuf1, UNIT_FLAGS(u), unit_flags), (signed long)UNIT_HIT(u),
-           (signed long)UNIT_MAX_HIT(u), UNIT_ALIGNMENT(u));
+           UNIT_LIGHTS(u),
+           UNIT_BRIGHT(u),
+           UNIT_ILLUM(u),
+           UNIT_CHARS(u),
+           UNIT_MINV(u),
+           UNIT_IN(u) != nullptr ? STR(TITLENAME(UNIT_IN(u))) : "Nothing",
+           UNIT_CONTAINS(u) != nullptr ? "has contents" : "is empty",
+           sprintbit(tmpbuf2, UNIT_MANIPULATE(u), unit_manipulate),
+           sprintbit(tmpbuf1, UNIT_FLAGS(u), unit_flags),
+           (signed long)UNIT_HIT(u),
+           (signed long)UNIT_MAX_HIT(u),
+           UNIT_ALIGNMENT(u));
    send_to_char(buf, ch);
 
    sprintf(buf,
            "Key name: [%s]  Open flags: %s\n\r"
            "Base weight : [%d] Weight : [%d] Capacity : [%d] Size [%d]\n\r",
 
-           UNIT_KEY(u) != nullptr ? UNIT_FI_NAME(u) : "none", sprintbit(tmpbuf1, UNIT_OPEN_FLAGS(u), unit_open_flags), UNIT_BASE_WEIGHT(u),
-           UNIT_WEIGHT(u), UNIT_CAPACITY(u), UNIT_SIZE(u));
+           UNIT_KEY(u) != nullptr ? UNIT_FI_NAME(u) : "none",
+           sprintbit(tmpbuf1, UNIT_OPEN_FLAGS(u), unit_open_flags),
+           UNIT_BASE_WEIGHT(u),
+           UNIT_WEIGHT(u),
+           UNIT_CAPACITY(u),
+           UNIT_SIZE(u));
    send_to_char(buf, ch);
 }
 
@@ -995,16 +1063,41 @@ static void stat_data(const unit_data *ch, unit_data *u)
               "STR [%d]  DEX [%d]  CON [%d]  CHA [%d]\n\r"
               "BRA [%d]  MAG [%d]  DIV [%d]  HP  [%d]\n\r",
 
-              CHAR_DESCRIPTOR(u) != nullptr ? "Yes" : "No", CHAR_FIGHTING(u) ? STR(UNIT_NAME(CHAR_FIGHTING(u))) : "Nobody",
+              CHAR_DESCRIPTOR(u) != nullptr ? "Yes" : "No",
+              CHAR_FIGHTING(u) ? STR(UNIT_NAME(CHAR_FIGHTING(u))) : "Nobody",
               CHAR_MASTER(u) ? STR(UNIT_NAME(CHAR_MASTER(u))) : "Nobody",
               CHAR_FOLLOWERS(u) ? STR(UNIT_NAME(CHAR_FOLLOWERS(u)->follower)) : "Nobody",
-              CHAR_LAST_ROOM(u) != nullptr ? STR(UNIT_TITLE_STRING(CHAR_LAST_ROOM(u))) : "Nowhere", CHAR_LEVEL(u),
-              sprinttype(nullptr, CHAR_SEX(u), char_sex), sprinttype(nullptr, CHAR_POS(u), char_pos),
-              IS_PC(u) ? sprinttype(nullptr, CHAR_RACE(u), pc_races) : itoa(CHAR_RACE(u)), char_carry_w_limit(u), char_carry_n_limit(u),
-              sprintbit(tmpbuf1, CHAR_FLAGS(u), char_flags), (signed long)CHAR_EXP(u), CHAR_OFFENSIVE(u), CHAR_DEFENSIVE(u),
-              sprinttype(nullptr, CHAR_ATTACK_TYPE(u), wpn_text), CHAR_SPEED(u), CHAR_NATURAL_ARMOUR(u), (signed long)UNIT_HIT(u),
-              hit_limit(u), hit_gain(u), CHAR_MANA(u), mana_limit(u), mana_gain(u), CHAR_ENDURANCE(u), move_limit(u), move_gain(u),
-              CHAR_STR(u), CHAR_DEX(u), CHAR_CON(u), CHAR_CHA(u), CHAR_BRA(u), CHAR_MAG(u), CHAR_DIV(u), CHAR_HPP(u));
+              CHAR_LAST_ROOM(u) != nullptr ? STR(UNIT_TITLE_STRING(CHAR_LAST_ROOM(u))) : "Nowhere",
+              CHAR_LEVEL(u),
+              sprinttype(nullptr, CHAR_SEX(u), char_sex),
+              sprinttype(nullptr, CHAR_POS(u), char_pos),
+              IS_PC(u) ? sprinttype(nullptr, CHAR_RACE(u), pc_races) : itoa(CHAR_RACE(u)),
+              char_carry_w_limit(u),
+              char_carry_n_limit(u),
+              sprintbit(tmpbuf1, CHAR_FLAGS(u), char_flags),
+              (signed long)CHAR_EXP(u),
+              CHAR_OFFENSIVE(u),
+              CHAR_DEFENSIVE(u),
+              sprinttype(nullptr, CHAR_ATTACK_TYPE(u), wpn_text),
+              CHAR_SPEED(u),
+              CHAR_NATURAL_ARMOUR(u),
+              (signed long)UNIT_HIT(u),
+              hit_limit(u),
+              hit_gain(u),
+              CHAR_MANA(u),
+              mana_limit(u),
+              mana_gain(u),
+              CHAR_ENDURANCE(u),
+              move_limit(u),
+              move_gain(u),
+              CHAR_STR(u),
+              CHAR_DEX(u),
+              CHAR_CON(u),
+              CHAR_CHA(u),
+              CHAR_BRA(u),
+              CHAR_MAG(u),
+              CHAR_DIV(u),
+              CHAR_HPP(u));
       send_to_char(buf, ch);
 
       if(IS_PC(u))
@@ -1027,12 +1120,33 @@ static void stat_data(const unit_data *ch, unit_data *u)
                  "Age: %dY %dM %dD %dH   Lifespan : %dY   Played: %hdDays %hdHours (%d)\n\r"
                  "Last connected at: %s\r"
                  "Created at       : %s\r",
-                 PC_FILENAME(u), (signed long)PC_ID(u), PC_ACCESS_LEVEL(u), PC_CRACK_ATTEMPTS(u), (signed long)PC_SKILL_POINTS(u),
-                 (signed long)PC_ABILITY_POINTS(u), PC_CRIMES(u), STR(PC_HOME(u)), PC_VIRTUAL_LEVEL(u),
-                 required_xp(PC_VIRTUAL_LEVEL(u) + 1) - required_xp(PC_VIRTUAL_LEVEL(u)), STR(PC_GUILD(u)),
-                 PC_TIME(u).played - PC_GUILD_TIME(u), PC_COND(u, DRUNK), PC_COND(u, FULL), PC_COND(u, THIRST),
-                 PC_ACCOUNT(u).last4 == -1 ? "NONE" : "SET", sprintbit(tmpbuf1, PC_FLAGS(u), pc_flags), tid1.year, tid1.month, tid1.day,
-                 tid1.hours, PC_LIFESPAN(u), tid2.day, tid2.hours, PC_TIME(u).played, tmpbuf2, ctime(&PC_TIME(u).creation));
+                 PC_FILENAME(u),
+                 (signed long)PC_ID(u),
+                 PC_ACCESS_LEVEL(u),
+                 PC_CRACK_ATTEMPTS(u),
+                 (signed long)PC_SKILL_POINTS(u),
+                 (signed long)PC_ABILITY_POINTS(u),
+                 PC_CRIMES(u),
+                 STR(PC_HOME(u)),
+                 PC_VIRTUAL_LEVEL(u),
+                 required_xp(PC_VIRTUAL_LEVEL(u) + 1) - required_xp(PC_VIRTUAL_LEVEL(u)),
+                 STR(PC_GUILD(u)),
+                 PC_TIME(u).played - PC_GUILD_TIME(u),
+                 PC_COND(u, DRUNK),
+                 PC_COND(u, FULL),
+                 PC_COND(u, THIRST),
+                 PC_ACCOUNT(u).last4 == -1 ? "NONE" : "SET",
+                 sprintbit(tmpbuf1, PC_FLAGS(u), pc_flags),
+                 tid1.year,
+                 tid1.month,
+                 tid1.day,
+                 tid1.hours,
+                 PC_LIFESPAN(u),
+                 tid2.day,
+                 tid2.hours,
+                 PC_TIME(u).played,
+                 tmpbuf2,
+                 ctime(&PC_TIME(u).creation));
 
          send_to_char(buf, ch);
       }
@@ -1043,7 +1157,8 @@ static void stat_data(const unit_data *ch, unit_data *u)
                  "Default position: %s\n\r"
                  "NPC-flags: %s\n\r",
 
-                 sprinttype(nullptr, NPC_DEFAULT(u), char_pos), sprintbit(tmpbuf1, NPC_FLAGS(u), npc_flags));
+                 sprinttype(nullptr, NPC_DEFAULT(u), char_pos),
+                 sprintbit(tmpbuf1, NPC_FLAGS(u), npc_flags));
          send_to_char(buf, ch);
       }
    }
@@ -1058,10 +1173,19 @@ static void stat_data(const unit_data *ch, unit_data *u)
               "Extra flags: %s\n\r"
               "Cost: [%lu]  Cost/day: [%lu]  Equipped: %s\n\r",
 
-              sprinttype(nullptr, OBJ_TYPE(u), obj_types), OBJ_TYPE(u), (signed long)OBJ_VALUE(u, 0), (signed long)OBJ_VALUE(u, 1),
-              (signed long)OBJ_VALUE(u, 2), (signed long)OBJ_VALUE(u, 3), (signed long)OBJ_VALUE(u, 4), OBJ_RESISTANCE(u),
-              stat_obj_data(u, wstat_obj_type), sprintbit(tmpbuf1, OBJ_FLAGS(u), obj_flags), (unsigned long)OBJ_PRICE(u),
-              (unsigned long)OBJ_PRICE_DAY(u), sprinttype(nullptr, OBJ_EQP_POS(u), equip_pos));
+              sprinttype(nullptr, OBJ_TYPE(u), obj_types),
+              OBJ_TYPE(u),
+              (signed long)OBJ_VALUE(u, 0),
+              (signed long)OBJ_VALUE(u, 1),
+              (signed long)OBJ_VALUE(u, 2),
+              (signed long)OBJ_VALUE(u, 3),
+              (signed long)OBJ_VALUE(u, 4),
+              OBJ_RESISTANCE(u),
+              stat_obj_data(u, wstat_obj_type),
+              sprintbit(tmpbuf1, OBJ_FLAGS(u), obj_flags),
+              (unsigned long)OBJ_PRICE(u),
+              (unsigned long)OBJ_PRICE_DAY(u),
+              sprinttype(nullptr, OBJ_EQP_POS(u), equip_pos));
       send_to_char(buf, ch);
    }
    else /* Stat on a room */
@@ -1071,8 +1195,12 @@ static void stat_data(const unit_data *ch, unit_data *u)
               "%s [%s@%s]  Sector type: %s\n\r"
               "Magic resistance [%d]\n\rOutside Environment: %s\n\r",
 
-              UNIT_TITLE_STRING(u), UNIT_FI_NAME(u), UNIT_FI_ZONENAME(u), sprinttype(nullptr, ROOM_LANDSCAPE(u), room_landscape),
-              ROOM_RESISTANCE(u), UNIT_IN(u) != nullptr ? STR(TITLENAME(UNIT_IN(u))) : "Nothing");
+              UNIT_TITLE_STRING(u),
+              UNIT_FI_NAME(u),
+              UNIT_FI_ZONENAME(u),
+              sprinttype(nullptr, ROOM_LANDSCAPE(u), room_landscape),
+              ROOM_RESISTANCE(u),
+              UNIT_IN(u) != nullptr ? STR(TITLENAME(UNIT_IN(u))) : "Nothing");
       send_to_char(buf, ch);
 
       for(i = 0; i < 6; i++)
@@ -1088,8 +1216,12 @@ static void stat_data(const unit_data *ch, unit_data *u)
                        "EXIT %-5s to [%s@%s] (%s)\n\r"
                        "   Exit Name: [%s]\n\r"
                        "   Exit Bits: [%s]\n\r",
-                       dirs[i], UNIT_FI_NAME(ROOM_EXIT(u, i)->to_room), UNIT_FI_ZONENAME(ROOM_EXIT(u, i)->to_room),
-                       UNIT_TITLE_STRING(ROOM_EXIT(u, i)->to_room), tmpbuf1, tmpbuf2);
+                       dirs[i],
+                       UNIT_FI_NAME(ROOM_EXIT(u, i)->to_room),
+                       UNIT_FI_ZONENAME(ROOM_EXIT(u, i)->to_room),
+                       UNIT_TITLE_STRING(ROOM_EXIT(u, i)->to_room),
+                       tmpbuf1,
+                       tmpbuf2);
             }
             else
             {
@@ -1097,7 +1229,9 @@ static void stat_data(const unit_data *ch, unit_data *u)
                        "EXIT %-5s to [NOWHERE]\n\r"
                        "   Exit Name: [%s]\n\r"
                        "   Exit Bits: [%s]\n\r",
-                       dirs[i], tmpbuf1, tmpbuf2);
+                       dirs[i],
+                       tmpbuf1,
+                       tmpbuf2);
             }
 
             send_to_char(buf, ch);
@@ -1116,7 +1250,12 @@ static void stat_contents(const unit_data *ch, unit_data *u)
       {
          if(CHAR_LEVEL(ch) >= UNIT_MINV(u))
          {
-            sprintf(buf, "[%s@%s] Name '%s', Title '%s'  %s\n\r", UNIT_FI_NAME(u), UNIT_FI_ZONENAME(u), UNIT_NAME(u), UNIT_TITLE_STRING(u),
+            sprintf(buf,
+                    "[%s@%s] Name '%s', Title '%s'  %s\n\r",
+                    UNIT_FI_NAME(u),
+                    UNIT_FI_ZONENAME(u),
+                    UNIT_NAME(u),
+                    UNIT_TITLE_STRING(u),
                     IS_OBJ(u) && (OBJ_EQP_POS(u) != 0u) ? "Equipped" : "");
             send_to_char(buf, ch);
          }
@@ -1135,19 +1274,47 @@ static void stat_descriptor(const unit_data *ch, unit_data *u)
 
 void do_wstat(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   char              buf[256];
-   unit_data        *u    = nullptr;
-   struct zone_type *zone = nullptr;
-   int               argno;
+   char               buf[256];
+   unit_data         *u    = nullptr;
+   struct zone_type  *zone = nullptr;
+   int                argno;
 
-   static const char *arguments[] = {"data",   "contents", "affects", "descriptor", "functions", "spells", "skills", "weapons", "extras",
-                                     "quests", "ability",  "account", "bank",       "combat",    "info",   "ip",     nullptr};
+   static const char *arguments[] = {"data",
+                                     "contents",
+                                     "affects",
+                                     "descriptor",
+                                     "functions",
+                                     "spells",
+                                     "skills",
+                                     "weapons",
+                                     "extras",
+                                     "quests",
+                                     "ability",
+                                     "account",
+                                     "bank",
+                                     "combat",
+                                     "info",
+                                     "ip",
+                                     nullptr};
 
 #define FUNC_ELMS (sizeof functions / sizeof(void (*)(unit_data *, unit_data *)))
 
-   static void (*functions[])(const unit_data *, unit_data *) = {
-      stat_data,        stat_contents,    stat_affect,  stat_descriptor,    stat_func, stat_spell,  stat_skill,      stat_wskill,
-      stat_extra_descr, stat_extra_quest, stat_ability, account_local_stat, stat_bank, stat_combat, stat_extra_info, stat_ip};
+   static void (*functions[])(const unit_data *, unit_data *) = {stat_data,
+                                                                 stat_contents,
+                                                                 stat_affect,
+                                                                 stat_descriptor,
+                                                                 stat_func,
+                                                                 stat_spell,
+                                                                 stat_skill,
+                                                                 stat_wskill,
+                                                                 stat_extra_descr,
+                                                                 stat_extra_quest,
+                                                                 stat_ability,
+                                                                 account_local_stat,
+                                                                 stat_bank,
+                                                                 stat_combat,
+                                                                 stat_extra_info,
+                                                                 stat_ip};
 
    if(CHAR_DESCRIPTOR(ch) == nullptr)
    {

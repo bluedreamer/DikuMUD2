@@ -40,6 +40,7 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+
 #include <cstdio>
 #include <cstdlib>
 
@@ -60,7 +61,7 @@ auto kludge_bonus(int level, int points) -> int
 
    expected = 100 + (level - 50);
 
-   b = 150;
+   b        = 150;
    b += (5 * (level - 50) * MIN(expected, points)) / expected;
 
    return b;
@@ -78,9 +79,9 @@ auto shield_bonus(unit_data *att, unit_data *def, unit_data **pDef_shield) -> in
    unit_data *def_shield;
    int        def_shield_bonus = 0;
 
-   int att_dex;
-   int def_dex;
-   int hm;
+   int        att_dex;
+   int        def_dex;
+   int        hm;
 
    att_dex = effective_dex(att);
    def_dex = effective_dex(def);
@@ -111,7 +112,9 @@ auto shield_bonus(unit_data *att, unit_data *def, unit_data **pDef_shield) -> in
          shield_bonus = OBJ_VALUE(def_shield, 1) + OBJ_VALUE(def_shield, 2);
 
          /* Let's make a shield check - CAN_SEE does affect this too */
-         hm = resistance_skill_check(def_dex + shield_bonus, att_dex, IS_PC(def) ? PC_SKI_SKILL(def, SKI_SHIELD) : def_dex,
+         hm           = resistance_skill_check(def_dex + shield_bonus,
+                                     att_dex,
+                                     IS_PC(def) ? PC_SKI_SKILL(def, SKI_SHIELD) : def_dex,
                                      IS_PC(att) ? PC_SKI_SKILL(att, SKI_SHIELD) : att_dex);
 
          if(hm >= 0)
@@ -129,8 +132,8 @@ auto shield_bonus(unit_data *att, unit_data *def, unit_data **pDef_shield) -> in
    return def_shield_bonus;
 }
 
-auto spell_bonus(unit_data *att, unit_data *medium, unit_data *def, int hit_loc, int spell_number, int *pDef_armour_type,
-                 unit_data **pDef_armour) -> int
+auto spell_bonus(
+   unit_data *att, unit_data *medium, unit_data *def, int hit_loc, int spell_number, int *pDef_armour_type, unit_data **pDef_armour) -> int
 {
    int        att_spl_knowledge;
    int        def_spl_knowledge;
@@ -208,15 +211,21 @@ auto spell_bonus(unit_data *att, unit_data *medium, unit_data *def, int hit_loc,
 /* to anything, then it will be set to the defenders armour_type  */
 /* which should be used upon lookup                               */
 
-auto melee_bonus(unit_data *att, unit_data *def, int hit_loc, int *pAtt_weapon_type, unit_data **pAtt_weapon, int *pDef_armour_type,
-                 unit_data **pDef_armour, int primary) -> int
+auto melee_bonus(unit_data  *att,
+                 unit_data  *def,
+                 int         hit_loc,
+                 int        *pAtt_weapon_type,
+                 unit_data **pAtt_weapon,
+                 int        *pDef_armour_type,
+                 unit_data **pDef_armour,
+                 int         primary) -> int
 {
-   int att_dex;
-   int att_bonus;
-   int att_wpn_knowledge;
-   int def_dex;
-   int def_bonus;
-   int def_wpn_knowledge;
+   int        att_dex;
+   int        att_bonus;
+   int        att_wpn_knowledge;
+   int        def_dex;
+   int        def_bonus;
+   int        def_wpn_knowledge;
 
    unit_data *att_wpn;
    int        att_wpn_type;
@@ -224,10 +233,10 @@ auto melee_bonus(unit_data *att, unit_data *def, int hit_loc, int *pAtt_weapon_t
    int        def_armour_type;
    unit_data *def_armour;
 
-   int hm;
+   int        hm;
 
-   att_dex = effective_dex(att);
-   def_dex = effective_dex(def);
+   att_dex   = effective_dex(att);
+   def_dex   = effective_dex(def);
 
    att_bonus = CHAR_OFFENSIVE(att);
    def_bonus = CHAR_DEFENSIVE(def);
@@ -386,7 +395,7 @@ auto base_melee(unit_data *att, unit_data *def, int hit_loc) -> int
    CHAR_COMBAT(def)->setMelee(att);
    CHAR_POS(def) = POSITION_FIGHTING;
 
-   bonus = melee_bonus(att, def, hit_loc, nullptr, nullptr, nullptr, nullptr);
+   bonus         = melee_bonus(att, def, hit_loc, nullptr, nullptr, nullptr, nullptr);
 
    CHAR_POS(def) = ocp;
    CHAR_COMBAT(def)->setMelee(ocf);
@@ -411,13 +420,13 @@ auto base_consider(unit_data *att, unit_data *def) -> int
    ocf           = CHAR_FIGHTING(def);
    CHAR_POS(def) = POSITION_FIGHTING;
 
-   att_wpn_type = WPN_ROOT;
+   att_wpn_type  = WPN_ROOT;
 
-   bonus = melee_bonus(att, def, WEAR_BODY, &att_wpn_type, nullptr, &def_arm_type, nullptr);
+   bonus         = melee_bonus(att, def, WEAR_BODY, &att_wpn_type, nullptr, &def_arm_type, nullptr);
 
    CHAR_POS(def) = ocp;
 
-   dam = weapon_damage(50 + bonus, att_wpn_type, def_arm_type);
+   dam           = weapon_damage(50 + bonus, att_wpn_type, def_arm_type);
 
    if(dam <= 0)
    {
