@@ -36,6 +36,7 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "tree_type.h"
 #include "unit_affected_type.h"
 #include "unit_fptr.h"
 #include "utility.h"

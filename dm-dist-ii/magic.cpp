@@ -28,9 +28,7 @@
 /* 31/08/94 gnort  : Fixed infite loop in may_teleport()   (!!!!!!!!)      */
 /* 13/09/94 seifert: No you didn't - you made an infinite loop (!)         */
 
-#include <cstdio>
-#include <cstdlib>
-
+#include "magic.h"
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
@@ -40,16 +38,18 @@
 #include "fight.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "magic.h"
 #include "skills.h"
 #include "spell_args.h"
 #include "spell_info_type.h"
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "tree_type.h"
 #include "utility.h"
 #include "utils.h"
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
 
 /* Extern structures */
 extern unit_data *unit_list;

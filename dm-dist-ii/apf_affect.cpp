@@ -38,6 +38,7 @@
 #include "skills.h"
 #include "spells.h"
 #include "structs.h"
+#include "tree_type.h"
 #include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"

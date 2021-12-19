@@ -25,21 +25,21 @@
 
 /* 29/08/92 seifert: Added damage_variation routine.                       */
 
-#include <cstdio>
-#include <cstdlib>
-
+#include "skills.h"
 #include "comm.h"
 #include "common.h"
 #include "db.h"
 #include "files.h"
 #include "interpreter.h"
-#include "skills.h"
 #include "spelldef.h"
 #include "structs.h"
 #include "textutil.h"
+#include "tree_type.h"
 #include "trie.h"
 #include "utility.h"
 #include "utils.h"
+#include <cstdio>
+#include <cstdlib>
 
 auto skill_text(const struct skill_interval *si, int skill) -> const char *
 {
@@ -69,7 +69,6 @@ int hit_location_table[] =                       /* Determine by using 2d8 */
     WEAR_FEET};
 
 const char              *spl_text[SPL_TREE_MAX + 1];
-struct tree_type         spl_tree[SPL_TREE_MAX + 1];
 int8_t                   racial_spells[SPL_TREE_MAX][PC_RACE_MAX];
 struct damage_chart_type spell_chart[SPL_TREE_MAX];
 
@@ -77,16 +76,13 @@ const char           *pc_races[PC_RACE_MAX + 1];
 const char           *pc_race_adverbs[PC_RACE_MAX + 1];
 struct race_info_type race_info[PC_RACE_MAX];
 
-const char      *ski_text[SKI_TREE_MAX + 1];
-struct tree_type ski_tree[SKI_TREE_MAX + 1];
-int8_t           racial_skills[SKI_TREE_MAX][PC_RACE_MAX];
+const char *ski_text[SKI_TREE_MAX + 1];
+int8_t      racial_skills[SKI_TREE_MAX][PC_RACE_MAX];
 
-const char      *abil_text[ABIL_TREE_MAX + 1];
-struct tree_type abil_tree[ABIL_TREE_MAX + 1];
-int8_t           racial_ability[ABIL_TREE_MAX][PC_RACE_MAX];
+const char *abil_text[ABIL_TREE_MAX + 1];
+int8_t      racial_ability[ABIL_TREE_MAX][PC_RACE_MAX];
 
 const char              *wpn_text[WPN_TREE_MAX + 1];
-struct tree_type         wpn_tree[WPN_TREE_MAX + 1];
 int8_t                   racial_weapons[WPN_TREE_MAX][PC_RACE_MAX];
 struct damage_chart_type weapon_chart[WPN_TREE_MAX];
 struct wpn_info_type     wpn_info[WPN_TREE_MAX];

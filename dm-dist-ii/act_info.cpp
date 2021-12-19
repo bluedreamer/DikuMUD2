@@ -31,12 +31,6 @@
 /* 23/08/93 jubal  : Allow imms to see hidden thingys                      */
 /* 10/02/94 gnort  : Rewrote do_who to be smaller and dynamic.             */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"
@@ -56,10 +50,16 @@
 #include "structs.h"
 #include "textutil.h"
 #include "time_info_data.h"
+#include "tree_type.h"
 #include "trie.h"
 #include "utility.h"
 #include "utils.h"
+#include <cctype>
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 /* extern variables */
 

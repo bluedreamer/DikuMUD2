@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : magic.h                                   Part of Valhalla MUD *
  * Version: 1.03                                                           *
@@ -22,11 +23,10 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_MAGIC_H
-#define _MUD_MAGIC_H
 
 /* #define MAGIC_POWER(ch)  \
    MAX(CHAR_MAG(ch), CHAR_DIV(ch)) */
+#include "unit_data.h"
 
 auto dil_effect(const char *pStr, struct spell_args *sa) -> int;
 auto object_power(unit_data *unit) -> int;
@@ -162,5 +162,3 @@ void spell_mana_boost(struct spell_args *sa);
 void spell_find_path(struct spell_args *sa);
 void spell_transport(struct spell_args *sa);
 void spell_undead_door(struct spell_args *sa);
-
-#endif /* _MUD_MAGIC_H */

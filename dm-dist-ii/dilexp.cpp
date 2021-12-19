@@ -24,17 +24,13 @@
  * *********************************************************************** */
 
 /* Wed Jan 22 14:57:30 PST 1997   HHS added paycheck dilfun */
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
+#include "dilexp.h"
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
 #include "db.h"
 #include "db_file.h"
 #include "dil.h"
-#include "dilexp.h"
 #include "dilrun.h"
 #include "fight.h"
 #include "handler.h"
@@ -48,12 +44,16 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "tree_type.h"
 #include "unit_fptr.h"
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
 #include <climits>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 /* ************************************************************************ */
 /* DIL-expressions							    */

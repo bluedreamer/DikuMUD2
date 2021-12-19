@@ -78,16 +78,7 @@ struct damage_chart_type
    struct damage_chart_element_type element[5];
 };
 
-#define TREE_PARENT(tree, node)      (tree[node].parent)
-#define TREE_GRANDPARENT(tree, node) (tree[tree[node].parent].parent)
-#define TREE_ISROOT(tree, node)      ((node) == (tree[node].parent))
-#define TREE_ISLEAF(tree, node)      (tree[node].isleaf)
 
-struct tree_type
-{
-   int     parent;
-   uint8_t isleaf;
-};
 
 /* Tree has a pointer to parent for each node. 0 pointer from root */
 struct wpn_info_type
@@ -148,10 +139,6 @@ extern int8_t                   racial_weapons[WPN_TREE_MAX][PC_RACE_MAX];
 extern int8_t                   racial_skills[SKI_TREE_MAX][PC_RACE_MAX];
 extern int8_t                   racial_spells[SPL_TREE_MAX][PC_RACE_MAX];
 
-extern struct tree_type wpn_tree[WPN_TREE_MAX + 1];
-extern struct tree_type spl_tree[SPL_TREE_MAX + 1];
-extern struct tree_type ski_tree[SKI_TREE_MAX + 1];
-extern struct tree_type abil_tree[ABIL_TREE_MAX + 1];
 
 extern int hit_location_table[];
 

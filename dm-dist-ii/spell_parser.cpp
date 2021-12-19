@@ -24,6 +24,7 @@
 
 #include "comm.h"
 #include "common.h"
+#include "tree_type.h"
 #include "db.h"
 #include "db_file.h"
 #include "dilrun.h"
