@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : unixshit.h                                Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -21,9 +22,6 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
-
-#ifndef _MUD_UNIXSHIT_H
-#define _MUD_UNIXSHIT_H
 
 #ifdef SUNOS4
 int vsprintf(char *s, const char *format, va_list ap);
@@ -120,7 +118,3 @@ void bcopy(char *, char *, int);
 int remove(const char *path);
 int system(const char *string);
 #endif
-
-/* ======================== ???.H ============================= */
-
-#endif /* _MUD_UNIXSHIT_H */

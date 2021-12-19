@@ -85,12 +85,6 @@
 
 #define ZONE_FILE_LIST "zonelist"
 
-struct help_index_type
-{
-   char *keyword;
-   long  pos;
-};
-
 struct zone_info_type
 {
    int               no_of_zones; /* Total number of zones       */

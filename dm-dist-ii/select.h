@@ -22,8 +22,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-
-
 #include "essential.h"
 #include "queue.h"
 

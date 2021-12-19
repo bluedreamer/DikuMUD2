@@ -23,10 +23,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cassert>
-#include <cstdlib>
-#include <cstring>
-
 #include "char_data.h"
 #include "essential.h"
 #include "file_index_type.h"
@@ -35,6 +31,9 @@
 #include "pc_data.h"
 #include "room_data.h"
 #include "structs.h"
+#include <cassert>
+#include <cstdlib>
+#include <cstring>
 
 extern const int8_t time_light[];
 

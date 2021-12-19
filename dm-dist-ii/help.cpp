@@ -22,19 +22,19 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-
 #include "comm.h"
 #include "db.h"
 #include "files.h"
 #include "handler.h"
+#include "help_index_type.h"
 #include "interpreter.h"
 #include "structs.h"
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
 
 /*  Help-file contained 468 keywords on 12-Sep-94
  *  Potential waste: 8 * (HELP_INCREMENT - 1) bytes
@@ -44,9 +44,9 @@
 
 struct help_file_type
 {
-   struct help_index_type *help_idx;       /* the help keyword list */
-   int                     elements, size; /* info about the list   */
-   char                   *filename;
+   help_index_type *help_idx;       /* the help keyword list */
+   int              elements, size; /* info about the list   */
+   char            *filename;
 };
 
 static struct help_file_type help_file[3];
@@ -55,29 +55,28 @@ extern char libdir[]; /* from dikumud.c        */
 
 auto search_help_cmp(const void *keyval, const void *datum) -> int
 {
-   if(is_abbrev((char *)keyval, ((struct help_index_type *)datum)->keyword) != 0u)
+   if(is_abbrev((char *)keyval, ((help_index_type *)datum)->keyword) != 0u)
    {
       return 0;
    }
-   return str_ccmp((char *)keyval, ((struct help_index_type *)datum)->keyword);
+   return str_ccmp((char *)keyval, ((help_index_type *)datum)->keyword);
 }
 
 /* Returns TRUE if help was presented */
 static auto help(struct help_file_type *hlp, descriptor_data *d, char *arg) -> int
 {
-   char                    buf[MAX_STRING_LENGTH];
-   char                    line[256];
-   char                    buf2[MAX_STRING_LENGTH];
-   struct help_index_type *tmp;
-   FILE                   *help_fl;
+   char             buf[MAX_STRING_LENGTH];
+   char             line[256];
+   char             buf2[MAX_STRING_LENGTH];
+   help_index_type *tmp;
+   FILE            *help_fl;
 
    if((hlp->help_idx == nullptr) || (hlp->elements < 1))
    {
       return FALSE;
    }
 
-   if((tmp = (struct help_index_type *)bsearch(arg, hlp->help_idx, hlp->elements + 1, sizeof(struct help_index_type), search_help_cmp)) !=
-      nullptr)
+   if((tmp = (help_index_type *)bsearch(arg, hlp->help_idx, hlp->elements + 1, sizeof(help_index_type), search_help_cmp)) != nullptr)
    {
       int i = (tmp - hlp->help_idx);
 
@@ -203,7 +202,7 @@ auto one_word(char *arg, char *first_arg) -> char *
 
 auto build_help_cmp(const void *keyval, const void *datum) -> int
 {
-   return str_ccmp(((struct help_index_type *)keyval)->keyword, ((struct help_index_type *)datum)->keyword);
+   return str_ccmp(((help_index_type *)keyval)->keyword, ((help_index_type *)datum)->keyword);
 }
 
 static void generate_help_idx(struct help_file_type *hlp, const char *name)
@@ -249,12 +248,12 @@ static void generate_help_idx(struct help_file_type *hlp, const char *name)
          if(hlp->help_idx == nullptr)
          {
             hlp->size = HELP_INCREMENT;
-            CREATE(hlp->help_idx, struct help_index_type, hlp->size);
+            CREATE(hlp->help_idx, help_index_type, hlp->size);
          }
          else if(++hlp->elements == hlp->size)
          {
             hlp->size += HELP_INCREMENT;
-            RECREATE(hlp->help_idx, struct help_index_type, hlp->size);
+            RECREATE(hlp->help_idx, help_index_type, hlp->size);
          }
 
          hlp->help_idx[hlp->elements].pos     = pos;
@@ -278,7 +277,7 @@ static void generate_help_idx(struct help_file_type *hlp, const char *name)
       }
    }
 
-   qsort(hlp->help_idx, hlp->elements + 1, sizeof(struct help_index_type), build_help_cmp);
+   qsort(hlp->help_idx, hlp->elements + 1, sizeof(help_index_type), build_help_cmp);
 }
 
 void boot_help()
