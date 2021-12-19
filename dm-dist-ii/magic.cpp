@@ -34,7 +34,9 @@
 #include "common.h"
 #include "dbfind.h"
 #include "dil.h"
+#include "dilprg.h"
 #include "dilrun.h"
+#include "dilvar.h"
 #include "fight.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -56,7 +58,7 @@ extern unit_data *unit_list;
 
 /* Returns TRUE when effect is shown by DIL */
 
-auto dil_effect(const char *pStr, struct spell_args *sa) -> int
+auto dil_effect(const char *pStr, spell_args *sa) -> int
 {
    if(static_cast<unsigned int>(str_is_empty(pStr)) != 0U)
    {
@@ -96,8 +98,8 @@ auto dil_effect(const char *pStr, struct spell_args *sa) -> int
       return static_cast<int>(FALSE);
    }
 
-   struct dilprg *prg;
-   unit_fptr     *fptr;
+   dilprg    *prg;
+   unit_fptr *fptr;
 
    prg          = dil_copy_template(tmpl, sa->caster, &fptr);
    prg->waitcmd = WAITCMD_MAXINST - 1; // The usual hack, see db_file

@@ -39,7 +39,7 @@
 #include "utils.h"
 #include <climits>
 
-void dilfe_fld(struct dilprg *p, class dilval *v)
+void dilfe_fld(dilprg *p, dilval *v)
 {
    /* Get a structure field */
    class dilval v1;

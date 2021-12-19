@@ -56,9 +56,6 @@ CByteBuffer g_FileBuffer(16384);
 // int filbuffer_length = 0;             /* The length of filbuffer         */
 // uint8_t *filbuffer = 0;                 /* Buffer for read/write unit      */
 
-#ifdef DMSERVER
-extern struct unit_function_array_type unit_function_array[];
-#endif
 
 auto bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra) -> int
 {

@@ -36,7 +36,9 @@
 #include "common.h"
 #include "constants.h"
 #include "db.h"
+#include "dilprg.h"
 #include "dilrun.h"
+#include "diltemplate.h"
 #include "files.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -905,12 +907,10 @@ void start_player(unit_data *ch)
       SET_BIT(CHAR_FLAGS(ch), CHAR_PEACEFUL);
    }
 
-   extern struct diltemplate *playerinit_tmpl;
-
    if(playerinit_tmpl != nullptr)
    {
       /* Call DIL to see if we should init the player in any other way. */
-      struct dilprg *prg = dil_copy_template(playerinit_tmpl, ch, nullptr);
+      dilprg *prg = dil_copy_template(playerinit_tmpl, ch, nullptr);
 
       prg->waitcmd = WAITCMD_MAXINST - 1; // The usual hack, see db_file
 

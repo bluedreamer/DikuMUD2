@@ -26,6 +26,7 @@
 #include "common.h"
 #include "db.h"
 #include "db_file.h"
+#include "dilprg.h"
 #include "dilrun.h"
 #include "files.h"
 #include "handler.h"
@@ -221,7 +222,7 @@ auto spell_perform(int spell_no, int spell_type, unit_data *caster, unit_data *m
 
    if(spell_info[spell_no].tmpl != nullptr)
    {
-      struct dilprg *prg;
+      dilprg *prg;
 
       prg          = dil_copy_template(spell_info[spell_no].tmpl, caster, nullptr);
       prg->waitcmd = WAITCMD_MAXINST - 1; // The usual hack, see db_file

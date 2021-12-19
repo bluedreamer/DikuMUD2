@@ -25,6 +25,7 @@
 
 /* Wed Jan 22 14:57:30 PST 1997   HHS added paycheck dilfun DILE_PCK */
 
+#include "dilprg.h"
 #include "essential.h"
 #include "spec_arg.h"
 #include "unit_data.h"
@@ -36,7 +37,6 @@
 #define WAITCMD_MAXINST 2000
 
 #define SKIP 0xffffffff /* skip label/index defined */
-
 
 /*
  *  The expressions and instructions are as follows:
@@ -327,123 +327,10 @@
 #define DILV_HASHSTR 22 /* Hashed String */
 #define DILV_MAX     22 /* Max number */
 
-/* DIL variable structure */
-struct dilvar
-{
-   uint8_t type; /* variable type */
-   union
-   {
-      unit_data               *unitptr;
-      int32_t                  integer;
-      struct extra_descr_data *extraptr;
-      char                    *string;
-      class cStringInstance   *pHash;
-      class cNamelist         *namelist;
-   } val;
-};
-
 /* allocation strategy */
 #define DILA_NONE 0 /* not malloc (int) */
 #define DILA_NORM 1 /* normal malloc */
 #define DILA_EXP  2 /* temp. expression malloc */
-
-/* DIL evaluation result. */
-class dilval
-{
-public:
-   dilval() { type = DILV_FAIL; }
-   ~dilval();
-
-   uint8_t type; /* result type     */
-   uint8_t atyp; /* allocation type */
-   union
-   {
-      void   *ptr; /* result pointer  */
-      int64_t num; /* result integer  MS 2020 (32->64 bit)*/
-   } val;
-   void *ref; /* result reference (NULL=Rexpr) */
-};
-
-/* structure for securing unit pointers */
-struct dilsecure
-{
-   unit_data *sup; /* A direct reference to the variabel! */
-   uint8_t   *lab; /* address to jump to, NULL=foreach */
-};
-
-/*
- *  An external reference.
- *  For each external reference, the name and cooresponding
- *  argument and return types will be saved
- */
-struct dilxref
-{
-   char    *name; /* func/proc name [@ zone] */
-   uint8_t  rtnt; /* return type */
-   uint8_t  argc; /* number of arguments (min 1) */
-   uint8_t *argt; /* argument types */
-};
-
-/*
- *  A DIL template for registering DIL programs/functions/procedures.
- *  Inline code is registered as local instances.
- *  Uppon loading old dil programs, an unlinked template is created.
- */
-struct diltemplate
-{
-   const char       *prgname; /* program name @ zone */
-   struct zone_type *zone;    /* Pointer to owner of structure    */
-
-   uint8_t  flags;     /* recall, etc. */
-   uint16_t intrcount; /* max number of interrupts */
-   uint16_t varcrc;    /* variable crc from compiler */
-   uint16_t corecrc;   /* core crc from compiler */
-   uint8_t  rtnt;      /* return type */
-   uint8_t  argc;      /* number of arguments */
-   uint8_t *argt;      /* argument types */
-
-   uint32_t coresz; /* size of coreblock */
-   uint8_t *core;   /* instructions, expressions and statics */
-
-   uint16_t varc; /* number of variables */
-   uint8_t *vart; /* variable types */
-
-   uint16_t             xrefcount; /* number of external references   */
-   struct diltemplate **extprg;    /* external programs (SERVER only) */
-   struct dilxref      *xrefs;     /* external references (DMC only)  */
-
-   uint32_t nActivations; /* Number of activations           */
-
-   struct diltemplate *next; /* for zone templates              */
-};
-
-struct dilintr
-{
-   uint16_t flags; /* what message types to react on 0=off */
-   uint8_t *lab;   /* where to perform check */
-};
-
-/*
- *  A stack frame for a DIL call of function or procedure.
- *  The frame contains runtime values for proc/func execution,
- *  including the return variable number for calling proc/func.
- *  Uppon call, a new stackframe is created from the called
- *  template. The needed memory is allocated in one chunk.
- */
-struct dilframe
-{
-   uint16_t            ret;  /* return variable # (not saved) */
-   struct diltemplate *tmpl; /* current template */
-   struct dilvar      *vars; /* variables */
-
-   uint8_t *pc; /* program counter */
-
-   uint16_t          securecount; /* number of secures (not saved) */
-   struct dilsecure *secure;      /* secured vars (not saved) */
-
-   uint16_t        intrcount; /* number of interrupts */
-   struct dilintr *intr;      /* interrupts */
-};
 
 /*
  *   A dil process.
@@ -452,27 +339,6 @@ struct dilframe
 
 #define DIL_STACKINC 8 /* # of stackframes to inc stack with */
 
-struct dilprg
-{
-   uint8_t  flags;   /* Recall, copy, etc. */
-   uint16_t varcrc;  /* variable crc from compiler (saved) */
-   uint16_t corecrc; /* core crc from compiler (saved) */
-
-   uint16_t         stacksz; /* stack size */
-   struct dilframe *sp;      /* stack and pointer */
-   struct dilframe *stack;   /* stack frames, #0 saved */
-
-   spec_arg  *sarg;
-   unit_data *owner;
-
-   int16_t waitcmd; /* Command countdown */
-
-   struct dilprg *next; /* For global dilprg list (sendtoalldil) */
-};
-
-extern struct dilprg *dil_list;
-extern struct dilprg *dil_list_nextdude;
-
 /* Function prototypes */
-void free_prg(struct dilprg *prg);
-void clear_prg(struct dilprg *prg);
+void free_prg(dilprg *prg);
+void clear_prg(dilprg *prg);

@@ -2,6 +2,7 @@
 #include "spec_assign.h"
 #include "structs.h"
 
+
 unit_function_array_type unit_function_array[] = {
    {"Persist Internal", persist_intern, SD_NEVER, SFB_TICK | SFB_SAVE, 0},
    {"DIL Copy Internal", dil_direct_init, SD_NEVER, 0, PULSE_SEC * 5},

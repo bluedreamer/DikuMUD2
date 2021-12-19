@@ -32,6 +32,7 @@
 #include "db_file.h"
 #include "dil.h"
 #include "dilrun.h"
+#include "dilval.h"
 #include "fight.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -59,7 +60,7 @@
 /* DIL-expressions							    */
 /* ************************************************************************ */
 
-void dilfe_illegal(struct dilprg *p, class dilval *v)
+void dilfe_illegal(struct dilprg *p, dilval *v)
 {
    szonelog(UNIT_FI_ZONE(p->sarg->owner), "DIL %s@%s, Illegal Expression/Instruction Node.\n", UNIT_FI_NAME(p->sarg->owner),
             UNIT_FI_ZONENAME(p->sarg->owner));
@@ -70,13 +71,13 @@ void dilfe_illegal(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_atsp(struct dilprg *p, class dilval *v)
+void dilfe_atsp(struct dilprg *p, dilval *v)
 {
-   class dilval v1;
-   class dilval v2;
-   class dilval v3;
-   class dilval v4;
-   class dilval v5;
+   dilval v1;
+   dilval v2;
+   dilval v3;
+   dilval v4;
+   dilval v5;
 
    eval_dil_exp(p, &v1); /* spell number */
    eval_dil_exp(p, &v2); /* caster */
@@ -172,13 +173,13 @@ void dilfe_atsp(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_cast2(struct dilprg *p, class dilval *v)
+void dilfe_cast2(struct dilprg *p, dilval *v)
 {
-   class dilval v1;
-   class dilval v2;
-   class dilval v3;
-   class dilval v4;
-   class dilval v5;
+   dilval v1;
+   dilval v2;
+   dilval v3;
+   dilval v4;
+   dilval v5;
 
    eval_dil_exp(p, &v1); /* spell number */
    eval_dil_exp(p, &v2); /* caster       */
@@ -271,10 +272,10 @@ void dilfe_cast2(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_rest(struct dilprg *p, class dilval *v)
+void dilfe_rest(struct dilprg *p, dilval *v)
 {
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    auto restore_unit(char *zonename, char *unitname)->unit_data *;
 
@@ -315,10 +316,10 @@ void dilfe_rest(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_opro(struct dilprg *p, class dilval *v)
+void dilfe_opro(struct dilprg *p, dilval *v)
 {
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -356,10 +357,10 @@ void dilfe_opro(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_eqpm(struct dilprg *p, class dilval *v)
+void dilfe_eqpm(struct dilprg *p, dilval *v)
 {
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -404,12 +405,12 @@ void dilfe_eqpm(struct dilprg *p, class dilval *v)
 }
 
 /* int meleeAttack(unit, unit, int, int) */
-void dilfe_mel(struct dilprg *p, class dilval *v)
+void dilfe_mel(struct dilprg *p, dilval *v)
 {
-   class dilval v1;
-   class dilval v2;
-   class dilval v3;
-   class dilval v4;
+   dilval v1;
+   dilval v2;
+   dilval v3;
+   dilval v4;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -483,10 +484,10 @@ void dilfe_mel(struct dilprg *p, class dilval *v)
 }
 
 /* visible, some vs other */
-void dilfe_visi(struct dilprg *p, class dilval *v)
+void dilfe_visi(struct dilprg *p, dilval *v)
 {
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1) eval_dil_exp(p, &v2);
 
@@ -531,10 +532,10 @@ void dilfe_visi(struct dilprg *p, class dilval *v)
 }
 
 /* is unit opponent of other */
-void dilfe_oppo(struct dilprg *p, class dilval *v)
+void dilfe_oppo(struct dilprg *p, dilval *v)
 {
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1) eval_dil_exp(p, &v2);
 
@@ -581,9 +582,9 @@ void dilfe_oppo(struct dilprg *p, class dilval *v)
 }
 
 /* spellindex */
-void dilfe_splx(struct dilprg *p, class dilval *v)
+void dilfe_splx(struct dilprg *p, dilval *v)
 {
-   class dilval v1;
+   dilval v1;
 
    eval_dil_exp(p, &v1)
 
@@ -623,16 +624,16 @@ void dilfe_splx(struct dilprg *p, class dilval *v)
 }
 
 /* spellinfo */
-void dilfe_spli(struct dilprg *p, class dilval *v)
+void dilfe_spli(struct dilprg *p, dilval *v)
 {
-   class dilval v1;
-   class dilval v2;
-   class dilval v3;
-   class dilval v4;
-   class dilval v5;
-   class dilval v6;
-   class dilval v7;
-   class dilval v8;
+   dilval v1;
+   dilval v2;
+   dilval v3;
+   dilval v4;
+   dilval v5;
+   dilval v6;
+   dilval v7;
+   dilval v8;
 
    v->type = DILV_FAIL;
 
@@ -788,10 +789,10 @@ void dilfe_spli(struct dilprg *p, class dilval *v)
 }
 
 /* contents of purse */
-void dilfe_purs(struct dilprg *p, class dilval *v)
+void dilfe_purs(struct dilprg *p, dilval *v)
 {
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1) eval_dil_exp(p, &v2);
 
@@ -861,10 +862,10 @@ void dilfe_purs(struct dilprg *p, class dilval *v)
 }
 
 /* money_string */
-void dilfe_mons(struct dilprg *p, class dilval *v)
+void dilfe_mons(struct dilprg *p, dilval *v)
 {
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1) eval_dil_exp(p, &v2);
 
@@ -904,10 +905,10 @@ void dilfe_mons(struct dilprg *p, class dilval *v)
 }
 
 /* pathto */
-void dilfe_path(struct dilprg *p, class dilval *v)
+void dilfe_path(struct dilprg *p, dilval *v)
 {
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1) eval_dil_exp(p, &v2);
 
@@ -960,11 +961,11 @@ void dilfe_path(struct dilprg *p, class dilval *v)
 }
 
 /* can_carry */
-void dilfe_cary(struct dilprg *p, class dilval *v)
+void dilfe_cary(struct dilprg *p, dilval *v)
 {
-   class dilval v1;
-   class dilval v2;
-   class dilval v3;
+   dilval v1;
+   dilval v2;
+   dilval v3;
 
    eval_dil_exp(p, &v1) eval_dil_exp(p, &v2);
    eval_dil_exp(p, &v3);
@@ -1042,11 +1043,11 @@ void dilfe_cary(struct dilprg *p, class dilval *v)
 }
 
 /* transfermoney */
-void dilfe_trmo(struct dilprg *p, class dilval *v)
+void dilfe_trmo(struct dilprg *p, dilval *v)
 {
-   class dilval v1;
-   class dilval v2;
-   class dilval v3;
+   dilval v1;
+   dilval v2;
+   dilval v3;
 
    eval_dil_exp(p, &v1) eval_dil_exp(p, &v2);
    eval_dil_exp(p, &v3);
@@ -1135,11 +1136,11 @@ void dilfe_trmo(struct dilprg *p, class dilval *v)
 }
 
 /* transfermoney */
-void dilfe_fits(struct dilprg *p, class dilval *v)
+void dilfe_fits(struct dilprg *p, dilval *v)
 {
-   class dilval v1;
-   class dilval v2;
-   class dilval v3;
+   dilval v1;
+   dilval v2;
+   dilval v3;
 
    eval_dil_exp(p, &v1) eval_dil_exp(p, &v2);
    eval_dil_exp(p, &v3);
@@ -1208,14 +1209,14 @@ void dilfe_fits(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_intr(struct dilprg *p, class dilval *v)
+void dilfe_intr(struct dilprg *p, dilval *v)
 {
    /* add interrupt to current frame */
    uint16_t intnum;
    uint8_t *lab;
 
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    lab = p->sp->pc;
@@ -1233,10 +1234,10 @@ void dilfe_intr(struct dilprg *p, class dilval *v)
    bread_uint32_t(&(p->sp->pc)); /* skip label */
 }
 
-void dilfe_not(struct dilprg *p, class dilval *v)
+void dilfe_not(struct dilprg *p, dilval *v)
 {
    /* Negation of integers (and booleans, etc.) */
-   class dilval v1;
+   dilval v1;
 
    eval_dil_exp(p, &v1);
    v->type    = DILV_INT;
@@ -1244,10 +1245,10 @@ void dilfe_not(struct dilprg *p, class dilval *v)
    v->val.num = static_cast<int64_t>(static_cast<int64_t>(dil_getbool(&v1)) == 0);
 }
 
-void dilfe_umin(struct dilprg *p, class dilval *v)
+void dilfe_umin(struct dilprg *p, dilval *v)
 {
    /* Unary minus */
-   class dilval v1;
+   dilval v1;
 
    eval_dil_exp(p, &v1);
 
@@ -1267,10 +1268,10 @@ void dilfe_umin(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_itoa(struct dilprg *p, class dilval *v)
+void dilfe_itoa(struct dilprg *p, dilval *v)
 {
    /* Conversion of integers to strings */
-   class dilval v1;
+   dilval v1;
 
    eval_dil_exp(p, &v1);
    switch(dil_getval(&v1))
@@ -1289,10 +1290,10 @@ void dilfe_itoa(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_atoi(struct dilprg *p, class dilval *v)
+void dilfe_atoi(struct dilprg *p, dilval *v)
 {
    /* Conversion of strings to integers */
-   class dilval v1;
+   dilval v1;
 
    eval_dil_exp(p, &v1);
    switch(dil_getval(&v1))
@@ -1319,10 +1320,10 @@ void dilfe_atoi(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_len(struct dilprg *p, class dilval *v)
+void dilfe_len(struct dilprg *p, dilval *v)
 {
    /* length of strings or stringlists */
-   class dilval v1;
+   dilval v1;
 
    eval_dil_exp(p, &v1);
    switch(dil_getval(&v1))
@@ -1363,9 +1364,9 @@ void dilfe_len(struct dilprg *p, class dilval *v)
 
 /* textformat */
 
-void dilfe_txf(struct dilprg *p, class dilval *v)
+void dilfe_txf(struct dilprg *p, dilval *v)
 {
-   class dilval v1;
+   dilval v1;
 
    eval_dil_exp(p, &v1); /* string */
 
@@ -1400,10 +1401,10 @@ void dilfe_txf(struct dilprg *p, class dilval *v)
 }
 
 /* asctime */
-void dilfe_ast(struct dilprg *p, class dilval *v)
+void dilfe_ast(struct dilprg *p, dilval *v)
 {
-   class dilval v1;
-   char        *c;
+   dilval v1;
+   char  *c;
 
    eval_dil_exp(p, &v1); /* integer */
 
@@ -1430,12 +1431,12 @@ void dilfe_ast(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_getw(struct dilprg *p, class dilval *v)
+void dilfe_getw(struct dilprg *p, dilval *v)
 {
    /* Get first word of a string */
-   class dilval v1;
-   char        *c;
-   char         buf1[MAX_STRING_LENGTH];
+   dilval v1;
+   char  *c;
+   char   buf1[MAX_STRING_LENGTH];
 
    eval_dil_exp(p, &v1); /* string */
 
@@ -1474,12 +1475,12 @@ void dilfe_getw(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_getws(struct dilprg *p, class dilval *v)
+void dilfe_getws(struct dilprg *p, dilval *v)
 {
    /* Get first word of a string */
-   class dilval v1;
-   char        *tmp;
-   char        *c;
+   dilval v1;
+   char  *tmp;
+   char  *c;
 
    eval_dil_exp(p, &v1); /* string */
 
@@ -1519,10 +1520,10 @@ void dilfe_getws(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_load(struct dilprg *p, class dilval *v)
+void dilfe_load(struct dilprg *p, dilval *v)
 {
    /* Load a unit from database */
-   class dilval v1;
+   dilval v1;
 
    eval_dil_exp(p, &v1); /* unit name */
 
@@ -1563,12 +1564,12 @@ void dilfe_load(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_plus(struct dilprg *p, class dilval *v)
+void dilfe_plus(struct dilprg *p, dilval *v)
 {
    /* Addition of strings or integers */
 
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -1639,12 +1640,12 @@ void dilfe_plus(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_dld(struct dilprg *p, class dilval *v)
+void dilfe_dld(struct dilprg *p, dilval *v)
 {
    /* Destruction of DIL programs */
 
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1); /* string  */
    eval_dil_exp(p, &v2); /* unitptr */
@@ -1691,12 +1692,12 @@ void dilfe_dld(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_dlf(struct dilprg *p, class dilval *v)
+void dilfe_dlf(struct dilprg *p, dilval *v)
 {
    /* Detection of DIL programs (TRUE/FALSE) */
 
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -1747,11 +1748,11 @@ void dilfe_dlf(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_min(struct dilprg *p, class dilval *v)
+void dilfe_min(struct dilprg *p, dilval *v)
 {
    /* Subtraction of integers */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -1790,11 +1791,11 @@ void dilfe_min(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_mul(struct dilprg *p, class dilval *v)
+void dilfe_mul(struct dilprg *p, dilval *v)
 {
    /* Multiplication of integers */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -1830,11 +1831,11 @@ void dilfe_mul(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_div(struct dilprg *p, class dilval *v)
+void dilfe_div(struct dilprg *p, dilval *v)
 {
    /* Division of integers */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -1877,11 +1878,11 @@ void dilfe_div(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_mod(struct dilprg *p, class dilval *v)
+void dilfe_mod(struct dilprg *p, dilval *v)
 {
    /* Modulo of integers */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -1924,11 +1925,11 @@ void dilfe_mod(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_and(struct dilprg *p, class dilval *v)
+void dilfe_and(struct dilprg *p, dilval *v)
 {
    /* And two integers (or booleans) */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -1946,11 +1947,11 @@ void dilfe_and(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_land(struct dilprg *p, class dilval *v)
+void dilfe_land(struct dilprg *p, dilval *v)
 {
    /* And two integers (or booleans) */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -1960,11 +1961,11 @@ void dilfe_land(struct dilprg *p, class dilval *v)
    v->val.num = static_cast<int64_t>((static_cast<int64_t>(dil_getbool(&v1) != 0) != 0) && (dil_getbool(&v2)) != 0);
 }
 
-void dilfe_or(struct dilprg *p, class dilval *v)
+void dilfe_or(struct dilprg *p, dilval *v)
 {
    /* Or two integers (or booleans) */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -1982,11 +1983,11 @@ void dilfe_or(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_lor(struct dilprg *p, class dilval *v)
+void dilfe_lor(struct dilprg *p, dilval *v)
 {
    /* Or two integers (or booleans) */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -1996,11 +1997,11 @@ void dilfe_lor(struct dilprg *p, class dilval *v)
    v->val.num = static_cast<int64_t>((static_cast<int64_t>(dil_getbool(&v1) != 0) != 0) || (dil_getbool(&v2)) != 0);
 }
 
-void dilfe_isa(struct dilprg *p, class dilval *v)
+void dilfe_isa(struct dilprg *p, dilval *v)
 {
    /* Test if unit is affected by affect */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -2048,11 +2049,11 @@ void dilfe_isa(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_rnd(struct dilprg *p, class dilval *v)
+void dilfe_rnd(struct dilprg *p, dilval *v)
 {
    /* Random in an integer range */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -2092,12 +2093,12 @@ void dilfe_rnd(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_fndr(struct dilprg *p, class dilval *v)
+void dilfe_fndr(struct dilprg *p, dilval *v)
 {
    /* Find a room */
-   class dilval v1;
-   char         buf1[MAX_STRING_LENGTH];
-   char         buf2[MAX_STRING_LENGTH];
+   dilval v1;
+   char   buf1[MAX_STRING_LENGTH];
+   char   buf2[MAX_STRING_LENGTH];
 
    eval_dil_exp(p, &v1);
    switch(dil_getval(&v1))
@@ -2134,12 +2135,12 @@ void dilfe_fndr(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_fnds2(struct dilprg *p, class dilval *v)
+void dilfe_fnds2(struct dilprg *p, dilval *v)
 {
    /* Find a symbolic unit */
-   class dilval v1;
-   class dilval v2;
-   class dilval v3;
+   dilval v1;
+   dilval v2;
+   dilval v3;
 
    char buf1[MAX_STRING_LENGTH];
    char buf2[MAX_STRING_LENGTH];
@@ -2237,12 +2238,12 @@ void dilfe_fnds2(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_fnds(struct dilprg *p, class dilval *v)
+void dilfe_fnds(struct dilprg *p, dilval *v)
 {
    /* Find a symbolic unit */
-   class dilval v1;
-   char         buf1[MAX_STRING_LENGTH];
-   char         buf2[MAX_STRING_LENGTH];
+   dilval v1;
+   char   buf1[MAX_STRING_LENGTH];
+   char   buf2[MAX_STRING_LENGTH];
 
    eval_dil_exp(p, &v1);
    switch(dil_getval(&v1))
@@ -2274,11 +2275,11 @@ void dilfe_fnds(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_gt(struct dilprg *p, class dilval *v)
+void dilfe_gt(struct dilprg *p, dilval *v)
 {
    /* Greater Than operator */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -2317,11 +2318,11 @@ void dilfe_gt(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_lt(struct dilprg *p, class dilval *v)
+void dilfe_lt(struct dilprg *p, dilval *v)
 {
    /* Less Than operator */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -2360,11 +2361,11 @@ void dilfe_lt(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_ge(struct dilprg *p, class dilval *v)
+void dilfe_ge(struct dilprg *p, dilval *v)
 {
    /* Greater or Equal operator */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -2403,11 +2404,11 @@ void dilfe_ge(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_le(struct dilprg *p, class dilval *v)
+void dilfe_le(struct dilprg *p, dilval *v)
 {
    /* Less or Equal operator */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -2446,11 +2447,11 @@ void dilfe_le(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_eq(struct dilprg *p, class dilval *v)
+void dilfe_eq(struct dilprg *p, dilval *v)
 {
    /* Equal operator */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -2489,11 +2490,11 @@ void dilfe_eq(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_se(struct dilprg *p, class dilval *v)
+void dilfe_se(struct dilprg *p, dilval *v)
 {
    /* String equal operator */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -2558,11 +2559,11 @@ void dilfe_se(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_sne(struct dilprg *p, class dilval *v)
+void dilfe_sne(struct dilprg *p, dilval *v)
 {
    /* String not equal operator */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -2619,11 +2620,11 @@ void dilfe_sne(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_pe(struct dilprg *p, class dilval *v)
+void dilfe_pe(struct dilprg *p, dilval *v)
 {
    /* Pointer Equality operator */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -2673,11 +2674,11 @@ void dilfe_pe(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_pne(struct dilprg *p, class dilval *v)
+void dilfe_pne(struct dilprg *p, dilval *v)
 {
    /* Pointer Equality operator */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -2727,11 +2728,11 @@ void dilfe_pne(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_ne(struct dilprg *p, class dilval *v)
+void dilfe_ne(struct dilprg *p, dilval *v)
 {
    /* Not Equal operator */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -2771,11 +2772,11 @@ void dilfe_ne(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_iss(struct dilprg *p, class dilval *v)
+void dilfe_iss(struct dilprg *p, dilval *v)
 {
    /* Test if bits is set in bitfield */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -2815,11 +2816,11 @@ void dilfe_iss(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_in(struct dilprg *p, class dilval *v)
+void dilfe_in(struct dilprg *p, dilval *v)
 {
    /* Test if string in string, stringlist or extra description */
-   class dilval v1;
-   class dilval v2;
+   dilval v1;
+   dilval v2;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -2920,13 +2921,13 @@ void dilfe_in(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_fndu(struct dilprg *p, class dilval *v)
+void dilfe_fndu(struct dilprg *p, dilval *v)
 {
    /* Find a unit */
-   class dilval v1;
-   class dilval v2;
-   class dilval v3;
-   class dilval v4;
+   dilval v1;
+   dilval v2;
+   dilval v3;
+   dilval v4;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -3062,12 +3063,12 @@ void dilfe_fndu(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_fndru(struct dilprg *p, class dilval *v)
+void dilfe_fndru(struct dilprg *p, dilval *v)
 {
    /* Find a unit */
-   class dilval v1;
-   class dilval v2;
-   class dilval v3;
+   dilval v1;
+   dilval v2;
+   dilval v3;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
@@ -3149,7 +3150,7 @@ void dilfe_fndru(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_fs(struct dilprg *p, class dilval *v)
+void dilfe_fs(struct dilprg *p, dilval *v)
 {
    /* A Fixed String */
    v->type = DILV_SP;
@@ -3166,7 +3167,7 @@ void dilfe_fs(struct dilprg *p, class dilval *v)
    (p->sp->pc)++; /* ready for next */
 }
 
-void dilfe_fsl(struct dilprg *p, class dilval *v)
+void dilfe_fsl(struct dilprg *p, dilval *v)
 {
    auto *namelist = new cNamelist;
    /* A Fixed String list */
@@ -3178,7 +3179,7 @@ void dilfe_fsl(struct dilprg *p, class dilval *v)
    v->val.ptr = namelist;
 }
 
-void dilfe_var(struct dilprg *p, class dilval *v)
+void dilfe_var(struct dilprg *p, dilval *v)
 {
    /* A variable */
    int varno;
@@ -3218,7 +3219,7 @@ void dilfe_var(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_weat(struct dilprg *p, class dilval *v)
+void dilfe_weat(struct dilprg *p, dilval *v)
 {
    /* Self */
 
@@ -3227,7 +3228,7 @@ void dilfe_weat(struct dilprg *p, class dilval *v)
    v->val.num = unit_zone(p->sarg->owner)->weather.sky;
 }
 
-void dilfe_self(struct dilprg *p, class dilval *v)
+void dilfe_self(struct dilprg *p, dilval *v)
 {
    /* Self */
 
@@ -3236,7 +3237,7 @@ void dilfe_self(struct dilprg *p, class dilval *v)
    v->val.ptr = p->sarg->owner;
 }
 
-void dilfe_hrt(struct dilprg *p, class dilval *v)
+void dilfe_hrt(struct dilprg *p, dilval *v)
 {
    /* Heartbeat */
 
@@ -3245,7 +3246,7 @@ void dilfe_hrt(struct dilprg *p, class dilval *v)
    v->ref  = (int16_t *)&(p->sarg->fptr->heart_beat);
 }
 
-void dilfe_tho(struct dilprg *p, class dilval *v)
+void dilfe_tho(struct dilprg *p, dilval *v)
 {
    /* MudHour */
 
@@ -3254,7 +3255,7 @@ void dilfe_tho(struct dilprg *p, class dilval *v)
    v->val.num = mud_date(time(nullptr)).hours;
 }
 
-void dilfe_tda(struct dilprg *p, class dilval *v)
+void dilfe_tda(struct dilprg *p, dilval *v)
 {
    /* MudDay */
 
@@ -3263,7 +3264,7 @@ void dilfe_tda(struct dilprg *p, class dilval *v)
    v->val.num = mud_date(time(nullptr)).day;
 }
 
-void dilfe_tmd(struct dilprg *p, class dilval *v)
+void dilfe_tmd(struct dilprg *p, dilval *v)
 {
    /* MudMonth */
 
@@ -3272,7 +3273,7 @@ void dilfe_tmd(struct dilprg *p, class dilval *v)
    v->val.num = mud_date(time(nullptr)).month;
 }
 
-void dilfe_tye(struct dilprg *p, class dilval *v)
+void dilfe_tye(struct dilprg *p, dilval *v)
 {
    /* MudYear */
 
@@ -3281,7 +3282,7 @@ void dilfe_tye(struct dilprg *p, class dilval *v)
    v->val.num = mud_date(time(nullptr)).year;
 }
 
-void dilfe_rti(struct dilprg *p, class dilval *v)
+void dilfe_rti(struct dilprg *p, dilval *v)
 {
    /* RealTime */
 
@@ -3290,7 +3291,7 @@ void dilfe_rti(struct dilprg *p, class dilval *v)
    v->val.num = time(nullptr);
 }
 
-void dilfe_acti(struct dilprg *p, class dilval *v)
+void dilfe_acti(struct dilprg *p, dilval *v)
 {
    /* Activator */
 
@@ -3299,7 +3300,7 @@ void dilfe_acti(struct dilprg *p, class dilval *v)
    v->val.ptr = p->sarg->activator;
 }
 
-void dilfe_medi(struct dilprg *p, class dilval *v)
+void dilfe_medi(struct dilprg *p, dilval *v)
 {
    /* Medium */
 
@@ -3308,7 +3309,7 @@ void dilfe_medi(struct dilprg *p, class dilval *v)
    v->val.ptr = p->sarg->medium;
 }
 
-void dilfe_targ(struct dilprg *p, class dilval *v)
+void dilfe_targ(struct dilprg *p, dilval *v)
 {
    /* Target */
 
@@ -3317,7 +3318,7 @@ void dilfe_targ(struct dilprg *p, class dilval *v)
    v->val.ptr = p->sarg->target;
 }
 
-void dilfe_powe(struct dilprg *p, class dilval *v)
+void dilfe_powe(struct dilprg *p, dilval *v)
 {
    /* Power */
 
@@ -3336,7 +3337,7 @@ void dilfe_powe(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_cmst(struct dilprg *p, class dilval *v)
+void dilfe_cmst(struct dilprg *p, dilval *v)
 {
    /* cmdstr */
 
@@ -3354,7 +3355,7 @@ void dilfe_cmst(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_argm(struct dilprg *p, class dilval *v)
+void dilfe_argm(struct dilprg *p, dilval *v)
 {
    /* Argument */
 
@@ -3371,7 +3372,7 @@ void dilfe_argm(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_null(struct dilprg *p, class dilval *v)
+void dilfe_null(struct dilprg *p, dilval *v)
 {
    /* Pointer value null */
 
@@ -3380,7 +3381,7 @@ void dilfe_null(struct dilprg *p, class dilval *v)
    v->val.ptr = nullptr;
 }
 
-void dilfe_int(struct dilprg *p, class dilval *v)
+void dilfe_int(struct dilprg *p, dilval *v)
 {
    /* Fixed integer */
 
@@ -3389,10 +3390,10 @@ void dilfe_int(struct dilprg *p, class dilval *v)
    v->val.num = (int32_t)bread_uint32_t(&(p->sp->pc));
 }
 
-void dilfe_cmds(struct dilprg *p, class dilval *v)
+void dilfe_cmds(struct dilprg *p, dilval *v)
 {
    /* Check if the input command might the supplied argument */
-   class dilval v1;
+   dilval v1;
 
    eval_dil_exp(p, &v1);
 
@@ -3427,11 +3428,11 @@ void dilfe_cmds(struct dilprg *p, class dilval *v)
 }
 
 /* visible, some vs other */
-void dilfe_pck(struct dilprg *p, class dilval *v)
+void dilfe_pck(struct dilprg *p, dilval *v)
 {
-   extern auto  pay_point_charlie(unit_data * ch, unit_data * to)->int; /* from act_movement.c */
-   class dilval v1;
-   class dilval v2;
+   extern auto pay_point_charlie(unit_data * ch, unit_data * to)->int; /* from act_movement.c */
+   dilval      v1;
+   dilval      v2;
 
    eval_dil_exp(p, &v1) eval_dil_exp(p, &v2);
 
@@ -3475,16 +3476,16 @@ void dilfe_pck(struct dilprg *p, class dilval *v)
    }
 }
 
-void dilfe_act(struct dilprg *p, class dilval *v)
+void dilfe_act(struct dilprg *p, dilval *v)
 {
    char buf[1024];
    /* Conversion of integers to strings */
-   class dilval v1;
-   class dilval v2;
-   class dilval v3;
-   class dilval v4;
-   class dilval v5;
-   class dilval v6;
+   dilval v1;
+   dilval v2;
+   dilval v3;
+   dilval v4;
+   dilval v5;
+   dilval v6;
 
    eval_dil_exp(p, &v1);
    eval_dil_exp(p, &v2);
