@@ -45,6 +45,7 @@
 #include "structs.h"
 #include "textutil.h"
 #include "unit_affected_type.h"
+#include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
 
@@ -169,8 +170,8 @@ void npc_set_visit(unit_data *npc, unit_data *dest_room, int what_now(const unit
 {
    unit_data         *u;
    struct visit_data *vd;
-   struct unit_fptr  *fp1;
-   struct unit_fptr  *fp2;
+   unit_fptr         *fp1;
+   unit_fptr         *fp2;
 
    assert(IS_ROOM(dest_room));
 
@@ -768,7 +769,7 @@ void activate_accuse(unit_data *npc, uint8_t crime_type, const char *cname)
 {
    struct npc_accuse_data *nad;
    unit_data              *prison;
-   struct unit_fptr       *fptr;
+   unit_fptr              *fptr;
    struct visit_data      *vd;
 
    /* GEN: get accuse room in here */
@@ -866,7 +867,7 @@ auto guard_assist(const unit_data *npc, struct visit_data *vd) -> int
 void call_guards(unit_data *guard)
 {
    struct zone_type *zone;
-   struct unit_fptr *fptr;
+   unit_fptr        *fptr;
    unit_data        *u;
    int               ok;
 

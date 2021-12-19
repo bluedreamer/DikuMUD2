@@ -40,6 +40,7 @@
 #include "structs.h"
 #include "textutil.h"
 #include "time_info_data.h"
+#include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
 #include <cctype>

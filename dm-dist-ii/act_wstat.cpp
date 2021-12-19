@@ -55,6 +55,7 @@
 #include "textutil.h"
 #include "time_info_data.h"
 #include "unit_affected_type.h"
+#include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
@@ -696,9 +697,9 @@ static void stat_func(const unit_data *ch, unit_data *u)
 {
    extern struct unit_function_array_type unit_function_array[];
 
-   char              buf[4096];
-   char              buf2[512];
-   struct unit_fptr *f;
+   char       buf[4096];
+   char       buf2[512];
+   unit_fptr *f;
 
    if(!UNIT_FUNC(u))
    {

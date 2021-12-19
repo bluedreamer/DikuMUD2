@@ -53,6 +53,7 @@
 #include "structs.h"
 #include "textutil.h"
 #include "trie.h"
+#include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
 #include <climits>
@@ -1071,7 +1072,7 @@ auto mercenary_hire(struct spec_arg *sarg) -> int
    amount_t                 price;
    currency_t               currency = local_currency(sarg->owner);
 
-   void start_special(unit_data * u, struct unit_fptr * fptr);
+   void start_special(unit_data * u, unit_fptr * fptr);
 
    if(!IS_CHAR(sarg->owner))
    {

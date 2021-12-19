@@ -49,6 +49,7 @@
 #include "textutil.h"
 #include "trie.h"
 #include "unit_affected_type.h"
+#include "unit_fptr.h"
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
@@ -2321,7 +2322,7 @@ void dilfi_sntadil(struct dilprg *p, class dilval *v)
 
             if((tp->sp != nullptr) && tp->sp->tmpl == tmpl && tp != p)
             {
-               struct unit_fptr *fptr;
+               unit_fptr *fptr;
 
                /* If it is destructed, then it cant be found because data
                   will be null */

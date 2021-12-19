@@ -73,10 +73,10 @@ void dil_test_secure(struct dilprg *prg);
 auto dil_destroy(char *name, unit_data *u) -> int;
 
 /* NULL fptr creates one...  */
-auto dil_copy_template(struct diltemplate *tmpl, unit_data *u, struct unit_fptr **pfptr) -> struct dilprg *;
+auto dil_copy_template(struct diltemplate *tmpl, unit_data *u, unit_fptr **pfptr) -> struct dilprg *;
 auto dil_copy(char *name, unit_data *u) -> struct dilprg *;
 
-auto dil_find(const char *name, unit_data *u) -> struct unit_fptr *;
+auto dil_find(const char *name, unit_data *u) -> unit_fptr *;
 
 void dil_typeerr(struct dilprg *p, const char *where);
 

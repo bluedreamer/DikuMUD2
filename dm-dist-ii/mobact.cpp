@@ -32,6 +32,7 @@
 #include "main.h"
 #include "skills.h"
 #include "structs.h"
+#include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
 
@@ -42,7 +43,7 @@ void event_deenq(void (*func)(), void *arg1, void *arg2);
 extern struct zone_type               *boot_zone;
 extern struct unit_function_array_type unit_function_array[];
 
-void SetFptrTimer(unit_data *u, struct unit_fptr *fptr)
+void SetFptrTimer(unit_data *u, unit_fptr *fptr)
 {
    uint32_t ticks;
 
@@ -63,7 +64,7 @@ void SetFptrTimer(unit_data *u, struct unit_fptr *fptr)
    }
 }
 
-void ResetFptrTimer(unit_data *u, struct unit_fptr *fptr)
+void ResetFptrTimer(unit_data *u, unit_fptr *fptr)
 {
    event_deenq(special_event, u, fptr);
    SetFptrTimer(u, fptr);
@@ -72,12 +73,12 @@ void ResetFptrTimer(unit_data *u, struct unit_fptr *fptr)
 void special_event(void *p1, void *p2)
 {
    auto *u    = (unit_data *)p1;
-   auto *fptr = (struct unit_fptr *)p2;
+   auto *fptr = (unit_fptr *)p2;
 
-   uint32_t          ret = SFR_SHARE;
-   uint32_t          ticks;
-   struct unit_fptr *ftmp;
-   struct spec_arg   sarg;
+   uint32_t        ret = SFR_SHARE;
+   uint32_t        ticks;
+   unit_fptr      *ftmp;
+   struct spec_arg sarg;
 
    void add_func_history(unit_data * u, uint16_t, uint16_t);
 
@@ -141,12 +142,12 @@ void special_event(void *p1, void *p2)
 }
 
 /* Return TRUE while stopping events */
-void stop_special(unit_data *u, struct unit_fptr *fptr)
+void stop_special(unit_data *u, unit_fptr *fptr)
 {
    event_deenq(special_event, u, fptr);
 }
 
-void start_special(unit_data *u, struct unit_fptr *fptr)
+void start_special(unit_data *u, unit_fptr *fptr)
 {
    if(IS_SET(fptr->flags, SFB_TICK) || fptr->index == SFUN_DIL_INTERNAL)
    {
@@ -173,7 +174,7 @@ void start_special(unit_data *u, struct unit_fptr *fptr)
 
 void start_all_special(unit_data *u)
 {
-   struct unit_fptr *fptr;
+   unit_fptr *fptr;
 
    for(fptr = UNIT_FUNC(u); fptr != nullptr; fptr = fptr->next)
    {
@@ -183,7 +184,7 @@ void start_all_special(unit_data *u)
 
 void stop_all_special(unit_data *u)
 {
-   struct unit_fptr *fptr;
+   unit_fptr *fptr;
 
    for(fptr = UNIT_FUNC(u); fptr != nullptr; fptr = fptr->next)
    {

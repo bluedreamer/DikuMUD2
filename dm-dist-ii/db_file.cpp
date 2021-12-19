@@ -43,6 +43,7 @@
 #include "structs.h"
 #include "textutil.h"
 #include "unit_affected_type.h"
+#include "unit_fptr.h"
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
@@ -410,7 +411,7 @@ void bwrite_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
  *   lookup and typecheck of loaded template.
  *
  */
-auto bread_dil(CByteBuffer *pBuf, unit_data *owner, uint8_t version, struct unit_fptr *fptr) -> void *
+auto bread_dil(CByteBuffer *pBuf, unit_data *owner, uint8_t version, unit_fptr *fptr) -> void *
 {
    struct dilprg      *prg;
    struct diltemplate *tmpl     = nullptr;
@@ -646,15 +647,15 @@ auto bread_dil(CByteBuffer *pBuf, unit_data *owner, uint8_t version, struct unit
    return prg;
 }
 
-auto bread_func(CByteBuffer *pBuf, uint8_t version, unit_data *owner) -> struct unit_fptr *
+auto bread_func(CByteBuffer *pBuf, uint8_t version, unit_data *owner) -> unit_fptr *
 {
-   struct unit_fptr *fptr;
-   struct unit_fptr *head;
-   int               cnt;
-   int               i;
-   uint8_t           t8;
-   uint16_t          t16;
-   uint32_t          t32;
+   unit_fptr *fptr;
+   unit_fptr *head;
+   int        cnt;
+   int        i;
+   uint8_t    t8;
+   uint16_t   t16;
+   uint32_t   t32;
 
    fptr = nullptr;
    head = nullptr;
@@ -667,12 +668,12 @@ auto bread_func(CByteBuffer *pBuf, uint8_t version, unit_data *owner) -> struct 
    {
       if(fptr != nullptr)
       {
-         CREATE(fptr->next, struct unit_fptr, 1);
+         CREATE(fptr->next, unit_fptr, 1);
          fptr = fptr->next;
       }
       else
       {
-         CREATE(head, struct unit_fptr, 1);
+         CREATE(head, unit_fptr, 1);
          fptr = head;
       }
 
@@ -974,7 +975,7 @@ void bwrite_dil(CByteBuffer *pBuf, struct dilprg *prg)
    bwrite_dilintr(pBuf, prg);
 }
 
-void bwrite_func(CByteBuffer *pBuf, struct unit_fptr *fptr)
+void bwrite_func(CByteBuffer *pBuf, unit_fptr *fptr)
 {
    char    *data;
    int      cnt;

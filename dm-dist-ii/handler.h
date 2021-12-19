@@ -47,9 +47,9 @@ auto quest_add(unit_data *ch, const char *name, char *descr) -> struct extra_des
 void insert_in_unit_list(unit_data *u);
 void remove_from_unit_list(unit_data *unit);
 
-auto find_fptr(unit_data *u, uint16_t index) -> struct unit_fptr *;
-auto create_fptr(unit_data *u, uint16_t index, uint16_t beat, uint16_t flags, void *data) -> struct unit_fptr *;
-void destroy_fptr(unit_data *u, struct unit_fptr *f);
+auto find_fptr(unit_data *u, uint16_t index) -> unit_fptr *;
+auto create_fptr(unit_data *u, uint16_t index, uint16_t beat, uint16_t flags, void *data) -> unit_fptr *;
+void destroy_fptr(unit_data *u, unit_fptr *f);
 
 void stop_following(unit_data *ch);
 void start_following(unit_data *ch, unit_data *leader);

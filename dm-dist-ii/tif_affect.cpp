@@ -49,7 +49,7 @@
 
 void tif_confusion_tick(unit_affected_type *af, unit_data *unit)
 {
-   struct unit_fptr *fptr;
+   unit_fptr *fptr;
 
    if((fptr = find_fptr(unit, SFUN_HUNTING)) != nullptr)
    {

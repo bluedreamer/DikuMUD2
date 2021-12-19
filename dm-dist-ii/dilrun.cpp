@@ -44,6 +44,7 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "unit_fptr.h"
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
@@ -827,8 +828,8 @@ static auto check_interrupt(struct dilprg *prg) -> int
 
 void ActivateDil(unit_data *pc)
 {
-   struct unit_fptr *fptr;
-   struct dilprg    *prg;
+   unit_fptr     *fptr;
+   struct dilprg *prg;
 
    for(fptr = UNIT_FUNC(pc); fptr != nullptr; fptr = fptr->next)
    {
@@ -842,8 +843,8 @@ void ActivateDil(unit_data *pc)
 
 void DeactivateDil(unit_data *pc)
 {
-   struct unit_fptr *fptr;
-   struct dilprg    *prg;
+   unit_fptr     *fptr;
+   struct dilprg *prg;
 
    for(fptr = UNIT_FUNC(pc); fptr != nullptr; fptr = fptr->next)
    {
@@ -1007,7 +1008,7 @@ auto run_dil(struct spec_arg *sarg) -> int
       Therefore, I am unfortunately forced to do the follow dequeue and
       enqueue.
       */
-   void ResetFptrTimer(unit_data * u, struct unit_fptr * fptr);
+   void ResetFptrTimer(unit_data * u, unit_fptr * fptr);
 
    sarg->fptr->heart_beat = MAX(PULSE_SEC * 1, sarg->fptr->heart_beat);
 
@@ -1155,8 +1156,8 @@ auto dil_direct_init(struct spec_arg *sarg) -> int
 
 auto dil_destroy(char *name, unit_data *u) -> int
 {
-   struct unit_fptr *fptr;
-   struct dilprg    *prg;
+   unit_fptr     *fptr;
+   struct dilprg *prg;
 
    fptr = dil_find(name, u);
    if(fptr != nullptr)
@@ -1190,11 +1191,11 @@ void dil_init_vars(int varc, struct dilframe *frm)
    }
 }
 
-auto dil_copy_template(struct diltemplate *tmpl, unit_data *u, struct unit_fptr **pfptr) -> struct dilprg *
+auto dil_copy_template(struct diltemplate *tmpl, unit_data *u, unit_fptr **pfptr) -> struct dilprg *
 {
-   struct dilprg    *prg;
-   struct dilframe  *frm;
-   struct unit_fptr *fptr;
+   struct dilprg   *prg;
+   struct dilframe *frm;
+   unit_fptr       *fptr;
 
    CREATE(prg, struct dilprg, 1);
    CREATE(frm, struct dilframe, 1);
@@ -1264,8 +1265,8 @@ auto dil_copy_template(struct diltemplate *tmpl, unit_data *u, struct unit_fptr 
 
 void dil_activate(struct dilprg *prg)
 {
-   struct spec_arg   sarg;
-   struct unit_fptr *fptr;
+   struct spec_arg sarg;
+   unit_fptr      *fptr;
 
    assert(prg);
 
@@ -1299,8 +1300,8 @@ void dil_activate(struct dilprg *prg)
 
 void dil_loadtime_activate(unit_data *u)
 {
-   struct unit_fptr *f;
-   struct unit_fptr *fnext;
+   unit_fptr *f;
+   unit_fptr *fnext;
 
    for(f = UNIT_FUNC(u); f != nullptr; f = fnext)
    {
@@ -1437,9 +1438,9 @@ auto dil_copy(char *name, unit_data *u) -> struct dilprg *
    return prg;
 }
 
-auto dil_find(const char *name, unit_data *u) -> struct unit_fptr *
+auto dil_find(const char *name, unit_data *u) -> unit_fptr *
 {
-   struct unit_fptr   *fptr;
+   unit_fptr          *fptr;
    struct diltemplate *tmpl;
 
    if((tmpl = find_dil_template(name)) != nullptr)

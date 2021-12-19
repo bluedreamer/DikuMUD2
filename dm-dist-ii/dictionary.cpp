@@ -89,6 +89,7 @@ Mon Nov 14 17:19:47 MET 1994
 #include "structs.h"
 #include "textutil.h"
 #include "trie.h"
+#include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
 

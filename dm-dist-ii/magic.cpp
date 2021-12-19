@@ -94,8 +94,8 @@ auto dil_effect(const char *pStr, struct spell_args *sa) -> int
       return FALSE;
    }
 
-   struct dilprg    *prg;
-   struct unit_fptr *fptr;
+   struct dilprg *prg;
+   unit_fptr     *fptr;
 
    prg          = dil_copy_template(tmpl, sa->caster, &fptr);
    prg->waitcmd = WAITCMD_MAXINST - 1; // The usual hack, see db_file

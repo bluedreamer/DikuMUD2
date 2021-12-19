@@ -55,6 +55,7 @@
 #include "nanny.h"
 #include "structs.h"
 #include "textutil.h"
+#include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
@@ -108,7 +109,7 @@ auto remove_msg(unit_data * /*ch*/, struct board_info * /*tb*/, char * /*arg*/) 
 void save_board_msg(struct board_info * /*tb*/, int /*index*/, char * /*text*/);
 void load_board_msg(struct board_info * /*tb*/, int /*index*/, bool /*text*/);
 auto init_board(char * /*file_name*/) -> struct board_info *;
-auto get_board(struct unit_fptr * /*fptr*/) -> struct board_info *;
+auto get_board(unit_fptr * /*fptr*/) -> struct board_info *;
 
 auto board(struct spec_arg *sarg) -> int
 {
@@ -666,7 +667,7 @@ auto init_board(char *file_name) -> struct board_info *
    return tb;
 }
 
-auto get_board(struct unit_fptr *fptr) -> struct board_info *
+auto get_board(unit_fptr *fptr) -> struct board_info *
 {
    struct board_info *tb;
    char               file_name[200];
@@ -717,7 +718,7 @@ auto get_board(struct unit_fptr *fptr) -> struct board_info *
 void do_boards(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    unit_data         *u;
-   struct unit_fptr  *f = nullptr;
+   unit_fptr         *f = nullptr;
    struct board_info *b;
    char               buf[256];
    char               tmp[256];

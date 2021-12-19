@@ -60,6 +60,7 @@
 #include "skills.h"
 #include "textutil.h"
 #include "unit_affected_type.h"
+#include "unit_fptr.h"
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
@@ -68,7 +69,7 @@ extern unit_data *combat_list;
 
 /* External procedures */
 
-void stop_special(unit_data *u, struct unit_fptr *fptr);
+void stop_special(unit_data *u, unit_fptr *fptr);
 
 auto unit_is_edited(unit_data *u) -> descriptor_data *
 {
@@ -141,9 +142,9 @@ void remove_from_unit_list(unit_data *unit)
    unit->gnext = unit->gprevious = nullptr;
 }
 
-auto find_fptr(unit_data *u, uint16_t idx) -> struct unit_fptr *
+auto find_fptr(unit_data *u, uint16_t idx) -> unit_fptr *
 {
-   struct unit_fptr *tf;
+   unit_fptr *tf;
 
    for(tf = UNIT_FUNC(u); tf != nullptr; tf = tf->next)
    {
@@ -156,13 +157,13 @@ auto find_fptr(unit_data *u, uint16_t idx) -> struct unit_fptr *
    return nullptr;
 }
 
-auto create_fptr(unit_data *u, uint16_t index, uint16_t beat, uint16_t flags, void *data) -> struct unit_fptr *
+auto create_fptr(unit_data *u, uint16_t index, uint16_t beat, uint16_t flags, void *data) -> unit_fptr *
 {
-   struct unit_fptr *f;
+   unit_fptr *f;
 
-   void start_special(unit_data * u, struct unit_fptr * fptr);
+   void start_special(unit_data * u, unit_fptr * fptr);
 
-   CREATE(f, struct unit_fptr, 1);
+   CREATE(f, unit_fptr, 1);
    assert(f);
    assert(!is_destructed(DR_FUNC, f));
 
@@ -180,10 +181,10 @@ auto create_fptr(unit_data *u, uint16_t index, uint16_t beat, uint16_t flags, vo
 }
 
 /* Does not free 'f' - it is done by clear_destruct by comm.c */
-void destroy_fptr(unit_data *u, struct unit_fptr *f)
+void destroy_fptr(unit_data *u, unit_fptr *f)
 {
-   struct unit_fptr *tf;
-   struct spec_arg   sarg;
+   unit_fptr      *tf;
+   struct spec_arg sarg;
 
    extern struct unit_function_array_type unit_function_array[];
 

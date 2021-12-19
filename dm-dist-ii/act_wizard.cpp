@@ -225,8 +225,8 @@ auto frozen(struct spec_arg *sarg) -> int
 
 void do_freeze(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   unit_data        *unit;
-   struct unit_fptr *fptr;
+   unit_data *unit;
+   unit_fptr *fptr;
 
    if(str_is_empty(arg) != 0u)
    {

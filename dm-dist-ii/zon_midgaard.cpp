@@ -40,6 +40,7 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
 #include <climits>

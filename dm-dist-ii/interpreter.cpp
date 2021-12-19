@@ -45,6 +45,7 @@
 #include "structs.h"
 #include "textutil.h"
 #include "trie.h"
+#include "unit_fptr.h"
 #include "unitfind.h"
 #include "utility.h"
 #include "utils.h"
@@ -699,9 +700,9 @@ auto function_activate(unit_data *u, struct spec_arg *sarg) -> int
 
 auto unit_function_scan(unit_data *u, struct spec_arg *sarg) -> int
 {
-   int               res      = SFR_SHARE;
-   int               priority = 0;
-   struct unit_fptr *next;
+   int        res      = SFR_SHARE;
+   int        priority = 0;
+   unit_fptr *next;
 
    if(g_cServerConfig.m_bNoSpecials != 0)
    {

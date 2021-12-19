@@ -41,6 +41,7 @@
 #include "skills.h"
 #include "structs.h"
 #include "textutil.h"
+#include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
 
@@ -225,8 +226,8 @@ void register_destruct(int i, void *ptr)
 /* May only be called from comm.c event loop */
 void clear_destructed()
 {
-   struct unit_fptr *f;
-   int               i;
+   unit_fptr *f;
+   int        i;
 
    for(i = 0; i < destructed_idx[DR_AFFECT]; i++)
    {
@@ -236,7 +237,7 @@ void clear_destructed()
 
    for(i = 0; i < destructed_idx[DR_FUNC]; i++)
    {
-      f = (struct unit_fptr *)destructed[DR_FUNC][i];
+      f = (unit_fptr *)destructed[DR_FUNC][i];
       if(f->data != nullptr)
       {
          free(f->data);
