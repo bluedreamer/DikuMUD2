@@ -5,7 +5,7 @@
 
 struct trie_type
 {
-   void              *data;
-   uint8_t            size;
+   void       *data;
+   uint8_t     size;
    trie_entry *nexts;
 };

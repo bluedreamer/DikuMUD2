@@ -272,7 +272,7 @@ auto cmd_is_a_social(char *cmd, int complete) -> bool
    {
       return (((action = (struct social_msg *)search_trie(cmd, soc_trie)) != nullptr) && str_ccmp(action->cmd_str, cmd) == 0);
    }
-   return search_trie(cmd, soc_trie) != NULL;
+   return search_trie(cmd, soc_trie) != nullptr;
 }
 
 auto perform_social(unit_data *ch, char *arg, const command_info *cmd) -> bool
@@ -287,33 +287,39 @@ auto perform_social(unit_data *ch, char *arg, const command_info *cmd) -> bool
       return FALSE;
    }
    if(CHAR_POS(ch) < action->min_pos)
-      wrong_position(ch);
-   else if(str_is_empty(arg) || !action->char_found)
    {
-      act(action->char_no_arg, A_SOMEONE, ch, 0, 0, TO_CHAR);
-      act(action->others_no_arg, action->hide_flag, ch, 0, 0, TO_ROOM);
-      send_done(ch, NULL, NULL, 0, cmd, oarg);
+      wrong_position(ch);
+   }
+   else if(str_is_empty(arg) || (action->char_found == nullptr))
+   {
+      act(action->char_no_arg, A_SOMEONE, ch, nullptr, nullptr, TO_CHAR);
+      act(action->others_no_arg, action->hide_flag, ch, nullptr, nullptr, TO_ROOM);
+      send_done(ch, nullptr, nullptr, 0, cmd, oarg);
    }
    else
    {
-      unit_data *vict = find_unit(ch, &arg, 0, FIND_UNIT_SURRO);
+      unit_data *vict = find_unit(ch, &arg, nullptr, FIND_UNIT_SURRO);
 
-      if(vict == NULL || !IS_CHAR(vict))
-         act(action->not_found, A_SOMEONE, ch, 0, 0, TO_CHAR);
+      if(vict == nullptr || !IS_CHAR(vict))
+      {
+         act(action->not_found, A_SOMEONE, ch, nullptr, nullptr, TO_CHAR);
+      }
       else if(vict == ch)
       {
-         act(action->char_auto, A_SOMEONE, ch, 0, 0, TO_CHAR);
-         act(action->others_auto, action->hide_flag, ch, 0, 0, TO_ROOM);
-         send_done(ch, NULL, NULL, 0, cmd, oarg);
+         act(action->char_auto, A_SOMEONE, ch, nullptr, nullptr, TO_CHAR);
+         act(action->others_auto, action->hide_flag, ch, nullptr, nullptr, TO_ROOM);
+         send_done(ch, nullptr, nullptr, 0, cmd, oarg);
       }
       else if(CHAR_POS(vict) < action->vic_min_pos)
-         act("$2n is not in a proper position for that.", A_SOMEONE, ch, vict, 0, TO_CHAR);
+      {
+         act("$2n is not in a proper position for that.", A_SOMEONE, ch, vict, nullptr, TO_CHAR);
+      }
       else
       {
-         act(action->char_found, A_SOMEONE, ch, 0, vict, TO_CHAR);
-         act(action->others_found, action->hide_flag, ch, 0, vict, TO_NOTVICT);
-         act(action->vict_found, action->hide_flag, ch, 0, vict, TO_VICT);
-         send_done(ch, NULL, vict, 0, cmd, oarg);
+         act(action->char_found, A_SOMEONE, ch, nullptr, vict, TO_CHAR);
+         act(action->others_found, action->hide_flag, ch, nullptr, vict, TO_NOTVICT);
+         act(action->vict_found, action->hide_flag, ch, nullptr, vict, TO_VICT);
+         send_done(ch, nullptr, vict, 0, cmd, oarg);
       }
    }
    return TRUE;
@@ -393,7 +399,7 @@ void do_insult(unit_data *ch, char *arg, const struct command_info *cmd)
    const char *insult;
    unit_data  *victim;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Surely you don't want to insult everybody.\n\r", ch);
       return;

@@ -53,7 +53,7 @@ auto triebindex(char c, trie_type *t) -> trie_entry *
    {
       return (trie_entry *)bsearch(&c, t->nexts, t->size, sizeof(trie_entry), trie_src_cmp);
    }
-   return NULL;
+   return nullptr;
 }
 
 void qsort_triedata(trie_type *t)
@@ -137,7 +137,7 @@ void set_triedata(const char *s, trie_type *t, void *p, bool nonabbrev)
 
    while((*s != 0) && (t != nullptr))
    {
-      if(t->data == nullptr && (nonabbrev == 0u))
+      if(t->data == nullptr && (static_cast<unsigned int>(nonabbrev) == 0U))
       {
          t->data = p;
       }
@@ -228,7 +228,7 @@ auto del_trie(char *s, trie_type **t, void (*free_data)(void *)) -> bool
       int i = trie_index(*s, *t);
 
       /* Found one, did deletion of rest of keyword delete node below? */
-      if(i >= 0 && (del_trie(s + 1, &((*t)->nexts[i].t), free_data) != 0u))
+      if(i >= 0 && (static_cast<unsigned int>(del_trie(s + 1, &((*t)->nexts[i].t), free_data)) != 0U))
       {
          if((*t)->size == 1) /* Yes.  Are we alone at this node? */
          {                   /* Yep, delete and confirm */
@@ -245,7 +245,9 @@ auto del_trie(char *s, trie_type **t, void (*free_data)(void *)) -> bool
 
          (*t)->size--;
          for(; i < (*t)->size; i++)
+         {
             (*t)->nexts[i] = (*t)->nexts[i + 1];
+         }
          RECREATE((*t)->nexts, trie_entry, (*t)->size);
       }
    }

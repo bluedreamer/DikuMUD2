@@ -85,7 +85,7 @@ void offend_legal_state(unit_data *ch, unit_data *victim)
 {
    if(!IS_SET(CHAR_FLAGS(ch), CHAR_SELF_DEFENCE))
    {
-      if(!CHAR_COMBAT(victim) && !IS_SET(CHAR_FLAGS(victim), CHAR_LEGAL_TARGET))
+      if((CHAR_COMBAT(victim) == nullptr) && !IS_SET(CHAR_FLAGS(victim), CHAR_LEGAL_TARGET))
       {
          SET_BIT(CHAR_FLAGS(victim), CHAR_SELF_DEFENCE);
       }
@@ -299,7 +299,7 @@ void set_reward_char(unit_data *ch, int crimes)
    create_affect(ch, &af);
 }
 
-void set_witness(unit_data *criminal, unit_data *witness, int no, int type, int show = TRUE)
+void set_witness(unit_data *criminal, unit_data *witness, int no, int type, int show = static_cast<int>(TRUE))
 {
    unit_affected_type af;
 
@@ -354,13 +354,13 @@ void add_crime(unit_data *criminal, unit_data *victim, int type)
 
    assert(IS_PC(criminal));
 
-   if(str_is_empty(UNIT_NAME(criminal)) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(UNIT_NAME(criminal))) != 0U)
    {
       slog(LOG_ALL, 0, "JUSTICE: NULL name in criminal");
       return;
    }
 
-   if(str_is_empty(UNIT_NAME(victim)) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(UNIT_NAME(victim))) != 0U)
    {
       slog(LOG_ALL, 0, "JUSTICE: NULL name in victim");
       return;
@@ -377,7 +377,7 @@ void add_crime(unit_data *criminal, unit_data *victim, int type)
    strncpy(crime->victim, UNIT_NAME(victim), 30);
    crime->crime_type          = type;
    crime->ticks_to_neutralize = CRIME_LIFE + 2;
-   crime->reported            = FALSE;
+   crime->reported            = static_cast<uint8_t>(FALSE);
 }
 
 auto crime_victim_name(int crime_no, int id) -> const char *
@@ -433,7 +433,7 @@ void log_crime(unit_data *criminal, unit_data *victim, uint8_t crime_type, int a
    {
       if(IS_PC(UVI(j)))
       {
-         if(CHAR_COMBAT(UVI(j)) && CHAR_COMBAT(UVI(j))->FindOpponent(victim))
+         if((CHAR_COMBAT(UVI(j)) != nullptr) && (CHAR_COMBAT(UVI(j))->FindOpponent(victim) != nullptr))
          {
             add_crime(UVI(j), victim, crime_type);
 
@@ -503,7 +503,7 @@ static void crime_counter(unit_data *criminal, int incr, int first_accuse)
 static void update_criminal(const unit_data *deputy, const char *pPlyName, int pidx, struct char_crime_data *crime, int first_accuse)
 {
    unit_data *criminal = nullptr;
-   int        loaded   = FALSE;
+   int        loaded   = static_cast<int>(FALSE);
    int        incr;
 
    void save_player_file(unit_data * pc);
@@ -536,7 +536,7 @@ static void update_criminal(const unit_data *deputy, const char *pPlyName, int p
          return;
       }
 
-      loaded = TRUE;
+      loaded = static_cast<int>(TRUE);
    }
 
    if(criminal != nullptr)
@@ -571,7 +571,7 @@ auto accuse(struct spec_arg *sarg) -> int
    auto find_player_id(char *)->int;
 
    /* legal command ? */
-   if(is_command(sarg->cmd, "accuse") == 0u)
+   if(static_cast<unsigned int>(is_command(sarg->cmd, "accuse")) == 0U)
    {
       return SFR_SHARE;
    }
@@ -592,7 +592,7 @@ auto accuse(struct spec_arg *sarg) -> int
    /* legal args ? */
    argument_interpreter(sarg->arg, arg1, arg2); /* extract args from arg :) */
 
-   if(str_is_empty(arg1) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg1)) != 0U)
    {
       act("$1n says, 'Yes... who?'", A_SOMEONE, sarg->owner, sarg->activator, nullptr, TO_ROOM);
       return SFR_BLOCK;
@@ -651,17 +651,17 @@ auto accuse(struct spec_arg *sarg) -> int
             {
                act("$1n says, 'Thank you very much $3N, I will stop $2t.'", A_SOMEONE, sarg->owner, arg1, sarg->activator, TO_ROOM);
 
-               if((crime->reported) == 0u)
+               if((crime->reported) == 0U)
                {
-                  update_criminal(sarg->owner, arg1, pid, crime, TRUE);
+                  update_criminal(sarg->owner, arg1, pid, crime, static_cast<int>(TRUE));
                }
                else
                {
-                  update_criminal(sarg->owner, arg1, pid, crime, FALSE);
+                  update_criminal(sarg->owner, arg1, pid, crime, static_cast<int>(FALSE));
                }
 
                /* Mark crime as already reported */
-               crime->reported = TRUE;
+               crime->reported = static_cast<uint8_t>(TRUE);
                save_accusation(crime, sarg->activator);
 
                if(UNIT_ALIGNMENT(sarg->activator) > -1000)
@@ -827,10 +827,10 @@ static auto crime_in_progress(unit_data *att, unit_data *def) -> int
          (((IS_SET(CHAR_FLAGS(def), CHAR_PROTECTED) && !IS_SET(CHAR_FLAGS(def), CHAR_LEGAL_TARGET)) ||
            (!IS_SET(CHAR_FLAGS(att), CHAR_PROTECTED) && IS_SET(CHAR_FLAGS(def), CHAR_PROTECTED)))))
       {
-         return TRUE;
+         return static_cast<int>(TRUE);
       }
    }
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 /* Help another friendly guard! :-) */
@@ -849,7 +849,7 @@ auto guard_assist(const unit_data *npc, struct visit_data *vd) -> int
          return SFR_BLOCK;
 
       case 2:
-         if(CHAR_COMBAT(npc))
+         if(CHAR_COMBAT(npc) != nullptr)
          {
             vd->state = 2;
             return SFR_BLOCK;
@@ -882,16 +882,16 @@ void call_guards(unit_data *guard)
    {
       if(IS_NPC(u) && IS_ROOM(UNIT_IN(u)) && zone == UNIT_FILE_INDEX(UNIT_IN(u))->zone && u != guard)
       {
-         ok = FALSE;
+         ok = static_cast<int>(FALSE);
          for(fptr = UNIT_FUNC(u); fptr != nullptr; fptr = fptr->next)
          {
             if(fptr->index == SFUN_PROTECT_LAWFUL)
             {
-               ok = TRUE;
+               ok = static_cast<int>(TRUE);
             }
             else if(fptr->index == SFUN_NPC_VISIT_ROOM)
             {
-               ok = FALSE;
+               ok = static_cast<int>(FALSE);
                break;
             }
          }
@@ -909,7 +909,8 @@ auto protect_lawful(struct spec_arg *sarg) -> int
 {
    int i;
 
-   if((sarg->cmd->no < CMD_AUTO_DEATH) || !CHAR_AWAKE(sarg->owner) || CHAR_COMBAT(sarg->owner) || sarg->activator == sarg->owner)
+   if((sarg->cmd->no < CMD_AUTO_DEATH) || !CHAR_AWAKE(sarg->owner) || (CHAR_COMBAT(sarg->owner) != nullptr) ||
+      sarg->activator == sarg->owner)
    {
       return SFR_SHARE;
    }
@@ -989,7 +990,7 @@ auto whistle(struct spec_arg *sarg) -> int
       }
    }
 
-   if(CHAR_AWAKE(sarg->owner) && CHAR_COMBAT(sarg->activator) && CHAR_CAN_SEE(sarg->owner, sarg->activator))
+   if(CHAR_AWAKE(sarg->owner) && (CHAR_COMBAT(sarg->activator) != nullptr) && CHAR_CAN_SEE(sarg->owner, sarg->activator))
    {
       if(crime_in_progress(sarg->activator, CHAR_FIGHTING(sarg->activator)) != 0)
       {
@@ -1056,7 +1057,7 @@ auto reward_board(struct spec_arg *sarg) -> int
 {
    unit_data          *u;
    unit_affected_type *af    = nullptr;
-   int                 found = FALSE;
+   int                 found = static_cast<int>(FALSE);
    char                buf[256];
    char               *c = (char *)sarg->arg;
 
@@ -1078,7 +1079,7 @@ auto reward_board(struct spec_arg *sarg) -> int
       {
          if((af = affected_by_spell(u, ID_REWARD)) != nullptr)
          {
-            found = TRUE;
+            found = static_cast<int>(TRUE);
             sprintf(buf,
                     "%s (%s) wanted dead for %d xp "
                     "and %s (%d crimes).\n\r",
@@ -1090,13 +1091,13 @@ auto reward_board(struct spec_arg *sarg) -> int
          {
             sprintf(buf, "%s (%s) wanted alive for imprisonment.\n\r", UNIT_NAME(u), IS_PC(u) ? "Player" : "Monster");
             send_to_char(buf, sarg->activator);
-            found = TRUE;
+            found = static_cast<int>(TRUE);
          }
          else if(IS_SET(CHAR_FLAGS(u), CHAR_OUTLAW))
          {
             sprintf(buf, "%s (%s) wanted dead or alive.\n\r", UNIT_NAME(u), IS_PC(u) ? "Player" : "Monster");
             send_to_char(buf, sarg->activator);
-            found = TRUE;
+            found = static_cast<int>(TRUE);
          }
       }
    }

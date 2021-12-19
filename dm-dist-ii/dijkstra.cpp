@@ -159,7 +159,9 @@ static auto hob_min_child(int x, struct hob *h) -> int
    for(b = b1 + 1; b <= b2; b++)
    {
       if(HOB_KEY(h->array[b]) < HOB_KEY(h->array[minb]))
+      {
          minb = b;
+      }
    }
    return minb;
 }
@@ -302,7 +304,7 @@ static void outedges(struct graph *g, struct graph_vertice *v)
 
    for(i = 0; i < 6; i++)
    {
-      if(ROOM_EXIT(v->room, i) && ROOM_EXIT(v->room, i)->to_room)
+      if((ROOM_EXIT(v->room, i) != nullptr) && (ROOM_EXIT(v->room, i)->to_room != nullptr))
       /* If there is an edge between two rooms */
       {
          flags  = ROOM_EXIT(v->room, i)->exit_info;
@@ -330,7 +332,7 @@ static void outedges(struct graph *g, struct graph_vertice *v)
    }
 
    /* Check room for an exit room */
-   if(UNIT_IN(v->room) && IS_ROOM(UNIT_IN(v->room)))
+   if((UNIT_IN(v->room) != nullptr) && IS_ROOM(UNIT_IN(v->room)))
    {
       if(IS_SET(UNIT_MANIPULATE(UNIT_IN(v->room)), MANIPULATE_ENTER))
       {
@@ -607,7 +609,7 @@ auto move_to(const unit_data *from, const unit_data *to) -> int
 
    if(UNIT_FILE_INDEX(from)->zone == (UNIT_FILE_INDEX(to)->zone))
    {
-      if(UNIT_FILE_INDEX(to)->zone->spmatrix)
+      if(UNIT_FILE_INDEX(to)->zone->spmatrix != nullptr)
       {
          i = UNIT_FILE_INDEX(from)->room_no;
 
@@ -618,13 +620,14 @@ auto move_to(const unit_data *from, const unit_data *to) -> int
       return DIR_IMPOSSIBLE;
    }
    /* Inter-zone path info needed */
-   if(iz[UNIT_FILE_INDEX(from)->zone->zone_no][UNIT_FILE_INDEX(to)->zone->zone_no].room)
+   if(iz[UNIT_FILE_INDEX(from)->zone->zone_no][UNIT_FILE_INDEX(to)->zone->zone_no].room != nullptr)
    {
       i = move_to(from, iz[UNIT_FILE_INDEX(from)->zone->zone_no][UNIT_FILE_INDEX(to)->zone->zone_no].room);
       if(i == DIR_HERE)
+      {
          return iz[UNIT_FILE_INDEX(from)->zone->zone_no][UNIT_FILE_INDEX(to)->zone->zone_no].dir;
-      else
-         return i;
+      }
+      return i;
    }
    return DIR_IMPOSSIBLE; /* Zone is unreachable */
 }
@@ -642,12 +645,10 @@ auto npc_stand(const unit_data *npc) -> int
       do_wake((unit_data *)npc, mbuf, &cmd_auto_unknown);
       return MOVE_BUSY; /* Still busy, NPC is now sitting */
    }
-   else
-   {
-      char mbuf[MAX_INPUT_LENGTH] = {0};
-      do_stand((unit_data *)npc, mbuf, &cmd_auto_unknown);
-      return MOVE_BUSY;
-   }
+
+   char mbuf[MAX_INPUT_LENGTH] = {0};
+   do_stand((unit_data *)npc, mbuf, &cmd_auto_unknown);
+   return MOVE_BUSY;
 }
 
 auto open_door(const unit_data *npc, int dir) -> int
@@ -671,15 +672,13 @@ auto open_door(const unit_data *npc, int dir) -> int
          }
          return MOVE_BUSY;
       }
-      else
+
+      do_open((unit_data *)npc, buf, &cmd_auto_unknown);
+      if(IS_SET(ROOM_EXIT(UNIT_IN(npc), dir)->exit_info, EX_CLOSED))
       {
-         do_open((unit_data *)npc, buf, &cmd_auto_unknown);
-         if(IS_SET(ROOM_EXIT(UNIT_IN(npc), dir)->exit_info, EX_CLOSED))
-         {
-            return MOVE_FAILED;
-         }
-         return MOVE_BUSY;
+         return MOVE_FAILED;
       }
+      return MOVE_BUSY;
    }
 
    return MOVE_FAILED;
@@ -705,15 +704,13 @@ auto enter_open(const unit_data *npc, const unit_data *enter) -> int
          }
          return MOVE_BUSY;
       }
-      else
+
+      do_open((unit_data *)npc, buf, &cmd_auto_unknown);
+      if(IS_SET(UNIT_OPEN_FLAGS(enter), EX_CLOSED))
       {
-         do_open((unit_data *)npc, buf, &cmd_auto_unknown);
-         if(IS_SET(UNIT_OPEN_FLAGS(enter), EX_CLOSED))
-         {
-            return MOVE_FAILED;
-         }
-         return MOVE_BUSY;
+         return MOVE_FAILED;
       }
+      return MOVE_BUSY;
    }
 
    return MOVE_FAILED;
@@ -741,15 +738,13 @@ auto exit_open(const unit_data *npc) -> int
          }
          return MOVE_BUSY;
       }
-      else
+
+      do_open((unit_data *)npc, buf, &cmd_auto_unknown);
+      if(IS_SET(UNIT_OPEN_FLAGS(enter), EX_CLOSED))
       {
-         do_open((unit_data *)npc, buf, &cmd_auto_unknown);
-         if(IS_SET(UNIT_OPEN_FLAGS(enter), EX_CLOSED))
-         {
-            return MOVE_FAILED;
-         }
-         return MOVE_BUSY;
+         return MOVE_FAILED;
       }
+      return MOVE_BUSY;
    }
 
    return MOVE_FAILED;
@@ -769,7 +764,7 @@ auto npc_move(const unit_data *npc, const unit_data *to) -> int
       return MOVE_FAILED; /* How can we move to anything but rooms? */
    }
 
-   if(!UNIT_FILE_INDEX(to)->zone->spmatrix)
+   if(UNIT_FILE_INDEX(to)->zone->spmatrix == nullptr)
    {
       return MOVE_FAILED;
    }
@@ -802,16 +797,18 @@ auto npc_move(const unit_data *npc, const unit_data *to) -> int
          return open_door(npc, dir);
       }
 
-      i = do_advanced_move((unit_data *)npc, dir, TRUE);
+      i = do_advanced_move((unit_data *)npc, dir, static_cast<int>(TRUE));
       if(i == -1)
+      {
          return MOVE_DEAD; /* NPC died */
-      else if(i == 1)
+      }
+      if(i == 1)
          return MOVE_CLOSER; /* The NPC was moved closer */
 
       /* Something (not closed) prevented the NPC from moving     */
       return MOVE_FAILED;
    }
-   else if(dir == DIR_ENTER)
+   if(dir == DIR_ENTER)
    {
       for(u = UNIT_CONTAINS(UNIT_IN(npc)); u != nullptr; u = u->next)
       {

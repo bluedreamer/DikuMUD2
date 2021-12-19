@@ -169,7 +169,7 @@ void check_idle()
          {
             send_to_char("Autosave.\n\r", d->character);
             save_player(d->character);
-            save_player_contents(d->character, TRUE); /* No compress */
+            save_player_contents(d->character, static_cast<int>(TRUE)); /* No compress */
             /* Only save one player per autosave... */
             return;
          }
@@ -228,7 +228,7 @@ void reconnect_game(descriptor_data *d, unit_data *ch)
 
    send_to_char("Reconnecting.\n\r", ch);
 
-   if(CHAR_LAST_ROOM(ch) && (CHAR_LAST_ROOM(ch) != UNIT_IN(ch)))
+   if((CHAR_LAST_ROOM(ch) != nullptr) && (CHAR_LAST_ROOM(ch) != UNIT_IN(ch)))
    {
       act("$1n has reconnected, and is moved to another location.", A_HIDEINV, ch, nullptr, nullptr, TO_ROOM);
       unit_from_unit(ch);
@@ -282,7 +282,7 @@ void enter_game(unit_data *ch)
    assert(ch);
    assert(!UNIT_IN(ch));
 
-   if(CHAR_DESCRIPTOR(ch))
+   if(CHAR_DESCRIPTOR(ch) != nullptr)
    {
       ConnectionBegin(ch);
 
@@ -303,7 +303,7 @@ void enter_game(unit_data *ch)
 
    insert_in_unit_list(ch);
 
-   if(CHAR_LAST_ROOM(ch))
+   if(CHAR_LAST_ROOM(ch) != nullptr)
    {
       load_room          = CHAR_LAST_ROOM(ch);
       CHAR_LAST_ROOM(ch) = nullptr;
@@ -315,7 +315,7 @@ void enter_game(unit_data *ch)
 
    unit_to_unit(ch, load_room);
 
-   if(CHAR_DESCRIPTOR(ch)) /* Only do these things if player is connected */
+   if(CHAR_DESCRIPTOR(ch) != nullptr) /* Only do these things if player is connected */
    {
       sprintf(buf, "%s has entered the world.\n\r", UNIT_NAME(ch));
 
@@ -323,7 +323,7 @@ void enter_game(unit_data *ch)
       {
          if((descriptor_is_playing(i) != 0) && i->character != ch && CHAR_CAN_SEE(CHAR_ORIGINAL(i->character), ch) &&
             IS_PC(CHAR_ORIGINAL(i->character)) && IS_SET(PC_FLAGS(CHAR_ORIGINAL(i->character)), PC_INFORM) &&
-            (same_surroundings(ch, i->character) == 0u))
+            (static_cast<unsigned int>(same_surroundings(ch, i->character)) == 0U))
          {
             send_to_descriptor(buf, i);
          }
@@ -349,7 +349,7 @@ void enter_game(unit_data *ch)
       do_look(ch, mbuf, &cmd_info[CMD_DOWN]);
    }
 
-   if(file_exists(ContentsFileName(PC_FILENAME(ch))) != 0u)
+   if(static_cast<unsigned int>(file_exists(ContentsFileName(PC_FILENAME(ch)))) != 0U)
    {
       auto rent_calc(unit_data * ch, time_t savetime)->uint32_t;
 
@@ -370,7 +370,7 @@ void enter_game(unit_data *ch)
 
    competition_enroll(ch);
 
-   if(player_has_mail(ch) != 0u)
+   if(player_has_mail(ch) != 0U)
    {
       send_to_char(COLOUR_ATTN "You have a great urge to visit the postoffice.\n\r" COLOUR_NORMAL, ch);
    }
@@ -400,7 +400,7 @@ void set_descriptor_fptr(descriptor_data *d, void (*fptr)(descriptor_data *, con
    }
 
    d->fptr = fptr;
-   if(call != 0u)
+   if(static_cast<unsigned int>(call) != 0U)
    {
       char mbuf[MAX_INPUT_LENGTH] = {0};
       d->state                    = 0;
@@ -426,10 +426,10 @@ auto nanny_help_check(descriptor_data *d, char *arg, char *def) -> int
    str_lower(buf);
    if(!(strcmp("help", buf) == 0 || strcmp("hel", buf) == 0 || strcmp("he", buf) == 0 || strcmp("h", buf) == 0 || strcmp(buf, "?") == 0))
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       arg = def;
    }
@@ -439,7 +439,7 @@ auto nanny_help_check(descriptor_data *d, char *arg, char *def) -> int
       sprintf(buf, "There is no help on the subject '%s'.\n\r", arg);
       send_to_descriptor(buf, d);
    }
-   return TRUE;
+   return static_cast<int>(TRUE);
 }
 
 void nanny_close(descriptor_data *d, const char *arg)
@@ -468,7 +468,7 @@ void nanny_motd(descriptor_data *d, char *arg)
 
 void nanny_newbie(descriptor_data *d, char *arg)
 {
-   if((str_is_empty(g_cServerConfig.m_pNewbie) == 0u) && STATE(d)++ == 0)
+   if((static_cast<unsigned int>(str_is_empty(g_cServerConfig.m_pNewbie)) == 0U) && STATE(d)++ == 0)
    {
       page_string(d, g_cServerConfig.m_pNewbie);
       page_string(d, "\n\r\n*** PRESS RETURN: ");
@@ -537,7 +537,9 @@ void nanny_throw(descriptor_data *d, const char *arg)
       set_descriptor_fptr(d, nanny_close, TRUE);
    }
    else
+   {
       send_to_descriptor("Please type Yes or No: ", d);
+   }
 }
 
 void nanny_dil(descriptor_data *d, char *arg)
@@ -546,7 +548,7 @@ void nanny_dil(descriptor_data *d, char *arg)
 
    exd = UNIT_EXTRA_DESCR(d->character)->find_raw("$nanny");
 
-   if((exd != nullptr) && (str_is_empty(exd->names.Name(1)) == 0u))
+   if((exd != nullptr) && (static_cast<unsigned int>(str_is_empty(exd->names.Name(1))) == 0U))
    {
       char buf[256];
 
@@ -576,7 +578,7 @@ void nanny_dil(descriptor_data *d, char *arg)
 
    if(UNIT_EXTRA_DESCR(d->character)->find_raw("$nanny") == nullptr)
    {
-      if(str_is_empty(PC_GUILD(d->character)) == 0u)
+      if(static_cast<unsigned int>(str_is_empty(PC_GUILD(d->character))) == 0U)
       {
          char buf[256];
 
@@ -639,7 +641,7 @@ auto check_pwd(descriptor_data *d, char *pwd) -> int
                          "Your password has to be at least 5 characters and "
                          "must contain both letters and digits.\n\r\n\r",
                          d);
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(strlen(pwd) > 10)
@@ -647,41 +649,41 @@ auto check_pwd(descriptor_data *d, char *pwd) -> int
       pwd[10] = 0;
    }
 
-   bA  = FALSE;
-   bNA = FALSE;
+   bA  = static_cast<int>(FALSE);
+   bNA = static_cast<int>(FALSE);
 
    for(i = 0; pwd[i] != 0; i++)
    {
       if(isalpha(pwd[i]) != 0)
       {
-         bA = TRUE;
+         bA = static_cast<int>(TRUE);
       }
       else
       {
-         bNA = TRUE;
+         bNA = static_cast<int>(TRUE);
       }
    }
 
-   if(bA == FALSE)
+   if(bA == static_cast<int>(FALSE))
    {
       send_to_descriptor("\n\rThe chosen password only contains letters.\n\r"
                          "Your password has to be at least 5 characters and "
                          "must contain both letters and digits.\n\r\n\r",
                          d);
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
-   if(bNA == FALSE)
+   if(bNA == static_cast<int>(FALSE))
    {
       send_to_descriptor("\n\rThe chosen password only contains "
                          "non-letters (digits).\n\r"
                          "Your password has to be at least 5 characters and "
                          "must contain both letters and digits.\n\r\n\r",
                          d);
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
-   return TRUE;
+   return static_cast<int>(TRUE);
 }
 
 void nanny_new_pwd(descriptor_data *d, char *arg)
@@ -890,7 +892,7 @@ auto base_string_add(descriptor_data *d, char *str) -> bool
 /* Add user input to the 'current' string (as defined by d->str) */
 void interpreter_string_add(descriptor_data *d, const char *str)
 {
-   if(base_string_add(d, str) != 0u)
+   if(static_cast<unsigned int>(base_string_add(d, str)) != 0U)
    {
       set_descriptor_fptr(d, descriptor_interpreter, FALSE);
    }
@@ -916,7 +918,7 @@ void nanny_fix_descriptions(unit_data *u)
 
       if((exd->names.Name() == nullptr) || (search_block(buf, bodyparts, TRUE) != 0))
       {
-         if(str_is_empty(exd->descr.String()) != 0u)
+         if(static_cast<unsigned int>(str_is_empty(exd->descr.String())) != 0U)
          {
             UNIT_EXTRA_DESCR(u) = UNIT_EXTRA_DESCR(u)->remove(exd);
             exd                 = UNIT_EXTRA_DESCR(u);
@@ -935,7 +937,7 @@ void nanny_fix_descriptions(unit_data *u)
 /* Add user input to the 'current' string (as defined by d->str) */
 void nanny_string_add(descriptor_data *d, char *str)
 {
-   if(base_string_add(d, str) != 0u)
+   if(static_cast<unsigned int>(base_string_add(d, str)) != 0U)
    {
       nanny_fix_descriptions(d->character);
       set_descriptor_fptr(d, nanny_change_information, TRUE);
@@ -951,10 +953,14 @@ void nanny_wizi(descriptor_data *d, char *arg)
    }
 
    int i = atoi(arg);
-   if(!is_in(i, 0, CHAR_LEVEL(d->character)))
+   if(is_in(i, 0, CHAR_LEVEL(d->character)) == 0)
+   {
       send_to_descriptor("Invalid wizi level.\n\r", d);
+   }
    else
+   {
       UNIT_MINV(d->character) = i;
+   }
 
    set_descriptor_fptr(d, nanny_menu, TRUE);
 }
@@ -1040,7 +1046,7 @@ void nanny_describe_bodypart(descriptor_data *d, char *arg)
 
    exd = unit_find_extra(bodyparts[i - 1], d->character);
 
-   if((exd != nullptr) && (str_is_empty(exd->descr.String()) == 0u))
+   if((exd != nullptr) && (static_cast<unsigned int>(str_is_empty(exd->descr.String())) == 0U))
    {
       sprintf(Buf, "\n\rYour current '%s' description:\n\r", bodyparts[i - 1]);
       send_to_descriptor(Buf, d);
@@ -1141,7 +1147,7 @@ void nanny_charge_confirm(descriptor_data *d, char *arg)
 
    send_to_descriptor(CONTROL_ECHO_ON "\n\r", d);
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_descriptor(COLOUR_ATTN "\n\r\n\rYou have cancelled your "
                                      "transaction.\n\r" COLOUR_NORMAL,
@@ -1254,7 +1260,7 @@ void nanny_charge(descriptor_data *d, char *arg)
 
    i = atoi(arg);
 
-   if(str_is_number(arg) == 0u)
+   if(static_cast<unsigned int>(str_is_number(arg)) == 0U)
    {
       send_to_descriptor(COLOUR_ATTN "\n\rYou did not enter a number, "
                                      "please retry.\n\r" COLOUR_NORMAL,
@@ -1625,7 +1631,7 @@ void nanny_change_information(descriptor_data *d, const char *arg)
       case '1':
          exd = unit_find_extra(UNIT_NAME(d->character), d->character);
 
-         if((exd != nullptr) && (str_is_empty(exd->descr.String()) == 0u))
+         if((exd != nullptr) && (static_cast<unsigned int>(str_is_empty(exd->descr.String())) == 0U))
          {
             send_to_descriptor("\n\rYour current description:\n\r", d);
             send_to_descriptor(exd->descr.String(), d);
@@ -1795,7 +1801,7 @@ void nanny_existing_pwd(descriptor_data *d, char *arg)
 
    send_to_descriptor(CONTROL_ECHO_ON, d);
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       UNIT_NAMES(d->character).Free();
       send_to_descriptor("\n\r\n\rWrong password, please login again.", d);
@@ -1806,7 +1812,7 @@ void nanny_existing_pwd(descriptor_data *d, char *arg)
 
    if(strncmp(crypt(arg, PC_PWD(d->character)), PC_PWD(d->character), 10) != 0)
    {
-      if(str_is_empty(arg) == 0u)
+      if(static_cast<unsigned int>(str_is_empty(arg)) == 0U)
       {
          slog(LOG_ALL, 0, "%s entered a wrong password [%s].", PC_FILENAME(d->character), d->host);
          PC_CRACK_ATTEMPTS(d->character)++;
@@ -1913,7 +1919,7 @@ void nanny_get_name(descriptor_data *d, char *arg)
    descriptor_data *td;
    int              n;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       set_descriptor_fptr(d, nanny_close, TRUE);
       return;
@@ -1974,7 +1980,7 @@ void nanny_get_name(descriptor_data *d, char *arg)
    }
 
    /* Check for wizlock */
-   if(wizlock)
+   if(wizlock != 0)
    {
       send_to_descriptor("Sorry, no new players now, the game "
                          "is wizlocked!\n\r",
@@ -1995,7 +2001,7 @@ void nanny_get_name(descriptor_data *d, char *arg)
    strcpy(PC_PWD(d->character), "");
 
    /* If someone is connected, we borrow his pwd */
-   if((td = find_descriptor(tmp_name, d)))
+   if((td = find_descriptor(tmp_name, d)) != nullptr)
    {
       strcpy(PC_PWD(d->character), PC_PWD(td->character));
       set_descriptor_fptr(d, nanny_existing_pwd, TRUE);

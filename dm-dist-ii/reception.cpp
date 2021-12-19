@@ -61,7 +61,7 @@ static void show_items(unit_data *ch, unit_data *item, uint32_t price)
       price = money_round_up(price, local_currency(ch), 2);
 
       act("$2t for $3n", A_ALWAYS, ch, money_string(price, local_currency(ch), FALSE), item, TO_CHAR);
-      rent_info = TRUE;
+      rent_info = static_cast<int>(TRUE);
    }
 }
 
@@ -71,7 +71,7 @@ static void subtract_rent(unit_data *ch, unit_data *item, uint32_t price)
 {
    if(price > 0)
    {
-      if(char_can_afford(ch, price, DEF_CURRENCY) == 0u)
+      if(static_cast<unsigned int>(char_can_afford(ch, price, DEF_CURRENCY)) == 0U)
       {
          act(COLOUR_ATTN "You couldn't afford to keep $2n." COLOUR_NORMAL, A_ALWAYS, ch, item, nullptr, TO_CHAR);
          extract_unit(item);
@@ -100,14 +100,14 @@ static auto subtract_recurse(unit_data *ch, unit_data *item, uint32_t seconds, v
       return 0;
    }
 
-   if(!UNIT_MINV(item))
+   if(UNIT_MINV(item) == 0u)
    {
       sum += subtract_recurse(ch, UNIT_CONTAINS(item), seconds, fptr);
    }
 
    sum += subtract_recurse(ch, item->next, seconds, fptr);
 
-   if(IS_OBJ(item) && !UNIT_MINV(item))
+   if(IS_OBJ(item) && (UNIT_MINV(item) == 0u))
    {
       uint32_t price = 0;
 
@@ -164,7 +164,7 @@ void do_rent(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    uint32_t sum;
 
-   rent_info = FALSE;
+   rent_info = static_cast<int>(FALSE);
 
    sum = subtract_recurse(ch, UNIT_CONTAINS(ch), SECS_PER_REAL_DAY, show_items);
 
@@ -232,7 +232,7 @@ void enlist(CByteBuffer *pBuf, unit_data *unit, int level, int fast)
 
    len = write_unit_string(&TmpBuf, unit);
 
-   if((fast != 0) || !UNIT_FILE_INDEX(unit))
+   if((fast != 0) || (UNIT_FILE_INDEX(unit) == nullptr))
    {
       h.compressed = 0;
    }
@@ -421,7 +421,7 @@ auto save_contents(const char *pFileName, unit_data *unit, int fast, int bContai
 
    strcpy(name, ContentsFileName(pFileName));
 
-   if(!UNIT_CONTAINS(unit))
+   if(UNIT_CONTAINS(unit) == nullptr)
    {
       remove(name);
       return 0;
@@ -490,11 +490,11 @@ auto base_load_contents(const char *pFileName, const unit_data *unit) -> unit_da
 
    if((unit != nullptr) && IS_CHAR(unit))
    {
-      tmp_descr             = CHAR_DESCRIPTOR(unit);
-      CHAR_DESCRIPTOR(const_cast<unit_data*>(unit)) = nullptr;
+      tmp_descr                                      = CHAR_DESCRIPTOR(unit);
+      CHAR_DESCRIPTOR(const_cast<unit_data *>(unit)) = nullptr;
    }
 
-   for(init = TRUE; InvBuf.GetReadPosition() < InvBuf.GetLength();)
+   for(init = static_cast<int>(TRUE); InvBuf.GetReadPosition() < InvBuf.GetLength();)
    {
       if(InvBuf.Read((uint8_t *)&h, sizeof(h)) != 0)
       {
@@ -505,9 +505,9 @@ auto base_load_contents(const char *pFileName, const unit_data *unit) -> unit_da
 
       pnew = nullptr;
 
-      equip_ok = TRUE;
+      equip_ok = static_cast<int>(TRUE);
 
-      if(h.compressed != 0u)
+      if(h.compressed != 0U)
       {
          assert(FALSE);
 
@@ -563,7 +563,7 @@ auto base_load_contents(const char *pFileName, const unit_data *unit) -> unit_da
          }
          else
          {
-            pnew = read_unit_string(&InvBuf, h.type, h.length, TRUE, str_cc(fi->name, fi->zone->name));
+            pnew = read_unit_string(&InvBuf, h.type, h.length, static_cast<int>(TRUE), str_cc(fi->name, fi->zone->name));
             if(g_nCorrupt != 0)
             {
                slog(LOG_ALL, 0, "Inventory UNIT corrupt!");
@@ -582,7 +582,7 @@ auto base_load_contents(const char *pFileName, const unit_data *unit) -> unit_da
 
       if(pstack[frame] == nullptr)
       {
-         if(UNIT_IN(pnew))
+         if(UNIT_IN(pnew) != nullptr)
          {
             pstack[frame] = UNIT_IN(pnew);
          }
@@ -606,7 +606,7 @@ auto base_load_contents(const char *pFileName, const unit_data *unit) -> unit_da
       }
 
       /* IS_CHAR() needed, since a potential char may have been slimed! */
-      if((h.equip != 0u) && (equip_ok != 0) && IS_CHAR(UNIT_IN(pnew)))
+      if((h.equip != 0U) && (equip_ok != 0) && IS_CHAR(UNIT_IN(pnew)))
       {
          equip_char(UNIT_IN(pnew), pnew, h.equip);
       }
@@ -616,7 +616,7 @@ auto base_load_contents(const char *pFileName, const unit_data *unit) -> unit_da
 
    if((unit != nullptr) && IS_CHAR(unit))
    {
-      CHAR_DESCRIPTOR(const_cast<unit_data*>(unit)) = tmp_descr;
+      CHAR_DESCRIPTOR(const_cast<unit_data *>(unit)) = tmp_descr;
    }
 
    return topu;
@@ -743,7 +743,7 @@ auto patch(char *ref, uint32_t reflen, char *dif, int diflen, char *res, int res
 
 void store_unit(unit_data *u)
 {
-   if(!UNIT_FILE_INDEX(u))
+   if(UNIT_FILE_INDEX(u) == nullptr)
    {
       return;
    }
@@ -817,7 +817,7 @@ auto restore_unit(char *zonename, char *unitname) -> unit_data *
 
    char mbuf[MAX_INPUT_LENGTH];
    strcpy(mbuf, "RESTORE");
-   unit_data *u = read_unit_string(pBuf, nType, len - 1, TRUE, mbuf);
+   unit_data *u = read_unit_string(pBuf, nType, len - 1, static_cast<int>(TRUE), mbuf);
 
    if(u == nullptr)
    {

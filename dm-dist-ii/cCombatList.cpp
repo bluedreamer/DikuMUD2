@@ -1,11 +1,11 @@
 #include "cCombatList.h"
 #include "cCombat.h"
 #include "comm.h"
+#include "fight.h"
 #include "interpreter.h"
 #include "textutil.h"
-#include "values.h"
 #include "utils.h"
-#include "fight.h"
+#include "values.h"
 #include <algorithm>
 #include <cstring>
 
@@ -76,9 +76,10 @@ static auto combat_compare(const void *v1, const void *v2) -> int
       return +1;
    }
    if(e1->When() < e2->When())
+   {
       return -1;
-   else
-      return 0;
+   }
+   return 0;
 }
 
 void cCombatList::Sort()
@@ -91,7 +92,7 @@ void cCombatList::Sort()
 
 void cCombatList::PerformViolence()
 {
-   int bAnyaction = FALSE;
+   int bAnyaction = static_cast<int>(FALSE);
 
    if(nTop < 1)
    {
@@ -113,7 +114,7 @@ void cCombatList::PerformViolence()
    {
       for(nIdx = 0; nIdx < nTop; nIdx++)
       {
-         bAnyaction = FALSE;
+         bAnyaction = static_cast<int>(FALSE);
 
          if(pElems[nIdx]->nWhen >= SPEED_DEFAULT)
          {
@@ -128,7 +129,7 @@ void cCombatList::PerformViolence()
 
             pElems[nIdx]->cmd[0] = 0;
             command_interpreter(pElems[nIdx]->pOwner, c);
-            bAnyaction = TRUE;
+            bAnyaction = static_cast<int>(TRUE);
 
             free(c);
          }
@@ -138,7 +139,7 @@ void cCombatList::PerformViolence()
             {
                if(char_dual_wield(pElems[nIdx]->pOwner) != 0)
                {
-                  bAnyaction = TRUE;
+                  bAnyaction = static_cast<int>(TRUE);
                   melee_violence(pElems[nIdx]->pOwner, static_cast<int>(tmp->nWhen <= (SPEED_DEFAULT + 1) / 2));
                   if((nIdx != -1) && (nIdx < nTop) && (tmp == pElems[nIdx]))
                   {
@@ -147,8 +148,8 @@ void cCombatList::PerformViolence()
                }
                else
                {
-                  bAnyaction = TRUE;
-                  melee_violence(pElems[nIdx]->pOwner, TRUE);
+                  bAnyaction = static_cast<int>(TRUE);
+                  melee_violence(pElems[nIdx]->pOwner, static_cast<int>(TRUE));
                   if((nIdx != -1) && (nIdx < nTop) && (tmp == pElems[nIdx]))
                   {
                      tmp->nWhen += std::max(4, static_cast<int>(CHAR_SPEED(tmp->pOwner)));

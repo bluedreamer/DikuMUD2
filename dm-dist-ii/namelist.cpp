@@ -59,7 +59,7 @@ void cNamelist::AppendBuffer(CByteBuffer *pBuf)
 {
    for(uint32_t i = 0; i < length; i++)
    {
-      if(str_is_empty(Name(i)) == 0u)
+      if(static_cast<unsigned int>(str_is_empty(Name(i))) == 0U)
       {
          pBuf->AppendString(Name(i));
       }
@@ -126,7 +126,7 @@ void cNamelist::catnames(char *s)
          sprintf(s, "\"%s\",", Name(i));
          TAIL(s);
       }
-      if(ok != 0u)
+      if(static_cast<unsigned int>(ok) != 0U)
       {
          s--; /* remove the comma */
       }
@@ -261,7 +261,7 @@ auto cNamelist::IsName(const char *name) -> const char *
 
    name = skip_spaces(name);
 
-   if(str_is_empty(name) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(name)) != 0U)
    {
       return nullptr;
    }
@@ -307,7 +307,7 @@ auto cNamelist::IsNameIdx(const char *name) -> const int
 
    name = skip_spaces(name);
 
-   if(str_is_empty(name) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(name)) != 0U)
    {
       return -1;
    }
@@ -340,7 +340,7 @@ auto cNamelist::InstanceName(uint32_t idx) -> cStringInstance *
 
 void cNamelist::AppendName(const char *name)
 {
-   if(str_is_empty(name) == 0u)
+   if(static_cast<unsigned int>(str_is_empty(name)) == 0U)
    {
       length++;
 
@@ -359,7 +359,7 @@ void cNamelist::AppendName(const char *name)
 
 void cNamelist::PrependName(const char *name)
 {
-   if(str_is_empty(name) == 0u)
+   if(static_cast<unsigned int>(str_is_empty(name)) == 0U)
    {
       length++;
 

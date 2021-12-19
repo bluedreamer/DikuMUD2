@@ -162,7 +162,7 @@ auto dil_intr_insert(struct dilprg *p, uint8_t *lab, uint16_t flags) -> int
    /* find intnum */
    for(intnum = 0; intnum < p->sp->intrcount; intnum++)
    {
-      if(p->sp->intr[intnum].flags == 0u)
+      if(p->sp->intr[intnum].flags == 0U)
       {
          break;
       }
@@ -374,11 +374,11 @@ auto dil_getbool(class dilval *v) -> char
 
       case DILV_FAIL:
       case DILV_NULL:
-         return FALSE;
+         return static_cast<char>(FALSE);
 
       default:
          slog(LOG_ALL, 0, "DIL getbool error.");
-         return FALSE;
+         return static_cast<char>(FALSE);
    }
 }
 
@@ -457,7 +457,7 @@ void dil_add_secure(struct dilprg *prg, unit_data *sup, uint8_t *lab)
       return;
    }
 
-   if(prg->sp->securecount != 0u)
+   if(prg->sp->securecount != 0U)
    {
       RECREATE(prg->sp->secure, struct dilsecure, prg->sp->securecount + 1);
    }
@@ -493,7 +493,7 @@ void dil_sub_secure(struct dilframe *frm, unit_data *sup, int bForeach)
 
          frm->secure[i] = frm->secure[--(frm->securecount)];
 
-         if(frm->securecount != 0u)
+         if(frm->securecount != 0U)
          {
             RECREATE(frm->secure, struct dilsecure, frm->securecount);
          }
@@ -741,7 +741,7 @@ void dil_free_prg(struct dilprg *prg)
    }
    else
    {
-      int ok = FALSE;
+      int ok = static_cast<int>(FALSE);
       for(tp = dil_list; tp->next != nullptr; tp = tp->next)
       {
          if(tp->next == prg)
@@ -751,7 +751,7 @@ void dil_free_prg(struct dilprg *prg)
                dil_list_nextdude = prg->next;
             }
             tp->next = prg->next;
-            ok       = TRUE;
+            ok       = static_cast<int>(TRUE);
             break;
          }
       }
@@ -961,7 +961,7 @@ auto run_dil(struct spec_arg *sarg) -> int
       dil_free_prg(prg);
       return SFR_SHARE;
    }
-   else if(prg->waitcmd <= WAITCMD_QUIT)
+   if(prg->waitcmd <= WAITCMD_QUIT)
    {
       destroy_fptr(sarg->owner, sarg->fptr);
 
@@ -1166,9 +1166,9 @@ auto dil_destroy(char *name, unit_data *u) -> int
       prg          = ((struct dilprg *)fptr->data);
       prg->waitcmd = WAITCMD_QUIT;
       dil_activate(prg);
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 void dil_init_vars(int varc, struct dilframe *frm)
@@ -1216,7 +1216,7 @@ auto dil_copy_template(struct diltemplate *tmpl, unit_data *u, unit_fptr **pfptr
 
    frm->ret = DILV_NULL; /* ignored, 1.frame */
 
-   if(tmpl->varc != 0u)
+   if(tmpl->varc != 0U)
    {
       CREATE(frm->vars, struct dilvar, tmpl->varc);
    }
@@ -1232,7 +1232,7 @@ auto dil_copy_template(struct diltemplate *tmpl, unit_data *u, unit_fptr **pfptr
 
    dil_init_vars(tmpl->varc, frm);
 
-   if(tmpl->intrcount != 0u)
+   if(tmpl->intrcount != 0U)
    {
       CREATE(frm->intr, struct dilintr, tmpl->intrcount);
    }
@@ -1397,7 +1397,9 @@ auto dil_copy(char *name, unit_data *u) -> struct dilprg *
          strip_trailing_spaces(args[i]);
 
          if(str_is_number(args[i]))
+         {
             continue;
+         }
       }
 
       szonelog(UNIT_FI_ZONE(u), "Template '%s' had mismatching argument mismatch for %d: %s@%s", tmplname, i, UNIT_FI_NAME(u),

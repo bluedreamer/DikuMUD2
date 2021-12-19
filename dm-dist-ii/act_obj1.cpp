@@ -61,7 +61,7 @@ auto get(unit_data *ch, unit_data *obj, unit_data *from_obj, const struct comman
       return 1;
    }
 
-   if(IS_OBJ(obj) && OBJ_EQP_POS(obj))
+   if(IS_OBJ(obj) && (OBJ_EQP_POS(obj) != 0u))
    {
       act("The $3N is equipped, you can't take $3m.", A_SOMEONE, ch, nullptr, obj, TO_CHAR);
       return 1;
@@ -186,7 +186,9 @@ auto get(unit_data *ch, unit_data *obj, unit_data *from_obj, const struct comman
          return 0; /* Object was "picked up" */
       }
       if(amount < (amount_t)MONEY_AMOUNT(obj))
+      {
          obj = split_money(obj, amount);
+      }
    }
    else
    {
@@ -252,13 +254,13 @@ auto extra_get(unit_data *ch, char *argument) -> int
 
 void do_get(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   unit_data *from_unit = NULL;
+   unit_data *from_unit = nullptr;
    unit_data *thing;
    char       arg1[MAX_INPUT_LENGTH];
    char      *arg2;
    char      *oarg = argument;
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Get what?\n\r", ch);
       return;
@@ -281,7 +283,7 @@ void do_get(unit_data *ch, char *argument, const struct command_info *cmd)
       }
       if(IS_CHAR(from_unit))
       {
-         act("$3e would probably object to that!", A_ALWAYS, ch, 0, from_unit, TO_CHAR);
+         act("$3e would probably object to that!", A_ALWAYS, ch, nullptr, from_unit, TO_CHAR);
          return;
       }
    }
@@ -352,7 +354,7 @@ void do_get(unit_data *ch, char *argument, const struct command_info *cmd)
       char     arg[MAX_INPUT_LENGTH];
       amount_t amount = 0;
 
-      if(next_word_is_number(arg1) != 0u)
+      if(static_cast<unsigned int>(next_word_is_number(arg1)) != 0U)
       {
          tmp = str_next_word(arg1, arg);
          if((amount = (amount_t)atoi(arg)) < 1)
@@ -404,7 +406,7 @@ void do_get(unit_data *ch, char *argument, const struct command_info *cmd)
 
 auto drop(unit_data *ch, unit_data *unit, const struct command_info *cmd, char *arg) -> int
 {
-   if(!(IS_OBJ(unit) && OBJ_EQP_POS(unit)))
+   if(!(IS_OBJ(unit) && (OBJ_EQP_POS(unit) != 0u)))
    {
       if(IS_MONEY(unit))
       {
@@ -418,9 +420,9 @@ auto drop(unit_data *ch, unit_data *unit, const struct command_info *cmd, char *
 
       unit_up(unit);
       send_done(ch, unit, nullptr, 0, cmd, arg);
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 void do_drop(unit_data *ch, char *argument, const struct command_info *cmd)
@@ -431,7 +433,7 @@ void do_drop(unit_data *ch, char *argument, const struct command_info *cmd)
    amount_t   amount = 0;
    char      *oarg   = argument;
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Drop what?\n\r", ch);
       return;
@@ -439,7 +441,7 @@ void do_drop(unit_data *ch, char *argument, const struct command_info *cmd)
 
    if(str_ccmp_next_word(argument, "all") != nullptr) /* Drop All */
    {
-      int anything = FALSE;
+      int anything = static_cast<int>(FALSE);
 
       for(thing = UNIT_CONTAINS(ch); thing != nullptr; thing = next_obj)
       {
@@ -483,7 +485,7 @@ void do_drop(unit_data *ch, char *argument, const struct command_info *cmd)
    }
    else /* Drop Single Object */
    {
-      if(next_word_is_number(argument) != 0u)
+      if(static_cast<unsigned int>(next_word_is_number(argument)) != 0U)
       {
          argument = str_next_word(argument, arg);
          if((amount = atoi(arg)) < 1)
@@ -534,19 +536,19 @@ auto put(unit_data *ch, unit_data *unit, unit_data *tounit, const struct command
    if(!IS_SET(UNIT_MANIPULATE(tounit), MANIPULATE_ENTER))
    {
       act("You can't put anything in the $2N.", A_ALWAYS, ch, tounit, nullptr, TO_CHAR);
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(unit == tounit)
    {
       act("You attempt to fold the $2N into $2mself, but fail.", A_ALWAYS, ch, tounit, nullptr, TO_CHAR);
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(IS_SET(UNIT_OPEN_FLAGS(tounit), EX_CLOSED))
    {
       act("The $2N is closed.", A_ALWAYS, ch, tounit, nullptr, TO_CHAR);
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(IS_MONEY(unit) && ((money = unit_has_money_type(tounit, MONEY_TYPE(unit))) != nullptr))
@@ -567,7 +569,7 @@ auto put(unit_data *ch, unit_data *unit, unit_data *tounit, const struct command
       else
       {
          act("The $2N can not contain any more.", A_ALWAYS, ch, tounit, nullptr, TO_CHAR);
-         return FALSE;
+         return static_cast<int>(FALSE);
       }
    }
 
@@ -595,7 +597,7 @@ auto put(unit_data *ch, unit_data *unit, unit_data *tounit, const struct command
 
    send_done(ch, unit, tounit, 0, cmd, arg);
 
-   return TRUE;
+   return static_cast<int>(TRUE);
 }
 
 void do_put(unit_data *ch, char *argument, const struct command_info *cmd)
@@ -609,7 +611,7 @@ void do_put(unit_data *ch, char *argument, const struct command_info *cmd)
    int        all;
    char      *oarg = argument;
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Put what in what?\n\r", ch);
       return;
@@ -636,11 +638,11 @@ void do_put(unit_data *ch, char *argument, const struct command_info *cmd)
    }
    if(IS_CHAR(tounit))
    {
-      act("$2e would probably object to that!", A_SOMEONE, ch, tounit, 0, TO_CHAR);
+      act("$2e would probably object to that!", A_SOMEONE, ch, tounit, nullptr, TO_CHAR);
       return;
    }
 
-   if(next_word_is_number(argument) != 0u)
+   if(static_cast<unsigned int>(next_word_is_number(argument)) != 0U)
    {
       argument = str_next_word(argument, buf);
       if((amount = (amount_t)atoi(buf)) < 1)
@@ -768,13 +770,13 @@ void do_give(unit_data *ch, char *argument, const struct command_info *cmd)
    amount_t   amount = 0;
    char      *oarg   = argument;
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Give? Just give? Give what to whom?\n\r", ch);
       return;
    }
 
-   if(next_word_is_number(argument) != 0u)
+   if(static_cast<unsigned int>(next_word_is_number(argument)) != 0U)
    {
       argument = str_next_word(argument, buf);
       if((amount = (amount_t)atoi(buf)) < 1)

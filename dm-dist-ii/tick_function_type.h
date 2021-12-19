@@ -8,4 +8,4 @@ struct tick_function_type
    const char *descr;
    void (*func)(unit_affected_type *af, unit_data *unit);
 };
-extern  tick_function_type  tif[];
+extern tick_function_type tif[];

@@ -62,7 +62,7 @@ auto hometown_unit(char *str) -> unit_data *
 
 auto change_hometown(struct spec_arg *sarg) -> int
 {
-   if(is_command(sarg->cmd, "moveto") == 0u)
+   if(static_cast<unsigned int>(is_command(sarg->cmd, "moveto")) == 0U)
    {
       return SFR_SHARE;
    }

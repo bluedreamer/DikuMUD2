@@ -127,13 +127,13 @@ static void cmd_deposit(const unit_data *pc, unit_data *clerk, char *s)
       return;
    }
 
-   if(str_is_empty(s) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(s)) != 0U)
    {
       act("$1n says 'Deposit what, $3n?'", A_SOMEONE, clerk, nullptr, pc, TO_VICT);
       return;
    }
 
-   if(next_word_is_number(s) != 0u)
+   if(static_cast<unsigned int>(next_word_is_number(s)) != 0U)
    {
       char buf[MAX_INPUT_LENGTH];
 
@@ -203,13 +203,13 @@ static void cmd_exchange(const unit_data *pc, unit_data *clerk, char *s)
       return;
    }
 
-   if(str_is_empty(s) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(s)) != 0U)
    {
       act("$1n says 'Exchange what, $3n?'", A_SOMEONE, clerk, nullptr, pc, TO_VICT);
       return;
    }
 
-   if(next_word_is_number(s) != 0u)
+   if(static_cast<unsigned int>(next_word_is_number(s)) != 0U)
    {
       char buf[MAX_INPUT_LENGTH];
 
@@ -228,7 +228,7 @@ static void cmd_exchange(const unit_data *pc, unit_data *clerk, char *s)
    }
    if(!IS_MONEY(thing))
    {
-      act("$1n says 'I only deal in money, $3n!'", A_SOMEONE, clerk, 0, pc, TO_VICT);
+      act("$1n says 'I only deal in money, $3n!'", A_SOMEONE, clerk, nullptr, pc, TO_VICT);
       return;
    }
 
@@ -249,7 +249,7 @@ static void cmd_exchange(const unit_data *pc, unit_data *clerk, char *s)
 
    unit_from_unit(thing);
 
-   if(str_is_empty(s) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(s)) != 0U)
    {
       act("$1n exchanges some $2t with $3n.", A_HIDEINV, pc, money_pluralis(thing), clerk, TO_NOTVICT);
       act("You exchange your $2t with $3n.", A_SOMEONE, pc, money_pluralis(thing), clerk, TO_CHAR);
@@ -320,13 +320,13 @@ static void cmd_withdraw(const unit_data *pc, unit_data *clerk, char *s)
       return;
    }
 
-   if(str_is_empty(s) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(s)) != 0U)
    {
       act("$1n says 'Withdraw what, $3n?'", A_SOMEONE, clerk, nullptr, pc, TO_VICT);
       return;
    }
 
-   if(next_word_is_number(s) != 0u)
+   if(static_cast<unsigned int>(next_word_is_number(s)) != 0U)
    {
       char buf[MAX_INPUT_LENGTH];
 
@@ -381,19 +381,19 @@ auto bank(struct spec_arg *sarg) -> int
 
    changed_balance = FALSE;
 
-   if(is_command(sarg->cmd, "balance") != 0u)
+   if(static_cast<unsigned int>(is_command(sarg->cmd, "balance")) != 0U)
    {
       cmd_balance(sarg->activator, sarg->owner, (char *)sarg->arg);
    }
-   else if(is_command(sarg->cmd, "deposit") != 0u)
+   else if(static_cast<unsigned int>(is_command(sarg->cmd, "deposit")) != 0U)
    {
       cmd_deposit(sarg->activator, sarg->owner, (char *)sarg->arg);
    }
-   else if(is_command(sarg->cmd, "exchange") != 0u)
+   else if(static_cast<unsigned int>(is_command(sarg->cmd, "exchange")) != 0U)
    {
       cmd_exchange(sarg->activator, sarg->owner, (char *)sarg->arg);
    }
-   else if(is_command(sarg->cmd, "withdraw") != 0u)
+   else if(static_cast<unsigned int>(is_command(sarg->cmd, "withdraw")) != 0U)
    {
       cmd_withdraw(sarg->activator, sarg->owner, (char *)sarg->arg);
    }

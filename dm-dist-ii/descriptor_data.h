@@ -13,7 +13,7 @@ public:
    descriptor_data(cMultiHook *pe);
    ~descriptor_data();
 
-   void CreateBBS();
+   void CreateBBS() const;
    void RemoveBBS() const;
 
    time_t      logon; /* Time of last connect              */

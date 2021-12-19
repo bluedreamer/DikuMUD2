@@ -74,7 +74,7 @@ auto PlayerFileName(const char *pName) -> char *
 /* Return TRUE if exists */
 auto player_exists(const char *pName) -> int
 {
-   return file_exists(PlayerFileName(pName));
+   return static_cast<int>(file_exists(PlayerFileName(pName)));
 }
 
 auto find_player(char *name) -> unit_data *
@@ -87,7 +87,7 @@ auto find_player(char *name) -> unit_data *
    {
       return d->character;
    }
-   return NULL;
+   return nullptr;
 }
 
 /* Return TRUE if deleted */
@@ -97,10 +97,10 @@ auto delete_inventory(const char *pName) -> int
 
    if(remove(ContentsFileName(pName)) != 0)
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
-   return TRUE;
+   return static_cast<int>(TRUE);
 }
 
 /* Return TRUE if deleted */
@@ -108,12 +108,12 @@ auto delete_player(const char *pName) -> int
 {
    if(remove(PlayerFileName(pName)) != 0)
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    delete_inventory(pName);
 
-   return TRUE;
+   return static_cast<int>(TRUE);
 }
 
 /* Given a name, return pointer to player-idx blk, or BLK_NULL if non exist */
@@ -122,7 +122,7 @@ auto find_player_id(char *pName) -> int
    FILE *pFile;
    int   id;
 
-   if(str_is_empty(pName) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(pName)) != 0U)
    {
       slog(LOG_ALL, 0, "Empty string in find_player_id.");
       return -1;
@@ -231,7 +231,7 @@ void save_player_file(unit_data *pc)
    blk_length       nPlyLen;
    int              tmp_i;
    unit_data       *tmp_u;
-   unit_data       *list = NULL;
+   unit_data       *list = nullptr;
    descriptor_data *tmp_descr;
    CByteBuffer     *pBuf = &g_FileBuffer;
 
@@ -262,7 +262,7 @@ void save_player_file(unit_data *pc)
    /* PRIMITIVE SANITY CHECK */
    assert(PC_ID(pc) >= 0 && PC_ID(pc) <= 1000000);
 
-   if(UNIT_IN(pc) && !IS_SET(UNIT_FLAGS(unit_room(pc)), UNIT_FL_NOSAVE))
+   if((UNIT_IN(pc) != nullptr) && !IS_SET(UNIT_FLAGS(unit_room(pc)), UNIT_FL_NOSAVE))
    {
       CHAR_LAST_ROOM(pc) = unit_room(pc);
    }
@@ -346,7 +346,7 @@ void save_player_contents(unit_data *pc, int fast)
    t0          = time(nullptr);
    keep_period = t0;
 
-   daily_cost = save_contents(PC_FILENAME(pc), pc, fast, FALSE);
+   daily_cost = save_contents(PC_FILENAME(pc), pc, fast, static_cast<int>(FALSE));
 
    if(daily_cost <= 0)
    {
@@ -391,7 +391,7 @@ void save_player_contents(unit_data *pc, int fast)
 /* Save the player 'pc'. Update logon and playing time.        */
 void save_player(unit_data *pc)
 {
-   if(CHAR_DESCRIPTOR(pc))
+   if(CHAR_DESCRIPTOR(pc) != nullptr)
    {
       time_t   t0;
       uint32_t used;
@@ -465,7 +465,7 @@ auto load_player_file(FILE *pFile) -> unit_data *
 
    char mbuf[MAX_INPUT_LENGTH];
    strcpy(mbuf, "Player");
-   pc = read_unit_string(pBuf, UNIT_ST_PC, nPlyLen, TRUE, mbuf);
+   pc = read_unit_string(pBuf, UNIT_ST_PC, nPlyLen, static_cast<int>(TRUE), mbuf);
 
    if(pc == nullptr)
    {
@@ -490,7 +490,7 @@ auto load_player(const char *pName) -> unit_data *
 
    void stop_all_special(unit_data * u);
 
-   if(str_is_empty(pName) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(pName)) != 0U)
    {
       return nullptr;
    }
@@ -539,14 +539,14 @@ void player_file_index()
    int     n;
 
    /* Get rid of any temporary player save file */
-   while(file_exists(tmp_player_name) != 0u)
+   while(static_cast<unsigned int>(file_exists(tmp_player_name)) != 0U)
    {
       n = remove(tmp_player_name);
       if(n != 0)
       {
          slog(LOG_ALL, 0, "Remove failed");
       }
-      if(file_exists(tmp_player_name) != 0u)
+      if(static_cast<unsigned int>(file_exists(tmp_player_name)) != 0U)
       {
          n = rename(tmp_player_name, "./playingfuck");
          if(n != 0)
@@ -556,7 +556,7 @@ void player_file_index()
       }
    }
 
-   if(file_exists(str_cc(libdir, PLAYER_ID_NAME)) == 0u)
+   if(static_cast<unsigned int>(file_exists(str_cc(libdir, PLAYER_ID_NAME))) == 0U)
    {
       touch_file(str_cc(libdir, PLAYER_ID_NAME));
       player_id = -7;

@@ -92,17 +92,16 @@ static auto gold_cost(struct skill_teach_type *s, int level) -> int
       return s->min_cost_per_point;
    }
    if(level >= s->max_skill)
-      return s->max_cost_per_point;
-   else
    {
-      int i = s->max_cost_per_point - s->min_cost_per_point;
-
-      i /= s->max_skill;
-
-      i = i * level + s->min_cost_per_point;
-
-      return i;
+      return s->max_cost_per_point;
    }
+   int i = s->max_cost_per_point - s->min_cost_per_point;
+
+   i /= s->max_skill;
+
+   i = i * level + s->min_cost_per_point;
+
+   return i;
 }
 
 auto actual_training_level(int lvl, const int costs[]) -> int
@@ -202,7 +201,7 @@ void info_show_one(unit_data *teacher, unit_data *pupil, uint8_t current_points,
 {
    char buf[256];
 
-   if(isleaf != 0u)
+   if(isleaf != 0U)
    {
       if(level_type == 0) /* Guild Level */
       {
@@ -393,11 +392,11 @@ auto pupil_magic(unit_data *pupil) -> int
          case ID_SKILL_TRANSFER:
          case ID_WEAPON_TRANSFER:
 
-            return TRUE;
+            return static_cast<int>(TRUE);
       }
    }
 
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 auto practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type *tree, const char *text[], uint8_t pc_values[],
@@ -421,13 +420,13 @@ auto practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type
               "to see which skills it contains.\n\r",
               text[pckt->teaches[teach_index].node], text[pckt->teaches[teach_index].node]);
       send_to_char(buf, sarg->activator);
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
    if(pckt->teaches[teach_index].max_skill <= pc_values[pckt->teaches[teach_index].node])
    {
       act(pckt->msgs.teacher_not_good_enough, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_VICT);
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
    if(pckt->level_type == 0) /* Guild Level */
@@ -439,7 +438,7 @@ auto practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type
                  "%s.\n\r",
                  pckt->teaches[teach_index].min_level, text[pckt->teaches[teach_index].node]);
          send_to_char(buf, sarg->activator);
-         return TRUE;
+         return static_cast<int>(TRUE);
       }
    }
    else
@@ -449,7 +448,7 @@ auto practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type
          sprintf(buf, "You need to be at least level %d to practice %s.\n\r", pckt->teaches[teach_index].min_level,
                  text[pckt->teaches[teach_index].node]);
          send_to_char(buf, sarg->activator);
-         return TRUE;
+         return static_cast<int>(TRUE);
       }
    }
 
@@ -464,7 +463,7 @@ auto practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type
       act("$1n tells you, 'You've learned all you can about $2t at "
           "this level.'",
           A_ALWAYS, sarg->owner, text[pckt->teaches[teach_index].node], sarg->activator, TO_VICT);
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
    assert(cost > 0);
@@ -479,24 +478,25 @@ auto practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type
                       "Then come back and practice afterwards.\n\r",
                       sarg->activator);
       }
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
    if(pupil_magic(sarg->activator) != 0)
    {
       act(pckt->msgs.not_pure, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_VICT);
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
    /* Ok, now we can teach */
 
    amt = money_round(TRUE, gold_cost(&pckt->teaches[teach_index], pc_values[pckt->teaches[teach_index].node]), currency, 1);
 
-   if(CHAR_LEVEL(sarg->activator) > PRACTICE_COST_LEVEL && (char_can_afford(sarg->activator, amt, currency) == 0u))
+   if(CHAR_LEVEL(sarg->activator) > PRACTICE_COST_LEVEL &&
+      (static_cast<unsigned int>(char_can_afford(sarg->activator, amt, currency)) == 0U))
    {
       sprintf(buf, pckt->msgs.not_enough_gold, money_string(amt, local_currency(sarg->activator), TRUE));
       act(buf, A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_VICT);
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
    current_points = pc_values[pckt->teaches[teach_index].node];
@@ -538,7 +538,7 @@ auto practice(struct spec_arg *sarg, struct teach_packet *pckt, struct tree_type
 
    act("You finish training $2t with $1n.", A_ALWAYS, sarg->owner, text[pckt->teaches[teach_index].node], sarg->activator, TO_VICT);
 
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 auto teach_basis(struct spec_arg *sarg, struct teach_packet *pckt) -> int
@@ -603,7 +603,7 @@ auto teach_basis(struct spec_arg *sarg, struct teach_packet *pckt) -> int
          assert(FALSE);
    }
 
-   if(str_is_empty(sarg->arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(sarg->arg)) != 0U)
    {
       if(sarg->cmd->no == CMD_INFO)
       {
@@ -824,7 +824,7 @@ auto teach_init(struct spec_arg *sarg) -> int
    }
 
    c = get_next_str(c, buf);
-   if(str_is_number(buf) != 0u)
+   if(static_cast<unsigned int>(str_is_number(buf)) != 0U)
    {
       packet->level_type = atoi(buf);
    }

@@ -23,8 +23,8 @@
  * *********************************************************************** */
 
 #pragma once
-#include "bytestring.h"
 #include "CByteBuffer.h"
+#include "bytestring.h"
 #define FCACHE_MAX 100
 
 void fstrcpy(CByteBuffer *pBuf, FILE *f);

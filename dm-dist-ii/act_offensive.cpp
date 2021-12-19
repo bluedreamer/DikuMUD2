@@ -56,7 +56,7 @@ void do_decapitate(unit_data *ch, char *argument, const struct command_info *cmd
 
    extern file_index_type *head_fi;
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("What corpse do you wish to decapitate?\n\r", ch);
       return;
@@ -129,7 +129,7 @@ void do_hit(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    unit_data *victim;
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       act("Who do you want to hit?", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
       return;
@@ -157,7 +157,7 @@ void do_hit(unit_data *ch, char *argument, const struct command_info *cmd)
          return;
       }
 #endif
-      if(pk_test(ch, victim, TRUE) != 0)
+      if(pk_test(ch, victim, static_cast<int>(TRUE)) != 0)
       {
          return;
       }
@@ -177,7 +177,7 @@ void do_kill(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    unit_data *victim;
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       act("Who do you want to kill?", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
       return;
@@ -206,7 +206,7 @@ void do_kill(unit_data *ch, char *argument, const struct command_info *cmd)
       act("You chop $3m to pieces! Ah! The blood!", A_SOMEONE, ch, nullptr, victim, TO_CHAR);
       act("$3n chops you to pieces!", A_SOMEONE, victim, nullptr, ch, TO_CHAR);
       act("$1n brutally slays $3n.", A_SOMEONE, ch, nullptr, victim, TO_NOTVICT);
-      set_fighting(ch, victim, TRUE); /* Point to the killer! */
+      set_fighting(ch, victim, static_cast<int>(TRUE)); /* Point to the killer! */
       raw_kill(victim);
    }
 }

@@ -77,22 +77,22 @@ auto has_found_door(unit_data *pc, int dir) -> int
 
    if(!IS_ROOM(UNIT_IN(pc)))
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
-   if(!ROOM_EXIT(UNIT_IN(pc), dir))
+   if(ROOM_EXIT(UNIT_IN(pc), dir) == nullptr)
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(!IS_PC(pc))
    {
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
    if(!IS_SET(ROOM_EXIT(UNIT_IN(pc), dir)->exit_info, EX_HIDDEN))
    {
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
    if(IS_SET(ROOM_EXIT(UNIT_IN(pc), dir)->exit_info, EX_CLOSED))
@@ -101,23 +101,23 @@ auto has_found_door(unit_data *pc, int dir) -> int
       {
          if(af->id == ID_SPOTTED_SECRET && PC_ID(pc) == af->data[0])
          {
-            return TRUE;
+            return static_cast<int>(TRUE);
          }
       }
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
-   return TRUE;
+   return static_cast<int>(TRUE);
 }
 
 auto pay_point_charlie(unit_data *ch, unit_data *to) -> int
 {
    if(IS_PC(ch) && (g_cServerConfig.m_bAccounting != 0) && IS_MORTAL(ch))
    {
-      if(CHAR_DESCRIPTOR(ch))
+      if(CHAR_DESCRIPTOR(ch) != nullptr)
       {
          if(g_cServerConfig.FromLAN(CHAR_DESCRIPTOR(ch)->host) != 0)
          {
-            return TRUE;
+            return static_cast<int>(TRUE);
          }
       }
 
@@ -126,14 +126,14 @@ auto pay_point_charlie(unit_data *ch, unit_data *to) -> int
          if((UNIT_FI_ZONE(to)->payonly == 1) && (PC_ACCOUNT(ch).total_credit <= 0))
          {
             account_paypoint(ch);
-            return FALSE;
+            return static_cast<int>(FALSE);
          }
-         if((UNIT_FI_ZONE(to)->payonly == 2) && (PC_ACCOUNT(ch).flatrate < (uint32_t)time(0)))
+         if((UNIT_FI_ZONE(to)->payonly == 2) && (PC_ACCOUNT(ch).flatrate < (uint32_t)time(nullptr)))
          {
             account_paypoint(ch);
-            return FALSE;
+            return static_cast<int>(FALSE);
          }
-         else if((UNIT_FI_ZONE(to)->payonly == 3) && ((PC_ACCOUNT(ch).total_credit > 0) || (PC_ACCOUNT(ch).flatrate > (uint32_t)time(0))))
+         if((UNIT_FI_ZONE(to)->payonly == 3) && ((PC_ACCOUNT(ch).total_credit > 0) || (PC_ACCOUNT(ch).flatrate > (uint32_t)time(0))))
          {
             account_paypoint(ch);
             return FALSE;
@@ -141,7 +141,7 @@ auto pay_point_charlie(unit_data *ch, unit_data *to) -> int
       }
    }
 
-   return TRUE;
+   return static_cast<int>(TRUE);
 }
 
 /* For sailing in boats! */
@@ -198,12 +198,12 @@ auto do_simple_sail(unit_data *boat, unit_data *captain, int direction) -> int
 
    unit_from_unit(boat);
 
-   if(UNIT_CONTAINS(was_in))
+   if(UNIT_CONTAINS(was_in) != nullptr)
    {
       act("$2n sails $3t.", A_HIDEINV, UNIT_CONTAINS(was_in), boat, dirs[direction], TO_ALL);
    }
 
-   if(UNIT_CONTAINS(to))
+   if(UNIT_CONTAINS(to) != nullptr)
    {
       act("$2n has arrived from $3t.", A_HIDEINV, UNIT_CONTAINS(to), boat, enter_dirs[rev_dir[direction]], TO_ALL);
    }
@@ -293,12 +293,12 @@ auto do_simple_ride(unit_data *beast, unit_data *master, int direction) -> int
 
    unit_from_unit(beast);
 
-   if(UNIT_CONTAINS(was_in))
+   if(UNIT_CONTAINS(was_in) != nullptr)
    {
       act("$2n rides $3t.", A_HIDEINV, UNIT_CONTAINS(was_in), beast, dirs[direction], TO_ALL);
    }
 
-   if(UNIT_CONTAINS(to))
+   if(UNIT_CONTAINS(to) != nullptr)
    {
       act("$2n has arrived from $3t.", A_HIDEINV, UNIT_CONTAINS(to), beast, enter_dirs[rev_dir[direction]], TO_ALL);
    }
@@ -435,14 +435,14 @@ auto do_simple_move(unit_data *ch, int direction, int following) -> int
 
    c = single_unit_messg(UNIT_IN(ch), "$leave_o", dirbuf, "$1n leaves $3t.");
 
-   if(!CHAR_HAS_FLAG(ch, CHAR_SNEAK) && (str_is_empty(c) == 0u))
+   if(!CHAR_HAS_FLAG(ch, CHAR_SNEAK) && (static_cast<unsigned int>(str_is_empty(c)) == 0U))
    {
       act(c, A_HIDEINV, ch, UNIT_IN(ch), dirs[direction], TO_ROOM);
    }
 
    c = single_unit_messg(UNIT_IN(ch), "$leave_s", dirbuf, "");
 
-   if(str_is_empty(c) == 0u)
+   if(static_cast<unsigned int>(str_is_empty(c)) == 0U)
    {
       act(c, A_ALWAYS, ch, UNIT_IN(ch), dirs[direction], TO_CHAR);
    }
@@ -457,7 +457,7 @@ auto do_simple_move(unit_data *ch, int direction, int following) -> int
 
    c = single_unit_messg(UNIT_IN(ch), "$arrive_o", dirbuf, "$1n has arrived from $3t.");
 
-   if(!CHAR_HAS_FLAG(ch, CHAR_SNEAK) && (str_is_empty(c) == 0u))
+   if(!CHAR_HAS_FLAG(ch, CHAR_SNEAK) && (static_cast<unsigned int>(str_is_empty(c)) == 0U))
    {
       act(c, A_HIDEINV, ch, UNIT_IN(ch), enter_dirs[rev_dir[direction]], TO_ROOM);
    }
@@ -465,7 +465,7 @@ auto do_simple_move(unit_data *ch, int direction, int following) -> int
    char mbuf[MAX_INPUT_LENGTH] = {0};
    c                           = single_unit_messg(UNIT_IN(ch), "$arrive_s", dirbuf, mbuf);
 
-   if(str_is_empty(c) == 0u)
+   if(static_cast<unsigned int>(str_is_empty(c)) == 0U)
    {
       act(c, A_ALWAYS, ch, UNIT_IN(ch), enter_dirs[rev_dir[direction]], TO_CHAR);
    }
@@ -490,7 +490,7 @@ auto do_advanced_move(unit_data *ch, int direction, int following) -> int
    unit_data               *was_in;
    struct char_follow_type *k;
 
-   if(!IS_ROOM(UNIT_IN(ch)) || !ROOM_EXIT(UNIT_IN(ch), direction))
+   if(!IS_ROOM(UNIT_IN(ch)) || (ROOM_EXIT(UNIT_IN(ch), direction) == nullptr))
    {
       send_to_char(ALAS_NOWAY, ch);
       return 0;
@@ -534,7 +534,7 @@ auto do_advanced_move(unit_data *ch, int direction, int following) -> int
             if(was_in == UNIT_IN(k->follower) && CHAR_POS(k->follower) >= POSITION_STANDING)
             {
                act("You follow $3n.\n\r", A_SOMEONE, k->follower, nullptr, ch, TO_CHAR);
-               do_advanced_move(k->follower, direction, TRUE);
+               do_advanced_move(k->follower, direction, static_cast<int>(TRUE));
             }
          }
       }
@@ -551,7 +551,7 @@ void do_drag(unit_data *ch, char *aaa, const struct command_info *cmd)
    int        direction;
 
    /* find unit to drag */
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Drag what in which direction?\n\r", ch);
       return;
@@ -591,7 +591,7 @@ void do_drag(unit_data *ch, char *aaa, const struct command_info *cmd)
    }
 
    /* move char */
-   if(do_advanced_move(ch, direction, TRUE) == 1)
+   if(do_advanced_move(ch, direction, static_cast<int>(TRUE)) == 1)
    {
       /* drag unit */
       if(CHAR_LEVEL(ch) < 200)
@@ -653,7 +653,7 @@ void do_ride(unit_data *ch, char *arg, const struct command_info *cmd)
 
    one_argument(arg, buf);
 
-   if(str_is_empty(buf) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(buf)) != 0U)
    {
       send_to_char("Ride in which direction?\n\r", ch);
       return;
@@ -667,7 +667,7 @@ void do_ride(unit_data *ch, char *arg, const struct command_info *cmd)
 
    room = UNIT_IN(beast);
 
-   if((room == nullptr) || !IS_ROOM(room) || !ROOM_EXIT(room, direction))
+   if((room == nullptr) || !IS_ROOM(room) || (ROOM_EXIT(room, direction) == nullptr))
    {
       send_to_char("Alas, you cannot ride that way...\n\r", ch);
       return;
@@ -710,7 +710,7 @@ void do_sail(unit_data *ch, char *aaa, const struct command_info *cmd)
 
    one_argument(arg, buf);
 
-   if(str_is_empty(buf) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(buf)) != 0U)
    {
       send_to_char("Sail in which direction?\n\r", ch);
       return;
@@ -732,7 +732,7 @@ void do_sail(unit_data *ch, char *aaa, const struct command_info *cmd)
 
    room = UNIT_IN(boat);
 
-   if(!IS_ROOM(room) || !ROOM_EXIT(room, direction))
+   if(!IS_ROOM(room) || (ROOM_EXIT(room, direction) == nullptr))
    {
       send_to_char("Alas, you cannot sail that way...\n\r", ch);
       return;
@@ -825,7 +825,7 @@ auto low_find_door(unit_data *ch, char *doorstr, int err_msg, int check_hidden) 
 
    dirdoorstr = one_argument(doorstr, dir);
 
-   if(str_is_empty(dir) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(dir)) != 0U)
    {
       if(err_msg != 0)
       {
@@ -847,7 +847,7 @@ auto low_find_door(unit_data *ch, char *doorstr, int err_msg, int check_hidden) 
    {
       /* A direction and name was specified */
 
-      if(str_is_empty(dirdoorstr) != 0u)
+      if(static_cast<unsigned int>(str_is_empty(dirdoorstr)) != 0U)
       {
          if(err_msg != 0)
          {
@@ -856,9 +856,10 @@ auto low_find_door(unit_data *ch, char *doorstr, int err_msg, int check_hidden) 
          return -1;
       }
 
-      if(ROOM_EXIT(UNIT_IN(ch), door))
+      if(ROOM_EXIT(UNIT_IN(ch), door) != nullptr)
       {
-         if(ROOM_EXIT(UNIT_IN(ch), door)->open_name.IsName(dirdoorstr) && ((check_hidden == 0) || (has_found_door(ch, door) != 0)))
+         if((ROOM_EXIT(UNIT_IN(ch), door)->open_name.IsName(dirdoorstr) != nullptr) &&
+            ((check_hidden == 0) || (has_found_door(ch, door) != 0)))
          {
             return door;
          }
@@ -882,9 +883,10 @@ auto low_find_door(unit_data *ch, char *doorstr, int err_msg, int check_hidden) 
 
    for(door = 0; door <= 5; door++)
    {
-      if(ROOM_EXIT(UNIT_IN(ch), door))
+      if(ROOM_EXIT(UNIT_IN(ch), door) != nullptr)
       {
-         if(ROOM_EXIT(UNIT_IN(ch), door)->open_name.IsName(doorstr) && ((check_hidden == 0) || (has_found_door(ch, door) != 0)))
+         if((ROOM_EXIT(UNIT_IN(ch), door)->open_name.IsName(doorstr) != nullptr) &&
+            ((check_hidden == 0) || (has_found_door(ch, door) != 0)))
          {
             return door;
          }
@@ -903,7 +905,7 @@ auto locate_lock(unit_data *ch, char *arg) -> struct door_data *
 {
    unit_data              *thing;
    unit_data              *other_room;
-   unit_data              *back = NULL;
+   unit_data              *back = nullptr;
    static struct door_data a_door;
    int                     door;
 
@@ -967,12 +969,12 @@ auto locate_lock(unit_data *ch, char *arg) -> struct door_data *
 
       return &a_door;
    }
-   if((door = low_find_door(ch, arg, TRUE, TRUE)) >= 0)
+   if((door = low_find_door(ch, arg, static_cast<int>(TRUE), static_cast<int>(TRUE))) >= 0)
    {
       a_door.direction = door;
-      a_door.reverse   = 0;
-      a_door.rev_flags = 0;
-      a_door.thing     = 0;
+      a_door.reverse   = nullptr;
+      a_door.rev_flags = nullptr;
+      a_door.thing     = nullptr;
 
       a_door.name  = ROOM_DOOR_NAME(UNIT_IN(ch), door);
       a_door.room  = UNIT_IN(ch);
@@ -980,13 +982,17 @@ auto locate_lock(unit_data *ch, char *arg) -> struct door_data *
       a_door.key   = ROOM_EXIT(UNIT_IN(ch), door)->key;
 
       /* Locate other side of room */
-      if((other_room = ROOM_EXIT(UNIT_IN(ch), door)->to_room) != 0)
-         if(ROOM_EXIT(other_room, rev_dir[door]) && (back = ROOM_EXIT(other_room, rev_dir[door])->to_room))
+      if((other_room = ROOM_EXIT(UNIT_IN(ch), door)->to_room) != nullptr)
+      {
+         if((ROOM_EXIT(other_room, rev_dir[door]) != nullptr) && ((back = ROOM_EXIT(other_room, rev_dir[door])->to_room) != nullptr))
+         {
             if(back == UNIT_IN(ch))
             {
                a_door.reverse   = other_room;
                a_door.rev_flags = &ROOM_EXIT(other_room, rev_dir[door])->exit_info;
             }
+         }
+      }
 
       return &a_door;
    }
@@ -998,7 +1004,7 @@ void do_knock(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    struct door_data *a_door;
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Knock on what?\n\r", ch);
       return;
@@ -1017,7 +1023,7 @@ void do_knock(unit_data *ch, char *argument, const struct command_info *cmd)
 
       if(a_door->reverse != nullptr)
       {
-         if(!UNIT_IS_TRANSPARENT(a_door->thing) && UNIT_CONTAINS(a_door->reverse))
+         if(!UNIT_IS_TRANSPARENT(a_door->thing) && (UNIT_CONTAINS(a_door->reverse) != nullptr))
          {
             act("You hear a loud knocking from $2n.", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), a_door->thing, nullptr, TO_ALL);
          }
@@ -1037,7 +1043,7 @@ void do_knock(unit_data *ch, char *argument, const struct command_info *cmd)
          send_done(ch, nullptr, a_door->room, a_door->direction, cmd, "");
       }
 
-      if((a_door->reverse != nullptr) && UNIT_CONTAINS(a_door->reverse))
+      if((a_door->reverse != nullptr) && (UNIT_CONTAINS(a_door->reverse) != nullptr))
       {
          act("You hear a faint knocking on the $2t.", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), a_door->name, nullptr, TO_ALL);
 
@@ -1058,7 +1064,7 @@ void do_open(unit_data *ch, char *aaa, const struct command_info *cmd)
    char             *argument = (char *)aaa;
    struct door_data *a_door;
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Open what?\n\r", ch);
       return;
@@ -1102,7 +1108,7 @@ void do_open(unit_data *ch, char *aaa, const struct command_info *cmd)
 
       if(a_door->reverse != nullptr)
       {
-         if(((a_door->room != nullptr) || !UNIT_IS_TRANSPARENT(a_door->thing)) && UNIT_CONTAINS(a_door->reverse))
+         if(((a_door->room != nullptr) || !UNIT_IS_TRANSPARENT(a_door->thing)) && (UNIT_CONTAINS(a_door->reverse) != nullptr))
          {
             act("The $2t is opened.", A_ALWAYS, UNIT_CONTAINS(a_door->reverse), a_door->name, nullptr, TO_ALL);
          }
@@ -1128,7 +1134,7 @@ void do_close(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    struct door_data *a_door;
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Close what?\n\r", ch);
       return;
@@ -1168,7 +1174,7 @@ void do_close(unit_data *ch, char *argument, const struct command_info *cmd)
 
       if(a_door->reverse != nullptr)
       {
-         if(((a_door->room != nullptr) || !UNIT_IS_TRANSPARENT(a_door->thing)) && UNIT_CONTAINS(a_door->reverse))
+         if(((a_door->room != nullptr) || !UNIT_IS_TRANSPARENT(a_door->thing)) && (UNIT_CONTAINS(a_door->reverse) != nullptr))
          {
             act("The $2t is closed.", A_ALWAYS, UNIT_CONTAINS(a_door->reverse), a_door->name, nullptr, TO_ALL);
          }
@@ -1199,18 +1205,18 @@ auto has_key(unit_data *ch, file_index_type *key) -> int
    {
       if(UNIT_FILE_INDEX(o) == key)
       {
-         return TRUE;
+         return static_cast<int>(TRUE);
       }
    }
 
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 void do_lock(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    struct door_data *a_door;
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Lock what?\n\r", ch);
       return;
@@ -1264,7 +1270,7 @@ void do_lock(unit_data *ch, char *argument, const struct command_info *cmd)
 
       if(a_door->reverse != nullptr)
       {
-         if(UNIT_CONTAINS(a_door->reverse))
+         if(UNIT_CONTAINS(a_door->reverse) != nullptr)
          {
             act("You hear a faint *cluck* from $2t.", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), a_door->name, nullptr, TO_ALL);
          }
@@ -1290,7 +1296,7 @@ void do_unlock(unit_data *ch, char *argument, const struct command_info *cmd)
 {
    struct door_data *a_door;
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Unlock what?\n\r", ch);
       return;
@@ -1344,7 +1350,7 @@ void do_unlock(unit_data *ch, char *argument, const struct command_info *cmd)
 
       if(a_door->reverse != nullptr)
       {
-         if(UNIT_CONTAINS(a_door->reverse))
+         if(UNIT_CONTAINS(a_door->reverse) != nullptr)
          {
             act("You hear a faint *click* from $2t.", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), a_door->name, nullptr, TO_ALL);
          }
@@ -1374,7 +1380,7 @@ void do_enter(unit_data *ch, char *arg, const struct command_info *cmd)
 
    const char *mnt_ent = (cmd->no == CMD_MOUNT ? "mount" : "enter");
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       act("$2t what?", A_ALWAYS, ch, mnt_ent, nullptr, TO_CHAR);
       return;
@@ -1462,9 +1468,9 @@ void do_enter(unit_data *ch, char *arg, const struct command_info *cmd)
       }
       send_done(ch, nullptr, thing, 0, cmd, oarg);
    }
-   else if((door = low_find_door(ch, arg, TRUE, TRUE)) != -1)
+   else if((door = low_find_door(ch, arg, static_cast<int>(TRUE), static_cast<int>(TRUE))) != -1)
    {
-      do_advanced_move(ch, door, TRUE);
+      do_advanced_move(ch, door, static_cast<int>(TRUE));
       return;
    }
    /* Otherwise low_find_door has sent an error message to character */
@@ -1477,7 +1483,7 @@ void do_exit(unit_data *ch, char *arg, const struct command_info *cmd)
    char      *oarg = arg;
 
    /* Is it meaningfull to exit */
-   if(!UNIT_IN(ch))
+   if(UNIT_IN(ch) == nullptr)
    {
       switch(cmd->no)
       {
@@ -1514,7 +1520,7 @@ void do_exit(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 
    /* Is there an outside (room, toplevel) */
-   if(!UNIT_IN(UNIT_IN(ch)))
+   if(UNIT_IN(UNIT_IN(ch)) == nullptr)
    {
       send_to_char("But there is nowhere to exit to.\n\r", ch);
       if(CHAR_LEVEL(ch) == START_LEVEL)
@@ -1739,7 +1745,7 @@ void do_wake(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    unit_data *tmp_char;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       if(CHAR_POS(ch) > POSITION_SLEEPING)
       {
@@ -1801,12 +1807,12 @@ void do_follow(unit_data *ch, char *arg, const struct command_info *cmd)
    void stop_follower(unit_data * ch);
    void add_follower(unit_data * ch, unit_data * leader);
 
-   if((str_is_empty(arg) != 0u) || ((leader = find_unit(ch, &arg, nullptr, FIND_UNIT_SURRO)) == ch))
+   if((static_cast<unsigned int>(str_is_empty(arg)) != 0U) || ((leader = find_unit(ch, &arg, nullptr, FIND_UNIT_SURRO)) == ch))
    {
       if(CHAR_MASTER(ch))
       {
          act("You stop following $3n.", A_SOMEONE, ch, nullptr, CHAR_MASTER(ch), TO_CHAR);
-         if(same_surroundings(ch, CHAR_MASTER(ch)) != 0u)
+         if(static_cast<unsigned int>(same_surroundings(ch, CHAR_MASTER(ch))) != 0U)
          {
             act("$1n stops following you.", A_HIDEINV, ch, nullptr, CHAR_MASTER(ch), TO_VICT);
          }
@@ -1829,7 +1835,7 @@ void do_follow(unit_data *ch, char *arg, const struct command_info *cmd)
    if(CHAR_MASTER(ch))
    {
       act("You stop following $3n.", A_SOMEONE, ch, nullptr, CHAR_MASTER(ch), TO_CHAR);
-      if(same_surroundings(ch, CHAR_MASTER(ch)) != 0u)
+      if(static_cast<unsigned int>(same_surroundings(ch, CHAR_MASTER(ch))) != 0U)
       {
          act("$1n stops following you.", A_HIDEINV, ch, nullptr, CHAR_MASTER(ch), TO_VICT);
       }

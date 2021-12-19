@@ -135,7 +135,7 @@ auto find_dil_index(char *zonename, char *name) -> struct diltemplate *
    struct zone_type       *zone;
    struct bin_search_type *ba;
 
-   if(str_is_empty(name) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(name)) != 0U)
    {
       return nullptr;
    }
@@ -164,7 +164,7 @@ auto find_dil_template(const char *name) -> struct diltemplate *
    char zbuf[256];
    char pbuf[256];
 
-   if(str_is_empty(name) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(name)) != 0U)
    {
       return nullptr;
    }

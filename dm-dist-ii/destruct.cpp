@@ -84,23 +84,23 @@
 void destruct_unit(unit_data *unit)
 {
    descriptor_data *d;
-   int              in_menu = FALSE;
+   int              in_menu = static_cast<int>(FALSE);
 
    extern descriptor_data *descriptor_list;
 
    /* Remove all snooping, snoopers and return from any body */
    if(IS_CHAR(unit))
    {
-      if(CHAR_DESCRIPTOR(unit))
+      if(CHAR_DESCRIPTOR(unit) != nullptr)
       {
          assert(IS_PC(unit));
 
-         in_menu = TRUE;
+         in_menu = static_cast<int>(TRUE);
 
          stop_all_special(unit);
          stop_affect(unit);
 
-         if(UNIT_IN(unit))
+         if(UNIT_IN(unit) != nullptr)
          {
             set_descriptor_fptr(CHAR_DESCRIPTOR(unit), nanny_menu, TRUE);
          }
@@ -115,7 +115,7 @@ void destruct_unit(unit_data *unit)
       assert(!CHAR_IS_SNOOPED(unit));
 
       /* If the PC which is switched is extracted, then unswitch */
-      if(IS_PC(unit) && !CHAR_DESCRIPTOR(unit))
+      if(IS_PC(unit) && (CHAR_DESCRIPTOR(unit) == nullptr))
       {
          for(d = descriptor_list; d != nullptr; d = d->next)
          {
@@ -133,9 +133,9 @@ void destruct_unit(unit_data *unit)
       assert(FALSE);
    }
 
-   while(UNIT_CONTAINS(unit))
+   while(UNIT_CONTAINS(unit) != nullptr)
    {
-      if(IS_OBJ(UNIT_CONTAINS(unit)) && OBJ_EQP_POS(UNIT_CONTAINS(unit)))
+      if(IS_OBJ(UNIT_CONTAINS(unit)) && (OBJ_EQP_POS(UNIT_CONTAINS(unit)) != 0u))
       {
          unequip_object(UNIT_CONTAINS(unit));
       }
@@ -146,23 +146,23 @@ void destruct_unit(unit_data *unit)
    {
       /* Call functions of the unit which have any data                     */
       /* that they might want to work on.                                   */
-      while(UNIT_FUNC(unit))
+      while(UNIT_FUNC(unit) != nullptr)
       {
          destroy_fptr(unit, UNIT_FUNC(unit)); /* Unlinks, no free */
       }
 
-      while(UNIT_AFFECTED(unit))
+      while(UNIT_AFFECTED(unit) != nullptr)
       {
          unlink_affect(unit, UNIT_AFFECTED(unit));
       }
    }
 
-   if(UNIT_IN(unit))
+   if(UNIT_IN(unit) != nullptr)
    {
       unit_from_unit(unit);
    }
 
-   if(UNIT_FILE_INDEX(unit))
+   if(UNIT_FILE_INDEX(unit) != nullptr)
    {
       UNIT_FILE_INDEX(unit)->no_in_mem--;
    }
@@ -263,9 +263,9 @@ auto is_destructed(int i, void *ptr) -> int
    {
       if(destructed[i][n] == ptr)
       {
-         return TRUE;
+         return static_cast<int>(TRUE);
       }
    }
 
-   return FALSE;
+   return static_cast<int>(FALSE);
 }

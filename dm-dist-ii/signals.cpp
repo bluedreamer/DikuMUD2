@@ -104,13 +104,13 @@ void (*sigabrt_func)(int) = nullptr;
 
 void sig_debugdump(int tsignal)
 {
-   static int here = FALSE;
+   static int here = static_cast<int>(FALSE);
 
    slog(LOG_ALL, 0, "SIG_IOT #%d received!", tsignal);
    if(here == 0)
    {
       dump_debug_history();
-      here = TRUE;
+      here = static_cast<int>(TRUE);
    }
    //	signal(SIGSEGV,SIG_DFL);
    //	signal(SIGBUS,SIG_DFL);

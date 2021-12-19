@@ -381,7 +381,7 @@ auto pain_act(unit_data *npc, struct pain_type *pain) -> int
 {
    act((char *)pain->cmds[pain->idx].ptr[0], A_SOMEONE, npc, nullptr, nullptr, TO_ROOM);
    pain_next_cmd(pain);
-   return FALSE; /* Stop command loop until next tick */
+   return static_cast<int>(FALSE); /* Stop command loop until next tick */
 }
 
 /* 'C' command */
@@ -389,7 +389,7 @@ auto pain_command(unit_data *npc, struct pain_type *pain) -> int
 {
    command_interpreter(npc, (char *)pain->cmds[pain->idx].ptr[0]);
    pain_next_cmd(pain);
-   return FALSE; /* Stop command loop until next tick */
+   return static_cast<int>(FALSE); /* Stop command loop until next tick */
 }
 
 /* 'D' Command */
@@ -397,19 +397,19 @@ auto pain_closed(unit_data *npc, struct pain_type *pain) -> int
 {
    int i;
 
-   if(IS_ROOM(UNIT_IN(npc)) && ROOM_EXIT(UNIT_IN(npc), pain->cmds[pain->idx].data[0]))
+   if(IS_ROOM(UNIT_IN(npc)) && (ROOM_EXIT(UNIT_IN(npc), pain->cmds[pain->idx].data[0]) != nullptr))
    {
       i = ROOM_EXIT(UNIT_IN(npc), pain->cmds[pain->idx].data[0])->exit_info;
       if(IS_SET(i, EX_CLOSED))
       {
          pain_gotoline(pain);
-         return TRUE; /* Continue command loop immediately */
+         return static_cast<int>(TRUE); /* Continue command loop immediately */
       }
    }
 
    /* Not closed */
    pain_next_cmd(pain);
-   return TRUE; /* Continue command loop immediately */
+   return static_cast<int>(TRUE); /* Continue command loop immediately */
 }
 
 /* 'd' command */
@@ -421,7 +421,7 @@ auto pain_charcmd(unit_data *npc, struct pain_type *pain) -> int
    if(pain->vars[0] == nullptr) /* Is there a PC target? */
    {
       pain_gotoline(pain);
-      return FALSE; /* Wait a tick */
+      return static_cast<int>(FALSE); /* Wait a tick */
    }
 
    for(u = UNIT_CONTAINS(UNIT_IN(npc)); u != nullptr; u = u->next)
@@ -436,14 +436,14 @@ auto pain_charcmd(unit_data *npc, struct pain_type *pain) -> int
    {
       pain->vars[0] = nullptr;
       pain_gotoline(pain);
-      return FALSE; /* Wait a tick */
+      return static_cast<int>(FALSE); /* Wait a tick */
    }
 
    /* Great! The CHAR is still here! */
    sprintf(buf, (char *)pain->cmds[pain->idx].ptr[0], UNIT_NAME(u));
    command_interpreter(npc, buf);
    pain_next_cmd(pain);
-   return FALSE; /* Stop command loop until next tick */
+   return static_cast<int>(FALSE); /* Stop command loop until next tick */
 }
 
 /* 'G' command */
@@ -462,7 +462,7 @@ auto pain_goto(unit_data *npc, struct pain_type *pain) -> int
    {
       pain_error("PAIN 'G' : This part has not yet been made!");
       pain_next_cmd(pain);
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(res == MOVE_GOAL)
@@ -470,7 +470,7 @@ auto pain_goto(unit_data *npc, struct pain_type *pain) -> int
       pain_next_cmd(pain);
    }
 
-   return FALSE; /* Stop command loop until next tick */
+   return static_cast<int>(FALSE); /* Stop command loop until next tick */
 }
 
 /* 'H' command */
@@ -483,12 +483,12 @@ auto pain_has(unit_data *npc, struct pain_type *pain) -> int
    if(find_unit(npc, &c, nullptr, FIND_UNIT_IN_ME) != nullptr)
    {
       pain_gotoline(pain);
-      return TRUE; /* Continue command loop immediately */
+      return static_cast<int>(TRUE); /* Continue command loop immediately */
    }
 
    /* Not found */
    pain_next_cmd(pain);
-   return TRUE; /* Continue command loop immediately */
+   return static_cast<int>(TRUE); /* Continue command loop immediately */
 }
 
 /* 'I' command */
@@ -505,21 +505,21 @@ auto pain_in_room(unit_data *npc, struct pain_type *pain) -> int
       if(u != npc)
       {
          pain_gotoline(pain);
-         return TRUE;
+         return static_cast<int>(TRUE);
       }
 
       c = (char *)pain->cmds[pain->idx].ptr[0];
       sprintf(buf, "2.%s", c);
-      if(find_unit(npc, &c, 0, FIND_UNIT_SURRO))
+      if(find_unit(npc, &c, nullptr, FIND_UNIT_SURRO) != nullptr)
       {
          pain_gotoline(pain);
-         return TRUE;
+         return static_cast<int>(TRUE);
       }
    }
 
    pain_next_cmd(pain);
 
-   return TRUE; /* Continue command loop immediately */
+   return static_cast<int>(TRUE); /* Continue command loop immediately */
 }
 
 /* 'i' command */
@@ -527,14 +527,14 @@ auto pain_intercept(unit_data *npc, struct pain_type *pain) -> int
 {
    pain_next_cmd(pain);
 
-   return FALSE; /* Stop ticking right away. :) */
+   return static_cast<int>(FALSE); /* Stop ticking right away. :) */
 }
 
 /* 'J' command */
 auto pain_jump(unit_data *npc, struct pain_type *pain) -> int
 {
    pain_gotoline(pain);
-   return FALSE; /* Command loop will stall one tick */
+   return static_cast<int>(FALSE); /* Command loop will stall one tick */
 }
 
 /* 'L' command */
@@ -542,13 +542,13 @@ auto pain_locked(unit_data *npc, struct pain_type *pain) -> int
 {
    int i;
 
-   if(IS_ROOM(UNIT_IN(npc)) && ROOM_EXIT(UNIT_IN(npc), pain->cmds[pain->idx].data[0]))
+   if(IS_ROOM(UNIT_IN(npc)) && (ROOM_EXIT(UNIT_IN(npc), pain->cmds[pain->idx].data[0]) != nullptr))
    {
       i = ROOM_EXIT(UNIT_IN(npc), pain->cmds[pain->idx].data[0])->exit_info;
       if(IS_SET(i, EX_LOCKED))
       {
          pain_gotoline(pain);
-         return TRUE; /* Continue command loop immediately */
+         return static_cast<int>(TRUE); /* Continue command loop immediately */
       }
    }
    else
@@ -556,7 +556,7 @@ auto pain_locked(unit_data *npc, struct pain_type *pain) -> int
       pain_next_cmd(pain);
    }
 
-   return TRUE; /* Continue command loop immediately */
+   return static_cast<int>(TRUE); /* Continue command loop immediately */
 }
 
 /* 'l' command */
@@ -567,7 +567,7 @@ auto pain_load(unit_data *npc, struct pain_type *pain) -> int
    u = read_unit((file_index_type *)pain->cmds[pain->idx].ptr[0]);
    unit_to_unit(u, npc);
    pain_next_cmd(pain);
-   return TRUE; /* Continue command loop immediately */
+   return static_cast<int>(TRUE); /* Continue command loop immediately */
 }
 
 /* 'r' command */
@@ -578,7 +578,7 @@ auto pain_remote_load(unit_data *npc, struct pain_type *pain) -> int
    u = read_unit((file_index_type *)pain->cmds[pain->idx].ptr[0]);
    unit_to_unit(u, (unit_data *)pain->cmds[pain->idx].ptr[1]);
    pain_next_cmd(pain);
-   return TRUE; /* Continue command loop immediately */
+   return static_cast<int>(TRUE); /* Continue command loop immediately */
 }
 
 /* 'R' command */
@@ -593,7 +593,7 @@ auto pain_random(unit_data *npc, struct pain_type *pain) -> int
       pain_next_cmd(pain);
    }
 
-   return TRUE; /* Continue command loop immediately */
+   return static_cast<int>(TRUE); /* Continue command loop immediately */
 }
 
 /* 'S' command */
@@ -606,12 +606,12 @@ auto pain_scan_pc(unit_data *npc, struct pain_type *pain) -> int
    if((unit_vector.top < 1) || !CHAR_CAN_SEE(npc, UVI(i)))
    {
       pain_gotoline(pain);
-      return FALSE; /* Wait a tick */
+      return static_cast<int>(FALSE); /* Wait a tick */
    }
 
    pain->vars[0] = unit_vector.units[i];
    pain_next_cmd(pain);
-   return TRUE; /* Wait no more */
+   return static_cast<int>(TRUE); /* Wait no more */
 }
 
 /* 'T' command */
@@ -630,12 +630,12 @@ auto pain_trash(unit_data *npc, struct pain_type *pain) -> int
          /* unit_down(u, npc); */
          extract_unit(u); /* Not sure this is fair... */
          pain_gotoline(pain);
-         return FALSE; /* Wait one tick */
+         return static_cast<int>(FALSE); /* Wait one tick */
       }
    }
 
    pain_next_cmd(pain);
-   return FALSE; /* Wait one tick */
+   return static_cast<int>(FALSE); /* Wait one tick */
 }
 
 /* 'W' command */
@@ -648,11 +648,11 @@ auto pain_wait(unit_data *npc, struct pain_type *pain) -> int
    if(pain->cmds[pain->idx].data[0] == time_info.hours)
    {
       pain_gotoline(pain);
-      return TRUE; /* Continue command loop immediately */
+      return static_cast<int>(TRUE); /* Continue command loop immediately */
    }
    pain_next_cmd(pain);
 
-   return TRUE; /* Continue command loop immediately */
+   return static_cast<int>(TRUE); /* Continue command loop immediately */
 }
 
 /* 'M' command */
@@ -661,11 +661,11 @@ auto pain_waitmsg(unit_data *npc, struct pain_type *pain) -> int
    if(pain->cmds[pain->idx].data[0] != 0)
    {
       pain->cmds[pain->idx].data[0]--;
-      return FALSE; /* Wait yet another tick */
+      return static_cast<int>(FALSE); /* Wait yet another tick */
    }
 
    pain_gotoline(pain);
-   return TRUE; /* Continue command loop immediately */
+   return static_cast<int>(TRUE); /* Continue command loop immediately */
 }
 
 /* ---------------------------------------------------------------------- */
@@ -744,14 +744,14 @@ auto pain_exec(struct spec_arg *sarg) -> int
    if((p->cmds[p->idx].func == pain_waitmsg) && (sarg->cmd->no == p->cmds[p->idx].data[0]) && ((p->vars[0]) != nullptr) &&
       (p->vars[0] == sarg->activator) && ((is_name(sarg->arg, (const char **)p->cmds[p->idx].ptr[0])) != nullptr))
    {
-      cont = TRUE;
+      cont = static_cast<int>(TRUE);
       pain_next_cmd(p);
       return SFR_SHARE;
    }
 
    if((sarg->cmd->no == CMD_AUTO_TICK) && !CHAR_FIGHTING(sarg->owner))
    {
-      for(cont = TRUE, i = 0; (cont != 0) && (i < 100); i++)
+      for(cont = static_cast<int>(TRUE), i = 0; (cont != 0) && (i < 100); i++)
       {
          cont = ((*p->cmds[p->idx].func)(sarg->owner, p));
       }
@@ -863,7 +863,7 @@ auto pain_doinit(unit_data *npc, char *text) -> struct pain_type *
    char              buf[MAX_STRING_LENGTH];
    char              zone[80];
    char              name[80];
-   char             *b = NULL;
+   char             *b = nullptr;
    struct pain_type *pain;
 
    struct pain_cmd_type   *cmd_list     = nullptr;
@@ -880,7 +880,7 @@ auto pain_doinit(unit_data *npc, char *text) -> struct pain_type *
 
    top   = 0;
    i     = 0;
-   error = FALSE;
+   error = static_cast<int>(FALSE);
 
    while((*text != 0) && (error == 0))
    {
@@ -900,14 +900,14 @@ auto pain_doinit(unit_data *npc, char *text) -> struct pain_type *
       text = pi_getnum(text, &i);
       if(i == -1)
       {
-         error = TRUE;
+         error = static_cast<int>(TRUE);
          continue;
       }
       if(i <= line_no.symbolic)
       {
          pain_error("PAIN: 'Repeating' or 'less than previous' symbolic "
                     "line num.");
-         error = TRUE;
+         error = static_cast<int>(TRUE);
          continue;
       }
       line_no.symbolic = i;
@@ -955,7 +955,7 @@ auto pain_doinit(unit_data *npc, char *text) -> struct pain_type *
             if(i == -1)
             {
                pain_error("PAIN - Illegal direction in Closed door test");
-               error = TRUE;
+               error = static_cast<int>(TRUE);
             }
             break;
 
@@ -966,7 +966,7 @@ auto pain_doinit(unit_data *npc, char *text) -> struct pain_type *
             if(cmd.ptr[0] == nullptr)
             {
                pain_error("Unknown unit referece in PAIN-Goto: %s", buf);
-               error = TRUE;
+               error = static_cast<int>(TRUE);
                continue;
             }
             break;
@@ -994,7 +994,7 @@ auto pain_doinit(unit_data *npc, char *text) -> struct pain_type *
                pain_error("PAIN - Illegal interpreter 'command'"
                           " reference: %s",
                           buf);
-               error = TRUE;
+               error = static_cast<int>(TRUE);
             }
             cmd.data[0] = cmd_ptr->no;
 
@@ -1009,7 +1009,7 @@ auto pain_doinit(unit_data *npc, char *text) -> struct pain_type *
             if((cmd.ptr[0] = find_file_index(zone, name)) == nullptr)
             {
                pain_error("PAIN - Illegal symbolic reference: %s/%s", zone, name);
-               error = TRUE;
+               error = static_cast<int>(TRUE);
             }
             cmd.func = pain_intercept;
             break;
@@ -1030,7 +1030,7 @@ auto pain_doinit(unit_data *npc, char *text) -> struct pain_type *
             if(i == -1)
             {
                pain_error("PAIN - Illegal direction in Lock door test");
-               error = TRUE;
+               error = static_cast<int>(TRUE);
             }
             break;
 
@@ -1040,7 +1040,7 @@ auto pain_doinit(unit_data *npc, char *text) -> struct pain_type *
             if((cmd.ptr[0] = find_file_index(zone, name)) == nullptr)
             {
                pain_error("PAIN - Illegal symbolic reference: %s", buf);
-               error = TRUE;
+               error = static_cast<int>(TRUE);
             }
             cmd.func = pain_load;
             break;
@@ -1060,7 +1060,7 @@ auto pain_doinit(unit_data *npc, char *text) -> struct pain_type *
             if((cmd.ptr[0] = find_file_index(zone, name)) == nullptr)
             {
                pain_error("PAIN - Illegal symbolic reference: %s", buf);
-               error = TRUE;
+               error = static_cast<int>(TRUE);
             }
 
             text = pi_getstr(text, buf);
@@ -1068,7 +1068,7 @@ auto pain_doinit(unit_data *npc, char *text) -> struct pain_type *
             if((cmd.ptr[1] = world_room(zone, name)) == nullptr)
             {
                pain_error("PAIN 'r': - Illegal symbolic ROOM reference: %s", buf);
-               error = TRUE;
+               error = static_cast<int>(TRUE);
             }
             cmd.func = pain_remote_load;
             break;
@@ -1108,7 +1108,7 @@ auto pain_doinit(unit_data *npc, char *text) -> struct pain_type *
                   pain_error("PAIN - Illegal interpreter 'command'"
                              " reference: %s",
                              buf);
-                  error = TRUE;
+                  error = static_cast<int>(TRUE);
                }
                else
                {
@@ -1153,7 +1153,7 @@ auto pain_doinit(unit_data *npc, char *text) -> struct pain_type *
 
          default:
             pain_error("Illegal routine in pain init: %s", text);
-            error = TRUE;
+            error = static_cast<int>(TRUE);
             break;
       } /* switch */
 
@@ -1191,7 +1191,7 @@ auto pain_doinit(unit_data *npc, char *text) -> struct pain_type *
             if((j = translate_line(top, cmd_list[i].gotoline, line_numbers)) == -1)
             {
                pain_error("PAIN: Unknown symbolic line number %d", cmd_list[i].gotoline);
-               error = TRUE;
+               error = static_cast<int>(TRUE);
             }
             else
             {

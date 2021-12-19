@@ -31,7 +31,6 @@
 /* 23/08/93 jubal  : Allow imms to see hidden thingys                      */
 /* 10/02/94 gnort  : Rewrote do_who to be smaller and dynamic.             */
 
-#include "zone_info_type.h"
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"
@@ -55,6 +54,7 @@
 #include "trie.h"
 #include "utility.h"
 #include "utils.h"
+#include "zone_info_type.h"
 #include <cctype>
 #include <climits>
 #include <cstdio>
@@ -95,11 +95,9 @@ auto in_string(unit_data *ch, unit_data *u) -> char *
          sprintf(tmp, "%s@%s", UNIT_FI_NAME(u), UNIT_FI_ZONENAME(u));
          return in_str;
       }
-      else
-      {
-         sprintf(tmp, "%s/", UNIT_SEE_NAME(ch, u));
-         TAIL(tmp);
-      }
+
+      sprintf(tmp, "%s/", UNIT_SEE_NAME(ch, u));
+      TAIL(tmp);
    }
 
    error(HERE, "Something that is UNIT_IN, not in a room!");
@@ -136,7 +134,7 @@ void do_exits(unit_data *ch, char *arg, const struct command_info *cmd)
 
    for(door = 0; door <= 5; door++)
    {
-      if(ROOM_EXIT(room, door) && ROOM_EXIT(room, door)->to_room)
+      if((ROOM_EXIT(room, door) != nullptr) && (ROOM_EXIT(room, door)->to_room != nullptr))
       {
          if(!IS_SET(ROOM_EXIT(room, door)->exit_info, EX_CLOSED))
          {
@@ -198,7 +196,7 @@ void do_purse(unit_data *ch, char *arg, const struct command_info *cmd)
       }
    }
 
-   if(found == 0u)
+   if(static_cast<unsigned int>(found) == 0U)
    {
       send_to_char("  Nothing.\n\r", ch);
    }
@@ -206,7 +204,7 @@ void do_purse(unit_data *ch, char *arg, const struct command_info *cmd)
 
 void do_quests(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   int                      bOutput = FALSE;
+   int                      bOutput = static_cast<int>(FALSE);
    char                     buf[256];
    struct extra_descr_data *exd;
 
@@ -230,7 +228,7 @@ void do_quests(unit_data *ch, char *arg, const struct command_info *cmd)
 
       sprintf(buf, "%s\n\r", exd->names.Name());
       send_to_char(buf, ch);
-      bOutput = TRUE;
+      bOutput = static_cast<int>(TRUE);
    }
 
    if(bOutput == 0)
@@ -329,7 +327,7 @@ void do_status(unit_data *ch, char *arg, const struct command_info *cmd)
    *buf = '\0';
    b    = buf;
 
-   if(str_is_empty(arg) == 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) == 0U)
    {
       arg  = one_argument(arg, buf);
       idx  = search_block(buf, infos, FALSE);
@@ -489,7 +487,7 @@ auto own_position(unit_data *ch) -> char *
          {
             sprintf(buf, "You are fighting %s.\n\r", UNIT_TITLE_STRING(CHAR_FIGHTING(ch)));
          }
-         else if(CHAR_COMBAT(ch))
+         else if(CHAR_COMBAT(ch) != nullptr)
          {
             sprintf(buf, "You are fighting %s at a distance.\n\r", UNIT_TITLE_STRING(CHAR_COMBAT(ch)->Opponent()));
          }
@@ -517,7 +515,7 @@ void do_score(unit_data *ch, char *arg, const struct command_info *cmd)
    static char             *b;
    unit_data               *vict;
    struct char_follow_type *f;
-   int                      members = FALSE;
+   int                      members = static_cast<int>(FALSE);
 
    auto age(const unit_data *ch)->struct time_info_data;
 
@@ -544,7 +542,7 @@ void do_score(unit_data *ch, char *arg, const struct command_info *cmd)
          sprintf(b, "%s %ld(%ld) hit, %d(%d) mana and %d(%d) endurance.\n\r", UNIT_NAME(vict), (signed long)UNIT_HIT(vict),
                  (signed long)UNIT_MAX_HIT(vict), CHAR_MANA(vict), mana_limit(vict), CHAR_ENDURANCE(vict), move_limit(vict));
          TAIL(b);
-         members = TRUE;
+         members = static_cast<int>(TRUE);
       }
 
       for(f = CHAR_FOLLOWERS(vict); f != nullptr; f = f->next)
@@ -555,7 +553,7 @@ void do_score(unit_data *ch, char *arg, const struct command_info *cmd)
                     (signed long)UNIT_MAX_HIT(f->follower), CHAR_MANA(f->follower), mana_limit(f->follower), CHAR_ENDURANCE(f->follower),
                     move_limit(f->follower));
             TAIL(b);
-            members = TRUE;
+            members = static_cast<int>(TRUE);
          }
       }
 
@@ -726,23 +724,24 @@ void player_where(unit_data *ch, char *arg)
 {
    char             buf[160];
    descriptor_data *d;
-   int              any = FALSE;
+   int              any = static_cast<int>(FALSE);
 
    for(d = descriptor_list; d != nullptr; d = d->next)
    {
-      if((d->character != nullptr) && (d->character != ch) && UNIT_IN(d->character) && (descriptor_is_playing(d) != 0) &&
-         ((str_is_empty(arg) != 0u) || (str_ccmp(arg, UNIT_NAME(d->character)) == 0)) && CHAR_LEVEL(ch) >= UNIT_MINV(d->character) &&
-         d->original == nullptr && CHAR_CAN_SEE(ch, d->character) && unit_zone(ch) == unit_zone(d->character))
+      if((d->character != nullptr) && (d->character != ch) && (UNIT_IN(d->character) != nullptr) && (descriptor_is_playing(d) != 0) &&
+         ((static_cast<unsigned int>(str_is_empty(arg)) != 0U) || (str_ccmp(arg, UNIT_NAME(d->character)) == 0)) &&
+         CHAR_LEVEL(ch) >= UNIT_MINV(d->character) && d->original == nullptr && CHAR_CAN_SEE(ch, d->character) &&
+         unit_zone(ch) == unit_zone(d->character))
       {
          sprintf(buf, "%-30s at %s\n\r", UNIT_NAME(d->character), TITLENAME(unit_room(d->character)));
          send_to_char(buf, ch);
-         any = TRUE;
+         any = static_cast<int>(TRUE);
       }
    }
 
    if(any == 0)
    {
-      if(str_is_empty(arg) != 0u)
+      if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
       {
          send_to_char("No other visible players in this area.\n\r", ch);
       }
@@ -755,7 +754,7 @@ void player_where(unit_data *ch, char *arg)
 
 void do_where(unit_data *ch, char *aaa, const struct command_info *cmd)
 {
-   char            *buf = NULL;
+   char            *buf = nullptr;
    char             buf1[1024];
    char             buf2[512];
    unit_data       *i;
@@ -770,7 +769,7 @@ void do_where(unit_data *ch, char *aaa, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       strcpy(buf1, "Players\n\r-------\n\r");
       len = strlen(buf1);
@@ -778,7 +777,7 @@ void do_where(unit_data *ch, char *aaa, const struct command_info *cmd)
 
       for(d = descriptor_list; d != nullptr; d = d->next)
       {
-         if((d->character != nullptr) && UNIT_IN(d->character) && (descriptor_is_playing(d) != 0) &&
+         if((d->character != nullptr) && (UNIT_IN(d->character) != nullptr) && (descriptor_is_playing(d) != 0) &&
             CHAR_LEVEL(ch) >= UNIT_MINV(d->character) && (d->original == nullptr || CHAR_LEVEL(ch) >= UNIT_MINV(d->original)))
          {
             if(d->original != nullptr)
@@ -804,7 +803,7 @@ void do_where(unit_data *ch, char *aaa, const struct command_info *cmd)
 
       for(i = unit_list; i != nullptr; i = i->gnext)
       {
-         if(UNIT_IN(i) && UNIT_NAMES(i).IsName(arg) && CHAR_LEVEL(ch) >= UNIT_MINV(i))
+         if((UNIT_IN(i) != nullptr) && (UNIT_NAMES(i).IsName(arg) != nullptr) && CHAR_LEVEL(ch) >= UNIT_MINV(i))
          {
             sprintf(buf1, "%-30s - %s [%s]\n\r", TITLENAME(i), UNIT_SEE_TITLE(ch, UNIT_IN(i)), in_string(ch, i));
 
@@ -875,7 +874,7 @@ void do_who(unit_data *ch, char *arg, const struct command_info *cmd)
                strcat(tmp, UNIT_NAME(d->character));
             }
 
-            sprintf(tmp2, "%s %s\n\r", tmp, UNIT_MINV(d->character) ? str_cc("WIZI ", itoa(UNIT_MINV(d->character))) : "");
+            sprintf(tmp2, "%s %s\n\r", tmp, UNIT_MINV(d->character) != 0u ? str_cc("WIZI ", itoa(UNIT_MINV(d->character))) : "");
          }
          else
          {
@@ -953,9 +952,9 @@ void do_areas(unit_data *ch, char *arg, const struct command_info *cmd)
 
    for(z = zone_info.zone_list; z != nullptr; z = z->next)
    {
-      if(str_is_empty(z->title) == 0u)
+      if(static_cast<unsigned int>(str_is_empty(z->title)) == 0U)
       {
-         sprintf(b, "%-28s %s  ", z->title, z->payonly != 0u ? "Donation" : "        ");
+         sprintf(b, "%-28s %s  ", z->title, z->payonly != 0U ? "Donation" : "        ");
          if((no % 2) == 0)
          {
             strcat(b, "\n\r");

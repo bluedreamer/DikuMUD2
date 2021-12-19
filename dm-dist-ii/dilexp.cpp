@@ -574,9 +574,9 @@ void dilfe_oppo(struct dilprg *p, class dilval *v)
 
    if(v->type == DILV_INT)
    {
-      v->val.num =
-         (CHAR_COMBAT((unit_data *)v1.val.ptr) ? CHAR_COMBAT((unit_data *)v1.val.ptr)->FindOpponent((unit_data *)v2.val.ptr) != nullptr
-                                               : FALSE);
+      v->val.num = static_cast<int64_t>(CHAR_COMBAT((unit_data *)v1.val.ptr) != nullptr
+                                           ? CHAR_COMBAT((unit_data *)v1.val.ptr)->FindOpponent((unit_data *)v2.val.ptr) != nullptr
+                                           : FALSE);
    }
 }
 
@@ -611,7 +611,7 @@ void dilfe_splx(struct dilprg *p, class dilval *v)
       int   i;
       char *c = (char *)v1.val.ptr;
 
-      if(str_is_empty(c) != 0u)
+      if(static_cast<unsigned int>(str_is_empty(c)) != 0U)
       {
          v->val.num = -1;
       }
@@ -899,7 +899,7 @@ void dilfe_mons(struct dilprg *p, class dilval *v)
    if(v->type == DILV_SP)
    {
       v->atyp    = DILA_EXP;
-      v->val.ptr = str_dup(money_string(v1.val.num, DEF_CURRENCY, v2.val.num));
+      v->val.ptr = str_dup(money_string(v1.val.num, DEF_CURRENCY, v2.val.num != 0));
    }
 }
 
@@ -1117,7 +1117,7 @@ void dilfe_trmo(struct dilprg *p, class dilval *v)
       }
       else if(v2.val.ptr == nullptr)
       {
-         if(char_can_afford((unit_data *)v1.val.ptr, v3.val.num, local_currency((unit_data *)v1.val.ptr)) != 0u)
+         if(static_cast<unsigned int>(char_can_afford((unit_data *)v1.val.ptr, v3.val.num, local_currency((unit_data *)v1.val.ptr))) != 0U)
          {
             money_transfer((unit_data *)v1.val.ptr, nullptr, v3.val.num, local_currency((unit_data *)v1.val.ptr));
             v->val.num = 1;
@@ -1125,7 +1125,7 @@ void dilfe_trmo(struct dilprg *p, class dilval *v)
       }
       else
       {
-         if(char_can_afford((unit_data *)v1.val.ptr, v3.val.num, local_currency((unit_data *)v2.val.ptr)) != 0u)
+         if(static_cast<unsigned int>(char_can_afford((unit_data *)v1.val.ptr, v3.val.num, local_currency((unit_data *)v2.val.ptr))) != 0U)
          {
             money_transfer((unit_data *)v1.val.ptr, (unit_data *)v2.val.ptr, v3.val.num, local_currency((unit_data *)v2.val.ptr));
             v->val.num = 1;
@@ -1241,7 +1241,7 @@ void dilfe_not(struct dilprg *p, class dilval *v)
    eval_dil_exp(p, &v1);
    v->type    = DILV_INT;
    v->atyp    = DILA_NONE;
-   v->val.num = static_cast<int64_t>(dil_getbool(&v1)) == 0;
+   v->val.num = static_cast<int64_t>(static_cast<int64_t>(dil_getbool(&v1)) == 0);
 }
 
 void dilfe_umin(struct dilprg *p, class dilval *v)
@@ -1383,7 +1383,7 @@ void dilfe_txf(struct dilprg *p, class dilval *v)
 
             v->atyp = DILA_EXP;
             v->type = DILV_SP;
-            str_escape_format((char *)v1.val.ptr, dest, sizeof(dest), TRUE);
+            str_escape_format((char *)v1.val.ptr, dest, sizeof(dest), static_cast<int>(TRUE));
 
             v->val.ptr = str_dup(dest);
          }
@@ -1738,11 +1738,11 @@ void dilfe_dlf(struct dilprg *p, class dilval *v)
       v->atyp = DILA_NONE;
       if(dil_find((char *)v1.val.ptr, (unit_data *)v2.val.ptr) != nullptr)
       {
-         v->val.num = TRUE;
+         v->val.num = static_cast<int64_t>(TRUE);
       }
       else
       {
-         v->val.num = FALSE;
+         v->val.num = static_cast<int64_t>(FALSE);
       }
    }
 }
@@ -1957,7 +1957,7 @@ void dilfe_land(struct dilprg *p, class dilval *v)
 
    v->type    = DILV_INT;
    v->atyp    = DILA_NONE;
-   v->val.num = (static_cast<int64_t>(dil_getbool(&v1) != 0) && (dil_getbool(&v2)) != 0);
+   v->val.num = static_cast<int64_t>((static_cast<int64_t>(dil_getbool(&v1) != 0) != 0) && (dil_getbool(&v2)) != 0);
 }
 
 void dilfe_or(struct dilprg *p, class dilval *v)
@@ -1993,7 +1993,7 @@ void dilfe_lor(struct dilprg *p, class dilval *v)
 
    v->type    = DILV_INT;
    v->atyp    = DILA_NONE;
-   v->val.num = (static_cast<int64_t>(dil_getbool(&v1) != 0) || (dil_getbool(&v2)) != 0);
+   v->val.num = static_cast<int64_t>((static_cast<int64_t>(dil_getbool(&v1) != 0) != 0) || (dil_getbool(&v2)) != 0);
 }
 
 void dilfe_isa(struct dilprg *p, class dilval *v)
@@ -2539,19 +2539,21 @@ void dilfe_se(struct dilprg *p, class dilval *v)
    {
       case DILV_INT:
          v->atyp = DILA_NONE;
-         if((str_is_empty((char *)v1.val.ptr) != 0u) || (str_is_empty((char *)v2.val.ptr) != 0u))
+         if((static_cast<unsigned int>(str_is_empty((char *)v1.val.ptr)) != 0U) ||
+            (static_cast<unsigned int>(str_is_empty((char *)v2.val.ptr)) != 0U))
          {
-            v->val.num = static_cast<int64_t>((str_is_empty((char *)v1.val.ptr) != 0u) && (str_is_empty((char *)v2.val.ptr) != 0u));
+            v->val.num = static_cast<int64_t>((static_cast<unsigned int>(str_is_empty((char *)v1.val.ptr)) != 0U) &&
+                                              (static_cast<unsigned int>(str_is_empty((char *)v2.val.ptr)) != 0U));
          }
          else
          {
-            v->val.num = static_cast<int64_t>(str_ccmp((char *)v1.val.ptr, (char *)v2.val.ptr)) == 0;
+            v->val.num = static_cast<int64_t>(static_cast<int64_t>(str_ccmp((char *)v1.val.ptr, (char *)v2.val.ptr)) == 0);
          }
          break;
       case DILV_NULL:
          v->atyp    = DILA_NONE;
          v->type    = DILV_INT;
-         v->val.num = FALSE;
+         v->val.num = static_cast<int64_t>(FALSE);
          break;
    }
 }
@@ -2603,9 +2605,11 @@ void dilfe_sne(struct dilprg *p, class dilval *v)
    {
       case DILV_INT:
          v->atyp = DILA_NONE;
-         if((str_is_empty((char *)v1.val.ptr) != 0u) || (str_is_empty((char *)v2.val.ptr) != 0u))
+         if((static_cast<unsigned int>(str_is_empty((char *)v1.val.ptr)) != 0U) ||
+            (static_cast<unsigned int>(str_is_empty((char *)v2.val.ptr)) != 0U))
          {
-            v->val.num = static_cast<int64_t>((str_is_empty((char *)v1.val.ptr) == 0u) || (str_is_empty((char *)v2.val.ptr) == 0u));
+            v->val.num = static_cast<int64_t>((static_cast<unsigned int>(str_is_empty((char *)v1.val.ptr)) == 0U) ||
+                                              (static_cast<unsigned int>(str_is_empty((char *)v2.val.ptr)) == 0U));
          }
          else
          {
@@ -3403,7 +3407,7 @@ void dilfe_cmds(struct dilprg *p, class dilval *v)
          {
             v->type    = DILV_INT;
             v->atyp    = DILA_NONE;
-            v->val.num = is_command(p->sarg->cmd, (char *)v1.val.ptr);
+            v->val.num = static_cast<int64_t>(is_command(p->sarg->cmd, (char *)v1.val.ptr));
          }
          else
          {

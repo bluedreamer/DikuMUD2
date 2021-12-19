@@ -1,4 +1,3 @@
-
 /* *********************************************************************** *
  * File   : guilddef.h                                Part of Valhalla MUD *
  * Version: 1.01                                                           *
@@ -3923,7 +3922,8 @@ hand cuffing;
 
 #else
 
-ERROR      NO;
-GUILD TYPE DEFINED
+ERROR NO;
+GUILD TYPE;
+DEFINED
 
 #endif

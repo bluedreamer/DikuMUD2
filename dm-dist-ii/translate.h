@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : translate.h                               Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -22,10 +23,8 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_TRANSLATE_H
-#define _MUD_TRANSLATE_H
+#include "Mplex/mplex.h"
+#include <cstdint>
 
-void protocol_translate(class cConHook *con, uint8_t code, char **b);
+void protocol_translate(cConHook *con, uint8_t code, char **b);
 void translate_init();
-
-#endif

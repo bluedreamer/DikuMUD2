@@ -116,7 +116,8 @@ void spell_cause_wounds_1(spell_args *sa)
 
       sa->hm = -1;
 
-      damage(sa->caster, sa->target, nullptr, 0, MSG_TYPE_SPELL, SPL_CAUSE_WOUNDS_1, COM_MSG_MISS, static_cast<int>(effect) == 0);
+      damage(sa->caster, sa->target, nullptr, 0, MSG_TYPE_SPELL, SPL_CAUSE_WOUNDS_1, COM_MSG_MISS,
+             static_cast<int>(static_cast<int>(effect) == 0));
    }
 }
 
@@ -132,7 +133,8 @@ void spell_cause_wounds_2(spell_args *sa)
 
       sa->hm = -1;
 
-      damage(sa->caster, sa->target, nullptr, 0, MSG_TYPE_SPELL, SPL_CAUSE_WOUNDS_2, COM_MSG_MISS, static_cast<int>(effect) == 0);
+      damage(sa->caster, sa->target, nullptr, 0, MSG_TYPE_SPELL, SPL_CAUSE_WOUNDS_2, COM_MSG_MISS,
+             static_cast<int>(static_cast<int>(effect) == 0));
    }
 }
 
@@ -147,7 +149,8 @@ void spell_cause_wounds_3(spell_args *sa)
       int effect = dil_effect(sa->pEffect, sa);
       sa->hm     = -1;
 
-      damage(sa->caster, sa->target, nullptr, 0, MSG_TYPE_SPELL, SPL_CAUSE_WOUNDS_3, COM_MSG_MISS, static_cast<int>(effect) == 0);
+      damage(sa->caster, sa->target, nullptr, 0, MSG_TYPE_SPELL, SPL_CAUSE_WOUNDS_3, COM_MSG_MISS,
+             static_cast<int>(static_cast<int>(effect) == 0));
    }
 }
 
@@ -332,12 +335,10 @@ void spell_lock(spell_args *sa)
 {
    struct door_data *a_door = nullptr;
 
-   auto locate_lock(unit_data * ch, char *arg)->struct door_data *;
-
    char mbuf[MAX_INPUT_LENGTH];
    strcpy(mbuf, sa->arg);
 
-   if((str_is_empty(sa->arg) != 0u) || (a_door = locate_lock(sa->caster, mbuf)) == nullptr)
+   if((static_cast<unsigned int>(str_is_empty(sa->arg)) != 0U) || (a_door = locate_lock(sa->caster, mbuf)) == nullptr)
    {
       send_to_char("The spell fails.\n\r", sa->caster);
       return;
@@ -374,7 +375,7 @@ void spell_lock(spell_args *sa)
 
          if(a_door->reverse != nullptr)
          {
-            if(UNIT_CONTAINS(a_door->reverse))
+            if(UNIT_CONTAINS(a_door->reverse) != nullptr)
             {
                act("*cluck*", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), nullptr, nullptr, TO_ALL);
             }
@@ -395,7 +396,7 @@ void spell_unlock(spell_args *sa)
    char mbuf[MAX_INPUT_LENGTH];
    strcpy(mbuf, sa->arg);
 
-   if((str_is_empty(sa->arg) != 0u) || ((a_door = locate_lock(sa->caster, mbuf)) == nullptr))
+   if((static_cast<unsigned int>(str_is_empty(sa->arg)) != 0U) || ((a_door = locate_lock(sa->caster, mbuf)) == nullptr))
    {
       send_to_char("The spell failed.\n\r", sa->caster);
       return;
@@ -432,7 +433,7 @@ void spell_unlock(spell_args *sa)
 
          if(a_door->reverse != nullptr)
          {
-            if(UNIT_CONTAINS(a_door->reverse))
+            if(UNIT_CONTAINS(a_door->reverse) != nullptr)
             {
                act("*cluck*", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), nullptr, nullptr, TO_ALL);
             }
@@ -529,7 +530,7 @@ void spell_identify_1(spell_args *sa)
 
          case ITEM_DRINKCON:
          case ITEM_FOOD:
-            if(OBJ_VALUE(sa->target, 3))
+            if(OBJ_VALUE(sa->target, 3) != 0)
             {
                sprintf(extra, "It is poisoned.\n\r");
             }

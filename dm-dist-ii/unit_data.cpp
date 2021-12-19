@@ -91,12 +91,12 @@ unit_data::~unit_data()
    assert(unit_list != this);
 #endif
 
-   while(UNIT_FUNC(this))
+   while(UNIT_FUNC(this) != nullptr)
    {
       destroy_fptr(this, UNIT_FUNC(this)); /* Unlinks, no free */
    }
 
-   while(UNIT_AFFECTED(this))
+   while(UNIT_AFFECTED(this) != nullptr)
    {
       unlink_affect(this, UNIT_AFFECTED(this));
    }

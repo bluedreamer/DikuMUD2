@@ -118,7 +118,7 @@ auto cHashSystem::Hash(const char *str) -> uint32_t
 
    for(; *str != 0; ++str)
    {
-      if((g = ((h = (h << 4) + *str) & 0xf0000000)) != 0u)
+      if((g = ((h = (h << 4) + *str) & 0xf0000000)) != 0U)
       {
          h = (h ^ (g >> 24)) ^ g;
       }
@@ -219,7 +219,7 @@ cStringConstant::~cStringConstant()
 
 void cStringInstance::Make(const char *str)
 {
-   if(str_is_empty(str) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(str)) != 0U)
    {
       pConst = nullptr;
       return;

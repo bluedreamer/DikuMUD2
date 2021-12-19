@@ -287,9 +287,9 @@ auto guard_guild_way(struct spec_arg *sarg) -> int
 {
    char *str;
    char *location;
-   char *excl = NULL;
-   char *msg1 = NULL;
-   char *msg2 = NULL;
+   char *excl = nullptr;
+   char *msg1 = nullptr;
+   char *msg2 = nullptr;
    char *guild_no;
    int   guild_cmp;
 
@@ -422,13 +422,13 @@ auto can_leave_guild(struct guild_type *pG, unit_data *master, unit_data *ch) ->
 
    if(!IS_PC(ch))
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(!PC_GUILD(ch) || (strcmp(PC_GUILD(ch), pG->pGuildName) != 0))
    {
       act("$1n says, 'You are not a member here, $3n'", A_SOMEONE, master, nullptr, ch, TO_ROOM);
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(CHAR_LEVEL(ch) > START_LEVEL)
@@ -440,20 +440,20 @@ auto can_leave_guild(struct guild_type *pG, unit_data *master, unit_data *ch) ->
             if(find_quest(*p, ch) == nullptr)
             {
                act("$1n says, 'You must first complete the $2t quest, $3n'", A_SOMEONE, master, *p, ch, TO_ROOM);
-               return FALSE;
+               return static_cast<int>(FALSE);
             }
          }
       }
 
-      if(char_can_afford(ch, pG->nLeaveCost, currency) == 0u)
+      if(static_cast<unsigned int>(char_can_afford(ch, pG->nLeaveCost, currency)) == 0U)
       {
          act("$1n says, 'You can't afford the cost of $2t, $3n.'", A_SOMEONE, master, money_string(pG->nLeaveCost, currency, TRUE), ch,
              TO_ROOM);
-         return FALSE;
+         return static_cast<int>(FALSE);
       }
    }
 
-   return TRUE;
+   return static_cast<int>(TRUE);
 }
 
 void join_guild(unit_data *ch, char *guild_name)
@@ -482,7 +482,7 @@ auto can_join_guild(struct guild_type *pG, unit_data *master, unit_data *ch) -> 
 
    if(!IS_PC(ch))
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(PC_GUILD(ch))
@@ -497,7 +497,7 @@ auto can_join_guild(struct guild_type *pG, unit_data *master, unit_data *ch) -> 
              " guild, $3n'",
              A_SOMEONE, master, nullptr, ch, TO_ROOM);
       }
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(CHAR_LEVEL(ch) > START_LEVEL)
@@ -507,7 +507,7 @@ auto can_join_guild(struct guild_type *pG, unit_data *master, unit_data *ch) -> 
          if((**p != 0) && find_quest(*p, ch) == nullptr)
          {
             act("$1n says, 'You must first complete the $2t quest, $3n'", A_SOMEONE, master, *p, ch, TO_ROOM);
-            return FALSE;
+            return static_cast<int>(FALSE);
          }
       }
 
@@ -516,7 +516,7 @@ auto can_join_guild(struct guild_type *pG, unit_data *master, unit_data *ch) -> 
          act("$1n says, 'Don't you think we remeber how you acted last "
              "time, $3n? ",
              A_SOMEONE, master, nullptr, ch, TO_ROOM);
-         return FALSE;
+         return static_cast<int>(FALSE);
       }
 
       for(p = pG->ppExcludeQuest; *p != nullptr; p++)
@@ -526,19 +526,19 @@ auto can_join_guild(struct guild_type *pG, unit_data *master, unit_data *ch) -> 
             act("$1n says, 'We will never be able to accept you as a "
                 "member due to the $2t quest, $3n'",
                 A_SOMEONE, master, *p, ch, TO_ROOM);
-            return FALSE;
+            return static_cast<int>(FALSE);
          }
       }
 
-      if(char_can_afford(ch, pG->nEnterCost, currency) == 0u)
+      if(static_cast<unsigned int>(char_can_afford(ch, pG->nEnterCost, currency)) == 0U)
       {
          act("$1n says, 'You can't afford the entry cost of $2t, $3n.'", A_SOMEONE, master, money_string(pG->nEnterCost, currency, TRUE),
              ch, TO_ROOM);
-         return FALSE;
+         return static_cast<int>(FALSE);
       }
    }
 
-   return TRUE;
+   return static_cast<int>(TRUE);
 }
 
 /* You must be able to be expelled, to resign, to enroll and to obtain */
@@ -598,24 +598,28 @@ auto guild_master(struct spec_arg *sarg) -> int
    }
    if(sarg->cmd->no == CMD_INSULT)
    {
-      if(find_unit(sarg->activator, &arg, 0, FIND_UNIT_SURRO) != sarg->owner)
+      if(find_unit(sarg->activator, &arg, nullptr, FIND_UNIT_SURRO) != sarg->owner)
+      {
          return SFR_SHARE;
+      }
 
       if(pc_pos != PC_ID(sarg->activator))
       {
          act("$1n says, 'Do that again $3n and I will kick you out of this "
              "guild.'",
-             A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+             A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_ROOM);
          pc_pos = PC_ID(sarg->activator);
       }
       else /* Match! */
       {
-         if(can_leave_guild(pG, sarg->owner, sarg->activator))
+         if(can_leave_guild(pG, sarg->owner, sarg->activator) != 0)
          {
-            act("$1n says, 'So be it. Buggar ye off, $3n'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+            act("$1n says, 'So be it. Buggar ye off, $3n'", A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_ROOM);
 
             if(CHAR_LEVEL(sarg->activator) > START_LEVEL)
+            {
                money_transfer(sarg->activator, sarg->owner, pG->nLeaveCost, local_currency(sarg->owner));
+            }
 
             leave_guild(sarg->activator);
 
@@ -746,7 +750,7 @@ auto guild_title(struct spec_arg *sarg) -> int
 void do_guild(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    char                     buf[MAX_STRING_LENGTH];
-   int                      found = FALSE;
+   int                      found = static_cast<int>(FALSE);
    struct extra_descr_data *exd;
 
    if(!IS_PC(ch))
@@ -759,7 +763,7 @@ void do_guild(unit_data *ch, char *arg, const struct command_info *cmd)
    {
       if(exd->names.IsName("$guild") != nullptr)
       {
-         found = TRUE;
+         found = static_cast<int>(TRUE);
          sprintf(buf, "%-30s %-2s\n\r", exd->names.Name(0) + 1, exd->names.Name(1));
          send_to_char(buf, ch);
       }

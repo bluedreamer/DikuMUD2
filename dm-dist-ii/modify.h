@@ -22,5 +22,6 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
+#include "descriptor_data.h"
 
 void edit_extra(descriptor_data *d);

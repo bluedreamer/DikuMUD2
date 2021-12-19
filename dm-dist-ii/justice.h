@@ -34,6 +34,6 @@
 
 void offend_legal_state(unit_data *ch, unit_data *victim);
 
-void log_crime(unit_data *criminal, unit_data *victim, uint8_t crime_type, int active = TRUE);
+void log_crime(unit_data *criminal, unit_data *victim, uint8_t crime_type, int active = static_cast<int>(TRUE));
 
 void set_reward_char(unit_data *ch, int crimes);

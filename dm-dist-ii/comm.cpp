@@ -163,7 +163,7 @@ void send_to_room(const char *messg, unit_data *room)
    {
       for(i = UNIT_CONTAINS(room); i != nullptr; i = i->next)
       {
-         if(IS_CHAR(i) && CHAR_DESCRIPTOR(i))
+         if(IS_CHAR(i) && (CHAR_DESCRIPTOR(i) != nullptr))
          {
             send_to_descriptor(messg, CHAR_DESCRIPTOR(i));
          }
@@ -185,11 +185,11 @@ void act_generate(char *buf, const char *str, int show_type, const void *arg1, c
       const int  *num;
    } sub;
 
-   int uppercase = FALSE;
+   int uppercase = static_cast<int>(FALSE);
 
    *buf = 0;
 
-   if(!IS_CHAR(to) || !CHAR_DESCRIPTOR(to) || arg1 == nullptr)
+   if(!IS_CHAR(to) || (CHAR_DESCRIPTOR(to) == nullptr) || arg1 == nullptr)
    {
       return;
    }
@@ -251,7 +251,7 @@ void act_generate(char *buf, const char *str, int show_type, const void *arg1, c
                         if(IS_PC(sub.un))
                         {
                            /* Upper-case it */
-                           uppercase = TRUE;
+                           uppercase = static_cast<int>(TRUE);
                            i         = UNIT_NAME(sub.un);
                         }
                         else
@@ -312,7 +312,7 @@ void act_generate(char *buf, const char *str, int show_type, const void *arg1, c
          {
             *point++ = toupper(*i);
             i++;
-            uppercase = FALSE;
+            uppercase = static_cast<int>(FALSE);
          }
 
          while((*point = *(i++)) != 0)
@@ -389,7 +389,7 @@ void act(const char *str, int show_type, const void *arg1, const void *arg2, con
       {
          return;
       }
-      if(UNIT_CHARS(to) && UNIT_IS_TRANSPARENT(to))
+      if((UNIT_CHARS(to) != 0u) && UNIT_IS_TRANSPARENT(to))
       {
          for(u = UNIT_CONTAINS(to); u != nullptr; u = u->next)
          {
@@ -413,7 +413,7 @@ void act(const char *str, int show_type, const void *arg1, const void *arg2, con
             send_to_descriptor(buf, CHAR_DESCRIPTOR(to));
          }
 
-         if(UNIT_CHARS(to) && UNIT_IS_TRANSPARENT(to) && to != UNIT_IN((unit_data *)arg1))
+         if((UNIT_CHARS(to) != 0u) && UNIT_IS_TRANSPARENT(to) && to != UNIT_IN((unit_data *)arg1))
          {
             for(u = UNIT_CONTAINS(to); u != nullptr; u = u->next)
             {

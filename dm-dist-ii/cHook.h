@@ -16,7 +16,7 @@ public:
 
    [[nodiscard]] auto tfd() const -> int;
    [[nodiscard]] auto IsHooked() const -> int;
-   void               Write(uint8_t *pData, uint32_t nLen, int bCopy = TRUE);
+   void               Write(uint8_t *pData, uint32_t nLen, int bCopy = static_cast<int>(TRUE));
 
    cQueue qRX;
 

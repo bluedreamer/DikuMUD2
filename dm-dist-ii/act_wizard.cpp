@@ -89,7 +89,7 @@ void do_path(unit_data *ch, char *argument, const struct command_info *cmd)
    char       buf[MAX_INPUT_LENGTH];
    char       zone[MAX_INPUT_LENGTH];
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Path where to? (symbolic / findunit)\n\r", ch);
       return;
@@ -174,7 +174,7 @@ void do_reset(unit_data *ch, char *arg, const struct command_info *cmd)
 
    auto zone_reset(struct zone_type *)->int;
 
-   if(str_is_empty(arg) == 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) == 0U)
    {
       send_to_char("You can only reset the zone you are in.\n\r", ch);
       return;
@@ -192,7 +192,7 @@ void do_reset(unit_data *ch, char *arg, const struct command_info *cmd)
 
 void do_echo(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Echo needs an argument.\n\r", ch);
    }
@@ -228,7 +228,7 @@ void do_freeze(unit_data *ch, char *arg, const struct command_info *cmd)
    unit_data *unit;
    unit_fptr *fptr;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Freeze who?\n\r", ch);
    }
@@ -340,7 +340,7 @@ void do_wizinv(unit_data *ch, char *arg, const struct command_info *cmd)
 
    arg = skip_spaces(arg);
 
-   if((str_is_empty(arg) != 0u) || (isdigit(*arg) != 0))
+   if((static_cast<unsigned int>(str_is_empty(arg)) != 0U) || (isdigit(*arg) != 0))
    {
       unit = ch;
    }
@@ -409,7 +409,7 @@ void base_trans(unit_data *ch, unit_data *victim)
       return;
    }
 
-   if((may_teleport(victim, UNIT_IN(ch)) == 0u) && CHAR_LEVEL(ch) < 240)
+   if((static_cast<unsigned int>(may_teleport(victim, UNIT_IN(ch))) == 0U) && CHAR_LEVEL(ch) < 240)
    {
       act("You are not allowed to transfer $3n.", A_SOMEONE, ch, nullptr, victim, TO_CHAR);
       return;
@@ -486,7 +486,7 @@ void do_at(unit_data *ch, char *argument, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("You must supply a unit name or zone reference.\n\r", ch);
       return;
@@ -501,7 +501,7 @@ void do_at(unit_data *ch, char *argument, const struct command_info *cmd)
    {
       if((target = find_unit(ch, &argument, nullptr, FIND_UNIT_WORLD)) != nullptr)
       {
-         if(UNIT_IN(target))
+         if(UNIT_IN(target) != nullptr)
          {
             target = UNIT_IN(target);
          }
@@ -546,7 +546,7 @@ void do_goto(unit_data *ch, char *argument, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("You must supply a unit name or zone reference.\n\r", ch);
       return;
@@ -604,7 +604,7 @@ void do_goto(unit_data *ch, char *argument, const struct command_info *cmd)
       }
    }
 
-   if(may_teleport(ch, target) == 0u)
+   if(static_cast<unsigned int>(may_teleport(ch, target)) == 0U)
    {
       send_to_char("WARNING - this is a no teleport environment.\n\r", ch);
    }
@@ -625,7 +625,7 @@ void do_goto(unit_data *ch, char *argument, const struct command_info *cmd)
 
 void do_crash(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   if(cmd_is_abbrev(ch, cmd) != 0u)
+   if(static_cast<unsigned int>(cmd_is_abbrev(ch, cmd)) != 0U)
    {
       send_to_char("If you want to crash the game - say so!\n\r", ch);
       return;
@@ -667,7 +667,7 @@ void do_shutdown(unit_data *ch, char *argument, const struct command_info *cmd)
       return;
    }
 
-   if(cmd_is_abbrev(ch, cmd) != 0u)
+   if(static_cast<unsigned int>(cmd_is_abbrev(ch, cmd)) != 0U)
    {
       send_to_char("If you want to shut something down - say so!\n\r", ch);
       return;
@@ -689,7 +689,7 @@ void do_reboot(unit_data *ch, char *argument, const struct command_info *cmd)
       return;
    }
 
-   if(cmd_is_abbrev(ch, cmd) != 0u)
+   if(static_cast<unsigned int>(cmd_is_abbrev(ch, cmd)) != 0U)
    {
       send_to_char("If you want to reboot - say so!\n\r", ch);
       return;
@@ -720,12 +720,12 @@ void do_snoop(unit_data *ch, char *argument, const struct command_info *cmd)
    void unsnoop(unit_data * ch, int mode);
    void snoop(unit_data * ch, unit_data * victim);
 
-   if(!CHAR_DESCRIPTOR(ch))
+   if(CHAR_DESCRIPTOR(ch) == nullptr)
    {
       return;
    }
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       victim = ch;
    }
@@ -746,7 +746,7 @@ void do_snoop(unit_data *ch, char *argument, const struct command_info *cmd)
       return;
    }
 
-   if(!CHAR_DESCRIPTOR(victim))
+   if(CHAR_DESCRIPTOR(victim) == nullptr)
    {
       act("$3n has no descriptor-link.", A_SOMEONE, ch, nullptr, victim, TO_CHAR);
       return;
@@ -796,12 +796,12 @@ void do_switch(unit_data *ch, char *argument, const struct command_info *cmd)
    void switchbody(unit_data * ch, unit_data * victim);
    void unswitchbody(unit_data * npc);
 
-   if(!CHAR_DESCRIPTOR(ch))
+   if(CHAR_DESCRIPTOR(ch) == nullptr)
    {
       return;
    }
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       if(CHAR_IS_SWITCHED(ch))
       {
@@ -828,7 +828,7 @@ void do_switch(unit_data *ch, char *argument, const struct command_info *cmd)
       return;
    }
 
-   if(CHAR_DESCRIPTOR(victim))
+   if(CHAR_DESCRIPTOR(victim) != nullptr)
    {
       act("$3n's body is already in use!", A_ALWAYS, ch, nullptr, victim, TO_CHAR);
    }
@@ -911,9 +911,8 @@ void do_finger(unit_data *ch, char *arg, const struct command_info *cmd)
 
    void reset_char(unit_data * ch);
    auto player_exists(char *pName)->int;
-   void enter_game(unit_data * ch);
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Finger who?\n\r", ch);
       return;
@@ -939,7 +938,7 @@ void do_load(unit_data *ch, char *arg, const struct command_info *cmd)
    unit_data       *u;
    unit_data       *tmp;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Load? Load what??\n\r", ch);
       return;
@@ -978,7 +977,7 @@ void do_load(unit_data *ch, char *arg, const struct command_info *cmd)
          unit_to_unit(u, UNIT_IN(ch));
          send_to_char("You have loaded the player.\n\r", ch);
 
-         if(UNIT_CONTAINS(u))
+         if(UNIT_CONTAINS(u) != nullptr)
          {
             send_to_char("Inventory loaded.\n\r", ch);
          }
@@ -1043,13 +1042,13 @@ void do_delete(unit_data *ch, char *arg, const struct command_info *cmd)
    char       buf[MAX_INPUT_LENGTH];
    unit_data *tmp;
 
-   if(cmd_is_abbrev(ch, cmd) != 0u)
+   if(static_cast<unsigned int>(cmd_is_abbrev(ch, cmd)) != 0U)
    {
       send_to_char("If you want to delete someone - say so!\n\r", ch);
       return;
    }
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Delete what player???\n\r", ch);
       return;
@@ -1099,7 +1098,7 @@ void do_purge(unit_data *ch, char *argument, const struct command_info *cmd)
 
    one_argument(argument, buf);
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       act("$1n gestures... You are surrounded by scorching flames!", A_SOMEONE, ch, nullptr, nullptr, TO_ROOM);
       act("You are surrounded by scorching flames!", A_SOMEONE, ch, nullptr, nullptr, TO_CHAR);
@@ -1401,7 +1400,7 @@ void reroll(unit_data *victim)
 
    for(obj = UNIT_CONTAINS(victim); obj != nullptr; obj = obj->next)
    {
-      if(IS_OBJ(obj) && OBJ_EQP_POS(obj))
+      if(IS_OBJ(obj) && (OBJ_EQP_POS(obj) != 0u))
       {
          unequip_object(obj);
       }
@@ -1409,7 +1408,7 @@ void reroll(unit_data *victim)
 
    affect_clear_unit(victim);
 
-   if(UNIT_AFFECTED(victim))
+   if(UNIT_AFFECTED(victim) != nullptr)
    {
       send_to_char("You were not rerolled!\n\r", victim);
       return;
@@ -1456,7 +1455,7 @@ void do_reroll(unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Reroll who?\n\r", ch);
    }
@@ -1555,7 +1554,7 @@ static auto file_install(char *file, bool bNew) -> bool
 
    if(bNew)
    {
-      if(file_exists(str_cc(buf, ".new")) != 0u)
+      if(static_cast<unsigned int>(file_exists(str_cc(buf, ".new"))) != 0U)
       {
          rename(buf, str_cc(buf, ".old"));
          rename(str_cc(buf, ".new"), buf);
@@ -1567,7 +1566,7 @@ static auto file_install(char *file, bool bNew) -> bool
    }
    else
    {
-      if(file_exists(str_cc(buf, ".old")) != 0u)
+      if(static_cast<unsigned int>(file_exists(str_cc(buf, ".old"))) != 0U)
       {
          rename(str_cc(buf, ".old"), buf);
       }
@@ -1649,7 +1648,7 @@ void do_message(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    unit_data *vict;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Who? What??\n\r", ch);
    }
@@ -1661,7 +1660,7 @@ void do_message(unit_data *ch, char *arg, const struct command_info *cmd)
    {
       send_to_char("You recieve a message from yourself.\n\r", ch);
    }
-   else if(str_is_empty(arg) != 0u)
+   else if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("What??\n\r", ch);
    }
@@ -1676,7 +1675,7 @@ void do_broadcast(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    descriptor_data *d;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Yeah, that makes a LOT of sense!\n\r", ch);
    }
@@ -1733,7 +1732,7 @@ void do_wiz(unit_data *ch, char *arg, const struct command_info *cmd)
    bool             emote = FALSE;
    int              level;
 
-   if(!CHAR_DESCRIPTOR(ch))
+   if(CHAR_DESCRIPTOR(ch) == nullptr)
    {
       return;
    }
@@ -1759,7 +1758,7 @@ void do_wiz(unit_data *ch, char *arg, const struct command_info *cmd)
 
       case '#':
          one_argument(arg + 1, tmp);
-         if(str_is_number(tmp) != 0u)
+         if(static_cast<unsigned int>(str_is_number(tmp)) != 0U)
          {
             arg   = one_argument(++arg, tmp);
             level = MAX(atoi(tmp), WIZ_CMD_LEVEL);
@@ -1771,7 +1770,7 @@ void do_wiz(unit_data *ch, char *arg, const struct command_info *cmd)
          break;
 
       case '?':
-         if(str_is_empty(arg + 1) != 0u)
+         if(static_cast<unsigned int>(str_is_empty(arg + 1)) != 0U)
          {
             list_wizards(ch, TRUE);
             list_wizards(ch, FALSE);
@@ -1780,7 +1779,7 @@ void do_wiz(unit_data *ch, char *arg, const struct command_info *cmd)
          break;
 
       case '-':
-         if(str_is_empty(arg + 1) != 0u)
+         if(static_cast<unsigned int>(str_is_empty(arg + 1)) != 0U)
          {
             if(IS_SET(PC_FLAGS(CHAR_ORIGINAL(ch)), PC_NOWIZ))
             {
@@ -1796,7 +1795,7 @@ void do_wiz(unit_data *ch, char *arg, const struct command_info *cmd)
          break;
 
       case '+':
-         if(str_is_empty(arg + 1) != 0u)
+         if(static_cast<unsigned int>(str_is_empty(arg + 1)) != 0U)
          {
             if(!IS_SET(PC_FLAGS(CHAR_ORIGINAL(ch)), PC_NOWIZ))
             {
@@ -1820,7 +1819,7 @@ void do_wiz(unit_data *ch, char *arg, const struct command_info *cmd)
 
    arg = skip_spaces(arg);
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Gods don't like being bothered like that!\n\r", ch);
       return;
@@ -1843,7 +1842,7 @@ void do_title(unit_data *ch, char *arg, const struct command_info *cmd)
    unit_data *u;
    char      *oldarg = arg;
 
-   if(!IS_PC(ch) || (str_is_empty(arg) != 0u))
+   if(!IS_PC(ch) || (static_cast<unsigned int>(str_is_empty(arg)) != 0U))
    {
       send_to_char("That's rather silly, I think.\n\r", ch);
       return;
@@ -1860,7 +1859,7 @@ void do_title(unit_data *ch, char *arg, const struct command_info *cmd)
    {
       arg = skip_spaces(arg);
 
-      if(str_is_empty(arg) != 0u)
+      if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
       {
          send_to_char("You can't assign an empty title\n\r", ch);
          return;
@@ -1978,7 +1977,7 @@ void do_corpses(unit_data *ch, char *arg, const struct command_info *cmd)
    for(c = unit_list; c != nullptr; c = c->gnext)
    {
       if(IS_OBJ(c) && OBJ_VALUE(c, 2) == 1 /* 1 means player corpse, if a corpse */
-         && UNIT_CONTAINS(c))              /* skip empty corpses */
+         && (UNIT_CONTAINS(c) != nullptr)) /* skip empty corpses */
       {
          c1 = str_str(UNIT_OUT_DESCR_STRING(c), " corpse of ");
          c2 = str_str(UNIT_OUT_DESCR_STRING(c), " is here.");

@@ -67,7 +67,7 @@ auto zone_random(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
    {
       return (unit_data *)boot_zone; /* dummy */
    }
-   return NULL;
+   return nullptr;
 }
 
 /* Count ->no_in_zone for current 'boot_zone' (above) */
@@ -88,7 +88,7 @@ void zone_update_no_in_zone()
 
    for(u = unit_list; u != nullptr; u = u->gnext)
    {
-      if(UNIT_FILE_INDEX(u) && unit_zone(u) == boot_zone)
+      if((UNIT_FILE_INDEX(u) != nullptr) && unit_zone(u) == boot_zone)
       {
          UNIT_FILE_INDEX(u)->no_in_zone++;
       }
@@ -272,7 +272,7 @@ auto zone_door(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
    {
       szonelog(boot_zone, "Zone Reset Error: Not a room in door reference!");
    }
-   else if(!ROOM_EXIT(cmd->fi[0]->room_ptr, cmd->num[0]))
+   else if(ROOM_EXIT(cmd->fi[0]->room_ptr, cmd->num[0]) == nullptr)
    {
       szonelog(boot_zone, "Zone Reset Error: No %s direction from room %s in door.", dirs[cmd->num[0]], cmd->fi[0]->name);
    }
@@ -380,7 +380,7 @@ auto low_reset_zone(unit_data *u, struct zone_reset_cmd *cmd) -> bool
    for(; cmd != nullptr; cmd = cmd->next)
    {
       success = (*exec_zone_cmd[cmd->cmd_no])(u, cmd);
-      if((success != nullptr) && (cmd->nested != nullptr) && !low_reset_zone(success, cmd->nested) && (cmd->cmpl != 0u))
+      if((success != nullptr) && (cmd->nested != nullptr) && !low_reset_zone(success, cmd->nested) && (cmd->cmpl != 0U))
       {
          extract_unit(success);
          success = nullptr;

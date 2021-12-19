@@ -66,7 +66,7 @@ void descriptor_data::RemoveBBS() const
    }
 }
 
-void descriptor_data::CreateBBS()
+void descriptor_data::CreateBBS() const
 {
    if(nLine != 255)
    {

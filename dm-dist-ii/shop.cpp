@@ -153,7 +153,7 @@ static auto shop_producing(unit_data *item, struct shop_data *sd) -> bool
 {
    int counter = 0;
 
-   if(!UNIT_FILE_INDEX(item))
+   if(UNIT_FILE_INDEX(item) == nullptr)
    {
       return FALSE;
    }
@@ -179,14 +179,14 @@ static void shopping_buy(char *arg, unit_data *ch, unit_data *keeper, struct sho
    amount_t   price    = 0;
    bool       can_pay  = FALSE;
    int        i        = 0;
-   int        refit    = FALSE;
+   int        refit    = static_cast<int>(FALSE);
 
    if(!is_ok(keeper, ch, sd))
    {
       return;
    }
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       act("$1n asks you, 'What do you wish to buy?'", A_SOMEONE, keeper, nullptr, ch, TO_VICT);
       return;
@@ -217,7 +217,7 @@ static void shopping_buy(char *arg, unit_data *ch, unit_data *keeper, struct sho
       {
          currency = sd->currencies[i];
          price    = money_round_up((int)(obj_trade_price(temp1) * sd->profit_buy), currency, 2);
-         can_pay  = (char_can_afford(ch, price, currency) != 0u);
+         can_pay  = (static_cast<unsigned int>(char_can_afford(ch, price, currency)) != 0U);
       }
    }
 
@@ -248,7 +248,7 @@ static void shopping_buy(char *arg, unit_data *ch, unit_data *keeper, struct sho
       if(obj_wear_size(ch, temp1) != nullptr)
       {
          act("$1n says, 'A perfect fit, $3n!'", A_SOMEONE, keeper, nullptr, ch, TO_ROOM);
-         refit = TRUE;
+         refit = static_cast<int>(TRUE);
       }
    }
 
@@ -294,7 +294,7 @@ static void shopping_sell(char *arg, unit_data *ch, unit_data *keeper, struct sh
       return;
    }
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       act("$1n says, 'What do you want to sell $3n?'", A_SOMEONE, keeper, nullptr, ch, TO_ROOM);
       return;
@@ -324,7 +324,7 @@ static void shopping_sell(char *arg, unit_data *ch, unit_data *keeper, struct sh
       {
          currency = sd->currencies[i];
          price    = money_round_down((int)(obj_trade_price(temp1) * sd->profit_sell), currency, 2);
-         can_pay  = (char_can_afford(keeper, price, currency) != 0u);
+         can_pay  = (static_cast<unsigned int>(char_can_afford(keeper, price, currency)) != 0U);
       }
    }
 
@@ -369,7 +369,7 @@ static void shopping_value(char *arg, unit_data *ch, unit_data *keeper, struct s
       return;
    }
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       act("$1n says, 'What do you want me to value, $3n?'", A_SOMEONE, keeper, nullptr, ch, TO_ROOM);
       return;
@@ -393,7 +393,7 @@ static void shopping_value(char *arg, unit_data *ch, unit_data *keeper, struct s
       {
          currency = sd->currencies[i];
          price    = money_round_down((int)(obj_trade_price(temp1) * sd->profit_sell), currency, 2);
-         can_pay  = (char_can_afford(keeper, price, currency) != 0u);
+         can_pay  = (static_cast<unsigned int>(char_can_afford(keeper, price, currency)) != 0U);
       }
    }
 
@@ -439,7 +439,7 @@ static void shopping_list(char *arg, unit_data *ch, unit_data *keeper, struct sh
 
    for(temp1 = UNIT_CONTAINS(keeper); temp1 != nullptr; temp1 = temp1->next)
    {
-      if(IS_OBJ(temp1) && !OBJ_EQP_POS(temp1) && CHAR_CAN_SEE(ch, temp1) && obj_trade_price(temp1) > 0 && !IS_MONEY(temp1))
+      if(IS_OBJ(temp1) && (OBJ_EQP_POS(temp1) == 0u) && CHAR_CAN_SEE(ch, temp1) && obj_trade_price(temp1) > 0 && !IS_MONEY(temp1))
       {
          found_obj = TRUE;
          diff_buf  = nullptr;
@@ -450,8 +450,8 @@ static void shopping_list(char *arg, unit_data *ch, unit_data *keeper, struct sh
 
          if(OBJ_TYPE(temp1) == ITEM_DRINKCON)
          {
-            sprintf(buf2, "%s%s%s", STR(UNIT_TITLE_STRING(temp1)), OBJ_VALUE(temp1, 1) ? " of " : "",
-                    OBJ_VALUE(temp1, 1) ? drinks[OBJ_VALUE(temp1, 2)] : "");
+            sprintf(buf2, "%s%s%s", STR(UNIT_TITLE_STRING(temp1)), OBJ_VALUE(temp1, 1) != 0 ? " of " : "",
+                    OBJ_VALUE(temp1, 1) != 0 ? drinks[OBJ_VALUE(temp1, 2)] : "");
          }
          else if(OBJ_TYPE(temp1) == ITEM_WEAPON)
          {
@@ -505,7 +505,7 @@ static void shopping_price(char *arg, unit_data *ch, unit_data *keeper, struct s
       return;
    }
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       act("$1n says 'What do you want to know the price of, $2n?'", A_SOMEONE, keeper, ch, nullptr, TO_ROOM);
       return;
@@ -528,7 +528,7 @@ static void shopping_price(char *arg, unit_data *ch, unit_data *keeper, struct s
       {
          currency = sd->currencies[i];
          price    = money_round_up((int)(obj_trade_price(temp1) * sd->profit_buy), currency, 2);
-         can_pay  = (char_can_afford(ch, price, currency) != 0u);
+         can_pay  = (static_cast<unsigned int>(char_can_afford(ch, price, currency)) != 0U);
       }
    }
 
@@ -628,7 +628,7 @@ auto shop_keeper(struct spec_arg *sarg) -> int
    else if(sarg->cmd->no == CMD_AUTO_DEATH && sarg->owner == sarg->activator)
    {
       /* Get rid of contents */
-      while(UNIT_CONTAINS(sarg->owner))
+      while(UNIT_CONTAINS(sarg->owner) != nullptr)
       {
          extract_unit(UNIT_CONTAINS(sarg->owner));
       }

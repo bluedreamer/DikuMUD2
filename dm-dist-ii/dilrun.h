@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : dilrun.h                                  Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -20,8 +21,8 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
-#ifndef _MUD_DILRUN_H
-#define _MUD_DILRUN_H
+
+#include "unit_data.h"
 
 struct dil_func_type
 {
@@ -63,7 +64,7 @@ auto dil_getbool(struct dilval *v) -> char;
 auto dil_getval(struct dilval *v) -> int;
 void dil_add_secure(struct dilprg *prg, unit_data *sup, uint8_t *lab);
 #ifdef __cplusplus
-void dil_sub_secure(struct dilframe *frm, unit_data *sup, int bForeach = FALSE);
+void dil_sub_secure(struct dilframe *frm, unit_data *sup, int bForeach = static_cast<int>(FALSE));
 #endif
 auto same_environment(unit_data *u1, unit_data *u2) -> int;
 void unhash_str(char **s);
@@ -88,5 +89,3 @@ void dil_free_prg(struct dilprg *prg);
 
 void dil_intr_remove(struct dilprg *p, int idx);
 auto dil_intr_insert(struct dilprg *p, uint8_t *lab, uint16_t flags) -> int;
-
-#endif

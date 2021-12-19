@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : competition.h                             Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -22,10 +23,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_COMPETITION_H
-#define _MUD_COMPETITION_H
+#include "unit_data.h"
 
 void competition_enroll(unit_data *pc);
 void competition_update(unit_data *pc);
-
-#endif

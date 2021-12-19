@@ -215,7 +215,7 @@ void do_pray(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    unit_data *target;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       act("You feel righteous", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
       if(CHAR_AWAKE(ch))
@@ -307,7 +307,7 @@ auto sacrifice_unit_power(unit_data *item, int demigod) -> int
 
 auto sacrifice_unit(unit_data *u, int pow, int demigod) -> int
 {
-   if(UNIT_CONTAINS(u))
+   if(UNIT_CONTAINS(u) != nullptr)
    {
       pow += sacrifice_unit(UNIT_CONTAINS(u), pow, demigod);
    }
@@ -324,7 +324,7 @@ static auto contains_character(unit_data *u) -> bool
 {
    for(u = UNIT_CONTAINS(u); u != nullptr; u = u->next)
    {
-      if(IS_CHAR(u) || (UNIT_CONTAINS(u) && contains_character(u)))
+      if(IS_CHAR(u) || ((UNIT_CONTAINS(u) != nullptr) && contains_character(u)))
       {
          return TRUE;
       }
@@ -457,7 +457,7 @@ void do_sacrifice(unit_data *ch, char *arg, const struct command_info *cmd)
    return;
 #endif
 
-   base_sacrifice(ch, arg, FALSE);
+   base_sacrifice(ch, arg, static_cast<int>(FALSE));
 }
 
 auto sacrifice(struct spec_arg *sarg) -> int
@@ -469,7 +469,7 @@ auto sacrifice(struct spec_arg *sarg) -> int
       return SFR_BLOCK;
 #endif
 
-      base_sacrifice(sarg->activator, (char *)sarg->arg, TRUE);
+      base_sacrifice(sarg->activator, (char *)sarg->arg, static_cast<int>(TRUE));
       return SFR_BLOCK;
    }
    return SFR_SHARE;

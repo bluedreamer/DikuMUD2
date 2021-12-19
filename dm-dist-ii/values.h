@@ -53,8 +53,8 @@ constexpr int ULTIMATE_LEVEL      = 255;
 #define QUEST_RABBIT_COMPLETE "Rabbit Stew Complete"
 #define QUEST_POT_COMPLETE    "Mary's Pot Retrieved"
 
-//constexpr bool FALSE=false;
-//constexpr bool TRUE=true;
+// constexpr bool FALSE=false;
+// constexpr bool TRUE=true;
 
 #define A_HIDEINV 10
 #define A_SOMEONE 11

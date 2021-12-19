@@ -278,7 +278,7 @@ auto info_rod(struct spec_arg *sarg) -> int
    FILE             *fl;
    char              filename[256];
 
-   if((is_command(sarg->cmd, "wave") == 0u) || !IS_PC(sarg->activator) || OBJ_EQP_POS(sarg->owner) != WEAR_HOLD)
+   if((static_cast<unsigned int>(is_command(sarg->cmd, "wave")) == 0U) || !IS_PC(sarg->activator) || OBJ_EQP_POS(sarg->owner) != WEAR_HOLD)
    {
       return SFR_SHARE;
    }
@@ -346,8 +346,9 @@ auto chaos_daemon(struct spec_arg *sarg) -> int
    char      *arg = (char *)sarg->arg;
    unit_data *u;
 
-   if(sarg->cmd->no == CMD_AUTO_TICK || ((is_command(sarg->cmd, "tickle") != 0u) && IS_ULTIMATE(sarg->activator) &&
-                                         sarg->owner == find_unit(sarg->activator, &arg, nullptr, FIND_UNIT_SURRO)))
+   if(sarg->cmd->no == CMD_AUTO_TICK ||
+      ((static_cast<unsigned int>(is_command(sarg->cmd, "tickle")) != 0U) && IS_ULTIMATE(sarg->activator) &&
+       sarg->owner == find_unit(sarg->activator, &arg, nullptr, FIND_UNIT_SURRO)))
    {
       u = random_unit(sarg->owner, FIND_UNIT_WORLD, UNIT_ST_PC);
       if((u != nullptr) && IS_MORTAL(u))
@@ -451,7 +452,7 @@ auto log_object(struct spec_arg *sarg) -> int
 
          if(LOG_OFF < lev && IS_PC(ch) && PC_IMMORTAL(ch))
          {
-            while(str_is_empty(log_buf[*ip].str) == 0u)
+            while(static_cast<unsigned int>(str_is_empty(log_buf[*ip].str)) == 0U)
             {
                if(log_buf[*ip].level <= lev && log_buf[*ip].wizinv_level <= CHAR_LEVEL(ch))
                {
@@ -467,25 +468,25 @@ auto log_object(struct spec_arg *sarg) -> int
          if((sarg->cmd->cmd_str != nullptr) && sarg->activator == UNIT_IN(sarg->owner) && (strcmp("log", sarg->cmd->cmd_str) == 0))
          {
             sarg->arg = skip_spaces(sarg->arg);
-            if(is_abbrev(sarg->arg, "all") != 0u)
+            if(static_cast<unsigned int>(is_abbrev(sarg->arg, "all")) != 0U)
             {
                c = 'a';
             }
-            else if(is_abbrev(sarg->arg, "extensive") != 0u)
+            else if(static_cast<unsigned int>(is_abbrev(sarg->arg, "extensive")) != 0U)
             {
                c = 'e';
             }
-            else if(is_abbrev(sarg->arg, "brief") != 0u)
+            else if(static_cast<unsigned int>(is_abbrev(sarg->arg, "brief")) != 0U)
             {
                c = 'b';
             }
-            else if(is_abbrev(sarg->arg, "off") != 0u)
+            else if(static_cast<unsigned int>(is_abbrev(sarg->arg, "off")) != 0U)
             {
                act("Ok, log is now off.", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
                OBJ_VALUE(sarg->owner, 0) = 'o';
                return SFR_BLOCK;
             }
-            else if(is_abbrev(sarg->arg, "help") != 0u)
+            else if(static_cast<unsigned int>(is_abbrev(sarg->arg, "help")) != 0U)
             {
                act("Possible settings are:\n\r off, brief, extensive, all.", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
                return SFR_BLOCK;
@@ -518,10 +519,10 @@ auto system_check(unit_data *pc, char *buf) -> int
    {
       send_to_char("You can not use the ' and ; characters\n\r", pc);
       slog(LOG_ALL, 0, "%s may have tried to break security with %s", UNIT_NAME(pc), buf);
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
-   return TRUE;
+   return static_cast<int>(TRUE);
 }
 
 void execute_append(unit_data *pc, char *str)
@@ -562,7 +563,7 @@ auto admin_obj(struct spec_arg *sarg) -> int
 
    if(str_ccmp(sarg->cmd->cmd_str, "email") == 0)
    {
-      zonelist = FALSE;
+      zonelist = static_cast<int>(FALSE);
    }
    else if(str_ccmp(sarg->cmd->cmd_str, "zonelist") == 0)
    {
@@ -571,7 +572,7 @@ auto admin_obj(struct spec_arg *sarg) -> int
          send_to_char("Only administrators can use this function.\n\r", sarg->activator);
          return SFR_BLOCK;
       }
-      zonelist = TRUE;
+      zonelist = static_cast<int>(TRUE);
    }
    else
    {
@@ -584,7 +585,7 @@ auto admin_obj(struct spec_arg *sarg) -> int
       return SFR_BLOCK;
    }
 
-   if(str_is_empty(exdp->descr.String()) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(exdp->descr.String())) != 0U)
    {
       send_to_char("Your email is incorrectly registered.\n\r", sarg->activator);
       return SFR_BLOCK;

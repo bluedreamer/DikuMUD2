@@ -24,9 +24,10 @@
  * *********************************************************************** */
 
 #include "spelldef.h"
+#include "unit_data.h"
 
 auto spell_perform(int spell_no, int spell_type, unit_data *caster, unit_data *medium, unit_data *target, char *argument,
-                   char *pEffect = NULL, int bonus = 0) -> int;
+                   char *pEffect = nullptr, int bonus = 0) -> int;
 
 #include "dil.h"
 

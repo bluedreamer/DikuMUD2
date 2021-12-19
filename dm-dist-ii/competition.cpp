@@ -155,9 +155,10 @@ auto competition_compare(const void *v1, const void *v2) -> int
       return -1;
    }
    if(e1->points < e2->points)
+   {
       return 1;
-   else
-      return 0;
+   }
+   return 0;
 }
 
 static void competition_recalc(int idx, unit_data *pc, int xp, int secs)
@@ -397,20 +398,20 @@ static void show_competition(unit_data *ch, const int i)
 {
    int  j;
    char buf[256];
-   int  found = FALSE;
+   int  found = static_cast<int>(FALSE);
 
    sprintf(buf, COLOUR_MENU "%s%s" COLOUR_NORMAL " (Level %d to %d with %d competitors)\n\r", competition[i].descr,
            competition[i].ongoing != 0 ? "" : " [ENDED]", competition[i].start, competition[i].stop, competition[i].top_ten.competitors);
 
    send_to_char(buf, ch);
 
-   found = FALSE;
+   found = static_cast<int>(FALSE);
 
    for(j = 0; j < MAX_TOP_TEN - 1; j++)
    {
       if(competition[i].top_ten.entry[j].name[0] != 0)
       {
-         found = TRUE;
+         found = static_cast<int>(TRUE);
          sprintf(buf, "   %2d. %-15s  (%8d points)\n\r", j + 1, competition[i].top_ten.entry[j].name,
                  competition[i].top_ten.entry[j].points);
          send_to_char(buf, ch);
@@ -439,7 +440,7 @@ static auto competition_read_board(unit_data *ch, const char *arg) -> int
 
    one_argument(arg, number);
 
-   if(str_is_number(number) == 0u)
+   if(static_cast<unsigned int>(str_is_number(number)) == 0U)
    {
       return SFR_SHARE;
    }

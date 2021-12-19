@@ -31,7 +31,7 @@
 #define MAX_HOSTNAME 256
 
 void init_mother(int nPort);
-void descriptor_close(descriptor_data *d, int bSendClose = TRUE);
+void descriptor_close(descriptor_data *d, int bSendClose = static_cast<int>(TRUE));
 void MplexSendSetup(descriptor_data *d);
 
 #if defined(SUNOS4)

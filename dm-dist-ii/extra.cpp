@@ -99,7 +99,7 @@ auto extra_descr_data::find_raw(const char *word) -> class extra_descr_data *
    {
       if(exd->names.Length() < 1)
       {
-         if(str_is_empty(word) != 0u)
+         if(static_cast<unsigned int>(str_is_empty(word)) != 0U)
          {
             return exd;
          }
@@ -134,7 +134,7 @@ auto extra_descr_data::add(const char **names, const char *descr) -> class extra
       new_ex->names.CopyList(names);
    }
 
-   if(str_is_empty(descr) == 0u)
+   if(static_cast<unsigned int>(str_is_empty(descr)) == 0U)
    {
       new_ex->descr.Reassign(descr);
    }
@@ -236,7 +236,7 @@ auto unit_find_extra(const char *word, unit_data *unit) -> class extra_descr_dat
                return i;
             }
          }
-         else if(UNIT_NAMES(unit).IsName((char *)word))
+         else if(UNIT_NAMES(unit).IsName((char *)word) != nullptr)
          {
             return i;
          }

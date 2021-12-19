@@ -60,7 +60,7 @@ public:
    auto IsNameRaw(const char *name) -> const char *;
    auto IsName(const char *name) -> const char *;
 
-   inline auto Length() -> uint32_t const { return length; }
+   inline auto Length() const -> uint32_t const { return length; }
 
 private:
    class cStringInstance **namelist;

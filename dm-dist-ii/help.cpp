@@ -55,7 +55,7 @@ extern char libdir[]; /* from dikumud.c        */
 
 auto search_help_cmp(const void *keyval, const void *datum) -> int
 {
-   if(is_abbrev((char *)keyval, ((help_index_type *)datum)->keyword) != 0u)
+   if(static_cast<unsigned int>(is_abbrev((char *)keyval, ((help_index_type *)datum)->keyword)) != 0U)
    {
       return 0;
    }
@@ -73,7 +73,7 @@ static auto help(struct help_file_type *hlp, descriptor_data *d, char *arg) -> i
 
    if((hlp->help_idx == nullptr) || (hlp->elements < 1))
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if((tmp = (help_index_type *)bsearch(arg, hlp->help_idx, hlp->elements + 1, sizeof(help_index_type), search_help_cmp)) != nullptr)
@@ -83,7 +83,7 @@ static auto help(struct help_file_type *hlp, descriptor_data *d, char *arg) -> i
       /*  Have to unroll backwards to make sure we find FIRST
        *  occurence of argument
        */
-      while(0 < i && (is_abbrev(arg, hlp->help_idx[i - 1].keyword) != 0u))
+      while(0 < i && (static_cast<unsigned int>(is_abbrev(arg, hlp->help_idx[i - 1].keyword)) != 0U))
       {
          --i;
       }
@@ -111,24 +111,24 @@ static auto help(struct help_file_type *hlp, descriptor_data *d, char *arg) -> i
 
       str_escape_format(buf, buf2, sizeof(buf2));
       page_string(d, buf2);
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 /* Returns TRUE if help was found and displayed */
 
 auto help_base(descriptor_data *d, char *arg) -> int
 {
-   uint8_t bHelp = FALSE;
+   uint8_t bHelp = static_cast<uint8_t>(FALSE);
 
    arg = skip_spaces(arg);
    str_lower(arg);
 
    if((CHAR_LEVEL(d->character) >= IMMORTAL_LEVEL) && (help(&help_file[2], d, arg) != 0))
    {
-      bHelp = TRUE;
+      bHelp = static_cast<uint8_t>(TRUE);
    }
 
    if((help(&help_file[0], d, arg) == 0) && (help(&help_file[1], d, arg) == 0))
@@ -136,17 +136,17 @@ auto help_base(descriptor_data *d, char *arg) -> int
       return bHelp;
    }
 
-   return TRUE;
+   return static_cast<int>(TRUE);
 }
 
 void do_help(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   if(!IS_PC(ch) || !CHAR_DESCRIPTOR(ch))
+   if(!IS_PC(ch) || (CHAR_DESCRIPTOR(ch) == nullptr))
    {
       return;
    }
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       struct zone_type *zone = unit_zone(ch);
 

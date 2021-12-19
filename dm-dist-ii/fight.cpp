@@ -124,7 +124,7 @@ auto pk_test(unit_data *att, unit_data *def, int message) -> int
          {
             act("You are not old enough to do that!", A_ALWAYS, att, nullptr, def, TO_CHAR);
          }
-         return TRUE;
+         return static_cast<int>(TRUE);
       }
       if(CHAR_LEVEL(def) <= 3)
       {
@@ -132,13 +132,13 @@ auto pk_test(unit_data *att, unit_data *def, int message) -> int
          {
             act("$3e is too young to die now!", A_ALWAYS, att, nullptr, def, TO_CHAR);
          }
-         return TRUE;
+         return static_cast<int>(TRUE);
       }
    }
 
    if(g_cServerConfig.m_bBOB == 0)
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if((att != def) && IS_PC(att) && IS_PC(def) && (!IS_SET(PC_FLAGS(att), PC_PK_RELAXED) || !IS_SET(PC_FLAGS(def), PC_PK_RELAXED)))
@@ -162,16 +162,16 @@ auto pk_test(unit_data *att, unit_data *def, int message) -> int
                 A_ALWAYS, att, nullptr, def, TO_CHAR);
          }
       }
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 auto char_dual_wield(unit_data *ch) -> int
 {
-   return (static_cast<int>(equipment_type(ch, WEAR_WIELD, ITEM_WEAPON) != nullptr) &&
-           (equipment_type(ch, WEAR_HOLD, ITEM_WEAPON)) != nullptr);
+   return static_cast<int>((static_cast<int>(equipment_type(ch, WEAR_WIELD, ITEM_WEAPON) != nullptr) != 0) &&
+                           (equipment_type(ch, WEAR_HOLD, ITEM_WEAPON)) != nullptr);
 }
 
 /* Given an amount of experience, what is the 'virtual' level of the char? */
@@ -185,15 +185,20 @@ auto virtual_level(unit_data *ch) -> int
    {
       /* Above max mortal is just max mortal (shouldnt be possible) */
       if(CHAR_LEVEL(ch) >= MORTAL_MAX_LEVEL)
+      {
          return CHAR_LEVEL(ch);
+      }
 
       if(CHAR_EXP(ch) < required_xp(1 + PC_VIRTUAL_LEVEL(ch)))
+      {
          return CHAR_LEVEL(ch);
-      else
-         return CHAR_LEVEL(ch) + 1 + (CHAR_EXP(ch) - required_xp(1 + CHAR_LEVEL(ch))) / level_xp(CHAR_LEVEL(ch));
+      }
+      return CHAR_LEVEL(ch) + 1 + (CHAR_EXP(ch) - required_xp(1 + CHAR_LEVEL(ch))) / level_xp(CHAR_LEVEL(ch));
    }
    else
+   {
       return CHAR_LEVEL(ch);
+   }
 }
 
 /* -------------------------------------------------------------------- */
@@ -206,11 +211,11 @@ auto num_in_msg(struct combat_msg_list *msg, int no) -> int
    {
       if(msg->no[i] == no)
       {
-         return TRUE;
+         return static_cast<int>(TRUE);
       }
    }
 
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 void fread_single(FILE *f1, struct combat_single_msg *msg)
@@ -334,7 +339,9 @@ auto damage_index(int dam, int maxhp) -> int
       return 0;
    }
    if(dam >= maxhp)
+   {
       return 8;
+   }
 
    p = (100 * dam) / maxhp; /* Calculate relative damage (%) */
 
@@ -343,8 +350,10 @@ auto damage_index(int dam, int maxhp) -> int
       return 0;
    }
    if(p < 10)
+   {
       return 1;
-   else if(p < 15)
+   }
+   if(p < 15)
       return 2;
    else if(p < 20)
       return 3;
@@ -583,15 +592,25 @@ void update_pos(unit_data *victim)
       return;
    }
    if(UNIT_HIT(victim) > 0)
+   {
       CHAR_POS(victim) = POSITION_STANDING;
+   }
    else if(UNIT_HIT(victim) <= -11)
+   {
       CHAR_POS(victim) = POSITION_DEAD;
+   }
    else if(UNIT_HIT(victim) <= -6)
+   {
       CHAR_POS(victim) = POSITION_MORTALLYW;
+   }
    else if(UNIT_HIT(victim) <= -3)
+   {
       CHAR_POS(victim) = POSITION_INCAP;
+   }
    else
+   {
       CHAR_POS(victim) = POSITION_STUNNED;
+   }
 }
 
 /* -------------------------------------------------------------------- */
@@ -746,7 +765,7 @@ static void exp_align_gain(unit_data *ch, unit_data *victim)
    head = ch; /* Who is head of potential group? */
 
    if(CHAR_HAS_FLAG(ch, CHAR_GROUP) && CHAR_MASTER(ch) && CHAR_HAS_FLAG(CHAR_MASTER(ch), CHAR_GROUP) &&
-      (same_surroundings(ch, CHAR_MASTER(ch)) != 0u))
+      (static_cast<unsigned int>(same_surroundings(ch, CHAR_MASTER(ch))) != 0U))
    {
       head = CHAR_MASTER(ch);
    }
@@ -778,7 +797,7 @@ static void exp_align_gain(unit_data *ch, unit_data *victim)
       {
          for(f = CHAR_FOLLOWERS(head); f != nullptr; f = f->next)
          {
-            if(CHAR_HAS_FLAG(f->follower, CHAR_GROUP) && (same_surroundings(head, f->follower) != 0u))
+            if(CHAR_HAS_FLAG(f->follower, CHAR_GROUP) && (static_cast<unsigned int>(same_surroundings(head, f->follower)) != 0U))
             {
                sumlevel += virtual_level(f->follower);
 
@@ -823,18 +842,18 @@ static void exp_align_gain(unit_data *ch, unit_data *victim)
 
    if(!CHAR_HAS_FLAG(ch, CHAR_GROUP))
    {
-      person_gain(ch, victim, share, FALSE, maxlevel);
+      person_gain(ch, victim, share, static_cast<int>(FALSE), maxlevel);
    }
    else
    {
-      if(CHAR_HAS_FLAG(head, CHAR_GROUP) && (same_surroundings(head, ch) != 0u))
+      if(CHAR_HAS_FLAG(head, CHAR_GROUP) && (static_cast<unsigned int>(same_surroundings(head, ch)) != 0U))
       {
          person_gain(head, victim, share, static_cast<int>(no_members > 1), maxlevel);
       }
 
       for(f = CHAR_FOLLOWERS(head); f != nullptr; f = f->next)
       {
-         if(CHAR_HAS_FLAG(f->follower, CHAR_GROUP) && (same_surroundings(f->follower, ch) != 0u))
+         if(CHAR_HAS_FLAG(f->follower, CHAR_GROUP) && (static_cast<unsigned int>(same_surroundings(f->follower, ch)) != 0U))
          {
             person_gain(f->follower, victim, share, static_cast<int>(no_members > 1), maxlevel);
          }
@@ -854,7 +873,7 @@ static void death_cry(unit_data *ch)
    {
       for(door = 0; door <= 5; door++)
       {
-         if(CHAR_CAN_GO(ch, door) && UNIT_CONTAINS(ROOM_EXIT(UNIT_IN(ch), door)->to_room))
+         if(CHAR_CAN_GO(ch, door) && (UNIT_CONTAINS(ROOM_EXIT(UNIT_IN(ch), door)->to_room) != nullptr))
          {
             act("Your blood freezes as you hear someones death cry.", A_SOMEONE, UNIT_CONTAINS(ROOM_EXIT(UNIT_IN(ch), door)->to_room),
                 nullptr, nullptr, TO_ALL);
@@ -867,7 +886,7 @@ void RemoveReward(unit_data *ch)
 {
    unit_affected_type *taf1;
    unit_affected_type *taf2;
-   int                 reward = FALSE;
+   int                 reward = static_cast<int>(FALSE);
 
    for(taf1 = UNIT_AFFECTED(ch); taf1 != nullptr; taf1 = taf2)
    {
@@ -881,12 +900,12 @@ void RemoveReward(unit_data *ch)
          }
          else
          {
-            reward = TRUE;
+            reward = static_cast<int>(TRUE);
          }
       }
    }
 
-   if(reward == FALSE)
+   if(reward == static_cast<int>(FALSE))
    {
       REMOVE_BIT(CHAR_FLAGS(ch), CHAR_OUTLAW);
    }
@@ -895,9 +914,8 @@ void RemoveReward(unit_data *ch)
 auto raw_kill(unit_data *ch) -> unit_data *
 {
    unit_data *death_obj;
-   unit_data *corpse = NULL;
+   unit_data *corpse = nullptr;
 
-   extern unit_data       *seq_room;
    extern file_index_type *deathobj_fi;
 
    auto make_corpse(unit_data * ch)->unit_data *;
@@ -982,7 +1000,7 @@ auto raw_kill(unit_data *ch) -> unit_data *
       CHAR_LAST_ROOM(ch) = seq_room;
 
       save_player(ch);
-      save_player_contents(ch, TRUE);
+      save_player_contents(ch, static_cast<int>(TRUE));
    }
 
    return corpse;
@@ -1044,7 +1062,9 @@ void die(unit_data *ch)
          CHAR_EXP(ch) = 0;
 #endif
       if(IS_IMMORTAL(ch))
+      {
          CHAR_EXP(ch) = 0;
+      }
       else
       {
          gain_exp(ch, -lose_exp(ch));
@@ -1076,33 +1096,33 @@ auto provoked_attack(unit_data *victim, unit_data *ch) -> int
 {
    if(!IS_CHAR(victim) || !IS_CHAR(ch))
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(IS_IMMORTAL(victim) || IS_IMMORTAL(ch))
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    offend_legal_state(ch, victim);
 
    if(!CHAR_AWAKE(victim))
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(IS_SET(CHAR_FLAGS(victim), CHAR_PEACEFUL))
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
-   if(CHAR_COMBAT(victim) && CHAR_COMBAT(victim)->FindOpponent(ch))
+   if((CHAR_COMBAT(victim) != nullptr) && (CHAR_COMBAT(victim)->FindOpponent(ch) != nullptr))
    {
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
-   set_fighting(victim, ch, TRUE);
-   return TRUE;
+   set_fighting(victim, ch, static_cast<int>(TRUE));
+   return static_cast<int>(TRUE);
 }
 
 /* -------------------------------------------------------------------- */
@@ -1139,7 +1159,7 @@ void damage(unit_data *ch, unit_data *victim, unit_data *medium, int dam, int at
    dam = MAX(dam, 0);
 
    /* If neither are allowed to attack each other... */
-   if((pk_test(ch, victim, FALSE) != 0) && (pk_test(victim, ch, FALSE) != 0))
+   if((pk_test(ch, victim, static_cast<int>(FALSE)) != 0) && (pk_test(victim, ch, static_cast<int>(FALSE)) != 0))
    {
       dam = 0;
    }
@@ -1196,7 +1216,7 @@ void damage(unit_data *ch, unit_data *victim, unit_data *medium, int dam, int at
          }
          else
          {
-            set_fighting(victim, ch, TRUE);
+            set_fighting(victim, ch, static_cast<int>(TRUE));
          }
       }
       else
@@ -1368,8 +1388,8 @@ void damage(unit_data *ch, unit_data *victim, unit_data *medium, int dam, int at
       else
       {
          stop_fighting(victim);
-         set_fighting(victim, ch, TRUE);
-         set_fighting(ch, victim, TRUE);
+         set_fighting(victim, ch, static_cast<int>(TRUE));
+         set_fighting(ch, victim, static_cast<int>(TRUE));
 
          die(victim); /* Lose experience */
       }
@@ -1389,7 +1409,7 @@ void damage(unit_data *ch, unit_data *victim, unit_data *medium, int dam, int at
       }
    }
 
-   if(IS_PC(victim) && !CHAR_DESCRIPTOR(victim) && CHAR_AWAKE(victim))
+   if(IS_PC(victim) && (CHAR_DESCRIPTOR(victim) == nullptr) && CHAR_AWAKE(victim))
    {
       char mbuf[MAX_INPUT_LENGTH] = {0};
       do_flee(victim, mbuf, &cmd_auto_unknown);
@@ -1404,7 +1424,7 @@ void break_object(unit_data *obj)
 {
    char tmp[256];
 
-   if(OBJ_EQP_POS(obj))
+   if(OBJ_EQP_POS(obj) != 0u)
    {
       unequip_object(obj);
    }
@@ -1513,14 +1533,14 @@ auto one_hit(unit_data *att, unit_data *def, int bonus, int att_weapon_type, int
       return -1;
    }
 
-   if(same_surroundings(att, def) == 0u)
+   if(static_cast<unsigned int>(same_surroundings(att, def)) == 0U)
    {
       return -1;
    }
 
    if(!CHAR_FIGHTING(att))
    {
-      set_fighting(att, def, TRUE);
+      set_fighting(att, def, static_cast<int>(TRUE));
    }
 
    if(CHAR_POS(att) != POSITION_FIGHTING)
@@ -1548,7 +1568,7 @@ auto one_hit(unit_data *att, unit_data *def, int bonus, int att_weapon_type, int
    roll_description(att, "hit", roll);
    hm += roll;
 
-   if(CHAR_COMBAT(att))
+   if(CHAR_COMBAT(att) != nullptr)
    {
       CHAR_COMBAT(att)->changeSpeed(wpn_info[att_weapon_type].speed);
    }
@@ -1627,7 +1647,7 @@ auto one_hit(unit_data *att, unit_data *def, int bonus, int att_weapon_type, int
 
 auto simple_one_hit(unit_data *att, unit_data *def) -> int
 {
-   return one_hit(att, def, 0, WPN_ROOT, TRUE);
+   return one_hit(att, def, 0, WPN_ROOT, static_cast<int>(TRUE));
 }
 
 /* Returns TRUE if ok */
@@ -1636,7 +1656,7 @@ static auto check_combat(unit_data *ch) -> int
    if(is_destructed(DR_UNIT, ch) != 0)
    {
       assert(!CHAR_COMBAT(ch));
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(!CHAR_AWAKE(ch))
@@ -1647,7 +1667,7 @@ static auto check_combat(unit_data *ch) -> int
    {
       while(CHAR_FIGHTING(ch))
       {
-         if(same_surroundings(ch, CHAR_FIGHTING(ch)) == 0u)
+         if(static_cast<unsigned int>(same_surroundings(ch, CHAR_FIGHTING(ch))) == 0U)
          {
             stop_fighting(ch, CHAR_FIGHTING(ch));
          }
@@ -1756,9 +1776,9 @@ auto hunting(struct spec_arg *sarg) -> int
             SET_BIT(CHAR_FLAGS(h->victim), CHAR_LEGAL_TARGET);
          }
 
-         if(!CHAR_COMBAT(sarg->owner) || !CHAR_COMBAT(sarg->owner)->FindOpponent(h->victim))
+         if((CHAR_COMBAT(sarg->owner) == nullptr) || (CHAR_COMBAT(sarg->owner)->FindOpponent(h->victim) == nullptr))
          {
-            set_fighting(sarg->owner, h->victim, TRUE);
+            set_fighting(sarg->owner, h->victim, static_cast<int>(TRUE));
          }
 
          victim = h->victim;

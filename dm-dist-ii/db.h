@@ -97,5 +97,5 @@ auto create_unit(uint8_t type) -> unit_data *;
 
 /* --- The globals of db.c --- */
 
-extern int                   room_number;
-extern unit_data            *unit_list;
+extern int        room_number;
+extern unit_data *unit_list;

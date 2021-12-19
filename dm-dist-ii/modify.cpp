@@ -339,7 +339,7 @@ auto get_bit(char *bitlst, const char *structure[]) -> long int
          l++;
       }
 
-      if(str_is_empty(bit) == 0u)
+      if(static_cast<unsigned int>(str_is_empty(bit)) == 0U)
       {
          if((tmpval = search_block_set(bit, structure, FALSE)) == -1)
          {
@@ -373,13 +373,13 @@ void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
    unit_data               *unt;
    unit_affected_type      *aff;
 
-   if(!CHAR_DESCRIPTOR(ch))
+   if(CHAR_DESCRIPTOR(ch) == nullptr)
    {
       return;
    }
 
    /* Check argument */
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Syntax: set <name> <field> <arguments>.\n\r", ch);
       return;
@@ -451,7 +451,7 @@ void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
    switch(unit_field_data[type].atype)
    {
       case AT_STR:
-         if(str_is_empty(argument) != 0u)
+         if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
          {
             send_to_char("Argument expected.\n\r", ch);
             return;
@@ -471,7 +471,7 @@ void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
       case AT_VAL:
          send_to_char("Arg:<value>\n\r", ch);
          argument = str_next_word(argument, arg);
-         if(str_is_empty(arg) != 0u)
+         if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
          {
             send_to_char("Numeric argument expected.\n\r", ch);
             return;
@@ -522,7 +522,7 @@ void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
 
       case AT_KEYDES:
          send_to_char("Arg:<string> (description)\n\r", ch);
-         if(str_is_empty(argument) != 0u)
+         if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
          {
             send_to_char("Missing string argument.\n\r", ch);
             return;
@@ -548,7 +548,7 @@ void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
          sprintf(buf, "Type found is %s [%d]\n\r", unit_field_data[type].structure[typarg], typarg);
          send_to_char(buf, ch);
          argument = str_next_word(argument, arg);
-         if(str_is_empty(arg) != 0u)
+         if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
          {
             send_to_char("Numeric argument expected.\n\r", ch);
             return;
@@ -591,7 +591,7 @@ void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
          }
          sprintf(buf, "Direction found is %s [%d]\n\r", dirs[typarg], typarg);
          send_to_char(buf, ch);
-         if(str_is_empty(argument) != 0u)
+         if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
          {
             send_to_char("Missing string argument.\n\r", ch);
             return;
@@ -668,7 +668,7 @@ void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
          return;
 
       case 1: /* "del-name" */
-         if(!UNIT_NAMES(unt).Name(0) || !UNIT_NAMES(unt).Name(1))
+         if((UNIT_NAMES(unt).Name(0) == nullptr) || (UNIT_NAMES(unt).Name(1) == nullptr))
          {
             send_to_char("Must have minimum of two names\n\r", ch);
             return;
@@ -733,7 +733,7 @@ void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
          return;
 
       case 5: /* "del-extra" */
-         if(str_is_empty(argument) != 0u)
+         if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
          {
             send_to_char("You must supply a field name.\n\r", ch);
             return;
@@ -855,7 +855,7 @@ void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
          return;
 
       case 21: /* "add-dir-name" */
-         if(!ROOM_EXIT(unt, typarg))
+         if(ROOM_EXIT(unt, typarg) == nullptr)
          {
             send_to_char("No such exit.\n\r", ch);
             return;
@@ -866,7 +866,7 @@ void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
          return;
 
       case 22: /* "del-dir-name" */
-         if(!ROOM_EXIT(unt, typarg))
+         if(ROOM_EXIT(unt, typarg) == nullptr)
          {
             send_to_char("No such exit.\n\r", ch);
             return;
@@ -877,7 +877,7 @@ void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
          return;
 
       case 23: /* "dir-flags" */
-         if(!ROOM_EXIT(unt, typarg))
+         if(ROOM_EXIT(unt, typarg) == nullptr)
          {
             send_to_char("No such exit.\n\r", ch);
             return;
@@ -887,7 +887,7 @@ void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
          return;
 
       case 24: /* "dir-key" */
-         if(!ROOM_EXIT(unt, typarg))
+         if(ROOM_EXIT(unt, typarg) == nullptr)
          {
             send_to_char("No such exit.\n\r", ch);
             return;
@@ -1164,7 +1164,7 @@ void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
          return;
 
       case 61: /* "del-quest" */
-         if(str_is_empty(argument) != 0u)
+         if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
          {
             send_to_char("You must supply a field name.\n\r", ch);
             return;
@@ -1229,7 +1229,7 @@ void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
          return;
 
       case 64: /* "del-info" */
-         if(str_is_empty(argument) != 0u)
+         if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
          {
             send_to_char("You must supply a field name.\n\r", ch);
             return;
@@ -1297,13 +1297,13 @@ void do_setskill(unit_data *ch, char *argument, const struct command_info *cmd)
    char       arg[MAX_STRING_LENGTH];
    unit_data *unt;
 
-   if(!CHAR_DESCRIPTOR(ch))
+   if(CHAR_DESCRIPTOR(ch) == nullptr)
    {
       return;
    }
 
    /* Check argument */
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Syntax: setskill <name> (skill|spell|weapon)"
                    " <field> <value>.\n\r",

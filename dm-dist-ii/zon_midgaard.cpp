@@ -144,12 +144,12 @@ auto evaluate(struct spec_arg *sarg) -> int
    int        craft;
    int        category;
 
-   if(sarg->cmd->no != CMD_AUTO_UNKNOWN || (is_abbrev(sarg->cmd->cmd_str, "evaluate") == 0u))
+   if(sarg->cmd->no != CMD_AUTO_UNKNOWN || (static_cast<unsigned int>(is_abbrev(sarg->cmd->cmd_str, "evaluate")) == 0U))
    {
       return SFR_SHARE;
    }
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       act("$1n says, 'What item do you wish to evaluate $3n?", A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_ROOM);
       return SFR_BLOCK;
@@ -166,7 +166,7 @@ auto evaluate(struct spec_arg *sarg) -> int
 
    currency = local_currency(sarg->owner);
 
-   if(char_can_afford(sarg->activator, cost, currency) == 0u)
+   if(static_cast<unsigned int>(char_can_afford(sarg->activator, cost, currency)) == 0U)
    {
       act("$1n says, 'The cost is merely $2t, get them first.'", A_SOMEONE, sarg->owner, money_string(cost, currency, TRUE), nullptr,
           TO_ROOM);

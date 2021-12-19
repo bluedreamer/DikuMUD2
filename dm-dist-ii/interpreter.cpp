@@ -481,7 +481,7 @@ void command_interpreter(unit_data *ch, const char *arg)
    char                 argstr[MAX_INPUT_LENGTH + 10];
    const char          *orgarg = arg;
    struct command_info *cmd_ptr;
-   int                  is_social = FALSE;
+   int                  is_social = static_cast<int>(FALSE);
 
    assert(IS_CHAR(ch));
 
@@ -502,7 +502,7 @@ void command_interpreter(unit_data *ch, const char *arg)
    /* Find first non blank */
    arg = skip_spaces(arg);
 
-   if(CHAR_DESCRIPTOR(ch))
+   if(CHAR_DESCRIPTOR(ch) != nullptr)
    {
       if(*arg == '!')
       {
@@ -520,7 +520,7 @@ void command_interpreter(unit_data *ch, const char *arg)
 
    arg = str_next_word(arg, cmd);
 
-   if(CHAR_DESCRIPTOR(ch))
+   if(CHAR_DESCRIPTOR(ch) != nullptr)
    {
       strcpy(CHAR_DESCRIPTOR(ch)->last_cmd, cmd);
    }
@@ -536,11 +536,11 @@ void command_interpreter(unit_data *ch, const char *arg)
    strip_trailing_spaces(argstr);
 
    if((cmd_ptr = (struct command_info *)search_trie(cmd, intr_trie)) == nullptr ||
-      ((is_social = static_cast<int>(cmd_is_a_social(cmd, TRUE))) != 0))
+      ((is_social = static_cast<int>(cmd_is_a_social(cmd, static_cast<int>(TRUE)))) != 0))
    {
       struct command_info the_cmd = {0, 0, nullptr, CMD_AUTO_UNKNOWN, POSITION_DEAD, nullptr, 0};
 
-      if((is_social != 0) || (cmd_ptr == nullptr && cmd_is_a_social(cmd, FALSE)))
+      if((is_social != 0) || (cmd_ptr == nullptr && cmd_is_a_social(cmd, static_cast<int>(FALSE))))
       {
          the_cmd.no = CMD_A_SOCIAL;
       }
@@ -562,7 +562,7 @@ void command_interpreter(unit_data *ch, const char *arg)
       return;
    }
 
-   if((cmd_ptr->combat_buffer != 0u) && CHAR_COMBAT(ch))
+   if((cmd_ptr->combat_buffer != 0U) && (CHAR_COMBAT(ch) != nullptr))
    {
       if(CHAR_COMBAT(ch)->When() >= SPEED_DEFAULT)
       {
@@ -601,7 +601,7 @@ void command_interpreter(unit_data *ch, const char *arg)
       return;
    }
 
-   if(cmd_ptr->log_level != 0u)
+   if(cmd_ptr->log_level != 0U)
    {
       slog(LOG_ALL, MAX(CHAR_LEVEL(ch), cmd_ptr->log_level), "CMDLOG %s: %s %s", UNIT_NAME(ch), cmd_ptr->cmd_str, argstr);
    }
@@ -636,12 +636,12 @@ void command_interpreter(unit_data *ch, const char *arg)
 
 auto char_is_playing(unit_data *u) -> int
 {
-   return UNIT_IN(u) != nullptr;
+   return static_cast<int>(UNIT_IN(u) != nullptr);
 }
 
 auto descriptor_is_playing(descriptor_data *d) -> int
 {
-   return (static_cast<int>(d != nullptr) && (d->character != nullptr) && (char_is_playing(d->character)) != 0);
+   return static_cast<int>((static_cast<int>(d != nullptr) != 0) && (d->character != nullptr) && (char_is_playing(d->character)) != 0);
 }
 
 void descriptor_interpreter(descriptor_data *d, const char *arg)
@@ -653,7 +653,7 @@ void descriptor_interpreter(descriptor_data *d, const char *arg)
 /* Check to see if the full command was typed */
 auto cmd_is_abbrev(unit_data *ch, const struct command_info *cmd) -> bool
 {
-   return CHAR_DESCRIPTOR(ch) && (str_ccmp(CHAR_DESCRIPTOR(ch)->last_cmd, cmd->cmd_str) != 0);
+   return (CHAR_DESCRIPTOR(ch) != nullptr) && (str_ccmp(CHAR_DESCRIPTOR(ch)->last_cmd, cmd->cmd_str) != 0);
 }
 
 /* To check for commands by string */
@@ -661,12 +661,12 @@ auto is_command(const struct command_info *cmd, const char *str) -> bool
 {
    if((cmd->no == CMD_AUTO_UNKNOWN) || (cmd->no == CMD_A_SOCIAL))
    {
-      return (static_cast<bool>(cmd->cmd_str != nullptr) && (is_abbrev(cmd->cmd_str, str)) != 0u);
+      return (static_cast<bool>(cmd->cmd_str != nullptr) && static_cast<unsigned int>(is_abbrev(cmd->cmd_str, str)) != 0U);
    }
 
-   struct command_info *cmd_ptr = (struct command_info *)search_trie(str, intr_trie);
+   auto *cmd_ptr = (struct command_info *)search_trie(str, intr_trie);
 
-   return cmd_ptr && cmd->no == cmd_ptr->no;
+   return (cmd_ptr != nullptr) && cmd->no == cmd_ptr->no;
 }
 
 void argument_interpreter(const char *argument, char *first_arg, char *second_arg)
@@ -766,7 +766,7 @@ auto basic_special(unit_data *ch, struct spec_arg *sarg, uint16_t mflt, unit_dat
 
    sarg->mflags = mflt;
 
-   if((extra_target != nullptr) && (same_surroundings(ch, extra_target) == 0u))
+   if((extra_target != nullptr) && (static_cast<unsigned int>(same_surroundings(ch, extra_target)) == 0U))
    {
       if((unit_function_scan(extra_target, sarg)) != SFR_SHARE)
       {
@@ -775,7 +775,7 @@ auto basic_special(unit_data *ch, struct spec_arg *sarg, uint16_t mflt, unit_dat
    }
 
    /* special in room? */
-   if(UNIT_FUNC(UNIT_IN(ch)))
+   if(UNIT_FUNC(UNIT_IN(ch)) != nullptr)
    {
       if((unit_function_scan(UNIT_IN(ch), sarg)) != SFR_SHARE)
       {
@@ -787,7 +787,7 @@ auto basic_special(unit_data *ch, struct spec_arg *sarg, uint16_t mflt, unit_dat
    for(u = UNIT_CONTAINS(ch); u != nullptr; u = next)
    {
       next = u->next; /* Next dude trick */
-      if(UNIT_FUNC(u) && (unit_function_scan(u, sarg)) != SFR_SHARE)
+      if((UNIT_FUNC(u) != nullptr) && (unit_function_scan(u, sarg)) != SFR_SHARE)
       {
          return SFR_BLOCK;
       }
@@ -798,7 +798,7 @@ auto basic_special(unit_data *ch, struct spec_arg *sarg, uint16_t mflt, unit_dat
    {
       next = u->next; /* Next dude trick */
 
-      if(UNIT_FUNC(u) && (unit_function_scan(u, sarg)) != SFR_SHARE)
+      if((UNIT_FUNC(u) != nullptr) && (unit_function_scan(u, sarg)) != SFR_SHARE)
       {
          return SFR_BLOCK;
       }
@@ -810,7 +810,7 @@ auto basic_special(unit_data *ch, struct spec_arg *sarg, uint16_t mflt, unit_dat
             for(uu = UNIT_CONTAINS(u); uu != nullptr; uu = nextt)
             {
                nextt = uu->next; /* next dude double trick */
-               if(UNIT_FUNC(uu) && (unit_function_scan(uu, sarg)) != SFR_SHARE)
+               if((UNIT_FUNC(uu) != nullptr) && (unit_function_scan(uu, sarg)) != SFR_SHARE)
                {
                   return SFR_BLOCK;
                }
@@ -822,7 +822,7 @@ auto basic_special(unit_data *ch, struct spec_arg *sarg, uint16_t mflt, unit_dat
             for(uu = UNIT_CONTAINS(u); uu != nullptr; uu = nextt)
             {
                nextt = uu->next; /* Next dude trick */
-               if(UNIT_FUNC(uu) && IS_OBJ(uu) && OBJ_EQP_POS(uu) && (unit_function_scan(uu, sarg) != SFR_SHARE))
+               if((UNIT_FUNC(uu) != nullptr) && IS_OBJ(uu) && (OBJ_EQP_POS(uu) != 0u) && (unit_function_scan(uu, sarg) != SFR_SHARE))
                {
                   return SFR_BLOCK;
                }
@@ -832,10 +832,10 @@ auto basic_special(unit_data *ch, struct spec_arg *sarg, uint16_t mflt, unit_dat
    }
 
    /* specials outside room */
-   if(UNIT_IS_TRANSPARENT(UNIT_IN(ch)) && UNIT_IN(UNIT_IN(ch)))
+   if(UNIT_IS_TRANSPARENT(UNIT_IN(ch)) && (UNIT_IN(UNIT_IN(ch)) != nullptr))
    {
       /* special in outside room? */
-      if(UNIT_FUNC(UNIT_IN(UNIT_IN(ch))))
+      if(UNIT_FUNC(UNIT_IN(UNIT_IN(ch))) != nullptr)
       {
          if(unit_function_scan(UNIT_IN(UNIT_IN(ch)), sarg) != SFR_SHARE)
          {
@@ -843,19 +843,19 @@ auto basic_special(unit_data *ch, struct spec_arg *sarg, uint16_t mflt, unit_dat
          }
       }
 
-      if(UNIT_IN(UNIT_IN(ch)))
+      if(UNIT_IN(UNIT_IN(ch)) != nullptr)
       {
          for(u = UNIT_CONTAINS(UNIT_IN(UNIT_IN(ch))); u != nullptr; u = next)
          {
             next = u->next; /* Next dude trick */
 
             /* No self activation except when dying... */
-            if(UNIT_FUNC(u) && (unit_function_scan(u, sarg)) != SFR_SHARE)
+            if((UNIT_FUNC(u) != nullptr) && (unit_function_scan(u, sarg)) != SFR_SHARE)
             {
                return SFR_BLOCK;
             }
 
-            if(!UNIT_IN(UNIT_IN(ch)))
+            if(UNIT_IN(UNIT_IN(ch)) == nullptr)
             {
                break;
             }
@@ -867,7 +867,7 @@ auto basic_special(unit_data *ch, struct spec_arg *sarg, uint16_t mflt, unit_dat
                   for(uu = UNIT_CONTAINS(u); uu != nullptr; uu = nextt)
                   {
                      nextt = uu->next; /* next dude double trick */
-                     if(UNIT_FUNC(uu) && (unit_function_scan(uu, sarg)) != SFR_SHARE)
+                     if((UNIT_FUNC(uu) != nullptr) && (unit_function_scan(uu, sarg)) != SFR_SHARE)
                      {
                         return SFR_BLOCK;
                      }
@@ -879,7 +879,7 @@ auto basic_special(unit_data *ch, struct spec_arg *sarg, uint16_t mflt, unit_dat
                   for(uu = UNIT_CONTAINS(u); uu != nullptr; uu = nextt)
                   {
                      nextt = uu->next; /* Next dude trick */
-                     if(UNIT_FUNC(uu) && IS_OBJ(uu) && OBJ_EQP_POS(uu) && (unit_function_scan(uu, sarg) != SFR_SHARE))
+                     if((UNIT_FUNC(uu) != nullptr) && IS_OBJ(uu) && (OBJ_EQP_POS(uu) != 0u) && (unit_function_scan(uu, sarg) != SFR_SHARE))
                      {
                         return SFR_BLOCK;
                      }
@@ -1031,7 +1031,7 @@ static void read_command_file()
    {
       char *ms2020 = fgets(Buf, sizeof(Buf) - 1, f);
 
-      if((str_is_empty(Buf) == 0u) && Buf[0] != '#')
+      if((static_cast<unsigned int>(str_is_empty(Buf)) == 0U) && Buf[0] != '#')
       {
          c = Buf;
          c = str_next_word(Buf, cmd);

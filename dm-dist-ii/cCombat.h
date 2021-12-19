@@ -5,16 +5,16 @@ class cCombat
    friend class cCombatList;
 
 public:
-   cCombat(unit_data *owner, int bMelee = FALSE);
+   cCombat(unit_data *owner, int bMelee = static_cast<int>(FALSE));
    ~cCombat();
 
    auto Opponent(int i = 0) -> unit_data *;
    auto FindOpponent(unit_data *tmp) -> unit_data *;
 
-   inline auto Owner() -> unit_data * { return pOwner; }
-   inline auto Melee() -> unit_data * { return pMelee; }
-   inline auto When() const -> int { return nWhen; }
-   inline auto NoOpponents() const -> int { return nNoOpponents; }
+   inline auto               Owner() -> unit_data               *{ return pOwner; }
+   inline auto               Melee() -> unit_data               *{ return pMelee; }
+   [[nodiscard]] inline auto When() const -> int { return nWhen; }
+   [[nodiscard]] inline auto NoOpponents() const -> int { return nNoOpponents; }
 
    void changeSpeed(int delta);
    void setMelee(unit_data *victim);

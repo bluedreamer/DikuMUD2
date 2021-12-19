@@ -35,11 +35,11 @@
    #endif
    #include <csignal>
 #endif
-
 #include "comm.h"
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
+#include "main.h"
 #include "structs.h"
 #include "system.h"
 #include "textutil.h"
@@ -102,7 +102,6 @@ void check_reboot()
    char       dummy;
    FILE      *boot;
 
-   extern int mud_shutdown;
    extern int mud_reboot;
 
    tc     = time(nullptr);
@@ -286,7 +285,7 @@ auto nogames() -> char *
       fclose(fl);
    }
    #endif
-   return (0);
+   return (nullptr);
 }
 
    #define COMA_SIGN                                                                                                                       \

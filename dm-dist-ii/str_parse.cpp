@@ -53,7 +53,7 @@ auto parse_match(char *pData, const char *pMatch) -> char *
    {
       return pTmp2;
    }
-   return NULL;
+   return nullptr;
 }
 
 auto parse_name(char **pData) -> char *
@@ -102,7 +102,7 @@ auto parse_num(char **pData, int *pNum) -> int
    pTmp1 = skip_blanks(*pData);
    if((isdigit(*pTmp1) == 0) && *pTmp1 != '+' && *pTmp1 != '-')
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    *pNum = atoi(pTmp1);
@@ -118,12 +118,12 @@ auto parse_num(char **pData, int *pNum) -> int
 
    if((isspace(*pTmp1) == 0) && *pTmp1 != 0)
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    *pData = pTmp1;
 
-   return TRUE;
+   return static_cast<int>(TRUE);
 }
 
 auto parse_numlist(char **pData, int *int_count) -> int *
@@ -193,17 +193,17 @@ auto parse_match_num(char **pData, const char *pMatch, int *pResult) -> int
    pTmp = parse_match(*pData, pMatch);
    if(pTmp == nullptr)
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if((parse_num(&pTmp, pResult)) == 0)
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    *pData = pTmp;
 
-   return TRUE;
+   return static_cast<int>(TRUE);
 }
 
 auto parse_match_numlist(char **pData, const char *pMatch, int *count) -> int *

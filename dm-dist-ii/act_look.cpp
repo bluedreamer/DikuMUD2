@@ -175,7 +175,7 @@ auto single_unit_messg(unit_data *unit, const char *type, const char *pSubStr, c
    {
       if(exd->descr.StringPtr() != nullptr)
       {
-         if((str_is_empty(pSubStr) != 0u) || (exd->names.Name(1) == nullptr))
+         if((static_cast<unsigned int>(str_is_empty(pSubStr)) != 0U) || (exd->names.Name(1) == nullptr))
          {
             return exd->descr.String();
          }
@@ -189,7 +189,7 @@ auto single_unit_messg(unit_data *unit, const char *type, const char *pSubStr, c
       exd = exd->next;
    }
 
-   if(str_is_empty(mesg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(mesg)) != 0U)
    {
       return nullptr;
    }
@@ -203,14 +203,14 @@ void unit_messg(unit_data *ch, unit_data *unit, const char *type, const char *me
 
    c = single_unit_messg(unit, str_cc(type, "_s"), "", mesg_s);
 
-   if(str_is_empty(c) == 0u)
+   if(static_cast<unsigned int>(str_is_empty(c)) == 0U)
    {
       act(c, A_SOMEONE, ch, unit, nullptr, TO_CHAR);
    }
 
    c = single_unit_messg(unit, str_cc(type, "_o"), "", mesg_o);
 
-   if(str_is_empty(c) == 0u)
+   if(static_cast<unsigned int>(str_is_empty(c)) == 0U)
    {
       act(c, A_SOMEONE, ch, unit, nullptr, TO_ROOM);
    }
@@ -298,7 +298,7 @@ void cat_unit_effects(unit_data *ch, unit_data *unit, char *buf)
 /* etc. to see obvious effects (a torch is lit, etc.)                   */
 void cat_passing_effects(unit_data *ch, unit_data *unit, char *buf)
 {
-   if(UNIT_MINV(unit))
+   if(UNIT_MINV(unit) != 0u)
    {
       strcat(buf, " (wizinv)");
       TAIL(buf);
@@ -354,12 +354,12 @@ void show_obj_to_char_lookat(unit_data *obj, unit_data *ch, int extra)
 
 void show_obj_to_char_trans_cont(char *b, unit_data *obj, unit_data *ch)
 {
-   int        anything = FALSE;
+   int        anything = static_cast<int>(FALSE);
    unit_data *c;
 
    assert(IS_OBJ(obj));
 
-   if(CHAR_CAN_SEE(ch, obj) && UNIT_CHARS(obj) && UNIT_IS_TRANSPARENT(obj) &&
+   if(CHAR_CAN_SEE(ch, obj) && (UNIT_CHARS(obj) != 0u) && UNIT_IS_TRANSPARENT(obj) &&
       (UNIT_IN(obj) == UNIT_IN(ch) ||         /* same level */
        UNIT_IN(UNIT_IN(ch)) == UNIT_IN(obj))) /* obj is level above */
    {
@@ -370,11 +370,11 @@ void show_obj_to_char_trans_cont(char *b, unit_data *obj, unit_data *ch)
       {
          if(IS_CHAR(c) && CHAR_CAN_SEE(ch, c))
          {
-            if(anything == FALSE)
+            if(anything == static_cast<int>(FALSE))
             {
                act_generate(b, "The $1N contains:", A_SOMEONE, obj, nullptr, ch, TO_VICT, ch);
                TAIL(b);
-               anything = TRUE;
+               anything = static_cast<int>(TRUE);
             }
 
             if(IS_PC(c))
@@ -398,7 +398,7 @@ void show_obj_to_char_blank(char *buffer, unit_data *obj, unit_data *ch)
 {
    *buffer = 0;
 
-   if(UNIT_OUT_DESCR_STRING(obj) && (*UNIT_OUT_DESCR_STRING(obj) != 0))
+   if((UNIT_OUT_DESCR_STRING(obj) != nullptr) && (*UNIT_OUT_DESCR_STRING(obj) != 0))
    {
       strcpy(buffer, UNIT_OUT_DESCR_STRING(obj));
       cat_passing_effects(ch, obj, buffer);
@@ -453,7 +453,7 @@ void show_char_to_char_blank(char *buffer, unit_data *i, unit_data *ch)
       return;
    }
 
-   if(IS_NPC(i) && (CHAR_POS(i) == NPC_DEFAULT(i)) && UNIT_OUT_DESCR(i).StringPtr())
+   if(IS_NPC(i) && (CHAR_POS(i) == NPC_DEFAULT(i)) && (UNIT_OUT_DESCR(i).StringPtr() != nullptr))
    {
       /* Show the NPC's description, since in default position */
 
@@ -512,7 +512,7 @@ void show_char_to_char_blank(char *buffer, unit_data *i, unit_data *ch)
             {
                strcat(buffer, " is here, fighting ");
 
-               if(same_surroundings(i, CHAR_FIGHTING(i)) == 0u)
+               if(static_cast<unsigned int>(same_surroundings(i, CHAR_FIGHTING(i))) == 0U)
                {
                   strcat(buffer, "someone who has already left.");
                }
@@ -531,7 +531,7 @@ void show_char_to_char_blank(char *buffer, unit_data *i, unit_data *ch)
             }
             else /* NIL fighting pointer */
             {
-               if(!CHAR_COMBAT(i))
+               if(CHAR_COMBAT(i) == nullptr)
                {
                   strcat(buffer, " is here struggling with thin air.");
                }
@@ -539,7 +539,7 @@ void show_char_to_char_blank(char *buffer, unit_data *i, unit_data *ch)
                {
                   strcat(buffer, " is here, fighting ");
 
-                  if(same_surroundings(i, CHAR_COMBAT(i)->Opponent()) == 0u)
+                  if(static_cast<unsigned int>(same_surroundings(i, CHAR_COMBAT(i)->Opponent())) == 0U)
                   {
                      strcat(buffer, "someone who has already left.");
                   }
@@ -583,11 +583,11 @@ void show_char_to_char_blank(char *buffer, unit_data *i, unit_data *ch)
 void show_char_to_char_trans_cont(char *b, unit_data *i, unit_data *ch)
 {
    unit_data *c;
-   int        anything = FALSE;
+   int        anything = static_cast<int>(FALSE);
 
    assert(IS_CHAR(i));
 
-   if(CHAR_CAN_SEE(ch, i) && UNIT_CHARS(i) && UNIT_IS_TRANSPARENT(i) &&
+   if(CHAR_CAN_SEE(ch, i) && (UNIT_CHARS(i) != 0u) && UNIT_IS_TRANSPARENT(i) &&
       (UNIT_IN(i) == UNIT_IN(ch) ||         /* same level */
        UNIT_IN(UNIT_IN(ch)) == UNIT_IN(i))) /* obj is level above */
    {
@@ -598,11 +598,11 @@ void show_char_to_char_trans_cont(char *b, unit_data *i, unit_data *ch)
       {
          if(IS_CHAR(c) && CHAR_CAN_SEE(ch, c))
          {
-            if(anything == FALSE)
+            if(anything == static_cast<int>(FALSE))
             {
                act_generate(b, "$1n carries:", A_SOMEONE, i, nullptr, ch, TO_VICT, ch);
                TAIL(b);
-               anything = TRUE;
+               anything = static_cast<int>(TRUE);
             }
 
             if(IS_PC(c))
@@ -672,7 +672,7 @@ void show_char_to_char_lookat(unit_data *i, unit_data *ch)
 
    for(unit = UNIT_CONTAINS(i); unit != nullptr; unit = unit->next)
    {
-      if(IS_OBJ(unit) && OBJ_EQP_POS(unit))
+      if(IS_OBJ(unit) && (OBJ_EQP_POS(unit) != 0u))
       {
          if(CHAR_CAN_SEE(ch, unit))
          {
@@ -748,15 +748,16 @@ auto list_char_to_char(unit_data *i, unit_data *ch) -> int
 auto list_room_to_char(unit_data *list, unit_data *ch) -> int
 {
    unit_data *i;
-   int        found = FALSE;
+   int        found = static_cast<int>(FALSE);
 
    for(i = list; i != nullptr; i = i->next)
    {
-      if(IS_ROOM(i) && i != UNIT_IN(ch) && UNIT_OUT_DESCR_STRING(i) && (str_is_empty(UNIT_OUT_DESCR_STRING(i)) == 0u))
+      if(IS_ROOM(i) && i != UNIT_IN(ch) && (UNIT_OUT_DESCR_STRING(i) != nullptr) &&
+         (static_cast<unsigned int>(str_is_empty(UNIT_OUT_DESCR_STRING(i))) == 0U))
       {
          send_to_char(UNIT_OUT_DESCR_STRING(i), ch);
          send_to_char("\n\r", ch);
-         found = TRUE;
+         found = static_cast<int>(TRUE);
       }
    }
 
@@ -802,8 +803,6 @@ static void look_dir(unit_data *ch, int keyword_no)
    unit_data               *room = UNIT_IN(ch);
    struct extra_descr_data *pExd;
 
-   auto has_found_door(unit_data * pc, int dir)->int;
-
    if(!IS_ROOM(room))
    {
       room = UNIT_IS_TRANSPARENT(room) ? UNIT_IN(room) : nullptr;
@@ -821,7 +820,7 @@ static void look_dir(unit_data *ch, int keyword_no)
       send_to_char("\n\r", ch);
    }
 
-   if(ROOM_EXIT(room, keyword_no) && ROOM_EXIT(room, keyword_no)->open_name.Name())
+   if((ROOM_EXIT(room, keyword_no) != nullptr) && (ROOM_EXIT(room, keyword_no)->open_name.Name() != nullptr))
    {
       if(IS_SET(ROOM_EXIT(room, keyword_no)->exit_info, EX_CLOSED))
       {
@@ -848,7 +847,7 @@ static void look_in(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    unit_data *unit;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Look in what?\n\r", ch);
    }
@@ -872,7 +871,7 @@ static void look_in(unit_data *ch, char *arg, const struct command_info *cmd)
          c = single_unit_messg(unit, "$scope", "", "$1N ($2t):");
 
          act(c, A_SOMEONE, unit, "here", ch, TO_VICT);
-         list_contents(ch, UNIT_CONTAINS(unit), TRUE);
+         list_contents(ch, UNIT_CONTAINS(unit), static_cast<int>(TRUE));
          send_done(ch, nullptr, unit, 3, cmd, arg);
       }
    }
@@ -933,9 +932,9 @@ static void look_in(unit_data *ch, char *arg, const struct command_info *cmd)
                const char *c;
                c = single_unit_messg(unit, "$scope", "", "$1N ($2t) : ");
 
-               act(c, A_SOMEONE, unit, UNIT_IN(unit) == ch ? (OBJ_EQP_POS(unit) ? "worn" : "carried") : "here", ch, TO_VICT);
+               act(c, A_SOMEONE, unit, UNIT_IN(unit) == ch ? (OBJ_EQP_POS(unit) != 0u ? "worn" : "carried") : "here", ch, TO_VICT);
 
-               list_contents(ch, UNIT_CONTAINS(unit), TRUE);
+               list_contents(ch, UNIT_CONTAINS(unit), static_cast<int>(TRUE));
                send_done(ch, nullptr, unit, 3, cmd, arg);
             }
             break;
@@ -959,7 +958,7 @@ static void look_at(unit_data *ch, char *arg, const struct command_info *cmd)
    int                      j;
    int                      fnd;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Look at what?\n\r", ch);
       return;
@@ -990,7 +989,7 @@ static void look_at(unit_data *ch, char *arg, const struct command_info *cmd)
                   page_string(CHAR_DESCRIPTOR(ch), "\n\r");
                }
 
-               show_obj_to_char_lookat(target, ch, ed != nullptr ? TRUE : FALSE);
+               show_obj_to_char_lookat(target, ch, static_cast<int>(ed != nullptr ? TRUE : FALSE));
 
                if(unit != ch)
                {
@@ -1089,7 +1088,7 @@ static void look_at(unit_data *ch, char *arg, const struct command_info *cmd)
             }
             else
             {
-               if(str_is_empty(b) != 0u)
+               if(static_cast<unsigned int>(str_is_empty(b)) != 0U)
                {
                   act("Look at $1n's what?", A_ALWAYS, unit, nullptr, ch, TO_VICT);
                }
@@ -1123,7 +1122,7 @@ static void look_at(unit_data *ch, char *arg, const struct command_info *cmd)
          page_string(CHAR_DESCRIPTOR(ch), "\n\r");
          send_done(ch, nullptr, nullptr, 2, cmd, arg);
       }
-      else if(UNIT_IN(ch) && UNIT_IS_TRANSPARENT(UNIT_IN(ch)) && UNIT_IN(UNIT_IN(ch)) &&
+      else if((UNIT_IN(ch) != nullptr) && UNIT_IS_TRANSPARENT(UNIT_IN(ch)) && (UNIT_IN(UNIT_IN(ch)) != nullptr) &&
               ((ed = char_unit_find_extra(ch, &target, arg, UNIT_IN(UNIT_IN(ch)))) != nullptr))
       {
          act("You look at the $3t.", A_HIDEINV, ch, nullptr, ed->names.Name() != nullptr ? ed->names.Name() : UNIT_NAME(target), TO_CHAR);
@@ -1249,7 +1248,7 @@ static void look_at(unit_data *ch, char *arg, const struct command_info *cmd)
          {
             send_to_char("You see nothing special.\n\r", ch);
          }
-         show_obj_to_char_lookat(unit, ch, TRUE);
+         show_obj_to_char_lookat(unit, ch, static_cast<int>(TRUE));
          send_done(ch, nullptr, unit, 2, cmd, arg);
       }
       else
@@ -1272,7 +1271,7 @@ static void look_exits(unit_data *ch)
    }
 
    int        door;
-   int        found                  = FALSE;
+   int        found                  = static_cast<int>(FALSE);
    char       buf[MAX_STRING_LENGTH] = "";
    char      *b                      = buf;
    unit_data *room;
@@ -1299,19 +1298,19 @@ static void look_exits(unit_data *ch)
 
    for(door = 0; door <= 5; door++)
    {
-      if(ROOM_EXIT(room, door) && ROOM_EXIT(room, door)->to_room)
+      if((ROOM_EXIT(room, door) != nullptr) && (ROOM_EXIT(room, door)->to_room != nullptr))
       {
          if(!IS_SET(ROOM_EXIT(room, door)->exit_info, EX_CLOSED))
          {
             sprintf(b, "%s, ", exits[door]);
             TAIL(b);
-            found = TRUE;
+            found = static_cast<int>(TRUE);
          }
          else if(has_found_door(ch, door) != 0)
          {
             sprintf(b, "%s, ", exits[door]);
             TAIL(b);
-            found = TRUE;
+            found = static_cast<int>(TRUE);
          }
       }
    }
@@ -1385,7 +1384,7 @@ static void look_blank(unit_data *ch, const struct command_info *cmd)
       act(c, A_SOMEONE, UNIT_IN(ch), IS_OBJ(UNIT_IN(ch)) ? "contains" : "carries", ch, TO_VICT);
 
       /* list units present */
-      list_contents(ch, UNIT_CONTAINS(UNIT_IN(ch)), TRUE);
+      list_contents(ch, UNIT_CONTAINS(UNIT_IN(ch)), static_cast<int>(TRUE));
 
       /* show unit, the surrounding unit is in */
       if(UNIT_IS_TRANSPARENT(UNIT_IN(ch)))
@@ -1427,7 +1426,7 @@ static void look_blank(unit_data *ch, const struct command_info *cmd)
                act(buffer, A_SOMEONE, UNIT_IN(ch), UNIT_IN(UNIT_IN(ch)), ch, TO_VICT);
 
                /* now list the unit, the surrounding unit is in */
-               list_contents(ch, UNIT_CONTAINS(room), TRUE);
+               list_contents(ch, UNIT_CONTAINS(room), static_cast<int>(TRUE));
             }
          }
       }
@@ -1439,7 +1438,7 @@ static void look_blank(unit_data *ch, const struct command_info *cmd)
 void do_look(unit_data *ch, char *aaa, const struct command_info *cmd)
 {
    char *arg = (char *)aaa;
-   if(!CHAR_DESCRIPTOR(ch))
+   if(CHAR_DESCRIPTOR(ch) == nullptr)
    {
       return;
    }
@@ -1477,7 +1476,7 @@ void do_look(unit_data *ch, char *aaa, const struct command_info *cmd)
 
       if(keyword_no == -1)
       {
-         if(str_is_empty(arg1) != 0u) /* wrong arg  */
+         if(static_cast<unsigned int>(str_is_empty(arg1)) != 0U) /* wrong arg  */
          {
             send_to_char("Sorry, I didn't understand that.\n\r", ch);
             return;
@@ -1491,7 +1490,7 @@ void do_look(unit_data *ch, char *aaa, const struct command_info *cmd)
          arg = str_next_word(arg, arg1);
          if((keyword_no >= 0) && (keyword_no <= 5))
          {
-            if(str_is_empty(arg) == 0u)
+            if(static_cast<unsigned int>(str_is_empty(arg)) == 0U)
             {
                arg        = pOrgArg;
                keyword_no = 7;
@@ -1507,7 +1506,7 @@ void do_look(unit_data *ch, char *aaa, const struct command_info *cmd)
          case 3:
          case 4:
          case 5:
-            if(str_is_empty(arg) != 0u)
+            if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
             {
                look_dir(ch, keyword_no);
             }
@@ -1532,7 +1531,7 @@ void do_look(unit_data *ch, char *aaa, const struct command_info *cmd)
 
 void do_read(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Read what?\n\r", ch);
       return;
@@ -1575,7 +1574,7 @@ void do_examine(unit_data *ch, char *aaa, const struct command_info *cmd)
    char      *b;
    unit_data *unit;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Examine what?\n\r", ch);
       return;
@@ -1616,7 +1615,7 @@ void do_inventory(unit_data *ch, char *arg, const struct command_info *cmd)
       {
          if(IS_OBJ(thing))
          {
-            if(!OBJ_EQP_POS(thing) && !IS_MONEY(thing))
+            if((OBJ_EQP_POS(thing) == 0u) && !IS_MONEY(thing))
             {
                show_obj_to_char_inv(buffer, thing, ch);
                list = add_to_look_list(list, buffer);
@@ -1656,7 +1655,7 @@ void do_equipment(unit_data *ch, char *arg, const struct command_info *cmd)
 
    for(thing = UNIT_CONTAINS(ch); thing != nullptr; thing = thing->next)
    {
-      if(IS_OBJ(thing) && OBJ_EQP_POS(thing) && CHAR_CAN_SEE(ch, thing))
+      if(IS_OBJ(thing) && (OBJ_EQP_POS(thing) != 0u) && CHAR_CAN_SEE(ch, thing))
       {
          found = TRUE;
 

@@ -188,7 +188,6 @@ void destroy_fptr(unit_data *u, unit_fptr *f)
 
    extern struct unit_function_array_type unit_function_array[];
 
-   void register_destruct(int i, void *ptr);
    void add_func_history(unit_data * u, uint16_t, uint16_t);
 
    assert(f);
@@ -241,8 +240,6 @@ void stop_following(unit_data *ch)
 {
    struct char_follow_type *j;
    struct char_follow_type *k;
-
-   extern struct command_info *cmd_follow;
 
    assert(CHAR_MASTER(ch));
 
@@ -322,7 +319,7 @@ void modify_bright(unit_data *unit, int bright)
       UNIT_LIGHTS(in) += bright;
    }
 
-   if(IS_OBJ(unit) && OBJ_EQP_POS(unit))
+   if(IS_OBJ(unit) && (OBJ_EQP_POS(unit) != 0u))
    {
       /* The char holding the torch light up the SAME way the torch does! */
       /* this works with the equib/unequib functions. This is NOT a case  */
@@ -355,7 +352,7 @@ void trans_set(unit_data *u)
    UNIT_ILLUM(u) = sum;
    UNIT_BRIGHT(u) += sum;
 
-   if(UNIT_IN(u))
+   if(UNIT_IN(u) != nullptr)
    {
       UNIT_LIGHTS(UNIT_IN(u)) += sum;
    }
@@ -365,7 +362,7 @@ void trans_unset(unit_data *u)
 {
    UNIT_BRIGHT(u) -= UNIT_ILLUM(u);
 
-   if(UNIT_IN(u))
+   if(UNIT_IN(u) != nullptr)
    {
       UNIT_LIGHTS(UNIT_IN(u)) -= UNIT_ILLUM(u);
    }
@@ -423,7 +420,7 @@ auto equipment_type(unit_data *ch, int pos, uint8_t type) -> unit_data *
    {
       return obj;
    }
-   return NULL;
+   return nullptr;
 }
 
 void equip_char(unit_data *ch, unit_data *obj, uint8_t pos)
@@ -515,11 +512,11 @@ auto unit_recursive(unit_data *from, unit_data *to) -> int
    {
       if(u == from)
       {
-         return TRUE;
+         return static_cast<int>(TRUE);
       }
    }
 
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 auto unit_zone(const unit_data *unit) -> struct zone_type *
@@ -528,7 +525,7 @@ auto unit_zone(const unit_data *unit) -> struct zone_type *
 
    for(; unit != nullptr; unit = UNIT_IN(unit))
    {
-      if(!UNIT_IN(unit))
+      if(UNIT_IN(unit) == nullptr)
       {
          assert(IS_ROOM(unit));
          return UNIT_FILE_INDEX(unit)->zone;
@@ -626,7 +623,7 @@ void intern_unit_up(unit_data *unit, bool pile)
       }
    }
 
-   if((pile != 0u) && IS_MONEY(unit) && UNIT_IN(unit))
+   if((static_cast<unsigned int>(pile) != 0U) && IS_MONEY(unit) && (UNIT_IN(unit) != nullptr))
    {
       pile_money(unit);
    }
@@ -639,7 +636,7 @@ void unit_up(unit_data *unit)
 
 void unit_from_unit(unit_data *unit)
 {
-   while(UNIT_IN(unit))
+   while(UNIT_IN(unit) != nullptr)
    {
       intern_unit_up(unit, FALSE);
    }
@@ -683,7 +680,7 @@ void intern_unit_down(unit_data *unit, unit_data *to, bool pile)
       }
    }
 
-   if(UNIT_IN(unit))
+   if(UNIT_IN(unit) != nullptr)
    {
       if(IS_CHAR(unit))
       {
@@ -713,7 +710,7 @@ void intern_unit_down(unit_data *unit, unit_data *to, bool pile)
    }
    UNIT_WEIGHT(to) += UNIT_WEIGHT(unit);
 
-   if((pile != 0u) && IS_MONEY(unit))
+   if((static_cast<unsigned int>(pile) != 0U) && IS_MONEY(unit))
    {
       pile_money(unit);
    }
@@ -728,14 +725,14 @@ void intern_unit_to_unit(unit_data *unit, unit_data *to, bool pile)
 {
    assert(to);
 
-   if(UNIT_IN(to))
+   if(UNIT_IN(to) != nullptr)
    {
       intern_unit_to_unit(unit, UNIT_IN(to), FALSE);
    }
 
    intern_unit_down(unit, to, FALSE);
 
-   if((pile != 0u) && IS_MONEY(unit))
+   if((static_cast<unsigned int>(pile) != 0U) && IS_MONEY(unit))
    {
       pile_money(unit);
    }
@@ -863,10 +860,10 @@ void extract_unit(unit_data *unit)
    /* We can't extract rooms! Sanity, MS 300595, wierd bug... */
    assert(!IS_ROOM(unit));
 
-   if(IS_PC(unit) && UNIT_IN(unit) && (!PC_IS_UNSAVED(unit)))
+   if(IS_PC(unit) && (UNIT_IN(unit) != nullptr) && (!PC_IS_UNSAVED(unit)))
    {
       save_player(unit);
-      save_player_contents(unit, TRUE);
+      save_player_contents(unit, static_cast<int>(TRUE));
    }
 
    DeactivateDil(unit);
@@ -881,12 +878,12 @@ void extract_unit(unit_data *unit)
    stop_all_special(unit);
    stop_affect(unit);
 
-   while(UNIT_CONTAINS(unit))
+   while(UNIT_CONTAINS(unit) != nullptr)
    {
       extract_unit(UNIT_CONTAINS(unit));
    }
 
-   if(!IS_PC(unit) || UNIT_IN(unit))
+   if(!IS_PC(unit) || (UNIT_IN(unit) != nullptr))
    {
       while((d = unit_is_edited(unit)) != nullptr)
       {
@@ -905,7 +902,7 @@ void extract_unit(unit_data *unit)
          }
 
          /* If the PC which is switched is extracted, then unswitch */
-         if(IS_PC(unit) && !CHAR_DESCRIPTOR(unit))
+         if(IS_PC(unit) && (CHAR_DESCRIPTOR(unit) == nullptr))
          {
             for(d = descriptor_list; d != nullptr; d = d->next)
             {
@@ -917,7 +914,7 @@ void extract_unit(unit_data *unit)
             }
          }
 
-         if(CHAR_DESCRIPTOR(unit))
+         if(CHAR_DESCRIPTOR(unit) != nullptr)
          {
             void disconnect_game(unit_data * pc);
 
@@ -937,7 +934,7 @@ void extract_unit(unit_data *unit)
          }
       }
 
-      if(UNIT_IN(unit))
+      if(UNIT_IN(unit) != nullptr)
       {
          unit_from_unit(unit);
       }

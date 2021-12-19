@@ -52,7 +52,7 @@ auto raw_destruct_affect(unit_affected_type *af) -> bool
 
 auto skill_overflow(int skill, int change, bool set) -> bool
 {
-   if(set != 0u)
+   if(static_cast<unsigned int>(set) != 0U)
    {
       if(skill == 0)
       {
@@ -84,7 +84,7 @@ auto apf_mod_char_flags(unit_affected_type *af, unit_data *unit, bool set) -> bo
 
    assert(IS_CHAR(unit));
 
-   if(set != 0u)
+   if(static_cast<unsigned int>(set) != 0U)
    {
       SET_BIT(CHAR_FLAGS(unit), (uint32_t)af->data[0]);
    }
@@ -118,7 +118,7 @@ auto apf_mod_obj_flags(unit_affected_type *af, unit_data *unit, bool set) -> boo
 
    assert(IS_OBJ(unit));
 
-   if(set != 0u)
+   if(static_cast<unsigned int>(set) != 0U)
    {
       SET_BIT(OBJ_FLAGS(unit), (uint32_t)af->data[0]);
    }
@@ -150,7 +150,7 @@ auto apf_mod_unit_flags(unit_affected_type *af, unit_data *unit, bool set) -> bo
 {
    unit_affected_type *taf;
 
-   if(set != 0u)
+   if(static_cast<unsigned int>(set) != 0U)
    {
       SET_BIT(UNIT_FLAGS(unit), (uint16_t)af->data[0]);
    }
@@ -194,11 +194,11 @@ auto apf_weapon_adj(unit_affected_type *af, unit_data *unit, bool set) -> bool
       }
    }
 
-   if(set != 0u)
+   if(static_cast<unsigned int>(set) != 0U)
    {
       if(IS_PC(unit))
       {
-         if(skill_overflow(PC_WPN_SKILL(unit, modify), af->data[1], set) != 0u)
+         if(static_cast<unsigned int>(skill_overflow(PC_WPN_SKILL(unit, modify), af->data[1], set)) != 0U)
          {
             return raw_destruct_affect(af);
          }
@@ -206,7 +206,7 @@ auto apf_weapon_adj(unit_affected_type *af, unit_data *unit, bool set) -> bool
       }
       else
       {
-         if(skill_overflow(NPC_WPN_SKILL(unit, modify), af->data[1], set) != 0u)
+         if(static_cast<unsigned int>(skill_overflow(NPC_WPN_SKILL(unit, modify), af->data[1], set)) != 0U)
          {
             return raw_destruct_affect(af);
          }
@@ -217,7 +217,7 @@ auto apf_weapon_adj(unit_affected_type *af, unit_data *unit, bool set) -> bool
    {
       if(IS_PC(unit))
       {
-         if(skill_overflow(PC_WPN_SKILL(unit, modify), af->data[1], set) != 0u)
+         if(static_cast<unsigned int>(skill_overflow(PC_WPN_SKILL(unit, modify), af->data[1], set)) != 0U)
          {
             af->duration = 0; /* Stall the destruction until possible */
             return FALSE;     /* CANCEL the destruction               */
@@ -226,7 +226,7 @@ auto apf_weapon_adj(unit_affected_type *af, unit_data *unit, bool set) -> bool
       }
       else
       {
-         if(skill_overflow(NPC_WPN_SKILL(unit, modify), af->data[1], set) != 0u)
+         if(static_cast<unsigned int>(skill_overflow(NPC_WPN_SKILL(unit, modify), af->data[1], set)) != 0U)
          {
             af->duration = 0; /* Stall the destruction until possible */
             return FALSE;     /* CANCEL the destruction               */
@@ -247,11 +247,11 @@ auto apf_skill_adj(unit_affected_type *af, unit_data *unit, bool set) -> bool
       return TRUE;
    }
 
-   if(set != 0u)
+   if(static_cast<unsigned int>(set) != 0U)
    {
       if(IS_PC(unit))
       {
-         if(skill_overflow(PC_SKI_SKILL(unit, af->data[0]), af->data[1], set) != 0u)
+         if(static_cast<unsigned int>(skill_overflow(PC_SKI_SKILL(unit, af->data[0]), af->data[1], set)) != 0U)
          {
             return raw_destruct_affect(af);
          }
@@ -262,7 +262,7 @@ auto apf_skill_adj(unit_affected_type *af, unit_data *unit, bool set) -> bool
    {
       if(IS_PC(unit))
       {
-         if(skill_overflow(PC_SKI_SKILL(unit, af->data[0]), af->data[1], set) != 0u)
+         if(static_cast<unsigned int>(skill_overflow(PC_SKI_SKILL(unit, af->data[0]), af->data[1], set)) != 0U)
          {
             af->duration = 0; /* Stall the destruction until possible */
             return FALSE;     /* CANCEL the destruction               */
@@ -297,11 +297,11 @@ auto apf_spell_adj(unit_affected_type *af, unit_data *unit, bool set) -> bool
       }
    }
 
-   if(set != 0u)
+   if(static_cast<unsigned int>(set) != 0U)
    {
       if(IS_PC(unit))
       {
-         if(skill_overflow(PC_SPL_SKILL(unit, modify), af->data[1], set) != 0u)
+         if(static_cast<unsigned int>(skill_overflow(PC_SPL_SKILL(unit, modify), af->data[1], set)) != 0U)
          {
             return raw_destruct_affect(af);
          }
@@ -309,7 +309,7 @@ auto apf_spell_adj(unit_affected_type *af, unit_data *unit, bool set) -> bool
       }
       else
       {
-         if(skill_overflow(NPC_SPL_SKILL(unit, modify), af->data[1], set) != 0u)
+         if(static_cast<unsigned int>(skill_overflow(NPC_SPL_SKILL(unit, modify), af->data[1], set)) != 0U)
          {
             return raw_destruct_affect(af);
          }
@@ -320,7 +320,7 @@ auto apf_spell_adj(unit_affected_type *af, unit_data *unit, bool set) -> bool
    {
       if(IS_PC(unit))
       {
-         if(skill_overflow(PC_SPL_SKILL(unit, modify), af->data[1], set) != 0u)
+         if(static_cast<unsigned int>(skill_overflow(PC_SPL_SKILL(unit, modify), af->data[1], set)) != 0U)
          {
             af->duration = 0; /* Stall the destruction until possible */
             return FALSE;     /* CANCEL the destruction               */
@@ -329,7 +329,7 @@ auto apf_spell_adj(unit_affected_type *af, unit_data *unit, bool set) -> bool
       }
       else
       {
-         if(skill_overflow(NPC_SPL_SKILL(unit, modify), af->data[1], set) != 0u)
+         if(static_cast<unsigned int>(skill_overflow(NPC_SPL_SKILL(unit, modify), af->data[1], set)) != 0U)
          {
             af->duration = 0; /* Stall the destruction until possible */
             return FALSE;     /* CANCEL the destruction               */
@@ -349,9 +349,9 @@ auto apf_ability_adj(unit_affected_type *af, unit_data *unit, bool set) -> bool
 {
    assert(IS_CHAR(unit));
 
-   if(set != 0u)
+   if(static_cast<unsigned int>(set) != 0U)
    {
-      if(skill_overflow(CHAR_ABILITY(unit, af->data[0]), af->data[1], set) != 0u)
+      if(static_cast<unsigned int>(skill_overflow(CHAR_ABILITY(unit, af->data[0]), af->data[1], set)) != 0U)
       {
          return raw_destruct_affect(af);
       }
@@ -365,7 +365,7 @@ auto apf_ability_adj(unit_affected_type *af, unit_data *unit, bool set) -> bool
    }
    else
    {
-      if(skill_overflow(CHAR_ABILITY(unit, af->data[0]), af->data[1], set) != 0u)
+      if(static_cast<unsigned int>(skill_overflow(CHAR_ABILITY(unit, af->data[0]), af->data[1], set)) != 0U)
       {
          af->duration = 0; /* Stall the destruction until possible */
          return FALSE;     /* CANCEL the destruction               */
@@ -384,7 +384,7 @@ auto apf_ability_adj(unit_affected_type *af, unit_data *unit, bool set) -> bool
 /* Data[0] = Amount of light sources */
 auto apf_light(unit_affected_type *af, unit_data *unit, bool set) -> bool
 {
-   if(set == 0u)
+   if(static_cast<unsigned int>(set) == 0U)
    {
       af->data[0] = -af->data[0];
    }
@@ -396,7 +396,7 @@ auto apf_light(unit_affected_type *af, unit_data *unit, bool set) -> bool
 
    modify_bright(unit, af->data[0]);
 
-   if(set == 0u)
+   if(static_cast<unsigned int>(set) == 0U)
    {
       af->data[0] = -af->data[0];
    }
@@ -419,7 +419,7 @@ auto apf_natural_armour(unit_affected_type *af, unit_data *unit, bool set) -> bo
       return TRUE;
    }
 
-   if(set != 0u)
+   if(static_cast<unsigned int>(set) != 0U)
    {
       unit_affected_type *taf;
 
@@ -458,7 +458,7 @@ auto apf_speed(unit_affected_type *af, unit_data *unit, bool set) -> bool
       return TRUE;
    }
 
-   if(set != 0u)
+   if(static_cast<unsigned int>(set) != 0U)
    {
       unit_affected_type *taf;
 

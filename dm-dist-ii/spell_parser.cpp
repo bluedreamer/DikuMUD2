@@ -81,7 +81,7 @@ auto spell_legal_target(int spl, unit_data *caster, unit_data *target) -> bool
       return FALSE;
    }
 
-   if((spell_info[spl].offensive != 0u) && (pk_test(caster, target, TRUE) != 0))
+   if((spell_info[spl].offensive != 0U) && (pk_test(caster, target, static_cast<int>(TRUE)) != 0))
    {
       return FALSE;
    }
@@ -166,7 +166,7 @@ auto spell_perform(int spell_no, int spell_type, unit_data *caster, unit_data *m
       return hm;
    }
 
-   if(spell_legal_type(spell_no, spell_type) == 0u)
+   if(static_cast<unsigned int>(spell_legal_type(spell_no, spell_type)) == 0U)
    {
       send_to_char("This spell wasn't meant to "
                    "be there! Please report.\n\r",
@@ -177,13 +177,13 @@ auto spell_perform(int spell_no, int spell_type, unit_data *caster, unit_data *m
       return -1;
    }
 
-   if(spell_legal_target(spell_no, caster, target) == 0u)
+   if(static_cast<unsigned int>(spell_legal_target(spell_no, caster, target)) == 0U)
    {
       act("The magic disappears when cast on $3n.", A_SOMEONE, caster, nullptr, target, TO_CHAR);
       return -1;
    }
 
-   if((spell_info[spell_no].offensive != 0u) && (target != nullptr) && IS_CHAR(target))
+   if((spell_info[spell_no].offensive != 0U) && (target != nullptr) && IS_CHAR(target))
    {
       offend_legal_state(caster, target);
    }
@@ -268,7 +268,7 @@ void do_cast(unit_data *ch, char *argument, const struct command_info *cmd)
    char      *orgarg;
    char      *c;
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Cast which spell?\n\r", ch);
       return;
@@ -339,7 +339,7 @@ void do_cast(unit_data *ch, char *argument, const struct command_info *cmd)
       return;
    }
 
-   if(spell_legal_type(spl, MEDIA_SPELL) == 0u)
+   if(static_cast<unsigned int>(spell_legal_type(spl, MEDIA_SPELL)) == 0U)
    {
       send_to_char("This isn't a legal spell for you to cast!  "
                    "Please report.\n\r",
@@ -357,7 +357,7 @@ void do_cast(unit_data *ch, char *argument, const struct command_info *cmd)
 
    if(!IS_SET(spell_info[spl].targets, TAR_IGNORE))
    {
-      if(str_is_empty(argument) == 0u) /* if there is an argument to look at */
+      if(static_cast<unsigned int>(str_is_empty(argument)) == 0U) /* if there is an argument to look at */
       {
          /* Find unit by the name 'argument' at target location */
          unit = find_unit(ch, &argument, nullptr, spell_info[spl].targets);
@@ -375,25 +375,26 @@ void do_cast(unit_data *ch, char *argument, const struct command_info *cmd)
             target_ok = TRUE;
          }
 
-         if((target_ok == 0u) && IS_SET(spell_info[spl].targets, TAR_FIGHT_VICT) && ((unit = CHAR_FIGHTING(ch)) != nullptr))
+         if((static_cast<unsigned int>(target_ok) == 0U) && IS_SET(spell_info[spl].targets, TAR_FIGHT_VICT) &&
+            ((unit = CHAR_FIGHTING(ch)) != nullptr))
          {
             target_ok = TRUE;
          }
 
-         if((target_ok == 0u) && IS_SET(spell_info[spl].targets, TAR_AUTO_SELF))
+         if((static_cast<unsigned int>(target_ok) == 0U) && IS_SET(spell_info[spl].targets, TAR_AUTO_SELF))
          {
             unit      = ch;
             target_ok = TRUE;
          }
 
-         if((target_ok == 0u) && IS_SET(spell_info[spl].targets, TAR_ROOM) && IS_ROOM(UNIT_IN(ch)))
+         if((static_cast<unsigned int>(target_ok) == 0U) && IS_SET(spell_info[spl].targets, TAR_ROOM) && IS_ROOM(UNIT_IN(ch)))
          {
             unit      = UNIT_IN(ch);
             target_ok = TRUE;
          }
       }
 
-      if(target_ok == 0u)
+      if(static_cast<unsigned int>(target_ok) == 0U)
       {
          if(*orgarg != 0) /* If a name was typed */
          {
@@ -428,7 +429,7 @@ void do_cast(unit_data *ch, char *argument, const struct command_info *cmd)
          send_to_char("You can not cast this spell upon yourself.\n\r", ch);
          return;
       }
-      else if(unit != ch && IS_SET(spell_info[spl].targets, TAR_SELF_ONLY))
+      if(unit != ch && IS_SET(spell_info[spl].targets, TAR_SELF_ONLY))
       {
          send_to_char("You can only cast this spell upon yourself.\n\r", ch);
          return;
@@ -470,7 +471,7 @@ void do_cast(unit_data *ch, char *argument, const struct command_info *cmd)
    }
 
    // Spells take time too!
-   if(CHAR_COMBAT(ch))
+   if(CHAR_COMBAT(ch) != nullptr)
    {
       CHAR_COMBAT(ch)->changeSpeed(spell_info[spl].beats);
    }
@@ -585,7 +586,7 @@ static void spell_read()
       str_lower(pTmp);
       strip_trailing_blanks(pTmp);
 
-      if(pCh == nullptr || (str_is_empty(pCh) != 0u))
+      if(pCh == nullptr || (static_cast<unsigned int>(str_is_empty(pCh)) != 0U))
       {
          continue;
       }
@@ -593,7 +594,7 @@ static void spell_read()
       if(strncmp(pTmp, "index", 5) == 0)
       {
          idx = atoi(pCh);
-         if((str_is_number(pCh) == 0u) || (is_in(idx, SPL_ALL, SPL_TREE_MAX - 1) == 0))
+         if((static_cast<unsigned int>(str_is_number(pCh)) == 0U) || (is_in(idx, SPL_ALL, SPL_TREE_MAX - 1) == 0))
          {
             slog(LOG_ALL, 0, "Spell boot error: %s", pCh);
             idx = -1;
@@ -853,11 +854,11 @@ static void spell_init()
 
       if(i < SPL_GROUP_MAX)
       {
-         spl_tree[i].isleaf = FALSE;
+         spl_tree[i].isleaf = static_cast<uint8_t>(FALSE);
       }
       else
       {
-         spl_tree[i].isleaf = TRUE;
+         spl_tree[i].isleaf = static_cast<uint8_t>(TRUE);
       }
 
       spell_info[i].spell_pointer    = nullptr;
@@ -868,7 +869,7 @@ static void spell_init()
       spell_info[i].media            = 0;
       spell_info[i].cast_type        = SPLCST_CHECK;
       spell_info[i].demi_power       = 0;
-      spell_info[i].offensive        = FALSE;
+      spell_info[i].offensive        = static_cast<uint8_t>(FALSE);
       spell_info[i].tmpl             = nullptr;
       spell_info[i].shield           = SHIELD_M_USELESS;
 
@@ -882,7 +883,7 @@ static void spell_init()
    }
 
    spl_tree[SPL_TREE_MAX].parent = -1;
-   spl_tree[SPL_TREE_MAX].isleaf = FALSE;
+   spl_tree[SPL_TREE_MAX].isleaf = static_cast<uint8_t>(FALSE);
    spl_text[SPL_TREE_MAX]        = nullptr;
 }
 

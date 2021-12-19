@@ -75,11 +75,6 @@ Mon Nov 14 17:19:47 MET 1994
 
 */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include "trie_type.h"
 #include "comm.h"
 #include "config.h"
 #include "db_file.h"
@@ -89,9 +84,14 @@ Mon Nov 14 17:19:47 MET 1994
 #include "structs.h"
 #include "textutil.h"
 #include "trie.h"
+#include "trie_type.h"
 #include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #define MAX_ALIAS_LENGTH  10   /* Max length of alias */
 #define MAX_ALIAS_COUNT   2000 /* Max room for string saved to file */
@@ -104,9 +104,9 @@ Mon Nov 14 17:19:47 MET 1994
        */
 struct alias_head
 {
-   uint16_t          char_count;
+   uint16_t   char_count;
    trie_type *trie;
-   char              owner[20];
+   char       owner[20];
 };
 
 struct alias_t
@@ -306,10 +306,10 @@ static void alias_to_char(struct alias_t *al, unit_data *ch)
  */
 static auto print_alias(trie_type *t, unit_data *ch) -> int
 {
-   trie_type *t2;
-   struct alias_t   *al;
-   int               i;
-   int               count = 0;
+   trie_type      *t2;
+   struct alias_t *al;
+   int             i;
+   int             count = 0;
 
    for(i = 0; (t != nullptr) && i < t->size; i++)
    {
@@ -331,7 +331,7 @@ static auto print_alias(trie_type *t, unit_data *ch) -> int
  */
 static auto add_alias(struct alias_head *ah, char *key, char *val, bool single) -> int
 {
-   struct alias_t *al = NULL;
+   struct alias_t *al = nullptr;
    struct alias_t *tmp_al;
 
    /* There is already an alias for key - Delete it */
@@ -418,14 +418,16 @@ static auto circle_alias(char *key, char *val, trie_type *t, bool first) -> uint
          return 1;
       }
       if(first && (is_abbrev(comm, "alias") || is_abbrev(comm, "unalias")))
+      {
          return 2;
-      else if(first && *comm == '!')
+      }
+      if(first && *comm == '!')
          return 4;
       else if(first && is_abbrev(comm, "shout"))
          return 5;
 
       if((t != nullptr) && ((tmp_al = (struct alias_t *)search_trie(comm, t)) != nullptr) &&
-         ((res = circle_alias(key, tmp_al->value, t, FALSE)) != 0u))
+         ((res = circle_alias(key, tmp_al->value, t, FALSE)) != 0U))
       {
          return res;
       }
@@ -468,7 +470,7 @@ static auto alias_is_ok(struct alias_head *ah, char *key, char *val, unit_data *
       return FALSE;
    }
 
-   if((is_abbrev(key, "alias") != 0u) || (is_abbrev(key, "unalias") != 0u))
+   if((static_cast<unsigned int>(is_abbrev(key, "alias")) != 0U) || (static_cast<unsigned int>(is_abbrev(key, "unalias")) != 0U))
    {
       send_to_char("Alas, but that is a reserved name.\n\r", ch);
       return FALSE;
@@ -624,7 +626,7 @@ static void cmd_alias(unit_data *ch, char *arg, struct alias_head *alias_h)
    char            comm[MAX_INPUT_LENGTH + 1];
    struct alias_t *al = nullptr;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       /* No argument lists the defined aliases */
       if(print_alias(alias_h->trie, ch) == 0)
@@ -642,7 +644,7 @@ static void cmd_alias(unit_data *ch, char *arg, struct alias_head *alias_h)
    /* Cut off first argument */
    arg = get_next_word(arg, comm);
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       /* No further arguments lists this alias, if defined */
       if(alias_h->trie == nullptr || (al = (struct alias_t *)search_trie(comm, alias_h->trie)) == nullptr)
@@ -670,7 +672,7 @@ static void cmd_alias(unit_data *ch, char *arg, struct alias_head *alias_h)
 
 static void cmd_unalias(unit_data *ch, char *arg, struct alias_head *alias_h)
 {
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       act("Unalias what??", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
    }
@@ -684,7 +686,7 @@ static void cmd_unalias(unit_data *ch, char *arg, struct alias_head *alias_h)
          arg = get_next_word(arg, comm);
 
          act(del_alias(alias_h, comm) ? "Alias `$2t' deleted." : "No alias defined for `$2t'.", A_ALWAYS, ch, comm, nullptr, TO_CHAR);
-      } while(str_is_empty(arg) == 0u);
+      } while(static_cast<unsigned int>(str_is_empty(arg)) == 0U);
    }
 }
 
@@ -694,7 +696,7 @@ static void cmd_claim(unit_data *ch, char *arg, unit_data *obj, struct alias_hea
 
    one_argument(arg, buf);
 
-   if((str_is_empty(buf) != 0u) || !UNIT_NAMES(obj).IsName(buf))
+   if((static_cast<unsigned int>(str_is_empty(buf)) != 0U) || (UNIT_NAMES(obj).IsName(buf) == nullptr))
    {
       act("You can only claim $2n.", A_ALWAYS, ch, obj, nullptr, TO_CHAR);
    }
@@ -709,7 +711,7 @@ static void cmd_claim(unit_data *ch, char *arg, unit_data *obj, struct alias_hea
 
 static auto local_dictionary(struct spec_arg *sarg) -> int
 {
-   char                    *pcomm = NULL;
+   char                    *pcomm = nullptr;
    char                    *cmd_array[256];
    uint8_t                  i;
    struct alias_t          *al = nullptr;
@@ -743,8 +745,10 @@ static auto local_dictionary(struct spec_arg *sarg) -> int
 
       exd = UNIT_EXTRA_DESCR(sarg->owner)->find_raw("$alias");
 
-      if(exd == NULL)
+      if(exd == nullptr)
+      {
          exd = fix_extra_descr(sarg->owner, exd);
+      }
 
       tmp = alias_to_str(alias_h);
       assert(strlen(tmp) < MAX_ALIAS_COUNT + ALIAS_NAME + 2 + 500);
@@ -754,7 +758,7 @@ static auto local_dictionary(struct spec_arg *sarg) -> int
    }
 
    /* Not an applicaple command */
-   if((sarg->activator == nullptr) || !IS_CHAR(sarg->activator) || !CHAR_DESCRIPTOR(sarg->activator) ||
+   if((sarg->activator == nullptr) || !IS_CHAR(sarg->activator) || (CHAR_DESCRIPTOR(sarg->activator) == nullptr) ||
       sarg->activator != UNIT_IN(sarg->owner))
    {
       return SFR_SHARE;
@@ -763,7 +767,7 @@ static auto local_dictionary(struct spec_arg *sarg) -> int
    /* Check for the dictionary-commands */
 
    /* The alias command */
-   if(is_command(sarg->cmd, "alias") != 0u)
+   if(static_cast<unsigned int>(is_command(sarg->cmd, "alias")) != 0U)
    {
       /* This check is needed too, so people can't wreak havoc with another
        * person's dictionary...
@@ -786,7 +790,7 @@ static auto local_dictionary(struct spec_arg *sarg) -> int
       return SFR_BLOCK;
    }
    /* The claim command is used to `accept' the current dictionary */
-   else if(is_command(sarg->cmd, "claim"))
+   if(is_command(sarg->cmd, "claim"))
    {
       cmd_claim(sarg->activator, (char *)sarg->arg, sarg->owner, alias_h);
       return SFR_BLOCK;
@@ -817,7 +821,7 @@ static auto local_dictionary(struct spec_arg *sarg) -> int
    /*  In the unlikely (?) event that one or more commands sneak in on the
     *  command queue before we get to to process, we have to empty it...
     */
-   for(i = 0; !CHAR_DESCRIPTOR(sarg->activator)->qInput.IsEmpty();)
+   for(i = 0; CHAR_DESCRIPTOR(sarg->activator)->qInput.IsEmpty() == 0;)
    {
       if(i < 256) /* 256 should certainly be enough, but check anyway */
       {
@@ -834,7 +838,7 @@ static auto local_dictionary(struct spec_arg *sarg) -> int
       /* Execute first of `derived' commands to avoid silly `command lag'
        * This is very ugly
        */
-      if(!CHAR_DESCRIPTOR(sarg->activator)->qInput.IsEmpty())
+      if(CHAR_DESCRIPTOR(sarg->activator)->qInput.IsEmpty() == 0)
       {
          struct cQueueElem *qe = CHAR_DESCRIPTOR(sarg->activator)->qInput.GetHead();
          pcomm                 = (char *)qe->Data();
@@ -844,7 +848,7 @@ static auto local_dictionary(struct spec_arg *sarg) -> int
    }
 
    /* Put popped commands back on queue and clean up */
-   while((i--) != 0u)
+   while((i--) != 0U)
    {
       CHAR_DESCRIPTOR(sarg->activator)->qInput.Append(new cQueueElem(cmd_array[i]));
    }

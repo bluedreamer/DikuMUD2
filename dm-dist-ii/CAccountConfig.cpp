@@ -1,17 +1,17 @@
 #include "CAccountConfig.h"
 #include "account.h"
-#include "str_parse.h"
 #include "common.h"
 #include "config.h"
 #include "db.h"
 #include "essential.h"
 #include "files.h"
+#include "str_parse.h"
 #include "textutil.h"
 #include <cstring>
 #include <ctime>
 
 CAccountConfig g_cAccountConfig;
-extern int next_crc;
+extern int     next_crc;
 
 CAccountConfig::CAccountConfig()
 {
@@ -25,7 +25,7 @@ CAccountConfig::CAccountConfig()
    m_nMaxCharge       = 10000;
    m_nMinCharge       = 1000;
    m_nHourlyRate      = 1000;
-   m_bCreditCard      = false;
+   m_bCreditCard      = 0;
 
    // MS2020: memset(&m_flatrate, sizeof(m_flatrate), 0); warning
    //  Looks like an error :-)
@@ -49,7 +49,7 @@ void CAccountConfig::Boot()
 
    slog(LOG_OFF, 0, "Booting account system.");
 
-   if(file_exists(str_cc(libdir, ACCOUNT_LOG)) == 0u)
+   if(static_cast<unsigned int>(file_exists(str_cc(libdir, ACCOUNT_LOG))) == 0U)
    {
       time_t now = time(nullptr);
 

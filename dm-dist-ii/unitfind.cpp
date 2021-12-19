@@ -36,7 +36,7 @@
 /* Assumes UNIT_IN(room) == NULL */
 static auto same_surroundings_room(unit_data *room, unit_data *u2) -> bool
 {
-   if(!UNIT_IN(u2))
+   if(UNIT_IN(u2) == nullptr)
    {
       return FALSE;
    }
@@ -56,12 +56,14 @@ static auto same_surroundings_room(unit_data *room, unit_data *u2) -> bool
 
 auto same_surroundings(unit_data *u1, unit_data *u2) -> bool
 {
-   if(!UNIT_IN(u1))
+   if(UNIT_IN(u1) == nullptr)
    {
       return same_surroundings_room(u1, u2);
    }
-   if(!UNIT_IN(u2))
+   if(UNIT_IN(u2) == nullptr)
+   {
       return same_surroundings_room(u2, u1);
+   }
 
    if(UNIT_IN(u1) == UNIT_IN(u2))
    {
@@ -117,7 +119,7 @@ static inline auto pcpay(unit_data *u) -> int
 {
    return static_cast<int>((PC_ACCOUNT(u).credit > 0.0) || (PC_ACCOUNT(u).discount == 100) ||
                            (PC_ACCOUNT(u).flatrate > (uint32_t)time(nullptr)) ||
-                           ((CHAR_DESCRIPTOR(u) ? g_cServerConfig.FromLAN(CHAR_DESCRIPTOR(u)->host) : 0) != 0));
+                           ((CHAR_DESCRIPTOR(u) != nullptr ? g_cServerConfig.FromLAN(CHAR_DESCRIPTOR(u)->host) : 0) != 0));
 }
 
 /* returns if ROOM is pay/no pay !0/0 */
@@ -147,16 +149,19 @@ static inline auto findcheck(unit_data *u, int pset, int tflags) -> int
       }
       if(pset == FIND_UNIT_NOPAY)
       {
-         if(IS_PC(u) && !pcpay(u))
+         if(IS_PC(u) && (pcpay(u) == 0))
+         {
             return 1;
+         }
 
-         if(IS_ROOM(u) && !roompay(u))
+         if(IS_ROOM(u) && (roompay(u) == 0))
+         {
             return 1;
+         }
 
          return 0;
       }
-      else
-         return 1;
+      return 1;
    }
 
    return 0;
@@ -165,7 +170,7 @@ static inline auto findcheck(unit_data *u, int pset, int tflags) -> int
 auto random_unit(unit_data *ref, int sflags, int tflags) -> unit_data *
 {
    unit_data *u;
-   unit_data *selected = NULL;
+   unit_data *selected = nullptr;
    int        count    = 0;
    int        pset     = 0;
 
@@ -195,21 +200,29 @@ auto random_unit(unit_data *ref, int sflags, int tflags) -> unit_data *
       struct zone_type *z;
 
       if(UNIT_FI_ZONE(ref))
+      {
          z = UNIT_FI_ZONE(ref);
+      }
       else
+      {
          z = unit_zone(ref);
+      }
 
-      for(u = unit_list; u; u = u->gnext)
-         if((u != ref) && ((IS_PC(u) && unit_zone(u) == z) || (UNIT_FI_ZONE(u) == z)) && findcheck(u, pset, tflags))
+      for(u = unit_list; u != nullptr; u = u->gnext)
+      {
+         if((u != ref) && ((IS_PC(u) && unit_zone(u) == z) || (UNIT_FI_ZONE(u) == z)) && (findcheck(u, pset, tflags) != 0))
          {
             count++;
             if(number(1, count) == 1)
+            {
                selected = u;
+            }
          }
+      }
 
       return selected;
    }
-   else if(sflags == FIND_UNIT_INVEN)
+   if(sflags == FIND_UNIT_INVEN)
    {
       for(u = UNIT_CONTAINS(ref); u; u = u->next)
          if((!IS_OBJ(u) || (OBJ_EQP_POS(u) == 0)) && findcheck(u, pset, tflags))
@@ -286,7 +299,7 @@ auto find_unit_general(const unit_data *viewer, const unit_data *ch, char **arg,
    }
 
    /* Eliminate spaces and all "ignore" words */
-   while(is_fillword != 0u)
+   while(static_cast<unsigned int>(is_fillword) != 0U)
    {
       for(i = 0; ((name[i] = c[i]) != 0) && name[i] != ' '; i++)
       {
@@ -339,7 +352,7 @@ auto find_unit_general(const unit_data *viewer, const unit_data *ch, char **arg,
       {
          for(u = UNIT_CONTAINS(ch); u != nullptr; u = u->next)
          {
-            if(IS_OBJ(u) && OBJ_EQP_POS(u) && ((viewer == ch) || CHAR_CAN_SEE(viewer, u)) && (CHAR_LEVEL(viewer) >= UNIT_MINV(u)) &&
+            if(IS_OBJ(u) && (OBJ_EQP_POS(u) != 0u) && ((viewer == ch) || CHAR_CAN_SEE(viewer, u)) && (CHAR_LEVEL(viewer) >= UNIT_MINV(u)) &&
                ((ct = UNIT_NAMES(u).IsNameRaw(c)) != nullptr) && (ct - c >= best_len))
             {
                if(ct - c > best_len)
@@ -361,7 +374,7 @@ auto find_unit_general(const unit_data *viewer, const unit_data *ch, char **arg,
          for(u = UNIT_CONTAINS(ch); u != nullptr; u = u->next)
          {
             if(((ct = UNIT_NAMES(u).IsNameRaw(c)) != nullptr) && ((viewer == ch) || CHAR_CAN_SEE(viewer, u)) &&
-               (CHAR_LEVEL(viewer) >= UNIT_MINV(u)) && !(IS_OBJ(u) && OBJ_EQP_POS(u)) && (ct - c >= best_len))
+               (CHAR_LEVEL(viewer) >= UNIT_MINV(u)) && !(IS_OBJ(u) && (OBJ_EQP_POS(u) != 0u)) && (ct - c >= best_len))
             {
                if(ct - c > best_len)
                {
@@ -424,7 +437,7 @@ auto find_unit_general(const unit_data *viewer, const unit_data *ch, char **arg,
                }
 
                /* check tranparancy */
-               if(UNIT_CHARS(u) && UNIT_IS_TRANSPARENT(u))
+               if((UNIT_CHARS(u) != 0u) && UNIT_IS_TRANSPARENT(u))
                {
                   for(uu = UNIT_CONTAINS(u); uu != nullptr; uu = uu->next)
                   {
@@ -469,7 +482,7 @@ auto find_unit_general(const unit_data *viewer, const unit_data *ch, char **arg,
                   }
 
                   /* check down into transparent unit */
-                  if(UNIT_CHARS(u) && UNIT_IS_TRANSPARENT(u))
+                  if((UNIT_CHARS(u) != 0u) && UNIT_IS_TRANSPARENT(u))
                   {
                      for(uu = UNIT_CONTAINS(u); uu != nullptr; uu = uu->next)
                      {
@@ -629,7 +642,7 @@ auto find_symbolic_instance_ref(unit_data *ref, file_index_type *fi, uint16_t bi
       }
    }
 
-   if(IS_SET(bitvector, FIND_UNIT_SURRO) && UNIT_IN(ref))
+   if(IS_SET(bitvector, FIND_UNIT_SURRO) && (UNIT_IN(ref) != nullptr))
    {
       if(fi == UNIT_FILE_INDEX(UNIT_IN(ref)))
       {
@@ -645,7 +658,7 @@ auto find_symbolic_instance_ref(unit_data *ref, file_index_type *fi, uint16_t bi
          }
 
          /* check tranparancy */
-         if(UNIT_CHARS(u) && UNIT_IS_TRANSPARENT(u))
+         if((UNIT_CHARS(u) != 0u) && UNIT_IS_TRANSPARENT(u))
          {
             for(uu = UNIT_CONTAINS(u); uu != nullptr; uu = uu->next)
             {
@@ -670,7 +683,7 @@ auto find_symbolic_instance_ref(unit_data *ref, file_index_type *fi, uint16_t bi
                }
 
                /* check down into transparent unit */
-               if(UNIT_CHARS(u) && UNIT_IS_TRANSPARENT(u))
+               if((UNIT_CHARS(u) != 0u) && UNIT_IS_TRANSPARENT(u))
                {
                   for(uu = UNIT_CONTAINS(u); uu != nullptr; uu = uu->next)
                   {
@@ -807,7 +820,7 @@ void scan4_unit(unit_data *ch, uint8_t type)
    unit_data *u;
    unit_data *uu;
 
-   if(!UNIT_IN(ch))
+   if(UNIT_IN(ch) == nullptr)
    {
       scan4_unit_room(ch, type);
       return;
@@ -849,7 +862,7 @@ void scan4_unit(unit_data *ch, uint8_t type)
    }
 
    /* up through transparent unit */
-   if(UNIT_IS_TRANSPARENT(UNIT_IN(ch)) && UNIT_IN(UNIT_IN(ch)))
+   if(UNIT_IS_TRANSPARENT(UNIT_IN(ch)) && (UNIT_IN(UNIT_IN(ch)) != nullptr))
    {
       for(u = UNIT_CONTAINS(UNIT_IN(UNIT_IN(ch))); u != nullptr; u = u->next)
       {
@@ -920,7 +933,7 @@ auto scan4_ref(unit_data *ch, unit_data *fu) -> unit_data *
    unit_data *u;
    unit_data *uu;
 
-   if(!UNIT_IN(ch))
+   if(UNIT_IN(ch) == nullptr)
    {
       return scan4_ref_room(ch, fu);
    }
@@ -958,7 +971,7 @@ auto scan4_ref(unit_data *ch, unit_data *fu) -> unit_data *
    }
 
    /* up through transparent unit */
-   if(UNIT_IS_TRANSPARENT(UNIT_IN(ch)) && UNIT_IN(UNIT_IN(ch)))
+   if(UNIT_IS_TRANSPARENT(UNIT_IN(ch)) && (UNIT_IN(UNIT_IN(ch)) != nullptr))
    {
       for(u = UNIT_CONTAINS(UNIT_IN(UNIT_IN(ch))); u != nullptr; u = u->next)
       {
@@ -1000,8 +1013,8 @@ auto random_direction(unit_data *ch) -> int
 
    for(top = i = 0; i < 6; i++)
    {
-      if(ROOM_EXIT(UNIT_IN(ch), i) && ROOM_EXIT(UNIT_IN(ch), i)->to_room && !IS_SET(ROOM_EXIT(UNIT_IN(ch), i)->exit_info, EX_CLOSED) &&
-         ROOM_LANDSCAPE(ROOM_EXIT(UNIT_IN(ch), i)->to_room) != SECT_WATER_SAIL)
+      if((ROOM_EXIT(UNIT_IN(ch), i) != nullptr) && (ROOM_EXIT(UNIT_IN(ch), i)->to_room != nullptr) &&
+         !IS_SET(ROOM_EXIT(UNIT_IN(ch), i)->exit_info, EX_CLOSED) && ROOM_LANDSCAPE(ROOM_EXIT(UNIT_IN(ch), i)->to_room) != SECT_WATER_SAIL)
       {
          dirs[top++] = i;
       }

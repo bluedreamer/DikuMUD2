@@ -57,7 +57,7 @@ auto hands_used(unit_data *ch) -> int
    /* This is faster than calling the equipment() function */
    for(i = UNIT_CONTAINS(ch); i != nullptr; i = i->next)
    {
-      if(IS_OBJ(i) && OBJ_EQP_POS(i))
+      if(IS_OBJ(i) && (OBJ_EQP_POS(i) != 0u))
       {
          switch(OBJ_EQP_POS(i))
          {
@@ -222,8 +222,10 @@ static auto wear_size(unit_data *ch, unit_data *obj, int var) -> const char *
       return "way too small";
    }
    if(percent < (100 - var))
+   {
       return "too small";
-   else if(percent > 100 + var + (100 + var) / 2)
+   }
+   if(percent > 100 + var + (100 + var) / 2)
       return "way too large";
    else if(percent > (100 + var))
       return "too large";
@@ -856,7 +858,7 @@ void do_wear(unit_data *ch, char *arg, const struct command_info *cmd)
    unit_data *obj;
    char      *oarg = arg;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Wear what (where)?\n\r", ch);
    }
@@ -881,7 +883,7 @@ void do_wear(unit_data *ch, char *arg, const struct command_info *cmd)
             }
 
             next = obj->next;
-            if(IS_OBJ(obj) && !OBJ_EQP_POS(obj))
+            if(IS_OBJ(obj) && (OBJ_EQP_POS(obj) == 0u))
             {
                worn = (wear(ch, obj, getkeyword(obj), FALSE, cmd, oarg) || worn);
             }
@@ -900,7 +902,7 @@ void do_wear(unit_data *ch, char *arg, const struct command_info *cmd)
    {
       send_to_char("You can't wear that.\n\r", ch);
    }
-   else if(str_is_empty(arg) == 0u)
+   else if(static_cast<unsigned int>(str_is_empty(arg)) == 0U)
    {
       char buf[MAX_INPUT_LENGTH];
       int  keyword;
@@ -929,7 +931,7 @@ void do_wield(unit_data *ch, char *arg, const struct command_info *cmd)
    unit_data *obj;
    char      *oarg = arg;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Wield which weapon?\n\r", ch);
    }
@@ -971,7 +973,7 @@ void do_grab(unit_data *ch, char *arg, const struct command_info *cmd)
    unit_data *obj;
    char      *oarg = arg;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Grab what?\n\r", ch);
    }
@@ -1012,7 +1014,7 @@ void do_remove(unit_data *ch, char *arg, const struct command_info *cmd)
    unit_data *obj;
    char      *oarg = arg;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Remove what?\n\r", ch);
    }
@@ -1037,7 +1039,7 @@ void do_remove(unit_data *ch, char *arg, const struct command_info *cmd)
             }
 
             next = obj->next;
-            if(IS_OBJ(obj) && OBJ_EQP_POS(obj))
+            if(IS_OBJ(obj) && (OBJ_EQP_POS(obj) != 0u))
             {
                removed = (remove_equip(ch, obj, cmd, oarg) || removed);
             }

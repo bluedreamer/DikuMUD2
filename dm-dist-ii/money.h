@@ -23,10 +23,10 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include "structs.h"
 #include "money_type.h"
+#include "structs.h"
 
-using amount_t   = int32_t;
+using amount_t = int32_t;
 
 /* Give a number of coins (of a specific type) to unit
  * (type == -1 means money_to_unit with local_currency(unit)

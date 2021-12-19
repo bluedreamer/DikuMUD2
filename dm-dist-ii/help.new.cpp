@@ -94,7 +94,7 @@ static auto help(struct help_file_type *hlp, descriptor_data *d, char *arg) -> i
    FILE                   *help_fl;
 
    if((hlp->help_idx == NULL) || (hlp->elements < 1))
-      return FALSE;
+      return static_cast<int>(FALSE);
 
    if((tmp = (struct help_index_type *)bsearch(arg, hlp->help_idx, hlp->elements + 1, sizeof(struct help_index_type), search_help_cmp)))
    {
@@ -129,38 +129,38 @@ static auto help(struct help_file_type *hlp, descriptor_data *d, char *arg) -> i
 
       str_escape_format(buf, buf2, sizeof(buf2));
       page_string(d, buf2);
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 /* Returns TRUE if help was found and displayed */
 
 auto help_base(descriptor_data *d, char *arg) -> int
 {
-   uint8_t bHelp = FALSE;
+   uint8_t bHelp = static_cast<uint8_t>(FALSE);
 
    arg = skip_spaces(arg);
    str_lower(arg);
 
    if((CHAR_LEVEL(d->character) >= IMMORTAL_LEVEL) && help(&help_file[2], d, arg))
-      bHelp = TRUE;
+      bHelp = static_cast<uint8_t>(TRUE);
 
    if(!help(&help_file[0], d, arg) && !help(&help_file[1], d, arg))
       return bHelp;
 
-   return TRUE;
+   return static_cast<int>(TRUE);
 }
 
 void do_help(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   if(!IS_PC(ch) || !CHAR_DESCRIPTOR(ch))
+   if(!IS_PC(ch) || (CHAR_DESCRIPTOR(ch) == nullptr))
    {
       return;
    }
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       struct zone_type *zone = unit_zone(ch);
 

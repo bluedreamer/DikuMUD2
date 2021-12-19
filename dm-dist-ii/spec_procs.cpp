@@ -79,7 +79,7 @@ auto obj_trade_price(unit_data *u) -> amount_t;
 /* Ticks. */
 auto force_move(struct spec_arg *sarg) -> int
 {
-   char            *c = NULL;
+   char            *c = nullptr;
    char            *c2;
    char            *s = (char *)sarg->fptr->data;
    file_index_type *fi;
@@ -133,18 +133,18 @@ auto force_move(struct spec_arg *sarg) -> int
          next = u->next;
          if(!IS_ROOM(u))
          {
-            if(IS_CHAR(u) && CHAR_COMBAT(u))
+            if(IS_CHAR(u) && (CHAR_COMBAT(u) != nullptr))
             {
                continue;
             }
 
-            if(UNIT_CHARS(u))
+            if(UNIT_CHARS(u) != 0u)
             {
                unit_data *tu;
 
                for(tu = UNIT_CONTAINS(u); tu != nullptr; tu = tu->next)
                {
-                  if(IS_CHAR(tu) && CHAR_COMBAT(tu))
+                  if(IS_CHAR(tu) && (CHAR_COMBAT(tu) != nullptr))
                   {
                      break;
                   }
@@ -161,7 +161,7 @@ auto force_move(struct spec_arg *sarg) -> int
                act(c2 + 1, A_HIDEINV, u, nullptr, nullptr, TO_ROOM);
             }
 
-            if(UNIT_CONTAINS(fi->room_ptr))
+            if(UNIT_CONTAINS(fi->room_ptr) != nullptr)
             {
                act("$2n has arrived.", A_HIDEINV, UNIT_CONTAINS(fi->room_ptr), u, nullptr, TO_ALL);
             }
@@ -206,7 +206,7 @@ auto combat_poison_sting(struct spec_arg *sarg) -> int
    }
 
    if(sarg->cmd->no == CMD_AUTO_COMBAT && CHAR_AWAKE(sarg->owner) && ((activator = CHAR_FIGHTING(sarg->owner)) != nullptr) &&
-      (cast_magic_now(sarg->owner, 20) != 0u))
+      (static_cast<unsigned int>(cast_magic_now(sarg->owner, 20)) != 0U))
    {
       CHAR_MANA(sarg->owner) -= 20;
 
@@ -249,7 +249,7 @@ auto obey_animal(struct spec_arg *sarg) -> int
 
       arg = skip_spaces(arg);
 
-      if(str_is_empty(arg) != 0u)
+      if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
       {
          act("Command $3N to do what?", A_ALWAYS, sarg->activator, nullptr, sarg->owner, TO_CHAR);
          return SFR_BLOCK;
@@ -346,7 +346,7 @@ auto obey(struct spec_arg *sarg) -> int
 
       arg = skip_spaces(arg);
 
-      if(str_is_empty(arg) != 0u)
+      if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
       {
          act("Command $3N to do what?", A_ALWAYS, sarg->activator, nullptr, sarg->owner, TO_CHAR);
          return SFR_BLOCK;
@@ -467,7 +467,7 @@ auto scavenger(struct spec_arg *sarg) -> int
    {
       for(max = 50, best_obj = nullptr, obj = UNIT_CONTAINS(UNIT_IN(sarg->owner)); obj != nullptr; obj = obj->next)
       {
-         if(IS_OBJ(obj) && (obj_trade_price(obj) > (int32_t)max) && !UNIT_CHARS(obj) && (char_can_get_unit(sarg->owner, obj) != 0))
+         if(IS_OBJ(obj) && (obj_trade_price(obj) > (int32_t)max) && (UNIT_CHARS(obj) == 0u) && (char_can_get_unit(sarg->owner, obj) != 0))
          {
             best_obj = obj;
             max      = obj_trade_price(obj);
@@ -600,7 +600,7 @@ auto combat_magic(struct spec_arg *sarg) -> int
          return SFR_BLOCK;
       }
 
-      if(cast_magic_now(sarg->owner, 12) != 0u)
+      if(static_cast<unsigned int>(cast_magic_now(sarg->owner, 12)) != 0U)
       {
          command_interpreter(sarg->owner, (char *)sarg->fptr->data);
          return SFR_BLOCK;
@@ -658,26 +658,26 @@ auto charname_in_list(unit_data *ch, char *arg) -> int
 
    if((arg == nullptr) || (*arg == 0) || IS_PC(ch))
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    while((c = strchr(arg, '/')) != nullptr)
    {
       *c = '\0';
-      if(UNIT_NAMES(ch).IsName(arg))
+      if(UNIT_NAMES(ch).IsName(arg) != nullptr)
       {
          *c = '/';
-         return TRUE;
+         return static_cast<int>(TRUE);
       }
       *c  = '/';
       arg = ++c;
    }
-   if(UNIT_NAMES(ch).IsName(arg))
+   if(UNIT_NAMES(ch).IsName(arg) != nullptr)
    {
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 /* Fptr->data is a string, containing                                     */
@@ -690,9 +690,9 @@ auto guard_way(struct spec_arg *sarg) -> int
 {
    char *str;
    char *location;
-   char *excl = NULL;
-   char *msg1 = NULL;
-   char *msg2 = NULL;
+   char *excl = nullptr;
+   char *msg1 = nullptr;
+   char *msg2 = nullptr;
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -743,12 +743,12 @@ auto guard_way(struct spec_arg *sarg) -> int
 auto guard_unit(struct spec_arg *sarg) -> int
 {
    char      *arg = (char *)sarg->arg;
-   char      *str = NULL;
+   char      *str = nullptr;
    char      *location;
-   char      *excl     = NULL;
-   char      *msg1     = NULL;
-   char      *msg2     = NULL;
-   char      *unitname = NULL;
+   char      *excl     = nullptr;
+   char      *msg1     = nullptr;
+   char      *msg2     = nullptr;
+   char      *unitname = nullptr;
    char      *c;
    unit_data *u1;
    unit_data *u2;
@@ -815,12 +815,12 @@ auto guard_unit(struct spec_arg *sarg) -> int
 auto guard_door(struct spec_arg *sarg) -> int
 {
    char *arg  = (char *)sarg->arg;
-   char *str  = NULL;
-   char *excl = NULL;
-   char *msg1 = NULL;
-   char *msg2 = NULL;
+   char *str  = nullptr;
+   char *excl = nullptr;
+   char *msg1 = nullptr;
+   char *msg2 = nullptr;
    char *location;
-   char *doorname = NULL;
+   char *doorname = nullptr;
    int   i1;
    int   i2;
 
@@ -851,7 +851,7 @@ auto guard_door(struct spec_arg *sarg) -> int
       *doorname = '@';
 
       *excl = '\0';
-      i1    = low_find_door(sarg->owner, doorname + 1, FALSE, FALSE);
+      i1    = low_find_door(sarg->owner, doorname + 1, static_cast<int>(FALSE), static_cast<int>(FALSE));
       *excl = '@';
 
       if(i1 == -1)
@@ -859,7 +859,7 @@ auto guard_door(struct spec_arg *sarg) -> int
          return SFR_SHARE;
       }
 
-      if(i1 != (i2 = low_find_door(sarg->activator, arg, FALSE, FALSE)))
+      if(i1 != (i2 = low_find_door(sarg->activator, arg, static_cast<int>(FALSE), static_cast<int>(FALSE))))
       {
          return SFR_SHARE;
       }
@@ -891,10 +891,10 @@ auto guard_way_level(struct spec_arg *sarg) -> int
 {
    char *str;
    char *location;
-   char *min  = NULL;
-   char *max  = NULL;
-   char *msg1 = NULL;
-   char *msg2 = NULL;
+   char *min  = nullptr;
+   char *max  = nullptr;
+   char *msg1 = nullptr;
+   char *msg2 = nullptr;
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -1099,7 +1099,7 @@ auto mercenary_hire(struct spec_arg *sarg) -> int
          }
          price = MAX(5000, 500 * (CHAR_LEVEL(victim) + CHAR_LEVEL(sarg->owner) * CHAR_LEVEL(sarg->owner)));
 
-         if(char_can_afford(sarg->activator, price, currency) == 0u)
+         if(static_cast<unsigned int>(char_can_afford(sarg->activator, price, currency)) == 0U)
          {
             act("$1n says, 'Get me $2t'", A_SOMEONE, sarg->owner, money_string(price, currency, TRUE), nullptr, TO_ROOM);
             return SFR_BLOCK;
@@ -1155,16 +1155,16 @@ auto mercenary_hire(struct spec_arg *sarg) -> int
       }
       if(sarg->cmd->no == CMD_OFFER)
       {
-         act("$1n talks to $3n.", A_SOMEONE, sarg->activator, 0, sarg->owner, TO_ROOM);
+         act("$1n talks to $3n.", A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_ROOM);
 
-         if(!(victim = find_unit(sarg->owner, &arg, 0, FIND_UNIT_WORLD)) || !IS_CHAR(victim))
+         if(((victim = find_unit(sarg->owner, &arg, nullptr, FIND_UNIT_WORLD)) == nullptr) || !IS_CHAR(victim))
          {
-            act("$1n says, 'Never heard of him.'", A_SOMEONE, sarg->owner, 0, 0, TO_ROOM);
+            act("$1n says, 'Never heard of him.'", A_SOMEONE, sarg->owner, nullptr, nullptr, TO_ROOM);
             return SFR_BLOCK;
          }
          if(victim == sarg->owner)
          {
-            act("$1n says, 'Get lost, punk!'", A_SOMEONE, sarg->owner, 0, 0, TO_ROOM);
+            act("$1n says, 'Get lost, punk!'", A_SOMEONE, sarg->owner, nullptr, nullptr, TO_ROOM);
             return SFR_BLOCK;
          }
          price = MAX(5000, 500 * (CHAR_LEVEL(victim) + CHAR_LEVEL(sarg->owner) * CHAR_LEVEL(sarg->owner)));
@@ -1238,7 +1238,7 @@ auto mercenary_hunt(struct spec_arg *sarg) -> int
             simple_one_hit(sarg->owner, u);
             return SFR_BLOCK;
          }
-         md->destination = 0; /* The chicken has left... :) */
+         md->destination = nullptr; /* The chicken has left... :) */
       }
 
       return SFR_BLOCK; /* Prevent other routines from taking over */
@@ -1247,10 +1247,10 @@ auto mercenary_hunt(struct spec_arg *sarg) -> int
    {
       free(md->victim_name);
       free(md);
-      sarg->fptr->data = 0;
+      sarg->fptr->data = nullptr;
       return SFR_BLOCK;
    }
-   else if(sarg->cmd->no == CMD_AUTO_DEATH)
+   if(sarg->cmd->no == CMD_AUTO_DEATH)
    {
       if(UNIT_NAME(sarg->activator) && (str_ccmp(UNIT_NAME(sarg->activator), md->victim_name) == 0))
       {
@@ -1389,7 +1389,7 @@ auto obj_guild(struct spec_arg *sarg) -> int
           "Being in the right guild would probably help.",
           A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_CHAR);
       act("$1n is burnt by $3n and drops $3m immediately.", A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_ROOM);
-      if(IS_OBJ(sarg->owner) && OBJ_EQP_POS(sarg->owner))
+      if(IS_OBJ(sarg->owner) && (OBJ_EQP_POS(sarg->owner) != 0u))
       {
          unequip_object(sarg->owner);
       }
@@ -1419,7 +1419,7 @@ auto obj_quest(struct spec_arg *sarg) -> int
           "You have apparantly not completed the right quest!",
           A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_CHAR);
       act("$1n is burnt by $3n and drops $3m immediately.", A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_ROOM);
-      if(IS_OBJ(sarg->owner) && OBJ_EQP_POS(sarg->owner))
+      if(IS_OBJ(sarg->owner) && (OBJ_EQP_POS(sarg->owner) != 0u))
       {
          unequip_object(sarg->owner);
       }
@@ -1437,7 +1437,7 @@ auto obj_good(struct spec_arg *sarg) -> int
    {
       act("$3n burns your hands, and you must drop it.", A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_CHAR);
       act("$1n is burnt by $3n and drops $3m immediately.", A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_ROOM);
-      if(IS_OBJ(sarg->owner) && OBJ_EQP_POS(sarg->owner))
+      if(IS_OBJ(sarg->owner) && (OBJ_EQP_POS(sarg->owner) != 0u))
       {
          unequip_object(sarg->owner);
       }
@@ -1460,7 +1460,7 @@ auto obj_evil(struct spec_arg *sarg) -> int
    {
       act("$3n burns your hands, and you must drop it.", A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_CHAR);
       act("$1n is burnt by $3n and drops $3m immediately.", A_SOMEONE, sarg->activator, nullptr, sarg->owner, TO_ROOM);
-      if(IS_OBJ(sarg->owner) && OBJ_EQP_POS(sarg->owner))
+      if(IS_OBJ(sarg->owner) && (OBJ_EQP_POS(sarg->owner) != 0u))
       {
          unequip_object(sarg->owner);
       }
@@ -1507,7 +1507,7 @@ auto charm_of_death(struct spec_arg *sarg) -> int
 
    if(sarg->cmd->no == CMD_AUTO_DEATH)
    {
-      if(UNIT_IN(sarg->owner) == sarg->activator && OBJ_EQP_POS(sarg->owner) && IS_PC(sarg->activator) &&
+      if(UNIT_IN(sarg->owner) == sarg->activator && (OBJ_EQP_POS(sarg->owner) != 0u) && IS_PC(sarg->activator) &&
          CHAR_LEVEL(sarg->activator) <= MORTAL_MAX_LEVEL && OBJ_VALUE(sarg->owner, 3) > 0)
       {
          int loss = lose_exp(sarg->activator);
@@ -1552,7 +1552,7 @@ auto return_to_origin(struct spec_arg *sarg) -> int
 auto restrict_obj(struct spec_arg *sarg) -> int
 {
    if((sarg->cmd->no == CMD_WEAR || sarg->cmd->no == CMD_WIELD || sarg->cmd->no == CMD_HOLD) && IS_OBJ(sarg->owner) &&
-      UNIT_IN(sarg->owner) == sarg->activator && !OBJ_EQP_POS(sarg->owner))
+      UNIT_IN(sarg->owner) == sarg->activator && (OBJ_EQP_POS(sarg->owner) == 0u))
    {
       char *arg = (char *)sarg->arg;
       char  pMsg[80];
@@ -1658,7 +1658,7 @@ auto link_dead(struct spec_arg *sarg) -> int
 {
    if((sarg->cmd->no >= CMD_NORTH) && (sarg->activator != nullptr) && (sarg->activator != sarg->owner))
    {
-      if(CHAR_DESCRIPTOR(sarg->owner))
+      if(CHAR_DESCRIPTOR(sarg->owner) != nullptr)
       {
          destroy_fptr(sarg->owner, sarg->fptr);
          return SFR_SHARE;

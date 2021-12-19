@@ -126,7 +126,7 @@ auto money_string(amount_t amt, currency_t currency, bool verbose) -> const char
          strcat(buf, tmp);
          amt -= money_tmp[nr]->relative_value * times;
 
-         if(verbose != 0u)
+         if(static_cast<unsigned int>(verbose) != 0U)
          {
             if(times == 1)
             {
@@ -222,10 +222,8 @@ auto set_money(unit_data *money, amount_t amt) -> unit_data *
       {
          break;
       }
-      else
-      {
-         UNIT_NAMES(money).AppendName(money_types[MONEY_TYPE(money)].strings[i]);
-      }
+
+      UNIT_NAMES(money).AppendName(money_types[MONEY_TYPE(money)].strings[i]);
    }
 
    /* This isn't very pretty, but i couldn't come up with anything better
@@ -635,7 +633,7 @@ auto split_money(unit_data *money, amount_t amt) -> unit_data *
       unit_data *pnew = make_money(money_types[MONEY_TYPE(money)].fi, amt);
       set_money(money, calc_money(MONEY_AMOUNT(money), '-', amt));
 
-      if(UNIT_IN(money))
+      if(UNIT_IN(money) != nullptr)
       {
          intern_unit_to_unit(pnew, UNIT_IN(money), FALSE);
       }
@@ -706,7 +704,7 @@ auto money_round(bool up, amount_t amt, currency_t currency, int types) -> amoun
     * be removed without taking too much, meaning that it is a rounded down
     * value.  To round up, just take a single coin of last type used.
     */
-   if((up != 0u) && remainder > 0)
+   if((static_cast<unsigned int>(up) != 0U) && remainder > 0)
    {
       remainder -= money_tmp[nr + 1]->relative_value;
    }
@@ -764,7 +762,7 @@ void do_makemoney(unit_data *ch, char *arg, const struct command_info *cmd)
    currency_t cur;
    amount_t   amt = 0;
 
-   if(!IS_PC(ch) || (str_is_empty(arg) != 0u) || (amt = atol(arg)) < 0)
+   if(!IS_PC(ch) || (static_cast<unsigned int>(str_is_empty(arg)) != 0U) || (amt = atol(arg)) < 0)
    {
       send_to_char("Rather silly, isn't it?\n\r", ch);
       return;
@@ -912,7 +910,7 @@ void boot_money()
          }
       } while(buf[0] == '\n' || buf[0] == '#'); /* Skip empty lines & comments */
 
-      if(currencies != 0u)
+      if(static_cast<unsigned int>(currencies) != 0U)
       {
          if(buf[0] == '~')
          {

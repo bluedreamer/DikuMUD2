@@ -58,7 +58,7 @@ auto is_ignored(unit_data *ch, unit_data *victim) -> int
 
    if(!IS_PC(ch) || !IS_PC(victim))
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    pexd = PC_INFO(ch)->find_raw("$ignore");
@@ -67,11 +67,11 @@ auto is_ignored(unit_data *ch, unit_data *victim) -> int
    {
       if(pexd->names.IsName(itoa(PC_ID(victim))) != nullptr)
       {
-         return TRUE;
+         return static_cast<int>(TRUE);
       }
    }
 
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 auto drunk_speech(unit_data *ch, const char *str) -> char *
@@ -142,7 +142,7 @@ void do_emote(unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("What do you want to emote?\n\r", ch);
    }
@@ -176,7 +176,7 @@ void do_say(unit_data *ch, char *argument, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("What do you want to say?\n\r", ch);
    }
@@ -255,7 +255,7 @@ void do_shout(unit_data *ch, char *argument, const struct command_info *cmd)
       CHAR_ENDURANCE(ch) -= endcost;
    }
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Shout? Yes! Fine! Shout we must, but WHAT??\n\r", ch);
       return;
@@ -307,7 +307,7 @@ void do_tell(unit_data *ch, char *aaa, const struct command_info *cmd)
    const char              *others;
    const char              *me;
    char                    *c;
-   int                      switched = FALSE;
+   int                      switched = static_cast<int>(FALSE);
    char                    *argument = (char *)aaa;
 
    if(IS_PC(ch) && IS_SET(PC_FLAGS(ch), PC_NOTELLING))
@@ -316,7 +316,7 @@ void do_tell(unit_data *ch, char *aaa, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Who do you wish to tell what??\n\r", ch);
       return;
@@ -369,7 +369,7 @@ void do_tell(unit_data *ch, char *aaa, const struct command_info *cmd)
 
    argument = skip_spaces(argument);
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("What?\n\r", ch);
       return;
@@ -389,7 +389,7 @@ void do_tell(unit_data *ch, char *aaa, const struct command_info *cmd)
             {
                /* AHA! He is switched! */
                vict     = d->character;
-               switched = TRUE;
+               switched = static_cast<int>(TRUE);
                break;
             }
          }
@@ -400,7 +400,7 @@ void do_tell(unit_data *ch, char *aaa, const struct command_info *cmd)
       {
          act("$3e can't hear you.", A_ALWAYS, ch, nullptr, vict, TO_CHAR);
       }
-      else if(CHAR_DESCRIPTOR(vict) && CHAR_DESCRIPTOR(vict)->editing)
+      else if((CHAR_DESCRIPTOR(vict) != nullptr) && (CHAR_DESCRIPTOR(vict)->editing != nullptr))
       {
          act("$3n is busy writing a message, $3e can't hear you!", A_ALWAYS, ch, nullptr, vict, TO_CHAR);
          return;
@@ -556,7 +556,7 @@ void do_ignore(unit_data *ch, char *argument, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Who do you wish to ignore?\n\r", ch);
       return;
@@ -592,7 +592,7 @@ void do_whisper(unit_data *ch, char *aaa, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Who do you want to whisper to.. and what??\n\r", ch);
       return;
@@ -629,7 +629,7 @@ void do_whisper(unit_data *ch, char *aaa, const struct command_info *cmd)
    else
    {
       arg = skip_spaces(arg);
-      if(str_is_empty(arg) != 0u)
+      if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
       {
          send_to_char("Whisper what?\n\r", ch);
       }
@@ -670,7 +670,7 @@ void do_ask(unit_data *ch, char *aaa, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Who or what do you want to ask??\n\r", ch);
       return;
@@ -716,7 +716,7 @@ void do_ask(unit_data *ch, char *aaa, const struct command_info *cmd)
    }
    else
    {
-      if(str_is_empty(argument) != 0u)
+      if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
       {
          send_to_char("What?\n\r", ch);
       }
@@ -750,12 +750,12 @@ void do_write(unit_data *ch, char *aaa, const struct command_info *cmd)
    unit_data               *paper    = nullptr;
    char                    *argument = (char *)aaa;
 
-   if(!CHAR_DESCRIPTOR(ch))
+   if(CHAR_DESCRIPTOR(ch) == nullptr)
    {
       return;
    }
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Write on what?\n\r", ch);
       return;

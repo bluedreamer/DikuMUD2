@@ -85,7 +85,7 @@ auto random_room() -> unit_data *
          return nullptr; /* Give up */
       }
 
-      if(may_teleport_away(room) != 0u)
+      if(static_cast<unsigned int>(may_teleport_away(room)) != 0U)
       { /* Can we go to that room? */
          return room;
       }
@@ -105,7 +105,7 @@ auto random_npc() -> unit_data *
 
    for(u = unit_list; u != nullptr; u = u->gnext, i--)
    {
-      if(IS_NPC(u) && i <= 0 && (may_teleport_away(u) != 0u) && (is_destructed(DR_UNIT, u) == 0))
+      if(IS_NPC(u) && i <= 0 && (static_cast<unsigned int>(may_teleport_away(u)) != 0U) && (is_destructed(DR_UNIT, u) == 0))
       {
          return u;
       }
@@ -130,7 +130,7 @@ void summon_attack_npc(unit_data *caster, int n)
 
    for(; n > 0; n--)
    {
-      if(((u = random_npc()) != nullptr) && (u != caster) && (may_teleport_away(u) != 0u))
+      if(((u = random_npc()) != nullptr) && (u != caster) && (static_cast<unsigned int>(may_teleport_away(u)) != 0U))
       {
          if(CHAR_FIGHTING(u))
          {
@@ -263,7 +263,7 @@ void spell_random_teleport(spell_args *sa)
       return;
    }
 
-   if(may_teleport(sa->caster, room) == 0u)
+   if(static_cast<unsigned int>(may_teleport(sa->caster, room)) == 0U)
    {
       send_to_char("It seems that you can't teleport there.\n\r", sa->caster);
       return;
@@ -318,7 +318,7 @@ void spell_transport(spell_args *sa)
    room = unit_room(sa->target);
    assert(room);
 
-   if(may_teleport(sa->caster, room) == 0u)
+   if(static_cast<unsigned int>(may_teleport(sa->caster, room)) == 0U)
    {
       send_to_char("It seems that you can't teleport there.\n\r", sa->caster);
       return;
@@ -383,7 +383,7 @@ void spell_control_teleport(spell_args *sa)
    room = unit_room(sa->target);
    assert(room);
 
-   if(may_teleport(sa->caster, room) == 0u)
+   if(static_cast<unsigned int>(may_teleport(sa->caster, room)) == 0U)
    {
       send_to_char("It seems that you can't teleport there.\n\r", sa->caster);
       return;
@@ -438,7 +438,8 @@ void spell_undead_door(spell_args *sa)
 
    /* find destination */
 
-   if((may_teleport(sa->caster, roomt) == 0u) || (may_teleport(sa->target, roomf) == 0u))
+   if((static_cast<unsigned int>(may_teleport(sa->caster, roomt)) == 0U) ||
+      (static_cast<unsigned int>(may_teleport(sa->target, roomf)) == 0U))
    {
       send_to_char("It seems that you can't switch with this undead.\n\r", sa->caster);
       return;
@@ -486,7 +487,7 @@ void spell_summon_char_1(spell_args *sa)
 
    room = unit_room(sa->caster);
 
-   if(same_surroundings(room, sa->caster) == 0u)
+   if(static_cast<unsigned int>(same_surroundings(room, sa->caster)) == 0U)
    {
       send_to_char("The magic fizzles as there is nowhere for the creature to "
                    "arrive.\n\r",
@@ -494,7 +495,7 @@ void spell_summon_char_1(spell_args *sa)
       return;
    }
 
-   if(may_teleport(sa->target, room) == 0u)
+   if(static_cast<unsigned int>(may_teleport(sa->target, room)) == 0U)
    {
       send_to_char("Powers beyond your control prevent the summoning.\n\r", sa->caster);
       return;
@@ -545,7 +546,7 @@ void spell_summon_char_1(spell_args *sa)
 
    provoked_attack(sa->target, sa->caster);
 
-   if(CHAR_COMBAT(sa->caster))
+   if(CHAR_COMBAT(sa->caster) != nullptr)
    {
       CHAR_COMBAT(sa->caster)->changeSpeed(2 * 12);
    }
@@ -563,7 +564,7 @@ void spell_summon_char_2(spell_args *sa)
 
    room = unit_room(sa->caster);
 
-   if(same_surroundings(room, sa->caster) == 0u)
+   if(static_cast<unsigned int>(same_surroundings(room, sa->caster)) == 0U)
    {
       send_to_char("The magic fizzles as there is nowhere for the creature to "
                    "arrive.\n\r",
@@ -571,7 +572,7 @@ void spell_summon_char_2(spell_args *sa)
       return;
    }
 
-   if(may_teleport(sa->target, room) == 0u)
+   if(static_cast<unsigned int>(may_teleport(sa->target, room)) == 0U)
    {
       send_to_char("Powers beyond your control prevent the summoning.\n\r", sa->caster);
       return;
@@ -616,7 +617,7 @@ void spell_summon_char_2(spell_args *sa)
 
    provoked_attack(sa->target, sa->caster);
 
-   if(CHAR_COMBAT(sa->caster))
+   if(CHAR_COMBAT(sa->caster) != nullptr)
    {
       CHAR_COMBAT(sa->caster)->changeSpeed(2 * 12);
    }
@@ -737,7 +738,7 @@ void spell_wizard_eye(spell_args *sa)
    unit_data *pOrgUnit;
    unit_data *pTo;
 
-   if(!UNIT_IN(sa->target))
+   if(UNIT_IN(sa->target) == nullptr)
    {
       pTo = sa->target;
    }

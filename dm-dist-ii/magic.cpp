@@ -58,9 +58,9 @@ extern unit_data *unit_list;
 
 auto dil_effect(const char *pStr, struct spell_args *sa) -> int
 {
-   if(str_is_empty(pStr) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(pStr)) != 0U)
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    struct diltemplate *tmpl;
@@ -69,31 +69,31 @@ auto dil_effect(const char *pStr, struct spell_args *sa) -> int
 
    if(tmpl == nullptr)
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(tmpl->argc != 3)
    {
       slog(LOG_ALL, 0, "Spell DIL effect wrong arg count.");
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(tmpl->argt[0] != DILV_UP)
    {
       slog(LOG_ALL, 0, "Spell DIL effect arg 1 mismatch.");
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(tmpl->argt[1] != DILV_UP)
    {
       slog(LOG_ALL, 0, "Spell DIL effect arg 2 mismatch.");
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(tmpl->argt[2] != DILV_INT)
    {
       slog(LOG_ALL, 0, "Spell DIL effect arg 3 mismatch.");
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    struct dilprg *prg;
@@ -125,7 +125,7 @@ auto dil_effect(const char *pStr, struct spell_args *sa) -> int
 
    run_dil(&sarg);
 
-   return TRUE;
+   return static_cast<int>(TRUE);
 }
 
 /* This procedure uses mana from a medium */
@@ -142,7 +142,7 @@ auto use_mana(unit_data *medium, int mana) -> bool
       }
       return FALSE;
    }
-   else if(IS_OBJ(medium))
+   if(IS_OBJ(medium))
    {
       switch(OBJ_TYPE(medium))
       {
@@ -193,9 +193,11 @@ auto cast_magic_now(unit_data *ch, int mana) -> bool
       {
          return FALSE;
       }
-      if(hleft > 80) /* Small chance, allow heal to be possible */
+      if(hleft > 80)
+      { /* Small chance, allow heal to be possible */
          return (number(1, MAX(1, 16 - 2 * sleft)) == 1);
-      else if(hleft > 50)
+      }
+      if(hleft > 50)
          return (number(1, MAX(1, 6 - sleft)) == 1);
       else if(hleft > 40)
          return (number(1, MAX(1, 4 - sleft)) == 1);
@@ -257,7 +259,8 @@ auto may_teleport_to(unit_data *unit, unit_data *dest) -> bool
 /* See if unit is allowed to be transferred to 'dest' */
 auto may_teleport(unit_data *unit, unit_data *dest) -> bool
 {
-   return (static_cast<bool>(may_teleport_away(unit) != 0u) && (may_teleport_to(unit, dest)) != 0u);
+   return (static_cast<bool>(static_cast<unsigned int>(may_teleport_away(unit)) != 0U) &&
+           static_cast<unsigned int>(may_teleport_to(unit, dest)) != 0U);
 }
 
 /* ===================================================================== */
@@ -272,10 +275,8 @@ auto object_power(unit_data *unit) -> int
       }
       return OBJ_RESISTANCE(unit);
    }
-   else
-   {
-      return 0;
-   }
+
+   return 0;
 }
 
 auto room_power(unit_data *unit) -> int
@@ -483,11 +484,13 @@ auto spell_offensive(struct spell_args *sa, int spell_number, int bonus) -> int
 
    if(sa->hm > 0)
    {
-      damage(sa->caster, sa->target, nullptr, sa->hm, MSG_TYPE_SPELL, spell_number, COM_MSG_EBODY, static_cast<int>(bEffect) == 0);
+      damage(sa->caster, sa->target, nullptr, sa->hm, MSG_TYPE_SPELL, spell_number, COM_MSG_EBODY,
+             static_cast<int>(static_cast<int>(bEffect) == 0));
    }
    else
    {
-      damage(sa->caster, sa->target, nullptr, 0, MSG_TYPE_SPELL, spell_number, COM_MSG_MISS, static_cast<int>(bEffect) == 0);
+      damage(sa->caster, sa->target, nullptr, 0, MSG_TYPE_SPELL, spell_number, COM_MSG_MISS,
+             static_cast<int>(static_cast<int>(bEffect) == 0));
    }
 
    return sa->hm;

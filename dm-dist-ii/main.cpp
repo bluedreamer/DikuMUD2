@@ -87,7 +87,7 @@ descriptor_data    *next_to_process = nullptr;
 int mud_bootzone   = 1; /* Used when booting & resolving DIL templts */
 int no_players     = 0; /* Statistics                                */
 int max_no_players = 0; /* Statistics                                */
-int player_convert = FALSE;
+int player_convert = static_cast<int>(FALSE);
 int slow_death     = 0; /* Shut her down, Martha, she's sucking mud */
 int mud_shutdown   = 0; /* clean shutdown */
 int mud_reboot     = 0; /* reboot the game after a shutdown */
@@ -213,7 +213,7 @@ auto main(int argc, char **argv) -> int
 
          case 'c':
             slog(LOG_OFF, 0, "Converting player file mode.");
-            player_convert = TRUE;
+            player_convert = static_cast<int>(TRUE);
             pos++;
             player_name_list = create_namelist();
             while((pos < argc) && (*(argv[pos]) != '-'))
@@ -245,7 +245,7 @@ auto main(int argc, char **argv) -> int
             {
                char *name = strrchr(argv[pos], '/');
 
-               if(str_is_empty(name + 1) == 0u)
+               if(static_cast<unsigned int>(str_is_empty(name + 1)) == 0U)
                {
                   persist_namelist.AppendName(name + 1);
                }
@@ -595,7 +595,7 @@ void game_event()
                {
                   if(IS_PC(point->character) && IS_CREATOR(point->character))
                   {
-                     if(UNIT_MINV(point->character))
+                     if(UNIT_MINV(point->character) != 0u)
                      {
                         sprintf(buf, "%d> ", UNIT_MINV(point->character));
                      }

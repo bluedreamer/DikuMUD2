@@ -73,7 +73,7 @@ void touch_file(char *name)
 {
    FILE *fp;
 
-   if(file_exists(name) != 0u)
+   if(static_cast<unsigned int>(file_exists(name)) != 0U)
    {
       return;
    }
@@ -173,7 +173,7 @@ auto fread_string(FILE *fl) -> char *
    {
       return str_dup(buf);
    }
-   return 0;
+   return nullptr;
 }
 
 /* Read contents of a file, but skip all remark lines and blank lines. */
@@ -410,14 +410,22 @@ auto fopen_cache(char *name, const char *mode) -> FILE *
       return fcache[min_i].file;
    }
 
-   if(strchr(mode, 'w'))
+   if(strchr(mode, 'w') != nullptr)
+   {
       fcache[hit_i].file = freopen(name, "w+b", fcache[hit_i].file);
-   else if(strchr(mode, 'a'))
+   }
+   else if(strchr(mode, 'a') != nullptr)
+   {
       fseek(fcache[hit_i].file, 0L, SEEK_END);
-   else if(strchr(mode, 'r'))
+   }
+   else if(strchr(mode, 'r') != nullptr)
+   {
       fseek(fcache[hit_i].file, 0L, SEEK_SET);
+   }
    else
+   {
       error(HERE, "Bad file mode [%s] for file [%s]", mode, name);
+   }
 
    pure_hits++;
 
@@ -444,7 +452,7 @@ void fclose_cache()
             return;
          }
 
-         fcache[i].file = NULL;
+         fcache[i].file = nullptr;
       }
    }
 }

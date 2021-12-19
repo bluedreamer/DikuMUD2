@@ -110,7 +110,7 @@ auto make_corpse(unit_data *ch) -> unit_data *
 
    if(IS_PC(ch))
    {
-      if(UNIT_CONTAINS(corpse))
+      if(UNIT_CONTAINS(corpse) != nullptr)
       {
          persist_create(corpse);
       }

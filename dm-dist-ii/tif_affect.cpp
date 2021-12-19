@@ -114,35 +114,43 @@ void tif_fear_check(unit_affected_type *af, unit_data *unit)
    }
 
    /* Find someone else */
-   for(ch = UNIT_CONTAINS(UNIT_IN(unit)); ch; ch = ch->next)
+   for(ch = UNIT_CONTAINS(UNIT_IN(unit)); ch != nullptr; ch = ch->next)
+   {
       if(ch != unit && IS_CHAR(ch))
+      {
          break;
+      }
+   }
 
-   if(ch)
+   if(ch != nullptr)
+   {
       switch(number(0, 1))
       {
          case 0:
-            act("$3n prepares to kill you.", A_SOMEONE, unit, 0, ch, TO_CHAR);
-            act("$1n looks at you in a strange way.", A_SOMEONE, unit, 0, ch, TO_VICT);
-            act("$1n seems paranoid, looking at $3n.", A_SOMEONE, unit, 0, ch, TO_NOTVICT);
+            act("$3n prepares to kill you.", A_SOMEONE, unit, nullptr, ch, TO_CHAR);
+            act("$1n looks at you in a strange way.", A_SOMEONE, unit, nullptr, ch, TO_VICT);
+            act("$1n seems paranoid, looking at $3n.", A_SOMEONE, unit, nullptr, ch, TO_NOTVICT);
             break;
          case 1:
-            act("$3n wounds you fatally with $3s sword.", A_SOMEONE, unit, 0, ch, TO_CHAR);
-            act("$1n screams in agony.", A_SOMEONE, unit, 0, ch, TO_ROOM);
+            act("$3n wounds you fatally with $3s sword.", A_SOMEONE, unit, nullptr, ch, TO_CHAR);
+            act("$1n screams in agony.", A_SOMEONE, unit, nullptr, ch, TO_ROOM);
             break;
       }
+   }
    else
+   {
       switch(number(0, 2))
       {
          case 0:
-            act("Someone tries to steal your weapon!", A_ALWAYS, unit, 0, 0, TO_CHAR);
+            act("Someone tries to steal your weapon!", A_ALWAYS, unit, nullptr, nullptr, TO_CHAR);
             break;
          case 1:
-            act("Someone grins evilly.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+            act("Someone grins evilly.", A_ALWAYS, unit, nullptr, nullptr, TO_CHAR);
             break;
          case 2:
-            act("The huge green dragon appears in a puff of smoke!", A_ALWAYS, unit, 0, 0, TO_CHAR);
+            act("The huge green dragon appears in a puff of smoke!", A_ALWAYS, unit, nullptr, nullptr, TO_CHAR);
       }
+   }
 }
 
 void tif_blind_on(unit_affected_type *af, unit_data *unit)
@@ -265,7 +273,7 @@ void tif_curse_on(unit_affected_type *af, unit_data *unit)
       send_to_char("You feel that the gods are against you.\n\r", unit);
    }
    act("A shadow falls upon $1n.", A_HIDEINV, unit, nullptr, nullptr, TO_ROOM);
-   if(UNIT_IN(unit) && IS_CHAR(UNIT_IN(unit)))
+   if((UNIT_IN(unit) != nullptr) && IS_CHAR(UNIT_IN(unit)))
    {
       act("A shadow falls upon $3n.", A_HIDEINV, UNIT_IN(unit), nullptr, unit, TO_CHAR);
    }
@@ -279,7 +287,7 @@ void tif_curse_off(unit_affected_type *af, unit_data *unit)
    }
 
    act("A shadow lifts from $1n.", A_HIDEINV, unit, nullptr, nullptr, TO_ROOM);
-   if(UNIT_IN(unit) && IS_CHAR(UNIT_IN(unit)))
+   if((UNIT_IN(unit) != nullptr) && IS_CHAR(UNIT_IN(unit)))
    {
       act("A shadow lifts from $3n.", A_HIDEINV, UNIT_IN(unit), nullptr, unit, TO_CHAR);
    }
@@ -331,7 +339,7 @@ void tif_torch_tick(unit_affected_type *af, unit_data *unit)
 
 void tif_light_add(unit_affected_type *af, unit_data *unit)
 {
-   if(!UNIT_IN(unit))
+   if(UNIT_IN(unit) == nullptr)
    {
       return;
    }
@@ -342,7 +350,7 @@ void tif_light_add(unit_affected_type *af, unit_data *unit)
       act("Your $3N starts to glow.", A_HIDEINV, UNIT_IN(unit), nullptr, unit, TO_CHAR);
       act("$1n's $3n starts to glow.", A_HIDEINV, UNIT_IN(unit), nullptr, unit, TO_ROOM);
    }
-   else if(UNIT_CONTAINS(UNIT_IN(unit)))
+   else if(UNIT_CONTAINS(UNIT_IN(unit)) != nullptr)
    {
       act("The $3N starts to glow.", A_HIDEINV, UNIT_CONTAINS(UNIT_IN(unit)), nullptr, unit, TO_ALL);
    }
@@ -350,7 +358,7 @@ void tif_light_add(unit_affected_type *af, unit_data *unit)
 
 void tif_light_sub(unit_affected_type *af, unit_data *unit)
 {
-   if(!UNIT_IN(unit))
+   if(UNIT_IN(unit) == nullptr)
    {
       return;
    }
@@ -361,7 +369,7 @@ void tif_light_sub(unit_affected_type *af, unit_data *unit)
       act("Your $3N gets dimmer.", A_HIDEINV, UNIT_IN(unit), nullptr, unit, TO_CHAR);
       act("$1n's $3N gets dimmer.", A_HIDEINV, UNIT_IN(unit), nullptr, unit, TO_ROOM);
    }
-   else if(UNIT_CONTAINS(UNIT_IN(unit)))
+   else if(UNIT_CONTAINS(UNIT_IN(unit)) != nullptr)
    {
       act("The $3N gets dimmer.", A_HIDEINV, UNIT_CONTAINS(UNIT_IN(unit)), nullptr, unit, TO_ALL);
    }
@@ -706,7 +714,7 @@ void tif_buried_destruct(unit_affected_type *af, unit_data *unit)
    {
       /* Empty the container and set buried status of contents */
 
-      while(UNIT_CONTAINS(unit))
+      while(UNIT_CONTAINS(unit) != nullptr)
       {
          unit_affected_type naf;
 
@@ -764,7 +772,7 @@ void tif_valhalla_ret(unit_affected_type *af, unit_data *unit)
    if(is_destructed(DR_UNIT, unit) == 0)
    {
       save_player(unit);
-      save_player_contents(unit, TRUE);
+      save_player_contents(unit, static_cast<int>(TRUE));
    }
 }
 

@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : dijkstra.h                                Part of Valhalla MUD *
  * Version: 1.42                                                           *
@@ -22,10 +23,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_DIJKSTRA_H
-#define _MUD_DIJKSTRA_H
+#include "unit_data.h"
 
 auto npc_move(const unit_data *npc, const unit_data *to) -> int;
 auto move_to(const unit_data *from, const unit_data *to) -> int;
-
-#endif

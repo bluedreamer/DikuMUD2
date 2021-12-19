@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : guild.h                                   Part of Valhalla MUD *
  * Version: 1.10                                                           *
@@ -22,10 +23,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_GUILD_H
-#define _MUD_GUILD_H
+#include "unit_data.h"
 
 auto char_guild_level(unit_data *ch) -> int;
 void advance_guild_level(unit_data *ch);
-
-#endif

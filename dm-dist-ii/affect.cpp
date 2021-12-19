@@ -100,7 +100,7 @@ void create_affect(unit_data *unit, unit_affected_type *af)
       {
          if(af->applyf_i >= 0)
          {
-            if((*apf[af->applyf_i].func)(af, unit, TRUE) == 0u)
+            if(static_cast<unsigned int>((*apf[af->applyf_i].func)(af, unit, TRUE)) == 0U)
             {
                return;
             }
@@ -192,7 +192,7 @@ void destroy_affect(unit_affected_type *af)
    {
       if(af->applyf_i >= 0)
       {
-         if((*apf[af->applyf_i].func)(af, af->owner, FALSE) == 0u)
+         if(static_cast<unsigned int>((*apf[af->applyf_i].func)(af, af->owner, FALSE)) == 0U)
          {
             af->duration = 0;
             af->beat     = WAIT_SEC * 5;
@@ -220,7 +220,7 @@ void affect_clear_unit(unit_data *unit)
 
    /* Some affects may not be destroyed at first attempt if it would */
    /* cause an overflow, therefore do several attemps to destroy     */
-   for(i = 0; UNIT_AFFECTED(unit) && (i < 5); i++)
+   for(i = 0; (UNIT_AFFECTED(unit) != nullptr) && (i < 5); i++)
    {
       for(taf1 = UNIT_AFFECTED(unit); taf1 != nullptr; taf1 = taf2)
       {
@@ -229,7 +229,7 @@ void affect_clear_unit(unit_data *unit)
       }
    }
 
-   if(UNIT_AFFECTED(unit))
+   if(UNIT_AFFECTED(unit) != nullptr)
    {
       slog(LOG_ALL, 0, "ERROR: Could not clear unit of affects!");
    }
@@ -265,9 +265,9 @@ void affect_beat(void *p1, void *p2)
       af->beat = 2 * WAIT_SEC;
    }
 
-   destroyed = FALSE;
+   destroyed = static_cast<int>(FALSE);
 
-   if(!IS_PC(af->owner) || CHAR_DESCRIPTOR(af->owner))
+   if(!IS_PC(af->owner) || (CHAR_DESCRIPTOR(af->owner) != nullptr))
    {
       if(af->duration == 0)
       {
@@ -278,12 +278,16 @@ void affect_beat(void *p1, void *p2)
       }
 
       if(af->tickf_i >= 0)
+      {
          (*tif[af->tickf_i].func)(af, af->owner);
+      }
 
       destroyed = is_destructed(DR_AFFECT, af);
 
-      if(!destroyed && (af->duration > 0))
+      if((destroyed == 0) && (af->duration > 0))
+      {
          af->duration--;
+      }
    }
    if(destroyed == 0)
    {
@@ -302,7 +306,7 @@ void apply_affect(unit_data *unit)
    {
       if((af->id >= 0) && (af->applyf_i >= 0))
       {
-         if((*apf[af->applyf_i].func)(af, unit, TRUE) == 0u)
+         if(static_cast<unsigned int>((*apf[af->applyf_i].func)(af, unit, TRUE)) == 0U)
          {
             continue;
          }

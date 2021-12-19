@@ -165,7 +165,7 @@ static void chg_exits(unit_data *ch)
 
 static void chg_columns(unit_data *ch, const char *arg)
 {
-   if((str_is_empty(arg) != 0u) || (str_is_number(arg) == 0u))
+   if((static_cast<unsigned int>(str_is_empty(arg)) != 0U) || (static_cast<unsigned int>(str_is_number(arg)) == 0U))
    {
       send_to_char("You must enter a column number between 40 and 160.\n\r", ch);
       return;
@@ -188,7 +188,7 @@ static void chg_columns(unit_data *ch, const char *arg)
 
 static void chg_rows(unit_data *ch, const char *arg)
 {
-   if((str_is_empty(arg) != 0u) || (str_is_number(arg) == 0u))
+   if((static_cast<unsigned int>(str_is_empty(arg)) != 0U) || (static_cast<unsigned int>(str_is_number(arg)) == 0U))
    {
       send_to_char("You must enter a row number between 15 and 60.\n\r", ch);
       return;
@@ -349,12 +349,12 @@ void do_change(unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   if(!CHAR_DESCRIPTOR(ch))
+   if(CHAR_DESCRIPTOR(ch) == nullptr)
    {
       return;
    }
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Usage: change <type> [arguments]\n\r"
                    "<type> being one of:\n\r",

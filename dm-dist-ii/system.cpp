@@ -103,19 +103,19 @@ void init_char(unit_data *ch)
 
    if(g_cServerConfig.m_bBBS != 0)
    {
-      PC_SETUP_ECHO(ch)      = TRUE;
-      PC_SETUP_REDRAW(ch)    = TRUE;
+      PC_SETUP_ECHO(ch)      = static_cast<uint8_t>(TRUE);
+      PC_SETUP_REDRAW(ch)    = static_cast<uint8_t>(TRUE);
       PC_SETUP_EMULATION(ch) = TERM_ANSI;
-      PC_SETUP_TELNET(ch)    = FALSE;
+      PC_SETUP_TELNET(ch)    = static_cast<uint8_t>(FALSE);
 
       SET_BIT(PC_FLAGS(ch), PC_INFORM);
    }
    else
    {
-      PC_SETUP_ECHO(ch)      = FALSE;
-      PC_SETUP_REDRAW(ch)    = FALSE;
+      PC_SETUP_ECHO(ch)      = static_cast<uint8_t>(FALSE);
+      PC_SETUP_REDRAW(ch)    = static_cast<uint8_t>(FALSE);
       PC_SETUP_EMULATION(ch) = TERM_TTY;
-      PC_SETUP_TELNET(ch)    = TRUE;
+      PC_SETUP_TELNET(ch)    = static_cast<uint8_t>(TRUE);
    }
 
    PC_SETUP_WIDTH(ch)    = 80;
@@ -242,7 +242,7 @@ void descriptor_close(descriptor_data *d, int bSendClose)
    /* Descriptor must be either in the game (UNIT_IN) or in menu.  */
    /* If unit has been extracted, then all his data is half erased */
    /* (affects, etc) and he shall not be saved!                    */
-   if(!UNIT_IN(d->character)) /* In menu - extract completely */
+   if(UNIT_IN(d->character) == nullptr) /* In menu - extract completely */
    {
       assert(!UNIT_CONTAINS(d->character));
       assert(!UNIT_IN(d->character));
@@ -294,7 +294,7 @@ void descriptor_close(descriptor_data *d, int bSendClose)
          {
             /* We need to save player to update his time status! */
             save_player(d->character); /* Save non-guests */
-            save_player_contents(d->character, TRUE);
+            save_player_contents(d->character, static_cast<int>(TRUE));
 
             create_fptr(d->character, SFUN_LINK_DEAD, 0, SFB_CMD, nullptr);
          }

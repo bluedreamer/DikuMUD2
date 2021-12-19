@@ -196,7 +196,7 @@ auto dice(int number, int size) -> int
 
       *result = '\0';
 
-      for(nr = 0; vektor != 0u; vektor >>= 1, nr += names[nr] != nullptr ? 1 : 0)
+      for(nr = 0; vektor != 0U; vektor >>= 1, nr += names[nr] != nullptr ? 1 : 0)
       {
          if(IS_SET(1, vektor))
          {

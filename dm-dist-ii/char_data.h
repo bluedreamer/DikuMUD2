@@ -1,8 +1,8 @@
 #pragma once
+#include "cCombat.h"
 #include "char_follow_type.h"
 #include "char_point_data.h"
 #include "descriptor_data.h"
-#include "cCombat.h"
 
 class char_data
 {

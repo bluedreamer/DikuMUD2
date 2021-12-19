@@ -117,7 +117,7 @@ auto board(struct spec_arg *sarg) -> int
    struct board_info *tb;
    char              *arg = (char *)sarg->arg;
 
-   if(sarg->activator == nullptr || !IS_CHAR(sarg->activator) || !CHAR_DESCRIPTOR(sarg->activator))
+   if(sarg->activator == nullptr || !IS_CHAR(sarg->activator) || (CHAR_DESCRIPTOR(sarg->activator) == nullptr))
    {
       return SFR_SHARE;
    }
@@ -254,7 +254,7 @@ void compact_board(struct board_info *tb)
 {
    descriptor_data *d;
    int              index;
-   int              compacted = FALSE;
+   int              compacted = static_cast<int>(FALSE);
 
    for(index = 0; index < MAX_MSGS - 1; index++)
    {
@@ -292,7 +292,7 @@ void compact_board(struct board_info *tb)
 
       if(tb->handles[index] != BLK_NULL)
       {
-         compacted = TRUE;
+         compacted = static_cast<int>(TRUE);
       }
 
       tb->handles[index + 1]     = BLK_NULL;
@@ -399,7 +399,7 @@ auto reply_board(unit_data *ch, struct board_info *tb, char *arg, unit_data *boa
 
    one_argument(arg, number);
 
-   if(str_is_number(number) == 0u)
+   if(static_cast<unsigned int>(str_is_number(number)) == 0U)
    {
       return SFR_SHARE;
    }
@@ -442,7 +442,7 @@ auto read_board(unit_data *ch, struct board_info *tb, char *arg) -> int
 
    one_argument(arg, number);
 
-   if(str_is_number(number) == 0u)
+   if(static_cast<unsigned int>(str_is_number(number)) == 0U)
    {
       return SFR_SHARE;
    }
@@ -486,7 +486,7 @@ auto remove_msg(unit_data *ch, struct board_info *tb, char *arg) -> int
 
    one_argument(arg, number);
 
-   if(str_is_number(number) == 0u)
+   if(static_cast<unsigned int>(str_is_number(number)) == 0U)
    {
       return SFR_SHARE;
    }
@@ -725,7 +725,7 @@ void do_boards(unit_data *ch, char *arg, const struct command_info *cmd)
 
    for(u = unit_list; u != nullptr; u = u->gnext)
    {
-      if(IS_OBJ(u) && UNIT_IN(u) && UNIT_MINV(u) <= CHAR_LEVEL(ch) && ((f = find_fptr(u, SFUN_BULLETIN_BOARD)) != nullptr))
+      if(IS_OBJ(u) && (UNIT_IN(u) != nullptr) && UNIT_MINV(u) <= CHAR_LEVEL(ch) && ((f = find_fptr(u, SFUN_BULLETIN_BOARD)) != nullptr))
       {
          b = get_board(f);
          if(b->min_level <= (CHAR_LEVEL(ch)))

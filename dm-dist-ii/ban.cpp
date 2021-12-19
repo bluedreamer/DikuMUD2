@@ -150,7 +150,7 @@ void add_ban(unit_data *ch, char *site, char type, time_t *until, char *textfile
    {
       CREATE(entry, struct ban_t, 1);
       entry->site = str_dup(site);
-      if(str_is_empty(textfile) == 0u)
+      if(static_cast<unsigned int>(str_is_empty(textfile)) == 0U)
       {
          entry->textfile = str_dup(textfile);
       }
@@ -266,7 +266,7 @@ void do_ban(unit_data *ch, char *arg, const struct command_info *cmd)
    char          type;
    time_t        until = 0;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       if(ban_list != nullptr)
       {
@@ -287,7 +287,7 @@ void do_ban(unit_data *ch, char *arg, const struct command_info *cmd)
    mode = tolower(*arg);
    ++arg;
 
-   if(str_is_empty(arg) == 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) == 0U)
    {
       arg = one_argument(arg, site);
       arg = one_argument(arg, textfile);
@@ -298,7 +298,7 @@ void do_ban(unit_data *ch, char *arg, const struct command_info *cmd)
          case 't':
             type = (mode == 't') ? BAN_TOTAL : BAN_NEW_CHARS;
 
-            if((str_is_empty(arg) == 0u) && (until = ban_timer(arg)) == 0)
+            if((static_cast<unsigned int>(str_is_empty(arg)) == 0U) && (until = ban_timer(arg)) == 0)
             {
                send_to_char("Wrong syntax in time. Not banned.\n\r.", ch);
             }
@@ -329,21 +329,33 @@ auto ban_check(char *ban, char *site) -> bool /* TRUE, if banned */
    if(*ban == '*')
    {
       if(*site == '\0' || *++ban == '\0')
+      {
          return TRUE;
+      }
       for(;;)
       {
          if(ban_check(ban, site))
+         {
             return TRUE;
+         }
          if(*++site == '\0')
+         {
             return FALSE;
+         }
       }
    }
    else if(*site == '\0')
+   {
       return FALSE;
+   }
    else if(*ban == '?' || *ban == tolower(*site))
+   {
       return ban_check(++ban, ++site);
+   }
    else
+   {
       return FALSE;
+   }
 }
 
 auto site_banned(char *cur_site) -> char

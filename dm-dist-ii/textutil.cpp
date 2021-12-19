@@ -193,8 +193,10 @@ auto str_ccmp(const char *s, const char *d) -> int
    {
       return -1;
    }
-   if(d == NULL)
+   if(d == nullptr)
+   {
       return 1;
+   }
 
    for(; tolower(*s) == tolower(*d); s++, d++)
    {
@@ -221,8 +223,10 @@ auto str_nccmp(const char *s, const char *d, int n) -> int
    {
       return -1;
    }
-   if(d == NULL)
+   if(d == nullptr)
+   {
       return 1;
+   }
 
    for(n--; tolower(*s) == tolower(*d); s++, d++, n--)
    {
@@ -433,7 +437,7 @@ auto search_block(const char *oarg, const char **list, bool exact) -> int
    /* Make into lower case, and get length of string */
    l = str_lower(oarg, arg, sizeof(arg));
 
-   if(exact != 0u)
+   if(static_cast<unsigned int>(exact) != 0U)
    {
       for(i = 0; list[i] != nullptr; i++)
       {
@@ -472,7 +476,7 @@ auto search_block_length(const char *oarg, int length, const char **list, bool e
    /* Make into lower case, and get length of string */
    str_lower(oarg, arg, sizeof(arg));
 
-   if(exact != 0u)
+   if(static_cast<unsigned int>(exact) != 0U)
    {
       for(i = 0; list[i] != nullptr; i++)
       {
@@ -625,7 +629,7 @@ auto search_block_abbrevs(const char *oarg, const char **list, const char **end)
          pd = d;
          s  = str_next_word(s, buf1);
          d  = str_next_word(d, buf2);
-         if(is_multi_abbrev(buf1, buf2) != 0u)
+         if(static_cast<unsigned int>(is_multi_abbrev(buf1, buf2)) != 0U)
          {
             s = skip_spaces(s);
             d = skip_spaces(d);
@@ -1103,7 +1107,7 @@ auto catnames(char *s, const char **names) -> char *
          sprintf(s, "\"%s\",", *nam);
          TAIL(s);
       }
-      if(ok != 0u)
+      if(static_cast<unsigned int>(ok) != 0U)
       {
          s--; /* remove the comma */
       }
@@ -1198,7 +1202,7 @@ auto str_escape_format(const char *src, char *dest, int destlen, int formatting)
             case 'l':
                /* if (!formatting)
                   slog(LOG_ALL, 0, "Redundant format code '&l'."); */
-               formatting = FALSE;
+               formatting = static_cast<int>(FALSE);
                break;
 
             case 'h':
@@ -1209,7 +1213,7 @@ auto str_escape_format(const char *src, char *dest, int destlen, int formatting)
             case 'f':
                /* if (formatting)
                   slog(LOG_ALL, 0, "Redundant format code '&f'."); */
-               formatting = TRUE;
+               formatting = static_cast<int>(TRUE);
                break;
 
             case '&':
@@ -1218,11 +1222,11 @@ auto str_escape_format(const char *src, char *dest, int destlen, int formatting)
 
             case 'c':
             {
-               int bright = FALSE;
+               int bright = static_cast<int>(FALSE);
 
                if(*++src == '+')
                {
-                  bright = TRUE;
+                  bright = static_cast<int>(TRUE);
                   src++;
                }
 

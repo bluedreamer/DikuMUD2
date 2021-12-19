@@ -161,7 +161,7 @@ void do_quit(unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   if(cmd_is_abbrev(ch, cmd) != 0u)
+   if(static_cast<unsigned int>(cmd_is_abbrev(ch, cmd)) != 0U)
    {
       send_to_char("You have to write quit - no less, to quit!\n\r", ch);
       return;
@@ -224,7 +224,7 @@ void do_save(unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   if(!PC_IS_UNSAVED(ch) && CHAR_DESCRIPTOR(ch))
+   if(!PC_IS_UNSAVED(ch) && (CHAR_DESCRIPTOR(ch) != nullptr))
    {
       if(CHAR_LEVEL(ch) < 200 && difftime(time(nullptr), CHAR_DESCRIPTOR(ch)->logon) < 60)
       {
@@ -246,7 +246,7 @@ void do_save(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 
    save_player(ch);
-   save_player_contents(ch, TRUE);
+   save_player_contents(ch, static_cast<int>(TRUE));
 }
 
 void do_not_here(unit_data *ch, char *arg, const struct command_info *cmd)
@@ -394,9 +394,9 @@ void do_bury(unit_data *ch, char *arg, const struct command_info *cmd)
    unit_data *u;
    unit_data *next;
    char      *oarg    = arg;
-   int        bBuried = FALSE;
+   int        bBuried = static_cast<int>(FALSE);
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       act("Bury what?", A_SOMEONE, ch, nullptr, nullptr, TO_CHAR);
       return;
@@ -431,10 +431,10 @@ void do_bury(unit_data *ch, char *arg, const struct command_info *cmd)
          }
 
          bury_unit(ch, u, oarg, cmd);
-         bBuried = TRUE;
+         bBuried = static_cast<int>(TRUE);
       }
 
-      if(bBuried == FALSE)
+      if(bBuried == static_cast<int>(FALSE))
       {
          act("Nothing here to bury.", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
       }

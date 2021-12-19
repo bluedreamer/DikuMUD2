@@ -700,9 +700,10 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
             case DILV_UP:
                if(v1.val.ptr != nullptr)
                {
-                  v->atyp    = DILA_NORM;
-                  v->type    = DILV_INT;
-                  v->val.num = UNIT_FILE_INDEX((unit_data *)v1.val.ptr) ? UNIT_FILE_INDEX((unit_data *)v1.val.ptr)->no_in_mem : 1;
+                  v->atyp = DILA_NORM;
+                  v->type = DILV_INT;
+                  v->val.num =
+                     UNIT_FILE_INDEX((unit_data *)v1.val.ptr) != nullptr ? UNIT_FILE_INDEX((unit_data *)v1.val.ptr)->no_in_mem : 1;
                }
                else
                {
@@ -1544,7 +1545,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
          if(v->type == DILV_SLPR)
          {
             if((v1.val.ptr != nullptr) && IS_ROOM((unit_data *)v1.val.ptr) && (is_in(v2.val.num, 0, 5) != 0) &&
-               ROOM_EXIT((unit_data *)v1.val.ptr, v2.val.num))
+               (ROOM_EXIT((unit_data *)v1.val.ptr, v2.val.num) != nullptr))
             {
                v->atyp = DILA_NORM;
                v->ref  = &(ROOM_EXIT((unit_data *)v1.val.ptr, v2.val.num)->open_name);
@@ -1593,7 +1594,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
          if(v->type == DILV_UINT1R)
          {
             if((v1.val.ptr != nullptr) && IS_ROOM((unit_data *)v1.val.ptr) && (is_in(v2.val.num, 0, 5) != 0) &&
-               ROOM_EXIT((unit_data *)v1.val.ptr, v2.val.num))
+               (ROOM_EXIT((unit_data *)v1.val.ptr, v2.val.num) != nullptr))
             {
                v->atyp = DILA_NONE;
                v->ref  = &(ROOM_EXIT((unit_data *)v1.val.ptr, v2.val.num)->exit_info);
@@ -1640,7 +1641,7 @@ void dilfe_fld(struct dilprg *p, class dilval *v)
          if(v->type == DILV_UP)
          {
             if((v1.val.ptr != nullptr) && IS_ROOM((unit_data *)v1.val.ptr) && (is_in(v2.val.num, 0, 5) != 0) &&
-               ROOM_EXIT((unit_data *)v1.val.ptr, v2.val.num))
+               (ROOM_EXIT((unit_data *)v1.val.ptr, v2.val.num) != nullptr))
             {
                v->atyp    = DILA_NORM;
                v->val.ptr = ROOM_EXIT((unit_data *)v1.val.ptr, v2.val.num)->to_room;

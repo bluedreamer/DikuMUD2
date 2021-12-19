@@ -88,7 +88,7 @@ static void apply_poison(unit_data *ch, int poison, int amount)
 /* Return TRUE if something was eaten/drunk */
 auto drink_eat(unit_data *ch, unit_data *obj, int amount, const struct command_info *cmd, char *arg) -> bool
 {
-   int extract = FALSE;
+   int extract = static_cast<int>(FALSE);
    int poison  = 0; /* No poison */
 
    void gain_condition(unit_data * ch, int condition, int value);
@@ -182,7 +182,7 @@ auto drink_eat(unit_data *ch, unit_data *obj, int amount, const struct command_i
 
       if(OBJ_VALUE(obj, 0) <= 0)
       {
-         extract = TRUE;
+         extract = static_cast<int>(TRUE);
       }
    }
 
@@ -219,7 +219,7 @@ void do_drink(unit_data *ch, char *arg, const struct command_info *cmd)
    unit_data *drink;
    char      *oarg = arg;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("What do you want to drink?\n\r", ch);
    }
@@ -258,7 +258,7 @@ void do_eat(unit_data *ch, char *arg, const struct command_info *cmd)
    unit_data *food;
    char      *oarg = arg;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("What do you want to eat?\n\r", ch);
    }
@@ -287,7 +287,7 @@ void do_sip(unit_data *ch, char *arg, const struct command_info *cmd)
    unit_data *drink;
    char      *oarg = arg;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    { /* No arguments */
       act("What do you want to sip?", A_SOMEONE, ch, nullptr, nullptr, TO_CHAR);
    }
@@ -315,7 +315,7 @@ void do_taste(unit_data *ch, char *arg, const struct command_info *cmd)
    unit_data *drink;
    char      *oarg = arg;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    { /* No arguments */
       act("What do you want to taste?", A_SOMEONE, ch, nullptr, nullptr, TO_CHAR);
    }
@@ -351,7 +351,7 @@ void do_pour(unit_data *ch, char *arg, const struct command_info *cmd)
    int        amount;
    char      *oarg = arg;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    { /* No arguments */
       act("What do you want to pour from?", A_SOMEONE, ch, nullptr, nullptr, TO_CHAR);
    }
@@ -367,7 +367,7 @@ void do_pour(unit_data *ch, char *arg, const struct command_info *cmd)
    {
       act("The $2N is empty.", A_SOMEONE, ch, from_obj, nullptr, TO_CHAR);
    }
-   else if(str_is_empty(arg) != 0u)
+   else if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    { /* No arguments */
       act("Where do you want it? Out or in what?", A_SOMEONE, ch, nullptr, nullptr, TO_CHAR);
    }

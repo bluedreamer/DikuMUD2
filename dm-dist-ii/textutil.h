@@ -27,8 +27,8 @@
 
 #define isaspace(c) ((c) == ' ')
 
-auto str_escape_format(const char *str, char *dest, int destlen, int format = TRUE) -> int;
-auto str_escape_format(const char *src, int formatting = TRUE) -> char *;
+auto str_escape_format(const char *str, char *dest, int destlen, int format = 1) -> int;
+auto str_escape_format(const char *src, int formatting = 1) -> char *;
 
 auto text_read_line(char *buf, char *res) -> char *;
 auto text_skip_line(char *buf) -> char *;
@@ -61,15 +61,15 @@ auto str_nccmp(const char *s, const char *d, int n) -> int;
 auto str_dup(const char *source) -> char *;
 auto str_str(const char *cs, const char *ct) -> char *;
 auto str_cstr(const char *cs, const char *ct) -> char *;
-bool str_is_empty(const char *arg);
-bool str_is_number(const char *str);
-bool next_word_is_number(const char *str);
+auto str_is_empty(const char *arg) -> bool;
+auto str_is_number(const char *str) -> bool;
+auto next_word_is_number(const char *str) -> bool;
 auto one_argument(const char *argument, char *first_arg) -> char *;
 auto search_block_abbrevs(const char *oarg, const char **list, const char **end) -> int;
 auto search_block(const char *arg, const char **list, bool exact) -> int;
 auto search_block_length(const char *arg, int length, const char **list, bool exact) -> int;
 auto fill_word(const char *argument) -> int;
-bool is_abbrev(const char *arg1, const char *arg2);
+auto is_abbrev(const char *arg1, const char *arg2) -> bool;
 auto str_cc(const char *s1, const char *s2) -> char *;
 auto add_name(const char *name, char **namelist) -> char **;
 auto del_name(const char *name, char **namelist) -> char **;

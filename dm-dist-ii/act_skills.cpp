@@ -117,7 +117,7 @@ void do_quaff(unit_data *ch, char *arg, const struct command_info *cmd)
    unit_data *potion;
    int        i;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       act("What do you want to quaff?", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
       return;
@@ -174,7 +174,7 @@ void do_recite(unit_data *ch, char *arg, const struct command_info *cmd)
    int        abila;
    int        hm;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       act("What do you want to recite?", A_ALWAYS, ch, nullptr, nullptr, TO_CHAR);
       return;
@@ -200,7 +200,7 @@ void do_recite(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 
    /* If no 'target' to recite on, assume reciter himself */
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       target = ch;
    }
@@ -251,7 +251,7 @@ void do_recite(unit_data *ch, char *arg, const struct command_info *cmd)
 
    send_done(ch, scroll, nullptr, 0, cmd, arg);
 
-   if(OBJ_EQP_POS(scroll))
+   if(OBJ_EQP_POS(scroll) != 0u)
    {
       unequip_object(scroll);
    }
@@ -265,14 +265,14 @@ void do_use(unit_data *ch, char *arg, const struct command_info *cmd)
  * tested: No
  */
 {
-   unit_data *stick  = NULL;
-   unit_data *target = NULL;
+   unit_data *stick  = nullptr;
+   unit_data *target = nullptr;
    int        skilla;
    int        abila;
    int        i;
    int        hm;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Use what?\n\r", ch);
       return;
@@ -349,7 +349,7 @@ void do_use(unit_data *ch, char *arg, const struct command_info *cmd)
    }
    else /* Wand */
    {
-      if(str_is_empty(arg) != 0u)
+      if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
       {
          send_to_char("You must use it on somebody.\n\r", ch);
          return;
@@ -422,7 +422,7 @@ void do_appraise(unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Appraise what?\n\r", ch);
       return;
@@ -486,7 +486,7 @@ void do_ventriloquate(unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Who or what should speak?\n\r", ch);
       return;
@@ -621,7 +621,7 @@ void do_flee(unit_data *ch, char *arg, const struct command_info *cmd)
       hm = resistance_skill_check(CHAR_DEX(ch), 0, IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_FLEE) : CHAR_DEX(ch), 0);
    }
 
-   die = FALSE;
+   die = static_cast<int>(FALSE);
 
    opos         = CHAR_POS(ch);
    CHAR_POS(ch) = POSITION_STANDING;
@@ -643,15 +643,21 @@ void do_flee(unit_data *ch, char *arg, const struct command_info *cmd)
       {
          u = UNIT_IN(ch);
 
-         act("$1n panics, and flees head over heels.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+         act("$1n panics, and flees head over heels.", A_HIDEINV, ch, nullptr, nullptr, TO_ROOM);
          send_to_char("You flee head over heels!\n\r", ch);
 
-         if((die = do_simple_move(ch, attempt, TRUE)) == 1)
+         if((die = do_simple_move(ch, attempt, static_cast<int>(TRUE))) == 1)
          {
             if(IS_PC(ch))
-               for(predator = UNIT_CONTAINS(u); predator; predator = predator->next)
+            {
+               for(predator = UNIT_CONTAINS(u); predator != nullptr; predator = predator->next)
+               {
                   if(IS_NPC(predator) && CHAR_FIGHTING(predator) == ch)
+                  {
                      set_hunting(predator, ch, legal);
+                  }
+               }
+            }
 
             stop_fighting(ch);
             return;
@@ -728,7 +734,7 @@ void do_backstab(unit_data *ch, char *arg, const struct command_info *cmd)
  */
 {
    unit_affected_type  af;
-   unit_affected_type *paf = NULL;
+   unit_affected_type *paf = nullptr;
    unit_data          *vict;
    unit_data          *stabber;
    int                 skilla;
@@ -736,7 +742,7 @@ void do_backstab(unit_data *ch, char *arg, const struct command_info *cmd)
    int                 hm;
    char               *oarg = arg;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Backstab who?\n\r", ch);
       return;
@@ -768,7 +774,7 @@ void do_backstab(unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   if(pk_test(ch, vict, TRUE) != 0)
+   if(pk_test(ch, vict, static_cast<int>(TRUE)) != 0)
    {
       return;
    }
@@ -932,7 +938,7 @@ void do_aid(unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Perform first aid on who?\n\r", ch);
       return;
@@ -992,7 +998,7 @@ void do_pick(unit_data *ch, char *arg, const struct command_info *cmd)
 
    skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_PICK_LOCK) : (CHAR_DEX(ch) + CHAR_BRA(ch)) / 2;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Pick what, where?\n\r", ch);
       return;
@@ -1048,7 +1054,7 @@ void do_pick(unit_data *ch, char *arg, const struct command_info *cmd)
 
       if(a_door->reverse != nullptr)
       {
-         if(UNIT_CONTAINS(a_door->reverse))
+         if(UNIT_CONTAINS(a_door->reverse) != nullptr)
          {
             act("*click*", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), nullptr, nullptr, TO_ALL);
          }
@@ -1080,7 +1086,7 @@ void do_steal(unit_data *ch, char *arg, const struct command_info *cmd)
 
    auto hands_used(unit_data * ch)->int;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Steal what from whom?\n\r", ch);
       return;
@@ -1119,12 +1125,12 @@ void do_steal(unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   if(pk_test(ch, vict, TRUE) != 0)
+   if(pk_test(ch, vict, static_cast<int>(TRUE)) != 0)
    {
       return;
    }
 
-   if(CHAR_COMBAT(vict))
+   if(CHAR_COMBAT(vict) != nullptr)
    {
       act("$3e is in combat and is moving around too fast!", A_SOMEONE, ch, nullptr, vict, TO_CHAR);
       return;
@@ -1179,7 +1185,7 @@ void do_steal(unit_data *ch, char *arg, const struct command_info *cmd)
    /* Builtin advantage for defender */
    hm = resistance_skill_check(CHAR_DEX(ch), CHAR_BRA(vict), skilla, skillb) - 10;
 
-   if(OBJ_EQP_POS(obj))
+   if(OBJ_EQP_POS(obj) != 0u)
    {
       hm -= 50; /* Equipment is MUCH harder */
    }
@@ -1272,7 +1278,7 @@ void do_steal(unit_data *ch, char *arg, const struct command_info *cmd)
       }
       else
       {
-         log_crime(ch, vict, CRIME_STEALING, FALSE);
+         log_crime(ch, vict, CRIME_STEALING, static_cast<int>(FALSE));
          send_to_char("You couldn't get any...\n\r", ch);
          return;
       }
@@ -1283,7 +1289,7 @@ void do_steal(unit_data *ch, char *arg, const struct command_info *cmd)
       slog(LOG_ALL, 0, "%s tried to steal from %s.", UNIT_NAME(ch), UNIT_NAME(vict));
    }
 
-   log_crime(ch, vict, CRIME_STEALING, FALSE);
+   log_crime(ch, vict, CRIME_STEALING, static_cast<int>(FALSE));
 
    unit_from_unit(obj);
    unit_to_unit(obj, ch);
@@ -1373,11 +1379,11 @@ void base_rescue(unit_data *ch, unit_data *vict)
       SET_BIT(CHAR_FLAGS(ch), CHAR_SELF_DEFENCE);
    }
 
-   set_fighting(ch, tmp_ch, TRUE);
-   set_fighting(tmp_ch, ch, TRUE);
-   set_fighting(vict, tmp_ch, FALSE);
+   set_fighting(ch, tmp_ch, static_cast<int>(TRUE));
+   set_fighting(tmp_ch, ch, static_cast<int>(TRUE));
+   set_fighting(vict, tmp_ch, static_cast<int>(FALSE));
 
-   if(CHAR_COMBAT(tmp_ch))
+   if(CHAR_COMBAT(tmp_ch) != nullptr)
    {
       CHAR_COMBAT(tmp_ch)->setMelee(ch);
    }
@@ -1391,7 +1397,7 @@ void do_rescue(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    unit_data *vict;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Rescue who?\n\r", ch);
       return;
@@ -1445,7 +1451,7 @@ void do_bash(unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   if(pk_test(ch, vict, TRUE) != 0)
+   if(pk_test(ch, vict, static_cast<int>(TRUE)) != 0)
    {
       return;
    }
@@ -1478,7 +1484,7 @@ void do_bash(unit_data *ch, char *arg, const struct command_info *cmd)
 
       damage(ch, vict, shield, 0, MSG_TYPE_SKILL, SKI_BASH, COM_MSG_MISS);
 
-      if(CHAR_COMBAT(ch))
+      if(CHAR_COMBAT(ch) != nullptr)
       {
          CHAR_COMBAT(ch)->changeSpeed(SPEED_DEFAULT);
       }
@@ -1489,7 +1495,7 @@ void do_bash(unit_data *ch, char *arg, const struct command_info *cmd)
 
       damage(ch, vict, shield, 1, MSG_TYPE_SKILL, SKI_BASH, COM_MSG_EBODY);
 
-      if(CHAR_COMBAT(vict))
+      if(CHAR_COMBAT(vict) != nullptr)
       {
          CHAR_COMBAT(vict)->changeSpeed(SPEED_DEFAULT);
       }
@@ -1504,7 +1510,7 @@ void do_search(unit_data *ch, char *arg, const struct command_info *cmd)
    unit_affected_type  af;
    unit_affected_type *taf;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("What is the name of the exit you wish to search for?\n\r", ch);
       return;
@@ -1517,7 +1523,7 @@ void do_search(unit_data *ch, char *arg, const struct command_info *cmd)
    }
    CHAR_ENDURANCE(ch) -= 10;
 
-   if((dir = low_find_door(ch, arg, FALSE, FALSE)) == -1)
+   if((dir = low_find_door(ch, arg, static_cast<int>(FALSE), static_cast<int>(FALSE))) == -1)
    {
       act("You search but find nothing.", A_SOMEONE, ch, nullptr, nullptr, TO_CHAR);
       return;

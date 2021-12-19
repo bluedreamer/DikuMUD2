@@ -192,11 +192,11 @@ static void stat_zone_reset(char *indnt, zone_reset_cmd *zrip, unit_data *ch)
             }
          }
 
-         strcpy(stat_p, zrip->cmpl != 0u ? " Complete" : "");
+         strcpy(stat_p, zrip->cmpl != 0U ? " Complete" : "");
          break;
 
       case 2:
-         sprintf(stat_p, "Equip %s %s max %d %s", zrip->fi[0]->name, where[zrip->num[1]], zrip->num[0], zrip->cmpl != 0u ? "Complete" : "");
+         sprintf(stat_p, "Equip %s %s max %d %s", zrip->fi[0]->name, where[zrip->num[1]], zrip->num[0], zrip->cmpl != 0U ? "Complete" : "");
          break;
 
       case 3:
@@ -256,10 +256,10 @@ static void stat_zone(unit_data *ch, struct zone_type *zone)
    }
 
    sprintf(tmp, "%s%s.err", zondir, zone->filename);
-   errors = (file_exists(tmp) != 0u);
+   errors = (static_cast<unsigned int>(file_exists(tmp)) != 0U);
 
    sprintf(tmp, "%s%s.inf", zondir, zone->filename);
-   info = (file_exists(tmp) != 0u);
+   info = (static_cast<unsigned int>(file_exists(tmp)) != 0U);
 
    zone->creators.catnames(tmp);
 
@@ -289,7 +289,7 @@ static void stat_creators(unit_data *ch, char *arg)
    int               found;
    struct zone_type *z;
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("Requires name of creator.\n\r", ch);
       return;
@@ -304,7 +304,7 @@ static void stat_creators(unit_data *ch, char *arg)
       sprintf(b, "List of all Zones with Creators.\n\r\n\r");
       TAIL(b);
 
-      found = FALSE;
+      found = static_cast<int>(FALSE);
 
       for(z = zone_info.zone_list; z != nullptr; z = z->next)
       {
@@ -313,7 +313,7 @@ static void stat_creators(unit_data *ch, char *arg)
          sprintf(b, "%-15s   %s\n\r", z->name, tmp);
 
          TAIL(b);
-         found = TRUE;
+         found = static_cast<int>(TRUE);
       }
 
       page_string(CHAR_DESCRIPTOR(ch), buf);
@@ -323,14 +323,14 @@ static void stat_creators(unit_data *ch, char *arg)
    sprintf(b, "Zones Created by %s.\n\r\n\r", tmp);
    TAIL(b);
 
-   found = FALSE;
+   found = static_cast<int>(FALSE);
    for(z = zone_info.zone_list; z != nullptr; z = z->next)
    {
       if(z->creators.IsName(tmp) != nullptr)
       {
          sprintf(b, "%-15s   File: %s.zon\n\r", z->name, z->filename);
          TAIL(b);
-         found = TRUE;
+         found = static_cast<int>(TRUE);
       }
    }
 
@@ -483,7 +483,7 @@ static void extra_stat_zone(unit_data *ch, char *arg, struct zone_type *zone)
       case 5:
          /* Errors/Info (Small hack, this :-) ) */
          sprintf(filename, "%s%s.%.3s", zondir, zone->filename, zone_args[argno]);
-         if(file_exists(filename) == 0u)
+         if(static_cast<unsigned int>(file_exists(filename)) == 0U)
          {
             return;
          }
@@ -664,7 +664,7 @@ static void stat_affect(const unit_data *ch, unit_data *u)
    unit_affected_type *af;
    char                buf[1024];
 
-   if(!UNIT_AFFECTED(u))
+   if(UNIT_AFFECTED(u) == nullptr)
    {
       send_to_char("It is not affected by anything.\n\r", ch);
       return;
@@ -700,7 +700,7 @@ static void stat_func(const unit_data *ch, unit_data *u)
    char       buf2[512];
    unit_fptr *f;
 
-   if(!UNIT_FUNC(u))
+   if(UNIT_FUNC(u) == nullptr)
    {
       send_to_char("It has no special routines.\n\r", ch);
       return;
@@ -751,8 +751,9 @@ static void stat_normal(unit_data *ch, unit_data *u)
            "Inside_descr:\n\r\"%s\"\n\r",
 
            sprintbit(tmpbuf2, UNIT_TYPE(u), unit_status), UNIT_FI_NAME(u), UNIT_FI_ZONENAME(u),
-           UNIT_FILE_INDEX(u) ? UNIT_FILE_INDEX(u)->no_in_mem : -1, UNIT_FILE_INDEX(u) ? (unsigned long)UNIT_FILE_INDEX(u)->crc : 0,
-           tmpbuf1, STR(UNIT_TITLE_STRING(u)), STR(UNIT_OUT_DESCR_STRING(u)), STR(UNIT_IN_DESCR_STRING(u)));
+           UNIT_FILE_INDEX(u) != nullptr ? UNIT_FILE_INDEX(u)->no_in_mem : -1,
+           UNIT_FILE_INDEX(u) != nullptr ? (unsigned long)UNIT_FILE_INDEX(u)->crc : 0, tmpbuf1, STR(UNIT_TITLE_STRING(u)),
+           STR(UNIT_OUT_DESCR_STRING(u)), STR(UNIT_IN_DESCR_STRING(u)));
    send_to_char(buf, ch);
 
    sprintf(buf,
@@ -763,16 +764,17 @@ static void stat_normal(unit_data *ch, unit_data *u)
            "Flags: %s\n\r"
            "Hitpoints/max: [%ld/%ld]  Alignment: [%d]\n\r",
 
-           UNIT_LIGHTS(u), UNIT_BRIGHT(u), UNIT_ILLUM(u), UNIT_CHARS(u), UNIT_MINV(u), UNIT_IN(u) ? STR(TITLENAME(UNIT_IN(u))) : "Nothing",
-           UNIT_CONTAINS(u) ? "has contents" : "is empty", sprintbit(tmpbuf2, UNIT_MANIPULATE(u), unit_manipulate),
-           sprintbit(tmpbuf1, UNIT_FLAGS(u), unit_flags), (signed long)UNIT_HIT(u), (signed long)UNIT_MAX_HIT(u), UNIT_ALIGNMENT(u));
+           UNIT_LIGHTS(u), UNIT_BRIGHT(u), UNIT_ILLUM(u), UNIT_CHARS(u), UNIT_MINV(u),
+           UNIT_IN(u) != nullptr ? STR(TITLENAME(UNIT_IN(u))) : "Nothing", UNIT_CONTAINS(u) != nullptr ? "has contents" : "is empty",
+           sprintbit(tmpbuf2, UNIT_MANIPULATE(u), unit_manipulate), sprintbit(tmpbuf1, UNIT_FLAGS(u), unit_flags), (signed long)UNIT_HIT(u),
+           (signed long)UNIT_MAX_HIT(u), UNIT_ALIGNMENT(u));
    send_to_char(buf, ch);
 
    sprintf(buf,
            "Key name: [%s]  Open flags: %s\n\r"
            "Base weight : [%d] Weight : [%d] Capacity : [%d] Size [%d]\n\r",
 
-           UNIT_KEY(u) ? UNIT_FI_NAME(u) : "none", sprintbit(tmpbuf1, UNIT_OPEN_FLAGS(u), unit_open_flags), UNIT_BASE_WEIGHT(u),
+           UNIT_KEY(u) != nullptr ? UNIT_FI_NAME(u) : "none", sprintbit(tmpbuf1, UNIT_OPEN_FLAGS(u), unit_open_flags), UNIT_BASE_WEIGHT(u),
            UNIT_WEIGHT(u), UNIT_CAPACITY(u), UNIT_SIZE(u));
    send_to_char(buf, ch);
 }
@@ -992,10 +994,10 @@ static void stat_data(const unit_data *ch, unit_data *u)
               "STR [%d]  DEX [%d]  CON [%d]  CHA [%d]\n\r"
               "BRA [%d]  MAG [%d]  DIV [%d]  HP  [%d]\n\r",
 
-              CHAR_DESCRIPTOR(u) ? "Yes" : "No", CHAR_FIGHTING(u) ? STR(UNIT_NAME(CHAR_FIGHTING(u))) : "Nobody",
+              CHAR_DESCRIPTOR(u) != nullptr ? "Yes" : "No", CHAR_FIGHTING(u) ? STR(UNIT_NAME(CHAR_FIGHTING(u))) : "Nobody",
               CHAR_MASTER(u) ? STR(UNIT_NAME(CHAR_MASTER(u))) : "Nobody",
               CHAR_FOLLOWERS(u) ? STR(UNIT_NAME(CHAR_FOLLOWERS(u)->follower)) : "Nobody",
-              CHAR_LAST_ROOM(u) ? STR(UNIT_TITLE_STRING(CHAR_LAST_ROOM(u))) : "Nowhere", CHAR_LEVEL(u),
+              CHAR_LAST_ROOM(u) != nullptr ? STR(UNIT_TITLE_STRING(CHAR_LAST_ROOM(u))) : "Nowhere", CHAR_LEVEL(u),
               sprinttype(nullptr, CHAR_SEX(u), char_sex), sprinttype(nullptr, CHAR_POS(u), char_pos),
               IS_PC(u) ? sprinttype(nullptr, CHAR_RACE(u), pc_races) : itoa(CHAR_RACE(u)), char_carry_w_limit(u), char_carry_n_limit(u),
               sprintbit(tmpbuf1, CHAR_FLAGS(u), char_flags), (signed long)CHAR_EXP(u), CHAR_OFFENSIVE(u), CHAR_DEFENSIVE(u),
@@ -1069,17 +1071,17 @@ static void stat_data(const unit_data *ch, unit_data *u)
               "Magic resistance [%d]\n\rOutside Environment: %s\n\r",
 
               UNIT_TITLE_STRING(u), UNIT_FI_NAME(u), UNIT_FI_ZONENAME(u), sprinttype(nullptr, ROOM_LANDSCAPE(u), room_landscape),
-              ROOM_RESISTANCE(u), UNIT_IN(u) ? STR(TITLENAME(UNIT_IN(u))) : "Nothing");
+              ROOM_RESISTANCE(u), UNIT_IN(u) != nullptr ? STR(TITLENAME(UNIT_IN(u))) : "Nothing");
       send_to_char(buf, ch);
 
       for(i = 0; i < 6; i++)
       {
-         if(ROOM_EXIT(u, i))
+         if(ROOM_EXIT(u, i) != nullptr)
          {
             ROOM_EXIT(u, i)->open_name.catnames(tmpbuf1);
             sprintbit(tmpbuf2, ROOM_EXIT(u, i)->exit_info, unit_open_flags);
 
-            if(ROOM_EXIT(u, i)->to_room)
+            if(ROOM_EXIT(u, i)->to_room != nullptr)
             {
                sprintf(buf,
                        "EXIT %-5s to [%s@%s] (%s)\n\r"
@@ -1107,14 +1109,14 @@ static void stat_contents(const unit_data *ch, unit_data *u)
 {
    char buf[MAX_INPUT_LENGTH];
 
-   if(UNIT_CONTAINS(u))
+   if(UNIT_CONTAINS(u) != nullptr)
    {
       for(u = UNIT_CONTAINS(u); u != nullptr; u = u->next)
       {
          if(CHAR_LEVEL(ch) >= UNIT_MINV(u))
          {
             sprintf(buf, "[%s@%s] Name '%s', Title '%s'  %s\n\r", UNIT_FI_NAME(u), UNIT_FI_ZONENAME(u), UNIT_NAME(u), UNIT_TITLE_STRING(u),
-                    IS_OBJ(u) && OBJ_EQP_POS(u) ? "Equipped" : "");
+                    IS_OBJ(u) && (OBJ_EQP_POS(u) != 0u) ? "Equipped" : "");
             send_to_char(buf, ch);
          }
       }
@@ -1151,7 +1153,7 @@ void do_wstat(unit_data *ch, char *argument, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(argument) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
       send_to_char("Usage: See help wstat\n\r", ch);
       return;
@@ -1196,7 +1198,7 @@ void do_wstat(unit_data *ch, char *argument, const struct command_info *cmd)
    else if(strncmp("world", argument, 5) == 0)
    {
       argument += 5;
-      if(str_is_empty(argument) != 0u)
+      if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
       {
          stat_world(ch);
       }
@@ -1249,7 +1251,7 @@ void do_wstat(unit_data *ch, char *argument, const struct command_info *cmd)
 
    if(zone != nullptr)
    {
-      if(str_is_empty(argument) != 0u)
+      if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
       {
          stat_zone(ch, zone);
       }

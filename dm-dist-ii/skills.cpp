@@ -168,8 +168,10 @@ auto weight_size(int lbs) -> int
       return SIZ_TINY;
    }
    if(lbs <= 40)
+   {
       return SIZ_SMALL;
-   else if(lbs <= 160)
+   }
+   if(lbs <= 160)
       return SIZ_MEDIUM;
    else if(lbs <= 500)
       return SIZ_LARGE;
@@ -190,16 +192,16 @@ auto object_two_handed(unit_data *obj) -> int
    {
       if(wpn_info[OBJ_VALUE(obj, 0)].hands == 2)
       {
-         return TRUE;
+         return static_cast<int>(TRUE);
       }
    }
 
    if(IS_SET(OBJ_FLAGS(obj), OBJ_TWO_HANDS))
    {
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 auto chart_damage(int roll, struct damage_chart_element_type *element) -> int
@@ -316,19 +318,27 @@ auto weapon_defense_skill(unit_data *ch, int skill) -> int
    }
    /* a NPC */
    if(TREE_ISLEAF(wpn_tree, skill))
+   {
       skill = TREE_PARENT(wpn_tree, skill);
+   }
 
    if(TREE_ISROOT(wpn_tree, skill))
+   {
       max = NPC_WPN_SKILL(ch, skill);
+   }
    else
+   {
       max = NPC_WPN_SKILL(ch, skill) / 2;
+   }
 
    while(!TREE_ISROOT(wpn_tree, skill))
    {
       skill = TREE_PARENT(wpn_tree, skill);
 
       if(NPC_WPN_SKILL(ch, skill) > max)
+      {
          max = NPC_WPN_SKILL(ch, skill);
+      }
    }
 
    return max;
@@ -343,7 +353,9 @@ auto weapon_attack_skill(unit_data *ch, int skill) -> int
    }
 
    if(TREE_ISLEAF(wpn_tree, skill))
+   {
       skill = TREE_PARENT(wpn_tree, skill);
+   }
 
    return NPC_WPN_SKILL(ch, skill);
 }
@@ -395,7 +407,7 @@ static void race_read()
          str_lower(pTmp);
       }
 
-      if(pCh == nullptr || (str_is_empty(pCh) != 0u))
+      if(pCh == nullptr || (static_cast<unsigned int>(str_is_empty(pCh)) != 0U))
       {
          continue;
       }
@@ -403,7 +415,7 @@ static void race_read()
       if(strncmp(pTmp, "index", 5) == 0)
       {
          idx = atoi(pCh);
-         if((str_is_number(pCh) == 0u) || (is_in(idx, 0, PC_RACE_MAX - 1) == 0))
+         if((static_cast<unsigned int>(str_is_number(pCh)) == 0U) || (is_in(idx, 0, PC_RACE_MAX - 1) == 0))
          {
             slog(LOG_ALL, 0, "Race boot error: %s", pCh);
             idx = -1;
@@ -603,7 +615,7 @@ static void ability_read()
       str_lower(pTmp);
       strip_trailing_blanks(pTmp);
 
-      if(pCh == nullptr || (str_is_empty(pCh) != 0u))
+      if(pCh == nullptr || (static_cast<unsigned int>(str_is_empty(pCh)) != 0U))
       {
          continue;
       }
@@ -611,7 +623,7 @@ static void ability_read()
       if(strncmp(pTmp, "index", 5) == 0)
       {
          idx = atoi(pCh);
-         if((str_is_number(pCh) == 0u) || (is_in(idx, 0, ABIL_TREE_MAX - 1) == 0))
+         if((static_cast<unsigned int>(str_is_number(pCh)) == 0U) || (is_in(idx, 0, ABIL_TREE_MAX - 1) == 0))
          {
             slog(LOG_ALL, 0, "Ability boot error: %s", pCh);
             idx = -1;
@@ -667,7 +679,7 @@ static void ability_init()
    for(i = 0; i < ABIL_TREE_MAX; i++)
    {
       abil_tree[i].parent = i;
-      abil_tree[i].isleaf = TRUE;
+      abil_tree[i].isleaf = static_cast<uint8_t>(TRUE);
       abil_text[i]        = nullptr;
 
       for(int j = 0; j < PC_RACE_MAX; j++)
@@ -677,7 +689,7 @@ static void ability_init()
    }
 
    abil_tree[ABIL_TREE_MAX].parent = -1;
-   abil_tree[ABIL_TREE_MAX].isleaf = FALSE;
+   abil_tree[ABIL_TREE_MAX].isleaf = static_cast<uint8_t>(FALSE);
    abil_text[ABIL_TREE_MAX]        = nullptr;
 }
 
@@ -719,7 +731,7 @@ static void weapon_read()
       str_lower(pTmp);
       strip_trailing_blanks(pTmp);
 
-      if(pCh == nullptr || (str_is_empty(pCh) != 0u))
+      if(pCh == nullptr || (static_cast<unsigned int>(str_is_empty(pCh)) != 0U))
       {
          continue;
       }
@@ -727,7 +739,7 @@ static void weapon_read()
       if(strncmp(pTmp, "index", 5) == 0)
       {
          idx = atoi(pCh);
-         if((str_is_number(pCh) == 0u) || (is_in(idx, WPN_ROOT, WPN_TREE_MAX - 1) == 0))
+         if((static_cast<unsigned int>(str_is_number(pCh)) == 0U) || (is_in(idx, WPN_ROOT, WPN_TREE_MAX - 1) == 0))
          {
             slog(LOG_ALL, 0, "Weapon boot error: %s", pCh);
             idx = -1;
@@ -899,11 +911,11 @@ static void weapon_init()
 
       if(i < WPN_GROUP_MAX)
       {
-         wpn_tree[i].isleaf = FALSE;
+         wpn_tree[i].isleaf = static_cast<uint8_t>(FALSE);
       }
       else
       {
-         wpn_tree[i].isleaf = TRUE;
+         wpn_tree[i].isleaf = static_cast<uint8_t>(TRUE);
       }
 
       wpn_text[i] = nullptr;
@@ -916,7 +928,7 @@ static void weapon_init()
    }
 
    wpn_tree[WPN_TREE_MAX].parent = -1;
-   wpn_tree[WPN_TREE_MAX].isleaf = FALSE;
+   wpn_tree[WPN_TREE_MAX].isleaf = static_cast<uint8_t>(FALSE);
    wpn_text[WPN_TREE_MAX]        = nullptr;
 }
 
@@ -959,7 +971,7 @@ static void skill_read()
       str_lower(pTmp);
       strip_trailing_blanks(pTmp);
 
-      if(pCh == nullptr || (str_is_empty(pCh) != 0u))
+      if(pCh == nullptr || (static_cast<unsigned int>(str_is_empty(pCh)) != 0U))
       {
          continue;
       }
@@ -968,7 +980,7 @@ static void skill_read()
       {
          cmdptr = nullptr;
          idx    = atoi(pCh);
-         if((str_is_number(pCh) == 0u) || (is_in(idx, 0, SKI_TREE_MAX - 1) == 0))
+         if((static_cast<unsigned int>(str_is_number(pCh)) == 0U) || (is_in(idx, 0, SKI_TREE_MAX - 1) == 0))
          {
             slog(LOG_ALL, 0, "Skill boot error, no index: %s", pCh);
             idx = -1;
@@ -978,7 +990,7 @@ static void skill_read()
       if(strncmp(pTmp, "cmdindex", 8) == 0)
       {
          int cmdidx = atoi(pCh);
-         cmdptr     = NULL;
+         cmdptr     = nullptr;
 
          if(!str_is_number(pCh))
          {
@@ -988,7 +1000,7 @@ static void skill_read()
          {
             extern struct command_info cmd_info[];
 
-            for(int i = 0; *cmd_info[i].cmd_str; i++) // MS2020, missing *
+            for(int i = 0; *cmd_info[i].cmd_str != 0; i++) // MS2020, missing *
             {
                if(cmd_info[i].no == cmdidx)
                {
@@ -996,8 +1008,10 @@ static void skill_read()
                   break;
                }
             }
-            if(!cmdptr)
+            if(cmdptr == nullptr)
+            {
                slog(LOG_ALL, 0, "No interpreter equivalent for CMD_ %d.", cmdidx);
+            }
          }
          continue;
       }
@@ -1016,15 +1030,21 @@ static void skill_read()
          if(strncmp(pTmp, "race ", 5) == 0)
          {
             dummy = atoi(pCh);
-            if(!is_in(dummy, -3, +3))
+            if(is_in(dummy, -3, +3) == 0)
+            {
                continue;
+            }
 
             int ridx = search_block(pTmp + 5, pc_races, TRUE);
 
             if(ridx == -1)
+            {
                slog(LOG_ALL, 0, "Skills: Illegal race in: %s", pTmp);
+            }
             else
+            {
                racial_skills[idx][ridx] = dummy;
+            }
             continue;
          }
       }
@@ -1037,7 +1057,7 @@ static void skill_read()
 
       if(strncmp(pTmp, "command", 7) == 0)
       {
-         if((str_is_empty(pCh) == 0u) && strcmp(pCh, cmdptr->cmd_str) != 0)
+         if((static_cast<unsigned int>(str_is_empty(pCh)) == 0U) && strcmp(pCh, cmdptr->cmd_str) != 0)
          {
             cmdptr->cmd_str = str_dup(pCh);
          }
@@ -1046,28 +1066,36 @@ static void skill_read()
       if(strncmp(pTmp, "turns", 5) == 0)
       {
          dummy = atoi(pCh);
-         if(is_in(dummy, 1, 4 * PULSE_VIOLENCE))
+         if(is_in(dummy, 1, 4 * PULSE_VIOLENCE) != 0)
          {
             cmdptr->combat_speed  = dummy;
-            cmdptr->combat_buffer = TRUE;
+            cmdptr->combat_buffer = static_cast<uint8_t>(TRUE);
          }
       }
       else if(strncmp(pTmp, "minpos", 6) == 0)
       {
          dummy = atoi(pCh);
-         if(is_in(dummy, POSITION_DEAD, POSITION_STANDING))
+         if(is_in(dummy, POSITION_DEAD, POSITION_STANDING) != 0)
+         {
             cmdptr->minimum_position = dummy;
+         }
       }
       else if(strncmp(pTmp, "func", 4) == 0)
       {
-         if(cmdptr->tmpl)
+         if(cmdptr->tmpl != nullptr)
+         {
             free(cmdptr->tmpl);
+         }
 
-         if(!(cmdptr->tmpl = find_dil_template(pCh)))
+         if((cmdptr->tmpl = find_dil_template(pCh)) == nullptr)
+         {
             slog(LOG_ALL, 0, "No such DIL template %s.", pCh);
+         }
       }
       else
+      {
          slog(LOG_ALL, 0, "Skill boot unknown string: %s", pTmp);
+      }
    }
 
    fclose(fl);
@@ -1080,7 +1108,7 @@ static void skill_init()
    for(i = 0; i < SKI_TREE_MAX; i++)
    {
       ski_tree[i].parent = i;
-      ski_tree[i].isleaf = TRUE;
+      ski_tree[i].isleaf = static_cast<uint8_t>(TRUE);
 
       ski_text[i] = nullptr;
 
@@ -1092,7 +1120,7 @@ static void skill_init()
    }
 
    ski_tree[SKI_TREE_MAX].parent = -1;
-   ski_tree[SKI_TREE_MAX].isleaf = FALSE;
+   ski_tree[SKI_TREE_MAX].isleaf = static_cast<uint8_t>(FALSE);
    ski_text[SKI_TREE_MAX]        = nullptr;
 }
 

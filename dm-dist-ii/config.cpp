@@ -52,11 +52,11 @@ void ShowUsage(const char *name)
 CServerConfiguration::CServerConfiguration()
 {
    m_bAccounting   = 0;
-   m_bBBS          = FALSE;
-   m_bLawful       = FALSE;
-   m_bAliasShout   = TRUE;
-   m_bNoSpecials   = FALSE;
-   m_bBOB          = FALSE;
+   m_bBBS          = static_cast<int>(FALSE);
+   m_bLawful       = static_cast<int>(FALSE);
+   m_bAliasShout   = static_cast<int>(TRUE);
+   m_bNoSpecials   = static_cast<int>(FALSE);
+   m_bBOB          = static_cast<int>(FALSE);
    m_nShout        = 1;
    m_nRentModifier = 10;
    m_nMotherPort   = 4999;
@@ -83,7 +83,7 @@ auto CServerConfiguration::FromLAN(char *pFromHost) const -> int
    if(inet_aton(pFromHost, &sTmp) == 0)
    {
       slog(LOG_ALL, 0, "Localhost invalid.");
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    return static_cast<int>((m_sSubnetMask.s_addr & m_sLocalhost.s_addr) == (m_sSubnetMask.s_addr & sTmp.s_addr));
@@ -99,11 +99,11 @@ auto CServerConfiguration::ValidMplex(struct sockaddr_in *isa) -> int
    {
       if(isa->sin_addr.s_addr == m_aMplexHosts[i].s_addr)
       {
-         return TRUE;
+         return static_cast<int>(TRUE);
       }
    }
 
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 void CServerConfiguration::TripleColorFormat(struct SFightColorSet *pSet, char **ppList)
@@ -144,7 +144,7 @@ void CServerConfiguration::Boot()
 
    slog(LOG_OFF, 0, "Booting server.");
 
-   if(file_exists(str_cc(libdir, SERVER_CONFIG)) == 0u)
+   if(static_cast<unsigned int>(file_exists(str_cc(libdir, SERVER_CONFIG))) == 0U)
    {
       slog(LOG_ALL, 0, "No server configuration file.");
       return;

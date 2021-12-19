@@ -77,7 +77,7 @@ struct keyword_type
 } *eliza_keyword      = nullptr;
 int eliza_maxkeywords = 0;
 
-int eliza_booted = FALSE;
+int eliza_booted = static_cast<int>(FALSE);
 
 static char words[400];
 
@@ -147,7 +147,7 @@ auto match_templ(char *input, struct template_type *tem) -> char *
          {
             break;
          }
-         else if(isalnum(*tcp) != 0)
+         if(isalnum(*tcp) != 0)
          {
             return nullptr;
          }
@@ -160,7 +160,7 @@ auto match_templ(char *input, struct template_type *tem) -> char *
          {
             break;
          }
-         else if(isalnum(*tcp) != 0)
+         if(isalnum(*tcp) != 0)
          {
             return nullptr;
          }
@@ -186,10 +186,8 @@ auto match_templ(char *input, struct template_type *tem) -> char *
                {
                   break;
                }
-               else
-               {
-                  return nullptr;
-               }
+
+               return nullptr;
             }
 
             lp += strlen(tem->exp[i - 1]);
@@ -215,7 +213,7 @@ auto match_templ(char *input, struct template_type *tem) -> char *
                {
                   return nullptr;
                }
-               else if(isspace(*cp) == 0)
+               if(isspace(*cp) == 0)
                {
                   break;
                }
@@ -254,7 +252,7 @@ auto match_templ(char *input, struct template_type *tem) -> char *
    {
       return respons;
    }
-   return NULL;
+   return nullptr;
 }
 
 /*
@@ -680,7 +678,7 @@ auto oracle(struct spec_arg *sarg) -> int
 
    if(sarg->fptr->data == nullptr)
    {
-      if(eliza_booted == FALSE)
+      if(eliza_booted == static_cast<int>(FALSE))
       {
          eliza_boot();
          if(eliza_maxsubjects < 10)
@@ -688,7 +686,7 @@ auto oracle(struct spec_arg *sarg) -> int
             destroy_fptr(sarg->owner, sarg->fptr);
             return SFR_SHARE;
          }
-         eliza_booted = TRUE;
+         eliza_booted = static_cast<int>(TRUE);
       }
 
       CREATE(sarg->fptr->data, struct oracle_data, 1);
@@ -863,7 +861,7 @@ void eliza_get_template(char *buf, int subjno)
    tem = eliza_find_template(subjno);
    b   = buf;
 
-   for(; str_is_empty(b) == 0u;)
+   for(; static_cast<unsigned int>(str_is_empty(b)) == 0U;)
    {
       for(i = 0; b[i] != 0; i++)
       {
@@ -875,7 +873,7 @@ void eliza_get_template(char *buf, int subjno)
       }
       tmp[i] = 0;
 
-      if(str_is_empty(tmp) == 0u)
+      if(static_cast<unsigned int>(str_is_empty(tmp)) == 0U)
       {
          tem->exp = add_name(tmp, tem->exp);
       }

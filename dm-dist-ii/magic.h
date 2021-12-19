@@ -29,12 +29,12 @@
 
 auto dil_effect(const char *pStr, struct spell_args *sa) -> int;
 auto object_power(unit_data *unit) -> int;
-bool use_mana(unit_data *medium, int mana);
-bool cast_magic_now(unit_data *ch, int mana);
+auto use_mana(unit_data *medium, int mana) -> bool;
+auto cast_magic_now(unit_data *ch, int mana) -> bool;
 
-bool may_teleport_away(unit_data *unit);
-bool may_teleport_to(unit_data *unit, unit_data *dest);
-bool may_teleport(unit_data *unit, unit_data *dest);
+auto may_teleport_away(unit_data *unit) -> bool;
+auto may_teleport_to(unit_data *unit, unit_data *dest) -> bool;
+auto may_teleport(unit_data *unit, unit_data *dest) -> bool;
 
 auto spell_cast_check(unit_data *att, int spell) -> int;
 auto spell_resistance(unit_data *att, unit_data *def, int spell) -> int;

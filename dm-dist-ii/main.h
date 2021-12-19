@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : main.h                                    Part of Valhalla MUD *
  * Version: 1.05                                                           *
@@ -22,8 +23,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_MAIN_H
-#define _MUD_MAIN_H
+#include "descriptor_data.h"
 
 void event_enq(int when, void (*func)(void *, void *), void *arg1, void *arg2);
 void event_deenq(void (*func)(void *, void *), void *arg1, void *arg2);
@@ -55,5 +55,3 @@ extern char plydir[64];
 
 extern const char *compile_date;
 extern const char *compile_time;
-
-#endif

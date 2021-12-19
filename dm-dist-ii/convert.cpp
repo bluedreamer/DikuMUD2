@@ -65,7 +65,7 @@ uint8_t *ids              = nullptr; /* For checking duplicate players... */
 
 void convert_free_unit(unit_data *u)
 {
-   while(UNIT_CONTAINS(u))
+   while(UNIT_CONTAINS(u) != nullptr)
    {
       convert_free_unit(UNIT_CONTAINS(u));
    }
@@ -166,7 +166,7 @@ auto convert_item(unit_data *u, unit_data *pc, int bList) -> unit_data *
 #endif
 }
 
-void convert_inventory(unit_data *u, unit_data *pc, int bList = FALSE)
+void convert_inventory(unit_data *u, unit_data *pc, int bList = static_cast<int>(FALSE))
 {
    unit_data *bla;
 
@@ -191,7 +191,7 @@ void convert_inventory(unit_data *u, unit_data *pc, int bList = FALSE)
 
       unit_to_unit(bla, UNIT_IN(u));
 
-      while(UNIT_CONTAINS(u))
+      while(UNIT_CONTAINS(u) != nullptr)
       {
          tmpu = UNIT_CONTAINS(u);
          unit_from_unit(tmpu);
@@ -260,61 +260,61 @@ auto sanity_check(unit_data *u) -> int
 {
    void race_adjust(unit_data * ch);
 
-   if(g_nCorrupt == TRUE)
+   if(g_nCorrupt == static_cast<int>(TRUE))
    {
       printf("Corrupted unit in READ.");
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(PC_ID(u) >= top_id)
    {
       printf("Maximum ID exceeded!");
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(PC_ID(u) < 0)
    {
       printf("Illegal ID < 0!");
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if((UNIT_HIT(u) > 10000) || (UNIT_MAX_HIT(u) > 10000))
    {
       printf("Corrupted UNIT HITPOINTS");
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(!IS_PC(u))
    {
       printf("Not a player!");
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(PC_TIME(u).creation > time(nullptr))
    {
       printf("Corrupted creation time.");
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(PC_TIME(u).connect > time(nullptr))
    {
       printf("Corrupted connect time.");
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(CHAR_RACE(u) >= PC_RACE_MAX)
    {
       printf("Corrupted RACE");
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
-   if(!UNIT_CONTAINS(u) && (UNIT_WEIGHT(u) != UNIT_BASE_WEIGHT(u)))
+   if((UNIT_CONTAINS(u) == nullptr) && (UNIT_WEIGHT(u) != UNIT_BASE_WEIGHT(u)))
    {
       printf("Fixed illegal weight.");
       UNIT_WEIGHT(u) = UNIT_BASE_WEIGHT(u);
    }
 
-   return TRUE;
+   return static_cast<int>(TRUE);
 }
 
 auto shall_delete(unit_data *pc) -> int
@@ -326,46 +326,46 @@ auto shall_delete(unit_data *pc) -> int
    /* Player which have paid at some point in time remain almost permanent. */
    if(PC_ACCOUNT(pc).total_credit > 0)
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(days > 360)
    {
       printf("360 Days DEL");
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
    if(CHAR_LEVEL(pc) < START_LEVEL)
    {
       printf(" LVL 1/2 DEL");
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
    if((days > 14) && (CHAR_EXP(pc) <= required_xp(START_LEVEL)) && IS_MORTAL(pc))
    {
       printf(" 14 Days DEL (unplayed newbie)");
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
    if((days > 30) && (CHAR_LEVEL(pc) <= START_LEVEL + 1))
    {
       printf(" 30 Days DEL (+1 level)");
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
    if((days > 80) && (CHAR_LEVEL(pc) <= START_LEVEL + 3))
    {
       printf("80 Days DEL (+2 .. +3 levels)");
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
    if((days > 180) && (CHAR_LEVEL(pc) <= START_LEVEL + 8))
    {
       printf("180 Days DEL (+4 .. +8 levels)");
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 auto shall_exclude(const char *name) -> int
@@ -374,18 +374,17 @@ auto shall_exclude(const char *name) -> int
 
    auto _parse_name(const char *arg, char *name)->int;
 
-   if(static_cast<int>(_parse_name(name, buf)) == 0 == 0)
+   if(static_cast<int>(static_cast<int>(_parse_name(name, buf)) == 0) == 0)
    {
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 auto convert_load_player(char *name) -> unit_data *
 {
-   unit_data        *ch;
-   extern unit_data *destroy_room;
+   unit_data *ch;
 
    if(player_exists(name) == 0)
    {
@@ -466,7 +465,7 @@ void list()
       printf("Id [%4d]  Lvl [%3d]  %-3s (%3d days)", PC_ID(pc), CHAR_LEVEL(pc), IS_MORTAL(pc) ? "   " : (IS_GOD(pc) ? "GOD" : "DEM"),
              days_old(PC_TIME(pc).connect));
 
-      if(ids[PC_ID(pc)] != 0u)
+      if(ids[PC_ID(pc)] != 0U)
       {
          printf("Duplicate ID! (%ld)", (signed long)PC_ID(pc));
       }
@@ -490,10 +489,10 @@ void list()
       UNIT_CONTAINS(void_char) = nullptr;
       load_contents(player_name_list[i], void_char);
 
-      if(UNIT_CONTAINS(void_char))
+      if(UNIT_CONTAINS(void_char) != nullptr)
       {
          printf("  INV");
-         convert_inventory(UNIT_CONTAINS(void_char), pc, TRUE);
+         convert_inventory(UNIT_CONTAINS(void_char), pc, static_cast<int>(TRUE));
          free_inventory(UNIT_CONTAINS(void_char));
          if(days_old(PC_TIME(pc).connect) > 60)
          {
@@ -540,7 +539,7 @@ void convert_file()
          continue;
       }
 
-      if(ids[PC_ID(pc)] != 0u)
+      if(ids[PC_ID(pc)] != 0U)
       {
          printf("Duplicate ID! (%ld)", (signed long)PC_ID(pc));
       }
@@ -564,7 +563,7 @@ void convert_file()
 
       UNIT_CONTAINS(void_char) = nullptr;
       load_contents(player_name_list[i], void_char);
-      if(UNIT_CONTAINS(void_char))
+      if(UNIT_CONTAINS(void_char) != nullptr)
       {
          printf("  INV");
 
@@ -572,7 +571,7 @@ void convert_file()
          {
             convert_inventory(UNIT_CONTAINS(void_char), pc);
             assert(!is_destructed(DR_UNIT, void_char));
-            save_contents(player_name_list[i], void_char, FALSE, FALSE);
+            save_contents(player_name_list[i], void_char, static_cast<int>(FALSE), static_cast<int>(FALSE));
          }
          else
          {
@@ -626,7 +625,7 @@ void cleanup()
 
       UNIT_CONTAINS(void_char) = nullptr;
       load_contents(player_name_list[i], void_char);
-      if(UNIT_CONTAINS(void_char))
+      if(UNIT_CONTAINS(void_char) != nullptr)
       {
          printf("  INV");
          if(days_old(PC_TIME(pc).connect) > 60)

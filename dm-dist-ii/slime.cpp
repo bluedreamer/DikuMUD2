@@ -112,11 +112,11 @@ auto is_slimed(file_index_type *sp) -> int
    {
       if(slime_list[i] == sp)
       {
-         return TRUE;
+         return static_cast<int>(TRUE);
       }
    }
 
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 auto slime_obj(struct spec_arg *sarg) -> int
@@ -126,7 +126,7 @@ auto slime_obj(struct spec_arg *sarg) -> int
    char             fi_name[MAX_INPUT_LENGTH];
    file_index_type *fi;
 
-   if(is_command(sarg->cmd, "slime") == 0u)
+   if(static_cast<unsigned int>(is_command(sarg->cmd, "slime")) == 0U)
    {
       return SFR_SHARE;
    }
@@ -139,7 +139,7 @@ auto slime_obj(struct spec_arg *sarg) -> int
 
    sarg->arg = one_argument(sarg->arg, buf);
 
-   if(is_abbrev(buf, "list") != 0u)
+   if(static_cast<unsigned int>(is_abbrev(buf, "list")) != 0U)
    {
       int i;
       send_to_char("List of slimed units:\n\r", sarg->activator);
@@ -168,7 +168,7 @@ auto slime_obj(struct spec_arg *sarg) -> int
       return SFR_BLOCK;
    }
 
-   if(is_abbrev(buf, "add") != 0u)
+   if(static_cast<unsigned int>(is_abbrev(buf, "add")) != 0U)
    {
       if(is_slimed(fi) != 0)
       {
@@ -181,7 +181,7 @@ auto slime_obj(struct spec_arg *sarg) -> int
          send_to_char("Added.\n\r", sarg->activator);
       }
    }
-   else if(is_abbrev(buf, "remove") != 0u)
+   else if(static_cast<unsigned int>(is_abbrev(buf, "remove")) != 0U)
    {
       if(is_slimed(fi) == 0)
       {

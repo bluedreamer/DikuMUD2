@@ -22,6 +22,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "cCombatList.h"
 #include "comm.h"
 #include "fight.h"
 #include "interpreter.h"
@@ -29,7 +30,6 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
-#include "cCombatList.h"
 
 /* start one char fighting another (yes, it is horrible, I know... )  */
 void set_fighting(unit_data *ch, unit_data *vict, int bMelee)
@@ -61,7 +61,7 @@ void stop_fighting(unit_data *ch, unit_data *victim)
 {
    if(victim == nullptr) // Stop all combat...
    {
-      while(CHAR_COMBAT(ch))
+      while(CHAR_COMBAT(ch) != nullptr)
       {
          CHAR_COMBAT(ch)->subOpponent(CHAR_COMBAT(ch)->Opponent());
       }
@@ -95,7 +95,7 @@ void stat_combat(const unit_data *ch, unit_data *u)
 
    CombatList.status(ch);
 
-   if(!CHAR_COMBAT(u))
+   if(CHAR_COMBAT(u) == nullptr)
    {
       act("No combat structure on '$2n'", A_ALWAYS, ch, u, nullptr, TO_CHAR);
    }

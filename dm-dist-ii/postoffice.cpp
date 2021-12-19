@@ -110,7 +110,7 @@ auto find_free_index() -> int16_t
    }
 
    mailfile_info[top_of_mailfile].handle = BLK_NULL;
-   mailfile_info[top_of_mailfile].loaded = FALSE;
+   mailfile_info[top_of_mailfile].loaded = static_cast<uint8_t>(FALSE);
 
    top_of_mailfile++;
 
@@ -146,7 +146,7 @@ auto read_mail(int16_t index) -> char *
 
    assert(mailfile_info[index].handle != BLK_NULL);
 
-   mailfile_info[index].loaded = TRUE;
+   mailfile_info[index].loaded = static_cast<uint8_t>(TRUE);
    msg                         = (char *)blk_read(mbf, mailfile_info[index].handle, nullptr);
 
    return msg;
@@ -173,7 +173,7 @@ void mail_mail(int receipient, char *rcv_name, unit_data *sender, const char *st
 
    index = find_free_index();
 
-   mailfile_info[index].loaded     = FALSE;
+   mailfile_info[index].loaded     = static_cast<uint8_t>(FALSE);
    mailfile_info[index].date       = time(nullptr);
    mailfile_info[index].receipient = receipient;
    mailfile_info[index].sender     = PC_ID(sender);
@@ -209,7 +209,7 @@ auto player_next_mail(unit_data *ch, int16_t index) -> int16_t
 
    for(i = index; i < top_of_mailfile; i++)
    {
-      if((mailfile_info[i].handle != BLK_NULL) && (mailfile_info[i].loaded == 0u) && (mailfile_info[i].receipient == PC_ID(ch)))
+      if((mailfile_info[i].handle != BLK_NULL) && (mailfile_info[i].loaded == 0U) && (mailfile_info[i].receipient == PC_ID(ch)))
       {
          return i;
       }
@@ -301,7 +301,7 @@ auto eat_and_delete(struct spec_arg *sarg) -> int
    if(sarg->cmd->no == CMD_AUTO_EXTRACT)
    {
       index                       = *((int16_t *)sarg->fptr->data);
-      mailfile_info[index].loaded = FALSE;
+      mailfile_info[index].loaded = static_cast<uint8_t>(FALSE);
    }
 
    return SFR_SHARE;
@@ -353,7 +353,7 @@ auto postman(struct spec_arg *sarg) -> int
       }
 
       exd = unit_find_extra(UNIT_NAME(letter), letter);
-      if((exd == nullptr) || (str_is_empty(exd->descr.String()) != 0u))
+      if((exd == nullptr) || (static_cast<unsigned int>(str_is_empty(exd->descr.String())) != 0U))
       {
          act("$1n says, 'How stupid of you $3n, the note is empty!", A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_ROOM);
          return SFR_BLOCK;
@@ -361,7 +361,7 @@ auto postman(struct spec_arg *sarg) -> int
 
       one_argument(arg, tmpname);
 
-      if(str_is_empty(tmpname) != 0u)
+      if(static_cast<unsigned int>(str_is_empty(tmpname)) != 0U)
       {
          act("$1n says, 'You must say who the letter should be sent to!'", A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_ROOM);
          return SFR_BLOCK;
@@ -378,7 +378,7 @@ auto postman(struct spec_arg *sarg) -> int
 
       act("$3n gives $1n a letter.", A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_NOTVICT);
 
-      if(char_can_afford(sarg->activator, postage, currency) == 0u)
+      if(static_cast<unsigned int>(char_can_afford(sarg->activator, postage, currency)) == 0U)
       {
          act("$1n says, '$3n - even though you dont have any money for "
              "postage I'll send it anyway.'",
@@ -411,8 +411,8 @@ auto postman(struct spec_arg *sarg) -> int
    /* Request Mail */
    if((index = player_next_mail(sarg->activator, 0)) < 0)
    {
-      act("$1n says, 'No mail for you today $3n.'", A_SOMEONE, sarg->owner, 0, sarg->activator,
-          UNIT_MINV(sarg->activator) ? TO_VICT : TO_ROOM);
+      act("$1n says, 'No mail for you today $3n.'", A_SOMEONE, sarg->owner, nullptr, sarg->activator,
+          UNIT_MINV(sarg->activator) != 0u ? TO_VICT : TO_ROOM);
       return SFR_BLOCK;
    }
 
@@ -423,11 +423,13 @@ auto postman(struct spec_arg *sarg) -> int
       unit_to_unit(letter, sarg->activator);
       b = read_mail(index);
 
-      if(b == NULL)
-         UNIT_EXTRA_DESCR(letter) = UNIT_EXTRA_DESCR(letter)->add((char *)NULL, "DESTROYED BY MAILBOX ERROR!");
+      if(b == nullptr)
+      {
+         UNIT_EXTRA_DESCR(letter) = UNIT_EXTRA_DESCR(letter)->add((char *)nullptr, "DESTROYED BY MAILBOX ERROR!");
+      }
       else
       {
-         UNIT_EXTRA_DESCR(letter) = UNIT_EXTRA_DESCR(letter)->add((char *)NULL, b);
+         UNIT_EXTRA_DESCR(letter) = UNIT_EXTRA_DESCR(letter)->add((char *)nullptr, b);
          free(b);
       }
 
@@ -436,8 +438,8 @@ auto postman(struct spec_arg *sarg) -> int
       create_fptr(letter, SFUN_EAT_AND_DELETE, 0, SFB_CMD, tmp);
    } while((index = player_next_mail(sarg->activator, index + 1)) >= 0);
 
-   act("$1n gives you your mail.", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_VICT);
-   act("$1n gives $3n $3s mail.", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_NOTVICT);
+   act("$1n gives you your mail.", A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_VICT);
+   act("$1n gives $3n $3s mail.", A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_NOTVICT);
 
    return SFR_BLOCK;
 }

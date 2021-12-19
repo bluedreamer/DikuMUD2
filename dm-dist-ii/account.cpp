@@ -298,30 +298,31 @@ static auto tm_less_than(tm *b, tm *e) -> int
 {
    if(b->tm_wday != e->tm_wday)
    {
-      return TRUE;
+      return static_cast<int>(TRUE);
    }
 
    if(b->tm_hour > e->tm_hour)
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(b->tm_hour == e->tm_hour)
    {
       if(b->tm_min > e->tm_min)
       {
-         return FALSE;
+         return static_cast<int>(FALSE);
       }
       if(b->tm_min == e->tm_min)
       {
          if(b->tm_sec > e->tm_sec)
-            return FALSE;
-         else
-            return TRUE;
+         {
+            return static_cast<int>(FALSE);
+         }
+         return static_cast<int>(TRUE);
       }
    }
 
-   return TRUE;
+   return static_cast<int>(TRUE);
 }
 
 static void account_calc(unit_data *pc, tm *b, tm *e)
@@ -440,13 +441,13 @@ auto account_is_overdue(const unit_data *ch) -> int
    {
       if(PC_ACCOUNT(ch).flatrate > (uint32_t)time(nullptr))
       {
-         return FALSE;
+         return static_cast<int>(FALSE);
       }
 
       return static_cast<int>(PC_ACCOUNT(ch).credit < 0.0);
    }
 
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 static void account_status(const unit_data *ch)
@@ -538,7 +539,7 @@ auto account_is_closed(unit_data *ch) -> int
    {
       if(PC_ACCOUNT(ch).flatrate > (uint32_t)time(nullptr))
       {
-         return FALSE;
+         return static_cast<int>(FALSE);
       }
 
       i = (int)PC_ACCOUNT(ch).credit;
@@ -547,7 +548,7 @@ auto account_is_closed(unit_data *ch) -> int
       return static_cast<int>(i < -j);
    }
 
-   return FALSE;
+   return static_cast<int>(FALSE);
 }
 
 void account_insert(unit_data *god, unit_data *whom, uint32_t amount)
@@ -637,7 +638,7 @@ void do_account(unit_data *ch, char *arg, const command_info *cmd)
       return;
    }
 
-   if((str_is_empty(arg) != 0u) || !IS_ADMINISTRATOR(ch))
+   if((static_cast<unsigned int>(str_is_empty(arg)) != 0U) || !IS_ADMINISTRATOR(ch))
    {
       account_status(ch);
       return;
@@ -787,11 +788,11 @@ void do_account(unit_data *ch, char *arg, const command_info *cmd)
          }
 
          c = str_next_word(c, word);
-         if(is_abbrev(word, "add") != 0u)
+         if(static_cast<unsigned int>(is_abbrev(word, "add")) != 0U)
          {
             ;
          }
-         else if(is_abbrev(word, "remove") != 0u)
+         else if(static_cast<unsigned int>(is_abbrev(word, "remove")) != 0U)
          {
             amount = -amount;
          }
@@ -914,7 +915,7 @@ auto flatrate_sanity(int *numlist, int numlen) -> int
 {
    if(numlist == nullptr)
    {
-      return FALSE;
+      return static_cast<int>(FALSE);
    }
 
    if(numlen != 2)
@@ -935,5 +936,5 @@ auto flatrate_sanity(int *numlist, int numlen) -> int
       exit(0);
    }
 
-   return TRUE;
+   return static_cast<int>(TRUE);
 }

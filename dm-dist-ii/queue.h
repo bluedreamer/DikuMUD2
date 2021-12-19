@@ -31,8 +31,8 @@ class cQueueElem
    friend class cQueue;
 
 public:
-   cQueueElem(char *c, int bCopy = TRUE);
-   cQueueElem(uint8_t *d, uint32_t n, int bCopy = TRUE);
+   cQueueElem(char *c, int bCopy = static_cast<int>(TRUE));
+   cQueueElem(uint8_t *d, uint32_t n, int bCopy = static_cast<int>(TRUE));
    ~cQueueElem()
    {
       if(pData != nullptr)
@@ -41,7 +41,7 @@ public:
       }
    }
 
-   auto Bytes() -> uint32_t const { return nSize; }
+   auto Bytes() const -> uint32_t const { return nSize; }
    auto Data() -> uint8_t * { return pData; }
    void SetNull()
    {

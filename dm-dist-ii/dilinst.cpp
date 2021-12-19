@@ -101,12 +101,12 @@ void dilfi_foe(struct dilprg *p, class dilval *v)
       {
          if(p->sp->secure[i].lab == nullptr)
          {
-            dil_sub_secure(p->sp, p->sp->secure[i].sup, TRUE);
+            dil_sub_secure(p->sp, p->sp->secure[i].sup, static_cast<int>(TRUE));
             i--; // Shit
          }
       }
 
-      if(UNIT_IN(p->sarg->owner))
+      if(UNIT_IN(p->sarg->owner) != nullptr)
       {
          scan4_unit(p->sarg->owner, v1.val.num);
       }
@@ -167,7 +167,7 @@ void dilfi_fon(struct dilprg *p, class dilval *v)
    else
    {
       /* assign variable the new value */
-      dil_sub_secure(p->sp, u, TRUE);
+      dil_sub_secure(p->sp, u, static_cast<int>(TRUE));
       *((unit_data **)v1.ref) = u;
    }
 }
@@ -330,7 +330,7 @@ void dilfi_chas(struct dilprg *p, class dilval *v)
       return;
    }
 
-   if((v1.val.ptr != nullptr) && IS_CHAR((unit_data *)v1.val.ptr) && CHAR_COMBAT((unit_data *)v1.val.ptr))
+   if((v1.val.ptr != nullptr) && IS_CHAR((unit_data *)v1.val.ptr) && (CHAR_COMBAT((unit_data *)v1.val.ptr) != nullptr))
    {
       CHAR_COMBAT((unit_data *)v1.val.ptr)->changeSpeed(v2.val.num);
    }
@@ -361,11 +361,11 @@ void dilfi_setf(struct dilprg *p, class dilval *v)
    {
       if(CHAR_FIGHTING((unit_data *)v1.val.ptr))
       {
-         set_fighting((unit_data *)v1.val.ptr, (unit_data *)v2.val.ptr, FALSE);
+         set_fighting((unit_data *)v1.val.ptr, (unit_data *)v2.val.ptr, static_cast<int>(FALSE));
       }
       else
       {
-         set_fighting((unit_data *)v1.val.ptr, (unit_data *)v2.val.ptr, TRUE);
+         set_fighting((unit_data *)v1.val.ptr, (unit_data *)v2.val.ptr, static_cast<int>(TRUE));
       }
    }
 }
@@ -523,7 +523,7 @@ void dil_push_frame(struct dilprg *p, struct diltemplate *rtmpl, class dilval *a
 
    frm->intrcount = rtmpl->intrcount;
 
-   if(rtmpl->intrcount != 0u)
+   if(rtmpl->intrcount != 0U)
    {
       CREATE(frm->intr, struct dilintr, rtmpl->intrcount);
    }
@@ -532,7 +532,7 @@ void dil_push_frame(struct dilprg *p, struct diltemplate *rtmpl, class dilval *a
       frm->intr = nullptr;
    }
 
-   if(rtmpl->varc != 0u)
+   if(rtmpl->varc != 0U)
    {
       CREATE(frm->vars, struct dilvar, rtmpl->varc);
 
@@ -1195,7 +1195,7 @@ void dilfi_lnk(struct dilprg *p, class dilval *v)
 
    if((v1.val.ptr != nullptr) && (v2.val.ptr != nullptr))
    {
-      if(IS_OBJ((unit_data *)v1.val.ptr) && OBJ_EQP_POS((unit_data *)v1.val.ptr))
+      if(IS_OBJ((unit_data *)v1.val.ptr) && (OBJ_EQP_POS((unit_data *)v1.val.ptr) != 0u))
       {
          unequip_object((unit_data *)v1.val.ptr);
       }
@@ -2307,7 +2307,7 @@ void dilfi_sntadil(struct dilprg *p, class dilval *v)
       return;
    }
 
-   if((v1.val.ptr != nullptr) && (str_is_empty((char *)v2.val.ptr) == 0u))
+   if((v1.val.ptr != nullptr) && (static_cast<unsigned int>(str_is_empty((char *)v2.val.ptr)) == 0U))
    {
       struct diltemplate *tmpl;
 
@@ -2471,7 +2471,7 @@ void dilfi_eqp(struct dilprg *p, class dilval *v)
       return;
    }
 
-   if((v1.val.ptr != nullptr) && UNIT_IN((unit_data *)v1.val.ptr) && IS_CHAR(UNIT_IN((unit_data *)v1.val.ptr)) &&
+   if((v1.val.ptr != nullptr) && (UNIT_IN((unit_data *)v1.val.ptr) != nullptr) && IS_CHAR(UNIT_IN((unit_data *)v1.val.ptr)) &&
       IS_OBJ((unit_data *)v1.val.ptr) && (equipment(UNIT_IN((unit_data *)v1.val.ptr), v2.val.num) == nullptr))
    {
       /* Then equip char */
@@ -2500,7 +2500,7 @@ void dilfi_ueq(struct dilprg *p, class dilval *v)
       return;
    }
 
-   if((v1.val.ptr != nullptr) && IS_OBJ((unit_data *)v1.val.ptr) && OBJ_EQP_POS((unit_data *)v1.val.ptr))
+   if((v1.val.ptr != nullptr) && IS_OBJ((unit_data *)v1.val.ptr) && (OBJ_EQP_POS((unit_data *)v1.val.ptr) != 0u))
    {
       unequip_object((unit_data *)v1.val.ptr);
    }
@@ -2571,9 +2571,9 @@ void dilfi_cast(struct dilprg *p, class dilval *v)
    class dilval v2;
    class dilval v3;
    class dilval v4;
-   unit_data   *caster = NULL;
-   unit_data   *medium = NULL;
-   unit_data   *target = NULL;
+   unit_data   *caster = nullptr;
+   unit_data   *medium = nullptr;
+   unit_data   *target = nullptr;
 
    if(v != nullptr)
    {

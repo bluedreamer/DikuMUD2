@@ -197,7 +197,7 @@ auto bread_diltemplate(CByteBuffer *pBuf) -> struct diltemplate *
    pBuf->Read8(&tmpl->rtnt);
    pBuf->Read8(&tmpl->argc);
 
-   if(tmpl->argc != 0u)
+   if(tmpl->argc != 0U)
    {
       CREATE(tmpl->argt, uint8_t, tmpl->argc);
 
@@ -215,7 +215,7 @@ auto bread_diltemplate(CByteBuffer *pBuf) -> struct diltemplate *
 
    pBuf->Read16(&tmpl->varc); /* number of variables */
 
-   if(tmpl->varc != 0u)
+   if(tmpl->varc != 0U)
    {
       CREATE(tmpl->vart, uint8_t, tmpl->varc);
 
@@ -231,7 +231,7 @@ auto bread_diltemplate(CByteBuffer *pBuf) -> struct diltemplate *
 
    pBuf->Read16(&tmpl->xrefcount);
 
-   if(tmpl->xrefcount != 0u)
+   if(tmpl->xrefcount != 0U)
    {
       CREATE(tmpl->xrefs, struct dilxref, tmpl->xrefcount);
 
@@ -242,7 +242,7 @@ auto bread_diltemplate(CByteBuffer *pBuf) -> struct diltemplate *
          pBuf->Read8(&tmpl->xrefs[i].rtnt);
          pBuf->Read8(&tmpl->xrefs[i].argc);
 
-         if(tmpl->xrefs[i].argc != 0u)
+         if(tmpl->xrefs[i].argc != 0U)
          {
             CREATE(tmpl->xrefs[i].argt, uint8_t, tmpl->xrefs[i].argc);
             for(j = 0; j < tmpl->xrefs[i].argc; j++)
@@ -264,7 +264,7 @@ auto bread_diltemplate(CByteBuffer *pBuf) -> struct diltemplate *
 #ifdef DMSERVER
    /* Resolve the external references runtime */
 
-   if(tmpl->xrefcount != 0u)
+   if(tmpl->xrefcount != 0U)
    {
       CREATE(tmpl->extprg, struct diltemplate *, tmpl->xrefcount);
    }
@@ -331,7 +331,7 @@ void bread_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
    /* read interrupts */
    pBuf->Read16(&prg->stack[0].intrcount);
 
-   if(prg->stack[0].intrcount != 0u)
+   if(prg->stack[0].intrcount != 0U)
    {
       CREATE(prg->stack[0].intr, struct dilintr, prg->stack[0].intrcount);
 
@@ -562,7 +562,7 @@ auto bread_dil(CByteBuffer *pBuf, unit_data *owner, uint8_t version, unit_fptr *
          free(prg->sp->vars);
       }
 
-      if(tmpl->varc != 0u)
+      if(tmpl->varc != 0U)
       {
          CREATE(prg->sp->vars, struct dilvar, tmpl->varc);
       }
@@ -590,7 +590,7 @@ auto bread_dil(CByteBuffer *pBuf, unit_data *owner, uint8_t version, unit_fptr *
          free(prg->sp->intr);
       }
 
-      if(tmpl->intrcount != 0u)
+      if(tmpl->intrcount != 0U)
       {
          CREATE(prg->sp->intr, struct dilintr, tmpl->intrcount);
       }
@@ -624,7 +624,7 @@ auto bread_dil(CByteBuffer *pBuf, unit_data *owner, uint8_t version, unit_fptr *
          free(prg->sp->intr);
       }
 
-      if(tmpl->intrcount != 0u)
+      if(tmpl->intrcount != 0U)
       {
          CREATE(prg->sp->intr, struct dilintr, tmpl->intrcount);
       }
@@ -681,12 +681,12 @@ auto bread_func(CByteBuffer *pBuf, uint8_t version, unit_data *owner) -> unit_fp
       if(fptr->index > SFUN_TOP_IDX)
       {
          slog(LOG_ALL, 0, "Illegal func index in bread_func index - corrupt.");
-         g_nCorrupt = TRUE;
+         g_nCorrupt = static_cast<int>(TRUE);
          return nullptr;
       }
 
       g_nCorrupt += pBuf->Read16(&fptr->heart_beat);
-      if(((fptr->heart_beat) != 0u) && (fptr->heart_beat < WAIT_SEC))
+      if(((fptr->heart_beat) != 0U) && (fptr->heart_beat < WAIT_SEC))
       {
          slog(LOG_ALL, 0, "WARNING: HEARTBEAT LOW (%d)\n", fptr->heart_beat);
       }
@@ -1008,7 +1008,7 @@ void bwrite_func(CByteBuffer *pBuf, unit_fptr *fptr)
       i++;
       pBuf->Append16(fptr->index);
 
-      if((fptr->heart_beat != 0u) && fptr->heart_beat < WAIT_SEC)
+      if((fptr->heart_beat != 0U) && fptr->heart_beat < WAIT_SEC)
       {
          slog(LOG_ALL, 0, "WARNING: HEARTBEAT LOW (%d)\n", fptr->heart_beat);
       }
@@ -1137,7 +1137,7 @@ auto write_unit_string(CByteBuffer *pBuf, unit_data *u) -> int
       {
          inu = CHAR_LAST_ROOM(u);
       }
-      else if(UNIT_IN(u))
+      else if(UNIT_IN(u) != nullptr)
       {
 #ifdef DMSERVER
          inu = unit_room(u);
@@ -1146,7 +1146,7 @@ auto write_unit_string(CByteBuffer *pBuf, unit_data *u) -> int
 #endif
       }
 
-      if((inu != nullptr) && UNIT_FILE_INDEX(inu))
+      if((inu != nullptr) && (UNIT_FILE_INDEX(inu) != nullptr))
       {
          pBuf->AppendString(UNIT_FI_ZONENAME(inu));
          pBuf->AppendString(UNIT_FI_NAME(inu));
@@ -1317,14 +1317,14 @@ auto write_unit_string(CByteBuffer *pBuf, unit_data *u) -> int
             const char *c1 = "";
             const char *c2 = "";
 
-            if(ROOM_EXIT(u, i) && ROOM_EXIT(u, i)->to_room)
+            if((ROOM_EXIT(u, i) != nullptr) && (ROOM_EXIT(u, i)->to_room != nullptr))
             {
                c1 = (char *)ROOM_EXIT(u, i)->to_room;
                c2 = c1;
                TAIL(c2);
                c2++;
             }
-            if(ROOM_EXIT(u, i) && (*c1 != 0) && (*c2 != 0))
+            if((ROOM_EXIT(u, i) != nullptr) && (*c1 != 0) && (*c2 != 0))
             {
                pBuf->AppendDoubleString((char *)ROOM_EXIT(u, i)->to_room);
                ROOM_EXIT(u, i)->open_name.AppendBuffer(pBuf);

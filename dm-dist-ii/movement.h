@@ -73,4 +73,4 @@ struct visit_data
 void npc_set_visit(unit_data *npc, unit_data *dest_room, int what_now(const unit_data *, struct visit_data *), void *data,
                    int non_tick_return);
 
-auto do_advanced_move(unit_data *ch, int direction, int following = FALSE) -> int;
+auto do_advanced_move(unit_data *ch, int direction, int following = static_cast<int>(FALSE)) -> int;

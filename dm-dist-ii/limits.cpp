@@ -125,8 +125,10 @@ auto age_graph(int age, int lifespan, int p0, int p1, int p2, int p3, int p4, in
       return (int)(p0 + (((age) * (p1 - p0)) / step));
    }
    if(age <= 2 * step)
+   {
       return (int)(p1 + (((age - step) * (p2 - p1)) / step));
-   else if(age <= 3 * step)
+   }
+   if(age <= 3 * step)
       return (int)(p2 + (((age - 2 * step) * (p3 - p2)) / step));
    else if(age <= 4 * step)
       return (int)(p3 + (((age - 3 * step) * (p4 - p3)) / step));
@@ -543,7 +545,7 @@ void food_update()
    {
       next_dude = u->gnext;
 
-      if(IS_PC(u) && CHAR_DESCRIPTOR(u))
+      if(IS_PC(u) && (CHAR_DESCRIPTOR(u) != nullptr))
       {
          unit_data *tu = u;
 

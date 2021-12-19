@@ -124,7 +124,7 @@ auto cMultiHook::Read() -> int
             a connection_close to the mplex'er */
          if(d != nullptr)
          {
-            descriptor_close(d, FALSE);
+            descriptor_close(d, static_cast<int>(FALSE));
          }
          if(data != nullptr)
          {
@@ -158,7 +158,7 @@ auto cMultiHook::Read() -> int
       case MULTI_TEXT_CHAR:
          if(d != nullptr)
          {
-            d->qInput.Append(new cQueueElem(data, FALSE));
+            d->qInput.Append(new cQueueElem(data, static_cast<int>(FALSE)));
          }
          /* Kept in queue */
          break;

@@ -239,7 +239,7 @@ void blk_delete(BLK_FILE *bf, blk_handle index)
       error(HERE, "%s: Cache open.", bf->name);
    }
 
-   first = TRUE;
+   first = static_cast<int>(TRUE);
 
    do
    {
@@ -268,7 +268,7 @@ void blk_delete(BLK_FILE *bf, blk_handle index)
             return;
          }
          next_block = (blk_handle)bread_uint16_t(&b);
-         first      = FALSE;
+         first      = static_cast<int>(FALSE);
       }
 
       b = (uint8_t *)bf->buf;
@@ -294,8 +294,8 @@ void blk_delete(BLK_FILE *bf, blk_handle index)
 auto blk_read(BLK_FILE *bf, blk_handle index, blk_length *blen) -> void *
 {
    void      *blk_ptr;
-   void      *data  = 0;
-   void      *odata = 0;
+   void      *data  = nullptr;
+   void      *odata = nullptr;
    blk_handle next_block;
    blk_handle oindex;
    blk_length len = 0;

@@ -2,9 +2,9 @@
 #include "cCombatList.h"
 #include "comm.h"
 #include "fight.h"
+#include "utility.h"
 #include "utils.h"
 #include "values.h"
-#include "utility.h"
 
 cCombat::cCombat(unit_data *owner, int bMelee)
 {
@@ -100,7 +100,7 @@ void cCombat::add(unit_data *victim)
 
 void cCombat::sub(int idx)
 {
-   int bWas = FALSE;
+   int bWas = static_cast<int>(FALSE);
 
    if(idx == -1)
    {
@@ -116,7 +116,7 @@ void cCombat::sub(int idx)
    if(pOpponents[idx] == pMelee)
    {
       pMelee = nullptr;
-      bWas   = TRUE;
+      bWas   = static_cast<int>(TRUE);
    }
 
    if(nNoOpponents - idx > 1)
@@ -147,7 +147,7 @@ void cCombat::setMelee(unit_data *victim)
 // Add another opponent. A very important feature is, that opponents
 // always exists as pairs and if one is removed so is the other.
 //
-void cCombat::addOpponent(unit_data *victim, int bMelee = FALSE)
+void cCombat::addOpponent(unit_data *victim, int bMelee = static_cast<int>(FALSE))
 {
    // This if is needed since we call recursively for the victim
 
@@ -155,7 +155,7 @@ void cCombat::addOpponent(unit_data *victim, int bMelee = FALSE)
    {
       add(victim);
 
-      if(!CHAR_COMBAT(victim))
+      if(CHAR_COMBAT(victim) == nullptr)
       {
          CHAR_COMBAT(victim) = new cCombat(victim, bMelee);
       }

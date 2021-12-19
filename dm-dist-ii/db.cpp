@@ -88,7 +88,7 @@ void generate_bin_arrays()
    /* Generate array for file indexes for each zone */
    for(z = zone_info.zone_list; z != nullptr; z = z->next)
    {
-      if(z->no_of_fi != 0u)
+      if(z->no_of_fi != 0U)
       {
          CREATE(z->ba, struct bin_search_type, z->no_of_fi);
          for(fi = z->fi, i = 0; fi != nullptr; fi = fi->next, i++)
@@ -98,7 +98,7 @@ void generate_bin_arrays()
          }
       }
 
-      if(z->no_tmpl != 0u)
+      if(z->no_tmpl != 0U)
       {
          struct diltemplate *tmpl;
 
@@ -187,7 +187,7 @@ auto generate_templates(FILE *f, struct zone_type *zone) -> struct diltemplate *
       error(HERE, "Failed to fread() tmplsize");
    }
 
-   while((tmplsize != 0u) && (feof(f) == 0))
+   while((tmplsize != 0U) && (feof(f) == 0))
    {
       Buf.FileRead(f, tmplsize);
 
@@ -380,7 +380,7 @@ void generate_zone_indexes()
 
       c = str_next_word_copy(buf, zone);
 
-      if(str_is_empty(zone) != 0u)
+      if(static_cast<unsigned int>(str_is_empty(zone)) != 0U)
       {
          break;
       }
@@ -396,7 +396,7 @@ void generate_zone_indexes()
       /* Read priority level */
       c = str_next_word_copy(c, tmpbuf);
 
-      if(str_is_number(tmpbuf) != 0u)
+      if(static_cast<unsigned int>(str_is_number(tmpbuf)) != 0U)
       {
          access = atoi(tmpbuf);
       }
@@ -408,7 +408,7 @@ void generate_zone_indexes()
       /* Read load level */
       c = str_next_word_copy(c, tmpbuf);
 
-      if(str_is_number(tmpbuf) != 0u)
+      if(static_cast<unsigned int>(str_is_number(tmpbuf)) != 0U)
       {
          loadlevel = MAX(200, atoi(tmpbuf));
       }
@@ -420,13 +420,13 @@ void generate_zone_indexes()
       /* Read pay only */
       c = str_next_word_copy(c, tmpbuf);
 
-      if(str_is_number(tmpbuf) != 0u)
+      if(static_cast<unsigned int>(str_is_number(tmpbuf)) != 0U)
       {
          payonly = atoi(tmpbuf);
       }
       else
       {
-         payonly = FALSE;
+         payonly = static_cast<uint8_t>(FALSE);
       }
 
       if((f = fopen_cache(filename, "rb")) == nullptr)
@@ -698,7 +698,7 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
 
    if(type != UNIT_ST_NPC && type != UNIT_ST_PC && type != UNIT_ST_ROOM && type != UNIT_ST_OBJ)
    {
-      g_nCorrupt = TRUE;
+      g_nCorrupt = static_cast<int>(TRUE);
       return nullptr;
    }
 
@@ -1273,8 +1273,6 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
    }
    else
    {
-      extern file_index_type *slime_fi;
-
       slog(LOG_ALL, 0, "FATAL: UNIT CORRUPT: %s", u->names.Name());
 
       if((type != UNIT_ST_PC) && (type != UNIT_ST_ROOM) && (slime_fi != nullptr))
@@ -1349,7 +1347,7 @@ auto read_unit(file_index_type *org_fi) -> unit_data *
 
    unit_error_zone = org_fi->zone;
 
-   u = read_unit_string(&g_FileBuffer, org_fi->type, org_fi->length, FALSE, str_cc(org_fi->name, org_fi->zone->name));
+   u = read_unit_string(&g_FileBuffer, org_fi->type, org_fi->length, static_cast<int>(FALSE), str_cc(org_fi->name, org_fi->zone->name));
 
    UNIT_FILE_INDEX(u) = org_fi;
 
@@ -1414,7 +1412,7 @@ void normalize_world()
       if(IS_ROOM(u))
       {
          /* Place room inside another room? */
-         if(UNIT_IN(u))
+         if(UNIT_IN(u) != nullptr)
          {
             fi = (file_index_type *)UNIT_IN(u);
 
@@ -1426,7 +1424,7 @@ void normalize_world()
          /* Change directions into unit_data points from file_index_type */
          for(i = 0; i < 6; i++)
          {
-            if(ROOM_EXIT(u, i))
+            if(ROOM_EXIT(u, i) != nullptr)
             {
                ROOM_EXIT(u, i)->to_room = ((file_index_type *)ROOM_EXIT(u, i)->to_room)->room_ptr;
             }
@@ -1436,7 +1434,7 @@ void normalize_world()
 
    for(u = unit_list; u != nullptr; u = u->gnext)
    {
-      if(IS_ROOM(u) && UNIT_IN(u))
+      if(IS_ROOM(u) && (UNIT_IN(u) != nullptr))
       {
          tmpu       = UNIT_IN(u);
          UNIT_IN(u) = nullptr;

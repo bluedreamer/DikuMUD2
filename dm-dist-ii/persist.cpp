@@ -59,7 +59,7 @@ void persist_save(unit_data *u, struct persist_type *pt)
 {
    void basic_save_contents(const char *pFileName, unit_data *unit, int fast, int bContainer);
 
-   basic_save_contents(pt->name, u, FALSE, TRUE);
+   basic_save_contents(pt->name, u, static_cast<int>(FALSE), static_cast<int>(TRUE));
 
    pt->weight = UNIT_WEIGHT(u);
    pt->in     = UNIT_FILE_INDEX(UNIT_IN(u));

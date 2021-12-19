@@ -439,7 +439,7 @@ void do_consider(unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   if(str_is_empty(arg) != 0u)
+   if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
       send_to_char("You consider Life, the Universe and everything.\n\r", ch);
       return;
