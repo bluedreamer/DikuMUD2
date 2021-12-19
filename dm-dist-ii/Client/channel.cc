@@ -327,4 +327,3 @@ void cChannelManager::Close(void)
         BaseChannel[i] = NULL;
      }
 }
-

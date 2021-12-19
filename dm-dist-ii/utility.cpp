@@ -24,31 +24,13 @@
 
 #include "utility.h"
 
-#include "comm.h"
-#include "db.h"
 #include "files.h"
-#include "structs.h"
-#include "textutil.h"
-#include "unixshit.h"
-#include "utils.h"
 
 #include <cstdarg> /* va_args in slog()        */
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
-
-#ifndef HPUX
-auto MIN(int a, int b) -> int
-{
-   return ((a < b) ? a : b);
-}
-
-auto MAX(int a, int b) -> int
-{
-   return ((a > b) ? a : b);
-}
-#endif /* HPUX */
 
 #ifdef SUSPEKT /* Unused */
 /* Entries is range of indexes (0..entries-1). Useful for arrays */
@@ -66,8 +48,8 @@ int string_index(int entries, int value, int minv, int maxv)
    idx = (value - minv) / step;
 
    /* Just for safety in case of illegal parameters */
-   idx = MAX(0, idx);
-   idx = MIN(idx, entries - 1);
+   idx = std::max(0, idx);
+   idx = std::min(idx, entries - 1);
 
    return idx;
 }

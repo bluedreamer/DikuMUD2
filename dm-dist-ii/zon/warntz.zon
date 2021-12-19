@@ -4768,5 +4768,3 @@ load bull_board@udgaard into zigs_dorm
 /* load trader */
 load trader into path3@warntz
 %end
-
-

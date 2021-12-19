@@ -5054,4 +5054,3 @@ door utility_room NORTH {EX_OPEN_CLOSE, EX_CLOSED}
 door mob_room EAST {EX_OPEN_CLOSE, EX_CLOSED}
 
 %end
-

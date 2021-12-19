@@ -53,6 +53,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <algorithm>
 
 /* *********************************************************************** *
  * Implementation notes:
@@ -974,7 +975,7 @@ auto run_dil(struct spec_arg *sarg) -> int
       */
    void ResetFptrTimer(unit_data * u, unit_fptr * fptr);
 
-   sarg->fptr->heart_beat = MAX(PULSE_SEC * 1, sarg->fptr->heart_beat);
+   sarg->fptr->heart_beat = std::max(PULSE_SEC * 1, static_cast<int>(sarg->fptr->heart_beat));
 
    /* Purely for optimization purposes! Enqueue / dequeue are HUGE! */
    if((OrgHeartBeat != sarg->fptr->heart_beat) && (sarg->cmd->no != CMD_AUTO_TICK))

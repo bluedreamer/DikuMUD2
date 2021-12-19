@@ -24,7 +24,7 @@
  * *********************************************************************** */
 
 /* #define MAGIC_POWER(ch)  \
-   MAX(CHAR_MAG(ch), CHAR_DIV(ch)) */
+   std::max(CHAR_MAG(ch), CHAR_DIV(ch)) */
 #include "spell_args.h"
 #include "unit_data.h"
 

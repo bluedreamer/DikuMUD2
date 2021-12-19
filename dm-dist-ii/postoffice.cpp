@@ -48,6 +48,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <algorithm>
 
 #define MAIL_MAX_AGE    SECS_PER_REAL_DAY * 90 /* 90 days lifetime */
 #define MAIL_BLOCK_SIZE 128
@@ -374,7 +375,7 @@ auto postman(struct spec_arg *sarg) -> int
       }
 
       postage = exd->descr.Length() / 20;
-      postage = MAX(1, MIN(50, postage));
+      postage = std::max(1, std::min(50, postage));
 
       act("$3n gives $1n a letter.", A_SOMEONE, sarg->owner, nullptr, sarg->activator, TO_NOTVICT);
 

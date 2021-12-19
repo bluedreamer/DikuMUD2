@@ -2990,7 +2990,3 @@ door elf_throne EAST {EX_OPEN_CLOSE,EX_CLOSED,EX_LOCKED}
 door damnroom WEST {EX_OPEN_CLOSE,EX_CLOSED,EX_LOCKED}
 
 %end
-
-
-
-

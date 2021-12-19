@@ -55,6 +55,7 @@
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
+#include <algorithm>
 
 /* Extern structures */
 extern unit_data *unit_list;
@@ -200,12 +201,12 @@ auto cast_magic_now(unit_data *ch, int mana) -> bool
       }
       if(hleft > 80)
       { /* Small chance, allow heal to be possible */
-         return (number(1, MAX(1, 16 - 2 * sleft)) == 1);
+         return (number(1, std::max(1, 16 - 2 * sleft)) == 1);
       }
       if(hleft > 50)
-         return (number(1, MAX(1, 6 - sleft)) == 1);
+         return (number(1, std::max(1, 6 - sleft)) == 1);
       else if(hleft > 40)
-         return (number(1, MAX(1, 4 - sleft)) == 1);
+         return (number(1, std::max(1, 4 - sleft)) == 1);
       else
          return TRUE;
    }

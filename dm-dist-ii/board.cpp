@@ -59,6 +59,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <algorithm>
 
 #define MAX_MSGS 50 /* Maximum number of messages      */
 /* Bugger, I just realized that this value can't be modified without
@@ -720,7 +721,7 @@ auto get_board(unit_fptr *fptr) -> struct board_info *
       tb = init_board(file_name2);
    }
 
-   tb->min_level = MAX(level, tb->min_level);
+   tb->min_level = std::max(level, tb->min_level);
 
    return tb;
 }

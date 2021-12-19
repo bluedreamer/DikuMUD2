@@ -59,6 +59,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <algorithm>
 
 /* report error in instruction */
 void dil_insterr(dilprg *p, const char *where)
@@ -1371,9 +1372,9 @@ void dilfi_exp(dilprg *p, dilval *v)
 
    if((v2.val.ptr != nullptr) && IS_PC((unit_data *)v2.val.ptr))
    {
-      value = MAX(-level_xp(CHAR_LEVEL((unit_data *)v2.val.ptr)), value);
+      value = std::max(-level_xp(CHAR_LEVEL((unit_data *)v2.val.ptr)), value);
 
-      value = MIN(level_xp(CHAR_LEVEL((unit_data *)v2.val.ptr)), value);
+      value = std::min(level_xp(CHAR_LEVEL((unit_data *)v2.val.ptr)), value);
 
       slog(LOG_ALL,
            0,

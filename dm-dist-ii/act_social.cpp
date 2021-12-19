@@ -43,6 +43,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
 
 /* externs */
 extern char libdir[]; /* from dikumud.c */
@@ -243,7 +244,7 @@ void boot_social_messages()
       list[list_elms].hide_flag     = str_to_hide_flag(hide);
       list[list_elms].min_pos       = str_to_min_pos(min_pos);
       list[list_elms].vic_min_pos   = str_to_min_pos(vic_min_pos);
-      list[list_elms].level         = MIN(255, level);
+      list[list_elms].level         = std::min(255, level);
 
       list[list_elms].char_no_arg   = fread_action(fl);
       list[list_elms].others_no_arg = fread_action(fl);

@@ -23,18 +23,8 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "essential.h"
 #include "unit_data.h"
-
-#ifdef MIN
-   #undef MIN
-#endif
-
-#ifdef MAX
-   #undef MAX
-#endif
-
-auto MIN(int a, int b) -> int;
-auto MAX(int a, int b) -> int;
 
 auto number(int from, int to) -> int;
 auto dice(int number, int size) -> int;

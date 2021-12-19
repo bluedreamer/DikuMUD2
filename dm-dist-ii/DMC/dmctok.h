@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : dmctok.h                                  Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -21,9 +22,6 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
-
-#ifndef _MUD_DMCTOK_H
-#define _MUD_DMCTOK_H
 
 struct symbols
 {
@@ -122,5 +120,3 @@ struct symbols
    {"random", RANDOM},
    {"complete", COMPLETE},
    {0, 0}};
-
-#endif /* _MUD_DMCTOK_H */

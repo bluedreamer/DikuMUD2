@@ -43,6 +43,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <algorithm>
 
 void save_player_file(unit_data *pc);
 
@@ -130,7 +131,7 @@ void do_manifest(unit_data *ch, char *arg, const struct command_info *cmd)
 
    if(str_ccmp_next_word(arg, "self") && !unit_recursive(ch, player))
    {
-      int power = MAX(1, CHAR_LEVEL(ch) - 5) * 500;
+      int power = std::max(1, CHAR_LEVEL(ch) - 5) * 500;
       if(CHAR_EXP(ch) < power)
       {
          send_to_char("You do not have enough power.\n\r", ch);
@@ -167,7 +168,7 @@ void do_manifest(unit_data *ch, char *arg, const struct command_info *cmd)
          return;
       }
 
-      power = MAX(1, CHAR_LEVEL(monster) - 5) * 500;
+      power = std::max(1, CHAR_LEVEL(monster) - 5) * 500;
       if(CHAR_EXP(ch) < power)
       {
          send_to_char("You do not have enough power.\n\r", ch);
@@ -283,7 +284,7 @@ auto sacrifice_unit_power(unit_data *item, int demigod) -> int
          case ITEM_MONEY:
             return MONEY_VALUE(item) / 100;
          default:
-            return MIN(20000, OBJ_PRICE(item) / 10);
+            return std::min(20000u, OBJ_PRICE(item) / 10);
       }
    }
    else
@@ -300,7 +301,7 @@ auto sacrifice_unit_power(unit_data *item, int demigod) -> int
          case ITEM_MONEY:
             return MONEY_VALUE(item) / 8;
          default:
-            return MIN(20000, OBJ_PRICE(item) / 10);
+            return std::min(20000u, OBJ_PRICE(item) / 10);
       }
    }
 }
@@ -737,11 +738,11 @@ auto demi_stuff(spec_arg *sarg) -> int
 
          i /= nMember;
 
-         CHAR_EXP(ch) = MAX(0, CHAR_EXP(ch) - i);
+         CHAR_EXP(ch) = std::max(0, CHAR_EXP(ch) - i);
 
          for(f = CHAR_FOLLOWERS(ch); f; f = f->next)
             if(IS_DEMIGOD(f->follower))
-               CHAR_EXP(f->follower) = MAX(0, CHAR_EXP(f->follower) - i);
+               CHAR_EXP(f->follower) = std::max(0, CHAR_EXP(f->follower) - i);
 
          banish_demigod(pVict);
 

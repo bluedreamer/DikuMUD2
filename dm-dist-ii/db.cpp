@@ -61,6 +61,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <algorithm>
 
 int             room_number;         /* For counting numbers in rooms */
 unit_data      *unit_list = nullptr; /* The global unit_list          */
@@ -412,7 +413,7 @@ void generate_zone_indexes()
 
       if(static_cast<unsigned int>(str_is_number(tmpbuf)) != 0U)
       {
-         loadlevel = MAX(200, atoi(tmpbuf));
+         loadlevel = std::max(200, atoi(tmpbuf));
       }
       else
       {
@@ -542,7 +543,7 @@ void generate_zone_indexes()
    mud_bootzone = 0;
 
    /* Allocate memory for the largest possible file-buffer */
-   /* filbuffer_length = MAX(filbuffer_length + 1, 16384); */
+   /* filbuffer_length = std::max(filbuffer_length + 1, 16384); */
    // CREATE(filbuffer, uint8_t, filbuffer_length + 1);
    // slog(LOG_OFF, 0, "Max length for filebuffer is %d bytes.", filbuffer_length);
 }

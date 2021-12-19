@@ -1577,4 +1577,3 @@ brush someone rest fight 0
 You brush the dirt off your armor, that was an entertaining battle.
 $1n brushes the dirt of $1m armor, amused at the last battle.
 #
-

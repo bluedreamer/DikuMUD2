@@ -384,7 +384,7 @@ void recalc_dex_red(unit_data *ch)
          reduction += OBJ_VALUE(eq, 3) - CHAR_STR(ch);
      }
 
-   CHAR_DEX_RED(ch) = MIN(95, reduction);
+   CHAR_DEX_RED(ch) = std::min(95, reduction);
 }
 */
 

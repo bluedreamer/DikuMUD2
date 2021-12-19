@@ -50,6 +50,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <algorithm>
 
 /* These are constant for all guards.                            */
 
@@ -270,8 +271,8 @@ void set_reward_char(unit_data *ch, int crimes)
 
    if((paf = affected_by_spell(ch, ID_REWARD)) != nullptr)
    {
-      paf->data[0] = MAX(xp, paf->data[0]);
-      paf->data[1] = MAX(gold, paf->data[1]);
+      paf->data[0] = std::max(xp, paf->data[0]);
+      paf->data[1] = std::max(gold, paf->data[1]);
       paf->data[2]++;
       return;
    }
@@ -282,7 +283,7 @@ void set_reward_char(unit_data *ch, int crimes)
    if(IS_PC(ch))
    {
       PC_CRIMES(ch) += crimes;
-      xp = MIN(lose_exp(ch) / 2, xp);
+      xp = std::min(lose_exp(ch) / 2, xp);
    }
 
    af.id       = ID_REWARD;
@@ -1052,7 +1053,7 @@ auto reward_give(struct spec_arg *sarg) -> int
 
    if(IS_PC(sarg->activator))
    {
-      gain_exp(sarg->activator, MIN(level_xp(CHAR_LEVEL(sarg->activator)), paf->data[0]));
+      gain_exp(sarg->activator, std::min(level_xp(CHAR_LEVEL(sarg->activator)), paf->data[0]));
    }
 
    money_to_unit(sarg->activator, paf->data[1], cur);

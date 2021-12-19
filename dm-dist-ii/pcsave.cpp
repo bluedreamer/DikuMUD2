@@ -52,6 +52,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <algorithm>
 
 int32_t            player_id       = 1;
 static const char *tmp_player_name = PLAY_DIR "player.tmp";
@@ -362,7 +363,7 @@ void save_player_contents(unit_data *pc, int fast)
          time_t tdiff;
 
          /* No of days items may be kept (Maximum of 30!) */
-         tmp_i = MIN(30, amount / daily_cost);
+         tmp_i = std::min(30, amount / daily_cost);
 
          if(tmp_i >= 1)
          {

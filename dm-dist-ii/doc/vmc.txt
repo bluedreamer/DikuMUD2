@@ -623,28 +623,3 @@ is  not  loaded this will have no effect on the complete flag. To
 make the ruby_ring affect to captains complete flag, the bag must
 also  have  specified a complete flag (becuase the bag would then
 not be complete, and thus the captain would not be complete).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

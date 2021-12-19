@@ -41,6 +41,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
 
 /*  From char * input stream 'str' copy characters into 'buf' until
  *  end of string or newline. Returns position of 'str' after copied
@@ -1049,28 +1050,28 @@ void split_fi_ref(const char *str, char *zone, char *name)
 
    if((c = strchr(str, '@')) != nullptr)
    {
-      l = MIN(c - str, FI_MAX_UNITNAME);
+      l = std::min(c - str, static_cast<long>(FI_MAX_UNITNAME));
       strncpy(name, str, l);
       name[l] = '\0';
 
-      l       = MIN(strlen(c + 1), FI_MAX_ZONENAME);
+      l       = std::min(strlen(c + 1), static_cast<size_t>(FI_MAX_ZONENAME));
       if((t = strchr(c + 1, ' ')) != nullptr)
       {
-         l = MIN(l, t - (c + 1));
+         l = std::min(static_cast<long>(l), t - (c + 1));
       }
       strncpy(zone, c + 1, l);
       zone[l] = 0;
    }
    else if((c = strchr(str, '/')) != nullptr)
    {
-      l = MIN(c - str, FI_MAX_ZONENAME);
+      l = std::min(c - str, static_cast<long>(FI_MAX_ZONENAME));
       strncpy(zone, str, l);
       zone[l] = '\0';
 
-      l       = MIN(strlen(c + 1), FI_MAX_UNITNAME);
+      l       = std::min(strlen(c + 1), static_cast<size_t>(FI_MAX_UNITNAME));
       if((t = strchr(c + 1, ' ')) != nullptr)
       {
-         l = MIN(l, t - (c + 1));
+         l = std::min(static_cast<long>(l), t - (c + 1));
       }
       strncpy(name, c + 1, l);
       name[l] = 0;
@@ -1079,13 +1080,13 @@ void split_fi_ref(const char *str, char *zone, char *name)
    {
       if((c = strchr(str, ' ')) != nullptr)
       {
-         l = MIN(c - str, FI_MAX_UNITNAME);
+         l = std::min(c - str, static_cast<long>(FI_MAX_UNITNAME));
          strncpy(name, str, l);
          name[l] = '\0';
       }
       else
       {
-         l = MIN(strlen(str), FI_MAX_UNITNAME);
+         l = std::min(strlen(str), static_cast<size_t>(FI_MAX_UNITNAME));
          strncpy(name, str, l);
          name[l] = 0;
       }

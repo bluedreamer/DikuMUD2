@@ -2,21 +2,28 @@ find_package(FLEX)
 find_package(BISON)
 
 set(DIL_SRC
-        ../db_file.cpp
-        ../utility.cpp
-        ../string.cpp
-        ../structs.cpp
-        ../textutil.cpp
-        ../common.cpp
-        ../cNamelist.cpp
-        ../bytestring.cpp
         ../CByteBuffer.cpp
+        ../bytestring.cpp
+        ../cHashSystem.cpp
+        ../cNamelist.cpp
+        ../cStringConstant.cpp
+        ../cStringInstance.cpp
+        ../common.cpp
+        ../common.h
+        ../db_file.cpp
         ../extra.cpp
         ../files.cpp
         ../memory.cpp
         ../room_data.cpp
-        ../room_direction_data.cpp)
-set(DIL_H dilpar.h ../common.h ../room_data.h ../room_direction_data.h)
+        ../room_data.h
+        ../room_direction_data.cpp
+        ../room_direction_data.h
+        ../string.cpp
+        ../structs.cpp
+        ../textutil.cpp
+        ../utility.cpp
+        dilpar.h
+        )
 
 include_directories(.)
 
@@ -28,7 +35,6 @@ add_compile_definitions(MUD_DEBUG MEMCHECK MEMORY_DEBUG DIL DMC)
 
 add_executable(dil
         ${DIL_SRC}
-        ${DIL_H}
         ${BISON_Parser_OUTPUTS}
         ${FLEX_Scanner_OUTPUTS}
         )

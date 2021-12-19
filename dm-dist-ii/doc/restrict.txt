@@ -654,4 +654,3 @@ A_SOMEONE,self.outside,self,null,TO_REST);
   and you are more than welcome to.
 
 Ken /whistler
-

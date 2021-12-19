@@ -71,6 +71,7 @@
 #include "utils.h"
 
 #include <climits>
+#include <algorithm>
 
 #define STATE(d) ((d)->state)
 
@@ -1790,7 +1791,7 @@ void nanny_existing_pwd(descriptor_data *d, char *arg)
                              " Press [enter] and wait for the password prompt." COLOUR_NORMAL,
                  PC_CRACK_ATTEMPTS(d->character));
          send_to_descriptor(buf, d);
-         d->wait = MIN(30, PC_CRACK_ATTEMPTS(d->character)) * 2 * PULSE_SEC;
+         d->wait = std::min(30, static_cast<int>(PC_CRACK_ATTEMPTS(d->character))) * 2 * PULSE_SEC;
          return;
       }
       STATE(d)++;

@@ -57,6 +57,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
 
 /* The TURN_UNDEAD skill */
 void do_turn(unit_data *ch, char *arg, const struct command_info *cmd)
@@ -500,10 +501,10 @@ void do_ventriloquate(unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   abila  = IS_CHAR(ch) ? MAX(CHAR_BRA(ch), CHAR_CHA(ch)) : 50;
+   abila  = IS_CHAR(ch) ? std::max(CHAR_BRA(ch), CHAR_CHA(ch)) : 50;
    skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_VENTRILOQUATE) : abila;
 
-   abilb  = IS_CHAR(vict) ? MAX(CHAR_BRA(vict), CHAR_CHA(vict)) : 50;
+   abilb  = IS_CHAR(vict) ? std::max(CHAR_BRA(vict), CHAR_CHA(vict)) : 50;
    skillb = IS_PC(vict) ? PC_SKI_SKILL(vict, SKI_VENTRILOQUATE) : abilb;
 
    /* vict gets to save for the ventriloquate */
@@ -556,7 +557,7 @@ void do_weather(unit_data *ch, char *arg, const struct command_info *cmd)
          hm   = resistance_skill_check(CHAR_BRA(ch), 35, skilla, 50);
 
          chng = unit_zone(ch)->weather.change;
-         chng += MIN(0, hm) * chng * SGN(number(-1, 0));
+         chng += std::min(0, hm) * chng * SGN(number(-1, 0));
 
          if(chng >= 0)
          {

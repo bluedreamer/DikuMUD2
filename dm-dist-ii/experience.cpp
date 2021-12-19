@@ -43,6 +43,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <algorithm>
 
 auto kludge_bonus(int level, int points) -> int
 {
@@ -53,7 +54,7 @@ auto kludge_bonus(int level, int points) -> int
 
    if(level <= 50)
    {
-      return ((5 * (level - 20)) * MIN(100, points)) / 100;
+      return ((5 * (level - 20)) * std::min(100, points)) / 100;
    }
 
    int b;
@@ -62,7 +63,7 @@ auto kludge_bonus(int level, int points) -> int
    expected = 100 + (level - 50);
 
    b        = 150;
-   b += (5 * (level - 50) * MIN(expected, points)) / expected;
+   b += (5 * (level - 50) * std::min(expected, points)) / expected;
 
    return b;
 }
@@ -202,7 +203,7 @@ auto spell_bonus(
       hm = (5 * spell_attack_ability(medium, spell_number)) / 2 + 2 * spell_attack_skill(medium, spell_number) - def_bonus;
    }
 
-   return MAX(-50, hm);
+   return std::max(-50, hm);
 }
 
 /* If 'att' hits 'def' on 'hit_loc' then what is his basic attack */
@@ -289,11 +290,11 @@ auto melee_bonus(unit_data  *att,
 
       if(primary != 0)
       {
-         att_bonus -= MAX(0, 25 - (dual_skill / 4));
+         att_bonus -= std::max(0, 25 - (dual_skill / 4));
       }
       else
       {
-         att_bonus -= MAX(0, 50 - (dual_skill / 4));
+         att_bonus -= std::max(0, 50 - (dual_skill / 4));
       }
    }
 
@@ -379,7 +380,7 @@ auto melee_bonus(unit_data  *att,
 
    // This results in a 5% hm increase per "level"
 
-   return MAX(-50, hm);
+   return std::max(-50, hm);
 }
 
 auto base_melee(unit_data *att, unit_data *def, int hit_loc) -> int

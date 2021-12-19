@@ -1153,4 +1153,3 @@ of the other docs.  Keep the other docs handy always, as you will undoubtedly
 come across something new you wish to try and periodically check the ftp
 site for new versions, they do pop up often believe it or not!  Happy
 creating! (Iccy)(& Kira too!)
-

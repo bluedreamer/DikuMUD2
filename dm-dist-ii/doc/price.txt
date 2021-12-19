@@ -63,7 +63,7 @@ Case                 12cp     11cp    1 lb 2 days   Leaher,  holds
                                                     20 lbs
 Cask                 10cp      9cp   5 lbs 1.5      Wood,       20
                                            days     liters
-Chain                   -      2sp   9 lbs 1 day    10’ iron
+Chain                   -      2sp   9 lbs 1 day    10ï¿½ iron
 Chalk                 1ip      1ip     .25 2 hrs    White
                                        lbs
 Grappling hook          -     10cp   1 lbs 1 day    Iron
@@ -78,19 +78,19 @@ Lantern,                -      6sp   3 lbs 6 days   4        light
 bullseye                                            sources,    12
                                                     hours
 Mirror                  -      5sp  .5 lbs 1 day    Glass,   iron,
-                                                    5”x5”.
+                                                    5ï¿½x5ï¿½.
 Oil flask             2cp      1cp    1 lb 1 day    Includes    .5
                                                     liter oil
-Paper                10ip      6ip     .02 1 hour   12” x 6”
+Paper                10ip      6ip     .02 1 hour   12ï¿½ x 6ï¿½
                                        lbs
-Parchment            18ip      9ip     .02 1 hour   12” x 6”
+Parchment            18ip      9ip     .02 1 hour   12ï¿½ x 6ï¿½
                                        lbs
 Pot, cooking          4cp      4cp   2 lbs 1 day    Iron, 8 liters
                                                     capacity
 Quill                 3ip      2ip     .02 15 min   Goose feather
                                        lbs
-Rope, hemp            4cp      5cp   7 lbs 3 days   50’
-Rope,                 6cp      7cp   7 lbs 5 days   50’ (hemp)
+Rope, hemp            4cp      5cp   7 lbs 3 days   50ï¿½
+Rope,                 6cp      7cp   7 lbs 5 days   50ï¿½ (hemp)
 reinforced
 Sack                  4ip      5ip   2 lbs 2 hrs    50         lbs
                                                     capacity
@@ -128,7 +128,7 @@ Wine               5ip      7ip  Pint
 Light meal         2ip      4ip  
 Normal meal        3ip      8ip  
 Heavy meal         4ip     12ip  
-Week’s            15ip     35ip  
+Weekï¿½s            15ip     35ip  
 rations
 Trail              3cp      2cp  1        wk.
 ration                           preserved
@@ -272,4 +272,3 @@ Wand             5gp
 Rod             15gp
 Staff           50gp
 Ring           250gp
-

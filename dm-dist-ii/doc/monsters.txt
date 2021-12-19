@@ -13,7 +13,7 @@ reading  this  document  you should read the  object.doc  document
 describing weapon and armour quality. Abilities and their  meaning
 is described in the ability.doc document.
 
-I’ve  attempted to remove all old references that  are  no  longer
+Iï¿½ve  attempted to remove all old references that  are  no  longer
 valid (hand, toughness, etc).
      
                          2.   Introduction
@@ -71,13 +71,13 @@ in between can also be used.
 
 2.4  The Race (race)
 Each  monster  has a race as specified in values.h.  In  case  you
-can’t  find  a race which matches your monster, just  use  #define
-RACE_XXX  in  you  own zonefile with a number that  isn’t  already
+canï¿½t  find  a race which matches your monster, just  use  #define
+RACE_XXX  in  you  own zonefile with a number that  isnï¿½t  already
 used. We will then later transfer it to values.h. Example:
 
      race RACE_DRAGON_SILVER
 
-or if the race you need isn’t defined, you could type:
+or if the race you need isnï¿½t defined, you could type:
 
      #define RACE_CRABMAN     7681 /* This is a large red crab man
 */
@@ -115,7 +115,7 @@ an example of an ability distribution:
 2.6.1
 
 Hints
-If you choose high percentages and high levels, you may “waste”  a
+If you choose high percentages and high levels, you may ï¿½wasteï¿½  a
 ability  points as it would pop above 200 (all excess  points  are
 simply  removed). For example a level 199 monster with an  ability
 percentage  a  bit above 20% will make an ability  above  the  200
@@ -127,8 +127,8 @@ etc.).
 
 2.7  Setting Weapon and Spell skills (spell[], weapon[])
 NPC's  know about weapons and spells but not at the same  detailed
-level  as  the  player. For NPC’s the spell and weapon  group  are
-used.  Thus the “axe hammer category” defines all defence and  all
+level  as  the  player. For NPCï¿½s the spell and weapon  group  are
+used.  Thus the ï¿½axe hammer categoryï¿½ defines all defence and  all
 attack for all kind of axes and hammers - whereas the player would
 have  to train individually in each axe and hammer type. The  same
 is  true for spells. Thus if a monster has 25 points in the weapon
@@ -189,11 +189,11 @@ either  Magic  or  Divine power together with  brain.  To  make  a
 monster  cast  spells  a number of various  special  routines  are
 available, for example:
 
-     special SFUN_COMBAT_MAGIC “cast acid ball”
-     special SFUN_COMBAT_MAGIC_HEAL “cast random teleport”
+     special SFUN_COMBAT_MAGIC ï¿½cast acid ballï¿½
+     special SFUN_COMBAT_MAGIC_HEAL ï¿½cast random teleportï¿½
 
-This  would make a monster use the “acid ball” spell when  engaged
-in  combat.  The  monster would attempt to cast “random  teleport”
+This  would make a monster use the ï¿½acid ballï¿½ spell when  engaged
+in  combat.  The  monster would attempt to cast ï¿½random  teleportï¿½
 when  it  gets low on hitpoints. The following table  shows  which
 spells a monster should use at a given level:
 
@@ -284,7 +284,7 @@ Standard monsters in composed.h
 The  file composed.h contains many standard monsters. It is a good
 idea  to  study these definitions, as they form the basis of  many
 different  monsters. Note that the definitions  by  no  means  are
-perfect,  but  we  are hoping to make a more  or  less  “complete”
+perfect,  but  we  are hoping to make a more  or  less  ï¿½completeï¿½
 monster  compendium.  If  you create certain  (general)  monsters,
 please design it as a macro so that it can be incorporated in  the
 file. The more monsters created by using these macros the better a
@@ -296,8 +296,8 @@ monsters.
 
 2.11.1    A Black Dragon
 In  this example a black dragon is created. You should notice that
-the  number  “121”  is the value of the SPL_ACIDBALL_3  definition
-since  I  can’t  currently get it translated  inside  quotes.  The
+the  number  ï¿½121ï¿½  is the value of the SPL_ACIDBALL_3  definition
+since  I  canï¿½t  currently get it translated  inside  quotes.  The
 following should at least be specified in your zone file.
 
      race RACE_DRAGON_BLACK
@@ -318,7 +318,7 @@ following should at least be specified in your zone file.
 average        */
        MSET_SPELL(0,0,0,0,0,0,0,0,0,0,30)       /*   Acid   sphere
 (external)          */
-     special SFUN_BREATH_WEAPON “”+SPL_ACIDBALL_3
+     special SFUN_BREATH_WEAPON ï¿½ï¿½+SPL_ACIDBALL_3
 
 Calculation of experience:
      Breath weapon       =   50%

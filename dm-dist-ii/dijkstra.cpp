@@ -39,6 +39,7 @@
 #include "utils.h"
 #include "zone_info_type.h"
 
+#include <algorithm>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -53,7 +54,7 @@
 
 #define P(x, h)  (((x)-1) / (h)->d)
 #define CF(x, h) ((x) * (h)->d + 1)
-#define CL(x, h) MIN((x) * (h)->d + (h)->d, (h)->no)
+#define CL(x, h) std::min((x) * (h)->d + (h)->d, (h)->no)
 
 extern uint32_t memory_total_alloc;
 extern int      memory_dijkstra_alloc;

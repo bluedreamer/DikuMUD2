@@ -248,7 +248,7 @@ void convert_player(unit_data *pc)
          }
       }
 
-      lvl = MAX(1,CHAR_LEVEL(pc) / 4);
+      lvl = std::max(1,CHAR_LEVEL(pc) / 4);
       reroll(pc);
       CHAR_EXP(pc) = required_xp(lvl);
    */

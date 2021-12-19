@@ -3228,4 +3228,3 @@ load falcon into cave_1 zonemax 2
 
 door for_12 NORTH {EX_OPEN_CLOSE, EX_CLOSED, EX_HIDDEN}
 %end
-

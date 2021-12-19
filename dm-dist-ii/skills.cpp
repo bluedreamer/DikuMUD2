@@ -45,6 +45,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <algorithm>
 
 auto skill_text(const struct skill_interval *si, int skill) -> const char *
 {
@@ -157,7 +158,7 @@ auto open_ended_roll(int size, int end) -> int
 /* Used on for example, hide, bless, raise str, etc.                */
 auto skill_duration(int howmuch) -> int
 {
-   return MAX(2, howmuch / 10);
+   return std::max(2, howmuch / 10);
 }
 
 /* "Defender" must resist against attack from attacker.    */
@@ -244,19 +245,19 @@ auto chart_size_damage(int roll, damage_chart_element_type *element, int lbs) ->
    switch(weight_size(lbs))
    {
       case SIZ_TINY:
-         roll = MIN(100, roll);
+         roll = std::min(100, roll);
          break;
 
       case SIZ_SMALL:
-         roll = MIN(110, roll);
+         roll = std::min(110, roll);
          break;
 
       case SIZ_MEDIUM:
-         roll = MIN(130, roll);
+         roll = std::min(130, roll);
          break;
 
       case SIZ_LARGE:
-         roll = MIN(150, roll);
+         roll = std::min(150, roll);
          break;
    }
 

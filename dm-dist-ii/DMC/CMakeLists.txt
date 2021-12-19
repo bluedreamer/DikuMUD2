@@ -2,13 +2,15 @@ find_package(FLEX)
 find_package(BISON)
 
 set(DMC_SRC
-        dmc.cpp
-        dmc_process.cpp
         ../CByteBuffer.cpp
         ../bytestring.cpp
         ../cNamelist.cpp
+        ../cNamelist.cpp
         ../cQueue.cpp
         ../cQueueElem.cpp
+        ../cStringConstant.cpp
+        ../cStringInstance.cpp
+        ../cHashSystem.cpp
         ../char_data.cpp
         ../common.cpp
         ../db_file.cpp
@@ -27,6 +29,8 @@ set(DMC_SRC
         ../textutil.cpp
         ../unit_data.cpp
         ../utility.cpp
+        dmc.cpp
+        dmc_process.cpp
         )
 
 set(DMC_H dmc.h dmctok.h)

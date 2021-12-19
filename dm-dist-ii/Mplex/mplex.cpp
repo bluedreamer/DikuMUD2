@@ -52,6 +52,7 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <algorithm>
 
 void mud_went_down(void);
 void Idle(cConHook *con, const char *cmd);
@@ -434,7 +435,7 @@ char *cConHook::IndentText(const char *source, char *dest, int dest_size, int wi
 {
    const char *last = source, *current;
    char       *newptr;
-   int         column = 0, cutpoint = MIN(30, width / 2);
+   int         column = 0, cutpoint = std::min(30, width / 2);
 
    if(!(current = source))
       return NULL;

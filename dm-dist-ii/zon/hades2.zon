@@ -1633,5 +1633,3 @@ door molt_entrance WEST {EX_OPEN_CLOSE, EX_CLOSED}
 
 
 %end
-
-

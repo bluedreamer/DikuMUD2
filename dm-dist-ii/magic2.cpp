@@ -47,6 +47,7 @@
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
+#include <algorithm>
 
 #define RIFT_RISK 100
 
@@ -221,7 +222,7 @@ void spell_clear_skies(spell_args *sa)
    }
 
    unit_zone(sa->caster)->weather.change += sa->hm / 20;
-   unit_zone(sa->caster)->weather.change = MIN(unit_zone(sa->caster)->weather.change, 12);
+   unit_zone(sa->caster)->weather.change = std::min(unit_zone(sa->caster)->weather.change, 12);
 
    act("You feel a warm breeze.", A_ALWAYS, sa->caster, nullptr, nullptr, TO_ALL);
 }
@@ -237,7 +238,7 @@ void spell_storm_call(spell_args *sa)
    }
 
    unit_zone(sa->caster)->weather.change -= sa->hm / 20;
-   unit_zone(sa->caster)->weather.change = MAX(unit_zone(sa->caster)->weather.change, -12);
+   unit_zone(sa->caster)->weather.change = std::max(unit_zone(sa->caster)->weather.change, -12);
 
    act("A cold wind chills you to the bone.", A_ALWAYS, sa->caster, nullptr, nullptr, TO_ALL);
 }
@@ -592,7 +593,7 @@ void spell_summon_char_2(spell_args *sa)
       return;
    }
 
-   if(number(1, RIFT_RISK - MAX(0, CHAR_LEVEL(sa->target) - CHAR_LEVEL(sa->caster))) <= 5)
+   if(number(1, RIFT_RISK - std::max(0, CHAR_LEVEL(sa->target) - CHAR_LEVEL(sa->caster))) <= 5)
    {
       rift_failure(sa->caster, sa->target);
       return;
@@ -952,7 +953,7 @@ void spell_mana_boost(spell_args *sa)
 {
    if(sa->hm > 0)
    {
-      CHAR_MANA(sa->target) = MIN(mana_limit(sa->target), CHAR_MANA(sa->target) + CHAR_MANA(sa->target) * skill_duration(sa->hm) / 10);
+      CHAR_MANA(sa->target) = std::min(mana_limit(sa->target), CHAR_MANA(sa->target) + CHAR_MANA(sa->target) * skill_duration(sa->hm) / 10);
       act("You are filled with essence.", A_ALWAYS, sa->target, nullptr, nullptr, TO_CHAR);
       act("$1n seems to be filled with energy.", A_HIDEINV, sa->target, nullptr, nullptr, TO_ROOM);
    }

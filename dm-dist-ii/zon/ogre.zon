@@ -5978,7 +5978,7 @@ end /* End elven shield of the sky */
 ++++++++++++++++++++++++++++++++++++++++++++++++ */
 %reset
 /*
-LOAD OBJ/MOB		INTO	WHERE	MAX TYPE	NO.
+LOAD OBJ/MOB		INTO	WHERE	std::max TYPE	NO.
 */
 
 load	h_farm_slave		into 	farm_2		zonemax	3
@@ -6402,4 +6402,3 @@ door pit_21 NORTH {EX_OPEN_CLOSE,EX_CLOSED}
 /* END RESET */
 
 %end
-

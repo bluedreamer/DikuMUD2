@@ -78,7 +78,7 @@ void cHook::PushWrite(void)
 
    while (!qTX.IsEmpty())
    {
-      len = MIN(sizeof(buf), qTX.Bytes());
+      len = std::min(sizeof(buf), qTX.Bytes());
 
       qTX.CutCopy(buf, len);
 
@@ -322,6 +322,3 @@ int cCaptainHook::Wait(struct timeval *timeout)
 
    return n;
 }
-
-
-

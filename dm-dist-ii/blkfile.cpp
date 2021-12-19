@@ -43,6 +43,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
 
 #define BLK_RESERVED 0 /* Reserved block for special exceptions */
 #define BLK_FREE     -1
@@ -184,7 +185,7 @@ static auto blk_extract_data(BLK_FILE *bf, void *blk_start, void *data, blk_leng
    used = (uint8_t *)blk_start - (uint8_t *)bf->buf;
    no   = bf->bsize - used;
 
-   no   = MIN(*len, no); /* Make sure we don't copy too much */
+   no   = std::min(*len, no); /* Make sure we don't copy too much */
 
    if(no < 0)
    {

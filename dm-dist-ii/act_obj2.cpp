@@ -46,6 +46,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
 
 /* Remove the last name from the drink container */
 void name_from_drinkcon(unit_data *obj)
@@ -237,8 +238,8 @@ void do_drink(unit_data *ch, char *arg, const struct command_info *cmd)
       }
       else
       {
-         amount = IS_GOD(ch) ? MIN(10, OBJ_VALUE(drink, 1)) : number(3, 10);
-         amount = MIN(amount, OBJ_VALUE(drink, 1));
+         amount = IS_GOD(ch) ? std::min(10, OBJ_VALUE(drink, 1)) : number(3, 10);
+         amount = std::min(amount, OBJ_VALUE(drink, 1));
          if(amount < 0)
          { /* Straange... Only value "0" should be negative*/
             amount = 0;
@@ -268,7 +269,7 @@ void do_eat(unit_data *ch, char *arg, const struct command_info *cmd)
    }
    else if(IS_OBJ(food) && OBJ_TYPE(food) == ITEM_FOOD)
    {
-      drink_eat(ch, food, MAX(0, OBJ_VALUE(food, 0)), cmd, oarg);
+      drink_eat(ch, food, std::max(0, OBJ_VALUE(food, 0)), cmd, oarg);
    }
    else if(!IS_GOD(ch) || IS_ROOM(food))
    {
@@ -421,8 +422,8 @@ void do_pour(unit_data *ch, char *arg, const struct command_info *cmd)
          else
          {
             amount = OBJ_VALUE(to_obj, 0) - OBJ_VALUE(to_obj, 1);
-            amount = MIN(OBJ_VALUE(from_obj, 1), amount);
-            amount = MAX(0, amount); /* Just in case someone goofed with it */
+            amount = std::min(OBJ_VALUE(from_obj, 1), amount);
+            amount = std::max(0, amount); /* Just in case someone goofed with it */
          }
 
          assert(amount >= 0);

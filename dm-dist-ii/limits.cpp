@@ -42,6 +42,7 @@
 #include "utils.h"
 #include "weather.h"
 
+#include <algorithm>
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
@@ -79,7 +80,7 @@ auto char_can_carry_n(unit_data *ch, int n) -> int
 
 auto char_carry_w_limit(unit_data *ch) -> int
 {
-   return 50 + MAX(50, UNIT_BASE_WEIGHT(ch) / 2) + CHAR_STR(ch) * 2;
+   return 50 + std::max(50, UNIT_BASE_WEIGHT(ch) / 2) + CHAR_STR(ch) * 2;
 }
 
 auto char_can_carry_w(unit_data *ch, int weight) -> int
@@ -118,7 +119,7 @@ auto char_can_drag_w(unit_data *ch, int weight) -> int
 
 auto age_graph(int age, int lifespan, int p0, int p1, int p2, int p3, int p4, int p5, int p6, int p7) -> int
 {
-   int step = MAX(1, lifespan / 6);
+   int step = std::max(1, lifespan / 6);
 
    if(age <= step)
    {
@@ -217,7 +218,7 @@ auto hit_gain(unit_data *ch) -> int
       /* gain = graf(age(ch).year, 2,5,10,18,6,4,2); */
       if((PC_COND(ch, FULL) < 0) || (PC_COND(ch, THIRST) < 0))
       {
-         gain += 3 * MIN(PC_COND(ch, FULL), 3 * PC_COND(ch, THIRST));
+         gain += 3 * std::min(static_cast<int>(PC_COND(ch, FULL)), 3 * PC_COND(ch, THIRST));
       }
    }
 
@@ -290,7 +291,7 @@ auto move_gain(unit_data *ch) -> int
       /* gain = graf(age(ch).year, ... Age calcs? */
       if((PC_COND(ch, FULL) < 0) || (PC_COND(ch, THIRST) < 0))
       {
-         gain += 3 * MIN(PC_COND(ch, FULL), 3 * PC_COND(ch, THIRST));
+         gain += 3 * std::min(static_cast<int>(PC_COND(ch, FULL)), 3 * PC_COND(ch, THIRST));
       }
    }
 
@@ -301,7 +302,7 @@ auto mana_limit(unit_data *ch) -> int
 {
    assert(IS_CHAR(ch));
 
-   int ml = MIN(200, 100 + (CHAR_BRA(ch) + CHAR_CHA(ch)) / 2);
+   int ml = std::min(200, 100 + (CHAR_BRA(ch) + CHAR_CHA(ch)) / 2);
 
    if(IS_PC(ch))
    {
@@ -330,8 +331,8 @@ auto mana_gain(unit_data *ch) -> int
    if(CHAR_POS(ch) != POSITION_FIGHTING)
    {
       gain = 1 + mana_limit(ch) / 10;
-      gain += (CHAR_CHA(ch) - MAX(CHAR_MAG(ch), CHAR_DIV(ch))) / 3;
-      gain = MAX(1, gain);
+      gain += (CHAR_CHA(ch) - std::max(CHAR_MAG(ch), CHAR_DIV(ch))) / 3;
+      gain = std::max(1, gain);
    }
    else
    {
@@ -365,7 +366,7 @@ auto mana_gain(unit_data *ch) -> int
    {
       if((PC_COND(ch, FULL) < 0) || (PC_COND(ch, THIRST) < 0))
       {
-         gain += 3 * MIN(PC_COND(ch, FULL), 3 * PC_COND(ch, THIRST));
+         gain += 3 * std::min(static_cast<int>(PC_COND(ch, FULL)), 3 * PC_COND(ch, THIRST));
       }
    }
 
@@ -426,15 +427,15 @@ void gain_condition(unit_data *ch, int condition, int value)
 
    PC_COND(ch, condition) += value;
 
-   PC_COND(ch, condition) = MIN(24, PC_COND(ch, condition));
+   PC_COND(ch, condition) = std::min(24, static_cast<int>(PC_COND(ch, condition)));
 
    if(condition == DRUNK)
    { /* How can one be less sober than 0? */
-      PC_COND(ch, condition) = MAX(0, PC_COND(ch, condition));
+      PC_COND(ch, condition) = std::max(0, static_cast<int>(PC_COND(ch, condition)));
    }
    else
    {
-      PC_COND(ch, condition) = MAX(-96, PC_COND(ch, condition));
+      PC_COND(ch, condition) = std::max(-96, static_cast<int>(PC_COND(ch, condition)));
    }
 
    if(PC_COND(ch, condition) > 3)
@@ -501,22 +502,22 @@ void point_update()
       {
          if(CHAR_POS(u) >= POSITION_STUNNED)
          {
-            CHAR_MANA(u)      = MIN(CHAR_MANA(u) + mana_gain(u), mana_limit(u));
+            CHAR_MANA(u)      = std::min(CHAR_MANA(u) + mana_gain(u), mana_limit(u));
 
-            CHAR_ENDURANCE(u) = MIN(CHAR_ENDURANCE(u) + move_gain(u), move_limit(u));
+            CHAR_ENDURANCE(u) = std::min(CHAR_ENDURANCE(u) + move_gain(u), move_limit(u));
 
             hgain             = hit_gain(u);
             if(hgain >= 0)
             {
-               UNIT_HIT(u) = MIN(UNIT_HIT(u) + hgain, hit_limit(u));
+               UNIT_HIT(u) = std::min(UNIT_HIT(u) + hgain, hit_limit(u));
             }
             else
             {
                damage(u, u, nullptr, -hgain, MSG_TYPE_OTHER, MSG_OTHER_STARVATION, COM_MSG_EBODY);
             }
 
-            CHAR_MANA(u)      = MAX(0, CHAR_MANA(u));
-            CHAR_ENDURANCE(u) = MAX(0, CHAR_ENDURANCE(u));
+            CHAR_MANA(u)      = std::max(static_cast<int16_t>(0), CHAR_MANA(u));
+            CHAR_ENDURANCE(u) = std::max(static_cast<int16_t>(0), CHAR_ENDURANCE(u));
 
             if(CHAR_POS(u) == POSITION_STUNNED)
             {

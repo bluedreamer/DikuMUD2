@@ -46,6 +46,6 @@ extern struct requirement_type spl_requirement[];
 
 #define SPL_DIV_REQ(spell) (spl_requirement[spell].abilities[ABIL_DIV])
 
-#define SPL_POW_REQ(spell) MIN(SPL_MAG_REQ(spell), SPL_DIV_REQ(spell))
+#define SPL_POW_REQ(spell) std::min(SPL_MAG_REQ(spell), SPL_DIV_REQ(spell))
 
 void set_spellargs(struct spell_args *sa, unit_data *caster, unit_data *medium, unit_data *target, const char *arg, int hm);

@@ -43,6 +43,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
 
 auto raw_destruct_affect(unit_affected_type *af) -> bool
 {
@@ -432,7 +433,7 @@ auto apf_natural_armour(unit_affected_type *af, unit_data *unit, bool set) -> bo
          }
       }
 
-      CHAR_NATURAL_ARMOUR(unit) = MAX(CHAR_NATURAL_ARMOUR(unit), af->data[0]);
+      CHAR_NATURAL_ARMOUR(unit) = std::max(static_cast<int>(CHAR_NATURAL_ARMOUR(unit)), af->data[0]);
    }
    else
    {

@@ -52,6 +52,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
 
 /* external fcntls */
 extern struct unit_function_array_type unit_function_array[];
@@ -453,7 +454,7 @@ public:
 
 static int  command_history_pos = 0;
 
-static void add_command_history(unit_data *u, char *str)
+static void add_command_history(unit_data *u, const char *str)
 {
    if(IS_PC(u))
    {
@@ -595,8 +596,8 @@ void command_interpreter(unit_data *ch, const char *arg)
       return;
    }
 
-   strncpy(argstr, skip_blanks(arg), MAX(0, MAX_INPUT_LENGTH - 1 - strlen(cmd)));
-   argstr[MAX(0, MAX_INPUT_LENGTH - 1 - strlen(cmd))] = 0;
+   strncpy(argstr, skip_blanks(arg), std::max((size_t)0, MAX_INPUT_LENGTH - 1 - strlen(cmd)));
+   argstr[std::max((size_t)0, MAX_INPUT_LENGTH - 1 - strlen(cmd))] = 0;
 
    strip_trailing_spaces(argstr);
 
@@ -668,7 +669,7 @@ void command_interpreter(unit_data *ch, const char *arg)
 
    if(cmd_ptr->log_level != 0U)
    {
-      slog(LOG_ALL, MAX(CHAR_LEVEL(ch), cmd_ptr->log_level), "CMDLOG %s: %s %s", UNIT_NAME(ch), cmd_ptr->cmd_str, argstr);
+      slog(LOG_ALL, std::max(CHAR_LEVEL(ch), cmd_ptr->log_level), "CMDLOG %s: %s %s", UNIT_NAME(ch), cmd_ptr->cmd_str, argstr);
    }
 
    if(cmd_ptr->tmpl != nullptr)

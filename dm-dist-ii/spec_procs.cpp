@@ -58,6 +58,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <algorithm>
 
 /*   external vars  */
 
@@ -1103,7 +1104,7 @@ auto mercenary_hire(struct spec_arg *sarg) -> int
             act("$1n says, 'Get lost, punk!'", A_SOMEONE, sarg->owner, nullptr, nullptr, TO_ROOM);
             return SFR_BLOCK;
          }
-         price = MAX(5000, 500 * (CHAR_LEVEL(victim) + CHAR_LEVEL(sarg->owner) * CHAR_LEVEL(sarg->owner)));
+         price = std::max(5000, 500 * (CHAR_LEVEL(victim) + CHAR_LEVEL(sarg->owner) * CHAR_LEVEL(sarg->owner)));
 
          if(static_cast<unsigned int>(char_can_afford(sarg->activator, price, currency)) == 0U)
          {
@@ -1176,7 +1177,7 @@ auto mercenary_hire(struct spec_arg *sarg) -> int
             act("$1n says, 'Get lost, punk!'", A_SOMEONE, sarg->owner, nullptr, nullptr, TO_ROOM);
             return SFR_BLOCK;
          }
-         price = MAX(5000, 500 * (CHAR_LEVEL(victim) + CHAR_LEVEL(sarg->owner) * CHAR_LEVEL(sarg->owner)));
+         price = std::max(5000, 500 * (CHAR_LEVEL(victim) + CHAR_LEVEL(sarg->owner) * CHAR_LEVEL(sarg->owner)));
 
          act("$1n says, '$3t, and $2n is history.'", A_SOMEONE, sarg->owner, victim, money_string(price, currency, TRUE), TO_ROOM);
          return SFR_BLOCK;
@@ -1360,7 +1361,7 @@ auto green_tuborg(struct spec_arg *sarg) -> int
          act("The $2N has made you feel more energetic!", A_HIDEINV, sarg->activator, sarg->owner, nullptr, TO_CHAR);
          act("$1n drinks $2n and looks more energetic!", A_HIDEINV, sarg->activator, sarg->owner, nullptr, TO_ROOM);
          CHAR_ENDURANCE(sarg->activator) = move_limit(sarg->activator);
-         UNIT_HIT(sarg->activator)       = MIN(UNIT_MAX_HIT(sarg->activator), UNIT_HIT(sarg->activator) + 3);
+         UNIT_HIT(sarg->activator)       = std::min(UNIT_MAX_HIT(sarg->activator), UNIT_HIT(sarg->activator) + 3);
          if((af = affected_by_spell(sarg->activator, ID_SLEEP)) != nullptr)
          {
             act("This fabulous $2N has made you feel less sleepy!", A_ALWAYS, sarg->activator, sarg->owner, nullptr, TO_CHAR);

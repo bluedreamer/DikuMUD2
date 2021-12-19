@@ -64,6 +64,7 @@
 #include "wpn_info_type.h"
 #include "zon_basis.h"
 
+#include <algorithm>
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
@@ -778,19 +779,19 @@ static void change_alignment(unit_data *slayer, unit_data *victim)
    diff = CHAR_LEVEL(slayer) - CHAR_LEVEL(victim);
    if(diff > 0)
    {
-      adjust += (adjust * MIN(10, diff)) / 10;
+      adjust += (adjust * std::min(10, diff)) / 10;
    }
    else if(diff < 0)
    {
-      adjust += (adjust * MAX(-10, diff)) / 20;
+      adjust += (adjust * std::max(-10, diff)) / 20;
    }
 
-   adjust = MIN(200, adjust);
-   adjust = MAX(-200, adjust);
+   adjust = std::min(200, adjust);
+   adjust = std::max(-200, adjust);
 
    UNIT_ALIGNMENT(slayer) += adjust;
-   UNIT_ALIGNMENT(slayer) = MIN(1000, UNIT_ALIGNMENT(slayer));
-   UNIT_ALIGNMENT(slayer) = MAX(-1000, UNIT_ALIGNMENT(slayer));
+   UNIT_ALIGNMENT(slayer) = std::min(1000, static_cast<int>(UNIT_ALIGNMENT(slayer)));
+   UNIT_ALIGNMENT(slayer) = std::max(-1000, static_cast<int>(UNIT_ALIGNMENT(slayer)));
 }
 
 /* Do all the gain stuff for CH where no is the number of players */
@@ -821,7 +822,7 @@ static void person_gain(unit_data *ch, unit_data *dead, int share, int grouped, 
 
          if(CHAR_LEVEL(ch) < maxlevel - 5)
          {
-            share -= (MIN(95, 7 * (maxlevel - (CHAR_LEVEL(ch) + 5))) * share) / 100;
+            share -= (std::min(95, 7 * (maxlevel - (CHAR_LEVEL(ch) + 5))) * share) / 100;
          }
       }
 
@@ -889,7 +890,7 @@ static void exp_align_gain(unit_data *ch, unit_data *victim)
 
       if(paf != nullptr)
       {
-         maxlevel = MAX(virtual_level(head), paf->data[0]);
+         maxlevel = std::max(virtual_level(head), paf->data[0]);
       }
       else
       {
@@ -908,8 +909,8 @@ static void exp_align_gain(unit_data *ch, unit_data *victim)
             {
                sumlevel += virtual_level(f->follower);
 
-               maxlevel = MAX(virtual_level(f->follower), maxlevel);
-               minlevel = MIN(virtual_level(f->follower), minlevel);
+               maxlevel = std::max(virtual_level(f->follower), maxlevel);
+               minlevel = std::min(virtual_level(f->follower), minlevel);
 
                no_members++;
             }
@@ -929,7 +930,7 @@ static void exp_align_gain(unit_data *ch, unit_data *victim)
 
          if(rellevel < 0)
          {
-            share = (MAX(0, 100 + 15 * rellevel) * share) / 100;
+            share = (std::max(0, 100 + 15 * rellevel) * share) / 100;
          }
          else if(rellevel > 0)
          {
@@ -941,7 +942,7 @@ static void exp_align_gain(unit_data *ch, unit_data *victim)
             share = (4 * share) / (3 + no_members);
          }
 
-         share = MIN(100 * no_members + 300, share);
+         share = std::min(100 * no_members + 300, share);
       }
    }
 
@@ -1034,7 +1035,7 @@ auto raw_kill(unit_data *ch) -> unit_data *
 #ifdef DEMIGOD
    if(CHAR_ORIGINAL(ch) && IS_DEMIGOD(CHAR_ORIGINAL(ch)))
    {
-      int power = MAX(1000, 1000 * CHAR_LEVEL(ch) - 4000);
+      int power = std::max(1000, 1000 * CHAR_LEVEL(ch) - 4000);
       CHAR_EXP(CHAR_ORIGINAL(ch)) -= power;
       act("You lose $2d points.", A_ALWAYS, ch, &power, 0, TO_CHAR);
    }
@@ -1126,20 +1127,20 @@ auto lose_exp(unit_data *ch) -> int
 
    /* This first line takes care of any xp earned above required level. */
 
-   loss = MAX(0, (CHAR_EXP(ch) - required_xp(PC_VIRTUAL_LEVEL(ch))) / 2);
+   loss = std::max(0, (CHAR_EXP(ch) - required_xp(PC_VIRTUAL_LEVEL(ch))) / 2);
 
    /* This line makes sure, that you lose at most half a level...       */
 
-   loss = MIN(loss, level_xp(PC_VIRTUAL_LEVEL(ch)) / 2);
+   loss = std::min(loss, level_xp(PC_VIRTUAL_LEVEL(ch)) / 2);
 
    /* This line takes care of the case where you have less or almost    */
    /* equal XP to your required. You thus lose at least 1/5th your      */
    /* level.                                                            */
 
-   loss = MAX(loss, level_xp(PC_VIRTUAL_LEVEL(ch)) / 5);
+   loss = std::max(loss, level_xp(PC_VIRTUAL_LEVEL(ch)) / 5);
 
    /* This line takes care of newbies, setting the lower bound... */
-   i    = MAX(0, (CHAR_EXP(ch) - required_xp(START_LEVEL)) / 2);
+   i    = std::max(0, (CHAR_EXP(ch) - required_xp(START_LEVEL)) / 2);
 
    if(loss > i)
    {
@@ -1245,7 +1246,7 @@ void modify_hit(unit_data *ch, int hit)
    if(CHAR_POS(ch) > POSITION_DEAD)
    {
       UNIT_HIT(ch) += hit;
-      UNIT_HIT(ch) = MIN(hit_limit(ch), UNIT_HIT(ch));
+      UNIT_HIT(ch) = std::min(hit_limit(ch), UNIT_HIT(ch));
 
       update_pos(ch);
 
@@ -1268,7 +1269,7 @@ void damage(
    }
 
    /* Minimum is 0 damage points [ no maximum! ] */
-   dam = MAX(dam, 0);
+   dam = std::max(dam, 0);
 
    /* If neither are allowed to attack each other... */
    if((pk_test(ch, victim, static_cast<int>(FALSE)) != 0) && (pk_test(victim, ch, static_cast<int>(FALSE)) != 0))
@@ -1371,7 +1372,7 @@ void damage(
 
    if((paf = affected_by_spell(victim, ID_MAX_ATTACKER)) != nullptr)
    {
-      paf->data[0] = MAX(CHAR_LEVEL(ch), paf->data[0]);
+      paf->data[0] = std::max(static_cast<int>(CHAR_LEVEL(ch)), paf->data[0]);
    }
    else
    {
@@ -1490,7 +1491,7 @@ void damage(
       if(!IS_NPC(victim))
       {
          slog(LOG_EXTENSIVE,
-              MAX(UNIT_MINV(ch), UNIT_MINV(victim)),
+              std::max(UNIT_MINV(ch), UNIT_MINV(victim)),
               "%s killed by %s at %s",
               STR(UNIT_NAME(victim)),
               TITLENAME(ch),
@@ -1676,7 +1677,7 @@ auto one_hit(unit_data *att, unit_data *def, int bonus, int att_weapon_type, int
    {
       act("You fumble with your $2N!", A_ALWAYS, att, att_weapon, nullptr, TO_CHAR);
       act("$1n fumbles with $1s $2N!", A_ALWAYS, att, att_weapon, nullptr, TO_ROOM);
-      hm = MIN(-10, roll - open100());
+      hm = std::min(-10, roll - open100());
       damage_object(att, att_weapon, hm);
       return 0;
    }
@@ -1693,7 +1694,7 @@ auto one_hit(unit_data *att, unit_data *def, int bonus, int att_weapon_type, int
 
    if(!CHAR_AWAKE(def))
    {
-      hm = MAX(hm, 100);
+      hm = std::max(hm, 100);
    }
 
    if(hm < 0) /* a miss */

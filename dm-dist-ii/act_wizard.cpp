@@ -66,6 +66,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
 
 /*   external vars  */
 
@@ -1766,7 +1767,7 @@ void do_wiz(unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   level = MAX(WIZ_CMD_LEVEL, UNIT_MINV(CHAR_ORIGINAL(ch)));
+   level = std::max(WIZ_CMD_LEVEL, static_cast<int>(UNIT_MINV(CHAR_ORIGINAL(ch))));
 
    switch(*arg)
    {
@@ -1779,7 +1780,7 @@ void do_wiz(unit_data *ch, char *arg, const struct command_info *cmd)
          if(static_cast<unsigned int>(str_is_number(tmp)) != 0U)
          {
             arg   = one_argument(++arg, tmp);
-            level = MAX(atoi(tmp), WIZ_CMD_LEVEL);
+            level = std::max(atoi(tmp), WIZ_CMD_LEVEL);
          }
          else if(emote)
          {

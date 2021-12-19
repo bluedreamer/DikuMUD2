@@ -190,7 +190,7 @@ auto apply_quality(int num, int quality) -> int
    {
       return (quality * num) / 100;
    }
-   return (MAX(1, 50 + quality / 2) * num) / 100;
+   return (std::max(1, 50 + quality / 2) * num) / 100;
 }
 
 /* Given a level, it returns how much XP is required to reach the  */

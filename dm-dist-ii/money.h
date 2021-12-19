@@ -25,6 +25,7 @@
 
 #include "money_type.h"
 #include "structs.h"
+#include "utils.h"
 
 using amount_t = int32_t;
 
@@ -116,7 +117,11 @@ auto unit_can_hold_amount(unit_data *unit, unit_data *money) -> amount_t;
 
 #define IS_MONEY(unit) (IS_OBJ(unit) && OBJ_TYPE(unit) == ITEM_MONEY)
 
-#define MONEY_AMOUNT(unit) (OBJ_PRICE(unit)) // MS2020: was  ((amount_t) OBJ_PRICE(unit))
+//#define MONEY_AMOUNT(unit) (OBJ_PRICE(unit)) // MS2020: was  ((amount_t) OBJ_PRICE(unit))
+inline auto MONEY_AMOUNT(unit_data *unit) -> uint32_t&
+{
+   return OBJ_PRICE(unit);
+}
 
 /* Index into money-array */
 #define MONEY_TYPE(obj) (OBJ_VALUE((obj), 0))

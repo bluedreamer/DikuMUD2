@@ -42,6 +42,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <algorithm>
 
 int          sunlight          = SUN_SET;   /* And how much sun. */
 const time_t beginning_of_time = 650336715; /* Sat Aug 11 01:05:15 1990 */
@@ -192,13 +193,13 @@ static void weather_change(struct zone_type *zone, struct time_info_data time_da
 
    zone->weather.change += (dice(1, 4) * diff + dice(2, 6) - dice(2, 6));
 
-   zone->weather.change = MIN(zone->weather.change, 12);
-   zone->weather.change = MAX(zone->weather.change, -12);
+   zone->weather.change = std::min(zone->weather.change, 12);
+   zone->weather.change = std::max(zone->weather.change, -12);
 
    zone->weather.pressure += zone->weather.change;
 
-   zone->weather.pressure = MIN(zone->weather.pressure, 1050);
-   zone->weather.pressure = MAX(zone->weather.pressure, 950);
+   zone->weather.pressure = std::min(zone->weather.pressure, 1050);
+   zone->weather.pressure = std::max(zone->weather.pressure, 950);
 
    change                 = 0;
 

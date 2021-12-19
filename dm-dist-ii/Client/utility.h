@@ -25,16 +25,16 @@
 #ifndef _MUD_UTILITY_H
 #define _MUD_UTILITY_H
 
-#ifdef MIN
-   #undef MIN
+#ifdef std::min
+   #undef std::min
 #endif
 
-#ifdef MAX
-   #undef MAX
+#ifdef std::max
+   #undef std::max
 #endif
 
-int   MIN(int a, int b);
-int   MAX(int a, int b);
+int   std::min(int a, int b);
+int   std::max(int a, int b);
 
 int   number(int from, int to);
 int   dice(int number, int size);

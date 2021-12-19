@@ -38,6 +38,7 @@
 #include <cstring>
 #include <sys/types.h>
 #include <unistd.h>
+#include <algorithm>
 
 // Read as much as we can...
 // -1 on error, 0 on ok.
@@ -206,7 +207,7 @@ void protocol_send_text(cHook *Hook, const uint16_t id, const char *text, const 
 
    len   = strlen(text) + 1;
 
-   txlen = MIN(MAX_TEXT_LEN, len);
+   txlen = std::min(MAX_TEXT_LEN, static_cast<int>(len));
 
    if(txlen < len)
    {
@@ -223,7 +224,7 @@ void protocol_send_text(cHook *Hook, const uint16_t id, const char *text, const 
 
       if(txlen == 0)
       {
-         txlen = MIN(MAX_TEXT_LEN, len);
+         txlen = std::min(MAX_TEXT_LEN, static_cast<int>(len));
       }
    }
 

@@ -1311,7 +1311,7 @@ end
 ++++++++++++++++++++++++++++++++++++++++++++++++ */
 %reset
 /*
-LOAD OBJ/MOB		INTO	WHERE	MAX TYPE	NO.
+LOAD OBJ/MOB		INTO	WHERE	std::max TYPE	NO.
 */
 
 load	frog@ogre		into	marsh_2	zonemax	10
@@ -1383,4 +1383,3 @@ door tunnel_15 WEST {EX_OPEN_CLOSE,EX_CLOSED}
 /* END RESET */
 
 %end
-

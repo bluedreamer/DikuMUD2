@@ -42,6 +42,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
 
 extern char       libdir[]; /* from dikumud.c */
 
@@ -194,7 +195,7 @@ static auto calc_money(amount_t v1, char op, amount_t v2) -> amount_t
 
    if(res < 0)
    { /* overflow */
-      return MAX(v1, v2);
+      return std::max(v1, v2);
    }
 
    return res;
@@ -389,7 +390,7 @@ void money_transfer(unit_data *from, unit_data *to, amount_t amt, currency_t cur
          if(0 < mon_array[i].take)
          { /* Did we take any of these? */
             /* Put back as many as we can `afford' or have */
-            if(0 < (temp = MIN((-calc) / mon_array[i].value, mon_array[i].take)))
+            if(0 < (temp = std::min((-calc) / mon_array[i].value, mon_array[i].take)))
             {
                mon_array[i].take -= temp;
                calc += calc_money(mon_array[i].value, '*', temp);
@@ -746,14 +747,14 @@ auto char_can_carry_amount(unit_data *ch, unit_data *money) -> amount_t
 {
    int d_wgt = char_carry_w_limit(ch) - UNIT_CONTAINING_W(ch);
 
-   return MIN((amount_t)(d_wgt * MONEY_WEIGHT(money)), MONEY_AMOUNT(money));
+   return std::min(static_cast<amount_t>(d_wgt * MONEY_WEIGHT(money)), static_cast<amount_t>(MONEY_AMOUNT(money)));
 }
 
 auto unit_can_hold_amount(unit_data *unit, unit_data *money) -> amount_t
 {
    int d_wgt = UNIT_CAPACITY(unit) - UNIT_CONTAINING_W(unit);
 
-   return MIN((amount_t)(d_wgt * MONEY_WEIGHT(money)), MONEY_AMOUNT(money));
+   return std::min(static_cast<amount_t>(d_wgt * MONEY_WEIGHT(money)), static_cast<amount_t>(MONEY_AMOUNT(money)));
 }
 
    /* Temporary (?) wizcommand to create money */
@@ -980,7 +981,7 @@ done:
       {
          if(money_types[idx].currency == cur)
          {
-            tmp = (tmp < 0) ? money_types[idx].relative_value : MIN(tmp, money_types[idx].relative_value);
+            tmp = (tmp < 0) ? money_types[idx].relative_value : std::min(tmp, money_types[idx].relative_value);
          }
       }
 
