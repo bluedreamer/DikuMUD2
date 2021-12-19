@@ -25,6 +25,7 @@
 
 #include "dijkstra.h"
 #include "interpreter.h"
+#include "visit_data.h"
 
 #define ROOM_DOOR_NAME(room, dir) (ROOM_EXIT((room), (dir))->open_name.Name() ? ROOM_EXIT((room), (dir))->open_name.Name() : "UNDEFINED")
 
@@ -42,24 +43,8 @@ auto low_find_door(unit_data *ch, char *doorstr, int err_msg, int check_hidden) 
 #define DESTROY_ME 12
 
 
-struct visit_data
-{
-   int        state;
-   unit_data *go_to;
 
-   unit_data *start_room;
-   unit_data *dest_room;
-
-   /* Return DESTROY_ME to destroy moving function        */
-   /*        SFR_SHARE to allow lower functions to handle */
-   /*        SFR_SUPREME to not allow lower functions     */
-   int (*what_now)(const unit_data *, struct visit_data *);
-
-   void *data;
-   int   non_tick_return; /* What to return upon non-ticks (SFR_...) */
-};
-
-void npc_set_visit(unit_data *npc, unit_data *dest_room, int what_now(const unit_data *, struct visit_data *), void *data,
+void npc_set_visit(unit_data *npc, unit_data *dest_room, int what_now(const unit_data *, visit_data *), void *data,
                    int non_tick_return);
 
 auto do_advanced_move(unit_data *ch, int direction, int following = static_cast<int>(FALSE)) -> int;

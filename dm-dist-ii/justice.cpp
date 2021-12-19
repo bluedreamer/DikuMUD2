@@ -108,10 +108,10 @@ void offend_legal_state(unit_data *ch, unit_data *victim)
 /*                                                                  */
 auto npc_visit_room(struct spec_arg *sarg) -> int
 {
-   struct visit_data *vd;
+   visit_data *vd;
    int                i;
 
-   vd = (struct visit_data *)sarg->fptr->data;
+   vd = (visit_data *)sarg->fptr->data;
 
    if(sarg->cmd->no == CMD_AUTO_EXTRACT)
    {
@@ -165,11 +165,11 @@ auto npc_visit_room(struct spec_arg *sarg) -> int
 /* return to its original room                                      */
 /* The *data may be any datapointer which what_now can use          */
 /*                                                                  */
-void npc_set_visit(unit_data *npc, unit_data *dest_room, int what_now(const unit_data *, struct visit_data *), void *data,
+void npc_set_visit(unit_data *npc, unit_data *dest_room, int what_now(const unit_data *, visit_data *), void *data,
                    int non_tick_return)
 {
    unit_data         *u;
-   struct visit_data *vd;
+   visit_data *vd;
    unit_fptr         *fp1;
    unit_fptr         *fp2;
 
@@ -177,7 +177,7 @@ void npc_set_visit(unit_data *npc, unit_data *dest_room, int what_now(const unit
 
    u = unit_room(npc);
 
-   CREATE(vd, struct visit_data, 1);
+   CREATE(vd, visit_data, 1);
 
    vd->non_tick_return = non_tick_return;
    vd->state           = 0;
@@ -711,7 +711,7 @@ struct npc_accuse_data
 /* For use with the walk.c system. When at captain accuse the criminal */
 /* and then return to previous duties                                  */
 /*                                                                     */
-auto npc_accuse(const unit_data *npc, struct visit_data *vd) -> int
+auto npc_accuse(const unit_data *npc, visit_data *vd) -> int
 {
    char                    str[80];
    unit_affected_type     *af;
@@ -770,7 +770,7 @@ void activate_accuse(unit_data *npc, uint8_t crime_type, const char *cname)
    struct npc_accuse_data *nad;
    unit_data              *prison;
    unit_fptr              *fptr;
-   struct visit_data      *vd;
+   visit_data      *vd;
 
    /* GEN: get accuse room in here */
    /* How to find the nearest accuse room? */
@@ -780,7 +780,7 @@ void activate_accuse(unit_data *npc, uint8_t crime_type, const char *cname)
       of everything */
    if(((fptr = find_fptr(npc, SFUN_NPC_VISIT_ROOM)) != nullptr) && (affected_by_spell(npc, ID_WITNESS) != nullptr))
    {
-      vd = (struct visit_data *)fptr->data;
+      vd = (visit_data *)fptr->data;
       if((vd != nullptr) && (vd->what_now == npc_accuse) && (vd->state == 0))
       {
          return; /* Do nothing */
@@ -835,7 +835,7 @@ static auto crime_in_progress(unit_data *att, unit_data *def) -> int
 
 /* Help another friendly guard! :-) */
 /*                                  */
-auto guard_assist(const unit_data *npc, struct visit_data *vd) -> int
+auto guard_assist(const unit_data *npc, visit_data *vd) -> int
 {
    char mbuf[MAX_INPUT_LENGTH] = {0};
    switch(vd->state++)
