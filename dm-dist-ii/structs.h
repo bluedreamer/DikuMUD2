@@ -53,13 +53,6 @@
 /* ------------------ OBJ SPECIFIC STRUCTURES ----------------------- */
 
 /* ------------------  PC SPECIFIC STRUCTURES ------------------------ */
-struct pc_time_data
-{
-   time_t   creation; /* This represents time when the pc was created.     */
-   time_t   connect;  /* This is the last time that the pc connected.      */
-   time_t   birth;    /* This represents the characters age                */
-   uint32_t played;   /* This is the total accumulated time played in secs */
-};
 
 struct pc_account_data
 {
@@ -71,7 +64,7 @@ struct pc_account_data
    uint8_t  discount;     /* 0 - 100% discount                              */
    uint32_t flatrate;     /* The expiration date of a flat rate service     */
 };
-
+#include "pc_time_data.h"
 class pc_data
 {
 public:
@@ -80,7 +73,7 @@ public:
 
    struct terminal_setup_type setup;
 
-   struct pc_time_data    time;    /* PCs time info  */
+   pc_time_data           time;    /* PCs time info  */
    struct pc_account_data account; /* Accounting     */
 
    char *guild;    /* Which guild is the player a member of?  */
