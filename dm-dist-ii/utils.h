@@ -61,6 +61,10 @@ inline auto U_CHAR(unit_data *u) -> char_data *&
 {
    return u->data.ch;
 }
+inline auto U_CHAR(const unit_data *u) -> char_data *
+{
+   return u->data.ch;
+}
 //#define U_NPC(u)  (U_CHAR(u)->specific.npc)
 inline auto U_NPC(unit_data *u) -> npc_data *&
 {
@@ -95,6 +99,12 @@ inline auto IS_ROOM(const unit_data *ptr) -> bool;
 #ifdef UNIT_TYPE_DEBUG
 //   #define UCHAR(u) (assert(u && IS_CHAR(u)), U_CHAR(u))
 inline auto UCHAR(unit_data *u) -> char_data *&
+{
+   assert(u && IS_CHAR(u));
+
+   return U_CHAR(u);
+}
+inline auto UCHAR(const unit_data *u) -> char_data *
 {
    assert(u && IS_CHAR(u));
 
@@ -444,6 +454,10 @@ inline auto OBJ_FLAGS(unit_data *obj) -> uint8_t &
 
 //#define CHAR_DESCRIPTOR(ch) (UCHAR(ch)->descriptor)
 inline auto CHAR_DESCRIPTOR(unit_data *ch) -> descriptor_data *&
+{
+   return UCHAR(ch)->descriptor;
+}
+inline auto CHAR_DESCRIPTOR(const unit_data *ch) -> descriptor_data *
 {
    return UCHAR(ch)->descriptor;
 }

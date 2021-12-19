@@ -26,6 +26,7 @@
 /* 09-Feb-95 gnort: Fixed silly bug in wstat zone                          */
 #include "account.h"
 #include "affect.h"
+#include "apply_function_type.h"
 #include "blkfile.h"
 #include "comm.h"
 #include "common.h"
@@ -43,6 +44,7 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "tick_function_type.h"
 #include "time_info_data.h"
 #include "tree_type.h"
 #include "unit_affected_type.h"
@@ -659,9 +661,6 @@ static void stat_wskill(const unit_data *ch, unit_data *u)
 
 static void stat_affect(const unit_data *ch, unit_data *u)
 {
-   extern struct tick_function_type  tif[];
-   extern struct apply_function_type apf[];
-
    unit_affected_type *af;
    char                buf[1024];
 

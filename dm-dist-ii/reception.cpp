@@ -491,7 +491,7 @@ auto base_load_contents(const char *pFileName, const unit_data *unit) -> unit_da
    if((unit != nullptr) && IS_CHAR(unit))
    {
       tmp_descr             = CHAR_DESCRIPTOR(unit);
-      CHAR_DESCRIPTOR(unit) = nullptr;
+      CHAR_DESCRIPTOR(const_cast<unit_data*>(unit)) = nullptr;
    }
 
    for(init = TRUE; InvBuf.GetReadPosition() < InvBuf.GetLength();)
@@ -616,7 +616,7 @@ auto base_load_contents(const char *pFileName, const unit_data *unit) -> unit_da
 
    if((unit != nullptr) && IS_CHAR(unit))
    {
-      CHAR_DESCRIPTOR(unit) = tmp_descr;
+      CHAR_DESCRIPTOR(const_cast<unit_data*>(unit)) = tmp_descr;
    }
 
    return topu;

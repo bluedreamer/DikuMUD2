@@ -40,8 +40,8 @@ enum log_level
 #define MAX_STRING_LENGTH 4096
 #define MAX_INPUT_LENGTH  200
 
-#define TRUE  1
-#define FALSE 0
+constexpr bool TRUE  = true;
+constexpr bool FALSE = false;
 
 #define BITCONV16(i) ((((uint16_t)i) >> 8) | ((((uint16_t)i) & 255) << 8))
 #define BITCONV32(i) ((((uint32_t)i) >> 16) | ((((uint32_t)i) & 65535) << 16))
@@ -59,7 +59,11 @@ enum log_level
    strcat(p, c);                                                                                                                           \
    TAIL(p)
 
-#define STR(str) (str ? str : "(NIL POINTER)")
+//#define STR(str) (str ? str : "(NIL POINTER)")
+inline auto STR(const char *str) -> const char *
+{
+   return str != nullptr ? str : "(NIL POINTER)";
+}
 
 #define IF_STR(st) ((st) ? (st) : "")
 

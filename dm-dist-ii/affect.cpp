@@ -25,18 +25,16 @@
 /* 23/07/92 seifert: Corrected grave error with event_enq when destroyed   */
 /* 02/08/92 seifert: Checks for destructed in various places               */
 
-#include <cstdio>
-#include <cstdlib>
-
 #include "affect.h"
+#include "apply_function_type.h"
 #include "main.h"
 #include "structs.h"
+#include "tick_function_type.h"
 #include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
-
-extern struct apply_function_type apf[];
-extern struct tick_function_type  tif[];
+#include <cstdio>
+#include <cstdlib>
 
 unit_affected_type *affected_list = nullptr; /* Global list pointer       */
 unit_affected_type *next_affected_dude;      /* dirty - very dirty indeed */
