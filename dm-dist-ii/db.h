@@ -25,6 +25,7 @@
 
 #include "bytestring.h"
 #include "config.h"
+#include "bin_search_type.h"
 #include "dbfind.h"
 
 #define MUD_NAME "Valhalla" /* For ease of localization */
@@ -94,7 +95,7 @@ struct zone_info_type
 {
    int                     no_of_zones; /* Total number of zones       */
    struct zone_type       *zone_list;   /* The Linked List of Zones    */
-   struct bin_search_type *ba;          /* Array of structs for search */
+    bin_search_type *ba;          /* Array of structs for search */
    void                  **spmatrix;    /* Inter zone shortest paths   */
 };
 

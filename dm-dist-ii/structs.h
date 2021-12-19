@@ -30,6 +30,7 @@
 #include "protocol.h"
 #include "queue.h"
 #include "system.h"
+#include "bin_search_type.h"
 #include "values.h"
 
 #define FI_MAX_ZONENAME 30 /* Max length of any zone-name    */
@@ -48,13 +49,6 @@
 #define SD_ASCII 2 /* If pointer, then it's ascii char * */
 
 /* ----------------- DATABASE STRUCTURES ----------------------- */
-
-/* This must be maintained as an array for use with binary search methods */
-struct bin_search_type
-{
-   const char *compare; /* Points to the comparison string  */
-   void       *block;   /* Points to the relevant block     */
-};
 
 /* A linked list of commands to execute */
 struct zone_reset_cmd
@@ -84,13 +78,13 @@ public:
    char           *filename; /* The filename of this file        */
 
    file_index_type        *fi; /* Pointer to list of file-index's  */
-   struct bin_search_type *ba; /* Pointer to binarray of type      */
+    bin_search_type *ba; /* Pointer to binarray of type      */
 
    struct zone_reset_cmd *zri;  /* List of Zone reset commands      */
    struct zone_type      *next; /* Next Zone                        */
 
    struct diltemplate     *tmpl;   /* DIL templates in zone            */
-   struct bin_search_type *tmplba; /* Pointer to binarray of type      */
+    bin_search_type *tmplba; /* Pointer to binarray of type      */
 
    uint8_t **spmatrix; /* Shortest Path Matrix             */
 

@@ -19,7 +19,7 @@ set(DMSERVER_SRC account.cpp act_change.cpp act_comm.cpp act_info.cpp act_moveme
         base.h config.h dil.h guild.h main.h select.h system.h utils.h
         blkfile.h connectionlog.h dilinst.h handler.h modify.h skills.h textutil.h values.h
         bytestring.h constants.h dilrun.h hashstring.h money.h spec_assign.h translate.h weather.h
-        combat.h db_file.h essential.h help.new.h movement.h spelldef.h trie.h wmacros.h act_movement.h zon_basis.h nice.h signals.h reception.h destruct.h pcsave.h nanny.h mobact.h unit_data.cpp unit_data.h file_index_type.cpp file_index_type.h)
+        combat.h db_file.h essential.h help.new.h movement.h spelldef.h trie.h wmacros.h act_movement.h zon_basis.h nice.h signals.h reception.h destruct.h pcsave.h nanny.h mobact.h unit_data.cpp unit_data.h file_index_type.cpp file_index_type.h bin_search_type.cpp bin_search_type.h)
 
 add_compile_definitions(DMSERVER MEMORY_DEBUG MUD_DEBUG)
 add_executable(dmserver ${DMSERVER_SRC})
