@@ -29,6 +29,8 @@
 
 #include "essential.h"
 #include "file_index_type.h"
+#include "obj_data.h"
+#include "room_data.h"
 #include "structs.h"
 
 extern const int8_t time_light[];
@@ -84,6 +86,10 @@ inline auto U_ROOM(unit_data *u) -> room_data *&
 #endif
 
 inline auto IS_CHAR(const unit_data *ptr) -> bool;
+inline auto IS_NPC(const unit_data *ptr) -> bool;
+inline auto IS_PC(const unit_data *ptr) -> bool;
+inline auto IS_OBJ(const unit_data *ptr) -> bool;
+inline auto IS_ROOM(const unit_data *ptr) -> bool;
 #ifdef UNIT_TYPE_DEBUG
 //   #define UCHAR(u) (assert(u && IS_CHAR(u)), U_CHAR(u))
 inline auto UCHAR(unit_data *u) -> char_data *&
@@ -92,16 +98,55 @@ inline auto UCHAR(unit_data *u) -> char_data *&
 
    return U_CHAR(u);
 }
-   #define UNPC(u)  (assert(u &&IS_NPC(u)), U_NPC(u))
-   #define UPC(u)   (assert(u &&IS_PC(u)), U_PC(u))
-   #define UOBJ(u)  (assert(u &&IS_OBJ(u)), U_OBJ(u))
-   #define UROOM(u) (assert(u &&IS_ROOM(u)), U_ROOM(u))
+//   #define UNPC(u)  (assert(u &&IS_NPC(u)), U_NPC(u))
+inline auto UNPC(unit_data *u) -> npc_data *&
+{
+   assert(u && IS_NPC(u));
+
+   return U_NPC(u);
+}
+//   #define UPC(u)   (assert(u &&IS_PC(u)), U_PC(u))
+inline auto UPC(unit_data *u) -> pc_data *&
+{
+   assert(u && IS_PC(u));
+
+   return U_PC(u);
+}
+//   #define UOBJ(u)  (assert(u &&IS_OBJ(u)), U_OBJ(u))
+inline auto UOBJ(unit_data *u) -> obj_data *&
+{
+   assert(u && IS_OBJ(u));
+
+   return U_OBJ(u);
+}
+//   #define UROOM(u) (assert(u &&IS_ROOM(u)), U_ROOM(u))
+inline auto UROOM(unit_data *u) -> room_data *&
+{
+   assert(u && IS_ROOM(u));
+
+   return U_ROOM(u);
+}
 #else
-   #define UCHAR(u) U_CHAR(u)
-   #define UNPC(u)  U_NPC(u)
-   #define UPC(u)   U_PC(u)
-   #define UOBJ(u)  U_OBJ(u)
-   #define UROOM(u) U_ROOM(u)
+inline auto UCHAR(unit_data *u) -> char_data *&
+{
+   return U_CHAR(u);
+}
+inline auto UNPC(unit_data *u) -> npc_data *&
+{
+   return U_NPC(u);
+}
+inline auto UPC(unit_data *u) -> pc_data *&
+{
+   return U_PC(u);
+}
+inline auto UOBJ(unit_data *u) -> obj_data *&
+{
+   return U_OBJ(u);
+}
+inline auto UROOM(unit_data *u) -> room_data *&
+{
+   return U_ROOM(u);
+}
 #endif
 
 /* ..................................................................... */
@@ -327,30 +372,64 @@ extern int sunlight;
 
 /* ..................................................................... */
 
-#define ROOM_RESISTANCE(room) (UROOM(room)->resistance)
+//#define ROOM_RESISTANCE(room) (UROOM(room)->resistance)
+inline auto ROOM_RESISTANCE(unit_data *room) -> uint8_t &
+{
+   return UROOM(room)->resistance;
+}
+//#define ROOM_LANDSCAPE(unit) (UROOM(unit)->movement_type)
+inline auto ROOM_LANDSCAPE(unit_data *unit) -> uint8_t &
+{
+   return UROOM(unit)->movement_type;
+}
 
-#define ROOM_LANDSCAPE(unit) (UROOM(unit)->movement_type)
-
-#define ROOM_FLAGS(unit) (UROOM(unit)->flags)
-
-#define ROOM_EXIT(unit, exit) (UROOM(unit)->dir_option[exit])
-
+//#define ROOM_FLAGS(unit) (UROOM(unit)->flags)
+inline auto ROOM_FLAGS(unit_data *unit) -> uint8_t &
+{
+   return UROOM(unit)->flags;
+}
+//#define ROOM_EXIT(unit, exit) (UROOM(unit)->dir_option[exit])
+inline auto ROOM_EXIT(unit_data *unit, size_t exit) -> room_direction_data *&
+{
+   return UROOM(unit)->dir_option[exit];
+}
 /* ..................................................................... */
 
-#define OBJ_RESISTANCE(obj) (UOBJ(obj)->resistance)
-
-#define OBJ_VALUE(unit, index) (UOBJ(unit)->value[index])
-
-#define OBJ_PRICE(unit) (UOBJ(unit)->cost)
-
-#define OBJ_PRICE_DAY(unit) (UOBJ(unit)->cost_per_day)
-
-#define OBJ_TYPE(unit) (UOBJ(unit)->type)
-
-#define OBJ_EQP_POS(unit) (UOBJ(unit)->equip_pos)
-
-#define OBJ_FLAGS(obj) (UOBJ(obj)->flags)
-
+//#define OBJ_RESISTANCE(obj) (UOBJ(obj)->resistance)
+inline auto OBJ_RESISTANCE(unit_data *obj) -> uint8_t &
+{
+   return UOBJ(obj)->resistance;
+}
+//#define OBJ_VALUE(unit, index) (UOBJ(unit)->value[index])
+inline auto OBJ_VALUE(unit_data *obj, size_t index) -> int32_t &
+{
+   return UOBJ(obj)->value[index];
+}
+//#define OBJ_PRICE(unit) (UOBJ(unit)->cost)
+inline auto OBJ_PRICE(unit_data *obj) -> uint32_t &
+{
+   return UOBJ(obj)->cost;
+}
+//#define OBJ_PRICE_DAY(unit) (UOBJ(unit)->cost_per_day)
+inline auto OBJ_PRICE_DAY(unit_data *obj) -> uint32_t &
+{
+   return UOBJ(obj)->cost_per_day;
+}
+//#define OBJ_TYPE(unit) (UOBJ(unit)->type)
+inline auto OBJ_TYPE(unit_data *obj) -> uint8_t &
+{
+   return UOBJ(obj)->type;
+}
+//#define OBJ_EQP_POS(unit) (UOBJ(unit)->equip_pos)
+inline auto OBJ_EQP_POS(unit_data *obj) -> uint8_t &
+{
+   return UOBJ(obj)->equip_pos;
+}
+//#define OBJ_FLAGS(obj) (UOBJ(obj)->flags)
+inline auto OBJ_FLAGS(unit_data *obj) -> uint8_t &
+{
+   return UOBJ(obj)->flags;
+}
 /* ...........................OBJECT SUPERSTRUCTURES..................... */
 
 #define OBJ_HAS_EXTRA(obj, stat) (IS_SET(OBJ_EXTRA(obj), stat))

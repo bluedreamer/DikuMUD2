@@ -50,58 +50,7 @@
 #define SD_NULL  1 /* Ignore fptr->data (save as 0 ptr)  */
 #define SD_ASCII 2 /* If pointer, then it's ascii char * */
 
-/* ----------------- DATABASE STRUCTURES ----------------------- */
-
-/* ----------------- OTHER STRUCTURES ----------------------- */
-
-/* --------------------- DESCRIPTOR STRUCTURES -------------------- */
-
-/* ----------------- ROOM SPECIFIC STRUCTURES ----------------------- */
-
-class room_direction_data
-{
-public:
-   room_direction_data();
-   ~room_direction_data();
-
-   class cNamelist open_name; /* For Open & Enter                  */
-
-   file_index_type *key;
-   unit_data       *to_room;
-
-   uint8_t exit_info; /* Door info flags                   */
-};
-
-class room_data
-{
-public:
-   room_data();
-   ~room_data();
-
-   class room_direction_data *dir_option[6]; /* Her?? */
-
-   uint8_t flags;         /* Room flags                              */
-   uint8_t movement_type; /* The type of movement (city, hills etc.) */
-   uint8_t resistance;    /* Magic resistance of the room            */
-};
-
 /* ------------------ OBJ SPECIFIC STRUCTURES ----------------------- */
-
-class obj_data
-{
-public:
-   obj_data();
-   ~obj_data();
-
-   int32_t  value[5];     /* Values of the item (see list)       */
-   uint32_t cost;         /* Value when sold (gp.)               */
-   uint32_t cost_per_day; /* Cost to keep pr. real day           */
-
-   uint8_t flags;      /* Various special object flags        */
-   uint8_t type;       /* Type of item (ITEM_XXX)             */
-   uint8_t equip_pos;  /* 0 or position of item in equipment  */
-   uint8_t resistance; /* Magic resistance                    */
-};
 
 /* ------------------  PC SPECIFIC STRUCTURES ------------------------ */
 struct pc_time_data

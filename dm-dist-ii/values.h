@@ -268,20 +268,20 @@ constexpr int ULTIMATE_LEVEL      = 255;
 
 */
 
-#define SECT_INSIDE      0
-#define SECT_CITY        1
-#define SECT_FIELD       2
-#define SECT_FOREST      3
-#define SECT_HILLS       4
-#define SECT_MOUNTAIN    5
-#define SECT_DESERT      6
-#define SECT_SWAMP       7
-#define SECT_WATER_SWIM  8
-#define SECT_WATER_SAIL  9
-#define SECT_UNDER_WATER 10
-#define SECT_SNOW        11
-#define SECT_SLUSH       12 /* Wet snow */
-#define SECT_ICE         13
+constexpr int SECT_INSIDE      = 0;
+constexpr int SECT_CITY        = 1;
+constexpr int SECT_FIELD       = 2;
+constexpr int SECT_FOREST      = 3;
+constexpr int SECT_HILLS       = 4;
+constexpr int SECT_MOUNTAIN    = 5;
+constexpr int SECT_DESERT      = 6;
+constexpr int SECT_SWAMP       = 7;
+constexpr int SECT_WATER_SWIM  = 8;
+constexpr int SECT_WATER_SAIL  = 9;
+constexpr int SECT_UNDER_WATER = 10;
+constexpr int SECT_SNOW        = 11;
+constexpr int SECT_SLUSH       = 12; /* Wet snow */
+constexpr int SECT_ICE         = 13;
 
 /* ------------------------- NPC Flags ------------------------------
  INFINITE_CAPACITY

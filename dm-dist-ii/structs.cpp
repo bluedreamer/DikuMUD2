@@ -34,15 +34,6 @@ int world_nozones   = 0; /* number of zones in the world   */
 
 /* Descriptor stuff is in system.c */
 
-room_direction_data::room_direction_data()
-{
-   key       = nullptr;
-   to_room   = nullptr;
-   exit_info = 0;
-}
-
-room_direction_data::~room_direction_data() = default;
-
 char_data::char_data()
 {
    world_nochars++;
@@ -61,42 +52,6 @@ char_data::char_data()
 char_data::~char_data()
 {
    world_nochars--;
-}
-
-room_data::room_data()
-{
-   world_norooms++;
-}
-
-room_data::~room_data()
-{
-   world_norooms--;
-
-   for(int i = 0; i <= 5; i++)
-   {
-      if(dir_option[i] != nullptr)
-      {
-         delete dir_option[i];
-      }
-   }
-}
-
-obj_data::obj_data()
-{
-   world_noobjects++;
-
-   memset(value, 0, sizeof(value));
-   cost         = 0;
-   cost_per_day = 0;
-   flags        = 0;
-   type         = 0;
-   equip_pos    = 0;
-   resistance   = 0;
-}
-
-obj_data::~obj_data()
-{
-   world_noobjects--;
 }
 
 pc_data::pc_data()

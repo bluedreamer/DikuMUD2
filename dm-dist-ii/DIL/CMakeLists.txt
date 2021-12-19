@@ -12,7 +12,8 @@ set(DIL_SRC
         ../bytestring.cpp
         ../extra.cpp
         ../files.cpp
-        ../memory.cpp)
+        ../memory.cpp
+        ../room_data.cpp)
 set(DIL_H dilpar.h)
 
 include_directories(.)

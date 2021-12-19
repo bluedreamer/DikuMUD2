@@ -2,6 +2,7 @@
 #include "file_index_type.h"
 #include "handler.h"
 #include "namelist.h"
+#include "room_data.h"
 #include "utils.h"
 #include "values.h"
 

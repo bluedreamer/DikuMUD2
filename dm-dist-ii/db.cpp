@@ -67,7 +67,7 @@ struct zone_info_type zone_info = {0, nullptr, nullptr, nullptr};
 extern char     zondir[];
 extern uint32_t memory_total_alloc;
 
-auto create_direction_data() -> struct room_direction_data *;
+auto create_direction_data() -> room_direction_data *;
 
 /*  Generate array of bin_search_type for the zone_list, and for each
  *  zone's file_index's.
@@ -1197,7 +1197,7 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
             {
                if((fi = find_file_index(zone, name)) != nullptr)
                {
-                  ROOM_EXIT(u, i) = new(class room_direction_data);
+                  ROOM_EXIT(u, i) = new(room_direction_data);
                   g_nCorrupt += ROOM_EXIT(u, i)->open_name.ReadBuffer(pBuf);
 
                   g_nCorrupt += pBuf->Read16(&t16);
