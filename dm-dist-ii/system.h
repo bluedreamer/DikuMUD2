@@ -28,20 +28,6 @@
 #include "select.h"
 #include <sys/time.h>
 
-#define MAX_MULTI 5 /* Maximum five multiconnects */
-
-#include "cMultiHook.h"
-class cMultiMaster
-{
-public:
-   cMultiMaster();
-
-   int        nCount;
-   cMultiHook Multi[MAX_MULTI];
-};
-
-extern class cMultiMaster Multi;
-
 #define MAX_HOSTNAME 256
 
 void init_mother(int nPort);

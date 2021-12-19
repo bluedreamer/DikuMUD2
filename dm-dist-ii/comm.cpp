@@ -32,13 +32,8 @@
 /* 21/07/94 gnort  : Removed dollar doubling on input, which is ok, as     */
 /*                   player input is NEVER fed directly to act             */
 
-#include <cctype>
-#include <cerrno>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #include "comm.h"
+#include "cHook.h"
 #include "constants.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -50,6 +45,11 @@
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+#include <cctype>
+#include <cerrno>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 /* external vars */
 extern descriptor_data *descriptor_list;

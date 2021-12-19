@@ -1,4 +1,5 @@
 #include "cMultiHook.h"
+#include "cMultiMaster.h"
 #include "comm.h"
 #include "config.h"
 #include "protocol.h"
@@ -6,9 +7,8 @@
 #include "system.h"
 #include <cstring>
 
-extern class cMultiMaster Multi;
-extern descriptor_data   *descriptor_list;
-auto                      descriptor_new(class cMultiHook *pe) -> descriptor_data *;
+extern descriptor_data *descriptor_list;
+auto                    descriptor_new(cMultiHook *pe) -> descriptor_data *;
 
 cMultiHook::cMultiHook()
 {

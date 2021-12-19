@@ -49,6 +49,7 @@
 
 #include "account.h"
 #include "ban.h"
+#include "cMultiMaster.h"
 #include "comm.h"
 #include "common.h"
 #include "db.h"
@@ -341,11 +342,6 @@ void descriptor_close(descriptor_data *d, int bSendClose)
 /*                        Multi-Protocol-Procedures                  */
 /*                                                                   */
 /* ----------------------------------------------------------------- */
-
-cMultiMaster::cMultiMaster()
-{
-   nCount = 0;
-}
 
 void multi_clear()
 {

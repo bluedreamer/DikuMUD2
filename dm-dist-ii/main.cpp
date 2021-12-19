@@ -82,9 +82,6 @@ int                 heapspace = 0, events = 0;
 descriptor_data    *descriptor_list = nullptr;
 descriptor_data    *next_to_process = nullptr;
 
-/* For multi-connectors */
-class cMultiMaster Multi;
-
 /* The global server configuration */
 
 int mud_bootzone   = 1; /* Used when booting & resolving DIL templts */

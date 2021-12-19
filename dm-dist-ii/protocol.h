@@ -23,6 +23,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "cHook.h"
 #include "essential.h"
 #include "select.h"
 

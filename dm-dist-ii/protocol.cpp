@@ -29,6 +29,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "cHook.h"
 #include "db_file.h"
 #include "essential.h"
 #include "protocol.h"
