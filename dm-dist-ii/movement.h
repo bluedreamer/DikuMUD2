@@ -41,17 +41,6 @@ auto low_find_door(unit_data *ch, char *doorstr, int err_msg, int check_hidden) 
 
 #define DESTROY_ME 12
 
-struct door_data
-{
-   unit_data       *thing;
-   unit_data       *room;
-   unit_data       *reverse; /* Reverse Room or Inside thing */
-   file_index_type *key;
-   uint8_t          direction; /* For rooms, which direction was picked? */
-   uint8_t         *flags;
-   uint8_t         *rev_flags;
-   const char      *name;
-};
 
 struct visit_data
 {

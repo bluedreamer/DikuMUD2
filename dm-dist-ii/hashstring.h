@@ -23,7 +23,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include "essential.h"
 class unit_data;
 
 void string_statistics(unit_data *ch);

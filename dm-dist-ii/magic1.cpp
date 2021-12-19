@@ -28,12 +28,12 @@
  *			needed it, thus killing spells[12].c
  *		    Rewrote spell_identify_1() to use the wstat system.
  */
-
 #include "act_movement.h"
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
 #include "db.h"
+#include "door_data.h"
 #include "fight.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -333,7 +333,7 @@ void spell_sustain(spell_args *sa)
 
 void spell_lock(spell_args *sa)
 {
-   struct door_data *a_door = nullptr;
+   door_data *a_door = nullptr;
 
    char mbuf[MAX_INPUT_LENGTH];
    strcpy(mbuf, sa->arg);
@@ -391,7 +391,7 @@ void spell_lock(spell_args *sa)
 
 void spell_unlock(spell_args *sa)
 {
-   struct door_data *a_door = nullptr;
+   door_data *a_door = nullptr;
 
    char mbuf[MAX_INPUT_LENGTH];
    strcpy(mbuf, sa->arg);
@@ -500,7 +500,7 @@ void spell_identify_1(spell_args *sa)
    };
 
    extra_descr_data *exd;
-   char                     buffer[1024];
+   char              buffer[1024];
 
    if(sa->hm < 0)
    {
@@ -563,7 +563,7 @@ void spell_identify_1(spell_args *sa)
 void spell_identify_2(spell_args *sa)
 {
    extra_descr_data *exd;
-   int                      i = 0;
+   int               i = 0;
 
    if(sa->hm < 0)
    {

@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : help.h                                    Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -22,8 +23,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_HELP_H
-#define _MUD_HELP_H
 
 class help_index_type
 {
@@ -47,5 +46,3 @@ public:
    int                     elements, size; /* info about the list   */
    char                   *filename;
 };
-
-#endif /* _MUD_HELP_H */

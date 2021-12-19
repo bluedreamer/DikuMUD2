@@ -32,15 +32,11 @@
 /* 07/11/93 gnort  : Fixed no-message `bug' in consider                    */
 /* 12-Aug-94 gnort : Inserted spell-type check in recite and use           */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
 #include "dbfind.h"
+#include "door_data.h"
 #include "fight.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -55,7 +51,11 @@
 #include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
+#include <cctype>
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 /* The TURN_UNDEAD skill */
 void do_turn(unit_data *ch, char *arg, const struct command_info *cmd)
@@ -988,13 +988,13 @@ void do_aid(unit_data *ch, char *arg, const struct command_info *cmd)
 
 void do_pick(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   int               skilla;
-   int               hm;
-   int               prot;
-   struct door_data *a_door;
-   char             *oarg = arg;
+   int        skilla;
+   int        hm;
+   int        prot;
+   door_data *a_door;
+   char      *oarg = arg;
 
-   auto locate_lock(unit_data * ch, char *arg)->struct door_data *;
+   auto locate_lock(unit_data * ch, char *arg)->door_data *;
 
    skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_PICK_LOCK) : (CHAR_DEX(ch) + CHAR_BRA(ch)) / 2;
 

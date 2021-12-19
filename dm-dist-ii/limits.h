@@ -23,7 +23,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include "structs.h"
+#include "unit_data.h"
 
 auto char_can_carry_unit(unit_data *ch, unit_data *unit) -> int;
 auto char_can_get_unit(unit_data *ch, unit_data *unit) -> int;

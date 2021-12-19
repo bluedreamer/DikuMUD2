@@ -35,7 +35,7 @@
 /* 23/08/93 jubal  : Fixed messages in do_sail                             */
 /* 23/08/93 jubal  : Added messages to leader when start/stop follow       */
 /* 23/08/93 jubal  : Fixed (nearly - still acttrouble) msgs around open etc*/
-
+#include "door_data.h"
 #include "CServerConfiguration.h"
 #include "account.h"
 #include "affect.h"
@@ -901,12 +901,12 @@ auto low_find_door(unit_data *ch, char *doorstr, int err_msg, int check_hidden) 
    return -1;
 }
 
-auto locate_lock(unit_data *ch, char *arg) -> struct door_data *
+auto locate_lock(unit_data *ch, char *arg) -> door_data *
 {
    unit_data              *thing;
    unit_data              *other_room;
    unit_data              *back = nullptr;
-   static struct door_data a_door;
+   static door_data a_door;
    int                     door;
 
 #ifdef SUSPEKT
@@ -1002,7 +1002,7 @@ auto locate_lock(unit_data *ch, char *arg) -> struct door_data *
 
 void do_knock(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct door_data *a_door;
+   door_data *a_door;
 
    if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
@@ -1062,7 +1062,7 @@ void do_knock(unit_data *ch, char *argument, const struct command_info *cmd)
 void do_open(unit_data *ch, char *aaa, const struct command_info *cmd)
 {
    char             *argument = (char *)aaa;
-   struct door_data *a_door;
+   door_data *a_door;
 
    if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
@@ -1132,7 +1132,7 @@ void do_open(unit_data *ch, char *aaa, const struct command_info *cmd)
 
 void do_close(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct door_data *a_door;
+   door_data *a_door;
 
    if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
@@ -1214,7 +1214,7 @@ auto has_key(unit_data *ch, file_index_type *key) -> int
 
 void do_lock(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct door_data *a_door;
+   door_data *a_door;
 
    if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
@@ -1294,7 +1294,7 @@ void do_lock(unit_data *ch, char *argument, const struct command_info *cmd)
 
 void do_unlock(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   struct door_data *a_door;
+   door_data *a_door;
 
    if(static_cast<unsigned int>(str_is_empty(argument)) != 0U)
    {
