@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : account.h                                 Part of Valhalla MUD *
  * Version: 1.00                                                           *
@@ -22,20 +23,12 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#pragma once
-
 #define MAX_FLATRATE 2
 #include "essential.h"
 #include "structs.h"
 #include "unit_data.h"
 
-struct flatrate_type
-{
-   char    *pMessage;
-   uint16_t days;
-   uint32_t price;
-};
-
+#include "flatrate_type.h"
 class CAccountConfig
 {
 public:
