@@ -2,7 +2,6 @@
 
 #include "bin_search_type.h"
 #include "cNamelist.h"
-#include "namelist.h"
 
 class zone_reset_cmd;
 class diltemplate;

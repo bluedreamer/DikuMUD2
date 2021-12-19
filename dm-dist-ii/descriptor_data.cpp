@@ -3,7 +3,6 @@
 #include "comm.h"
 #include "db.h"
 #include "nanny.h"
-#include "queue.h"
 #include "utils.h"
 
 extern int              no_connections;

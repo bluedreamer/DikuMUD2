@@ -27,7 +27,6 @@
  * *********************************************************************** */
 /* Tue Jul 6 1993 HHS: added exchangable lib dir                           */
 
-#include "postoffice.h"
 #include "blkfile.h"
 #include "comm.h"
 #include "db.h"

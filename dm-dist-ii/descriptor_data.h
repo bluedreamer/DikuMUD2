@@ -1,6 +1,5 @@
 #pragma once
 #include "cMultiHook.h"
-#include "queue.h"
 #include "snoop_data.h"
 #include <cstdint>
 #include <ctime>

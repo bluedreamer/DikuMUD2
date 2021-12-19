@@ -6,16 +6,16 @@ set(DMSERVER_SRC account.cpp act_change.cpp act_comm.cpp act_info.cpp act_moveme
         eliza.cpp experience.cpp fight.cpp files.cpp guild.cpp handler.cpp help.cpp act_look.cpp
         hometown.cpp interpreter.cpp justice.cpp limits.cpp magic.cpp magic1.cpp magic2.cpp
         mobact.cpp modify.cpp money.cpp nanny.cpp nice.cpp pain.cpp pcsave.cpp
-        postoffice.cpp protocol.cpp queue.cpp reception.cpp shop.cpp signals.cpp skills.cpp
+        postoffice.cpp protocol.cpp reception.cpp shop.cpp signals.cpp skills.cpp
         slime.cpp spec_assign.cpp spec_procs.cpp spell_parser.cpp str_parse.cpp string.cpp
         swap.cpp sysport.cpp system.cpp teach.cpp textutil.cpp tif_affect.cpp trie.cpp utility.cpp
         weather.cpp zon_basis.cpp zon_midgaard.cpp zon_wiz.cpp
-        zone_boot.cpp zone_reset.cpp namelist.cpp structs.cpp dilfld.cpp extra.cpp
+        zone_boot.cpp zone_reset.cpp structs.cpp dilfld.cpp extra.cpp
         dilinst.cpp dilexp.cpp dilrun.cpp dbfind.cpp competition.cpp unitfind.cpp combat.cpp
-        select.cpp persist.cpp bytestring.cpp config.cpp connectionlog.cpp memory.cpp account.h comm.h dbfind.h extra.h interpreter.h namelist.h spells.h ttydef.h
-        act.h common.h db.h fight.h justice.h postoffice.h str_parse.h unitfind.h
+        select.cpp persist.cpp bytestring.cpp config.cpp connectionlog.cpp memory.cpp account.h comm.h dbfind.h extra.h interpreter.h spells.h ttydef.h
+        act.h common.h db.h fight.h justice.h str_parse.h unitfind.h
         affect.h competition.h dijkstra.h files.h limits.h protocol.h structs.h unixshit.h
-        ban.h composed.h dilexp.h guilddef.h magic.h queue.h sysport.h utility.h
+        ban.h composed.h dilexp.h guilddef.h magic.h sysport.h utility.h
         base.h config.h dil.h guild.h main.h select.h system.h utils.h
         blkfile.h connectionlog.h dilinst.h handler.h modify.h skills.h textutil.h values.h
         bytestring.h constants.h dilrun.h hashstring.h money.h spec_assign.h translate.h weather.h

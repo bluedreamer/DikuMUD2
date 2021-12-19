@@ -17,7 +17,6 @@ set(DMC_SRC
         ../extra.cpp
         ../memory.cpp
         ../money.cpp
-        ../namelist.cpp
         ../npc_data.cpp
         ../obj_data.cpp
         ../pc_data.cpp

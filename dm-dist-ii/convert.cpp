@@ -42,7 +42,6 @@
 #include "handler.h"
 #include "money.h"
 #include "pcsave.h"
-#include "postoffice.h"
 #include "skills.h"
 #include "structs.h"
 #include "textutil.h"

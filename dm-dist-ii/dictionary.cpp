@@ -81,7 +81,6 @@ Mon Nov 14 17:19:47 MET 1994
 #include "db_file.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "queue.h"
 #include "structs.h"
 #include "textutil.h"
 #include "trie.h"

@@ -29,7 +29,6 @@
 #include "extra.h"
 #include "hashstring.h"
 #include "protocol.h"
-#include "queue.h"
 #include "snoop_data.h"
 #include "system.h"
 #include "values.h"

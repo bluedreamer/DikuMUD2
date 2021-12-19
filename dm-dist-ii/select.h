@@ -23,7 +23,6 @@
  * *********************************************************************** */
 
 #include "essential.h"
-#include "queue.h"
 
 extern int bPipeSignal;
 

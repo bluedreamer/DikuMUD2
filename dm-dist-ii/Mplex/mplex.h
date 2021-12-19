@@ -30,7 +30,6 @@
 #include "essential.h"
 #include "network.h"
 #include "protocol.h"
-#include "queue.h"
 #include "select.h"
 
 class cConHook : public cHook

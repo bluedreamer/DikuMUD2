@@ -9,7 +9,6 @@ set(DIL_SRC
         ../textutil.cpp
         ../common.cpp
         ../cNamelist.cpp
-        ../namelist.cpp
         ../bytestring.cpp
         ../CByteBuffer.cpp
         ../extra.cpp

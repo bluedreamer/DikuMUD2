@@ -10,7 +10,6 @@ set(MPLEX_SRC
         ../common.cpp
         ../memory.cpp
         ../protocol.cpp
-        ../queue.cpp
         ../select.cpp
         ../textutil.cpp
         ../utility.cpp
