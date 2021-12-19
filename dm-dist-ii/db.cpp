@@ -28,7 +28,9 @@
 /* 23/08/93 jubal   : check for error before returning find_file_index     */
 /* 12/09/94 gnort   : cleaned up a bit                                     */
 /* 01/07/95 HHS     : added template loading and checking                  */
+
 #include "db.h"
+#include "CAccountConfig.h"
 #include "account.h"
 #include "affect.h"
 #include "comm.h"

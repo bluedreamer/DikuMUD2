@@ -23,53 +23,27 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#define MAX_FLATRATE 2
 #include "essential.h"
 #include "structs.h"
 #include "unit_data.h"
 
-#include "flatrate_type.h"
-class CAccountConfig
-{
-public:
-   CAccountConfig();
+#define MINUTE_GRANULARITY (15)
+#define TIME_GRANULARITY   ((24 * 60) / MINUTE_GRANULARITY)
+extern int32_t day_charge[7][TIME_GRANULARITY];
 
-   void Boot();
-
-   char *m_pCoinName;
-   char *m_pOverdueMessage;
-   char *m_pClosedMessage;
-   char *m_pPaypointMessage;
-
-   int m_nMaxCharge;
-   int m_nMinCharge;
-   int m_nFreeFromLevel;
-   int m_nAccountFree;
-   int m_nAccountLimit;
-   int m_nHourlyRate;
-   int m_bCreditCard;
-
-   flatrate_type m_flatrate[MAX_FLATRATE]{};
-};
-
-extern class CAccountConfig g_cAccountConfig;
-
-void account_flatrate_change(unit_data *god, unit_data *whom, int32_t days);
-
-void account_cclog(unit_data *ch, int amount);
-
-void account_insert(unit_data *god, unit_data *whom, uint32_t amount);
-void account_withdraw(unit_data *god, unit_data *whom, uint32_t amount);
-void account_global_stat(const unit_data *ch);
-void account_local_stat(const unit_data *ch, unit_data *u);
-
-void account_defaults(unit_data *pc);
-
-void account_subtract(unit_data *pc, time_t from, time_t to);
-
-auto account_is_overdue(const unit_data *ch) -> int;
-void account_overdue(const unit_data *ch);
-
-void account_paypoint(unit_data *ch);
-void account_closed(unit_data *ch);
 auto account_is_closed(unit_data *ch) -> int;
+auto account_is_overdue(const unit_data *ch) -> int;
+auto flatrate_sanity(int *numlist, int numlen) -> int;
+void account_cclog(unit_data *ch, int amount);
+void account_closed(unit_data *ch);
+void account_defaults(unit_data *pc);
+void account_flatrate_change(unit_data *god, unit_data *whom, int32_t days);
+void account_global_stat(const unit_data *ch);
+void account_insert(unit_data *god, unit_data *whom, uint32_t amount);
+void account_local_stat(const unit_data *ch, unit_data *u);
+void account_overdue(const unit_data *ch);
+void account_paypoint(unit_data *ch);
+void account_subtract(unit_data *pc, time_t from, time_t to);
+void account_withdraw(unit_data *god, unit_data *whom, uint32_t amount);
+void numlist_sanity(int *numlist, int numlen);
+void numlist_to_charge(int *numlist, int len, int *day_charge);
