@@ -1,49 +1,17 @@
-/* *********************************************************************** *
- * File   : demigod.c                                 Part of Valhalla MUD *
- * Version: 1.01                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Handling the demigod stuff                                     *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-/* Feb 21 1995, gnort:	You can't sacrifice to yourself, and you can't
- *			sacrifice characters.
- */
-
 #include "affect.h"
 #include "comm.h"
-#include "db.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "money.h"
-#include "skills.h"
 #include "spells.h"
-#include "structs.h"
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
 
+#include <algorithm>
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
-#include <cstring>
-#include <ctime>
-#include <algorithm>
 
 void save_player_file(unit_data *pc);
 

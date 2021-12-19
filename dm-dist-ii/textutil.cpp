@@ -1,47 +1,13 @@
-/* *********************************************************************** *
- * File   : textutil.c                                Part of Valhalla MUD *
- * Version: 1.02                                                           *
- * Author : Mostly seifert@diku.dk and quinn@diku.dk                       *
- *                                                                         *
- * Purpose: Routines handling manipulation of text strings.                *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 26/07/93 MS+HHS : Fixed del-name bug (again)                            */
-/* 06/07/93 HHS    : added str_cc                                          */
-/* 23/08/93 jubal  : Corrections in indent_text                            */
-/* 27/08/94 gnort  : Changes in indent_text                                */
-/* 03/09/94 gnort  : Added CAP to indent_text                              */
-/* 12/09/94 gnort  : Added const'ness to various functions' string args    */
-/* 14/09/94 seifert: Optimized and split is_name (is_name_raw)             */
-
 #include "textutil.h"
 
 #include "common.h"
 #include "structs.h"
-#include "utility.h"
-#include "utils.h"
 
+#include <algorithm>
 #include <cctype>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <algorithm>
 
 /*  From char * input stream 'str' copy characters into 'buf' until
  *  end of string or newline. Returns position of 'str' after copied

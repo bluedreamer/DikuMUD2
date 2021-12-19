@@ -1,31 +1,3 @@
-/* *********************************************************************** *
- * File   : pain.c                                    Part of Valhalla MUD *
- * Version: 1.51                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Pseudo AI Interface for NPC's. Makes a very simple language    *
- *          available for programming NPC's directly from the world file   *
- *          definitions.                                                   *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 16/03/94 MS: Corrected 'i' bug which made program continue...           */
-
 #include "comm.h"
 #include "common.h"
 #include "db.h"
@@ -41,7 +13,6 @@
 #include "trie.h"
 #include "unit_fptr.h"
 #include "unit_vector_data.h"
-#include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
@@ -49,7 +20,6 @@
 #include <cctype>
 #include <cstdarg> /* va_args in pain_error()        */
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
 #include <ctime>
 

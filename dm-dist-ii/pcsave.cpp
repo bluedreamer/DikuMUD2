@@ -1,33 +1,3 @@
-/* *********************************************************************** *
- * File   : pcsave.c                                  Part of Valhalla MUD *
- * Version: 1.30                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Program for handling saving and loading of players.            *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 16/07/92 seifert: Sanity checks that player length < buffer length      */
-/* 13/10/92 seifert: find_player returns -1 if no player data              */
-/* Tue Jul 6 1993 HHS: added exchangable lib dir                           */
-/* 09/09/93 seifert: Deletes player data after new has been written.       */
-/* 30/03/94 seifert: find_player returns BLK_NULL if no player data        */
-
 #include "account.h"
 #include "affect.h"
 #include "blkfile.h"
@@ -43,16 +13,13 @@
 #include "money.h"
 #include "structs.h"
 #include "textutil.h"
-#include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
 
-#include <cctype>
+#include <algorithm>
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
 #include <ctime>
-#include <algorithm>
 
 int32_t            player_id       = 1;
 static const char *tmp_player_name = PLAY_DIR "player.tmp";

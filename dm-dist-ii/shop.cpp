@@ -1,32 +1,3 @@
-/* *********************************************************************** *
- * File   : shop.c                                    Part of Valhalla MUD *
- * Version: 2.10                                                           *
- * Author : noop@diku.dk and seifert@diku.dk                               *
- *                                                                         *
- * Purpose: Handling of shops.                                             *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 02/08/92 seifert: Modified a lot to make init from text string          */
-/*    10/92 gnort  : Introduced object money                               */
-/* 29/08/93 jubal  : Uses trade price                                      */
-/* 14-08-94 gnort  : finalized object money (sheesh, two years! ;-) )      */
-
 #include "act.h"
 #include "comm.h"
 #include "common.h"

@@ -1,35 +1,3 @@
-/* *********************************************************************** *
- * File   : dilpar.y                                  Part of Valhalla MUD *
- * Version: 3.10                                                           *
- * Author : bombman@diku.dk                                                *
- *                                                                         *
- * Purpose: Unknown.                                                       *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 21-Aug-94 gnort: Added iscommand("foo")
- *                  Tiny bugfix in send
- * 26-Aug-94 gnort: Changed above iscommand to accept either "foo" or CMD_FOO
- *                  Killed old command and changed iscommand to command()
- * 28-Jan-95 HHS:   Reconstructed code generation entirely
- * 14-Apr-95 HHS:   Added for and foreach, break and continue
- * Wed Jan 22 14:57:30 PST 1997   HHS added paycheck dilfun DILSE_PCK/ DILE_PCK
- */
-
 /*
  * Definitions and type associations.
  */
@@ -58,7 +26,7 @@ extern int linenum;
  */
 
 int sunlight = 0;
-const int8_t time_light[24] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+//const int8_t time_light[24] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 #define yyerror(dum) syntax(dum)
 

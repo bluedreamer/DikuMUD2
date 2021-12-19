@@ -25,7 +25,6 @@
 
 #include "essential.h"
 #include "inter.h"
-#include "select.h"
 #include "serial.h"
 #include "network.h"
 #include "arg.h"
@@ -303,4 +302,3 @@ void cMud::Input(int nFlags)
       }
    }
 }
-

@@ -1,52 +1,20 @@
-/* *********************************************************************** *
- * File   : zon_midgaard.c                            Part of Valhalla MUD *
- * Version: 1.05                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Special functions for midgaard.                                *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
 #include "affect.h"
 #include "comm.h"
-#include "common.h"
-#include "constants.h"
-#include "db.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "justice.h"
 #include "money.h"
 #include "skills.h"
 #include "spells.h"
-#include "structs.h"
 #include "textutil.h"
-#include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
 
-#include <cctype>
-#include <climits>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
 /*   external vars  */
-
 extern descriptor_data *descriptor_list;
 
 /* extern procedures */

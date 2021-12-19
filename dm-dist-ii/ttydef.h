@@ -1,27 +1,4 @@
 #pragma once
-/* *********************************************************************** *
- * File   : ttydef.h                                  Part of Valhalla MUD *
- * Version: 1.01                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Terminal definitions for ANSI, vt100, etc.                     *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
 #define BACKSPACE1_CHAR '\b' /* The two standard BACKSPACE chars */
 #define BACKSPACE2_CHAR '\177'
 

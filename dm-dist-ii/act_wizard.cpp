@@ -1,43 +1,3 @@
-/* *********************************************************************** *
- * File   : act_wizard.c                              Part of Valhalla MUD *
- * Version: 1.25                                                           *
- * Author : All.                                                           *
- *                                                                         *
- * Purpose: Implementation of wizard commands.                             *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 19/07/92 seifert: Recursive trans bug fixed.                            */
-/* 26/07/92 seifert: Fixed do_purge to match new destruct system           */
-/* 13/10/92 seifert: Fixed 'played:' time in do_stat                       */
-/* 13/10/92 seifert: Fixed 'do_advance' to allow lower than 255 to advance */
-/* 22/01/93  HHS added 'stat zone data' to give reset info (may purge you) */
-/* Sun Jun 27 1993 HHS added stat world                                    */
-/* Tue Jul 6 1993 HHS: added exchangable lib dir                           */
-/* 23/08/93 jubal  : Load puts takable things in inventory                 */
-/* 23/08/93 jubal  : Purge looks in inventory first                        */
-/* 23/08/93 jubal  : Purge room doesn't remove non-takable items           */
-/* 23/08/93 jubal  : Stat room data gives info on exits, and less lines    */
-/* 29/08/93 jubal  : Expanded stat zone                                    */
-/* 29/08/93 jubal  : Expanded goto to go to zones or enterable units       */
-/* 25/02/94 gnort  : Fixed missing functionality/crashbug in stat zone     */
-/* 11/08/94 gnort  : got rid of cras and shutdow                           */
-/* 10/02/95 gnort  : Made do_users dynamic                                 */
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"
@@ -46,6 +6,7 @@
 #include "db.h"
 #include "db_file.h"
 #include "dijkstra.h"
+#include "fight.h"
 #include "files.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -61,12 +22,12 @@
 #include "utility.h"
 #include "utils.h"
 
+#include <algorithm>
 #include <cctype>
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <algorithm>
 
 /*   external vars  */
 

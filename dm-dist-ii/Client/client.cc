@@ -32,7 +32,6 @@
 #include <termios.h>
 
 #include "essential.h"
-#include "select.h"
 #include "channel.h"
 #include "slide.h"
 #include "log.h"

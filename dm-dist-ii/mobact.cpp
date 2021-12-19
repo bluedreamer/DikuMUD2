@@ -1,28 +1,3 @@
-/* *********************************************************************** *
- * File   : mobact.c                                  Part of Valhalla MUD *
- * Version: 2.00                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Handling of calls of special procedure, including re-eventing  *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-#include "comm.h"
 #include "CServerConfiguration.h"
 #include "db.h"
 #include "handler.h"
@@ -36,16 +11,15 @@
 #include "utils.h"
 
 #include <cstdio>
-#include <cstdlib>
 
-void                                   special_event(void *p1, void *p2);
-void                                   event_enq(int when, void (*func)(), void *arg1, void *arg2);
-void                                   event_deenq(void (*func)(), void *arg1, void *arg2);
+void                            special_event(void *p1, void *p2);
+void                            event_enq(int when, void (*func)(), void *arg1, void *arg2);
+void                            event_deenq(void (*func)(), void *arg1, void *arg2);
 
-extern struct zone_type               *boot_zone;
-extern struct unit_function_array_type unit_function_array[];
+extern zone_type               *boot_zone;
+extern unit_function_array_type unit_function_array[];
 
-void                                   SetFptrTimer(unit_data *u, unit_fptr *fptr)
+void                            SetFptrTimer(unit_data *u, unit_fptr *fptr)
 {
    uint32_t ticks;
 

@@ -1,32 +1,3 @@
-/* *********************************************************************** *
- * File   : limits.c                                  Part of Valhalla MUD *
- * Version: 1.04                                                           *
- * Author : bombman, seifert and quinn (@diku.dk)                          *
- *                                                                         *
- * Purpose: Xp, hit, mana, endurance, food and age gain/modifications.     *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 23/07/92 seifert: Gain: Mana gain modified, gain fighting=>0 gain       */
-/* 01/09/92 seifert: Mana gain now depends on Charisma!                    */
-/* 10/04/94 seifert: Mana gain relative to Charisma & level!               */
-/* 6/12/94  bombman: Demigods neen no food or drink                        */
-
 #include "comm.h"
 #include "common.h"
 #include "constants.h"

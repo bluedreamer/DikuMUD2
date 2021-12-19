@@ -1,33 +1,3 @@
-/* *********************************************************************** *
- * File   : interpreter.c                             Part of Valhalla MUD *
- * Version: 1.02                                                           *
- * Author : All                                                            *
- *                                                                         *
- * Purpose: Interpretation of commands.                                    *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* This won't work (noop, 1989)                 */
-/* It will now work even better (seifert, 1991) */
-
-/* Aug 24 1993 gnort: cmd_interpreter will now strip trailing spaces of arg */
-/* Aug 11 1994 gnort: got rid of do_qui & co.                               */
-/* Aug 14 1994 gnort: Inserted new social-command system                    */
 #include "interpreter.h"
 
 #include "comm.h"
@@ -47,12 +17,12 @@
 #include "utility.h"
 #include "utils.h"
 
+#include <algorithm>
 #include <cctype>
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <algorithm>
 
 /* external fcntls */
 extern struct unit_function_array_type unit_function_array[];

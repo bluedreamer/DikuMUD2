@@ -1,34 +1,10 @@
-/* *********************************************************************** *
- * File   : spell_parser.c                            Part of Valhalla MUD *
- * Version: 1.05                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Spell parser.                                                  *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
 #include "comm.h"
 #include "common.h"
 #include "damage_chart_type.h"
 #include "db.h"
-#include "db_file.h"
 #include "dilprg.h"
 #include "dilrun.h"
+#include "fight.h"
 #include "files.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -38,12 +14,10 @@
 #include "spell_args.h"
 #include "spell_info_type.h"
 #include "spells.h"
-#include "structs.h"
 #include "textutil.h"
 #include "tree_type.h"
 #include "trie.h"
 #include "unit_vector_data.h"
-#include "utility.h"
 #include "utils.h"
 
 #include <cstdio>

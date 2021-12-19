@@ -80,7 +80,7 @@ void doelse(int elif, int abcd, const char *dcba)
             }
          }
          /* If have seen an #else */
-         Ifstack[Iflevel].i_else = static_cast<char>(elif) == 0;
+         Ifstack[Iflevel].i_else = static_cast<char>(static_cast<char>(elif) == 0);
       }
    }
    else

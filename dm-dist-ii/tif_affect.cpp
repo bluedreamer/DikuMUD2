@@ -1,48 +1,16 @@
-/* *********************************************************************** *
- * File   : tif_affect.c                              Part of Valhalla MUD *
- * Version: 2.03                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Affect system tick routines (TIF_).                            *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 23/07/92 seifert: Fixed grave bug in reordering af ticks                */
-/* 23/08/83 jubal  : Crimes are zeroed at death                            */
-
 #include "affect.h"
 #include "comm.h"
-#include "db.h"
 #include "fight.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "magic.h"
-#include "money.h"
 #include "skills.h"
 #include "spells.h"
-#include "structs.h"
 #include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
 
 #include <climits>
-#include <cstdio>
-#include <cstdlib>
 #include <cstring>
 
 /* Extern Functions */

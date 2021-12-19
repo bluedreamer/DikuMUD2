@@ -1,38 +1,17 @@
-/* *********************************************************************** *
- * File   : tuborg.c                                  Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : Unknown.                                                       *
- *                                                                         *
- * Purpose: Unknown.                                                      **
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
-int main(int argc, char *argv[])
+auto main(int argc, char *argv[]) -> int
 {
    int       month = -1;
    int       n;
-   int       operation, drunk = 0;
+   int       operation;
+   int       drunk = 0;
    time_t    when;
    struct tm tm_when;
-   char      Buf[200], pName[200];
+   char      Buf[200];
+   char      pName[200];
 
    if(argc > 1)
    {
@@ -46,7 +25,7 @@ int main(int argc, char *argv[])
       month--;
    }
 
-   while(!feof(stdin))
+   while(feof(stdin) == 0)
    {
       char *msbuf = fgets(Buf, sizeof(Buf), stdin);
       n           = sscanf(Buf, "TUBORG %s %d %ld", pName, &operation, &when);

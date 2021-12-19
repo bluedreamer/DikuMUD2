@@ -1,10 +1,10 @@
 #pragma once
-#include <ctype.h> /* Char type info			*/
-#include <stdio.h>
-#include <stdio.h>  /* Standard I/O info			*/
-#include <stdlib.h> /* Standard library info		*/
-#include <string.h>
-#include <time.h>
+#include <cctype> /* Char type info			*/
+#include <cstdio>
+#include <cstdio>  /* Standard I/O info			*/
+#include <cstdlib> /* Standard library info		*/
+#include <cstring>
+#include <ctime>
 
 #ifndef EVALINT
    #define EVALINT long /* Default values in eval are longs	*/
@@ -14,124 +14,124 @@
 /*
  *	pp1.c
  */
-int            pp_main(const char *filename);
-char          *getnext(char *cp, int *argc, char ***argv, int swvalid);
-void           init();
-void           usage(int v);
-void           output_adds(char *s);
-void           output_addc(int s);
+auto pp_main(const char *filename) -> int;
+auto getnext(char *cp, int *argc, char ***argv, int swvalid) -> char *;
+void init();
+void usage(int v);
+void output_adds(char *s);
+void output_addc(int s);
 
 /*
  *	pp2.c
  */
-char          *docall(struct symtab *p, char *internal, char *internal_limit);
-char          *_docall(char *line, char *internal, char *internal_limit);
-void           dodefine(int mactype, int izxy = 0, const char *izxz = 0);
-void           doerror(int izxx = 0, int izxy = 0, const char *izxz = 0);
-void           doundef(int izxx = 0, int izxy = 0, const char *izxz = 0);
-char          *esc_str(char *old, int c, const char *limit);
-void           fbind(struct symtab **formals, char *name, const char *value);
-char          *flookup(struct symtab *formals, char *name);
-struct param  *getparams();
-unsigned int   pphash(const char *sym);
-struct symtab *lookup(char *name, struct symtab **pe);
-struct param  *makeparam(const char *s, int f);
-struct ppdir  *predef(char *n, struct ppdir *table);
-void           sbind(const char *sym, const char *defn, struct param *params);
-char          *strize(char *result, char *limit, char *msg, char *snew);
-void           unfbind(struct symtab *formals);
-void           unparam(struct param *pp);
-void           unsbind(char *sym);
+auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *;
+auto _docall(char *line, char *internal, char *internal_limit) -> char *;
+void dodefine(int mactype, int izxy = 0, const char *izxz = nullptr);
+void doerror(int izxx = 0, int izxy = 0, const char *izxz = nullptr);
+void doundef(int izxx = 0, int izxy = 0, const char *izxz = nullptr);
+auto esc_str(char *old, int c, const char *limit) -> char *;
+void fbind(struct symtab **formals, char *name, const char *value);
+auto flookup(struct symtab *formals, char *name) -> char *;
+auto getparams() -> struct param *;
+auto pphash(const char *sym) -> unsigned int;
+auto lookup(char *name, struct symtab **pe) -> struct symtab *;
+auto makeparam(const char *s, int f) -> struct param *;
+auto predef(char *n, struct ppdir *table) -> struct ppdir *;
+void sbind(const char *sym, const char *defn, struct param *params);
+auto strize(char *result, char *limit, char *msg, char *snew) -> char *;
+void unfbind(struct symtab *formals);
+void unparam(struct param *pp);
+void unsbind(char *sym);
 
 /*
  *	pp3.c
  */
-void           cur_user();
-void           do_line(char at_bol);
-void           doinclude(int izxx = 0, int izxy = 0, const char *izxz = 0);
-void           doline(int izxx = 0, int izxy = 0, const char *izxz = 0);
-int            gchbuf();
-int            gchfile();
-int            gchpb();
-int            getchn();
-int            inc_open(const char *incfile);
-void           init_path();
-int            popfile();
-char          *readline(char *buf, int bufsize, int flags);
-void           scaneol();
-void           set_user();
-int            trigraph();
+void cur_user();
+void do_line(char at_bol);
+void doinclude(int izxx = 0, int izxy = 0, const char *izxz = nullptr);
+void doline(int izxx = 0, int izxy = 0, const char *izxz = nullptr);
+auto gchbuf() -> int;
+auto gchfile() -> int;
+auto gchpb() -> int;
+auto getchn() -> int;
+auto inc_open(const char *incfile) -> int;
+void init_path();
+auto popfile() -> int;
+auto readline(char *buf, int bufsize, int flags) -> char *;
+void scaneol();
+void set_user();
+auto trigraph() -> int;
 
 /*
  *	pp4.c
  */
-char          *addstr(char *old, const char *limit, const char *msg, const char *snew);
-int            getnstoken(int f);
-int            gettoken(int f);
-void           memmov(char *f, char *t, unsigned l);
-void           pbcstr(char *s);
-void           pbstr(const char *in);
-void           pushback(int c);
-void           puttoken(const char s[]);
-int            type(int c);
+auto addstr(char *old, const char *limit, const char *msg, const char *snew) -> char *;
+auto getnstoken(int f) -> int;
+auto gettoken(int f) -> int;
+void memmov(char *f, char *t, unsigned l);
+void pbcstr(char *s);
+void pbstr(const char *in);
+void pushback(int c);
+void puttoken(const char s[]);
+auto type(int c) -> int;
 
 /*
  *	pp5.c
  */
-void           doelse(int elif, int izxy = 0, const char *izxz = 0);
-void           doendif(int izxy, int ixy = 0, const char *izxz = 0);
-void           doif(int izxy, int ixy = 0, const char *izxz = 0);
-void           doifs(int t, int izxy = 0, const char *izxz = 0);
+void doelse(int elif, int izxy = 0, const char *izxz = nullptr);
+void doendif(int izxy, int ixy = 0, const char *izxz = nullptr);
+void doif(int izxy, int ixy = 0, const char *izxz = nullptr);
+void doifs(int t, int izxy = 0, const char *izxz = nullptr);
 
 /*
  *	pp6.c
  */
-void           dopragma(int izxy, int izy = 0, const char *izxz = 0);
-void           pragendm(int izxy = 0, int izy = 0, const char *izxz = 0);
-void           pragerror(int izxy = 0, int izy = 0, const char *izxz = 0);
-void           pragmsg(int izxy = 0, int izy = 0, const char *izxz = 0);
-void           pragopt(int dummy, int no_flag, const char *name);
-void           pragvalue(int izxy = 0, int izy = 0, const char *izxz = 0);
+void dopragma(int izxy, int izy = 0, const char *izxz = nullptr);
+void pragendm(int izxy = 0, int izy = 0, const char *izxz = nullptr);
+void pragerror(int izxy = 0, int izy = 0, const char *izxz = nullptr);
+void pragmsg(int izxy = 0, int izy = 0, const char *izxz = nullptr);
+void pragopt(int dummy, int no_flag, const char *name);
+void pragvalue(int izxy = 0, int izy = 0, const char *izxz = nullptr);
 
 /*
  *	pp7.c
  */
-void           end_of_file();
-void           fatal(const char *s1, const char *s2 = "");
-void           illegal_symbol();
-void           non_fatal(const char *s1, const char *s2);
-void           out_of_memory();
-void           prmsg(const char *s1, const char *s2, const char *s3);
-void           warning(const char *s1, const char *s2);
+void end_of_file();
+void fatal(const char *s1, const char *s2 = "");
+void illegal_symbol();
+void non_fatal(const char *s1, const char *s2);
+void out_of_memory();
+void prmsg(const char *s1, const char *s2, const char *s3);
+void warning(const char *s1, const char *s2);
 
 /*
  *	pp8.c
  */
-EVALINT        eval();
-EVALINT        evaltern();
-EVALINT        evallor();
-EVALINT        evalland();
-EVALINT        evalbor();
-EVALINT        evalbxor();
-EVALINT        evalband();
-EVALINT        evaleq();
-EVALINT        evalrel();
-EVALINT        evalsh();
-EVALINT        evalsum();
-EVALINT        evalmdr();
-EVALINT        evalfuns();
-EVALINT        evalucom();
-EVALINT        evalunot();
-EVALINT        evalumin();
-EVALINT        evalval();
-EVALINT        hexbin(char ch);
-int            ishex(char ch);
-int            isoct(char ch);
-int            item(int(fun)(int), int f);
-int            look(const char *str);
-int            match(char *tbuf, const char *str);
-char          *readexpline(char *buf, int bufsize);
-int            test(const char *str);
+auto eval() -> EVALINT;
+auto evaltern() -> EVALINT;
+auto evallor() -> EVALINT;
+auto evalland() -> EVALINT;
+auto evalbor() -> EVALINT;
+auto evalbxor() -> EVALINT;
+auto evalband() -> EVALINT;
+auto evaleq() -> EVALINT;
+auto evalrel() -> EVALINT;
+auto evalsh() -> EVALINT;
+auto evalsum() -> EVALINT;
+auto evalmdr() -> EVALINT;
+auto evalfuns() -> EVALINT;
+auto evalucom() -> EVALINT;
+auto evalunot() -> EVALINT;
+auto evalumin() -> EVALINT;
+auto evalval() -> EVALINT;
+auto hexbin(char ch) -> EVALINT;
+auto ishex(char ch) -> int;
+auto isoct(char ch) -> int;
+auto item(int(fun)(int), int f) -> int;
+auto look(const char *str) -> int;
+auto match(char *tbuf, const char *str) -> int;
+auto readexpline(char *buf, int bufsize) -> char *;
+auto test(const char *str) -> int;
 
 #define PP_VERSION "VMC PreProcessor v1.0" /* Version info */
 #ifdef MAIN

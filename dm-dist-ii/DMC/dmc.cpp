@@ -1,35 +1,5 @@
-/* *********************************************************************** *
- * File   : dmc.c                                     Part of Valhalla MUD *
- * Version: 1.10                                                           *
- * Author : quinn@diku.dk                                                  *
- *                                                                         *
- * Purpose: Database compiler. See dmc.doc for specs.                      *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-/* Mon 27 Jun 1994 Gnort: Changed the illustrious pipe to two temp-files.
- * Mon 30 Jan 1995 Gnort: Added support for include dirs.
- * Fri 10 Mar 1995 Gnort: Boots money now, for easy money support...
- * HHS : added DIL template writing
- */
-
 #include "dmc.h"
 
-#include "../utils.h"
 #include "common.h"
 #include "db_file.h"
 #include "dil.h"
@@ -41,14 +11,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <sys/types.h>
 #include <unistd.h>
 
 #define MEMBLOCK 65536
 #define BUFS     30
 
 int              sunlight       = 0;
-const int8_t     time_light[24] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+//const int8_t     time_light[24] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 struct zone_info zone;
 char             cur_filename[256], top_filename[256];

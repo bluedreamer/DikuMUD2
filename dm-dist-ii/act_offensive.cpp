@@ -1,35 +1,9 @@
-/* *********************************************************************** *
- * File   : act_offensive.c                           Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : All.                                                           *
- *                                                                         *
- * Purpose: All the offensive commands... (ewww)                           *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
 #include "affect.h"
 #include "comm.h"
 #include "db.h"
 #include "fight.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "skills.h"
-#include "spells.h"
 #include "structs.h"
 #include "textutil.h"
 #include "unit_affected_type.h"
@@ -38,7 +12,6 @@
 
 #include <climits>
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
 
 /* extern variables */

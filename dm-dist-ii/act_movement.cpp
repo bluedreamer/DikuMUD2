@@ -1,53 +1,12 @@
-/* *********************************************************************** *
- * File   : act_movement.c                            Part of Valhalla MUD *
- * Version: 1.60                                                           *
- * Author : All                                                            *
- *                                                                         *
- * Purpose: Routines for moving, entering, leaving, open, close,           *
- *          positions and follow.                                          *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 23/07/92 seifert: Fixed serious simple-move bug, now tests for != SHARE */
-/* 26/07/92 seifert: Split find_door into two. For use with sfun_door..    */
-/* 29/07/92 seifert: Fixed bug in simple_move                              */
-/* 24/09/92 gnort  : do_follow no longer assumpts char picks char as leader*/
-/* 30/09/92 seifert: Various additions and bug fixes                       */
-/* 02/10/92 gnort  : do_sail, in boat/obj check && changed to ||           */
-/* 07/10/92 gnort  : Various additions and bug fixes                       */
-/* 17/11/92 HHS    : Reinstated endurance cost                             */
-/* 17/11/92 HHS    : Added simle ride func. (like sail, does nothing yet)  */
-/* 23/08/93 jubal  : Fixed messages in do_sail                             */
-/* 23/08/93 jubal  : Added messages to leader when start/stop follow       */
-/* 23/08/93 jubal  : Fixed (nearly - still acttrouble) msgs around open etc*/
 #include "account.h"
-#include "affect.h"
 #include "comm.h"
 #include "common.h"
 #include "constants.h"
 #include "CServerConfiguration.h"
-#include "db.h"
 #include "door_data.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "main.h"
 #include "movement.h"
-#include "skills.h"
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
@@ -55,11 +14,7 @@
 #include "unit_data.h"
 #include "utils.h"
 
-#include <cerrno>
 #include <climits>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
 #include <ctime>
 
 /*   external vars  */

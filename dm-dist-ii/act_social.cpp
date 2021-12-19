@@ -1,49 +1,18 @@
-/* *********************************************************************** *
- * File   : act_social.c                              Part of Valhalla MUD *
- * Version: 3.00                                                           *
- * Author : gnort@daimi.aau.dk                                             *
- *                                                                         *
- * Purpose: Handling the social commands                                   *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-/* Tue  6-Jul-93   HHS: added exchangable lib dir
- * Sun 12-Mar-95 gnort: changed from binary searched array to trie
- *			because old method was too CPU intensive
- *			(as always, this meant I had to *think* to write
- *			sprint_social!!!1!)
- */
-
 #include "comm.h"
 #include "db.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "movement.h"
-#include "structs.h"
 #include "textutil.h"
 #include "trie.h"
 #include "trie_type.h"
 #include "utility.h"
 #include "utils.h"
 
+#include <algorithm>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <algorithm>
 
 /* externs */
 extern char libdir[]; /* from dikumud.c */

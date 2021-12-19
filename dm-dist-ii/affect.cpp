@@ -1,30 +1,3 @@
-/* *********************************************************************** *
- * File   : affect.c                                  Part of Valhalla MUD *
- * Version: 2.01                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Affect system (magic, 'events', etc.)                          *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 23/07/92 seifert: Corrected grave error with event_enq when destroyed   */
-/* 02/08/92 seifert: Checks for destructed in various places               */
-
 #include "affect.h"
 
 #include "apply_function_type.h"
@@ -36,7 +9,6 @@
 #include "utils.h"
 
 #include <cstdio>
-#include <cstdlib>
 
 unit_affected_type *affected_list = nullptr; /* Global list pointer       */
 unit_affected_type *next_affected_dude;      /* dirty - very dirty indeed */

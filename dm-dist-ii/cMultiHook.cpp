@@ -3,13 +3,15 @@
 #include "bytestring.h"
 #include "cMultiMaster.h"
 #include "comm.h"
-#include "config.h"
 #include "CServerConfiguration.h"
 #include "protocol.h"
-#include "select.h"
 #include "system.h"
 
 #include <cstring>
+
+#define SELECT_READ   0x01
+#define SELECT_WRITE  0x02
+#define SELECT_EXCEPT 0x04
 
 extern descriptor_data *descriptor_list;
 auto                    descriptor_new(cMultiHook *pe) -> descriptor_data *;

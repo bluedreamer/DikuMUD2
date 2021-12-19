@@ -1,31 +1,7 @@
-/* *********************************************************************** *
- * File   : header.c                                  Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Maing nice headers.                                            *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cassert>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #define MAX_SIZE 8192
 
@@ -120,13 +96,15 @@ void        write_header(FILE *output)
            notice);
 }
 
-int main(int argc, char *argv[])
+auto main(int argc, char *argv[]) -> int
 {
    char  buf[MAX_SIZE];
-   char *start, *end;
+   char *start;
+   char *end;
    char  c;
    int   n;
-   FILE *input, *output;
+   FILE *input;
+   FILE *output;
 
    strcpy(notice, notice1);
 
@@ -136,14 +114,14 @@ int main(int argc, char *argv[])
    if(argc == 2)
    {
       input = fopen(argv[1], "rb");
-      if(input == NULL)
+      if(input == nullptr)
       {
          printf("Error: No such file '%s'.\n", argv[1]);
          exit(1);
       }
 
       output = fopen("tmp_hdr", "wb");
-      if(input == NULL)
+      if(input == nullptr)
       {
          printf("Error: Can't make temp file 'tmpheader'.\n");
          exit(1);
@@ -157,7 +135,7 @@ int main(int argc, char *argv[])
    buf[n - 1] = 0;
    start      = strstr(buf, "/*");
    end        = strstr(buf, "*/");
-   if((start == NULL) || (end == NULL) || (start[40] != '*'))
+   if((start == nullptr) || (end == nullptr) || (start[40] != '*'))
    {
       buf[n - 1] = c;
       version    = 1.0;
@@ -166,19 +144,20 @@ int main(int argc, char *argv[])
    }
    else
    {
-      char *pstr, *estr;
+      char *pstr;
+      char *estr;
 
       pstr = strstr(buf, "Version:");
-      if(pstr)
+      if(pstr != nullptr)
       {
          sscanf(pstr + 9, " %f ", &version);
       }
 
       pstr = strstr(buf, " * Author : ");
-      if(pstr)
+      if(pstr != nullptr)
       {
          estr = strstr(pstr + 11, "*\n");
-         if(estr)
+         if(estr != nullptr)
          {
             strncpy(author, pstr, estr - pstr);
             author[estr - pstr + 1] = 0;
@@ -189,15 +168,19 @@ int main(int argc, char *argv[])
       }
 
       pstr = strstr(buf, " * Status : ");
-      if(pstr)
+      if(pstr != nullptr)
       {
-         if(strstr(pstr + 11, "Unpublished"))
+         if(strstr(pstr + 11, "Unpublished") != nullptr)
+         {
             strcpy(notice, notice1);
-         else if(strstr(pstr + 11, "Published"))
+         }
+         else if(strstr(pstr + 11, "Published") != nullptr)
+         {
             strcpy(notice, notice2);
+         }
 
          estr = strstr(pstr + 11, "*\n");
-         if(estr)
+         if(estr != nullptr)
          {
             strncpy(status, pstr, estr - pstr);
             status[estr - pstr + 1] = 0;
@@ -208,10 +191,10 @@ int main(int argc, char *argv[])
       }
 
       pstr = strstr(buf, " * Purpose:");
-      if(pstr)
+      if(pstr != nullptr)
       {
          estr = strstr(pstr + 11, "\n * Bugs");
-         if(estr)
+         if(estr != nullptr)
          {
             strncpy(purpose, pstr, estr - pstr);
             purpose[estr - pstr + 1] = 0;
@@ -219,10 +202,10 @@ int main(int argc, char *argv[])
       }
 
       pstr = strstr(buf, " * Bugs   :");
-      if(pstr)
+      if(pstr != nullptr)
       {
          estr = strstr(pstr + 11, "\n * Valhalla ");
-         if(estr)
+         if(estr != nullptr)
          {
             strncpy(bugs, pstr, estr - pstr);
             bugs[estr - pstr + 1] = 0;
@@ -234,11 +217,13 @@ int main(int argc, char *argv[])
       fwrite(end + 3, sizeof(char), n - (end - buf) - 3, output);
    }
 
-   while(!feof(input))
+   while(feof(input) == 0)
    {
       n = fread(buf, sizeof(char), MAX_SIZE, input);
       if(n > 0)
+      {
          fwrite(buf, sizeof(char), n, output);
+      }
    }
 
    n = rename("tmp_hdr", file);

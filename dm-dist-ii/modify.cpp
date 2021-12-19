@@ -1,31 +1,3 @@
-/* *********************************************************************** *
- * File   : modify.c                                  Part of Valhalla MUD *
- * Version: 1.11                                                           *
- * Author : bombman@diku.dk                                                *
- *                                                                         *
- * Purpose: Modification of values in units                                *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-/* 12-Sep-94 gnort: Severely cleaned up this module                        */
-/* 24-Oct-94 gnort: Added check for money in do_set...                     */
-/* 01-Feb-95 gnort: Removed logging of new password in do_set              */
-/* Tue Dec 16 1997 God: added age and lifespan                             */
-
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"

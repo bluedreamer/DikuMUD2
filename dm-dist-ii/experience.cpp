@@ -1,28 +1,3 @@
-/* *********************************************************************** *
- * File   : experience.c                              Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: To calculate the ratios of combat between two persons.         *
- *          To be used by, for example, consider funtion and               *
- *          experience calculations.                                       *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
 
 #include "affect.h"
 #include "comm.h"
@@ -35,14 +10,10 @@
 #include "movement.h"
 #include "shi_info_type.h"
 #include "skills.h"
-#include "spells.h"
-#include "structs.h"
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <algorithm>
 
 auto kludge_bonus(int level, int points) -> int

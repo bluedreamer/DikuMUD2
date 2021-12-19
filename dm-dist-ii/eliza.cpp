@@ -1,27 +1,3 @@
-/* *********************************************************************** *
- * File   : eliza.c                                   Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : seifert@diku.dk & mjr@mimsy.umd.edu                            *
- *                                                                         *
- * Purpose: An oracle spec-proc, based on good old eliza.                  *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
 #include "comm.h"
 #include "CServerConfiguration.h"
 #include "db.h"
@@ -46,6 +22,7 @@
 
 #define MAX_HISTORY 4
 
+// TODO Extract this
 struct oracle_data
 {
    int       *nextrep;
@@ -57,6 +34,7 @@ struct oracle_data
    char       lastrep[MAX_INPUT_LENGTH]; /* Don't make same reply twice!          */
 };
 
+// TODO Extract this
 struct subject_type
 {
    char **replies; /* NULL terminated         */
@@ -420,7 +398,7 @@ auto eliza_retrieve_memory(struct oracle_data *od) -> int
   getscript is set up to return the correct response.
   words contains the extracted words.  make reply
   */
-auto response(struct oracle_data *od, int subjno) -> char *
+auto response(oracle_data *od, int subjno) -> char *
 {
    static char resp[400];
    char        c1;

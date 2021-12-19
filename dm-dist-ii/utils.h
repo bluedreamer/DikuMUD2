@@ -1,32 +1,10 @@
 #pragma once
-/* *********************************************************************** *
- * File   : utils.h                                   Part of Valhalla MUD *
- * Version: 2.05                                                           *
- * Author : all                                                            *
- *                                                                         *
- * Purpose: Macros for accessing fields in structures, and defines.        *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
 
 #include "char_data.h"
 #include "essential.h"
 #include "file_index_type.h"
 #include "npc_data.h"
+#include "constants.h"
 #include "obj_data.h"
 #include "pc_data.h"
 #include "room_data.h"
@@ -35,10 +13,6 @@
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
-
-extern const int8_t time_light[];
-
-/* ..................................................................... */
 
 constexpr bool      PK_RELAXED = false;
 constexpr bool      PK_STRICT  = true;
@@ -369,12 +343,22 @@ inline auto UNIT_FI_NAME(unit_data *unit) -> const char *
 
 extern int sunlight;
 
-#define UNIT_OUTSIDE_LIGHT(unit) (!IS_SET(UNIT_FLAGS(unit), UNIT_FL_INDOORS) ? time_light[sunlight] : 0)
+//#define UNIT_OUTSIDE_LIGHT(unit) (!IS_SET(UNIT_FLAGS(unit), UNIT_FL_INDOORS) ? time_light[sunlight] : 0)
+inline auto UNIT_OUTSIDE_LIGHT(unit_data *unit) -> int
+{
+   return !IS_SET(UNIT_FLAGS(unit), UNIT_FL_INDOORS) ? time_light[sunlight] : 0;
+}
 
-#define UNIT_IS_DARK(unit) (UNIT_LIGHTS(unit) + UNIT_OUTSIDE_LIGHT(unit) + (UNIT_IN(unit) ? UNIT_LIGHTS(UNIT_IN(unit)) : 0) < 0)
-
-#define UNIT_IS_LIGHT(unit) (UNIT_LIGHTS(unit) + UNIT_OUTSIDE_LIGHT(unit) + (UNIT_IN(unit) ? UNIT_LIGHTS(UNIT_IN(unit)) : 0) >= 0)
-
+//#define UNIT_IS_DARK(unit) (UNIT_LIGHTS(unit) + UNIT_OUTSIDE_LIGHT(unit) + (UNIT_IN(unit) ? UNIT_LIGHTS(UNIT_IN(unit)) : 0) < 0)
+inline auto UNIT_IS_DARK(unit_data *unit) -> bool
+{
+   return UNIT_LIGHTS(unit) + UNIT_OUTSIDE_LIGHT(unit) + (UNIT_IN(unit) ? UNIT_LIGHTS(UNIT_IN(unit)) : 0) < 0;
+}
+//#define UNIT_IS_LIGHT(unit) (UNIT_LIGHTS(unit) + UNIT_OUTSIDE_LIGHT(unit) + (UNIT_IN(unit) ? UNIT_LIGHTS(UNIT_IN(unit)) : 0) >= 0)
+inline auto UNIT_IS_LIGHT(unit_data *unit) -> bool
+{
+   return UNIT_LIGHTS(unit) + UNIT_OUTSIDE_LIGHT(unit) + (UNIT_IN(unit) ? UNIT_LIGHTS(UNIT_IN(unit)) : 0) >= 0;
+}
 #define UNIT_SEX(unit) (IS_CHAR(unit) ? CHAR_SEX(unit) : SEX_NEUTRAL)
 
 #define UNIT_IS_GOOD(ch)    (UNIT_ALIGNMENT(ch) >= 350)
@@ -731,8 +715,11 @@ inline auto UNIT_OUT_DESCR_STRING(unit_data *unit) -> const char *
 /* Title, Name or Someone/Something */
 #define UNIT_SEE_TITLE(ch, unit) (CHAR_CAN_SEE(ch, unit) ? TITLENAME(unit) : SOMETON(unit))
 
-#define UNIT_SEE_NAME(ch, unit) (CHAR_CAN_SEE(ch, unit) ? UNIT_NAME(unit) : SOMETON(unit))
-
+//#define UNIT_SEE_NAME(ch, unit) (CHAR_CAN_SEE(ch, unit) ? UNIT_NAME(unit) : SOMETON(unit))
+inline auto UNIT_SEE_NAME(unit_data *ch, unit_data *unit) -> const char *
+{
+   return CHAR_CAN_SEE(ch, unit) ? UNIT_NAME(unit) : SOMETON(unit);
+}
 /* ..................................................................... */
 
 /* Invis people aren't supposed to have sex... /gnort */

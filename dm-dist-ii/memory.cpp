@@ -1,32 +1,3 @@
-/* *********************************************************************** *
- * File   : memory.c                                  Part of Valhalla MUD *
- * Version: 1.10                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Trapping illegal free() and realloc() calls.                   *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 28/03/93 gnort  : Fixed sanitycheck error                               */
-/* 10/04/94 seifert: Added memory alloc bytes total.                       */
-/* 29/09/94 seifert: Added overhead count and changed CRC to one byte.     */
-/*                   This makes the system more shaky, but less mem hungry */
-
 #include "essential.h"
 
 #include <cassert>

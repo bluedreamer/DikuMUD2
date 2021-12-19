@@ -1,49 +1,14 @@
-/* *********************************************************************** *
- * File   : destruct.c                                Part of Valhalla MUD *
- * Version: 1.02                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Help with checks for destruction before reordering of          *
- *          events. Supposed to be used with affect's, special routines    *
- *          and dying characters.                                          *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 23/03/94 seifert: Fixed bug, no more destroy_affect, unlink_aff instead */
-
 #include "affect.h"
 #include "comm.h"
 #include "db.h"
 #include "handler.h"
-#include "interpreter.h"
 #include "mobact.h"
 #include "nanny.h"
-#include "skills.h"
 #include "structs.h"
 #include "textutil.h"
 #include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
-
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
 
 /*
    This method is possible since we know that the only problem occurs when:

@@ -2,4 +2,4 @@
 
 #include "values.h"
 
-struct spell_info_type spell_info[SPL_TREE_MAX];
+spell_info_type spell_info[SPL_TREE_MAX];

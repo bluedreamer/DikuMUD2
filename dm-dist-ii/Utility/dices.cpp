@@ -1,41 +1,56 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
 
 /* Calculate how many ways you can roll <target> with            */
 /*    <num_dice>d<dice_size>  dices                              */
 /* <target> must be less than total possible                     */
-int dice_num(int num_dice, int dice_size, int target)
+auto dice_num(int num_dice, int dice_size, int target) -> int
 {
-   int i, res;
+   int i;
+   int res;
 
    if(num_dice == 1)
-      return (target <= dice_size);
+   {
+      return static_cast<int>(target <= dice_size);
+   }
 
    for(res = 0, i = 1; (i <= dice_size) && ((target - i) >= 1); i++)
+   {
       res += dice_num(num_dice - 1, dice_size, target - i);
+   }
 
    return res;
 }
 
-int number(int from, int to)
+auto number(int from, int to) -> int
 {
    return ((rand() % (to - from + 1)) + from);
 }
 
-int dice(int num, int size)
+auto dice(int num, int size) -> int
 {
    int sum;
 
    for(sum = 0; num > 0; num--)
+   {
       sum += ((rand() % size) + 1);
+   }
 
    return sum;
 }
 
-int main(int argc, char *argv[])
+auto main(int argc, char *argv[]) -> int
 {
-   int num, size, i, j, accum, rev_accum, res, potens, old_res;
+   int num;
+   int size;
+   int i;
+   int j;
+   int accum;
+   int rev_accum;
+   int res;
+   int potens;
+   int old_res;
 
    if(argc != 3)
    {
@@ -45,12 +60,14 @@ int main(int argc, char *argv[])
       exit(0);
    }
 
-   srand((unsigned int)time(0));
+   srand((unsigned int)time(nullptr));
    num  = atoi(argv[1]);
    size = atoi(argv[2]);
 
    for(i = num - 1, potens = size; i > 0; i--)
+   {
       potens *= size;
+   }
    printf("Probability Chart for %dD%d\n\n", num, size);
    printf("Average : %6.1f\n", (float)(num + num * size) / 2.0);
    printf("Number of possible rolls : %d\n\n", potens);

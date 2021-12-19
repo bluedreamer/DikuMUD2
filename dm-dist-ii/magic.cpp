@@ -1,36 +1,5 @@
-/* *********************************************************************** *
- * File   : magic.c                                   Part of Valhalla MUD *
- * Version: 2.02                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Common utility functions for magic1/2.c                        *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 29/08/92 seifert: Complete redesign of magic system calculations        */
-/* 23/08/93 jubal  : Check for space available in may_teleport             */
-/* 08/09/93 HHS    : use_mana added for easy use                           */
-/* 31/08/94 gnort  : Fixed infite loop in may_teleport()   (!!!!!!!!)      */
-/* 13/09/94 seifert: No you didn't - you made an infinite loop (!)         */
 #include "magic.h"
 
-#include "affect.h"
-#include "comm.h"
 #include "common.h"
 #include "damage_chart_type.h"
 #include "dbfind.h"
@@ -45,16 +14,11 @@
 #include "skills.h"
 #include "spell_args.h"
 #include "spell_info_type.h"
-#include "spells.h"
-#include "structs.h"
 #include "textutil.h"
 #include "tree_type.h"
 #include "utility.h"
 #include "utils.h"
 
-#include <climits>
-#include <cstdio>
-#include <cstdlib>
 #include <algorithm>
 
 /* Extern structures */

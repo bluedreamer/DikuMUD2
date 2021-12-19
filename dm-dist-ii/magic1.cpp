@@ -1,48 +1,13 @@
-/* *********************************************************************** *
- * File   : magic1.c                                  Part of Valhalla MUD *
- * Version: 2.10                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: First half of the spells.                                      *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-/* 30/09/92 seifert: Various bug fixes */
-/* 01/09/92 HHS: Implementation of some spells+bug fixes */
-
-/* 12-Aug-94 gnort: Included spell-preprocessing in the few spells that
- *			needed it, thus killing spells[12].c
- *		    Rewrote spell_identify_1() to use the wstat system.
- */
 #include "act_movement.h"
 #include "affect.h"
 #include "comm.h"
-#include "common.h"
-#include "db.h"
 #include "door_data.h"
 #include "fight.h"
 #include "handler.h"
-#include "interpreter.h"
 #include "magic.h"
-#include "movement.h"
 #include "skills.h"
 #include "spell_args.h"
 #include "spells.h"
-#include "structs.h"
 #include "textutil.h"
 #include "unit_affected_type.h"
 #include "unit_vector_data.h"
@@ -51,13 +16,7 @@
 #include "values.h"
 #include "zon_basis.h"
 
-#include <climits>
 #include <cstdio>
-#include <cstdlib>
-
-/* Extern structures */
-
-/* Extern procedure */
 
 void modify_hit(unit_data *ch, int hit);
 

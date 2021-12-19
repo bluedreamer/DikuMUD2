@@ -1,35 +1,3 @@
-/* *********************************************************************** *
- * File   : act_info.c                                Part of Valhalla MUD *
- * Version: 1.15                                                           *
- * Author : All.                                                           *
- *                                                                         *
- * Purpose: Look/score etc.                                                *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 09/07/92 seifert: Fixed look in <room>                                  */
-/* 09/07/92 seifert: Fixed invis in looks at himself                       */
-/* 23/08/93 jubal  : Fixed transparency in listing objects outside         */
-/* 23/08/93 jubal  : Made negative drinkcon values mean infinite contents  */
-/* 23/08/93 jubal  : Fixed info                                            */
-/* 23/08/93 jubal  : Added 'right beside you' in where                     */
-/* 23/08/93 jubal  : Allow imms to see hidden thingys                      */
-/* 10/02/94 gnort  : Rewrote do_who to be smaller and dynamic.             */
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"
@@ -66,6 +34,7 @@
 /* extern variables */
 
 extern descriptor_data *descriptor_list;
+extern int8_t         time_light[SUN_SET + 1];
 
 static void             add_to_string(char **buf, int *size, int len, const char *str)
 {

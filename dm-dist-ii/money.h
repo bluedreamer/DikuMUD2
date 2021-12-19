@@ -1,27 +1,4 @@
 #pragma once
-/* *********************************************************************** *
- * File   : money.h                                   Part of Valhalla MUD *
- * Version: 2.12                                                           *
- * Author : gnort@daimi.aau.dk                                             *
- *                                                                         *
- * Purpose: Prototypes and macros for money handling.                      *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
 
 #include "money_type.h"
 #include "structs.h"
@@ -118,7 +95,7 @@ auto unit_can_hold_amount(unit_data *unit, unit_data *money) -> amount_t;
 #define IS_MONEY(unit) (IS_OBJ(unit) && OBJ_TYPE(unit) == ITEM_MONEY)
 
 //#define MONEY_AMOUNT(unit) (OBJ_PRICE(unit)) // MS2020: was  ((amount_t) OBJ_PRICE(unit))
-inline auto MONEY_AMOUNT(unit_data *unit) -> uint32_t&
+inline auto MONEY_AMOUNT(unit_data *unit) -> uint32_t &
 {
    return OBJ_PRICE(unit);
 }

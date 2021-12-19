@@ -1,36 +1,14 @@
-/* *********************************************************************** *
- * File   : verify.c                                  Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : Unknown.                                                       *
- *                                                                         *
- * Purpose: Unknown.                                                      **
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
 #include "essential.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#include <cstdio>
+#include <ctime>
 
-int main(int argc, char *argv[])
+auto main(int argc, char *argv[]) -> int
 {
    char   Buf[1000];
-   time_t created, lastcrc, first_crc;
+   time_t created;
+   time_t lastcrc;
+   time_t first_crc;
 
    char  *msbuf = fgets(Buf, sizeof(Buf), stdin);
    sscanf(Buf, "%08x%08x", (uint32_t *)&created, (uint32_t *)&lastcrc);
@@ -40,16 +18,27 @@ int main(int argc, char *argv[])
    printf("Account File Created at [%d] %s", (uint32_t)created, ctime(&created));
    printf("Initial CRC is [%08x]\n", (uint32_t)first_crc);
 
-   while(!feof(stdin))
+   while(feof(stdin) == 0)
    {
-      char   name1[100], name2[100];
+      char   name1[100];
+      char   name2[100];
       char   action;
-      int    amount1, mxor, gid, pid, crc, amount, total, next_crc, check;
+      int    amount1;
+      int    mxor;
+      int    gid;
+      int    pid;
+      int    crc;
+      int    amount;
+      int    total;
+      int    next_crc;
+      int    check;
       time_t now;
 
       char  *msbuf2 = fgets(Buf, sizeof(Buf), stdin);
-      if(feof(stdin))
+      if(feof(stdin) != 0)
+      {
          break;
+      }
 
       sscanf(Buf,
              "%c %s %s %d %*01x%08x%08x%08x%08x%08x%08x%08x%08x\n",
@@ -84,14 +73,20 @@ int main(int argc, char *argv[])
       printf("%c %s(%4d) %s(%4d) %5d [%6d]  %s", action, name1, gid, name2, pid, amount, total, ctime(&now));
 
       if(amount != amount1)
+      {
          printf("Amount mismatch!\n");
+      }
 
       if(crc != check)
+      {
          printf("\nCRC mismatch: %08x versus %08x\n", crc, check);
+      }
 
       if(first_crc != next_crc)
+      {
          printf(
             "Dependancy check [%08x] [%08x] [%08x] [%08x]!\n", (uint32_t)first_crc, next_crc, (uint32_t)first_crc ^ mxor, next_crc ^ mxor);
+      }
 
       first_crc = next_crc ^ mxor;
    }

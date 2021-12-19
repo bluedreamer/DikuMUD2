@@ -1,40 +1,7 @@
-/* *********************************************************************** *
- * File   : db.c                                      Part of Valhalla MUD *
- * Version: 1.25                                                           *
- * Author : seifert@diku.dk and quinn@diku.dk                              *
- *                                                                         *
- * Purpose: Database stuff.                                                *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* Tue Jul 6 1993 HHS: added exchangable lib dir                           */
-/* Tue Jul 6 1993 HHS: added exchangable zon dir                           */
-/* 23/08/93 jubal   : check for no fi's in generate_bin_arrays             */
-/* 23/08/93 jubal   : check for error before returning find_file_index     */
-/* 12/09/94 gnort   : cleaned up a bit                                     */
-/* 01/07/95 HHS     : added template loading and checking                  */
-
 #include "db.h"
 
-#include "account.h"
 #include "affect.h"
 #include "CAccountConfig.h"
-#include "comm.h"
 #include "common.h"
 #include "connectionlog.h"
 #include "db_file.h"
@@ -45,24 +12,19 @@
 #include "money.h"
 #include "race_info_type.h"
 #include "reception.h"
-#include "skills.h"
 #include "structs.h"
 #include "textutil.h"
 #include "unit_affected_type.h"
-#include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
 #include "zone_info_type.h"
 
+#include <algorithm>
 #include <cctype>
-#include <climits>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <ctime>
-#include <algorithm>
-
 int             room_number;         /* For counting numbers in rooms */
 unit_data      *unit_list = nullptr; /* The global unit_list          */
 

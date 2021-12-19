@@ -1,28 +1,3 @@
-/* *********************************************************************** *
- * File   : act_change.c                              Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : gnort@daimi.aau.dk                                             *
- *                                                                         *
- * Purpose: Letting the player change all the things that were in the      *
- *          menu and other commands before.                                *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
 #include "comm.h"
 #include "interpreter.h"
 #include "structs.h"

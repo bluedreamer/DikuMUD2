@@ -1,12 +1,13 @@
 #include "cCaptainHook.h"
 
-#include "select.h"
-
 #include <cerrno>
 #include <csignal>
 #include <cstring>
 
 cCaptainHook CaptainHook;
+#define SELECT_READ   0x01
+#define SELECT_WRITE  0x02
+#define SELECT_EXCEPT 0x04
 
 cCaptainHook::cCaptainHook()
 {

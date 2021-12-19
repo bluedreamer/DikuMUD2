@@ -1,48 +1,5 @@
-/* *********************************************************************** *
- * File   : nanny.c                                   Part of Valhalla MUD *
- * Version: 2.02                                                           *
- * Author : seifert and quinn (@diku.dk)                                   *
- *                                                                         *
- * Purpose: Menus in entry.                                                *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
+#include "nanny.h"
 
-/* 27/07/92 seifert: Changed radically to use descriptor only              */
-/* 30/07/92 seifert: Fixed bug with find descriptor & wiz check            */
-/* 22/10/92 gnort  : Put pwd-hide on all operations in nanny.              */
-/* 05/1/93  HHS    : Included wizlock                                      */
-
-#include "CServerConfiguration.h"
-#include "interpreter.h"
-#include "pcsave.h"
-
-#include <arpa/inet.h>
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#ifndef DOS /* AMIGA */
-   #include <arpa/telnet.h>
-#endif
 #include "account.h"
 #include "affect.h"
 #include "ban.h"
@@ -53,6 +10,7 @@
 #include "competition.h"
 #include "connectionlog.h"
 #include "constants.h"
+#include "CServerConfiguration.h"
 #include "db.h"
 #include "dilrun.h"
 #include "files.h"
@@ -61,7 +19,7 @@
 #include "main.h"
 #include "modify.h"
 #include "money.h"
-#include "nanny.h"
+#include "pcsave.h"
 #include "protocol.h"
 #include "structs.h"
 #include "system.h"
@@ -70,8 +28,17 @@
 #include "utility.h"
 #include "utils.h"
 
-#include <climits>
 #include <algorithm>
+#include <arpa/inet.h>
+#include <cctype>
+#include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <unistd.h>
 
 #define STATE(d) ((d)->state)
 

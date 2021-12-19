@@ -1,44 +1,16 @@
-/* *********************************************************************** *
- * File   : protocol.c                                Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: The common protocol between server and multi-client-server.    *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
 #include "protocol.h"
 
 #include "cHook.h"
 #include "cQueueElem.h"
 #include "db_file.h"
 #include "essential.h"
-#include "select.h"
-#include "unixshit.h"
-#include "utility.h"
 
+#include <algorithm>
 #include <cassert>
 #include <cerrno>
-#include <cstdio>
 #include <cstring>
 #include <sys/types.h>
 #include <unistd.h>
-#include <algorithm>
 
 // Read as much as we can...
 // -1 on error, 0 on ok.

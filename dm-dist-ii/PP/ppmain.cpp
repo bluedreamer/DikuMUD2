@@ -255,7 +255,7 @@ auto original_main(int argc, char *argv[]) -> int
                /* -[v] verbose mode toggle */
                case 'V':
                case 'v':
-                  Verbose = static_cast<int>(Verbose) == 0;
+                  Verbose = static_cast<int>(static_cast<int>(Verbose) == 0);
                   break;
 
 #if DEBUG

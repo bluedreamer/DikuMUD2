@@ -1,37 +1,3 @@
-/* *********************************************************************** *
- * File   : comm.c                                    Part of Valhalla MUD *
- * Version: 1.30                                                           *
- * Author : all.                                                           *
- *                                                                         *
- * Purpose: Communications.                                                *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 26/07/92 seifert: Changed close_socket to match redesign of extract     */
-/* 29/07/92 seifert: Changed close_socket to new menu struct               */
-/* 30/07/92 seifert: Mana added to prompt after several requests           */
-/* 14/08/92 quinn  : Changed eventqueue to a heap for performance.         */
-/* 22/08/92 bombman: Split up of comm.c to isolate net stuff               */
-/* 13/10/93 bombman: Make act take care of transparent rooms               */
-/* 25/03/94 bombman: Edited act, to correct leaking from non !transp. unit */
-/* 21/07/94 gnort  : Removed dollar doubling on input, which is ok, as     */
-/*                   player input is NEVER fed directly to act             */
-
 #include "comm.h"
 
 #include "cHook.h"
@@ -40,10 +6,8 @@
 #include "interpreter.h"
 #include "protocol.h"
 #include "structs.h"
-#include "sysport.h"
 #include "system.h"
 #include "textutil.h"
-#include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
 

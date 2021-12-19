@@ -1,26 +1,3 @@
-/* *********************************************************************** *
- * File   : board.c                                   Part of Valhalla MUD *
- * Version: 1.30                                                           *
- * Author : gnort@daimi.aau.dk                                             *
- *                                                                         *
- * Purpose: A bulletin board service.                                      *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
 /*
   Usage in zone file:
   special SFUN_BULLETIN_BOARD ["board-name [L###]"]
@@ -30,17 +7,9 @@
   Later on, other exceptions to boardusage can easily, and without corrution
   of existing files, be added for guild (?), race, whatever.
 */
-
-/* Tue Jul  6 1993 HHS: added exchangable lib dir                           */
-/* Tue Aug  7 1993 Gnort: added reply due to popular (1) demand             */
-/* Mon Sep 27 1993 Gnort: fixed bug introduced in init_board() (replicating */
-/*                        boards)                                           */
-/* 11/04/94  seifert: Added Statements to free() unfreed memory in read.    */
-/* Jan 9, 1995 gnort: Changed the way filenames are used...                 */
-/* Mar 2, 1995 seif : Fixed nasty free bug in write / remove                */
-
 #include "blkfile.h"
 #include "comm.h"
+#include "constants.h"
 #include "db.h"
 #include "db_file.h"
 #include "files.h"
@@ -54,12 +23,12 @@
 #include "utils.h"
 #include "weather.h"
 
+#include <algorithm>
 #include <cctype>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
-#include <algorithm>
 
 #define MAX_MSGS 50 /* Maximum number of messages      */
 /* Bugger, I just realized that this value can't be modified without

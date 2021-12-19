@@ -1,34 +1,3 @@
-/* *********************************************************************** *
- * File   : spec_procs.c                              Part of Valhalla MUD *
- * Version: 1.43                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Special routines                                               *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 26/07/92 seifert: Added blockway, and door/unit access prevention       */
-/* 30/07/92 seifert: Added rescue, teamwork, hide                          */
-/* 30/07/92 seifert: Fixed exclude check from block procedures             */
-/* 01/10/92 seifert: modified various routines                             */
-/* 22/01/93 hhs: corrected drop bug in blow away                           */
-/* 02/08/94 gnort: Fixed a bug in force_move; added support for 2nd string */
-
 #include "affect.h"
 #include "comm.h"
 #include "db.h"
@@ -52,13 +21,13 @@
 #include "utility.h"
 #include "utils.h"
 
+#include <algorithm>
 #include <cctype>
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
-#include <algorithm>
 
 /*   external vars  */
 

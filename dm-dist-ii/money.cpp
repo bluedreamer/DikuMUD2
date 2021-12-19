@@ -1,32 +1,3 @@
-/* *********************************************************************** *
- * File   : money.c                                   Part of Valhalla MUD *
- * Version: 2.15                                                           *
- * Author : gnort@daimi.aau.dk                                             *
- *                                                                         *
- * Purpose: Routines related to money handling.                            *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 11-Jan-95 gnort: Fixed some small bugs in money_round().		   */
-/* 10-Jun-95 ms: Attempted to make general error handling of wierd cases,
-                 DIL can create strange object values, and asserting is NOT
-                 a good idea for these types of objects. */
-
 #include "money.h"
 
 #include "db.h"
@@ -36,13 +7,13 @@
 #include "utility.h"
 #include "utils.h"
 
+#include <algorithm>
 #include <cassert>
 #include <cctype>
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <algorithm>
 
 extern char       libdir[]; /* from dikumud.c */
 

@@ -506,8 +506,10 @@ auto gchfile() -> int
       Bufc = 0;
       return (EOF);
    }
-   if((Filestack[Filelevel]->f_eof) && popfile())
-      return (A_trigraph ? trigraph() : gchbuf());
+   if(((Filestack[Filelevel]->f_eof) != 0) && (popfile() != 0))
+   {
+      return (A_trigraph != 0 ? trigraph() : gchbuf());
+   }
 
    if(Filelevel < 0)
    {

@@ -1,33 +1,5 @@
-/* *********************************************************************** *
- * File   : magic2.c                                  Part of Valhalla MUD *
- * Version: 2.10                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: 2nd half of actual spells.                                     *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-/* 12-Aug-94 gnort: Included spell-preprocessing in the few spells that
- *		    needed it, thus killing spells[12].c
- */
-
 #include "affect.h"
 #include "comm.h"
-#include "common.h"
 #include "db.h"
 #include "fight.h"
 #include "handler.h"
@@ -44,10 +16,8 @@
 #include "utils.h"
 #include "zone_info_type.h"
 
-#include <climits>
-#include <cstdio>
-#include <cstdlib>
 #include <algorithm>
+#include <climits>
 
 #define RIFT_RISK 100
 

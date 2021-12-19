@@ -1,44 +1,14 @@
-/* *********************************************************************** *
- * File   : dbfind.c                                  Part of Valhalla MUD *
- * Version: 1.30                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Database stuff for locating database objects.                  *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
 #include "dbfind.h"
 
-#include "db.h"
 #include "dil.h"
 #include "handler.h"
 #include "structs.h"
 #include "textutil.h"
-#include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
 #include "zone_info_type.h"
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
 #include <cstring>
-#include <ctime>
 
 extern descriptor_data *descriptor_list;
 

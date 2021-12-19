@@ -1,29 +1,3 @@
-/* *********************************************************************** *
- * File   : act_wstat.c                               Part of Valhalla MUD *
- * Version: 2.00                                                           *
- * Author : All.                                                           *
- *                                                                         *
- * Purpose: Implementation of wizard 'wstat' command.                      *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 10-Aug-94 gnort: Touched up/rewrote enough to warrant new version number*/
-/* 09-Feb-95 gnort: Fixed silly bug in wstat zone                          */
 #include "account.h"
 #include "affect.h"
 #include "apply_function_type.h"

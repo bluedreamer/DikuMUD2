@@ -1,51 +1,15 @@
-/* *********************************************************************** *
- * File   : convert.c                                 Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Conversion of playerfiles.                                     *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 09/09/93 seifert : Changed to accomodate blkfile V2                     */
-/*          seifert : Changed to accomodate single player files.           */
-
-#include "affect.h"
-#include "blkfile.h"
 #include "common.h"
 #include "db.h"
 #include "db_file.h"
-#include "files.h"
 #include "handler.h"
-#include "money.h"
 #include "pcsave.h"
-#include "skills.h"
 #include "structs.h"
 #include "textutil.h"
-#include "utility.h"
 #include "utils.h"
 #include "zon_basis.h"
 
 #include <cctype>
-#include <climits>
-#include <cmath>
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
 #include <ctime>
 

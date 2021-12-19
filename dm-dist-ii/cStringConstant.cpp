@@ -1,8 +1,10 @@
-#include <cassert>
-#include "textutil.h"
-#include "essential.h"
 #include "cStringConstant.h"
+
 #include "cHashSystem.h"
+#include "essential.h"
+#include "textutil.h"
+
+#include <cassert>
 
 cStringConstant::cStringConstant(const char *str, uint32_t len, uint32_t nHash)
 {

@@ -1,37 +1,7 @@
-/* *********************************************************************** *
- * File   : constants.c                               Part of Valhalla MUD *
- * Version: 1.01                                                           *
- * Author : All.                                                           *
- *                                                                         *
- * Purpose: Constant definitions.                                          *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-#include "constants.h"
-
-#include "protocol.h"
 #include "skills.h"
-#include "structs.h"
-#include "utils.h"
 #include "values.h"
 
 #include <climits>
-#include <cstdlib>
 
 /* ---------------------------------------------------------------------- */
 /*                         M O V E M E N T                                */
@@ -44,7 +14,7 @@ const char *char_pos[] = {
 
 const char *enter_dirs[]     = {"the north", "the east", "the south", "the west", "above", "below", nullptr};
 
-const int   rev_dir[]        = {2, 3, 0, 1, 5, 4};
+ int   rev_dir[]        = {2, 3, 0, 1, 5, 4};
 
 const char *room_landscape[] = {"inside",
                                 "city",
@@ -63,7 +33,7 @@ const char *room_landscape[] = {"inside",
                                 "ice",
                                 nullptr};
 
-const int   movement_loss[]  = {
+ int   movement_loss[]  = {
    1,  /* Inside     */
    1,  /* City       */
    2,  /* Field      */
@@ -107,7 +77,7 @@ const char *month_name[MUD_YEAR] = {
    "Month of the Ancient Darkness" /* Fall   8 */
 };
 
-const int8_t time_light[SUN_SET + 1] = {
+int8_t time_light[SUN_SET + 1] = {
    -1, /* SUN_DARK  */
    0,  /* SUN_RISE  */
    1,  /* SUN_LIGHT */
@@ -140,7 +110,7 @@ const char *color_liquid[LIQ_MAX + 2] = {"clear",
                                          "golden",
                                          nullptr};
 
-const int   drink_aff[LIQ_MAX + 2][3] = {
+int         drink_aff[LIQ_MAX + 2][3] = {
    {0, 1, 10}, /* Water    */
    {3, 2, 5},  /* beer     */
    {5, 2, 5},  /* wine     */
@@ -178,7 +148,7 @@ const char   *bodyparts[]                 = {"arms",       "left arm",  "right a
                            "neck",       "butt",      "eyes",      "right eye", "left eye",   "mouth",     "ears", "right ear",
                            "left ear",   "teeth",     "tounge",    "nose",      "nostrils",   nullptr};
 
-const uint8_t bodyparts_cover[31][5]      = {
+ uint8_t bodyparts_cover[31][5]      = {
    {WEAR_ARMS, WEAR_UNUSED},                                    /* arms */
    {WEAR_ARMS, WEAR_UNUSED},                                    /* left arm */
    {WEAR_ARMS, WEAR_UNUSED},                                    /* right arm */
@@ -210,7 +180,7 @@ const uint8_t bodyparts_cover[31][5]      = {
    {WEAR_HEAD, WEAR_UNUSED}                                     /* nostrils */
 };
 
-const char                 *where[]           = {"<ILLEGAL POSITION>   ", /* Position 0 is not a position */
+const char    *where[]           = {"<ILLEGAL POSITION>   ", /* Position 0 is not a position */
                        "<ILLEGAL POSITION>   ", /* Position light is not used   */
                        "<worn on finger>     ", "<worn on finger>     ", "<worn around neck>   ", "<worn around neck>   ",
                        "<worn on body>       ", "<worn on head>       ", "<worn on legs>       ", "<worn on feet>       ",
@@ -223,51 +193,51 @@ const char                 *where[]           = {"<ILLEGAL POSITION>   ", /* Pos
 /*                      P O I N T   S Y S T E M                           */
 /* ---------------------------------------------------------------------- */
 
-const char                 *npc_class_types[] = {"Normal", "Undead", nullptr};
+const char    *npc_class_types[] = {"Normal", "Undead", nullptr};
 
-const struct skill_interval how_good[]        = {{-20, "horrible"},
-                                          {-15, "very bad"},
-                                          {-10, "bad"},
-                                          {-5, "worse than average"},
-                                          {0, "average"},
-                                          {5, "a little better than average"},
-                                          {10, "better than average"},
-                                          {15, "good"},
-                                          {20, "very good"},
-                                          {25, "supreme"},
-                                          {-1, nullptr}};
+skill_interval how_good[]        = {{-20, "horrible"},
+                             {-15, "very bad"},
+                             {-10, "bad"},
+                             {-5, "worse than average"},
+                             {0, "average"},
+                             {5, "a little better than average"},
+                             {10, "better than average"},
+                             {15, "good"},
+                             {20, "very good"},
+                             {25, "supreme"},
+                             {-1, nullptr}};
 
-const struct skill_interval weapon_skills[]   = {{0, "utterly hopeless"},
-                                               {10, "impossible"},
-                                               {25, "poor"},
-                                               {40, "good"},
-                                               {50, "skilled"},
-                                               {70, "specialized"},
-                                               {90, "supreme"},
-                                               {100, "expert"},
-                                               {150, "godly"},
-                                               {-1, nullptr}};
+skill_interval weapon_skills[]   = {{0, "utterly hopeless"},
+                                  {10, "impossible"},
+                                  {25, "poor"},
+                                  {40, "good"},
+                                  {50, "skilled"},
+                                  {70, "specialized"},
+                                  {90, "supreme"},
+                                  {100, "expert"},
+                                  {150, "godly"},
+                                  {-1, nullptr}};
 
-const struct skill_interval skill_skills[]    = {{0, "utterly hopeless"},
-                                              {10, "have heard about"},
-                                              {25, "have tried a little"},
-                                              {40, "have practiced"},
-                                              {50, "are good at"},
-                                              {70, "are an expert at"},
-                                              {90, "master"},
-                                              {100, "are expert at"},
-                                              {150, "are godly at"},
-                                              {-1, nullptr}};
+skill_interval skill_skills[]    = {{0, "utterly hopeless"},
+                                 {10, "have heard about"},
+                                 {25, "have tried a little"},
+                                 {40, "have practiced"},
+                                 {50, "are good at"},
+                                 {70, "are an expert at"},
+                                 {90, "master"},
+                                 {100, "are expert at"},
+                                 {150, "are godly at"},
+                                 {-1, nullptr}};
 
-const struct skill_interval spell_skills[]    = {{10, "might remember"},
-                                              {25, "can almost remember"},
-                                              {40, "can remember"},
-                                              {50, "have practiced"},
-                                              {70, "have learned"},
-                                              {90, "master"},
-                                              {100, "are expert with"},
-                                              {150, "are godly with"},
-                                              {-1, nullptr}};
+skill_interval spell_skills[]    = {{10, "might remember"},
+                                 {25, "can almost remember"},
+                                 {40, "can remember"},
+                                 {50, "have practiced"},
+                                 {70, "have learned"},
+                                 {90, "master"},
+                                 {100, "are expert with"},
+                                 {150, "are godly with"},
+                                 {-1, nullptr}};
 
 #ifdef SUSPEKT
 const char *weapon_skills[] = {"impossible", "poor", "good", "skilled", "specialized", "supreme", "godly", NULL};

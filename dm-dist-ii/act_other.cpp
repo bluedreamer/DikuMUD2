@@ -1,40 +1,8 @@
-/* *********************************************************************** *
- * File   : act_other.c                               Part of Valhalla MUD *
- * Version: 1.30                                                           *
- * Author : All.                                                           *
- *                                                                         *
- * Purpose: Other stuff                                                    *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 02/08/92 seifert: Fixed my own stupid no-group for leaders              */
-/* Tue Jul 6 1993 HHS: added exchangable lib dir                           */
-/* 23/08/93 jubal  : Allow mobs (switching!) to have idea/typo/bugs :-)    */
-/* 29/08/93 jubal  : Start puts people in hometowns                        */
-/* 11-Aug-94 gnort : Changed idea/bug/typo to one command (duh)            */
-/* 12-Aug-94 gnort : Unimplemented-spells-on-scrolls crash-bug fixed       */
-
 #include "account.h"
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"
 #include "common.h"
-#include "constants.h"
 #include "db.h"
 #include "dilprg.h"
 #include "dilrun.h"
@@ -55,8 +23,6 @@
 #include <cctype>
 #include <climits>
 #include <cstdio>
-#include <cstdlib>
-#include <cstring>
 #include <ctime>
 
 /* extern variables */

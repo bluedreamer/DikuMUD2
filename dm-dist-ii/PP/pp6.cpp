@@ -208,30 +208,30 @@ void pragopt(int dummy, int no_flag, const char *name)
 
    if(strcmp(name, "arg_string") == EQUAL)
    {
-      A_astring = static_cast<int>(no_flag) == 0;
+      A_astring = static_cast<int>(static_cast<int>(no_flag) == 0);
 #if(TARGET == T_QC) OR(TARGET == T_QCX) OR(TARGET == T_TCX)
       else if(strcmp(name, "asm_expand") == EQUAL) Asmexpand = !no_flag;
 #endif /* (TARGET == T_QC) OR (TARGET == T_QCX) OR (TARGET == T_TCX) */
    }
    else if(strcmp(name, "comment_recurse") == EQUAL)
    {
-      A_crecurse = static_cast<int>(no_flag) == 0;
+      A_crecurse = static_cast<int>(static_cast<int>(no_flag) == 0);
    }
    else if(strcmp(name, "eol_comment") == EQUAL)
    {
-      A_eolcomment = static_cast<int>(no_flag) == 0;
+      A_eolcomment = static_cast<int>(static_cast<int>(no_flag) == 0);
    }
    else if(strcmp(name, "macro_rescan") == EQUAL)
    {
-      A_rescan = static_cast<int>(no_flag) == 0;
+      A_rescan = static_cast<int>(static_cast<int>(no_flag) == 0);
    }
    else if(strcmp(name, "macro_stack") == EQUAL)
    {
-      A_stack = static_cast<int>(no_flag) == 0;
+      A_stack = static_cast<int>(static_cast<int>(no_flag) == 0);
    }
    else if(strcmp(name, "trigraph") == EQUAL)
    {
-      A_trigraph = static_cast<int>(no_flag) == 0;
+      A_trigraph = static_cast<int>(static_cast<int>(no_flag) == 0);
    }
    /*
     *	We need to keep track of the current setting of the options via

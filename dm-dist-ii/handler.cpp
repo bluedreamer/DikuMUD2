@@ -1,42 +1,3 @@
-/* *********************************************************************** *
- * File   : handler.c                                 Part of Valhalla MUD *
- * Version: 2.24                                                           *
- * Author : seifert@diku.dk and quinn@diku.dk                              *
- *                                                                         *
- * Purpose: Basic routines for handling units.                             *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 16/07/92 HHS+MS: Fixed bug in weight_change_unit                        */
-/* 19/07/92 MS fixed sanity check in handler unit_down                     */
-/* 19/07/92 MS made recusive from/to check routine                         */
-/* 23/07/92 Included destruct code to avoid grave errors                   */
-/* 26/07/92 seifert: Corrected error in extract unit - no longer recursive */
-/* 02/09/92 seifert: Added unequip_object (speed)                          */
-/* 13/10/92 seifert: Fixed unequip and object affects                      */
-/* 4/6/93  HHS: Fixed light for transperant objects                        */
-/* 29/08/93 jubal  : Find_unit doesn't start count at each area            */
-/* 16/03/94 seifert : Find_unit SURRO can find rooms when !CAN_SEE         */
-/* 06/04/94 seifert : Fixed bug in Find_unit to do with canoe bug          */
-/* 21/08/94 gnort   : Added check and pile for money in unit_up/down etc   */
-/* 14/09/94 gnort   : Made unit_vector dynamic rather than static (blegh)  */
-/* 11/01/95 gnort   : Moved find_raw_ex_descr() from act_info.c over here  */
-
 #include "handler.h"
 
 #include "affect.h"
@@ -55,7 +16,6 @@
 #include "unit_affected_type.h"
 #include "unit_fptr.h"
 #include "unit_function_array_type.h"
-#include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
 

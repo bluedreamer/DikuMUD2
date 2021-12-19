@@ -1,28 +1,3 @@
-/* *********************************************************************** *
- * File   : mplex.c                                   Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: The host that connects to the server and lets people connect.  *
- *                                                                         *
- * Bugs   : -                                                              *
- *                                                                         *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
 #include "mplex.h"
 
 #include "cCaptainHook.h"
@@ -31,35 +6,28 @@
 #include "essential.h"
 #include "network.h"
 #include "protocol.h"
-#include "select.h"
-#include "structs.h"
 #include "textutil.h"
 #include "translate.h"
-#include "ttydef.h"
-#include "unixshit.h"
-#include "utility.h"
 
+#include <algorithm>
 #include <arpa/telnet.h>
-#include <assert.h>
-#include <ctype.h>
-#include <errno.h>
+#include <cassert>
+#include <cctype>
+#include <cerrno>
+#include <csignal>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <fcntl.h>
 #include <netdb.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/time.h>
-#include <sys/types.h>
 #include <unistd.h>
-#include <algorithm>
 
-void mud_went_down(void);
+void mud_went_down();
 void Idle(cConHook *con, const char *cmd);
 
 int  connections_left = 0;
 
-int  bHadAlarm        = FALSE;
+int  bHadAlarm        = static_cast<int>(FALSE);
 
 void dumbPlayLoop(cConHook *con, const char *cmd)
 {
@@ -83,17 +51,21 @@ void dumbMudDown(class cConHook *con, const char *cmd)
 
 void alarm_check(int i)
 {
-   if(bHadAlarm)
+   if(bHadAlarm != 0)
    {
       slog(LOG_OFF, 0, "Alarm checkpoint %d.", i);
-      bHadAlarm = FALSE;
+      bHadAlarm = static_cast<int>(FALSE);
    }
 }
+
+#define SELECT_READ   0x01
+#define SELECT_WRITE  0x02
+#define SELECT_EXCEPT 0x04
 
 class cMotherHook : public cHook
 {
 public:
-   void Input(int nFlags)
+   void Input(int nFlags) override
    {
       if(nFlags & SELECT_EXCEPT)
       {
@@ -102,7 +74,7 @@ public:
       }
       else if(nFlags & SELECT_READ)
       {
-         class cConHook *con = new cConHook();
+         auto *con = new cConHook();
 
          if(connections_left <= 1)
          {
@@ -131,9 +103,9 @@ class cMotherHook MotherHook;
 class cMudHook : public cHook
 {
 public:
-   int  read_mud(void);
+   auto read_mud() -> int;
 
-   void Input(int nFlags)
+   void Input(int nFlags) override
    {
       if(nFlags & SELECT_EXCEPT)
       {
@@ -148,7 +120,9 @@ public:
          {
             n = read_mud();
             if((n == 0) || (n == -1))
+            {
                break;
+            }
          }
 
          if(n == -1)
@@ -183,12 +157,12 @@ struct arg_type
       }                                                                                                                                    \
    } while(0);
 
-int             g_bModeANSI     = FALSE;
-int             g_bModeEcho     = FALSE;
-int             g_bModeRedraw   = FALSE;
-int             g_bModeTelnet   = FALSE;
+int             g_bModeANSI     = static_cast<int>(FALSE);
+int             g_bModeEcho     = static_cast<int>(FALSE);
+int             g_bModeRedraw   = static_cast<int>(FALSE);
+int             g_bModeTelnet   = static_cast<int>(FALSE);
 
-class cConHook *connection_list = NULL;
+class cConHook *connection_list = nullptr;
 
 char            Outbuf[32768];
 
@@ -206,9 +180,10 @@ void            ShowUsage(char *name)
    exit(0);
 }
 
-int ParseArg(int argc, char *argv[], struct arg_type *arg)
+auto ParseArg(int argc, char *argv[], struct arg_type *arg) -> int
 {
-   int             i, n;
+   int             i;
+   int             n;
    struct hostent *pHostInfo;
    struct in_addr *pAddr;
    char           *c;
@@ -234,19 +209,19 @@ int ParseArg(int argc, char *argv[], struct arg_type *arg)
             break;
 
          case 'c':
-            g_bModeANSI = TRUE;
+            g_bModeANSI = static_cast<int>(TRUE);
             break;
 
          case 'e':
-            g_bModeEcho = TRUE;
+            g_bModeEcho = static_cast<int>(TRUE);
             break;
 
          case 'r':
-            g_bModeRedraw = TRUE;
+            g_bModeRedraw = static_cast<int>(TRUE);
             break;
 
          case 't':
-            g_bModeTelnet = TRUE;
+            g_bModeTelnet = static_cast<int>(TRUE);
             break;
 
          case 'a':
@@ -255,13 +230,13 @@ int ParseArg(int argc, char *argv[], struct arg_type *arg)
 
             c = argv[i];
 
-            if(!isdigit(c[0]))
+            if(isdigit(c[0]) == 0)
             {
                pHostInfo = gethostbyname(c);
-               Assert(pHostInfo != NULL, "Could not lookup address.");
+               Assert(pHostInfo != nullptr, "Could not lookup address.");
                pAddr = (struct in_addr *)(pHostInfo->h_addr_list[0]);
                c     = inet_ntoa(*pAddr);
-               Assert(c != NULL, "Error in address conversion");
+               Assert(c != nullptr, "Error in address conversion");
             }
 
             arg->pAddress = str_dup(c);
@@ -290,13 +265,13 @@ int ParseArg(int argc, char *argv[], struct arg_type *arg)
       }
    }
 
-   return TRUE;
+   return static_cast<int>(TRUE);
 }
 
 /* ======================= TEXT PARSE & ECHO INPUT ====================== */
 
 /* Maybe this would be overall easier? */
-char cConHook::AddInputChar(uint8_t c)
+auto cConHook::AddInputChar(uint8_t c) -> char
 {
    char *cp = m_aInputBuf;
 
@@ -325,7 +300,9 @@ char cConHook::AddInputChar(uint8_t c)
          }
       }
       else
+      {
          m_nEscapeCode = 0;
+      }
    }
 
    TAIL(cp);
@@ -345,8 +322,10 @@ char cConHook::AddInputChar(uint8_t c)
    *cp++         = c;
    *cp           = 0;
 
-   if((c < ' ') || (c == 255) || (m_sSetup.telnet && (c > 127)))
+   if((c < ' ') || (c == 255) || ((m_sSetup.telnet != 0u) && (c > 127)))
+   {
       *(cp - 1) = 0;
+   }
 
    return *(cp - 1);
 }
@@ -360,12 +339,14 @@ void cConHook::AddString(char *str)
 
    eb = echobuf;
 
-   for(s = str; *s; s++)
+   for(s = str; *s != 0; s++)
    {
       if(ISNEWL(*s) || (strlen(m_aInputBuf) >= MAX_INPUT_LENGTH - 4))
       {
          while(ISNEWL(*(s + 1)))
+         {
             s++;
+         }
          *eb++ = '\n';
          *eb++ = '\r';
          m_qInput.Append(new cQueueElem(m_aInputBuf));
@@ -375,7 +356,7 @@ void cConHook::AddString(char *str)
       {
          int x_pos = (m_nPromptLen + strlen(m_aInputBuf)) % m_sSetup.width;
          c         = AddInputChar(*s);
-         if(c)
+         if(c != 0)
          {
             if(c == '\b')
             {
@@ -400,7 +381,9 @@ void cConHook::AddString(char *str)
                }
             }
             else
+            {
                *eb++ = c;
+            }
          }
       }
    }
@@ -408,12 +391,14 @@ void cConHook::AddString(char *str)
    *eb = 0;
    assert(eb - echobuf < (int)sizeof(echobuf) - 1);
 
-   if(m_sSetup.echo)
+   if(m_sSetup.echo != 0u)
+   {
       Write((uint8_t *)echobuf, eb - echobuf);
+   }
 }
 
 /* On -1 'con' was destroyed */
-void cConHook::ParseInput(void)
+void cConHook::ParseInput()
 {
    char buf[256];
 
@@ -423,7 +408,7 @@ void cConHook::ParseInput(void)
 
       if(m_qInput.Size() > 100)
       {
-         Close(TRUE);
+         Close(static_cast<int>(TRUE));
          return;
       }
    }
@@ -431,18 +416,22 @@ void cConHook::ParseInput(void)
 
 /* ======================= TEXT FORMATTING OUTPUT ====================== */
 
-char *cConHook::IndentText(const char *source, char *dest, int dest_size, int width)
+auto cConHook::IndentText(const char *source, char *dest, int dest_size, int width) -> char *
 {
-   const char *last = source, *current;
+   const char *last = source;
+   const char *current;
    char       *newptr;
-   int         column = 0, cutpoint = std::min(30, width / 2);
+   int         column   = 0;
+   int         cutpoint = std::min(30, width / 2);
 
-   if(!(current = source))
-      return NULL;
+   if((current = source) == nullptr)
+   {
+      return nullptr;
+   }
 
    newptr = dest;
 
-   while(*current)
+   while(*current != 0)
    {
       if(*current == CONTROL_CHAR)
       {
@@ -452,25 +441,33 @@ char *cConHook::IndentText(const char *source, char *dest, int dest_size, int wi
          continue;
       }
 
-      if(isaspace(*current)) /* Remember last space */
+      if(isaspace(*current))
+      { /* Remember last space */
          last = current;
+      }
 
-      if(*current == '\n' || *current == '\r') /* Newlines signify new col. */
+      if(*current == '\n' || *current == '\r')
+      { /* Newlines signify new col. */
          column = 0;
+      }
 
-      if((++column <= width)) /* MS: Added '<=' Have some space.. */
+      if((++column <= width))
+      { /* MS: Added '<=' Have some space.. */
          *(newptr++) = *(current++);
+      }
       else /* Out of space, so... */
       {
          column = 0;
-         if(last == NULL || cutpoint < current - last) /* backtrack or cut */
+         if(last == nullptr || cutpoint < current - last)
+         { /* backtrack or cut */
             last = current;
+         }
          newptr -= (current - last);
          current     = ++last;
          *(newptr++) = '\n';
          *(newptr++) = '\r';
          current     = skip_spaces(current); /* Skip any double spaces, etc. */
-         last        = NULL;
+         last        = nullptr;
       }
    }
 
@@ -482,33 +479,41 @@ char *cConHook::IndentText(const char *source, char *dest, int dest_size, int wi
 }
 
 /* Parse the string 'text' and prepare it for output on 'con' */
-const char *cConHook::ParseOutput(const char *text)
+auto cConHook::ParseOutput(const char *text) -> const char *
 {
-   if(!IsHooked())
+   if(IsHooked() == 0)
+   {
       return "";
+   }
 
    return IndentText(text, Outbuf, sizeof(Outbuf), m_sSetup.width);
 }
 
 /* Attempts to erase the characters input after the prompt */
 
-void cConHook::PromptErase(void)
+void cConHook::PromptErase()
 {
    int   n;
    char  buf[MAX_STRING_LENGTH];
    char *b = buf;
 
    if(m_nPromptLen == 0)
+   {
       return;
+   }
 
    *b = 0;
 
    if((m_sSetup.emulation == TERM_TTY) || (m_sSetup.emulation == TERM_VT100))
    {
-      for(n = 0; m_aInputBuf[n]; n++)
+      for(n = 0; m_aInputBuf[n] != 0; n++)
+      {
          *b++ = '\b';
-      for(n = 0; m_aInputBuf[n]; n++)
+      }
+      for(n = 0; m_aInputBuf[n] != 0; n++)
+      {
          *b++ = ' ';
+      }
       *b = 0;
    }
    else if(m_sSetup.emulation == TERM_ANSI)
@@ -528,9 +533,13 @@ void cConHook::PromptErase(void)
          }
 
          if(m_nPromptLen > 1)
+         {
             sprintf(b, "[%dD[%dC[K", m_sSetup.width, m_nPromptLen - 1);
+         }
          else
+         {
             sprintf(b, "[%dD[K", m_sSetup.width);
+         }
 
          TAIL(b);
       }
@@ -538,18 +547,24 @@ void cConHook::PromptErase(void)
 
    m_nPromptLen = 0;
 
-   if(*buf)
+   if(*buf != 0)
+   {
       Write((uint8_t *)buf, strlen(buf));
+   }
 }
 
 /* Assumes that a newline has already been output */
 void cConHook::PromptRedraw(const char *prompt)
 {
-   if(*prompt)
+   if(*prompt != 0)
+   {
       Write((uint8_t *)prompt, strlen(prompt));
+   }
 
-   if(*m_aInputBuf)
+   if(*m_aInputBuf != 0)
+   {
       Write((uint8_t *)m_aInputBuf, strlen(m_aInputBuf));
+   }
 
    m_nPromptLen = strlen(prompt);
 }
@@ -559,8 +574,10 @@ void cConHook::PromptRedraw(const char *prompt)
 /* -1 on connection closed, 0 on success */
 void cConHook::WriteCon(const char *text)
 {
-   if(text == NULL)
+   if(text == nullptr)
+   {
       return;
+   }
 
    Write((uint8_t *)text, strlen(text));
 }
@@ -588,10 +605,10 @@ void cConHook::SequenceCompare(uint8_t *pBuf, int *pnLen)
          {
             m_nSequenceCompare = -1;
 
-            m_sSetup.echo      = FALSE;
-            m_sSetup.redraw    = FALSE;
+            m_sSetup.echo      = static_cast<uint8_t>(FALSE);
+            m_sSetup.redraw    = static_cast<uint8_t>(FALSE);
             m_sSetup.emulation = TERM_INTERNAL;
-            m_sSetup.telnet    = FALSE;
+            m_sSetup.telnet    = static_cast<uint8_t>(FALSE);
 
             memmove(pBuf, pBuf + strlen(match), *pnLen - strlen(match));
             *pnLen -= strlen(match);
@@ -609,7 +626,7 @@ void cConHook::SequenceCompare(uint8_t *pBuf, int *pnLen)
    }
 }
 
-cConHook::cConHook(void)
+cConHook::cConHook()
 {
    m_nEscapeCode      = 0;
    m_aOutput[0]       = 0;
@@ -628,10 +645,14 @@ cConHook::cConHook(void)
    m_sSetup.redraw    = g_bModeRedraw;
    m_sSetup.telnet    = g_bModeTelnet;
 
-   if(g_bModeANSI)
+   if(g_bModeANSI != 0)
+   {
       m_sSetup.emulation = TERM_ANSI;
+   }
    else
+   {
       m_sSetup.emulation = TERM_TTY;
+   }
 
    m_sSetup.height         = 15;
    m_sSetup.width          = 80;
@@ -719,17 +740,23 @@ cConHook::cConHook(void)
    connections_left--;
 }
 
-cConHook::~cConHook(void)
+cConHook::~cConHook()
 {
    if(this == connection_list)
+   {
       connection_list = this->m_pNext;
+   }
    else
    {
       class cConHook *tmp;
 
-      for(tmp = connection_list; tmp; tmp = tmp->m_pNext)
+      for(tmp = connection_list; tmp != nullptr; tmp = tmp->m_pNext)
+      {
          if(tmp->m_pNext == this)
+         {
             break;
+         }
+      }
       tmp->m_pNext = this->m_pNext;
    }
 
@@ -742,23 +769,35 @@ void cConHook::testChar(uint8_t c)
    {
       case 0:
          if(c == IAC)
+         {
             m_nFirst++;
+         }
          else
+         {
             m_nFirst = -1;
+         }
          break;
 
       case 1:
          if(c == WILL)
+         {
             m_nFirst++;
+         }
          else
+         {
             m_nFirst = -1;
+         }
          break;
 
       case 2:
          if(c == TELOPT_ECHO)
+         {
             m_nFirst++;
+         }
          else
+         {
             m_nFirst = -1;
+         }
          break;
 
       case 3:
@@ -768,7 +807,9 @@ void cConHook::testChar(uint8_t c)
 
       case 4:
          if(c == IAC)
+         {
             m_nFirst++;
+         }
          else
          {
             m_nFirst = -1;
@@ -778,7 +819,9 @@ void cConHook::testChar(uint8_t c)
 
       case 5:
          if(c == WONT)
+         {
             m_nFirst++;
+         }
          else
          {
             m_nFirst = -1;
@@ -816,9 +859,13 @@ void cConHook::getLine(uint8_t buf[], int *size)
       // slog(LOG_ALL, 0, "Testchar %d, first %d.", buf[i], m_nFirst);
 
       if(m_nFirst == -1)
+      {
          return;
+      }
       if(m_nFirst == -2)
+      {
          break;
+      }
    }
 
    if(i < *size)
@@ -832,7 +879,7 @@ void cConHook::Input(int nFlags)
 {
    if(nFlags & SELECT_EXCEPT)
    {
-      Close(TRUE);
+      Close(static_cast<int>(TRUE));
    }
    else if(nFlags & SELECT_READ)
    {
@@ -844,12 +891,14 @@ void cConHook::Input(int nFlags)
       if(n == -1)
       {
          if((errno == EWOULDBLOCK) || (errno == EAGAIN))
+         {
             return;
+         }
 
-         Close(TRUE);
+         Close(static_cast<int>(TRUE));
          return;
       }
-      else if(n == 0)
+      if(n == 0)
       {
          Close(TRUE);
          return;
@@ -859,14 +908,18 @@ void cConHook::Input(int nFlags)
       {
          SequenceCompare(buf, &n);
          if(n <= 0)
+         {
             return;
+         }
       }
 
       if(m_nFirst >= 0)
       {
          getLine(buf, &n);
          if(n <= 0)
+         {
             return;
+         }
       }
 
       buf[n] = 0;
@@ -876,7 +929,7 @@ void cConHook::Input(int nFlags)
 
       cQueueElem *qe;
 
-      while((qe = m_qInput.GetHead()))
+      while((qe = m_qInput.GetHead()) != nullptr)
       {
          c = (char *)qe->Data();
          assert(strlen(c) < MAX_INPUT_LENGTH);
@@ -888,14 +941,16 @@ void cConHook::Input(int nFlags)
 
 void cConHook::Close(int bNotifyMud)
 {
-   if(bNotifyMud && m_nId != 0 && MudHook.IsHooked())
+   if((bNotifyMud != 0) && m_nId != 0 && (MudHook.IsHooked() != 0))
    {
       slog(LOG_ALL, 0, "Closing con id %d.", m_nId);
       protocol_send_close(&MudHook, m_nId);
    }
 
-   if(IsHooked())
+   if(IsHooked() != 0)
+   {
       Unhook();
+   }
 
    m_aOutput[0]   = 0;
    m_aInputBuf[0] = 0;
@@ -904,17 +959,18 @@ void cConHook::Close(int bNotifyMud)
    m_nId          = 0;
 }
 
-void ClearUnhooked(void)
+void ClearUnhooked()
 {
-   class cConHook *con, *nextcon;
+   class cConHook *con;
+   class cConHook *nextcon;
 
-   for(con = connection_list; con; con = nextcon)
+   for(con = connection_list; con != nullptr; con = nextcon)
    {
       nextcon = con->m_pNext;
 
-      if(!con->IsHooked())
+      if(con->IsHooked() == 0)
       {
-         con->Close(TRUE);
+         con->Close(static_cast<int>(TRUE));
          delete con;
       }
    }
@@ -927,11 +983,15 @@ void cConHook::TransmitCommand(const char *text)
    char    *d;
    uint16_t len;
 
-   if((d = (char *)strchr(text, '\r'))) // MS2020
+   if((d = (char *)strchr(text, '\r')) != nullptr)
+   { // MS2020
       *d = 0;
+   }
 
-   if((d = (char *)strchr(text, '\n'))) // MS2020
+   if((d = (char *)strchr(text, '\n')) != nullptr)
+   { // MS2020
       *d = 0;
+   }
 
    strip_trailing_spaces((char *)text); // MS2020
 
@@ -964,15 +1024,15 @@ void cConHook::PlayLoop(const char *cmd)
          WriteCon(MUD_NAME " has not yet finished rebooting.\n\r");
          return;
       }
-      else
-      {
-         SendCon("Please retry.\n\r");
-         m_nState = 0;
-         m_pFptr  = dumbMenuSelect;
-      }
+
+      SendCon("Please retry.\n\r");
+      m_nState = 0;
+      m_pFptr  = dumbMenuSelect;
    }
-   else /* m_nId != 0 */
+   else
+   { /* m_nId != 0 */
       TransmitCommand(cmd);
+   }
 }
 
 void cConHook::MenuSelect(const char *cmd)
@@ -980,31 +1040,35 @@ void cConHook::MenuSelect(const char *cmd)
    int         n;
    const char *c;
 
-   if(!MudHook.IsHooked())
+   if(MudHook.IsHooked() == 0)
    {
       m_pFptr = dumbMudDown;
       return;
    }
 
-   for(c = cmd; isspace(*c); c++)
+   for(c = cmd; isspace(*c) != 0; c++)
+   {
       ;
+   }
 
    protocol_send_request(&MudHook);
 
-   if(MudHook.IsHooked())
+   if(MudHook.IsHooked() != 0)
    {
       m_nState = 0;
       m_pFptr  = dumbPlayLoop;
    }
    else
+   {
       SendCon(MUD_NAME " is unreachable right now...\n\r\n\r");
+   }
 }
 
 void cConHook::PressReturn(const char *cmd)
 {
    int oldmode = m_nPromptMode;
 
-   if(*skip_blanks(cmd))
+   if(*skip_blanks(cmd) != 0)
    {
       SendCon(CONTROL_FG_RED "*** Read aborted ***" CONTROL_FG_WHITE "\n\r");
 
@@ -1039,17 +1103,20 @@ void cConHook::PressReturn(const char *cmd)
 }
 
 /* Returns new point (NULL if done) */
-void cConHook::ShowChunk(void)
+void cConHook::ShowChunk()
 {
    char      buffer[160 * 60 + 600];
-   char     *scan, *point;
+   char     *scan;
+   char     *point;
    const int max_lines = m_sSetup.height;
    int       lines     = 0;
 
    scan                = buffer;
 
-   if(m_qPaged.IsEmpty())
+   if(m_qPaged.IsEmpty() != 0)
+   {
       return;
+   }
 
    cQueueElem *qe = m_qPaged.GetHead();
 
@@ -1057,10 +1124,12 @@ void cConHook::ShowChunk(void)
 
    for(;;)
    {
-      if(!*point)
+      if(*point == 0)
       {
-         if(m_qPaged.IsEmpty())
+         if(m_qPaged.IsEmpty() != 0)
+         {
             break;
+         }
 
          delete qe;
          qe    = m_qPaged.GetHead();
@@ -1071,10 +1140,14 @@ void cConHook::ShowChunk(void)
       *scan = *point++;
 
       if(*scan == '\n')
+      {
          lines++;
+      }
 
       if(max_lines <= lines)
+      {
          break;
+      }
 
       scan++;
 
@@ -1089,12 +1162,15 @@ void cConHook::ShowChunk(void)
 
    /* Insert the rest of the un-paged stringback into buffer */
    if(!str_is_empty(point))
+   {
       m_qPaged.Prepend(new cQueueElem(point));
+   }
 
-   if(qe)
+   {
       delete qe;
+   }
 
-   m_nPromptMode = !m_qPaged.IsEmpty();
+   m_nPromptMode = static_cast<int>(m_qPaged.IsEmpty()) == 0;
 
    if(m_nPromptMode == 1)
    {
@@ -1106,7 +1182,7 @@ void cConHook::ShowChunk(void)
    Write((uint8_t *)buffer, strlen(buffer));
 }
 
-void cConHook::ProcessPaged(void)
+void cConHook::ProcessPaged()
 {
    if(m_pFptr != dumbPressReturn)
    {
@@ -1116,18 +1192,22 @@ void cConHook::ProcessPaged(void)
 }
 
 /* -1 on error. 0 when no more data. +1 When processed one request. */
-int cMudHook::read_mud(void)
+auto cMudHook::read_mud() -> int
 {
    class cConHook *con;
-   uint16_t        id, len;
-   int             p, n;
+   uint16_t        id;
+   uint16_t        len;
+   int             p;
+   int             n;
    char           *data;
    uint8_t         text_type;
 
    p = protocol_parse_incoming(this, &id, &len, &data, &text_type);
 
    if(p <= 0)
+   {
       return p;
+   }
 
    switch(p)
    {
@@ -1138,16 +1218,18 @@ int cMudHook::read_mud(void)
             break;
          }
 
-         for(con = connection_list; con; con = con->m_pNext)
+         for(con = connection_list; con != nullptr; con = con->m_pNext)
          {
             if(con->m_nId == id)
             {
-               n = (con->m_sSetup.emulation == TERM_INTERNAL);
+               n = static_cast<int>(con->m_sSetup.emulation == TERM_INTERNAL);
 
                memcpy(&(con->m_sSetup), data, len);
 
-               if(n)
+               if(n != 0)
+               {
                   con->m_sSetup.emulation = TERM_INTERNAL;
+               }
 
                assert(is_in(con->m_sSetup.emulation, TERM_DUMB, TERM_INTERNAL));
 
@@ -1160,32 +1242,40 @@ int cMudHook::read_mud(void)
                break;
             }
          }
-         if(con == NULL)
+         if(con == nullptr)
+         {
             slog(LOG_OFF, 0, "ERROR: Unknown ID m_sSetup received.");
+         }
 
          break;
 
       case MULTI_TERMINATE_CHAR:
-         if(data)
+         if(data != nullptr)
+         {
             free(data);
-         for(con = connection_list; con; con = con->m_pNext)
+         }
+         for(con = connection_list; con != nullptr; con = con->m_pNext)
          {
             if(con->m_nId == id)
             {
                con->SendCon(CONTROL_RESET "Your connection was requested "
                                           "terminated.\n\n\r");
-               con->Close(FALSE);
+               con->Close(static_cast<int>(FALSE));
                return 1;
             }
          }
-         if(con == NULL)
+         if(con == nullptr)
+         {
             slog(LOG_OFF, 0, "ERROR: Unknown ID requested terminated.");
+         }
          return 1;
 
       case MULTI_CONNECT_CON_CHAR:
-         if(data)
+         if(data != nullptr)
+         {
             free(data);
-         for(con = connection_list; con; con = con->m_pNext)
+         }
+         for(con = connection_list; con != nullptr; con = con->m_pNext)
          {
             if((con->m_nId == 0) && (con->m_pFptr == dumbPlayLoop))
             {
@@ -1194,7 +1284,7 @@ int cMudHook::read_mud(void)
                break;
             }
          }
-         if(con == NULL)
+         if(con == nullptr)
          {
             // slog(LOG_OFF,0,"Unknown destination for confirm! Requesting term.");
             protocol_send_close(&MudHook, id);
@@ -1205,9 +1295,11 @@ int cMudHook::read_mud(void)
       case MULTI_PAGE_CHAR:
       case MULTI_PROMPT_CHAR:
          if(len == 0)
+         {
             break;
+         }
 
-         for(con = connection_list; con; con = con->m_pNext)
+         for(con = connection_list; con != nullptr; con = con->m_pNext)
          {
             if(id == con->m_nId)
             {
@@ -1234,7 +1326,7 @@ int cMudHook::read_mud(void)
             }
          }
 
-         if(con == NULL)
+         if(con == nullptr)
          {
             // slog(LOG_OFF, 0, "Unknown destination text received.");
          }
@@ -1244,17 +1336,21 @@ int cMudHook::read_mud(void)
          abort();
    }
 
-   if(data)
+   if(data != nullptr)
+   {
       free(data);
+   }
 
    return 1;
 }
 
 /* Test if the mud is up again... */
-void test_mud_up(void)
+void test_mud_up()
 {
-   int             n, fd;
-   class cConHook *nextcon, *con;
+   int             n;
+   int             fd;
+   class cConHook *nextcon;
+   class cConHook *con;
 
    fd = OpenNetwork(arg.nMudPort, arg.pAddress);
 
@@ -1268,7 +1364,7 @@ void test_mud_up(void)
 
    CaptainHook.Hook(fd, &MudHook);
 
-   for(con = connection_list; con; con = nextcon)
+   for(con = connection_list; con != nullptr; con = nextcon)
    {
       nextcon = con->m_pNext;
       con->SendCon(MUD_NAME " has begun rebooting... please wait.\n\n\r");
@@ -1285,15 +1381,18 @@ void cConHook::MudDown(const char *cmd)
    SendCon("There is still no connection to " MUD_NAME ".\n\n\r");
 }
 
-void mud_went_down(void)
+void mud_went_down()
 {
-   int             n, tmpFd;
+   int             n;
+   int             tmpFd;
    class cConHook *con;
 
-   if(MudHook.IsHooked())
+   if(MudHook.IsHooked() != 0)
+   {
       MudHook.Unhook();
+   }
 
-   for(con = connection_list; con; con = con->m_pNext)
+   for(con = connection_list; con != nullptr; con = con->m_pNext)
    {
       con->SendCon("\n\n\rThe connection to " MUD_NAME " was broken. "
                    "Please be patient...\n\n\r");
@@ -1303,17 +1402,19 @@ void mud_went_down(void)
    }
 }
 
-void Control(void)
+void Control()
 {
    static int tries = 0;
    int        n;
 
    for(;;)
    {
-      if(!MotherHook.IsHooked())
+      if(MotherHook.IsHooked() == 0)
+      {
          return;
+      }
 
-      if(!MudHook.IsHooked())
+      if(MudHook.IsHooked() == 0)
       {
          if(tries++ > 20)
          {
@@ -1323,11 +1424,13 @@ void Control(void)
          test_mud_up(); /* Need to do this first... */
       }
       else
+      {
          tries = 0;
+      }
 
       ClearUnhooked(); /* Clear all closed down connections */
 
-      n = CaptainHook.Wait(NULL);
+      n = CaptainHook.Wait(nullptr);
 
       if(n == -1)
       {
@@ -1354,10 +1457,10 @@ void alarm_signal(int sig)
 {
    signal(SIGALRM, alarm_signal);
    slog(LOG_OFF, 0, "Received alarm signal.");
-   bHadAlarm = TRUE;
+   bHadAlarm = static_cast<int>(TRUE);
 }
 
-int main(int argc, char *argv[])
+auto main(int argc, char *argv[]) -> int
 {
    static int i = 0;
    int        fd;
@@ -1369,8 +1472,10 @@ int main(int argc, char *argv[])
 
    assert(i++ == 0); /* Make sure we dont call ourselves... cheap hack! :) */
 
-   if(!ParseArg(argc, argv, &arg))
+   if(ParseArg(argc, argv, &arg) == 0)
+   {
       exit(0);
+   }
 
    signal(SIGQUIT, bye_signal);
    signal(SIGHUP, bye_signal);

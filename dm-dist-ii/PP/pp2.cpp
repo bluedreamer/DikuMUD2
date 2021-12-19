@@ -61,12 +61,6 @@
 /*									*/
 /************************************************************************/
 
-#ifdef MSC_OPT
-   #pragma optimize("e", off) /* Disable global reg optimizing */
-   #pragma optimize("g", off) /* Disable global common subs */
-   #pragma optimize("l", off) /* Disable loop optimizations */
-#endif                        /* MSC_OPT */
-
 auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *
 {
    static char    mbomsg[]       = "Macro body overflow";
@@ -111,7 +105,7 @@ auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *
          }
          else if(t == TOGGLE_EXPAND)
          {
-            expand = static_cast<int>(expand) == 0;
+            expand = static_cast<int>(static_cast<int>(expand) == 0);
          }
          else if(t == END_MACRO)
          {
@@ -335,7 +329,7 @@ auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *
       }
       if(t == TOGGLE_EXPAND)
       {
-         expand = static_cast<int>(expand) == 0;
+         expand = static_cast<int>(static_cast<int>(expand) == 0);
          continue;
       }
       /*
@@ -349,7 +343,7 @@ auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *
             {
                if(t == TOGGLE_EXPAND)
                {
-                  /* Skip toggle tokens */ expand = static_cast<int>(expand) == 0;
+                  /* Skip toggle tokens */ expand = static_cast<int>(static_cast<int>(expand) == 0);
                }
             }
             if(t == END_MACRO)
@@ -377,7 +371,7 @@ auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *
                {
                   if(t == TOGGLE_EXPAND)
                   {
-                     /* Skip toggle tokens */ expand = static_cast<int>(expand) == 0;
+                     /* Skip toggle tokens */ expand = static_cast<int>(static_cast<int>(expand) == 0);
                   }
                }
                if(expand != TRUE)
@@ -399,7 +393,7 @@ auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *
                   }
                   if(t == TOGGLE_EXPAND)
                   {
-                     expand = static_cast<int>(expand) == 0;
+                     expand = static_cast<int>(static_cast<int>(expand) == 0);
                      continue;
                   }
                   if(had_ws != 0)
@@ -454,7 +448,7 @@ auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *
             }
             else if(t == TOGGLE_EXPAND)
             {
-               /* Skip toggle tokens */ expand = static_cast<int>(expand) == 0;
+               /* Skip toggle tokens */ expand = static_cast<int>(static_cast<int>(expand) == 0);
             }
          }
          if((t == LETTER) && ((cp = flookup(formals, Token)) != nullptr))
@@ -499,7 +493,7 @@ auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *
             }
             else if(t == TOGGLE_EXPAND)
             {
-               /* Skip toggle tokens */ expand = static_cast<int>(expand) == 0;
+               /* Skip toggle tokens */ expand = static_cast<int>(static_cast<int>(expand) == 0);
             }
          }
          /*
@@ -529,7 +523,7 @@ auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *
                   }
                   if(t == TOGGLE_EXPAND)
                   {
-                     expand = static_cast<int>(expand) == 0;
+                     expand = static_cast<int>(static_cast<int>(expand) == 0);
                      continue;
                   }
                   if(had_ws != 0)
@@ -585,7 +579,7 @@ auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *
             }
             if(t == TOGGLE_EXPAND)
             {
-               expand = static_cast<int>(expand) == 0;
+               expand = static_cast<int>(static_cast<int>(expand) == 0);
                continue;
             }
             if(had_ws != 0)
@@ -686,7 +680,7 @@ auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *
       }
       if(t == TOGGLE_EXPAND)
       {
-         expand = static_cast<int>(expand) == 0;
+         expand = static_cast<int>(static_cast<int>(expand) == 0);
       }
       else if((t == LETTER) && (expand != 0) && (((bodyp > body) ? static_cast<int>(body[0] != '#') : TRUE) != 0) &&
               ((sy = lookup(Token, nullptr)) != nullptr) && (sy->disable == 0))

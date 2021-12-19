@@ -26,7 +26,6 @@
 
 #include "channel.h"
 #include "essential.h"
-#include "select.h"
 
 #include <netinet/in.h>
 #include <string.h>

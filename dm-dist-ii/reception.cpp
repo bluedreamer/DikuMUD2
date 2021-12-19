@@ -1,31 +1,3 @@
-/* *********************************************************************** *
- * File   : reception.c                               Part of Valhalla MUD *
- * Version: 2.00                                                           *
- * Author : quinn@diku.dk                                                  *
- *                                                                         *
- * Purpose: Procedures handling saving/loading of player objects           *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 03/08/92 seifert: Fixed abort() when missing file_index                 */
-/* Tue Jul 6 1993 HHS: added exchangable lib dir                           */
-/* 28/03/94 seifert: Modified to make more flexible                        */
-
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"
@@ -36,7 +8,6 @@
 #include "handler.h"
 #include "interpreter.h"
 #include "money.h"
-#include "spells.h"
 #include "structs.h"
 #include "textutil.h"
 #include "utility.h"

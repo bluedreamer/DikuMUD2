@@ -2,10 +2,6 @@
 
 #include "pp.h"
 
-#ifdef __TURBOC__
-extern unsigned _stklen = 32767;
-#endif /* __TURBOC__ */
-
 /************************************************************************/
 /*									*/
 /*	main								*/
@@ -14,11 +10,6 @@ extern unsigned _stklen = 32767;
 /*									*/
 /************************************************************************/
 
-#ifdef MSC_OPT
-   #pragma optimize("e", off) /* Disable global reg optimizing */
-   #pragma optimize("g", off) /* Disable global common subs */
-   #pragma optimize("l", off) /* Disable loop optimizations */
-#endif                        /* MSC_OPT */
 auto pp_main(const char *filename) -> int
 {
    //	static	char		*one_string = "1";

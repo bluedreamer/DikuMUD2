@@ -1,40 +1,10 @@
-/* *********************************************************************** *
- * File   : trie.c                                    Part of Valhalla MUD *
- * Version: 1.11                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: To make searching commands from a given input very fast.       *
- *          Time to locate command from input is O(|input|).               *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-/* Sep 1992: gnort:  Added del_trie                                        */
-/* Jul 1994: gnort:  Added free_trie                                       */
-
 #include "trie.h"
 
-#include "structs.h"
 #include "trie_entry.h"
 #include "trie_type.h"
 #include "utility.h"
-#include "utils.h"
 
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
 
 static int trie_size = 0, trie_nodes = 0;

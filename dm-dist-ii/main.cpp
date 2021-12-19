@@ -1,36 +1,19 @@
-/* *********************************************************************** *
- * File   : main.c                                    Part of Valhalla MUD *
- * Version: 1.10                                                           *
- * Author : bombman, quinn & seifert                                       *
- *                                                                         *
- * Purpose: Main loop and event control.                                   *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
+#include "main.h"
 
-/* 29/1/93  HHS: Added GA (go ahead) for all prompts                       */
-/* Sun Jun 27 1993 HHS: made vars for world status                         */
-/* Tue Jul 6 1993 HHS: added exchangable lib dir                           */
 #include "cCaptainHook.h"
 #include "cCombatList.h"
+#include "comm.h"
 #include "cQueueElem.h"
 #include "CServerConfiguration.h"
+#include "db.h"
+#include "files.h"
+#include "interpreter.h"
 #include "nice.h"
 #include "signals.h"
+#include "structs.h"
+#include "system.h"
+#include "textutil.h"
+#include "utils.h"
 
 #include <cctype>
 #include <cerrno>
@@ -39,29 +22,6 @@
 #include <cstring>
 #include <ctime>
 #include <unistd.h>
-
-#ifdef DOS
-   #include <sys/time.h>
-struct timezone
-{
-   int tz_minuteswest;
-   int tz_dsttime;
-};
-#endif
-
-#include "comm.h"
-#include "db.h"
-#include "files.h"
-#include "handler.h"
-#include "interpreter.h"
-#include "main.h"
-#include "structs.h"
-#include "sysport.h"
-#include "system.h"
-#include "textutil.h"
-#include "unixshit.h"
-#include "utility.h"
-#include "utils.h"
 
 extern uint32_t memory_total_alloc;
 

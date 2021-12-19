@@ -1,36 +1,13 @@
-/* *********************************************************************** *
- * File   : conanalyze.c                              Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : Unknown.                                                       *
- *                                                                         *
- * Purpose: Unknown.                                                      **
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
 #include "essential.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 long hours[24];
 
-int  update(struct tm *ptm_on, struct tm *ptm_off)
+auto update(struct tm *ptm_on, struct tm *ptm_off) -> int
 {
    int secs = 0;
 
@@ -48,29 +25,28 @@ int  update(struct tm *ptm_on, struct tm *ptm_off)
 
       return secs + update(ptm_on, ptm_off);
    }
+
+   if(ptm_off->tm_sec >= ptm_on->tm_sec)
+   {
+      secs += (ptm_off->tm_sec - ptm_on->tm_sec);
+      secs += 60 * (ptm_off->tm_min - ptm_on->tm_min);
+
+      hours[ptm_on->tm_hour] += (ptm_off->tm_sec - ptm_on->tm_sec);
+      hours[ptm_on->tm_hour] += 60 * (ptm_off->tm_min - ptm_on->tm_min);
+   }
    else
    {
-      if(ptm_off->tm_sec >= ptm_on->tm_sec)
-      {
-         secs += (ptm_off->tm_sec - ptm_on->tm_sec);
-         secs += 60 * (ptm_off->tm_min - ptm_on->tm_min);
+      secs += (60 - ptm_on->tm_sec) + ptm_off->tm_sec;
+      secs += 60 * (ptm_off->tm_min - ptm_on->tm_min - 1);
 
-         hours[ptm_on->tm_hour] += (ptm_off->tm_sec - ptm_on->tm_sec);
-         hours[ptm_on->tm_hour] += 60 * (ptm_off->tm_min - ptm_on->tm_min);
-      }
-      else
-      {
-         secs += (60 - ptm_on->tm_sec) + ptm_off->tm_sec;
-         secs += 60 * (ptm_off->tm_min - ptm_on->tm_min - 1);
-
-         hours[ptm_on->tm_hour] += (60 - ptm_on->tm_sec) + ptm_off->tm_sec;
-         hours[ptm_on->tm_hour] += 60 * (ptm_off->tm_min - ptm_on->tm_min - 1);
-      }
+      hours[ptm_on->tm_hour] += (60 - ptm_on->tm_sec) + ptm_off->tm_sec;
+      hours[ptm_on->tm_hour] += 60 * (ptm_off->tm_min - ptm_on->tm_min - 1);
    }
+
    return secs;
 }
 
-void udskriv(void)
+void udskriv()
 {
    int  i;
    long sum = 0;
@@ -95,17 +71,19 @@ void ShowUsage(int argc, char *argv[])
    printf("Copyright (C) 1996 by Valhalla.\n\n");
 }
 
-int is_in(int a, int from, int to)
+auto is_in(int a, int from, int to) -> int
 {
-   return ((a >= from) && (a <= to));
+   return static_cast<int>((a >= from) && (a <= to));
 }
 
-int main(int argc, char *argv[])
+auto main(int argc, char *argv[]) -> int
 {
-   int       n, i;
+   int       n;
+   int       i;
    uint8_t   Buf[12];
-   struct tm tm_on, tm_off;
-   int       error = FALSE;
+   struct tm tm_on;
+   struct tm tm_off;
+   int       error = static_cast<int>(FALSE);
    uint32_t  count = 1;
 
    int       day   = -1;
@@ -118,48 +96,64 @@ int main(int argc, char *argv[])
       if(argc >= 3 && strcmp(argv[1], "day") == 0)
       {
          day = atoi(argv[2]);
-         if(!is_in(day, 1, 366))
-            error = TRUE;
+         if(is_in(day, 1, 366) == 0)
+         {
+            error = static_cast<int>(TRUE);
+         }
          day--;
       }
       else if(argc >= 3 && strcmp(argv[1], "week") == 0)
       {
          week = atoi(argv[2]);
-         if(!is_in(week, 1, 53))
-            error = TRUE;
+         if(is_in(week, 1, 53) == 0)
+         {
+            error = static_cast<int>(TRUE);
+         }
       }
       else if(argc >= 3 && strcmp(argv[1], "month") == 0)
       {
          month = atoi(argv[2]);
-         if(!is_in(month, 1, 12))
-            error = TRUE;
+         if(is_in(month, 1, 12) == 0)
+         {
+            error = static_cast<int>(TRUE);
+         }
          month--;
       }
       else
-         error = TRUE;
+      {
+         error = static_cast<int>(TRUE);
+      }
 
       if(argc > 3)
       {
          year = atoi(argv[3]);
-         if(!is_in(year, 1990, 2020))
-            error = TRUE;
+         if(is_in(year, 1990, 2020) == 0)
+         {
+            error = static_cast<int>(TRUE);
+         }
          else
+         {
             year -= 1900;
+         }
       }
 
-      if(error)
+      if(error != 0)
       {
          ShowUsage(argc, argv);
          exit(1);
       }
    }
    else
+   {
       printf("Analysing entire database.\n\n");
+   }
 
    for(i = 0; i < 24; i++)
+   {
       hours[i] = 0;
+   }
 
-   while(!feof(stdin))
+   while(feof(stdin) == 0)
    {
       uint32_t id;
       uint32_t on;
@@ -172,8 +166,10 @@ int main(int argc, char *argv[])
 
       if(n != 3)
       {
-         if(feof(stdin))
+         if(feof(stdin) != 0)
+         {
             break;
+         }
 
          printf("Unable to read record!\n");
          exit(1);

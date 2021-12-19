@@ -1,33 +1,3 @@
-/* *********************************************************************** *
- * File   : act_obj2.c                                Part of Valhalla MUD *
- * Version: 1.10                                                           *
- * Author : All.                                                           *
- *                                                                         *
- * Purpose: Handling of drink/eat/pour.                                    *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 09/07/92 seifert: Changed stuff in do_pour - hope this is weight prob   */
-/* 23/08/93 jubal  : Fixed names in drinkcons                              */
-/* 23/08/93 jubal  : Infinite contents in drinkcon = negative value        */
-/* 28/03/94 seifert: Fixed bug in drinkcon names remove                    */
-/* 26/08/94 gnort  : Moved equipment stuff to act_obj3.c                   */
-
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
@@ -43,10 +13,10 @@
 #include "utility.h"
 #include "utils.h"
 
+#include <algorithm>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <algorithm>
 
 /* Remove the last name from the drink container */
 void name_from_drinkcon(unit_data *obj)

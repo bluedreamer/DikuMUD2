@@ -1,37 +1,3 @@
-/* *********************************************************************** *
- * File   : act_skills.c                              Part of Valhalla MUD *
- * Version: 1.20                                                           *
- * Author : bombman@diku.dk                                                *
- *                                                                         *
- * Purpose: Skill implementations                                          *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 19/07/92 seifert: Recoded pick lock to use same system as unlock        */
-/* 29/07/92 seifert: Fixed do_rescue bugs                                  */
-/* 02/08/92 seifert: Fixed bug with hands-used (do_steal)                  */
-/* 28/09/92 seifert: Fixed bug in ventriloquate and other stuff            */
-/* 01/10/92 seifert: Fixed minor details                                   */
-/* 23/08/93 jubal  : Made fleeing possible inside objs, or while non-fight */
-/* 29/08/93 jubal  : Appraise uses trade price                             */
-/* 07/11/93 gnort  : Fixed no-message `bug' in consider                    */
-/* 12-Aug-94 gnort : Inserted spell-type check in recite and use           */
-
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
@@ -52,12 +18,12 @@
 #include "utility.h"
 #include "utils.h"
 
+#include <algorithm>
 #include <cctype>
 #include <climits>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <algorithm>
 
 /* The TURN_UNDEAD skill */
 void do_turn(unit_data *ch, char *arg, const struct command_info *cmd)

@@ -1,44 +1,11 @@
-/* *********************************************************************** *
- * File   : hometown.c                                Part of Valhalla MUD *
- * Version: 1.01                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Making several home/start towns avaible in the game            *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-/* 28-Aug gnort: hometown_unit didn't test if str was NULL! */
 
 #include "comm.h"
 #include "db.h"
-#include "db_file.h"
 #include "interpreter.h"
 #include "structs.h"
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
-
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
-/* ----- FUNCTIONS ----- */
 
 auto hometown_unit(char *str) -> unit_data *
 {

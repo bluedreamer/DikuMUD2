@@ -1,41 +1,7 @@
-/* *********************************************************************** *
- * File   : act_obj1.c                                Part of Valhalla MUD *
- * Version: 1.21                                                           *
- * Author : All.                                                           *
- *                                                                         *
- * Purpose: Routines to get/put/give/drop.                                 *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 09/07/92 seifert: Corrected 'get' bug from characters                   */
-/* 23/08/93 jubal  : Check for money receiver is char                      */
-/* 14/08/94 gnort  : Put in object-money (finally!)                        */
-/* 09/09/94 gnort  : Added support for money keyword in do_get (2sec hack) */
-/* 26/10/94 gnort  : Fixed a couple of money-related bugs                  */
-/* Fri May 12 17:22:23 bombman : added extra ger description to do_get     */
-
 #include "comm.h"
-#include "db.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "money.h"
-#include "skills.h"
-#include "spells.h"
 #include "structs.h"
 #include "textutil.h"
 #include "utility.h"

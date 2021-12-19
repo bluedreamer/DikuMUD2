@@ -1,30 +1,7 @@
-/* *********************************************************************** *
- * File   : analyse.c                                 Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : Unknown.                                                       *
- *                                                                         *
- * Purpose: Unknown.                                                      **
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 long hours[24];
 
@@ -56,7 +33,7 @@ void update(struct tm *ptm_on, struct tm *ptm_off)
    }
 }
 
-void udskriv(void)
+void udskriv()
 {
    int  i;
    long sum = 0;
@@ -70,14 +47,17 @@ void udskriv(void)
    printf("Timer ialt: %ld\n", sum / 3600);
 }
 
-int main(int argc, char *argv[])
+auto main(int argc, char *argv[]) -> int
 {
    int       year  = -1;
    int       month = -1;
-   int       n, i;
-   time_t    on, off;
+   int       n;
+   int       i;
+   time_t    on;
+   time_t    off;
    char      Buf[200];
-   struct tm tm_on, tm_off;
+   struct tm tm_on;
+   struct tm tm_off;
 
    if(argc > 1)
    {
@@ -103,9 +83,11 @@ int main(int argc, char *argv[])
    }
 
    for(i = 0; i < 24; i++)
+   {
       hours[i] = 0;
+   }
 
-   while(!feof(stdin))
+   while(feof(stdin) == 0)
    {
       char *msbuf = fgets(Buf, sizeof(Buf), stdin);
       n           = sscanf(Buf, "Connected %ld - %ld disconnected.", &on, &off);

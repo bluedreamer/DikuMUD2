@@ -1,49 +1,12 @@
-/* *********************************************************************** *
- * File   : blkfile.c                                 Part of Valhalla MUD *
- * Version: 2.20                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Handling of single blocked files.                              *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 16/07/92 seifert: Now allows 0 byte long saves, may have been a problem */
-/* 12/06/93 seifert: Removed buggy fflush() (to avoid Linux bug)           */
-/* 27/08/93 seifert: Extensive testing of blocked file system              */
-/* 07/09/93 seifert: Added much integrity checking. Now checks for legal   */
-/*                   handles - but incompatible with old system.           */
-/* 16/07/94 seifert: The free list uses much less memory now.              */
-
 #include "blkfile.h"
 
-#include "db.h"
-#include "db_file.h"
 #include "files.h"
-#include "structs.h"
 #include "textutil.h"
-#include "unixshit.h"
 #include "utility.h"
-#include "utils.h"
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
 #include <algorithm>
+#include <cstdio>
+#include <cstring>
 
 #define BLK_RESERVED 0 /* Reserved block for special exceptions */
 #define BLK_FREE     -1

@@ -1,33 +1,10 @@
-/* *********************************************************************** *
- * File   : string.c                                  Part of Valhalla MUD *
- * Version: 1.03                                                           *
- * Author : seifert@diku.dk / gnort@daimi.aau.dk                           *
- *                                                                         *
- * Purpose: To make a string allocation scheme for known constant strings. *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
+#include "cHashSystem.h"
 #include "comm.h"
 #include "hashstring.h"
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
-#include "cHashSystem.h"
+
 #include <cstdio>
 
 #define STATISTICS 1

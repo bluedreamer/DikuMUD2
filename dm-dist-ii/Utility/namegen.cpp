@@ -1,22 +1,8 @@
-/*
- *          NameGen - Jacob Bay Hansen and Mads Haahr in 1991.
- *
- * Version 1.0 - August 5th 1991.  This program is freely distributable.
- *
- *       To obtain the latest version, send 500 gold pieces ;-) to
- *
- *               jake@freja.diku.dk or maze@freja.diku.dk
- *
- *                 See NameGen.doc for further details.
- *
- *           Humbly Ported to Linux by seifert@valhalla-usa.com
- */
-
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #define MAX_PREFIX 40
 #define MAX_MIDFIX 40
@@ -85,20 +71,21 @@ struct group groups[] =
  * And here come the prototypes ...
  */
 
-void     generate(int group_number, int number);
-void     about(void);
-unsigned rnd(unsigned low, unsigned high);
+void generate(int group_number, int number);
+void about();
+auto rnd(unsigned low, unsigned high) -> unsigned;
 
 /*
  * Main code ...
  */
 
-int      main(int argc, char *argv[])
+auto main(int argc, char *argv[]) -> int
 {
-   int   group_number, number;
+   int   group_number;
+   int   number;
    char *count;
 
-   srand(time(0));
+   srand(time(nullptr));
 
    if(argc == 1)
    {
@@ -108,27 +95,39 @@ int      main(int argc, char *argv[])
    else if(argc == 2 || argc == 3)
    {
       for(count = argv[1]; *count != 0; count++)
+      {
          *count = tolower(*count);
+      }
       if(strcmp(argv[1], "-help") == 0 || strcmp(argv[1], "help") == 0 || strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "?") == 0)
       {
          about();
          exit(0);
       }
       else if(strcmp(argv[1], "wizard") == 0)
+      {
          group_number = WIZARD;
+      }
       else if(strcmp(argv[1], "dwarf") == 0)
+      {
          group_number = DWARF;
+      }
       else if(strcmp(argv[1], "elf") == 0)
+      {
          group_number = ELF;
+      }
       else
       {
          printf("NameGen: Unknown group specified.\n");
          exit(10);
       };
       if(argc == 2)
+      {
          number = 20;
+      }
       else
+      {
          number = atoi(argv[2]);
+      }
       generate(group_number, number);
    }
    else
@@ -145,32 +144,37 @@ int      main(int argc, char *argv[])
 
 void generate(int group_number, int number)
 {
-   int i, r, s;
+   int i;
+   int r;
+   int s;
 
    for(i = 0; i < number; i++)
    {
       do
+      {
          r = rnd(0, MAX_PREFIX - 1);
-      while(groups[group_number].prefix[r][0] == 0);
+      } while(groups[group_number].prefix[r][0] == 0);
       printf("%s", groups[group_number].prefix[r]);
 
       for(r = rnd(groups[group_number].min_midfix, groups[group_number].max_midfix); r >= 1; r--)
       {
          do
+         {
             s = rnd(0, MAX_MIDFIX - 1);
-         while(groups[group_number].midfix[s][0] == 0);
+         } while(groups[group_number].midfix[s][0] == 0);
          printf("%s", groups[group_number].midfix[s]);
       }
 
       do
+      {
          r = rnd(0, MAX_SURFIX - 1);
-      while(groups[group_number].surfix[r][0] == 0);
+      } while(groups[group_number].surfix[r][0] == 0);
 
       printf("%s\n", groups[group_number].surfix[r]);
    }
 }
 
-void about(void)
+void about()
 {
    printf("NameGen - Name generator (v1.0) for role playing games.\n");
    printf("          CopyLeft 1991 Jacob Bay Hansen and Mads Haahr.\n");
@@ -181,10 +185,9 @@ void about(void)
    printf("             DWARF  - Dwarf like names\n");
    printf("             ELF    - Elf like names\n");
    printf("          and [number] states the number of names wanted (default 20).\n");
-   return;
 }
 
-unsigned rnd(unsigned low, unsigned high)
+auto rnd(unsigned low, unsigned high) -> unsigned
 {
    return (rand() % (high - low + 1)) + low;
 }

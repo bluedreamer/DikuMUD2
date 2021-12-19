@@ -1,27 +1,3 @@
-/* *********************************************************************** *
- * File   : dilinst.c                                 Part of Valhalla MUD *
- * Version: 2.00                                                           *
- * Author : bombman@diku.dk & seifert@diku.dk				   *
- *                                                                         *
- *                                                                         *
- * Purpose: DIL Instructions.                                              *
- *									   *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
 #include "dilinst.h"
 
 #include "account.h"
@@ -30,16 +6,15 @@
 #include "common.h"
 #include "CServerConfiguration.h"
 #include "db.h"
-#include "db_file.h"
 #include "dil.h"
 #include "dilintr.h"
 #include "dilrun.h"
 #include "dilval.h"
+#include "fight.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "justice.h"
 #include "magic.h"
-#include "main.h"
 #include "movement.h"
 #include "spell_info_type.h"
 #include "spells.h"
@@ -49,17 +24,12 @@
 #include "unit_affected_type.h"
 #include "unit_fptr.h"
 #include "unit_vector_data.h"
-#include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
 
-#include <climits>
-#include <cstdarg> /* For type_check */
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
 #include <algorithm>
+#include <climits>
+#include <cstring>
 
 /* report error in instruction */
 void dil_insterr(dilprg *p, const char *where)

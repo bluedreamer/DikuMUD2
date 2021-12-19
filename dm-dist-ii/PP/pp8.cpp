@@ -157,7 +157,7 @@ auto evalland() -> EVALINT
    for(val = evalbor(); test("&&") != 0;)
    {
       /*lint -e503 lint doesn't like boolean arguments to relationals */
-      if(static_cast<int>(evalbor()) == 0 != 0)
+      if(static_cast<int>(static_cast<int>(evalbor()) == 0) != 0)
       {
          /*lint +e503 lint doesn't like boolean arguments to relationals */
          val = FALSE;
@@ -430,16 +430,18 @@ auto evalfuns() -> EVALINT
       }
       return ((EVALINT)0);
    }
-   if(test("defined"))
+   if(test("defined") != 0)
    {
-      if(!(pflag = (getnstoken(GT_STR) == '('))) /* Latch '(' */
-         pbstr(Token);                           /* Put it back if not */
+      if((pflag = static_cast<int>(getnstoken(GT_STR) == '(')) == 0)
+      {                /* Latch '(' */
+         pbstr(Token); /* Put it back if not */
+      }
 
       if((t = getnstoken(GT_STR)) == LETTER) /* Get an Id */
       {
          rv = (int)(lookup(Token, nullptr) != nullptr);
 
-         if(pflag && (getnstoken(GT_STR) != ')'))
+         if((pflag != 0) && (getnstoken(GT_STR) != ')'))
          {
             non_fatal("Expression: Missing ')'", "");
             pbstr(Token);
@@ -447,7 +449,7 @@ auto evalfuns() -> EVALINT
 
          return ((EVALINT)rv);
       }
-      else if(t == '\n')
+      if(t == '\n')
          pushback('\n');
       else if(t == EOF)
          end_of_file();
@@ -455,7 +457,7 @@ auto evalfuns() -> EVALINT
       non_fatal("Expression: Not an identifier: ", Token);
       return ((EVALINT)FALSE);
    }
-   else if(test("_isstring"))
+   if(test("_isstring"))
    {
       rv = FALSE;
       if(!test("("))
@@ -604,7 +606,7 @@ auto evalunot() -> EVALINT
 {
    if(test("!") != 0)
    {
-      return ((EVALINT)evalfuns() == 0);
+      return static_cast<long>((EVALINT)evalfuns() == 0);
    }
    return (evalumin());
 }
@@ -621,10 +623,11 @@ auto evalumin() -> EVALINT
    {
       return ((EVALINT)evalfuns());
    }
-   if(test("-"))
+   if(test("-") != 0)
+   {
       return ((EVALINT)-evalfuns());
-   else
-      return (evalval());
+   }
+   return (evalval());
 }
 
 /************************************************************************/
@@ -707,9 +710,13 @@ auto evalval() -> EVALINT
                      break;
                   }
                   if(c == EOF)
+                  {
                      end_of_file();
-                  else if(isoct(c))
+                  }
+                  else if(isoct(c) != 0)
+                  {
                      val = val * 8 + c - '0'; /* Add in */
+                  }
                   else
                   {
                      non_fatal("Expression: Illegal octal digit", "");
@@ -731,9 +738,13 @@ auto evalval() -> EVALINT
                      break;
                   }
                   if(c == EOF)
+                  {
                      end_of_file();
-                  else if(ishex(c))
+                  }
+                  else if(ishex(c) != 0)
+                  {
                      val = val * 16 + hexbin(c);
+                  }
                   else
                   {
                      non_fatal("Expression: Illegal hex digit", "");
@@ -827,7 +838,7 @@ auto hexbin(char ch) -> EVALINT
    {
       return ((EVALINT)(ch - '0'));
    }
-   return ((EVALINT)((isupper(ch) ? tolower(ch) : ch) - 'a' + 10));
+   return ((EVALINT)((isupper(ch) != 0 ? tolower(ch) : ch) - 'a' + 10));
 }
 
 /************************************************************************/

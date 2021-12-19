@@ -1,29 +1,4 @@
 #pragma once
-/* *********************************************************************** *
- * File   : base.h                                    Part of Valhalla MUD *
- * Version: 2.03                                                           *
- * Author : Whistler (Ken Perry)       and    Bakka (Tim Perry)            *
- *                                                                         *
- * Purpose: Definitions for a right menagerie                              *
- *									   *
- * Comments:  Please send all comments and additions to one of the above   *
- *            authors.                                                     *
- * Bugs   : Unknown.                                                       *
- * Status : Published.                                                     *
- *                                                                         *
- * Copyright (C) 1994 - 1996 by Valhalla (This work is published).         *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This work is copyrighted. No part of this work may be copied,           *
- * reproduced, translated or reduced to any medium without the prior       *
- * written consent of Valhalla.                                            *
- * *********************************************************************** */
 
 #define BASE_GOLEM(MLVL, GENDER)                                                                                                           \
    race RACE_GOLEM sex GENDER level MLVL height 250 weight 700 alignment 0 NATURAL_DEF(WPN_FIST, ARM_PLATE)                                \

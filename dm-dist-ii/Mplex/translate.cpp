@@ -1,36 +1,10 @@
-/* *********************************************************************** *
- * File   : translate.c                               Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: To make highly efficient general purpose translation of        *
- *          internal control codes, into various protocols.                *
- *                                                                         *
- * Bugs   : -                                                              *
- *                                                                         *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
 #include "mplex.h"
 #include "ttydef.h"
 
 #include <arpa/telnet.h>
-#include <assert.h>
+#include <cassert>
+#include <cstdio>
 #include <cstring>
-#include <stdio.h>
 #include <strings.h>
 
 static uint8_t default_colours[3][24] = {
@@ -79,7 +53,9 @@ void protocol_translate(class cConHook *con, uint8_t code, char **b)
    assert(b && *b);
 
    if(code >= CONTROL_FG_BLACK_CHAR && code <= CONTROL_BG_WHITE_CHAR)
+   {
       code = default_colours[con->m_sSetup.colour_convert][code - CONTROL_FG_BLACK_CHAR];
+   }
 
    PROTOCOL_TRANSLATE(con, code, b);
 }
@@ -266,7 +242,7 @@ static void Control_ANSI_Bg_White(class cConHook *con, char **b, uint8_t code)
 
 static void Control_ANSI_Echo_Off(class cConHook *con, char **b, uint8_t code)
 {
-   if(con->m_sSetup.telnet)
+   if(con->m_sSetup.telnet != 0u)
    {
       TELNET_ECHO_OFF(*b);
       TAIL(*b);
@@ -278,7 +254,7 @@ static void Control_ANSI_Echo_Off(class cConHook *con, char **b, uint8_t code)
 
 static void Control_ANSI_Reset(class cConHook *con, char **b, uint8_t code)
 {
-   if(con->m_sSetup.telnet)
+   if(con->m_sSetup.telnet != 0u)
    {
       TELNET_ECHO_ON(*b);
       TAIL(*b);
@@ -311,7 +287,7 @@ static void Control_ANSI_Reverse(class cConHook *con, char **b, uint8_t code)
 
 static void Control_TTY_Echo_Off(class cConHook *con, char **b, uint8_t code)
 {
-   if(con->m_sSetup.telnet)
+   if(con->m_sSetup.telnet != 0u)
    {
       TELNET_ECHO_OFF(*b);
       TAIL(*b);
@@ -320,7 +296,7 @@ static void Control_TTY_Echo_Off(class cConHook *con, char **b, uint8_t code)
 
 static void Control_TTY_Echo_On(class cConHook *con, char **b, uint8_t code)
 {
-   if(con->m_sSetup.telnet)
+   if(con->m_sSetup.telnet != 0u)
    {
       TELNET_ECHO_ON(*b);
       TAIL(*b);
@@ -335,13 +311,18 @@ static void Control_Copy(class cConHook *con, char **b, uint8_t code)
    (*b)++;
 }
 
-void translate_init(void)
+void translate_init()
 {
-   int i, j;
+   int i;
+   int j;
 
    for(j = 0; j < 4; j++)
+   {
       for(i = 0; i < 256; i++)
-         control_code[j][i] = NULL;
+      {
+         control_code[j][i] = nullptr;
+      }
+   }
 
    control_code[TERM_TTY][CONTROL_ECHO_OFF_CHAR]     = Control_TTY_Echo_Off;
    control_code[TERM_TTY][CONTROL_ECHO_ON_CHAR]      = Control_TTY_Echo_On;
@@ -384,5 +365,7 @@ void translate_init(void)
    control_code[TERM_ANSI][CONTROL_BG_WHITE_CHAR]    = Control_ANSI_Bg_White;
 
    for(i = 0; i < 256; i++)
+   {
       control_code[TERM_INTERNAL][i] = Control_Copy;
+   }
 }

@@ -1,46 +1,25 @@
-/* *********************************************************************** *
- * File   : csv2guild.c                               Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : Unknown.                                                       *
- *                                                                         *
- * Purpose: Unknown.                                                      **
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
+#include <cassert>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
-#include <assert.h>
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-char *skip_blanks(const char *string)
+auto skip_blanks(const char *string) -> char *
 {
    assert(string);
 
-   for(; *string && isspace(*string); string++)
+   for(; (*string != 0) && (isspace(*string) != 0); string++)
+   {
       ;
+   }
 
    return (char *)string;
 }
 
 /* Returns true is arg is empty */
-int str_is_empty(const char *arg)
+auto str_is_empty(const char *arg) -> int
 {
-   return *(skip_blanks(arg)) == '\0';
+   return static_cast<int>(*(skip_blanks(arg)) == '\0');
 }
 
 void str_char_subst(char *str, char c)
@@ -48,32 +27,42 @@ void str_char_subst(char *str, char c)
    char *cp;
 
    if(c == 0)
+   {
       return;
+   }
 
-   while((cp = strchr(str, c)))
+   while((cp = strchr(str, c)) != nullptr)
+   {
       *cp++ = 0;
+   }
 }
 
-char *mystrtok(char *s, char delim)
+auto mystrtok(char *s, char delim) -> char *
 {
-   static char *cp = NULL;
+   static char *cp = nullptr;
    char        *cp2;
 
    if(delim == 0)
-      return NULL;
+   {
+      return nullptr;
+   }
 
-   if(s)
+   if(s != nullptr)
+   {
       cp = s;
+   }
 
-   if(cp == NULL || *cp == 0)
-      return NULL;
+   if(cp == nullptr || *cp == 0)
+   {
+      return nullptr;
+   }
 
    cp2 = cp;
 
    cp  = strchr(cp, delim);
-   if(cp == NULL)
+   if(cp == nullptr)
    {
-      cp = NULL;
+      cp = nullptr;
       return cp2;
    }
 
@@ -86,15 +75,18 @@ void convert(int idx)
 {
    char  buf[4096];
    char *name;
-   char *code = NULL;
-   int   i, section = 0;
+   char *code = nullptr;
+   int   i;
+   int   section     = 0;
 
    int   costs[5][3] = {{5, 10, 15}, {8, 16, 24}, {10, 20, 30}, {15, 30, 45}, {20, 40, 60}};
 
-   while(!feof(stdin))
+   while(feof(stdin) == 0)
    {
-      if(!fgets(buf, sizeof(buf), stdin))
+      if(fgets(buf, sizeof(buf), stdin) == nullptr)
+      {
          break;
+      }
 
       name = mystrtok(buf, ',');
 
@@ -104,16 +96,18 @@ void convert(int idx)
          continue;
       }
 
-      if(name && !str_is_empty(name))
+      if((name != nullptr) && (str_is_empty(name) == 0))
       {
          for(i = 0; i < idx; i++)
          {
-            code = mystrtok(NULL, ',');
-            if(code == NULL)
+            code = mystrtok(nullptr, ',');
+            if(code == nullptr)
+            {
                break;
+            }
          }
 
-         if(code && !str_is_empty(code))
+         if((code != nullptr) && (str_is_empty(code) == 0))
          {
             int   level;
             int   cost;
@@ -126,10 +120,10 @@ void convert(int idx)
             cost  = nc[0] - 'A';
             nums  = nc[1] - '0';
 
-            nc    = strtok(NULL, "/");
+            nc    = strtok(nullptr, "/");
             level = atoi(nc);
 
-            nc    = strtok(NULL, "/");
+            nc    = strtok(nullptr, "/");
             max   = atoi(nc);
 
             fprintf(stdout, "%d %2d; %4d; %-30s; %4d; %4d; ", section, level, max, name, (cost + 1) * 50, (cost + 1) * 500);
@@ -137,10 +131,14 @@ void convert(int idx)
             if((nums >= 0 && nums <= 3) && (cost >= 0 && cost <= 4))
             {
                for(i = 0; i < nums; i++)
+               {
                   fprintf(stdout, " %2d;", costs[cost][i]);
+               }
 
                for(; i < 3; i++)
+               {
                   fprintf(stdout, "    ");
+               }
 
                fprintf(stdout, "  0;\n");
             }
@@ -153,7 +151,7 @@ void convert(int idx)
    }
 }
 
-int main(int argc, char *argv[])
+auto main(int argc, char *argv[]) -> int
 {
    if(argc < 2)
    {

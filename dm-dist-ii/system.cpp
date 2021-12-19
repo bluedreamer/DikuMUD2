@@ -1,53 +1,12 @@
-/* *********************************************************************** *
- * File   : system.c                                  Part of Valhalla MUD *
- * Version: 2.01                                                           *
- * Author : seifert@diku.dk (formerly quinn@diku.dk & bombman@diku.dk)     *
- *                                                                         *
- * Purpose: Network communication and other system dependant things.       *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
+#include "system.h"
 
-/* Sun Jun 26 1994 Gnort: Added Amiga support				   */
-/* Thu Jan 11 1995 Gnort: Started work on moving Amiga support out of	   *
- *			  server, and into mplex'er			   */
-
-#include "CServerConfiguration.h"
-
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-#include <netinet/tcp.h>
-#include <unistd.h>
-#ifndef DOS
-   #include <sys/socket.h>
-   #include <sys/types.h>
-   #include <sys/un.h>
-#endif
-#ifdef LINUX
-   #include <sys/resource.h>
-#endif
 #include "account.h"
 #include "ban.h"
 #include "cCaptainHook.h"
 #include "cMultiMaster.h"
 #include "comm.h"
 #include "common.h"
+#include "CServerConfiguration.h"
 #include "db.h"
 #include "db_file.h"
 #include "files.h"
@@ -57,18 +16,25 @@
 #include "protocol.h"
 #include "str_parse.h"
 #include "structs.h"
-#include "sysport.h"
-#include "system.h"
 #include "textutil.h"
-#include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
 
 #include <arpa/inet.h>
 #include <cerrno>
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 #include <fcntl.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <sys/resource.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/un.h>
+#include <unistd.h>
 
 /* extern vars */
 
@@ -378,6 +344,9 @@ void multi_close_all()
 /*                         MotherHook                                */
 /*                                                                   */
 /* ----------------------------------------------------------------- */
+#define SELECT_READ   0x01
+#define SELECT_WRITE  0x02
+#define SELECT_EXCEPT 0x04
 
 void cMotherHook::Input(int nFlags)
 {

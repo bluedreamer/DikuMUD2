@@ -9,6 +9,7 @@ set(DIL_SRC
         ../cStringConstant.cpp
         ../cStringInstance.cpp
         ../common.cpp
+        ../constants.cpp
         ../common.h
         ../db_file.cpp
         ../extra.cpp
@@ -23,6 +24,7 @@ set(DIL_SRC
         ../textutil.cpp
         ../utility.cpp
         dilpar.h
+        diltok.h
         )
 
 include_directories(.)

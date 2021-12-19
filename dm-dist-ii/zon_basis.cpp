@@ -1,29 +1,3 @@
-/* *********************************************************************** *
- * File   : zon_basis.c                               Part of Valhalla MUD *
- * Version: 1.01                                                           *
- * Author : seifert@diku.dk & gnort@daimi.aau.dk                           *
- *                                                                         *
- * Purpose: basis zone routines.                                           *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-/* 12-Jan-95 Gnort:  Fixed security-hole in admin-obj...                   */
-
-#include "affect.h"
 #include "comm.h"
 #include "common.h"
 #include "db.h"
@@ -31,7 +5,6 @@
 #include "handler.h"
 #include "interpreter.h"
 #include "justice.h"
-#include "magic.h"
 #include "main.h"
 #include "money.h"
 #include "skills.h"
@@ -44,12 +17,9 @@
 #include "utility.h"
 #include "utils.h"
 
-#include <cctype>
-#include <climits>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <ctime>
 
 #define DEFAULT_ENTRY_ZONE "udgaard"
 #define DEFAULT_ENTRY_NAME "temple"

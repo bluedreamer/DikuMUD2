@@ -85,7 +85,9 @@ auto addstr(char *old, const char *limit, const char *msg, const char *snew) -> 
    o       = old;
    n       = snew;
    while((*o++ = *n++) != '\0')
-      ;            /* Copy strings */
+   {
+      ; /* Copy strings */
+   }
    return (o - 1); /* Next char pos in output string */
 }
 
@@ -568,7 +570,7 @@ int istype(int c, int v)
 
 void memmov(char *f, char *t, unsigned l)
 {
-   while((l--) != 0u)
+   while((l--) != 0U)
    {
       *t++ = *f++;
    }
@@ -755,7 +757,8 @@ auto type(int c) -> int
       return (LETTER);
    }
    if(istype(c, C_D))
+   {
       return (NUMBER);
-   else
-      return (c);
+   }
+   return (c);
 }

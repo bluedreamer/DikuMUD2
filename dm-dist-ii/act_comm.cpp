@@ -1,46 +1,15 @@
-/* *********************************************************************** *
- * File   : act_comm.c                                Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : seifert, ??                                                    *
- *                                                                         *
- * Purpose: say, shout, etc.                                               *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 24 Aug 1993, gnort:  Introduced more interesting communication.         */
-/*                      You can now continue writing on non-full notes     */
-
 #include "comm.h"
-#include "db.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "modify.h"
 #include "nanny.h"
 #include "protocol.h"
-#include "spells.h"
 #include "structs.h"
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
 
 #include <cctype>
-#include <cstdio>
-#include <cstdlib>
 #include <cstring>
 
 uint8_t                 g_nShout = 0;

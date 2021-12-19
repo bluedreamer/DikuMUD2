@@ -1,33 +1,3 @@
-/* *********************************************************************** *
- * File   : db_file.c                                 Part of Valhalla MUD *
- * Version: 2.00                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: Routines for writing and reading from/to buffers. Used by      *
- *          dmc and save char.                                             *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-/* 23/08/93 jubal   : Set capacity to something reasonable if unset
- * 28-Jan-95 HHS:   Reconstructed code generation entirely
- * 14-Apr-95 HHS:   Added for and foreach, break and continue
- */
-
 #include "db_file.h"
 
 #include "bytestring.h"
@@ -42,7 +12,6 @@
 #include "unit_affected_type.h"
 #include "unit_fptr.h"
 #include "unit_function_array_type.h"
-#include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
 

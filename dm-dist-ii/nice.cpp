@@ -1,49 +1,14 @@
-/* *********************************************************************** *
- * File   : nice.c                                    Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : quinn (?)                                                      *
- *                                                                         *
- * Purpose: Handling come, nice and reboot.                                *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-#if !defined(DOS)
-   #include <sys/time.h>
-
-   #ifdef SOLARIS /* Yuk!  /gnort */
-      #define _POSIX_C_SOURCE 3
-   #endif
-   #include <csignal>
-#endif
 #include "comm.h"
 #include "db.h"
-#include "handler.h"
-#include "interpreter.h"
 #include "main.h"
 #include "structs.h"
-#include "system.h"
-#include "textutil.h"
 #include "utility.h"
+
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
+#include <sys/time.h>
+#include <csignal>
 
 #define REBOOT_AT 10 /* 0-23, time of optional reboot if -e lib/reboot */
 

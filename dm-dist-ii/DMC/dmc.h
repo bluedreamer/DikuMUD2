@@ -1,29 +1,4 @@
-/* *********************************************************************** *
- * File   : dmc.h                                     Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : quinn@diku.dk                                                  *
- *                                                                         *
- * Purpose: Header for the database compiler. See dmc.doc for specs.       *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
-#ifndef _MUD_DMC_H
-#define _MUD_DMC_H
+#pragma once
 
 #include "../utils.h"
 
@@ -122,5 +97,3 @@ void                 process_unit(struct unit_data *u);
 #define UNIT_IDENT(unit) ((char *)(unit)->gnext) /* can you say 'filth'? */
                                                  /* You betcha... */
 #define UNIT_IDENT_ASSIGN(unit, val) ((unit)->gnext = (struct unit_data *)(val))
-
-#endif /* _MUD_DMC_H */

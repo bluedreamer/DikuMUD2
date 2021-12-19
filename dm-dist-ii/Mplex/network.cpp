@@ -1,40 +1,11 @@
-/* *********************************************************************** *
- * File   : network.c                                 Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : seifert                                                        *
- *                                                                         *
- * Purpose: Basic Internet / Stream opening                                *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
 #include "network.h"
 
 #include "protocol.h"
-#include "textutil.h"
-#include "unixshit.h"
 
-#include <errno.h>
+#include <cerrno>
+#include <cstdlib>
 #include <fcntl.h>
 #include <netinet/tcp.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/time.h>
-#include <sys/types.h>
 #include <sys/un.h>
 #include <unistd.h>
 
@@ -42,9 +13,10 @@
    #include <machine/endian.h>
 #endif
 
-int OpenMother(int nPort)
+auto OpenMother(int nPort) -> int
 {
-   int                n, fdMother;
+   int                n;
+   int                fdMother;
    struct linger      ld;
    struct sockaddr_in server_addr;
 
@@ -109,7 +81,7 @@ int OpenMother(int nPort)
    return fdMother;
 }
 
-int OpenNetwork(int nPort, const char *pcAddress)
+auto OpenNetwork(int nPort, const char *pcAddress) -> int
 {
    struct sockaddr_in server_addr;
    int                fdClient;

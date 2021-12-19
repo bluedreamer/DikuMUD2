@@ -8,9 +8,10 @@ set(MPLEX_SRC
         ../cQueue.cpp
         ../cQueueElem.cpp
         ../common.cpp
+        ../constants.cpp
+
         ../memory.cpp
         ../protocol.cpp
-        ../select.cpp
         ../textutil.cpp
         ../utility.cpp
         )

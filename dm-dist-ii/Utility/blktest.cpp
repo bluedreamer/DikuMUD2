@@ -1,40 +1,16 @@
-/* *********************************************************************** *
- * File   : blktest.c                                 Part of Valhalla MUD *
- * Version: 1.00                                                           *
- * Author : seifert@diku.dk                                                *
- *                                                                         *
- * Purpose: To test blkfile.c in a really tough way.                       *
- *                                                                         *
- * Bugs   : Unknown.                                                       *
- * Status : Unpublished.                                                   *
- *                                                                         *
- * Copyright (C) Valhalla (This work is unpublished).                      *
- *                                                                         *
- * This work is a property of:                                             *
- *                                                                         *
- *        Valhalla I/S                                                     *
- *        Noerre Soegade 37A, 4th floor                                    *
- *        1370 Copenhagen K.                                               *
- *        Denmark                                                          *
- *                                                                         *
- * This is an unpublished work containing Valhalla confidential and        *
- * proprietary information. Disclosure, use or reproduction without        *
- * authorization of Valhalla is prohobited.                                *
- * *********************************************************************** */
-
 #include "blkfile.h"
 #include "bytestring.h"
 #include "structs.h"
 #include "utils.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
 
 #undef free
 
 int          sunlight       = 0;
-const int8_t time_light[24] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+//int8_t time_light[24] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 #define TFSIZE 128
 #define MAXH   4000
@@ -54,7 +30,7 @@ FILE *fopen_cache(char *name, char *mode)
 }
 #endif
 
-char *gen_data(int len)
+auto gen_data(int len) -> char *
 {
    uint8_t       *ptr;
    static uint8_t data[4 * TFSIZE];
@@ -64,7 +40,9 @@ char *gen_data(int len)
    ptr = data;
 
    for(i = 0; i < 4 * TFSIZE / 4; i++)
+   {
       bwrite_uint32_t(&ptr, len++);
+   }
 
    count++;
 
@@ -74,7 +52,8 @@ char *gen_data(int len)
 void verify_data(uint8_t *data, int len)
 {
    uint8_t *ptr;
-   int      i, j;
+   int      i;
+   int      j;
 
    ptr = data;
    j   = len;
@@ -83,7 +62,9 @@ void verify_data(uint8_t *data, int len)
    {
       i = bread_uint32_t(&ptr);
       if(i != j++)
+      {
          assert(FALSE);
+      }
    }
 }
 
@@ -130,13 +111,17 @@ void write_data(BLK_FILE *tf, int no)
 
 void new_data(BLK_FILE *tf, int no)
 {
-   int   i, j, l;
+   int   i;
+   int   j;
+   int   l;
    char *c;
 
    for(j = 0; j < no; j++)
    {
       while(h[i = (rand() % MAXH)] != BLK_NULL)
+      {
          ;
+      }
       l    = 1 + (rand() % (TFSIZE - 6 + 3 - 1 * (TFSIZE - 2)));
       c    = gen_data(l);
       h[i] = blk_write(tf, c, l); /* One Block */
@@ -150,42 +135,50 @@ void verify_read(BLK_FILE *tf)
    blk_length len;
 
    for(i = 0; i < MAXH; i++)
+   {
       if(h[i] != BLK_NULL)
       {
          data = (uint8_t *)blk_read(tf, h[i], &len);
          verify_data(data, len);
       }
+   }
 }
 
 void fragment_data(BLK_FILE *tf, int no)
 {
-   int i, j;
+   int i;
+   int j;
 
    for(j = 0; j < no; j++)
    {
       /* In extreme cases this might cause an endless loop */
       /* but that shouldn't be a problem... :)             */
       while(h[i = (rand() % MAXH)] == BLK_NULL)
+      {
          ;
+      }
       blk_delete(tf, h[i]);
       h[i] = BLK_NULL;
    }
 }
 
-int main(void)
+auto main() -> int
 {
    FILE     *f;
    BLK_FILE *tf;
-   int       i, j;
+   int       i;
+   int       j;
 
-   srand(time(0));
+   srand(time(nullptr));
 
    f = fopen("tmp.testfile", "wb");
    fclose(f);
 
    tf = blk_open("tmp.testfile", TFSIZE);
    for(i = 0; i < MAXH; i++)
+   {
       h[i] = BLK_NULL;
+   }
 
    printf("Writing data\n");
    write_data(tf, 50); /* Write 50 * 10 units */

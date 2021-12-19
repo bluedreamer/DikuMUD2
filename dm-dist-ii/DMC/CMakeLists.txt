@@ -8,6 +8,8 @@ set(DMC_SRC
         ../cNamelist.cpp
         ../cQueue.cpp
         ../cQueueElem.cpp
+        ../constants.cpp
+
         ../cStringConstant.cpp
         ../cStringInstance.cpp
         ../cHashSystem.cpp
