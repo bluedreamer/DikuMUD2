@@ -26,6 +26,7 @@
 #include "unit_data.h"
 #include "values.h"
 
+#include "dice_type.h"
 #include "skill_interval.h"
 
 auto skill_text(const skill_interval *si, int skill) -> const char *;
@@ -53,22 +54,16 @@ auto skill_text(const skill_interval *si, int skill) -> const char *;
 
 #define CHAR_IS_UNDEAD(ch) RACE_IS_UNDEAD(CHAR_RACE(ch))
 
-struct dice_type
-{
-   uint16_t reps;
-   uint16_t size;
-};
-
 struct base_race_info_type
 {
-   uint16_t         height;
-   struct dice_type height_dice;
+   uint16_t  height;
+   dice_type height_dice;
 
-   uint16_t         weight;
-   struct dice_type weight_dice;
+   uint16_t  weight;
+   dice_type weight_dice;
 
-   uint16_t         lifespan;
-   struct dice_type lifespan_dice;
+   uint16_t  lifespan;
+   dice_type lifespan_dice;
 };
 
 struct race_info_type
