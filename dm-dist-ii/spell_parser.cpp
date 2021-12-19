@@ -696,7 +696,7 @@ static void spell_read()
          }
          // MS2020 free(((char *) spell_info[idx].tmpl));
          /* Nasty, just needed for brief conversion - MS2020 ... WTF is that ?!*/
-         spell_info[idx].tmpl = (struct diltemplate *)str_dup(pCh);
+         spell_info[idx].tmpl = (diltemplate *)str_dup(pCh);
       }
       else if(strncmp(pTmp, "minpos", 6) == 0)
       {

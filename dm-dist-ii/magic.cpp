@@ -65,7 +65,7 @@ auto dil_effect(const char *pStr, spell_args *sa) -> int
       return static_cast<int>(FALSE);
    }
 
-   struct diltemplate *tmpl;
+   diltemplate *tmpl;
 
    tmpl = find_dil_template(pStr);
 

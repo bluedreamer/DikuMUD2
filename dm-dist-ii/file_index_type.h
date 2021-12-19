@@ -3,6 +3,7 @@
 #include <cstdint>
 
 class unit_data;
+class zone_type;
 
 /* A linked sorted list of all units within a zone file */
 class file_index_type

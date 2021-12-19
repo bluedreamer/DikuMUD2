@@ -66,11 +66,11 @@ extern int linenum;
 extern  zone_info zone;
 extern int nooutput;
  unit_data *cur;
-struct extra_descr_data *cur_extra;
+extra_descr_data *cur_extra;
 struct reset_command *cur_cmd;
  unit_affected_type *cur_aff;
  unit_fptr *cur_func;
-struct diltemplate *cur_tmpl;
+diltemplate *cur_tmpl;
 struct dilprg *cur_prg;
 
 int myi, cur_ex, errcon = 0;
@@ -89,7 +89,7 @@ int dilarg_top;
 int mon_top, mon_list[50][2];
 
  unit_fptr *mcreate_func(void);
-void dumpdiltemplate(struct diltemplate *tmpl);
+void dumpdiltemplate(diltemplate *tmpl);
 void dumpdil(struct dilprg *prg);
 
  void syntax(const char *str);
@@ -1471,7 +1471,7 @@ char *str_dup_file(FILE *fl)
   return res;
 }
 
-void dumpdiltemplate(struct diltemplate *tmpl) {
+void dumpdiltemplate(diltemplate *tmpl) {
 
   int i;
   fprintf(stderr,"Name: '%s'\n",tmpl->prgname);

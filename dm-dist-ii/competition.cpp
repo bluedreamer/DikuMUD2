@@ -73,7 +73,7 @@ static struct competition_data
 
 static int competition_top = 0;
 
-auto competition_find(char *name, struct extra_descr_data *pexd) -> struct extra_descr_data *
+auto competition_find(char *name, extra_descr_data *pexd) -> extra_descr_data *
 {
    class extra_descr_data *exd;
 
@@ -213,7 +213,7 @@ static void competition_recalc(int idx, unit_data *pc, int xp, int secs)
 
 static auto competition_points(unit_data *pc, int idx) -> int
 {
-   struct extra_descr_data *exd;
+   extra_descr_data *exd;
    double                   xp;
    double                   secs;
    double                   points = 0.0;
@@ -239,7 +239,7 @@ static auto competition_points(unit_data *pc, int idx) -> int
 
 void competition_update(unit_data *pc)
 {
-   struct extra_descr_data *exd;
+   extra_descr_data *exd;
    int                      i;
    int                      xp;
    int                      secs;
@@ -262,8 +262,8 @@ void competition_update(unit_data *pc)
 void competition_enroll(unit_data *pc)
 {
    int                      i;
-   struct extra_descr_data *exd;
-   struct extra_descr_data *pexd;
+   extra_descr_data *exd;
+   extra_descr_data *pexd;
    const char              *names[2] = {"$competition", nullptr};
 
    for(i = 0; i < competition_top; i++)

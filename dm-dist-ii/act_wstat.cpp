@@ -350,7 +350,7 @@ static void stat_dil(const unit_data *ch, const struct zone_type *zone)
 {
    char                buf[MAX_STRING_LENGTH];
    char                buf2[MAX_STRING_LENGTH];
-   struct diltemplate *tmpl;
+   diltemplate *tmpl;
    int                 i;
 
    sprintf(buf, "List of DIL in zone %s:\n\r", zone->name);
@@ -385,7 +385,7 @@ static void stat_dil(const unit_data *ch, const struct zone_type *zone)
 static void stat_dil(const unit_data *ch, const struct zone_type *zone)
 {
    char                buf[MAX_STRING_LENGTH];
-   struct diltemplate *tmpl;
+   diltemplate *tmpl;
    int                 i;
 
    sprintf(buf, "List of DIL in zone %s:\n\r", zone->name);
@@ -780,7 +780,7 @@ static void stat_normal(unit_data *ch, unit_data *u)
    send_to_char(buf, ch);
 }
 
-static void stat_extra(const unit_data *ch, struct extra_descr_data *ed)
+static void stat_extra(const unit_data *ch, extra_descr_data *ed)
 {
    /* MS: We used to do a TAIL here... bad idea as newspaper is VERY HUGE */
    /* This isn't nice either, but it works... */

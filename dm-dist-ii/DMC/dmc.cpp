@@ -495,7 +495,7 @@ void dump_zone(char *prefix)
    unit_data            *u;
    struct reset_command *c;
    int                   no_rooms = 0;
-   struct diltemplate   *tmpl;
+   diltemplate   *tmpl;
    uint32_t              dummy;
    void                  dmc_error(int fatal, const char *fmt, ...);
 

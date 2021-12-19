@@ -42,7 +42,7 @@ void load_contents(const char *pFileName, unit_data *unit);
 void save_player_contents(unit_data *pc, int fast);
 
 /* handler.c */
-auto quest_add(unit_data *ch, const char *name, char *descr) -> struct extra_descr_data *;
+auto quest_add(unit_data *ch, const char *name, char *descr) -> extra_descr_data *;
 
 void insert_in_unit_list(unit_data *u);
 void remove_from_unit_list(unit_data *unit);

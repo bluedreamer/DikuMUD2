@@ -92,7 +92,7 @@ struct zone_info
    struct unit_data     *z_objects;
    struct reset_command *z_table;
    struct zone_header    z_zone;
-   struct diltemplate   *z_tmpl;
+   diltemplate   *z_tmpl;
 };
 
 struct reset_command

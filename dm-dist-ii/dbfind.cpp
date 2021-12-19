@@ -130,7 +130,7 @@ auto find_file_index(const char *zonename, const char *name) -> file_index_type 
 }
 
 /* Zonename & name must point to non-empty strings */
-auto find_dil_index(char *zonename, char *name) -> struct diltemplate *
+auto find_dil_index(char *zonename, char *name) -> diltemplate *
 {
    struct zone_type       *zone;
    struct bin_search_type *ba;
@@ -150,7 +150,7 @@ auto find_dil_index(char *zonename, char *name) -> struct diltemplate *
       return nullptr;
    }
 
-   return (struct diltemplate *)ba->block;
+   return (diltemplate *)ba->block;
 }
 
 /*
@@ -159,7 +159,7 @@ auto find_dil_index(char *zonename, char *name) -> struct diltemplate *
  * call by a DIL program.
  * Uses find_dil_index...
  */
-auto find_dil_template(const char *name) -> struct diltemplate *
+auto find_dil_template(const char *name) -> diltemplate *
 {
    char zbuf[256];
    char pbuf[256];

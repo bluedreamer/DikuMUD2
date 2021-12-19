@@ -956,7 +956,7 @@ void weight_change_unit(unit_data *unit, int weight)
    }
 }
 
-auto quest_add(unit_data *ch, const char *name, char *descr) -> struct extra_descr_data *
+auto quest_add(unit_data *ch, const char *name, char *descr) -> extra_descr_data *
 {
    const char *namelist[2];
 

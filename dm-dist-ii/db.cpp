@@ -100,7 +100,7 @@ void generate_bin_arrays()
 
       if(z->no_tmpl != 0U)
       {
-         struct diltemplate *tmpl;
+         diltemplate *tmpl;
 
          CREATE(z->tmplba, struct bin_search_type, z->no_tmpl);
          for(tmpl = z->tmpl, i = 0; tmpl != nullptr; tmpl = tmpl->next, i++)
@@ -116,7 +116,7 @@ void generate_bin_arrays()
 void resolve_templates()
 {
    class zone_type    *z;
-   struct diltemplate *tmpl;
+   diltemplate *tmpl;
    int                 i;
    int                 j;
    int                 valid;
@@ -166,10 +166,10 @@ void resolve_templates()
 }
 
 /* Generate and read DIL templates */
-auto generate_templates(FILE *f, struct zone_type *zone) -> struct diltemplate *
+auto generate_templates(FILE *f, struct zone_type *zone) -> diltemplate *
 {
-   struct diltemplate *tmpllist;
-   struct diltemplate *tmpl;
+   diltemplate *tmpllist;
+   diltemplate *tmpl;
    CByteBuffer         Buf;
    uint32_t            tmplsize = 0;
    char                nBuf[256];
@@ -195,8 +195,8 @@ auto generate_templates(FILE *f, struct zone_type *zone) -> struct diltemplate *
 
       if(tmpl != nullptr)
       {
-         struct diltemplate *tfi2;
-         struct diltemplate *tfi1;
+         diltemplate *tfi2;
+         diltemplate *tfi1;
 
          tmpl->zone = zone;
 

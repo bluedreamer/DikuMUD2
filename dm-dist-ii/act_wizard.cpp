@@ -1383,10 +1383,10 @@ void do_verify(unit_data *ch, char *arg, const struct command_info *cmd)
 
 void reroll(unit_data *victim)
 {
-   struct extra_descr_data *exd;
-   struct extra_descr_data *nextexd;
-   unit_data               *obj;
-   int                      i;
+   extra_descr_data *exd;
+   extra_descr_data *nextexd;
+   unit_data        *obj;
+   int               i;
 
    void race_cost(unit_data * ch);
    void points_reset(unit_data * ch);

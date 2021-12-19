@@ -69,7 +69,7 @@ zone_type::~zone_type()
    }
 
    /*
-   struct diltemplate *pt, *nextpt;
+   diltemplate *pt, *nextpt;
 
    for (pt = tmpl; pt; pt = nextpt)
    {
@@ -85,7 +85,7 @@ zone_type::~zone_type()
 */
 
    // struct bin_search_type *ba;    /* Pointer to binarray of type      */
-   // struct diltemplate *tmpl;      /* DIL templates in zone            */
+   // diltemplate *tmpl;      /* DIL templates in zone            */
    // struct bin_search_type *tmplba;/* Pointer to binarray of type      */
 
    free(spmatrix);

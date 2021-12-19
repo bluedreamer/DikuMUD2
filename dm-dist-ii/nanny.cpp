@@ -80,7 +80,7 @@ void multi_close(struct multi_element *pe);
 auto player_exists(const char *pName) -> int;
 void save_player_file(unit_data *ch);
 
-extern struct diltemplate *nanny_dil_tmpl;
+extern diltemplate *nanny_dil_tmpl;
 
 /* *************************************************************************
  *  Stuff for controlling the non-playing sockets (get name, pwd etc)      *
@@ -903,7 +903,7 @@ void interpreter_string_add(descriptor_data *d, const char *str)
 
 void nanny_fix_descriptions(unit_data *u)
 {
-   struct extra_descr_data *exd;
+   extra_descr_data *exd;
    char                     buf[1024];
 
    for(exd = UNIT_EXTRA_DESCR(u); exd != nullptr; exd = exd->next)
@@ -1009,7 +1009,7 @@ void nanny_describe_bodypart(descriptor_data *d, char *arg)
 {
    char                     Buf[1000];
    int                      i;
-   struct extra_descr_data *exd;
+   extra_descr_data *exd;
 
    STATE(d)++;
 
@@ -1568,7 +1568,7 @@ void nanny_change_terminal(descriptor_data *d, const char *arg)
 void nanny_view_descriptions(descriptor_data *d, char *arg)
 {
    char                     Buf[1000];
-   struct extra_descr_data *exd;
+   extra_descr_data *exd;
    int                      i;
 
    STATE(d)++;
@@ -1613,7 +1613,7 @@ void nanny_view_descriptions(descriptor_data *d, char *arg)
 
 void nanny_change_information(descriptor_data *d, const char *arg)
 {
-   struct extra_descr_data *exd;
+   extra_descr_data *exd;
 
    if(STATE(d)++ == 0)
    {

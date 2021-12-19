@@ -1,5 +1,6 @@
 #pragma once
 #include "unit_data.h"
+#include "diltemplate.h"
 #include <cstdint>
 
 struct command_info
@@ -18,7 +19,7 @@ struct command_info
    uint8_t minimum_level;
    uint8_t log_level; /* For logging certain immortal commands */
 
-   struct diltemplate *tmpl; /* Perhaps a DIL template...         */
+   diltemplate *tmpl; /* Perhaps a DIL template...         */
 
    /* Also put noise/provokation and impact values here            */
 

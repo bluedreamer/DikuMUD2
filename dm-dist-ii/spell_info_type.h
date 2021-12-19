@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include "diltemplate.h"
 
 struct spell_info_type
 {
@@ -23,7 +24,7 @@ struct spell_info_type
    uint8_t  realm;            /* Essence, Channeling, Mentalism?   */
    uint8_t  shield;           /* Shield method SHIELD_M_XXX        */
 
-   struct diltemplate *tmpl; /* Perhaps a DIL template...         */
+   diltemplate *tmpl; /* Perhaps a DIL template...         */
 };
 
 extern spell_info_type spell_info[];

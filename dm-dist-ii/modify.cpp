@@ -168,7 +168,7 @@ struct field_type unit_field_data[MAX_SET_FIELDS + 1] = {
 // Post-porcessing of adding-extra descriptions.
 void edit_extra(descriptor_data *d)
 {
-   struct extra_descr_data *exd;
+   extra_descr_data *exd;
 
    for(exd = UNIT_EXTRA_DESCR(d->editing); exd != nullptr; exd = exd->next)
    {
@@ -187,7 +187,7 @@ void edit_extra(descriptor_data *d)
 // Post-porcessing of adding-extra descriptions.
 void edit_info(descriptor_data *d)
 {
-   struct extra_descr_data *exd;
+   extra_descr_data *exd;
 
    for(exd = PC_INFO(d->editing); exd != nullptr; exd = exd->next)
    {
@@ -369,7 +369,7 @@ void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
    long int bitarg = 0;
 
    file_index_type         *untarg = nullptr;
-   struct extra_descr_data *ed;
+   extra_descr_data *ed;
    unit_data               *unt;
    unit_affected_type      *aff;
 

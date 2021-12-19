@@ -206,7 +206,7 @@ void do_quests(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    int                      bOutput = static_cast<int>(FALSE);
    char                     buf[256];
-   struct extra_descr_data *exd;
+   extra_descr_data *exd;
 
    if(!IS_PC(ch))
    {

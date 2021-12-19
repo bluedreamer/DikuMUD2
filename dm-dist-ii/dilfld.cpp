@@ -333,7 +333,7 @@ void dilfe_fld(dilprg *p, dilval *v)
                v->type = DILV_EDP;
                if(v1.val.ptr != nullptr)
                {
-                  v->val.ptr = ((struct extra_descr_data *)v1.val.ptr)->next;
+                  v->val.ptr = ((extra_descr_data *)v1.val.ptr)->next;
                }
                else
                {
@@ -372,7 +372,7 @@ void dilfe_fld(dilprg *p, dilval *v)
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_SLPR;
-                  v->ref  = &(((struct extra_descr_data *)v1.val.ptr)->names);
+                  v->ref  = &(((extra_descr_data *)v1.val.ptr)->names);
                }
                else
                {
@@ -412,7 +412,7 @@ void dilfe_fld(dilprg *p, dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_SP;
-                  v->val.ptr = (void *)IF_STR(((struct extra_descr_data *)v1.val.ptr)->names.Name());
+                  v->val.ptr = (void *)IF_STR(((extra_descr_data *)v1.val.ptr)->names.Name());
                }
                else
                {
@@ -454,7 +454,7 @@ void dilfe_fld(dilprg *p, dilval *v)
                {
                   v->atyp = DILA_NONE; // Dont dealloc!
                   v->type = DILV_HASHSTR;
-                  v->ref  = &(((struct extra_descr_data *)v1.val.ptr)->descr);
+                  v->ref  = &(((extra_descr_data *)v1.val.ptr)->descr);
                }
                else
                {

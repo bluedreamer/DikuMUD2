@@ -89,10 +89,10 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
 void read_unit_file(file_index_type *org_fi, CByteBuffer *pBuf);
 auto read_unit(file_index_type *fi) -> unit_data *;
 void free_unit(unit_data *ch);
-void free_extra_descr(struct extra_descr_data *ex);
-void free_extra_descr_list(struct extra_descr_data *ex);
+void free_extra_descr(extra_descr_data *ex);
+void free_extra_descr_list(extra_descr_data *ex);
 
-auto create_extra_descr() -> struct extra_descr_data *;
+auto create_extra_descr() -> extra_descr_data *;
 auto create_unit(uint8_t type) -> unit_data *;
 
 /* --- The globals of db.c --- */

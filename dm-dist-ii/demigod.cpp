@@ -49,7 +49,7 @@ void save_player_file(unit_data *pc);
 void add_sacrifice_info(unit_data *demi, unit_data *ch, long power)
 {
    char                     Buf[200];
-   struct extra_descr_data *exd;
+   extra_descr_data *exd;
 
    sprintf(Buf, "$S%s", UNIT_NAME(ch));
    str_lower(Buf + 2);
@@ -355,7 +355,7 @@ void base_sacrifice(unit_data *ch, char *arg, int noble)
    {
       if(IS_IMMORTAL(ch) || IS_NOBLE(ch))
       {
-         struct extra_descr_data *exd;
+         extra_descr_data *exd;
 
          for(exd = PC_QUEST(ch); exd; exd = exd->next)
          {
@@ -541,7 +541,7 @@ auto demi_stuff(spec_arg *sarg) -> int
    unit_data               *pVict, *paper;
    char                     Buf[MAX_STRING_LENGTH];
    int                      loaded = FALSE;
-   struct extra_descr_data *exd;
+   extra_descr_data *exd;
 
    if(cmd->no == CMD_LEVEL)
    {

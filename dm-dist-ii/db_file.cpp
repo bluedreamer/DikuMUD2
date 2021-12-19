@@ -59,8 +59,8 @@ CByteBuffer g_FileBuffer(16384);
 
 auto bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra) -> int
 {
-   struct extra_descr_data *e;
-   struct extra_descr_data *te;
+   extra_descr_data *e;
+   extra_descr_data *te;
    uint8_t                  i;
    char                    *c;
 
@@ -75,7 +75,7 @@ auto bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra) -> int
    /* While description is non null, keep reading */
    for(; i > 0; i--)
    {
-      e = new(struct extra_descr_data);
+      e = new(extra_descr_data);
 
       if(pBuf->SkipString(&c) != 0)
       {
@@ -169,7 +169,7 @@ auto bread_swap_skip(CByteBuffer *pBuf) -> int
 /*
  * This function reads a DIL template
  */
-auto bread_diltemplate(CByteBuffer *pBuf) -> struct diltemplate *
+auto bread_diltemplate(CByteBuffer *pBuf) -> diltemplate *
 {
 #ifdef DMSERVER
    extern int mud_bootzone;
@@ -177,10 +177,10 @@ auto bread_diltemplate(CByteBuffer *pBuf) -> struct diltemplate *
 #endif
    int                 i;
    int                 j;
-   struct diltemplate *tmpl;
+   diltemplate *tmpl;
 
    /* read a template */
-   CREATE(tmpl, struct diltemplate, 1);
+   CREATE(tmpl, diltemplate, 1);
 
    tmpl->nActivations = 0;
 
@@ -264,7 +264,7 @@ auto bread_diltemplate(CByteBuffer *pBuf) -> struct diltemplate *
 
    if(tmpl->xrefcount != 0U)
    {
-      CREATE(tmpl->extprg, struct diltemplate *, tmpl->xrefcount);
+      CREATE(tmpl->extprg, diltemplate *, tmpl->xrefcount);
    }
    else
    {
@@ -412,7 +412,7 @@ void bwrite_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
 auto bread_dil(CByteBuffer *pBuf, unit_data *owner, uint8_t version, unit_fptr *fptr) -> void *
 {
    struct dilprg      *prg;
-   struct diltemplate *tmpl     = nullptr;
+   diltemplate *tmpl     = nullptr;
    uint32_t            recallpc = 0;
    uint16_t            t16;
    int                 i;
@@ -462,7 +462,7 @@ auto bread_dil(CByteBuffer *pBuf, unit_data *owner, uint8_t version, unit_fptr *
       if(tmpl == nullptr)
       {
          /* Make static template containing just the name */
-         CREATE(tmpl, struct diltemplate, 1);
+         CREATE(tmpl, diltemplate, 1);
          tmpl->nActivations = 0;
          tmpl->prgname      = str_dup(name);
          tmpl->zone         = nullptr;
@@ -833,7 +833,7 @@ void bwrite_affect(CByteBuffer *pBuf, unit_affected_type *af, uint8_t version)
 /*
  * This function writes a DIL template
  */
-void bwrite_diltemplate(CByteBuffer *pBuf, struct diltemplate *tmpl)
+void bwrite_diltemplate(CByteBuffer *pBuf, diltemplate *tmpl)
 {
    int i;
    int j;
@@ -900,7 +900,7 @@ void bwrite_diltemplate(CByteBuffer *pBuf, struct diltemplate *tmpl)
 void bwrite_dil(CByteBuffer *pBuf, struct dilprg *prg)
 {
    int                 i;
-   struct diltemplate *tmpl;
+   diltemplate *tmpl;
 
    /* write new version */
    pBuf->Append8(prg->flags); /* from other template? */
@@ -1409,7 +1409,7 @@ void write_unit(FILE *f, unit_data *u, char *fname)
 
 /* Append template 'tmpl' to file 'f'                    */
 /* Used only by dmc. for writing zones                   */
-void write_diltemplate(FILE *f, struct diltemplate *tmpl)
+void write_diltemplate(FILE *f, diltemplate *tmpl)
 {
    CByteBuffer *pBuf;
    uint8_t     *b;

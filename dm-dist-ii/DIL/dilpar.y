@@ -105,7 +105,7 @@ struct dilref {
 };
 
 struct dilprg prg;              /* current program building */
-struct diltemplate tmpl;        /* current template building */
+diltemplate tmpl;        /* current template building */
 struct dilframe frm;		/* current frame building */
 struct dilref ref;		/* current reference */
 
@@ -136,7 +136,7 @@ void update_labels(void);
 void fatal(const char *str);
 void warning(const char *str);
 void syntax(const char *str);
-void dumpdiltemplate(struct diltemplate *tmpl);
+void dumpdiltemplate(diltemplate *tmpl);
 void dumpdil(struct dilprg *prg);
 int dil_corecrc(uint8_t *core, int len);
 int dil_headercrc(char **name, uint8_t *type);
@@ -4838,7 +4838,7 @@ void add_ref(struct dilref *ref)
 }
 
 
-void dumpdiltemplate(struct diltemplate *tmpl) {
+void dumpdiltemplate(diltemplate *tmpl) {
 
   int i;
   fprintf(stderr,"Name: '%s'\n",tmpl->prgname);

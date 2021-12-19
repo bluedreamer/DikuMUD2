@@ -499,7 +499,7 @@ void spell_identify_1(spell_args *sa)
        {3, 0, 0, 3, 3}} /*SHIELD    */
    };
 
-   struct extra_descr_data *exd;
+   extra_descr_data *exd;
    char                     buffer[1024];
 
    if(sa->hm < 0)
@@ -562,7 +562,7 @@ void spell_identify_1(spell_args *sa)
 
 void spell_identify_2(spell_args *sa)
 {
-   struct extra_descr_data *exd;
+   extra_descr_data *exd;
    int                      i = 0;
 
    if(sa->hm < 0)

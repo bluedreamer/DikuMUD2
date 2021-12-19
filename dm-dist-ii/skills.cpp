@@ -530,8 +530,8 @@ static void race_read()
    fclose(fl);
 }
 
-struct diltemplate *playerinit_tmpl;
-struct diltemplate *nanny_dil_tmpl;
+diltemplate *playerinit_tmpl;
+diltemplate *nanny_dil_tmpl;
 
 static void race_init()
 {

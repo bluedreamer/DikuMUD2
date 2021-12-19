@@ -642,7 +642,7 @@ void check_namelist(struct unit_data *unit, class cNamelist *nl)
 void process_unit(struct unit_data *u)
 {
    int                      i;
-   struct extra_descr_data *exd;
+   extra_descr_data *exd;
 
    extern int         verbose;
    extern const char *drinks[];

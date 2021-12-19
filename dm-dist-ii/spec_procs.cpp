@@ -1068,7 +1068,7 @@ auto mercenary_hire(struct spec_arg *sarg) -> int
    unit_data               *u;
    unit_data               *victim;
    struct mercenary_data   *md;
-   struct extra_descr_data *exd;
+   extra_descr_data *exd;
    amount_t                 price;
    currency_t               currency = local_currency(sarg->owner);
 
@@ -1403,7 +1403,7 @@ auto obj_guild(struct spec_arg *sarg) -> int
 
 auto obj_quest(struct spec_arg *sarg) -> int
 {
-   auto  find_quest(char *word, unit_data *unit)->struct extra_descr_data *;
+   auto  find_quest(char *word, unit_data *unit)->extra_descr_data *;
    char *quest = (char *)sarg->fptr->data;
 
    if(quest == nullptr)

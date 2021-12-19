@@ -157,7 +157,7 @@ static void set_owner(unit_data *obj, struct alias_head *ah, unit_data *ch)
 }
 
 /* Allocate `exd' if needed, and erase old description */
-static auto fix_extra_descr(unit_data *obj, class extra_descr_data *exd) -> struct extra_descr_data *
+static auto fix_extra_descr(unit_data *obj, class extra_descr_data *exd) -> extra_descr_data *
 {
    static const char *aliaslist[] = {"$alias", nullptr};
 
@@ -716,7 +716,7 @@ static auto local_dictionary(struct spec_arg *sarg) -> int
    uint8_t                  i;
    struct alias_t          *al = nullptr;
    struct alias_head       *alias_h;
-   struct extra_descr_data *exd;
+   extra_descr_data *exd;
 
    /* specproc initialization */
    if((alias_h = (struct alias_head *)sarg->fptr->data) == nullptr)

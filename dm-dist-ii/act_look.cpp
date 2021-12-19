@@ -168,7 +168,7 @@ void send_looklist(struct looklist_type *list, unit_data *ch)
 
 auto single_unit_messg(unit_data *unit, const char *type, const char *pSubStr, const char *mesg) -> const char *
 {
-   struct extra_descr_data *exd = UNIT_EXTRA_DESCR(unit);
+   extra_descr_data *exd = UNIT_EXTRA_DESCR(unit);
 
    while((exd != nullptr) && ((exd = exd->find_raw(type)) != nullptr))
    {
@@ -197,7 +197,7 @@ auto single_unit_messg(unit_data *unit, const char *type, const char *pSubStr, c
 
 void unit_messg(unit_data *ch, unit_data *unit, const char *type, const char *mesg_s, const char *mesg_o)
 {
-   struct extra_descr_data *exd = nullptr;
+   extra_descr_data *exd = nullptr;
    const char              *c;
 
    c = single_unit_messg(unit, str_cc(type, "_s"), "", mesg_s);
@@ -800,7 +800,7 @@ void list_contents(unit_data *ch, unit_data *unit, int show)
 static void look_dir(unit_data *ch, int keyword_no)
 {
    unit_data               *room = UNIT_IN(ch);
-   struct extra_descr_data *pExd;
+   extra_descr_data *pExd;
 
    if(!IS_ROOM(room))
    {
@@ -950,7 +950,7 @@ static void look_in(unit_data *ch, char *arg, const struct command_info *cmd)
 static void look_at(unit_data *ch, char *arg, const struct command_info *cmd)
 {
    unit_data               *unit;
-   struct extra_descr_data *ed;
+   extra_descr_data *ed;
    char                    *b = arg;
    char                    *c;
    int                      i;
@@ -1161,7 +1161,7 @@ static void look_at(unit_data *ch, char *arg, const struct command_info *cmd)
    }
    else
    {
-      struct extra_descr_data *exd;
+      extra_descr_data *exd;
 
       if(unit != nullptr)
       {

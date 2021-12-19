@@ -47,7 +47,7 @@ void extra_descr_data::AppendBuffer(CByteBuffer *pBuf)
 
    pBuf->Append8(0); /* Assume no extra description */
 
-   struct extra_descr_data *e = this;
+   extra_descr_data *e = this;
 
    /* While description is non null, keep writing */
    for(; e != nullptr; e = e->next)

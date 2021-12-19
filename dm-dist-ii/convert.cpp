@@ -226,8 +226,8 @@ void convert_inventory(unit_data *u, unit_data *pc, int bList = static_cast<int>
  * the playerfile, including affects and inventory                         */
 void convert_player(unit_data *pc)
 {
-   struct extra_descr_data *exd;
-   struct extra_descr_data *nextexd;
+   extra_descr_data *exd;
+   extra_descr_data *nextexd;
 
    int lvl;
 
