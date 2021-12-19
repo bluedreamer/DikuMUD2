@@ -59,6 +59,7 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
 #include "zon_basis.h"
@@ -755,7 +756,7 @@ static void exp_align_gain(unit_data *ch, unit_data *victim)
    }
    else /* NPC killed */
    {
-      struct unit_affected_type *paf;
+      unit_affected_type *paf;
 
       paf = affected_by_spell(victim, ID_MAX_ATTACKER);
 
@@ -863,9 +864,9 @@ static void death_cry(unit_data *ch)
 
 void RemoveReward(unit_data *ch)
 {
-   struct unit_affected_type *taf1;
-   struct unit_affected_type *taf2;
-   int                        reward = FALSE;
+   unit_affected_type *taf1;
+   unit_affected_type *taf2;
+   int                 reward = FALSE;
 
    for(taf1 = UNIT_AFFECTED(ch); taf1 != nullptr; taf1 = taf2)
    {
@@ -938,8 +939,8 @@ auto raw_kill(unit_data *ch) -> unit_data *
    }
    else
    {
-      struct unit_affected_type *taf1;
-      struct unit_affected_type *taf2;
+      unit_affected_type *taf1;
+      unit_affected_type *taf2;
 
       assert(IS_PC(ch));
 
@@ -1056,7 +1057,7 @@ void die(unit_data *ch)
 
    if(corpse != nullptr)
    {
-      struct unit_affected_type *taf1;
+      unit_affected_type *taf1;
 
       if((taf1 = affected_by_spell(ch, ID_REWARD)) != nullptr)
       {
@@ -1125,8 +1126,8 @@ void modify_hit(unit_data *ch, int hit)
 void damage(unit_data *ch, unit_data *victim, unit_data *medium, int dam, int attack_group, int attack_number, int hit_location,
             int bDisplay)
 {
-   int                        max_hit;
-   struct unit_affected_type *paf;
+   int                 max_hit;
+   unit_affected_type *paf;
 
    if((is_destructed(DR_UNIT, ch) != 0) || (is_destructed(DR_UNIT, victim) != 0))
    {
@@ -1241,7 +1242,7 @@ void damage(unit_data *ch, unit_data *victim, unit_data *medium, int dam, int at
    }
    else
    {
-      struct unit_affected_type af;
+      unit_affected_type af;
 
       af.id       = ID_MAX_ATTACKER;
       af.duration = 4;

@@ -41,6 +41,7 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
 #include <climits>
@@ -696,7 +697,7 @@ void spell_colourspray_3(struct spell_args *sa)
 
 void spell_invisibility(struct spell_args *sa)
 {
-   struct unit_affected_type af;
+   unit_affected_type af;
 
    if(IS_PC(sa->target))
    { /* Assume willing target */
@@ -760,7 +761,7 @@ void spell_wizard_eye(struct spell_args *sa)
 
 void spell_fear(struct spell_args *sa)
 {
-   struct unit_affected_type af;
+   unit_affected_type af;
 
    if(!CHAR_IS_MAMMAL(sa->target) && !CHAR_IS_HUMANOID(sa->target))
    {
@@ -787,7 +788,7 @@ void spell_fear(struct spell_args *sa)
 
 void spell_confusion(struct spell_args *sa)
 {
-   struct unit_affected_type af;
+   unit_affected_type af;
 
    if(sa->hm < 0)
    {

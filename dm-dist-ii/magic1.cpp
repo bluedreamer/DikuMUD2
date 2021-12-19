@@ -43,6 +43,7 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
 #include "values.h"
@@ -63,8 +64,8 @@ void spell_remove_curse(struct spell_args *sa)
       Spell Remove Curse:
       This spell removes the gods bad attention from a character.
       */
-   unit_data                 *u;
-   struct unit_affected_type *af;
+   unit_data          *u;
+   unit_affected_type *af;
 
    /* removes curse on unit and contents (if obj) */
    /* each unit gets to save (only fair)          */
@@ -151,7 +152,7 @@ void spell_cause_wounds_3(struct spell_args *sa)
 /* EVIL */
 void spell_dispel_evil(struct spell_args *sa)
 {
-   struct unit_affected_type *af;
+   unit_affected_type *af;
 
    provoked_attack(sa->target, sa->caster);
 
@@ -173,7 +174,7 @@ void spell_dispel_evil(struct spell_args *sa)
 /* EVIL */
 void spell_dispel_good(struct spell_args *sa)
 {
-   struct unit_affected_type *af;
+   unit_affected_type *af;
 
    provoked_attack(sa->target, sa->caster);
 
@@ -196,7 +197,7 @@ void spell_dispel_good(struct spell_args *sa)
 
 void spell_repel_undead_1(struct spell_args *sa)
 {
-   struct unit_affected_type af;
+   unit_affected_type af;
 
    if(!CHAR_IS_UNDEAD(sa->target))
    {
@@ -224,9 +225,9 @@ void spell_repel_undead_1(struct spell_args *sa)
 
 void spell_repel_undead_2(struct spell_args *sa)
 {
-   unit_data                *u;
-   struct unit_affected_type af;
-   int                       p;
+   unit_data         *u;
+   unit_affected_type af;
+   int                p;
 
    scan4_unit(sa->caster, UNIT_ST_PC | UNIT_ST_NPC);
 
@@ -261,7 +262,7 @@ void spell_repel_undead_2(struct spell_args *sa)
 
 void spell_cure_blind(struct spell_args *sa)
 {
-   struct unit_affected_type *af = nullptr;
+   unit_affected_type *af = nullptr;
 
    if(sa->hm >= 0)
    {
@@ -278,7 +279,7 @@ void spell_cure_blind(struct spell_args *sa)
 
 void spell_sanctuary(struct spell_args *sa)
 {
-   struct unit_affected_type af;
+   unit_affected_type af;
 
    if(affected_by_spell(sa->target, ID_SANCTUARY) != nullptr)
    {
@@ -302,7 +303,7 @@ void spell_sanctuary(struct spell_args *sa)
 
 void spell_sustain(struct spell_args *sa)
 {
-   struct unit_affected_type af;
+   unit_affected_type af;
 
    if(affected_by_spell(sa->target, ID_SUSTAIN) != nullptr)
    {

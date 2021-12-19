@@ -43,6 +43,7 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
 
@@ -72,7 +73,7 @@ void name_to_drinkcon(unit_data *obj, int type)
 
 static void apply_poison(unit_data *ch, int poison, int amount)
 {
-   struct unit_affected_type af;
+   unit_affected_type af;
 
    if(0 < poison && IS_MORTAL(ch))
    {

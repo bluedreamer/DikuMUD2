@@ -44,6 +44,7 @@
 #include "skills.h"
 #include "structs.h"
 #include "textutil.h"
+#include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
 
@@ -254,10 +255,10 @@ auto new_crime_serial_no() -> int
 
 void set_reward_char(unit_data *ch, int crimes)
 {
-   struct unit_affected_type *paf;
-   struct unit_affected_type  af;
-   int                        xp   = 0;
-   int                        gold = 0;
+   unit_affected_type *paf;
+   unit_affected_type  af;
+   int                 xp   = 0;
+   int                 gold = 0;
 
    auto lose_exp(unit_data * ch)->int;
 
@@ -299,7 +300,7 @@ void set_reward_char(unit_data *ch, int crimes)
 
 void set_witness(unit_data *criminal, unit_data *witness, int no, int type, int show = TRUE)
 {
-   struct unit_affected_type af;
+   unit_affected_type af;
 
    void activate_accuse(unit_data * npc, uint8_t crime_type, const char *cname);
 
@@ -558,8 +559,8 @@ static void update_criminal(const unit_data *deputy, const char *pPlyName, int p
 
 auto accuse(struct spec_arg *sarg) -> int
 {
-   struct unit_affected_type *af;
-   struct char_crime_data    *crime;
+   unit_affected_type     *af;
+   struct char_crime_data *crime;
 
    int  crime_type = 0; /* {CRIME_MURDER,CRIME_STEALING} */
    char arg1[80];
@@ -711,9 +712,9 @@ struct npc_accuse_data
 /*                                                                     */
 auto npc_accuse(const unit_data *npc, struct visit_data *vd) -> int
 {
-   char                       str[80];
-   struct unit_affected_type *af;
-   struct npc_accuse_data    *nad;
+   char                    str[80];
+   unit_affected_type     *af;
+   struct npc_accuse_data *nad;
 
    nad = (struct npc_accuse_data *)vd->data;
 
@@ -1010,9 +1011,9 @@ auto reward_give(struct spec_arg *sarg) -> int
 {
    void gain_exp(unit_data * ch, int gain);
 
-   unit_data                 *u;
-   struct unit_affected_type *paf;
-   currency_t                 cur;
+   unit_data          *u;
+   unit_affected_type *paf;
+   currency_t          cur;
 
    if(sarg->cmd->no != CMD_GIVE)
    {
@@ -1052,11 +1053,11 @@ auto reward_give(struct spec_arg *sarg) -> int
 
 auto reward_board(struct spec_arg *sarg) -> int
 {
-   unit_data                 *u;
-   struct unit_affected_type *af    = nullptr;
-   int                        found = FALSE;
-   char                       buf[256];
-   char                      *c = (char *)sarg->arg;
+   unit_data          *u;
+   unit_affected_type *af    = nullptr;
+   int                 found = FALSE;
+   char                buf[256];
+   char               *c = (char *)sarg->arg;
 
    if(sarg->cmd->no != CMD_LOOK)
    {
@@ -1107,7 +1108,7 @@ auto reward_board(struct spec_arg *sarg) -> int
    return SFR_BLOCK;
 }
 
-void tif_reward_on(struct unit_affected_type *af, unit_data *unit)
+void tif_reward_on(unit_affected_type *af, unit_data *unit)
 {
    if(IS_CHAR(unit))
    {
@@ -1126,7 +1127,7 @@ void tif_reward_on(struct unit_affected_type *af, unit_data *unit)
    }
 }
 
-void tif_reward_off(struct unit_affected_type *af, unit_data *unit)
+void tif_reward_off(unit_affected_type *af, unit_data *unit)
 {
    if(IS_CHAR(unit))
    {

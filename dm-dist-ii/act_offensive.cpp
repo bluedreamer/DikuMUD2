@@ -36,6 +36,7 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
 #include <climits>
@@ -44,14 +45,14 @@
 
 void do_decapitate(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   unit_data                 *corpse;
-   unit_data                 *head;
-   struct unit_affected_type *af;
-   struct unit_affected_type  naf;
-   char                      *c;
-   char                      *d;
-   char                       buf[256];
-   char                       buf2[256];
+   unit_data          *corpse;
+   unit_data          *head;
+   unit_affected_type *af;
+   unit_affected_type  naf;
+   char               *c;
+   char               *d;
+   char                buf[256];
+   char                buf2[256];
 
    extern file_index_type *head_fi;
 

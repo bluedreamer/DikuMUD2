@@ -22,10 +22,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #include "affect.h"
 #include "comm.h"
 #include "db.h"
@@ -35,19 +31,23 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 extern file_index_type *corpse_fi;
 
 auto make_corpse(unit_data *ch) -> unit_data *
 {
-   char                       buf[MAX_INPUT_LENGTH];
-   unit_data                 *corpse;
-   unit_data                 *u;
-   unit_data                 *next_dude;
-   struct unit_affected_type  af;
-   struct unit_affected_type *taf1;
+   char                buf[MAX_INPUT_LENGTH];
+   unit_data          *corpse;
+   unit_data          *u;
+   unit_data          *next_dude;
+   unit_affected_type  af;
+   unit_affected_type *taf1;
 
    void persist_create(unit_data * u);
 

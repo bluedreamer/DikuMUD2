@@ -51,6 +51,7 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
@@ -256,8 +257,8 @@ void do_not_here(unit_data *ch, char *arg, const struct command_info *cmd)
 
 void do_light(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   unit_data                *torch;
-   struct unit_affected_type af;
+   unit_data         *torch;
+   unit_affected_type af;
 
    torch = find_unit(ch, &arg, nullptr, FIND_UNIT_HERE);
 
@@ -305,8 +306,8 @@ void do_light(unit_data *ch, char *arg, const struct command_info *cmd)
 
 void do_extinguish(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   unit_data                 *torch;
-   struct unit_affected_type *af;
+   unit_data          *torch;
+   unit_affected_type *af;
 
    torch = find_unit(ch, &arg, nullptr, FIND_UNIT_HERE);
 
@@ -341,8 +342,8 @@ void do_extinguish(unit_data *ch, char *arg, const struct command_info *cmd)
 
 void do_dig(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   unit_data                 *u;
-   struct unit_affected_type *af;
+   unit_data          *u;
+   unit_affected_type *af;
 
    act("$1n starts digging.", A_SOMEONE, ch, nullptr, nullptr, TO_ROOM);
    act("Ok.", A_SOMEONE, ch, nullptr, nullptr, TO_CHAR);
@@ -366,7 +367,7 @@ void do_dig(unit_data *ch, char *arg, const struct command_info *cmd)
 
 void bury_unit(unit_data *ch, unit_data *u, char *arg, const struct command_info *cmd)
 {
-   struct unit_affected_type af;
+   unit_affected_type af;
 
    act("$1n buries $2n.", A_SOMEONE, ch, u, nullptr, TO_ROOM);
    act("You bury $2n.", A_SOMEONE, ch, u, nullptr, TO_CHAR);

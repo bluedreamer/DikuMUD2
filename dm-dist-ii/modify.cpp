@@ -368,10 +368,10 @@ void do_set(unit_data *ch, char *argument, const struct command_info *cmd)
    long int valarg = 0;
    long int bitarg = 0;
 
-   file_index_type           *untarg = nullptr;
-   struct extra_descr_data   *ed;
-   unit_data                 *unt;
-   struct unit_affected_type *aff;
+   file_index_type         *untarg = nullptr;
+   struct extra_descr_data *ed;
+   unit_data               *unt;
+   unit_affected_type      *aff;
 
    if(!CHAR_DESCRIPTOR(ch))
    {

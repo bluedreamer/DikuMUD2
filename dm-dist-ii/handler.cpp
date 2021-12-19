@@ -59,6 +59,7 @@
 #include "nanny.h"
 #include "skills.h"
 #include "textutil.h"
+#include "unit_affected_type.h"
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
@@ -426,8 +427,8 @@ auto equipment_type(unit_data *ch, int pos, uint8_t type) -> unit_data *
 
 void equip_char(unit_data *ch, unit_data *obj, uint8_t pos)
 {
-   struct unit_affected_type *af;
-   struct unit_affected_type  newaf;
+   unit_affected_type *af;
+   unit_affected_type  newaf;
 
    assert(pos > 0 && IS_OBJ(obj) && IS_CHAR(ch));
    assert(!equipment(ch, pos));
@@ -453,9 +454,9 @@ void equip_char(unit_data *ch, unit_data *obj, uint8_t pos)
 
 auto unequip_object(unit_data *obj) -> unit_data *
 {
-   unit_data                 *ch;
-   struct unit_affected_type *af;
-   struct unit_affected_type *caf;
+   unit_data          *ch;
+   unit_affected_type *af;
+   unit_affected_type *caf;
 
    ch = UNIT_IN(obj);
 

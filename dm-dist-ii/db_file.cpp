@@ -42,6 +42,7 @@
 #include "interpreter.h"
 #include "structs.h"
 #include "textutil.h"
+#include "unit_affected_type.h"
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
@@ -778,7 +779,7 @@ void bwrite_swap(CByteBuffer *pBuf, unit_data *u)
    UNIT_EXTRA_DESCR(u)->AppendBuffer(pBuf);
 }
 
-void bwrite_affect(CByteBuffer *pBuf, struct unit_affected_type *af, uint8_t version)
+void bwrite_affect(CByteBuffer *pBuf, unit_affected_type *af, uint8_t version)
 {
    int      i = 0;
    uint32_t nPos;

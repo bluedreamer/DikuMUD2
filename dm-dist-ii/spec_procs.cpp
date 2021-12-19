@@ -1285,9 +1285,9 @@ static void tuborg_log(const char *name, int cmd)
 
 auto green_tuborg(struct spec_arg *sarg) -> int
 {
-   struct unit_affected_type *af;
-   int                        oldval;
-   char                      *c = (char *)sarg->arg;
+   unit_affected_type *af;
+   int                 oldval;
+   char               *c = (char *)sarg->arg;
 
    if(sarg->cmd->no != CMD_TASTE && sarg->cmd->no != CMD_SIP && sarg->cmd->no != CMD_DRINK)
    {

@@ -56,6 +56,7 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "unit_affected_type.h"
 #include "unit_data.h"
 #include "utils.h"
 #include <climits>
@@ -72,7 +73,7 @@ auto get_obj_in_list_vis(unit_data *ch, char *name, unit_data *list) -> unit_dat
 /* and hidden then the door is found if it has been searched for.         */
 auto has_found_door(unit_data *pc, int dir) -> int
 {
-   struct unit_affected_type *af;
+   unit_affected_type *af;
 
    if(!IS_ROOM(UNIT_IN(pc)))
    {

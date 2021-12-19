@@ -52,6 +52,7 @@
 #include "skills.h"
 #include "structs.h"
 #include "textutil.h"
+#include "unit_affected_type.h"
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
@@ -565,12 +566,12 @@ void generate_zone_indexes()
  */
 auto bread_affect(CByteBuffer *pBuf, unit_data *u, uint8_t nVersion) -> int
 {
-   struct unit_affected_type af;
-   int                       i;
-   uint8_t                   t8;
-   uint16_t                  t16;
+   unit_affected_type af;
+   int                i;
+   uint8_t            t8;
+   uint16_t           t16;
 
-   auto link_alloc_affect(unit_data * unit, struct unit_affected_type * orgaf)->struct unit_affected_type *;
+   auto link_alloc_affect(unit_data * unit, unit_affected_type * orgaf)->unit_affected_type *;
 
    if(nVersion <= 56)
    {

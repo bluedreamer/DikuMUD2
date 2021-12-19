@@ -38,14 +38,13 @@
 #include "skills.h"
 #include "spells.h"
 #include "structs.h"
+#include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
 #include <climits>
 
-auto raw_destruct_affect(struct unit_affected_type *af) -> bool
+auto raw_destruct_affect(unit_affected_type *af) -> bool
 {
-   void unlink_affect(unit_data * u, struct unit_affected_type * af);
-
    unlink_affect(af->owner, af); /* registers and frees later */
    return FALSE;                 /* CANCEL */
 }
@@ -78,9 +77,9 @@ auto skill_overflow(int skill, int change, bool set) -> bool
 /*                                                      */
 /* Data[0] Must contain bits to set in CHAR_FLAGS()     */
 /*                                                      */
-auto apf_mod_char_flags(struct unit_affected_type *af, unit_data *unit, bool set) -> bool
+auto apf_mod_char_flags(unit_affected_type *af, unit_data *unit, bool set) -> bool
 {
-   struct unit_affected_type *taf;
+   unit_affected_type *taf;
 
    assert(IS_CHAR(unit));
 
@@ -112,9 +111,9 @@ auto apf_mod_char_flags(struct unit_affected_type *af, unit_data *unit, bool set
 /*                                                      */
 /* Data[0] Must contain bits to set in OBJ_FLAGS() */
 /*                                                      */
-auto apf_mod_obj_flags(struct unit_affected_type *af, unit_data *unit, bool set) -> bool
+auto apf_mod_obj_flags(unit_affected_type *af, unit_data *unit, bool set) -> bool
 {
-   struct unit_affected_type *taf;
+   unit_affected_type *taf;
 
    assert(IS_OBJ(unit));
 
@@ -146,9 +145,9 @@ auto apf_mod_obj_flags(struct unit_affected_type *af, unit_data *unit, bool set)
 /*                                                      */
 /* Data[0] Must contain bits to set in UNIT_FLAGS()     */
 /*                                                      */
-auto apf_mod_unit_flags(struct unit_affected_type *af, unit_data *unit, bool set) -> bool
+auto apf_mod_unit_flags(unit_affected_type *af, unit_data *unit, bool set) -> bool
 {
-   struct unit_affected_type *taf;
+   unit_affected_type *taf;
 
    if(set != 0u)
    {
@@ -175,7 +174,7 @@ auto apf_mod_unit_flags(struct unit_affected_type *af, unit_data *unit, bool set
    return TRUE;
 }
 
-auto apf_weapon_adj(struct unit_affected_type *af, unit_data *unit, bool set) -> bool
+auto apf_weapon_adj(unit_affected_type *af, unit_data *unit, bool set) -> bool
 {
    int modify;
 
@@ -239,7 +238,7 @@ auto apf_weapon_adj(struct unit_affected_type *af, unit_data *unit, bool set) ->
 }
 
 /* NPC's are ignored, they don't have skills. */
-auto apf_skill_adj(struct unit_affected_type *af, unit_data *unit, bool set) -> bool
+auto apf_skill_adj(unit_affected_type *af, unit_data *unit, bool set) -> bool
 {
    if(!IS_CHAR(unit))
    {
@@ -278,7 +277,7 @@ auto apf_skill_adj(struct unit_affected_type *af, unit_data *unit, bool set) -> 
 /* Data[1] must contain the amount to change              */
 /* Data[1] is added when set, and subtracted when not set */
 /* Unit can be CHAR                                       */
-auto apf_spell_adj(struct unit_affected_type *af, unit_data *unit, bool set) -> bool
+auto apf_spell_adj(unit_affected_type *af, unit_data *unit, bool set) -> bool
 {
    int modify;
 
@@ -345,7 +344,7 @@ auto apf_spell_adj(struct unit_affected_type *af, unit_data *unit, bool set) -> 
 /* Data[1] must contain the amount to change              */
 /* Data[1] is added when set, and subtracted when not set */
 /* Unit must be a CHAR!                                   */
-auto apf_ability_adj(struct unit_affected_type *af, unit_data *unit, bool set) -> bool
+auto apf_ability_adj(unit_affected_type *af, unit_data *unit, bool set) -> bool
 {
    assert(IS_CHAR(unit));
 
@@ -382,7 +381,7 @@ auto apf_ability_adj(struct unit_affected_type *af, unit_data *unit, bool set) -
 }
 
 /* Data[0] = Amount of light sources */
-auto apf_light(struct unit_affected_type *af, unit_data *unit, bool set) -> bool
+auto apf_light(unit_affected_type *af, unit_data *unit, bool set) -> bool
 {
    if(set == 0u)
    {
@@ -406,7 +405,7 @@ auto apf_light(struct unit_affected_type *af, unit_data *unit, bool set) -> bool
 
 /* Data[0] = The new armour-type */
 /* Data[1] = The original armour-type */
-auto apf_natural_armour(struct unit_affected_type *af, unit_data *unit, bool set) -> bool
+auto apf_natural_armour(unit_affected_type *af, unit_data *unit, bool set) -> bool
 {
    if(!IS_CHAR(unit))
    {
@@ -421,7 +420,7 @@ auto apf_natural_armour(struct unit_affected_type *af, unit_data *unit, bool set
 
    if(set != 0u)
    {
-      struct unit_affected_type *taf;
+      unit_affected_type *taf;
 
       for(taf = UNIT_AFFECTED(unit); taf != nullptr; taf = taf->next)
       {
@@ -446,7 +445,7 @@ auto apf_natural_armour(struct unit_affected_type *af, unit_data *unit, bool set
 /* Data[0] = The new speed            */
 /* Data[2] = The original speed - [2] because it is not tested in the
              unequip_object affect remove match. */
-auto apf_speed(struct unit_affected_type *af, unit_data *unit, bool set) -> bool
+auto apf_speed(unit_affected_type *af, unit_data *unit, bool set) -> bool
 {
    if(!IS_CHAR(unit))
    {
@@ -460,7 +459,7 @@ auto apf_speed(struct unit_affected_type *af, unit_data *unit, bool set) -> bool
 
    if(set != 0u)
    {
-      struct unit_affected_type *taf;
+      unit_affected_type *taf;
 
       af->data[2] = CHAR_SPEED(unit);
 

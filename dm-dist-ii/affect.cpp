@@ -31,14 +31,15 @@
 #include "affect.h"
 #include "main.h"
 #include "structs.h"
+#include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
 
 extern struct apply_function_type apf[];
 extern struct tick_function_type  tif[];
 
-struct unit_affected_type *affected_list = nullptr; /* Global list pointer       */
-struct unit_affected_type *next_affected_dude;      /* dirty - very dirty indeed */
+unit_affected_type *affected_list = nullptr; /* Global list pointer       */
+unit_affected_type *next_affected_dude;      /* dirty - very dirty indeed */
 
 void register_destruct(int i, void *ptr);
 void clear_destruct(int i);
@@ -72,11 +73,11 @@ void link_affect(unit_data *unit, unit_affected_type *af)
    af->owner           = unit;
 }
 
-auto link_alloc_affect(unit_data *unit, struct unit_affected_type *orgaf) -> struct unit_affected_type *
+auto link_alloc_affect(unit_data *unit, unit_affected_type *orgaf) -> unit_affected_type *
 {
    unit_affected_type *af;
 
-   CREATE(af, struct unit_affected_type, 1);
+   CREATE(af, unit_affected_type, 1);
    assert(!is_destructed(DR_AFFECT, af));
 
    *af = *orgaf;
@@ -90,7 +91,7 @@ auto link_alloc_affect(unit_data *unit, struct unit_affected_type *orgaf) -> str
 /* If the apf function returns TRUE then the tif - function */
 /* is *not* called - but the structure is still alloced and */
 /* linked.                                                  */
-void create_affect(unit_data *unit, struct unit_affected_type *af)
+void create_affect(unit_data *unit, unit_affected_type *af)
 {
    if(is_destructed(DR_UNIT, unit) == 0)
    {
@@ -129,9 +130,9 @@ void create_affect(unit_data *unit, struct unit_affected_type *af)
 /* It is freed by 'clear_destruct' automatically */
 /* MS2020 added unit data as parameter. Shouldnt be necessary */
 /* But I need it for sanity in DMC where there is an odd bug */
-void unlink_affect(unit_data *u, struct unit_affected_type *af)
+void unlink_affect(unit_data *u, unit_affected_type *af)
 {
-   struct unit_affected_type *i;
+   unit_affected_type *i;
 
    assert(af->owner == u); // MS2020
 
@@ -185,7 +186,7 @@ void unlink_affect(unit_data *u, struct unit_affected_type *af)
 /* Call apply (unset), Unlink, and last function, then free structure */
 /* If the apf funtion returns TRUE then the affect will neither be    */
 /* Unliked nor freed nor will the tif funtion be called               */
-void destroy_affect(struct unit_affected_type *af)
+void destroy_affect(unit_affected_type *af)
 {
    /* It is assumed that none of these function calls can */
    /* destroy the affect.                                 */
@@ -215,9 +216,9 @@ void destroy_affect(struct unit_affected_type *af)
 /* Attempts to clear a unit entirely of affects */
 void affect_clear_unit(unit_data *unit)
 {
-   int                        i;
-   struct unit_affected_type *taf1;
-   struct unit_affected_type *taf2;
+   int                 i;
+   unit_affected_type *taf1;
+   unit_affected_type *taf2;
 
    /* Some affects may not be destroyed at first attempt if it would */
    /* cause an overflow, therefore do several attemps to destroy     */
@@ -236,7 +237,7 @@ void affect_clear_unit(unit_data *unit)
    }
 }
 
-auto affected_by_spell(const unit_data *unit, int16_t id) -> struct unit_affected_type *
+auto affected_by_spell(const unit_data *unit, int16_t id) -> unit_affected_type *
 {
    unit_affected_type *af;
 
@@ -254,7 +255,7 @@ auto affected_by_spell(const unit_data *unit, int16_t id) -> struct unit_affecte
 /* Called by event handler when its ticking time */
 void affect_beat(void *p1, void *p2)
 {
-   auto *af = (struct unit_affected_type *)p1;
+   auto *af = (unit_affected_type *)p1;
    int   destroyed;
 
    assert(af->id >= 0); /* Negative ids (transfer) dont have beats */
@@ -296,7 +297,7 @@ void affect_beat(void *p1, void *p2)
 /* If 'apply' is TRUE then apply function will be called */
 void apply_affect(unit_data *unit)
 {
-   struct unit_affected_type *af;
+   unit_affected_type *af;
 
    /* If less than zero it is a transfer, and nothing will be set */
    for(af = UNIT_AFFECTED(unit); af != nullptr; af = af->next)
@@ -313,7 +314,7 @@ void apply_affect(unit_data *unit)
 
 void start_affect(unit_data *unit)
 {
-   struct unit_affected_type *af;
+   unit_affected_type *af;
 
    /* If less than zero it is a transfer, and nothing will be set */
    for(af = UNIT_AFFECTED(unit); af != nullptr; af = af->next)
@@ -327,7 +328,7 @@ void start_affect(unit_data *unit)
 
 void stop_affect(unit_data *unit)
 {
-   struct unit_affected_type *af;
+   unit_affected_type *af;
 
    for(af = UNIT_AFFECTED(unit); af != nullptr; af = af->next)
    {

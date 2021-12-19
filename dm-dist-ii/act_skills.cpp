@@ -52,6 +52,7 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
 #include <climits>
@@ -673,10 +674,10 @@ void do_sneak(unit_data *ch, char *arg, const struct command_info *cmd)
  * tested: No
  */
 {
-   int                        hm;
-   int                        skilla;
-   struct unit_affected_type *oaf;
-   struct unit_affected_type  af;
+   int                 hm;
+   int                 skilla;
+   unit_affected_type *oaf;
+   unit_affected_type  af;
 
    skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_SNEAK) : (effective_dex(ch) + CHAR_BRA(ch)) / 2;
 
@@ -726,14 +727,14 @@ void do_backstab(unit_data *ch, char *arg, const struct command_info *cmd)
  * tested: No
  */
 {
-   struct unit_affected_type  af;
-   struct unit_affected_type *paf = NULL;
-   unit_data                 *vict;
-   unit_data                 *stabber;
-   int                        skilla;
-   int                        skillb;
-   int                        hm;
-   char                      *oarg = arg;
+   unit_affected_type  af;
+   unit_affected_type *paf = NULL;
+   unit_data          *vict;
+   unit_data          *stabber;
+   int                 skilla;
+   int                 skillb;
+   int                 hm;
+   char               *oarg = arg;
 
    if(str_is_empty(arg) != 0u)
    {
@@ -856,10 +857,10 @@ void do_hide(unit_data *ch, char *arg, const struct command_info *cmd)
  * tested: No
  */
 {
-   int                        hm;
-   int                        skilla;
-   struct unit_affected_type *oaf;
-   struct unit_affected_type  af;
+   int                 hm;
+   int                 skilla;
+   unit_affected_type *oaf;
+   unit_affected_type  af;
 
    if(IS_PC(ch) && PC_SKI_SKILL(ch, SKI_HIDE) <= 1)
    {
@@ -1221,7 +1222,7 @@ void do_steal(unit_data *ch, char *arg, const struct command_info *cmd)
 
       if(IS_SET(UNIT_FLAGS(vict), UNIT_FL_INVISIBLE))
       {
-         struct unit_affected_type *paf;
+         unit_affected_type *paf;
 
          act("The sudden motion makes your invisibility wear off.", A_SOMEONE, ch, nullptr, vict, TO_CHAR);
          while((paf = affected_by_spell(vict, ID_INVISIBILITY)) != nullptr)
@@ -1497,11 +1498,11 @@ void do_bash(unit_data *ch, char *arg, const struct command_info *cmd)
 
 void do_search(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   int                        dir;
-   int                        skill;
-   int                        i;
-   struct unit_affected_type  af;
-   struct unit_affected_type *taf;
+   int                 dir;
+   int                 skill;
+   int                 i;
+   unit_affected_type  af;
+   unit_affected_type *taf;
 
    if(str_is_empty(arg) != 0u)
    {

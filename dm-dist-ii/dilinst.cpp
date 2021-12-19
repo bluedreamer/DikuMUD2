@@ -48,6 +48,7 @@
 #include "structs.h"
 #include "textutil.h"
 #include "trie.h"
+#include "unit_affected_type.h"
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
@@ -2018,9 +2019,9 @@ void dilfi_on(struct dilprg *p, class dilval *v)
 /* Substract affect from unit */
 void dilfi_sua(struct dilprg *p, class dilval *v)
 {
-   class dilval               v1;
-   class dilval               v2;
-   struct unit_affected_type *af;
+   class dilval        v1;
+   class dilval        v2;
+   unit_affected_type *af;
 
    if(v != nullptr)
    {
@@ -2103,7 +2104,7 @@ void dilfi_ada(struct dilprg *p, class dilval *v)
       }
       else
       {
-         struct unit_affected_type af;
+         unit_affected_type af;
 
          af.id       = v2.val.num;
          af.duration = v3.val.num;

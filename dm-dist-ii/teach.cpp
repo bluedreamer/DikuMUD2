@@ -39,6 +39,7 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
 #include <climits>
@@ -345,7 +346,7 @@ void info_one_skill(unit_data *teacher, unit_data *pupil, struct skill_teach_typ
 
 auto pupil_magic(unit_data *pupil) -> int
 {
-   struct unit_affected_type *af;
+   unit_affected_type *af;
 
    for(af = UNIT_AFFECTED(pupil); af != nullptr; af = af->next)
    {

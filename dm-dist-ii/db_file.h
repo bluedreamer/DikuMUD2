@@ -47,7 +47,7 @@ void bread_block(FILE *datafile, long file_pos, int length, void *buffer);
 
 void bwrite_extra_descr(CByteBuffer *pBuf, struct extra_descr_data *e);
 void bwrite_swap(CByteBuffer *pBuf, unit_data *u);
-void bwrite_affect(CByteBuffer *pBuf, struct unit_affected_type *af, uint8_t version);
+void bwrite_affect(CByteBuffer *pBuf, unit_affected_type *af, uint8_t version);
 void bwrite_func(CByteBuffer *pBuf, struct unit_fptr *fptr);
 void bwrite_block(FILE *f, int length, void *buffer);
 void bwrite_dil(CByteBuffer *pBuf, struct dilprg *prg);

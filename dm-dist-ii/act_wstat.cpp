@@ -54,6 +54,7 @@
 #include "structs.h"
 #include "textutil.h"
 #include "time_info_data.h"
+#include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
@@ -660,8 +661,8 @@ static void stat_affect(const unit_data *ch, unit_data *u)
    extern struct tick_function_type  tif[];
    extern struct apply_function_type apf[];
 
-   struct unit_affected_type *af;
-   char                       buf[1024];
+   unit_affected_type *af;
+   char                buf[1024];
 
    if(!UNIT_AFFECTED(u))
    {
