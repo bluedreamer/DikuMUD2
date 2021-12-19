@@ -26,13 +26,13 @@
 /* Thu Jan 11 1995 Gnort: Started work on moving Amiga support out of	   *
  *			  server, and into mplex'er			   */
 
+#include "CServerConfiguration.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <netinet/tcp.h>
 #include <unistd.h>
-
 #ifndef DOS
    #include <sys/socket.h>
    #include <sys/types.h>
@@ -41,7 +41,6 @@
 #ifdef LINUX
    #include <sys/resource.h>
 #endif
-
 #include "account.h"
 #include "ban.h"
 #include "cCaptainHook.h"

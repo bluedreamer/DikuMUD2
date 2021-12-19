@@ -26,11 +26,7 @@
 /* Tue Jul 6 1993 HHS: added exchangable lib dir                           */
 /* 28/03/94 seifert: Modified to make more flexible                        */
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
+#include "CServerConfiguration.h"
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"
@@ -45,6 +41,10 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 auto write_unit_string(uint8_t *b, unit_data *u) -> int;
 

@@ -22,7 +22,7 @@
  * proprietary information. Disclosure, use or reproduction without        *
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
-
+#include "CServerConfiguration.h"
 #include "dilinst.h"
 #include "account.h"
 #include "affect.h"

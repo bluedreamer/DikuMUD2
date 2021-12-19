@@ -22,12 +22,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cassert>
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
+#include "CServerConfiguration.h"
 #include "comm.h"
 #include "db.h"
 #include "files.h"
@@ -39,6 +34,11 @@
 #include "unit_fptr.h"
 #include "utility.h"
 #include "utils.h"
+#include <cassert>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #define ELIZA_TALKFILE "talk.eli"
 #define ELIZA_LOGFILE  "log.eli"

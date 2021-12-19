@@ -1,5 +1,3 @@
-#include "act_movement.h"
-
 /* *********************************************************************** *
  * File   : act_look.c                                Part of Valhalla MUD *
  * Version: 2.00                                                           *
@@ -33,12 +31,8 @@
 /* 23/08/93 jubal  : Allow imms to see hidden thingys                      */
 /* 10/02/94 gnort  : Rewrote do_who to be smaller and dynamic.             */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
+#include "CServerConfiguration.h"
+#include "act_movement.h"
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"
@@ -60,7 +54,12 @@
 #include "trie.h"
 #include "utility.h"
 #include "utils.h"
+#include <cctype>
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 /* extern variables */
 

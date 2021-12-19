@@ -23,6 +23,7 @@
  * *********************************************************************** */
 
 #include "unitfind.h"
+#include "CServerConfiguration.h"
 #include "common.h"
 #include "db.h"
 #include "handler.h"

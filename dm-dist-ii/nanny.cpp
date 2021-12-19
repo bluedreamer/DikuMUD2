@@ -27,6 +27,7 @@
 /* 22/10/92 gnort  : Put pwd-hide on all operations in nanny.              */
 /* 05/1/93  HHS    : Included wizlock                                      */
 
+#include "CServerConfiguration.h"
 #include "interpreter.h"
 #include "pcsave.h"
 #include <arpa/inet.h>

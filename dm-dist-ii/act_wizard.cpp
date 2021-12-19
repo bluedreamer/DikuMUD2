@@ -38,7 +38,7 @@
 /* 25/02/94 gnort  : Fixed missing functionality/crashbug in stat zone     */
 /* 11/08/94 gnort  : got rid of cras and shutdow                           */
 /* 10/02/95 gnort  : Made do_users dynamic                                 */
-
+#include "CServerConfiguration.h"
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"

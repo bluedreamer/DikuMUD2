@@ -23,6 +23,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
+#include "CServerConfiguration.h"
 #include "common.h"
 #include "config.h"
 #include "db_file.h"

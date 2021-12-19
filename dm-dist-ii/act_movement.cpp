@@ -36,12 +36,7 @@
 /* 23/08/93 jubal  : Added messages to leader when start/stop follow       */
 /* 23/08/93 jubal  : Fixed (nearly - still acttrouble) msgs around open etc*/
 
-#include <cerrno>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
+#include "CServerConfiguration.h"
 #include "account.h"
 #include "affect.h"
 #include "comm.h"
@@ -59,7 +54,12 @@
 #include "unit_affected_type.h"
 #include "unit_data.h"
 #include "utils.h"
+#include <cerrno>
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 /*   external vars  */
 

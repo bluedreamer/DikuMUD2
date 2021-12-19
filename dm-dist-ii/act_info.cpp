@@ -30,7 +30,7 @@
 /* 23/08/93 jubal  : Added 'right beside you' in where                     */
 /* 23/08/93 jubal  : Allow imms to see hidden thingys                      */
 /* 10/02/94 gnort  : Rewrote do_who to be smaller and dynamic.             */
-
+#include "CServerConfiguration.h"
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"

@@ -40,16 +40,13 @@
 /* Tue Jul 6 1993 HHS: added exchangable lib dir                           */
 /* 23/08/93 jubal  : Moved breaking to procedure, which removes affs, too  */
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
+#include "fight.h"
+#include "CServerConfiguration.h"
 #include "affect.h"
 #include "combat.h"
 #include "comm.h"
 #include "common.h"
 #include "db.h"
-#include "fight.h"
 #include "files.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -65,6 +62,9 @@
 #include "utils.h"
 #include "zon_basis.h"
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 /* Structures */
 

@@ -23,9 +23,9 @@
  * *********************************************************************** */
 
 /* #define ACCOUNT_DEBUG */
-
 #include "account.h"
 #include "CAccountConfig.h"
+#include "CServerConfiguration.h"
 #include "comm.h"
 #include "common.h"
 #include "db.h"

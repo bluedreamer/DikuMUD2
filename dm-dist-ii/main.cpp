@@ -25,6 +25,7 @@
 /* 29/1/93  HHS: Added GA (go ahead) for all prompts                       */
 /* Sun Jun 27 1993 HHS: made vars for world status                         */
 /* Tue Jul 6 1993 HHS: added exchangable lib dir                           */
+#include "CServerConfiguration.h"
 #include "cCaptainHook.h"
 #include "cCombatList.h"
 #include "nice.h"

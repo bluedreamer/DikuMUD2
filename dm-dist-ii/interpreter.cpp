@@ -28,8 +28,8 @@
 /* Aug 24 1993 gnort: cmd_interpreter will now strip trailing spaces of arg */
 /* Aug 11 1994 gnort: got rid of do_qui & co.                               */
 /* Aug 14 1994 gnort: Inserted new social-command system                    */
-
 #include "interpreter.h"
+#include "CServerConfiguration.h"
 #include "comm.h"
 #include "common.h"
 #include "constants.h"
