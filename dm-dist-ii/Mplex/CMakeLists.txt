@@ -2,16 +2,19 @@ set(MPLEX_SRC
         mplex.cpp
         translate.cpp
         network.cpp
-        ../select.cpp
-        ../queue.cpp
-        ../utility.cpp
-        ../textutil.cpp
-        ../memory.cpp
-        ../protocol.cpp
-        ../cHook.cpp
         ../bytestring.cpp
         ../cCaptainHook.cpp
-        ../common.cpp)
+        ../cHook.cpp
+        ../cQueue.cpp
+        ../cQueueElem.cpp
+        ../common.cpp
+        ../memory.cpp
+        ../protocol.cpp
+        ../queue.cpp
+        ../select.cpp
+        ../textutil.cpp
+        ../utility.cpp
+        )
 
 set(MPLEX_H mplex.h network.h)
 

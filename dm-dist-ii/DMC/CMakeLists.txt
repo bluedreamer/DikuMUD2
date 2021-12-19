@@ -4,29 +4,30 @@ find_package(BISON)
 set(DMC_SRC
         dmc.cpp
         dmc_process.cpp
-        ../utility.cpp
-        ../string.cpp
-        ../structs.cpp
-        ../money.cpp
-        ../db_file.cpp
-        ../bytestring.cpp
         ../CByteBuffer.cpp
-        ../namelist.cpp
-        ../memory.cpp
-        ../textutil.cpp
-        ../room_data.cpp
-        ../pc_data.cpp
-        ../unit_data.cpp
-        ../obj_data.cpp
+        ../bytestring.cpp
         ../cNamelist.cpp
-        ../npc_data.cpp
+        ../cQueue.cpp
+        ../cQueueElem.cpp
         ../char_data.cpp
-        ../room_direction_data.cpp
-        ../extra.cpp
         ../common.cpp
-        ../unit_data.cpp
+        ../db_file.cpp
         ../dilargstype.cpp
         ../dilargtype.cpp
+        ../extra.cpp
+        ../memory.cpp
+        ../money.cpp
+        ../namelist.cpp
+        ../npc_data.cpp
+        ../obj_data.cpp
+        ../pc_data.cpp
+        ../room_data.cpp
+        ../room_direction_data.cpp
+        ../string.cpp
+        ../structs.cpp
+        ../textutil.cpp
+        ../unit_data.cpp
+        ../utility.cpp
         )
 
 set(DMC_H dmc.h dmctok.h)

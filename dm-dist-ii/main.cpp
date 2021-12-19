@@ -28,6 +28,7 @@
 #include "CServerConfiguration.h"
 #include "cCaptainHook.h"
 #include "cCombatList.h"
+#include "cQueueElem.h"
 #include "nice.h"
 #include "signals.h"
 #include <cctype>
@@ -551,7 +552,7 @@ void game_event()
 
       if(--(point->wait) <= 0 && (point->qInput.IsEmpty() == 0))
       {
-         struct cQueueElem *qe = point->qInput.GetHead();
+         cQueueElem *qe = point->qInput.GetHead();
          pcomm                 = (char *)qe->Data();
          qe->SetNull();
          delete qe;

@@ -36,6 +36,7 @@
 #include "select.h"
 #include "unixshit.h"
 #include "utility.h"
+#include "cQueueElem.h"
 
 // Read as much as we can...
 // -1 on error, 0 on ok.
