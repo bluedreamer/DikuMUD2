@@ -29,7 +29,7 @@
 
 #define ROOM_DOOR_NAME(room, dir) (ROOM_EXIT((room), (dir))->open_name.Name() ? ROOM_EXIT((room), (dir))->open_name.Name() : "UNDEFINED")
 
-void backdoor(unit_data *ch, char *arg, const struct command_info *cmd);
+void backdoor(unit_data *ch, char *arg, const command_info *cmd);
 
 auto low_find_door(unit_data *ch, char *doorstr, int err_msg, int check_hidden) -> int;
 
