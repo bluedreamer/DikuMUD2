@@ -30,6 +30,7 @@
 #include "essential.h"
 #include "file_index_type.h"
 #include "obj_data.h"
+#include "pc_data.h"
 #include "room_data.h"
 #include "structs.h"
 
@@ -662,7 +663,11 @@ inline auto CHAR_HPP(unit_data *ch) -> uint8_t &
 
 #define PC_BANK(unit) (UPC(unit)->bank)
 
-#define PC_FLAGS(unit) (UPC(unit)->flags)
+//#define PC_FLAGS(unit) (UPC(unit)->flags)
+inline auto PC_FLAGS(unit_data *unit) -> uint16_t &
+{
+   return UPC(unit)->flags;
+}
 
 #define PC_TIME(unit) (UPC(unit)->time)
 
