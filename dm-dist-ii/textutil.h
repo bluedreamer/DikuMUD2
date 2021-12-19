@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : textutil.h                                Part of Valhalla MUD *
  * Version: 1.02                                                           *
@@ -22,8 +23,7 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_TEXTUTIL_H
-#define _MUD_TEXTUTIL_H
+#include "values.h"
 
 #define isaspace(c) ((c) == ' ')
 
@@ -97,5 +97,3 @@ void strip_trailing_blanks(char *str);
 //#define tolower(c) ((c) >= 'A' && (c) <= 'Z' ? ((c) + ('a' - 'A')) : (c))
 
 #define str_delete(str, nDel, nStrLen) memmove(str, str + nDel, nStrLen - nDel + 1)
-
-#endif /* _MUD_TEXTUTIL_H */

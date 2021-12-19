@@ -10,6 +10,7 @@ set(DMC_SRC
         ../money.cpp
         ../db_file.cpp
         ../bytestring.cpp
+        ../CByteBuffer.cpp
         ../namelist.cpp
         ../memory.cpp
         ../textutil.cpp

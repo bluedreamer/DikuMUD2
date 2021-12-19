@@ -8,7 +8,7 @@ FLEX_TARGET(Scanner calclex.l ${CMAKE_CURRENT_BINARY_DIR}/tmp_calclex.cpp)
 include_directories(.)
 
 add_executable(analyse analyse.cpp)
-add_executable(blktest blktest.cpp ../bytestring.cpp ../blkfile.cpp ../textutil.cpp ../utility.cpp ../files.cpp ../common.cpp)
+add_executable(blktest blktest.cpp ../bytestring.cpp ../blkfile.cpp ../textutil.cpp ../utility.cpp ../files.cpp ../common.cpp ../CByteBuffer.cpp)
 add_executable(calc calctok.h ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS})
 add_executable(conanalyze conanalyze.cpp)
 add_executable(csv2 csv2guild.cpp)

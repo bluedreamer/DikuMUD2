@@ -10,6 +10,7 @@ set(DIL_SRC
         ../common.cpp
         ../namelist.cpp
         ../bytestring.cpp
+        ../CByteBuffer.cpp
         ../extra.cpp
         ../files.cpp
         ../memory.cpp
