@@ -54,8 +54,6 @@ auto skill_text(const skill_interval *si, int skill) -> const char *;
 
 #define CHAR_IS_UNDEAD(ch) RACE_IS_UNDEAD(CHAR_RACE(ch))
 
-
-
 #include "damage_chart_element_type.h"
 struct damage_chart_type
 {
@@ -63,8 +61,6 @@ struct damage_chart_type
 
    damage_chart_element_type element[5];
 };
-
-
 
 /* Tree has a pointer to parent for each node. 0 pointer from root */
 struct wpn_info_type
@@ -115,15 +111,14 @@ auto av_howmuch(int av) -> int;
 auto av_makes(int av) -> int;
 void check_fitting(unit_data *u);
 
-extern const char           *pc_races[PC_RACE_MAX + 1];
-extern const char           *pc_race_adverbs[PC_RACE_MAX + 1];
+extern const char *pc_races[PC_RACE_MAX + 1];
+extern const char *pc_race_adverbs[PC_RACE_MAX + 1];
 
 extern struct damage_chart_type spell_chart[SPL_TREE_MAX];
 extern int8_t                   racial_ability[ABIL_TREE_MAX][PC_RACE_MAX];
 extern int8_t                   racial_weapons[WPN_TREE_MAX][PC_RACE_MAX];
 extern int8_t                   racial_skills[SKI_TREE_MAX][PC_RACE_MAX];
 extern int8_t                   racial_spells[SPL_TREE_MAX][PC_RACE_MAX];
-
 
 extern int hit_location_table[];
 

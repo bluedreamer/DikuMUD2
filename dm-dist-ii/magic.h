@@ -23,7 +23,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-
 /* #define MAGIC_POWER(ch)  \
    MAX(CHAR_MAG(ch), CHAR_DIV(ch)) */
 #include "unit_data.h"

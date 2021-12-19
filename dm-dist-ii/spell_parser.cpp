@@ -24,7 +24,6 @@
 
 #include "comm.h"
 #include "common.h"
-#include "tree_type.h"
 #include "db.h"
 #include "db_file.h"
 #include "dilrun.h"
@@ -39,6 +38,7 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "tree_type.h"
 #include "trie.h"
 #include "unit_vector_data.h"
 #include "utility.h"
