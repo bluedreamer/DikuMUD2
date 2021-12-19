@@ -126,7 +126,7 @@ auto convert_item(unit_data *u, unit_data *pc, int bList) -> unit_data *
       }
       else
       {
-         extern struct file_index_type *slime_fi;
+         extern file_index_type *slime_fi;
 
          nu = read_unit(slime_fi);
       }
@@ -149,7 +149,7 @@ auto convert_item(unit_data *u, unit_data *pc, int bList) -> unit_data *
       }
       else
       {
-         extern struct file_index_type *slime_fi;
+         extern file_index_type *slime_fi;
 
          nu = read_unit(slime_fi);
          slog(LOG_ALL, 0, "Slimed DIL item.");

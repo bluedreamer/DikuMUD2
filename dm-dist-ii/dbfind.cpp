@@ -106,7 +106,7 @@ auto find_zone(const char *zonename) -> struct zone_type *
 }
 
 /* Zonename & name must point to non-empty strings */
-auto find_file_index(const char *zonename, const char *name) -> struct file_index_type *
+auto find_file_index(const char *zonename, const char *name) -> file_index_type *
 {
    struct zone_type       *zone;
    struct bin_search_type *ba;
@@ -126,7 +126,7 @@ auto find_file_index(const char *zonename, const char *name) -> struct file_inde
       return nullptr;
    }
 
-   return (struct file_index_type *)ba->block;
+   return (file_index_type *)ba->block;
 }
 
 /* Zonename & name must point to non-empty strings */
@@ -179,7 +179,7 @@ auto find_dil_template(const char *name) -> struct diltemplate *
  */
 auto world_room(const char *zone, const char *name) -> unit_data *
 {
-   struct file_index_type *fi;
+   file_index_type *fi;
 
    return (fi = find_file_index(zone, name)) != nullptr ? fi->room_ptr : nullptr;
 }
@@ -187,7 +187,7 @@ auto world_room(const char *zone, const char *name) -> unit_data *
 /*  Find file index.
  *  String MUST be in format 'name@zone\0' or 'zone/name'.
  */
-auto str_to_file_index(const char *str) -> struct file_index_type *
+auto str_to_file_index(const char *str) -> file_index_type *
 {
    char name[FI_MAX_UNITNAME + 1];
    char zone[FI_MAX_ZONENAME + 1];
@@ -200,7 +200,7 @@ auto str_to_file_index(const char *str) -> struct file_index_type *
 /*  As str_to_file_index, except that if no zone is given, the
  *  zone of the 'ch' is assumed
  */
-auto pc_str_to_file_index(const unit_data *ch, const char *str) -> struct file_index_type *
+auto pc_str_to_file_index(const unit_data *ch, const char *str) -> file_index_type *
 {
    char name[MAX_INPUT_LENGTH + 1];
    char zone[MAX_INPUT_LENGTH + 1];

@@ -895,8 +895,8 @@ auto raw_kill(unit_data *ch) -> unit_data *
    unit_data *death_obj;
    unit_data *corpse = NULL;
 
-   extern unit_data              *seq_room;
-   extern struct file_index_type *deathobj_fi;
+   extern unit_data       *seq_room;
+   extern file_index_type *deathobj_fi;
 
    auto make_corpse(unit_data * ch)->unit_data *;
 

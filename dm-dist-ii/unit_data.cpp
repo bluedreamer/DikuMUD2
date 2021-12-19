@@ -1,4 +1,5 @@
 #include "unit_data.h"
+#include "file_index_type.h"
 #include "handler.h"
 #include "namelist.h"
 #include "utils.h"

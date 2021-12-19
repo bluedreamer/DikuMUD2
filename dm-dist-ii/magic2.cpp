@@ -59,10 +59,10 @@
 
 auto random_room() -> unit_data *
 {
-   unit_data              *room = nullptr;
-   struct zone_type       *zone;
-   struct file_index_type *fi;
-   int                     no;
+   unit_data        *room = nullptr;
+   struct zone_type *zone;
+   file_index_type  *fi;
+   int               no;
 
    for(;;)
    {
@@ -622,10 +622,10 @@ void spell_summon_char_2(struct spell_args *sa)
 
 void spell_animate_dead(struct spell_args *sa)
 {
-   extern struct file_index_type *zombie_fi;
-   unit_data                     *u;
-   unit_data                     *zombie;
-   char                           buf[1024];
+   extern file_index_type *zombie_fi;
+   unit_data              *u;
+   unit_data              *zombie;
+   char                    buf[1024];
 
    if(OBJ_TYPE(sa->target) != ITEM_CONTAINER || (affected_by_spell(sa->target, ID_CORPSE) == nullptr))
    {

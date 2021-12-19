@@ -2248,8 +2248,8 @@ void dilfi_snta(struct dilprg *p, class dilval *v)
 
    if((v1.val.ptr != nullptr) && (v2.val.ptr != nullptr))
    {
-      unit_data              *u;
-      struct file_index_type *fi;
+      unit_data       *u;
+      file_index_type *fi;
 
       if((fi = str_to_file_index((char *)v2.val.ptr)) != nullptr)
       {

@@ -73,9 +73,9 @@ auto zone_random(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
 /* Count ->no_in_zone for current 'boot_zone' (above) */
 void zone_update_no_in_zone()
 {
-   unit_data              *u;
-   struct file_index_type *fi;
-   struct zone_type       *tmp_zone;
+   unit_data        *u;
+   file_index_type  *fi;
+   struct zone_type *tmp_zone;
 
    /* Clear ALL ->no_in_zone */
    for(tmp_zone = zone_info.zone_list; tmp_zone != nullptr; tmp_zone = tmp_zone->next)
@@ -108,7 +108,7 @@ void zone_loaded_a_unit(unit_data *u)
 /* num[1] is the max allowed existing in zone.              */
 /* num[2] is the max allowed existing in room (object)      */
 /* Return TRUE if conditions are met, FALSE otherwise       */
-auto zone_limit(unit_data *u, struct file_index_type *fi, struct zone_reset_cmd *cmd) -> bool
+auto zone_limit(unit_data *u, file_index_type *fi, struct zone_reset_cmd *cmd) -> bool
 {
    unit_data *tmp;
    int16_t    i;

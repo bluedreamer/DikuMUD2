@@ -78,13 +78,13 @@ auto obj_trade_price(unit_data *u) -> amount_t;
 /* Ticks. */
 auto force_move(struct spec_arg *sarg) -> int
 {
-   char                   *c = NULL;
-   char                   *c2;
-   char                   *s = (char *)sarg->fptr->data;
-   struct file_index_type *fi;
-   unit_data              *u;
-   unit_data              *ut;
-   unit_data              *next;
+   char            *c = NULL;
+   char            *c2;
+   char            *s = (char *)sarg->fptr->data;
+   file_index_type *fi;
+   unit_data       *u;
+   unit_data       *ut;
+   unit_data       *next;
 
    if(sarg->cmd->no != CMD_AUTO_TICK)
    {

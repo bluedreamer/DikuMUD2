@@ -389,9 +389,9 @@ public:
       fi                 = nullptr;
    }
 
-   char                    str[MAX_INPUT_LENGTH + 50];
-   char                    pcname[PC_MAX_NAME + 1];
-   struct file_index_type *fi;
+   char             str[MAX_INPUT_LENGTH + 50];
+   char             pcname[PC_MAX_NAME + 1];
+   file_index_type *fi;
 } command_history_data[MAX_DEBUG_HISTORY];
 
 static int command_history_pos = 0;
@@ -436,9 +436,9 @@ public:
       flags = 0;
       fi    = nullptr;
    }
-   uint16_t                idx;
-   uint16_t                flags;
-   struct file_index_type *fi;
+   uint16_t         idx;
+   uint16_t         flags;
+   file_index_type *fi;
 } func_history_data[MAX_DEBUG_HISTORY];
 
 static int func_history_pos = 0;

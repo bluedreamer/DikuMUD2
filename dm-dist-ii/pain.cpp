@@ -446,10 +446,10 @@ auto pain_charcmd(unit_data *npc, struct pain_type *pain) -> int
 /* 'G' command */
 auto pain_goto(unit_data *npc, struct pain_type *pain) -> int
 {
-   struct file_index_type *fi;
-   int                     res;
+   file_index_type *fi;
+   int              res;
 
-   fi = (struct file_index_type *)pain->cmds[pain->idx].ptr[0];
+   fi = (file_index_type *)pain->cmds[pain->idx].ptr[0];
 
    if(fi->room_ptr != nullptr)
    {
@@ -561,7 +561,7 @@ auto pain_load(unit_data *npc, struct pain_type *pain) -> int
 {
    unit_data *u;
 
-   u = read_unit((struct file_index_type *)pain->cmds[pain->idx].ptr[0]);
+   u = read_unit((file_index_type *)pain->cmds[pain->idx].ptr[0]);
    unit_to_unit(u, npc);
    pain_next_cmd(pain);
    return TRUE; /* Continue command loop immediately */
@@ -572,7 +572,7 @@ auto pain_remote_load(unit_data *npc, struct pain_type *pain) -> int
 {
    unit_data *u;
 
-   u = read_unit((struct file_index_type *)pain->cmds[pain->idx].ptr[0]);
+   u = read_unit((file_index_type *)pain->cmds[pain->idx].ptr[0]);
    unit_to_unit(u, (unit_data *)pain->cmds[pain->idx].ptr[1]);
    pain_next_cmd(pain);
    return TRUE; /* Continue command loop immediately */

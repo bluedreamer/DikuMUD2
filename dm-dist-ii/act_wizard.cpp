@@ -476,10 +476,10 @@ void do_trans(unit_data *ch, char *arg, const struct command_info *cmd)
 
 void do_at(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   char                    buf[MAX_INPUT_LENGTH];
-   unit_data              *target;
-   unit_data              *original_loc;
-   struct file_index_type *fi;
+   char             buf[MAX_INPUT_LENGTH];
+   unit_data       *target;
+   unit_data       *original_loc;
+   file_index_type *fi;
 
    if(!IS_PC(ch))
    {
@@ -535,11 +535,11 @@ void do_at(unit_data *ch, char *argument, const struct command_info *cmd)
 
 void do_goto(unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   unit_data              *target;
-   unit_data              *pers;
-   struct file_index_type *fi;
-   struct zone_type       *zone;
-   int                     i;
+   unit_data        *target;
+   unit_data        *pers;
+   file_index_type  *fi;
+   struct zone_type *zone;
+   int               i;
 
    if(!IS_PC(ch))
    {
@@ -934,10 +934,10 @@ void do_finger(unit_data *ch, char *arg, const struct command_info *cmd)
 
 void do_load(unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   char                    buf[MAX_INPUT_LENGTH];
-   struct file_index_type *fi;
-   unit_data              *u;
-   unit_data              *tmp;
+   char             buf[MAX_INPUT_LENGTH];
+   file_index_type *fi;
+   unit_data       *u;
+   unit_data       *tmp;
 
    if(str_is_empty(arg) != 0u)
    {

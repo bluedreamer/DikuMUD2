@@ -393,7 +393,7 @@ void act(const char *str, int show_type, const void *arg1, const void *arg2, con
       {
          for(u = UNIT_CONTAINS(to); u != nullptr; u = u->next)
          {
-            if IS_CHAR(u)
+            if(IS_CHAR(u))
             {
                act_generate(buf, str, show_type, arg1, arg2, arg3, type, u);
                send_to_descriptor(buf, CHAR_DESCRIPTOR(u));

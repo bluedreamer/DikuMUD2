@@ -56,36 +56,14 @@ struct bin_search_type
    void       *block;   /* Points to the relevant block     */
 };
 
-/* A linked sorted list of all units within a zone file */
-class file_index_type
-{
-public:
-   file_index_type();
-   ~file_index_type();
-
-   char                   *name;     /* Unique within this list          */
-   class zone_type        *zone;     /* Pointer to owner of structure    */
-   struct file_index_type *next;     /* Next File Index                  */
-   unit_data              *room_ptr; /* Pointer to room if is room       */
-
-   long     filepos; /* Byte offset into file            */
-   uint32_t length;  /* No of bytes to read              */
-   uint32_t crc;     /* CRC check for compessed items    */
-
-   int16_t  no_in_zone; /* Updated in zone reset for reset  */
-   uint16_t no_in_mem;  /* Number of these in the game      */
-   uint16_t room_no;    /* The number of the room           */
-   uint8_t  type;       /* Room/Obj/Char or other?          */
-};
-
 /* A linked list of commands to execute */
 struct zone_reset_cmd
 {
    uint8_t cmd_no; /* Index to array of func() ptrs */
    uint8_t cmpl;   /* Complete flag                 */
 
-   struct file_index_type *fi[2];
-   int16_t                 num[3];
+   file_index_type *fi[2];
+   int16_t          num[3];
 
    struct zone_reset_cmd *next;
    struct zone_reset_cmd *nested;
@@ -105,7 +83,7 @@ public:
    char           *help;     /* User-Help to zone                */
    char           *filename; /* The filename of this file        */
 
-   struct file_index_type *fi; /* Pointer to list of file-index's  */
+   file_index_type        *fi; /* Pointer to list of file-index's  */
    struct bin_search_type *ba; /* Pointer to binarray of type      */
 
    struct zone_reset_cmd *zri;  /* List of Zone reset commands      */
@@ -204,8 +182,8 @@ public:
 
    class cNamelist open_name; /* For Open & Enter                  */
 
-   struct file_index_type *key;
-   unit_data              *to_room;
+   file_index_type *key;
+   unit_data       *to_room;
 
    uint8_t exit_info; /* Door info flags                   */
 };

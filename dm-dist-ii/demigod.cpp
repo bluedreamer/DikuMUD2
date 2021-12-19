@@ -73,7 +73,7 @@ void do_manifest(unit_data *ch, char *arg, const struct command_info *cmd)
    unit_data *player;
    unit_data *monster;
 
-   extern struct file_index_type *demigod_fi;
+   extern file_index_type *demigod_fi;
 
    void switchbody(unit_data * ch, unit_data * victim);
    void unswitchbody(unit_data * npc);
@@ -188,8 +188,8 @@ void do_manifest(unit_data *ch, char *arg, const struct command_info *cmd)
    }
    else
    {
-      char                    tmpbuf[50];
-      struct file_index_type *fi;
+      char             tmpbuf[50];
+      file_index_type *fi;
 
       sprintf(tmpbuf, UNIT_NAME(ch));
       str_lower(tmpbuf);

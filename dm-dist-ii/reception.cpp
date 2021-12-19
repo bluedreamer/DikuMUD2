@@ -214,7 +214,7 @@ static int membuflen = 0, mempos;
 */
 
 /* Global variables */
-struct file_index_type *slime_fi = nullptr;
+file_index_type *slime_fi = nullptr;
 
 /* save object */
 void enlist(CByteBuffer *pBuf, unit_data *unit, int level, int fast)
@@ -439,7 +439,7 @@ auto save_contents(const char *pFileName, unit_data *unit, int fast, int bContai
 auto base_load_contents(const char *pFileName, const unit_data *unit) -> unit_data *
 {
    struct objheader        h;
-   struct file_index_type *fi;
+   file_index_type        *fi;
    unit_data              *pnew;
    unit_data              *pstack[25];
    int                     len;
@@ -457,7 +457,7 @@ auto base_load_contents(const char *pFileName, const unit_data *unit) -> unit_da
 
    extern unit_data *void_room;
 
-   auto is_slimed(struct file_index_type * sp)->int;
+   auto is_slimed(file_index_type * sp)->int;
    auto patch(char *ref, uint32_t reflen, char *dif, int diflen, char *res, int reslen, uint32_t crc)->int;
 
    assert(slime_fi != nullptr);
@@ -777,8 +777,8 @@ void store_unit(unit_data *u)
 
 auto restore_unit(char *zonename, char *unitname) -> unit_data *
 {
-   struct file_index_type *fi   = find_file_index(zonename, unitname);
-   CByteBuffer            *pBuf = &g_FileBuffer;
+   file_index_type *fi   = find_file_index(zonename, unitname);
+   CByteBuffer     *pBuf = &g_FileBuffer;
    pBuf->Clear();
 
    if(fi == nullptr)

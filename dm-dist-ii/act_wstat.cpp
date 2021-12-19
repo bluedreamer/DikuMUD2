@@ -415,12 +415,12 @@ static void stat_dil(const unit_data *ch, const struct zone_type *zone)
 
 static void extra_stat_zone(unit_data *ch, char *arg, struct zone_type *zone)
 {
-   char                    buf[MAX_STRING_LENGTH];
-   char                    filename[128];
-   int                     argno;
-   struct file_index_type *fi;
-   int                     search_type = 0;
-   int                     i;
+   char             buf[MAX_STRING_LENGTH];
+   char             filename[128];
+   int              argno;
+   file_index_type *fi;
+   int              search_type = 0;
+   int              i;
 
    void stat_dijkstraa(unit_data * ch, struct zone_type * z);
 
@@ -1212,7 +1212,7 @@ void do_wstat(unit_data *ch, char *argument, const struct command_info *cmd)
    }
    else
    {
-      struct file_index_type *fi;
+      file_index_type *fi;
 
       u = find_unit(ch, &argument, nullptr, FIND_UNIT_GLOBAL);
 

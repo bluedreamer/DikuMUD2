@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : values.h                                  Part of Valhalla MUD *
  * Version: 1.24                                                           *
@@ -22,19 +23,16 @@
  * written consent of Valhalla.                                            *
  * *********************************************************************** */
 
-#ifndef _MUD_VALUES_H
-#define _MUD_VALUES_H
-
 #define ADMIN_MAIL "mud@valhalla-usa.com"
 
-#define START_LEVEL         1
-#define MORTAL_MAX_LEVEL    50  /* Maximum level for mortal players */
-#define IMMORTAL_LEVEL      200 /* At 200 you can't really die      */
-#define GOD_LEVEL           220 /* Here are the *real* gods         */
-#define CREATOR_LEVEL       230
-#define OVERSEER_LEVEL      253
-#define ADMINISTRATOR_LEVEL 254
-#define ULTIMATE_LEVEL      255
+constexpr int START_LEVEL         = 1;
+constexpr int MORTAL_MAX_LEVEL    = 50;  /* Maximum level for mortal players */
+constexpr int IMMORTAL_LEVEL      = 200; /* At 200 you can't really die      */
+constexpr int GOD_LEVEL           = 220; /* Here are the *real* gods         */
+constexpr int CREATOR_LEVEL       = 230;
+constexpr int OVERSEER_LEVEL      = 253;
+constexpr int ADMINISTRATOR_LEVEL = 254;
+constexpr int ULTIMATE_LEVEL      = 255;
 
 #define POLICE_ACADEMY    "$Police Member"
 #define POLICE_BANNED     "$Police Banned"
@@ -2381,5 +2379,3 @@ SFUN_SACRIFICE
 /* #define CMD_'           169 replaced by say      */
 /* #define CMD_PRACTISE    170 replaced by practiCe */
 /* #define CMD_,           177 replaced by emote    */
-
-#endif /* _MUD_VALUES_H */

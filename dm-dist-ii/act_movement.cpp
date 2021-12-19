@@ -56,6 +56,7 @@
 #include "spells.h"
 #include "structs.h"
 #include "textutil.h"
+#include "unit_data.h"
 #include "utils.h"
 #include <climits>
 
@@ -1188,7 +1189,7 @@ void do_close(unit_data *ch, char *argument, const struct command_info *cmd)
    }
 }
 
-auto has_key(unit_data *ch, struct file_index_type *key) -> int
+auto has_key(unit_data *ch, file_index_type *key) -> int
 {
    unit_data *o;
 

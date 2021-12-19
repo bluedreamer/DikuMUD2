@@ -401,13 +401,13 @@ void dijkstra(struct graph *g, struct graph_vertice *source)
 /* return a matrix of shortest path for the zone             */
 auto create_graph(struct zone_type *zone) -> uint8_t **
 {
-   static struct graph     g;
-   struct file_index_type *fi;
-   int                     i;
-   int                     j;
-   int                     hidx;
-   int                     vidx;
-   uint8_t               **spi;
+   static struct graph g;
+   file_index_type    *fi;
+   int                 i;
+   int                 j;
+   int                 hidx;
+   int                 vidx;
+   uint8_t           **spi;
 
    g.no = zone->no_rooms;
 

@@ -38,7 +38,7 @@
 #include "utility.h"
 #include "utils.h"
 
-extern struct file_index_type *corpse_fi;
+extern file_index_type *corpse_fi;
 
 auto make_corpse(unit_data *ch) -> unit_data *
 {

@@ -72,13 +72,13 @@ unit_data *seq_room     = nullptr;
 unit_data *time_room    = nullptr;
 unit_data *entry_room   = nullptr;
 
-struct file_index_type *demigod_fi    = nullptr; /* Default demigod shape */
-struct file_index_type *zombie_fi     = nullptr;
-struct file_index_type *letter_fi     = nullptr;
-struct file_index_type *corpse_fi     = nullptr;
-struct file_index_type *head_fi       = nullptr;
-struct file_index_type *deathobj_fi   = nullptr;
-struct file_index_type *beginner_note = nullptr;
+file_index_type *demigod_fi    = nullptr; /* Default demigod shape */
+file_index_type *zombie_fi     = nullptr;
+file_index_type *letter_fi     = nullptr;
+file_index_type *corpse_fi     = nullptr;
+file_index_type *head_fi       = nullptr;
+file_index_type *deathobj_fi   = nullptr;
+file_index_type *beginner_note = nullptr;
 
 void basis_boot()
 {

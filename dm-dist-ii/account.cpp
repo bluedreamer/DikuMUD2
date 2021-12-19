@@ -634,7 +634,7 @@ void do_account(unit_data *ch, char *arg, const command_info *cmd)
    int         i;
    int         amount;
 
-   extern struct file_index_type *letter_fi;
+   extern file_index_type *letter_fi;
 
    if((g_cServerConfig.m_bAccounting == 0) || !IS_PC(ch))
    {

@@ -286,7 +286,7 @@ auto set_money(unit_data *money, amount_t amt) -> unit_data *
    return money;
 }
 
-static auto make_money(struct file_index_type *fi, amount_t amt) -> unit_data *
+static auto make_money(file_index_type *fi, amount_t amt) -> unit_data *
 {
    unit_data  *money = read_unit(fi);
    char        buf[512];

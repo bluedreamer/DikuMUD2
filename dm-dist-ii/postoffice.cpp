@@ -319,7 +319,7 @@ auto postman(struct spec_arg *sarg) -> int
    currency_t               currency = local_currency(sarg->owner);
    amount_t                 postage;
 
-   extern struct file_index_type *letter_fi;
+   extern file_index_type *letter_fi;
 
    if((CHAR_POS(sarg->owner) < POSITION_STANDING) || (sarg->activator == nullptr))
    {

@@ -37,12 +37,12 @@
 #include "utility.h"
 #include "utils.h"
 
-extern struct file_index_type *slime_fi;
+extern file_index_type *slime_fi;
 
 extern char libdir[];
 
-static int               slime_count = 0;
-struct file_index_type **slime_list  = nullptr;
+static int        slime_count = 0;
+file_index_type **slime_list  = nullptr;
 
 static void slime_save()
 {
@@ -65,7 +65,7 @@ static void slime_save()
    fclose(f);
 }
 
-static void slime_add(struct file_index_type *sp)
+static void slime_add(file_index_type *sp)
 {
    if(sp == nullptr)
    {
@@ -74,17 +74,17 @@ static void slime_add(struct file_index_type *sp)
 
    if(slime_count++ == 0)
    {
-      CREATE(slime_list, struct file_index_type *, slime_count);
+      CREATE(slime_list, file_index_type *, slime_count);
    }
    else
    {
-      RECREATE(slime_list, struct file_index_type *, slime_count);
+      RECREATE(slime_list, file_index_type *, slime_count);
    }
 
    slime_list[slime_count - 1] = sp;
 }
 
-static void slime_remove(struct file_index_type *sp)
+static void slime_remove(file_index_type *sp)
 {
    int i;
 
@@ -104,7 +104,7 @@ static void slime_remove(struct file_index_type *sp)
    }
 }
 
-auto is_slimed(struct file_index_type *sp) -> int
+auto is_slimed(file_index_type *sp) -> int
 {
    int i;
 
@@ -122,9 +122,9 @@ auto is_slimed(struct file_index_type *sp) -> int
 auto slime_obj(struct spec_arg *sarg) -> int
 
 {
-   char                    buf[MAX_INPUT_LENGTH];
-   char                    fi_name[MAX_INPUT_LENGTH];
-   struct file_index_type *fi;
+   char             buf[MAX_INPUT_LENGTH];
+   char             fi_name[MAX_INPUT_LENGTH];
+   file_index_type *fi;
 
    if(is_command(sarg->cmd, "slime") == 0u)
    {
@@ -204,11 +204,11 @@ auto slime_obj(struct spec_arg *sarg) -> int
 
 void slime_boot()
 {
-   struct file_index_type *fi;
-   CByteBuffer             cBuf(100);
-   char                    buf1[256];
-   char                    buf2[256];
-   FILE                   *f;
+   file_index_type *fi;
+   CByteBuffer      cBuf(100);
+   char             buf1[256];
+   char             buf2[256];
+   FILE            *f;
 
    touch_file(str_cc(libdir, SLIME_FILE));
    if((f = fopen(str_cc(libdir, SLIME_FILE), "rb")) == nullptr)

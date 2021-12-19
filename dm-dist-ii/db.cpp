@@ -74,9 +74,9 @@ auto create_direction_data() -> struct room_direction_data *;
  */
 void generate_bin_arrays()
 {
-   struct file_index_type *fi;
-   class zone_type        *z;
-   int                     i;
+   file_index_type *fi;
+   class zone_type *z;
+   int              i;
 
    /* Generate array for zones */
    CREATE(zone_info.ba, struct bin_search_type, zone_info.no_of_zones);
@@ -248,13 +248,13 @@ auto generate_templates(FILE *f, struct zone_type *zone) -> struct diltemplate *
 }
 
 /* Generate index's for each unit in the file 'f', zone 'zone' */
-auto generate_file_indexes(FILE *f, class zone_type *zone) -> struct file_index_type *
+auto generate_file_indexes(FILE *f, class zone_type *zone) -> file_index_type *
 {
-   class file_index_type *fi;
-   class file_index_type *fi_list;
-   class file_index_type *tfi1;
-   class file_index_type *tfi2;
-   CByteBuffer            cBuf(100);
+   file_index_type *fi;
+   file_index_type *fi_list;
+   file_index_type *tfi1;
+   file_index_type *tfi2;
+   CByteBuffer      cBuf(100);
 
    fi_list     = nullptr;
    room_number = 0;
@@ -671,19 +671,19 @@ extern int memory_room_alloc;
  */
 auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom) -> unit_data *
 {
-   void                   *ptr;
-   unit_data              *u;
-   struct file_index_type *fi;
-   char                    zone[FI_MAX_ZONENAME + 1];
-   char                    name[FI_MAX_UNITNAME + 1];
-   char                   *tmp;
-   int                     i;
-   int                     j;
-   uint8_t                 unit_version;
-   uint8_t                 t8;
-   uint16_t                t16;
-   uint32_t                t32;
-   uint32_t                nStart;
+   void            *ptr;
+   unit_data       *u;
+   file_index_type *fi;
+   char             zone[FI_MAX_ZONENAME + 1];
+   char             name[FI_MAX_UNITNAME + 1];
+   char            *tmp;
+   int              i;
+   int              j;
+   uint8_t          unit_version;
+   uint8_t          t8;
+   uint16_t         t16;
+   uint32_t         t32;
+   uint32_t         nStart;
 
 #ifdef MEMORY_DEBUG
    int memory_start;
@@ -788,7 +788,7 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
       g_nCorrupt += pBuf->ReadStringCopy(zone, sizeof(zone));
       g_nCorrupt += pBuf->ReadStringCopy(name, sizeof(name));
 
-      struct file_index_type *tmpfi = find_file_index(zone, name);
+      file_index_type *tmpfi = find_file_index(zone, name);
 
       if(tmpfi != nullptr)
       {
@@ -958,7 +958,7 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
 
                if((ptr = find_file_index(zone, name)) != nullptr)
                {
-                  CHAR_LAST_ROOM(u) = ((struct file_index_type *)ptr)->room_ptr;
+                  CHAR_LAST_ROOM(u) = ((file_index_type *)ptr)->room_ptr;
                }
             }
 
@@ -1274,7 +1274,7 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
    }
    else
    {
-      extern struct file_index_type *slime_fi;
+      extern file_index_type *slime_fi;
 
       slog(LOG_ALL, 0, "FATAL: UNIT CORRUPT: %s", u->names.Name());
 
@@ -1308,7 +1308,7 @@ auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *w
 /*  Room directions points to file_indexes instead of units
  *  after a room has been read, due to initialization considerations
  */
-void read_unit_file(struct file_index_type *org_fi, CByteBuffer *pBuf)
+void read_unit_file(file_index_type *org_fi, CByteBuffer *pBuf)
 {
    FILE *f;
    char  buf[256];
@@ -1330,9 +1330,9 @@ void read_unit_file(struct file_index_type *org_fi, CByteBuffer *pBuf)
 /*  Room directions points to file_indexes instead of units
  *  after a room has been read, due to initialization considerations
  */
-auto read_unit(struct file_index_type *org_fi) -> unit_data *
+auto read_unit(file_index_type *org_fi) -> unit_data *
 {
-   auto is_slimed(struct file_index_type * sp)->int;
+   auto is_slimed(file_index_type * sp)->int;
 
    unit_data *u;
 
@@ -1381,8 +1381,8 @@ auto read_unit(struct file_index_type *org_fi) -> unit_data *
 
 void read_all_rooms()
 {
-   struct zone_type       *z;
-   struct file_index_type *fi;
+   struct zone_type *z;
+   file_index_type  *fi;
 
    extern struct zone_type *boot_zone;
 
@@ -1405,10 +1405,10 @@ void read_all_rooms()
 /* After boot time, normalize all room exits */
 void normalize_world()
 {
-   struct file_index_type *fi;
-   unit_data              *u;
-   unit_data              *tmpu;
-   int                     i;
+   file_index_type *fi;
+   unit_data       *u;
+   unit_data       *tmpu;
+   int              i;
 
    for(u = unit_list; u != nullptr; u = u->gnext)
    {
@@ -1417,7 +1417,7 @@ void normalize_world()
          /* Place room inside another room? */
          if(UNIT_IN(u))
          {
-            fi = (struct file_index_type *)UNIT_IN(u);
+            fi = (file_index_type *)UNIT_IN(u);
 
             assert(fi->room_ptr);
 
@@ -1429,7 +1429,7 @@ void normalize_world()
          {
             if(ROOM_EXIT(u, i))
             {
-               ROOM_EXIT(u, i)->to_room = ((struct file_index_type *)ROOM_EXIT(u, i)->to_room)->room_ptr;
+               ROOM_EXIT(u, i)->to_room = ((file_index_type *)ROOM_EXIT(u, i)->to_room)->room_ptr;
             }
          }
       }
@@ -1464,14 +1464,14 @@ static struct zone_type *read_zone_error = nullptr;
 
 auto read_zone(FILE *f, struct zone_reset_cmd *cmd_list) -> struct zone_reset_cmd *
 {
-   struct zone_reset_cmd  *cmd;
-   struct zone_reset_cmd  *tmp_cmd;
-   struct file_index_type *fi;
-   uint8_t                 cmdno;
-   uint8_t                 direction;
-   char                    zonename[FI_MAX_ZONENAME + 1];
-   char                    name[FI_MAX_UNITNAME + 1];
-   CByteBuffer             cBuf(100);
+   struct zone_reset_cmd *cmd;
+   struct zone_reset_cmd *tmp_cmd;
+   file_index_type       *fi;
+   uint8_t                cmdno;
+   uint8_t                direction;
+   char                   zonename[FI_MAX_ZONENAME + 1];
+   char                   name[FI_MAX_UNITNAME + 1];
+   CByteBuffer            cBuf(100);
 
    tmp_cmd = cmd_list;
 

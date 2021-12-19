@@ -1,2 +1,4 @@
 #pragma once
-extern struct file_index_type *slime_fi;
+#include "file_index_type.h"
+
+extern file_index_type *slime_fi;

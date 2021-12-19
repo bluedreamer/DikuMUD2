@@ -51,21 +51,21 @@
 
 struct shop_data
 {
-   struct file_index_type **prod;          /* Array of producing items, last nil   */
-   int                     *types;         /* Which item types to trade            */
-   int                      typecount;     /* The number of item types             */
-   float                    profit_buy;    /* Factor to multiply cost with.        */
-   float                    profit_sell;   /* Factor to multiply cost with.        */
-   char                    *no_such_item1; /* Message if keeper hasn't got an item */
-   char                    *no_such_item2; /* Message if player hasn't got an item */
-   char                    *missing_cash1; /* Message if keeper hasn't got cash    */
-   char                    *missing_cash2; /* Message if player hasn't got cash    */
-   char                    *do_not_buy;    /* If keeper dosn't buy such things.    */
-   char                    *message_buy;   /* Message when player buys item        */
-   char                    *message_sell;  /* Message when player sells item       */
-   int                     *time1, *time2; /* When does the shop open / close?     */
-   int                     *currencies;    /* What currencies to accept.           */
-   int                      currencycount; /* Number of currencies.                */
+   file_index_type **prod;          /* Array of producing items, last nil   */
+   int              *types;         /* Which item types to trade            */
+   int               typecount;     /* The number of item types             */
+   float             profit_buy;    /* Factor to multiply cost with.        */
+   float             profit_sell;   /* Factor to multiply cost with.        */
+   char             *no_such_item1; /* Message if keeper hasn't got an item */
+   char             *no_such_item2; /* Message if player hasn't got an item */
+   char             *missing_cash1; /* Message if keeper hasn't got cash    */
+   char             *missing_cash2; /* Message if player hasn't got cash    */
+   char             *do_not_buy;    /* If keeper dosn't buy such things.    */
+   char             *message_buy;   /* Message when player buys item        */
+   char             *message_sell;  /* Message when player sells item       */
+   int              *time1, *time2; /* When does the shop open / close?     */
+   int              *currencies;    /* What currencies to accept.           */
+   int               currencycount; /* Number of currencies.                */
 };
 
 auto obj_trade_price(unit_data *u) -> amount_t
@@ -710,7 +710,7 @@ static auto parse_shop(unit_data *keeper, char *data) -> struct shop_data *
       {
          ;
       }
-      CREATE(sd->prod, struct file_index_type *, i + 1);
+      CREATE(sd->prod, file_index_type *, i + 1);
 
       for(j = i = 0; names[i] != nullptr; i++)
       {

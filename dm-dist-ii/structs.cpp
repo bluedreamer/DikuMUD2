@@ -232,8 +232,8 @@ zone_type::~zone_type()
       free(filename);
    }
 
-   struct file_index_type *p;
-   struct file_index_type *nextfi;
+   file_index_type *p;
+   file_index_type *nextfi;
 
    for(p = fi; p != nullptr; p = nextfi)
    {
@@ -271,20 +271,4 @@ zone_type::~zone_type()
    // struct bin_search_type *tmplba;/* Pointer to binarray of type      */
 
    free(spmatrix);
-}
-
-file_index_type::file_index_type()
-{
-   name     = nullptr;
-   zone     = nullptr;
-   next     = nullptr;
-   room_ptr = nullptr;
-}
-
-file_index_type::~file_index_type()
-{
-   if(name != nullptr)
-   {
-      free(name);
-   }
 }

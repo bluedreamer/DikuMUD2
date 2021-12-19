@@ -597,7 +597,7 @@ auto find_unit(const unit_data *ch, char **arg, const unit_data *list, const uin
    return find_unit_general(ch, ch, arg, list, bitvector);
 }
 
-auto find_symbolic_instance_ref(unit_data *ref, struct file_index_type *fi, uint16_t bitvector) -> unit_data *
+auto find_symbolic_instance_ref(unit_data *ref, file_index_type *fi, uint16_t bitvector) -> unit_data *
 {
    unit_data *u;
    unit_data *uu;
@@ -710,7 +710,7 @@ auto find_symbolic_instance_ref(unit_data *ref, struct file_index_type *fi, uint
    return nullptr;
 }
 
-auto find_symbolic_instance(struct file_index_type *fi) -> unit_data *
+auto find_symbolic_instance(file_index_type *fi) -> unit_data *
 {
    unit_data *u;
 

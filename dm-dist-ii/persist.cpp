@@ -47,9 +47,9 @@
 
 struct persist_type
 {
-   char                    name[30];
-   struct file_index_type *in;
-   int32_t                 weight;
+   char             name[30];
+   file_index_type *in;
+   int32_t          weight;
 };
 
 cNamelist persist_namelist;

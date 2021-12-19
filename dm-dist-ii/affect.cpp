@@ -46,7 +46,7 @@ void clear_destruct(int i);
 void affect_beat(void * /*p1*/, void * /*p2*/);
 
 /* Link an affected structure into the units affected structure */
-void link_affect(unit_data *unit, struct unit_affected_type *af)
+void link_affect(unit_data *unit, unit_affected_type *af)
 {
    /*if (af->id > ID_TOP_IDX)
      error(HERE, "%s@%s (%s) linked affect ID %d > max value.",
@@ -74,7 +74,7 @@ void link_affect(unit_data *unit, struct unit_affected_type *af)
 
 auto link_alloc_affect(unit_data *unit, struct unit_affected_type *orgaf) -> struct unit_affected_type *
 {
-   struct unit_affected_type *af;
+   unit_affected_type *af;
 
    CREATE(af, struct unit_affected_type, 1);
    assert(!is_destructed(DR_AFFECT, af));

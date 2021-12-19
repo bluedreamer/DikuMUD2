@@ -53,7 +53,7 @@ void do_decapitate(unit_data *ch, char *argument, const struct command_info *cmd
    char                       buf[256];
    char                       buf2[256];
 
-   extern struct file_index_type *head_fi;
+   extern file_index_type *head_fi;
 
    if(str_is_empty(argument) != 0u)
    {

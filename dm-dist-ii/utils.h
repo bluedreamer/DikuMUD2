@@ -1,3 +1,4 @@
+#pragma once
 /* *********************************************************************** *
  * File   : utils.h                                   Part of Valhalla MUD *
  * Version: 2.05                                                           *
@@ -22,22 +23,20 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#ifndef _MUD_UTILS_H
-#define _MUD_UTILS_H
-
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
 
 #include "essential.h"
+#include "file_index_type.h"
 #include "structs.h"
 
 extern const int8_t time_light[];
 
 /* ..................................................................... */
 
-#define PK_RELAXED 0
-#define PK_STRICT  1
+constexpr bool PK_RELAXED = false;
+constexpr bool PK_STRICT  = true;
 
 #define IS_BEGINNER(ch)      (CHAR_LEVEL(ch) <= START_LEVEL)
 #define IS_MORTAL(ch)        (CHAR_LEVEL(ch) < IMMORTAL_LEVEL)
@@ -53,11 +52,31 @@ extern const int8_t time_light[];
 /*  Do NOT use these macros unless you know PRECISELY what you are doing!!!
  *  and only if you have to assign directly to them (as in db_utils.c)
  */
-#define U_CHAR(u) ((u)->data.ch)
-#define U_NPC(u)  (U_CHAR(u)->specific.npc)
-#define U_PC(u)   (U_CHAR(u)->specific.pc)
-#define U_OBJ(u)  ((u)->data.obj)
-#define U_ROOM(u) ((u)->data.room)
+//#define U_CHAR(u) ((u)->data.ch)
+inline auto U_CHAR(unit_data *u) -> char_data *&
+{
+   return u->data.ch;
+}
+//#define U_NPC(u)  (U_CHAR(u)->specific.npc)
+inline auto U_NPC(unit_data *u) -> npc_data *&
+{
+   return U_CHAR(u)->specific.npc;
+}
+//#define U_PC(u)   (U_CHAR(u)->specific.pc)
+inline auto U_PC(unit_data *u) -> pc_data *&
+{
+   return U_CHAR(u)->specific.pc;
+}
+//#define U_OBJ(u)  ((u)->data.obj)
+inline auto U_OBJ(unit_data *u) -> obj_data *&
+{
+   return u->data.obj;
+}
+//#define U_ROOM(u) ((u)->data.room)
+inline auto U_ROOM(unit_data *u) -> room_data *&
+{
+   return u->data.room;
+}
 
 #ifdef MUD_DEBUG
    #define DEBUG_HISTORY
@@ -80,81 +99,186 @@ extern const int8_t time_light[];
 
 /* ..................................................................... */
 
-#define UNIT_FUNC(unit) ((unit)->func)
+//#define UNIT_FUNC(unit) ((unit)->func)
+inline auto UNIT_FUNC(unit_data *u) -> unit_fptr *&
+{
+   return u->func;
+}
+//#define UNIT_FILE_INDEX(unit) ((unit)->fi)
+inline auto UNIT_FILE_INDEX(unit_data *u) -> file_index_type *&
+{
+   return u->fi;
+}
+//#define UNIT_MANIPULATE(unit) ((unit)->manipulate)
+inline auto UNIT_MANIPULATE(unit_data *u) -> uint32_t &
+{
+   return u->manipulate;
+}
+//#define UNIT_FLAGS(unit) ((unit)->flags)
+inline auto UNIT_FLAGS(unit_data *u) -> uint16_t &
+{
+   return u->flags;
+}
+//#define UNIT_WEIGHT(unit) ((unit)->weight)
+inline auto UNIT_WEIGHT(unit_data *u) -> int16_t &
+{
+   return u->weight;
+}
+//#define UNIT_BASE_WEIGHT(unit) ((unit)->base_weight)
+inline auto UNIT_BASE_WEIGHT(unit_data *u) -> int16_t &
+{
+   return u->base_weight;
+}
+//#define UNIT_SIZE(unit) ((unit)->size)
+inline auto UNIT_SIZE(unit_data *u) -> uint16_t &
+{
+   return u->size;
+}
+//#define UNIT_CAPACITY(unit) ((unit)->capacity)
+inline auto UNIT_CAPACITY(unit_data *u) -> int16_t &
+{
+   return u->capacity;
+}
+//#define UNIT_BRIGHT(unit) ((unit)->bright)
+inline auto UNIT_BRIGHT(unit_data *u) -> int8_t &
+{
+   return u->bright;
+}
+//#define UNIT_LIGHTS(unit) ((unit)->light)
+inline auto UNIT_LIGHTS(unit_data *u) -> int8_t &
+{
+   return u->light;
+}
+//#define UNIT_ILLUM(unit) ((unit)->illum)
+inline auto UNIT_ILLUM(unit_data *u) -> int8_t &
+{
+   return u->illum;
+}
+//#define UNIT_CHARS(unit) ((unit)->chars)
+inline auto UNIT_CHARS(unit_data *u) -> uint8_t &
+{
+   return u->chars;
+}
+//#define UNIT_CONTAINS(unit) ((unit)->inside)
+inline auto UNIT_CONTAINS(unit_data *u) -> unit_data *&
+{
+   return u->inside;
+}
+//#define UNIT_IN(unit) ((unit)->outside)
+inline auto UNIT_IN(unit_data *u) -> unit_data *&
+{
+   return u->outside;
+}
+//#define UNIT_AFFECTED(unit) ((unit)->affected)
+inline auto UNIT_AFFECTED(unit_data *u) -> unit_affected_type *&
+{
+   return u->affected;
+}
+//#define UNIT_NAMES(unit) ((unit)->names)
+inline auto UNIT_NAMES(unit_data *u) -> cNamelist &
+{
+   return u->names;
+}
+//#define UNIT_NAME(unit) (UNIT_NAMES(unit).Name())
+inline auto UNIT_NAME(unit_data *u) -> const char *
+{
+   return UNIT_NAMES(u).Name();
+}
+//#define UNIT_KEY(unit) ((unit)->key)
+inline auto UNIT_KEY(unit_data *u) -> file_index_type *&
+{
+   return u->key;
+}
+//#define UNIT_OPEN_FLAGS(unit) ((unit)->open_flags)
+inline auto UNIT_OPEN_FLAGS(unit_data *u) -> uint8_t &
+{
+   return u->open_flags;
+}
+//#define UNIT_TYPE(unit) ((unit)->status)
+inline auto UNIT_TYPE(const unit_data *u) -> uint8_t
+{
+   return u->status;
+}
 
-#define UNIT_FILE_INDEX(unit) ((unit)->fi)
-
-#define UNIT_MANIPULATE(unit) ((unit)->manipulate)
-
-#define UNIT_FLAGS(unit) ((unit)->flags)
-
-#define UNIT_WEIGHT(unit) ((unit)->weight)
-
-#define UNIT_BASE_WEIGHT(unit) ((unit)->base_weight)
-
-#define UNIT_SIZE(unit) ((unit)->size)
-
-#define UNIT_CAPACITY(unit) ((unit)->capacity)
-
-#define UNIT_BRIGHT(unit) ((unit)->bright)
-
-#define UNIT_LIGHTS(unit) ((unit)->light)
-
-#define UNIT_ILLUM(unit) ((unit)->illum)
-
-#define UNIT_CHARS(unit) ((unit)->chars)
-
-#define UNIT_CONTAINS(unit) ((unit)->inside)
-
-#define UNIT_IN(unit) ((unit)->outside)
-
-#define UNIT_AFFECTED(unit) ((unit)->affected)
-
-#define UNIT_NAME(unit) (UNIT_NAMES(unit).Name())
-
-#define UNIT_KEY(unit) ((unit)->key)
-
-#define UNIT_OPEN_FLAGS(unit) ((unit)->open_flags)
-
-#define UNIT_TYPE(unit) ((unit)->status)
-
-#define UNIT_NAMES(unit) ((unit)->names)
-
-#define UNIT_ALIGNMENT(unit) ((unit)->alignment)
-
-#define UNIT_HIT(unit) ((unit)->hp)
-
-#define UNIT_MAX_HIT(unit) ((unit)->max_hp)
-
-#define UNIT_MINV(u) ((u)->minv)
-
+//#define UNIT_ALIGNMENT(unit) ((unit)->alignment)
+inline auto UNIT_ALIGNMENT(unit_data *u) -> int16_t &
+{
+   return u->alignment;
+}
+//#define UNIT_HIT(unit) ((unit)->hp)
+inline auto UNIT_HIT(unit_data *u) -> int32_t &
+{
+   return u->hp;
+}
+//#define UNIT_MAX_HIT(unit) ((unit)->max_hp)
+inline auto UNIT_MAX_HIT(unit_data *u) -> int32_t &
+{
+   return u->max_hp;
+}
+//#define UNIT_MINV(u) ((u)->minv)
+inline auto UNIT_MINV(unit_data *u) -> uint8_t &
+{
+   return u->minv;
+}
 /* --- Swapped --- */
 
-#define UNIT_TITLE(unit) ((unit)->title)
-
-#define UNIT_OUT_DESCR(unit) ((unit)->out_descr)
-
-#define UNIT_IN_DESCR(unit) ((unit)->in_descr)
-
-#define UNIT_EXTRA_DESCR(unit) ((unit)->extra_descr)
-
+//#define UNIT_TITLE(unit) ((unit)->title)
+inline auto UNIT_TITLE(const unit_data *u) -> const cStringInstance &
+{
+   return u->title;
+}
+//#define UNIT_OUT_DESCR(unit) ((unit)->out_descr)
+inline auto UNIT_OUT_DESCR(unit_data *u) -> cStringInstance &
+{
+   return u->out_descr;
+}
+//#define UNIT_IN_DESCR(unit) ((unit)->in_descr)
+inline auto UNIT_IN_DESCR(const unit_data *u) -> const cStringInstance &
+{
+   return u->in_descr;
+}
+//#define UNIT_EXTRA_DESCR(unit) ((unit)->extra_descr)
+inline auto UNIT_EXTRA_DESCR(unit_data *u) -> extra_descr_data *&
+{
+   return u->extra_descr;
+}
 /* ..................................................................... */
 
-#define IS_ROOM(unit) (UNIT_TYPE(unit) == UNIT_ST_ROOM)
+//#define IS_ROOM(unit) (UNIT_TYPE(unit) == UNIT_ST_ROOM)
+inline auto IS_ROOM(const unit_data *ptr) -> bool
+{
+   return UNIT_TYPE(ptr) == UNIT_ST_ROOM;
+}
 
-#define IS_OBJ(unit) (UNIT_TYPE(unit) == UNIT_ST_OBJ)
-
-#define IS_NPC(unit) (UNIT_TYPE(unit) == UNIT_ST_NPC)
-
-#define IS_PC(unit) (UNIT_TYPE(unit) == UNIT_ST_PC)
-
-#define IS_CHAR(unit) (IS_SET(UNIT_TYPE(unit), UNIT_ST_PC | UNIT_ST_NPC))
-
+//#define IS_OBJ(unit) (UNIT_TYPE(unit) == UNIT_ST_OBJ)
+inline auto IS_OBJ(const unit_data *ptr) -> bool
+{
+   return UNIT_TYPE(ptr) == UNIT_ST_OBJ;
+}
+//#define IS_NPC(unit) (UNIT_TYPE(unit) == UNIT_ST_NPC)
+inline auto IS_NPC(const unit_data *ptr) -> bool
+{
+   return UNIT_TYPE(ptr) == UNIT_ST_NPC;
+}
+//#define IS_PC(unit) (UNIT_TYPE(unit) == UNIT_ST_PC)
+inline auto IS_PC(const unit_data *ptr) -> bool
+{
+   return UNIT_TYPE(ptr) == UNIT_ST_PC;
+}
+//#define IS_CHAR(unit) (IS_SET(UNIT_TYPE(unit), UNIT_ST_PC | UNIT_ST_NPC))
+inline auto IS_CHAR(const unit_data *ptr) -> bool
+{
+   return IS_SET(UNIT_TYPE(ptr), UNIT_ST_PC | UNIT_ST_NPC);
+}
 /* ............................FILE INDEX STUFF..................... */
 
 #define FI_ZONENAME(fi) ((fi) ? (fi)->zone->name : "NO-ZONE")
 
-#define FI_NAME(fi) ((fi) ? (fi)->name : "NO-NAME")
+//#define FI_NAME(fi) ((fi) ? (fi)->name : "NO-NAME")
+inline auto FI_NAME(file_index_type *fi) -> const char *
+{
+   return fi ? fi->name : "NO-NAME";
+}
 
 /* ............................UNIT SUPERSTRUCTURES..................... */
 
@@ -165,7 +289,11 @@ extern const int8_t time_light[];
 
 #define UNIT_FI_ZONENAME(unit) (FI_ZONENAME(UNIT_FILE_INDEX(unit)))
 
-#define UNIT_FI_NAME(unit) (FI_NAME(UNIT_FILE_INDEX(unit)))
+//#define UNIT_FI_NAME(unit) (FI_NAME(UNIT_FILE_INDEX(unit)))
+inline auto UNIT_FI_NAME(unit_data *unit) -> const char *
+{
+   return FI_NAME(UNIT_FILE_INDEX(unit));
+}
 
 #define UNIT_WEAR(unit, part) (IS_SET(UNIT_MANIPULATE(unit), part))
 
@@ -417,8 +545,11 @@ extern int sunlight;
 
 #define UNIT_TITLE_STRING(unit) (UNIT_TITLE(unit).String())
 
-#define UNIT_OUT_DESCR_STRING(unit) (UNIT_OUT_DESCR(unit).String())
-
+//#define UNIT_OUT_DESCR_STRING(unit) (UNIT_OUT_DESCR(unit).String())
+inline auto UNIT_OUT_DESCR_STRING(unit_data *unit) -> const char *
+{
+   return UNIT_OUT_DESCR(unit).String();
+}
 #define UNIT_IN_DESCR_STRING(unit) (UNIT_IN_DESCR(unit).String())
 
 #define TITLENAME(unit) (IS_PC(unit) ? UNIT_NAME(unit) : UNIT_TITLE_STRING(unit))
@@ -447,5 +578,3 @@ extern int sunlight;
 #define HMHR(to, ch) (CHAR_CAN_SEE((to), (ch)) ? B_HMHR(ch) : "them")
 
 #define UNIT_ANA(unit) ANA(*UNIT_NAME(unit))
-
-#endif /* _MUD_UTILS_H */
