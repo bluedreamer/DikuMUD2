@@ -22,14 +22,8 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
-#include "db.h"
 #include "dbfind.h"
+#include "db.h"
 #include "dil.h"
 #include "handler.h"
 #include "structs.h"
@@ -37,6 +31,12 @@
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+#include "zone_info_type.h"
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 extern descriptor_data *descriptor_list;
 

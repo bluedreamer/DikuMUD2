@@ -25,12 +25,6 @@
 /* 28/1 1993 HHS   Added code to implement Complete flag in reset_zone     */
 /* 28/03/93 jubal  : Better error messages                                 */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
@@ -45,7 +39,13 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include "zone_info_type.h"
+#include <cctype>
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 void event_enq(int when, void (*func)(), void *arg1, void *arg2);
 

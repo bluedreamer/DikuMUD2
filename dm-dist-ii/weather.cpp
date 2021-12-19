@@ -25,11 +25,7 @@
 /* 23/08/93 jubal  : Fixed mudtime_strcpy                                  */
 /* 10/08/94 gnort  : Fixed some ANSI time_t violations                     */
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
+#include "weather.h"
 #include "comm.h"
 #include "db.h"
 #include "handler.h"
@@ -39,7 +35,11 @@
 #include "time_info_data.h"
 #include "utility.h"
 #include "utils.h"
-#include "weather.h"
+#include "zone_info_type.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 int          sunlight          = SUN_SET;   /* And how much sun. */
 const time_t beginning_of_time = 650336715; /* Sat Aug 11 01:05:15 1990 */

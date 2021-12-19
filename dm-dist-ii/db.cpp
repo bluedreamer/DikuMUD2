@@ -28,7 +28,6 @@
 /* 23/08/93 jubal   : check for error before returning find_file_index     */
 /* 12/09/94 gnort   : cleaned up a bit                                     */
 /* 01/07/95 HHS     : added template loading and checking                  */
-
 #include "db.h"
 #include "account.h"
 #include "affect.h"
@@ -51,6 +50,7 @@
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
+#include "zone_info_type.h"
 #include <cctype>
 #include <climits>
 #include <cstdio>
@@ -60,9 +60,6 @@
 
 int        room_number;         /* For counting numbers in rooms */
 unit_data *unit_list = nullptr; /* The global unit_list          */
-
-/* Global permanent element of zone info */
-struct zone_info_type zone_info = {0, nullptr, nullptr, nullptr};
 
 extern char     zondir[];
 extern uint32_t memory_total_alloc;

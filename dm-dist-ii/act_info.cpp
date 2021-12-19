@@ -31,6 +31,7 @@
 /* 23/08/93 jubal  : Allow imms to see hidden thingys                      */
 /* 10/02/94 gnort  : Rewrote do_who to be smaller and dynamic.             */
 
+#include "zone_info_type.h"
 #include "affect.h"
 #include "blkfile.h"
 #include "comm.h"

@@ -24,7 +24,6 @@
 
 /* 10-Aug-94 gnort: Touched up/rewrote enough to warrant new version number*/
 /* 09-Feb-95 gnort: Fixed silly bug in wstat zone                          */
-
 #include "account.h"
 #include "affect.h"
 #include "blkfile.h"
@@ -51,6 +50,7 @@
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
+#include "zone_info_type.h"
 #include "zone_reset_cmd.h"
 #include <arpa/inet.h>
 #include <cctype>

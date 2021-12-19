@@ -85,14 +85,6 @@
 
 #define ZONE_FILE_LIST "zonelist"
 
-struct zone_info_type
-{
-   int               no_of_zones; /* Total number of zones       */
-   struct zone_type *zone_list;   /* The Linked List of Zones    */
-   bin_search_type  *ba;          /* Array of structs for search */
-   void            **spmatrix;    /* Inter zone shortest paths   */
-};
-
 auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom) -> unit_data *;
 void read_unit_file(file_index_type *org_fi, CByteBuffer *pBuf);
 auto read_unit(file_index_type *fi) -> unit_data *;
@@ -107,4 +99,3 @@ auto create_unit(uint8_t type) -> unit_data *;
 
 extern int                   room_number;
 extern unit_data            *unit_list;
-extern struct zone_info_type zone_info;

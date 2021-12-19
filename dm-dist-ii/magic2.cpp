@@ -25,9 +25,6 @@
  *		    needed it, thus killing spells[12].c
  */
 
-#include <cstdio>
-#include <cstdlib>
-
 #include "affect.h"
 #include "comm.h"
 #include "common.h"
@@ -45,7 +42,10 @@
 #include "unit_affected_type.h"
 #include "utility.h"
 #include "utils.h"
+#include "zone_info_type.h"
 #include <climits>
+#include <cstdio>
+#include <cstdlib>
 
 #define RIFT_RISK 100
 

@@ -24,6 +24,8 @@
  * *********************************************************************** */
 
 #include "time_info_data.h"
+#include <ctime>
+#include "unit_data.h"
 
 extern int sunlight;
 

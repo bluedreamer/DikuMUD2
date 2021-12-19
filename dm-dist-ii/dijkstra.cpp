@@ -28,11 +28,6 @@
 /*                   Death rooms no longer exist. Instead make deathrooms  */
 /*                   have no exits at all!                                 */
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
 #include "comm.h"
 #include "common.h"
 #include "db.h"
@@ -42,6 +37,11 @@
 #include "structs.h"
 #include "utility.h"
 #include "utils.h"
+#include "zone_info_type.h"
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 
 #define MAX_EXITS     20 /* Assume a maximum of 20 exits */
 #define DIST_INFINITE 1000000
