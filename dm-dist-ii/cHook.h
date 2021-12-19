@@ -1,7 +1,11 @@
 #pragma once
+#include "essential.h"
+#include "queue.h"
 #include <cstdint>
 
 class cCaptainHook;
+class cQueue;
+
 class cHook
 {
    friend cCaptainHook;

@@ -1,8 +1,28 @@
 find_package(FLEX)
 find_package(BISON)
 
-set(DMC_SRC dmc.cpp dmc_process.cpp ../utility.cpp ../string.cpp ../structs.cpp ../money.cpp ../db_file.cpp
-        ../bytestring.cpp ../namelist.cpp ../memory.cpp ../textutil.cpp ../extra.cpp ../common.cpp ../unit_data.cpp)
+set(DMC_SRC
+        dmc.cpp
+        dmc_process.cpp
+        ../utility.cpp
+        ../string.cpp
+        ../structs.cpp
+        ../money.cpp
+        ../db_file.cpp
+        ../bytestring.cpp
+        ../namelist.cpp
+        ../memory.cpp
+        ../textutil.cpp
+        ../room_data.cpp
+        ../pc_data.cpp
+        ../unit_data.cpp
+        ../obj_data.cpp
+        ../npc_data.cpp
+        ../char_data.cpp
+        ../room_direction_data.cpp
+        ../extra.cpp
+        ../common.cpp
+        ../unit_data.cpp)
 set(DMC_H dmc.h dmctok.h)
 
 include_directories(.)

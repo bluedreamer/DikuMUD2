@@ -108,12 +108,12 @@ struct reset_command
    struct reset_command *next;
 };
 
-struct unit_data           *mcreate_unit(int type);
-struct room_direction_data *mcreate_exit(void);
-struct unit_affected_type  *mcreate_affect();
-void                       *mmalloc(int size);
-void                        mem_reset(void);
-void                        mem_init(void);
+unit_data           *mcreate_unit(int type);
+room_direction_data *mcreate_exit(void);
+unit_affected_type  *mcreate_affect();
+void                *mmalloc(int size);
+void                 mem_reset(void);
+void                 mem_init(void);
 
 void process_unit(struct unit_data *u);
 

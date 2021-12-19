@@ -1,7 +1,7 @@
 #pragma once
-#include "unit_data.h"
 #include <cstdint>
 
+class unit_data;
 struct unit_affected_type
 {
    int16_t  id;

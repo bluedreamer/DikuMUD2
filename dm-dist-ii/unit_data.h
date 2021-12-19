@@ -1,12 +1,13 @@
 #pragma once
 #include "namelist.h"
+#include "unit_affected_type.h"
+#include "unit_fptr.h"
 #include <cstdint>
 
 class char_data;
 class room_data;
 class obj_data;
-class unit_fptr;
-class unit_affected_type;
+// class unit_affected_type;
 class file_index_type;
 class extra_descr_data;
 class cStringInstance;

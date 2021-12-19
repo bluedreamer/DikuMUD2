@@ -1,4 +1,8 @@
 #include "cHook.h"
+#include "select.h"
+#include <algorithm>
+#include <cerrno>
+#include <unistd.h>
 /* ------------------------------------------------------------------- */
 /*                                HOOK                                 */
 /* ------------------------------------------------------------------- */
@@ -47,7 +51,7 @@ void cHook::PushWrite()
 
    while(qTX.IsEmpty() == 0)
    {
-      len = MIN(sizeof(buf), qTX.Bytes());
+      len = std::min(sizeof(buf), static_cast<unsigned long>(qTX.Bytes()));
 
       qTX.CutCopy(buf, len);
 

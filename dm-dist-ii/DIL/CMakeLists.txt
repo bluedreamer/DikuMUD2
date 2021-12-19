@@ -13,8 +13,9 @@ set(DIL_SRC
         ../extra.cpp
         ../files.cpp
         ../memory.cpp
-        ../room_data.cpp)
-set(DIL_H dilpar.h)
+        ../room_data.cpp
+        ../room_direction_data.cpp)
+set(DIL_H dilpar.h ../common.h ../room_data.h ../room_direction_data.h)
 
 include_directories(.)
 

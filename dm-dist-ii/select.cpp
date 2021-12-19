@@ -29,11 +29,11 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "cHook.h"
 #include "select.h"
 #include "utility.h"
 
 cCaptainHook CaptainHook;
-
 
 /* ------------------------------------------------------------------- */
 /*                            CAPTAIN HOOK                             */

@@ -38,7 +38,6 @@ auto PipeWrite(int fd, char *buf, size_t count) -> int;
 
 class cHook;
 
-
 class cCaptainHook
 {
    friend cHook;

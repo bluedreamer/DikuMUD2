@@ -30,6 +30,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 #include <sys/stat.h>
@@ -41,6 +42,7 @@
 #include "dil.h"
 #include "dmc.h"
 #include "textutil.h"
+#include "unit_affected_type.h"
 #include "utility.h"
 
 #define MEMBLOCK 65536
@@ -410,7 +412,7 @@ struct unit_data *mcreate_unit(int type)
 
 struct unit_fptr *mcreate_func(void)
 {
-   return (struct unit_fptr *)mmalloc(sizeof(struct unit_fptr));
+   return (unit_fptr *)mmalloc(sizeof(unit_fptr));
 }
 
 struct room_direction_data *mcreate_exit(void)
@@ -426,11 +428,11 @@ struct room_direction_data *mcreate_exit(void)
    return rslt;
 }
 
-struct unit_affected_type *mcreate_affect(void)
+unit_affected_type *mcreate_affect(void)
 {
-   struct unit_affected_type *rs;
+   unit_affected_type *rs;
 
-   MCREATE(rs, struct unit_affected_type, 1);
+   MCREATE(rs, unit_affected_type, 1);
    rs->next     = 0;
    rs->id       = 0;
    rs->duration = 0;
@@ -470,7 +472,7 @@ void write_resetcom(FILE *fl, struct reset_command *c)
    fwrite(&c->direction, sizeof(c->direction), 1, fl);
 }
 
-void check_unique_ident(struct unit_data *u)
+void check_unique_ident(unit_data *u)
 {
    if(is_name(UNIT_IDENT(u), (const char **)ident_names))
    {
@@ -490,7 +492,7 @@ void dump_zone(char *prefix)
    FILE                 *fl;
    char                  filename[256];
    char                **creators;
-   struct unit_data     *u;
+   unit_data            *u;
    struct reset_command *c;
    int                   no_rooms = 0;
    struct diltemplate   *tmpl;
@@ -635,7 +637,7 @@ long stat_mtime(const char *name)
    return buf.st_mtime;
 }
 
-void szonelog(struct zone_type *zone, const char *fmt, ...)
+void szonelog(zone_type *zone, const char *fmt, ...)
 {
    /* Not pretty, but it's this or linking with handler.c ;) */
    fprintf(stderr, "%s\n", fmt);

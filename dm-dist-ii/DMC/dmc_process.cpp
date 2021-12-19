@@ -31,10 +31,12 @@
 #include <time.h>
 
 #include "common.h"
+
 #include "dmc.h"
 #include "money.h"
 #include "skills.h"
 #include "textutil.h"
+#include "unit_affected_type.h"
 #include "unixshit.h"
 #include "utility.h"
 
@@ -353,10 +355,10 @@ void show_info(struct unit_data *npc)
            UNIT_MAX_HIT(npc), CHAR_BRA(npc), CHAR_CHA(npc), CHAR_MAG(npc), CHAR_DIV(npc));
 }
 
-void process_affects(struct unit_data *pUnit)
+void process_affects(unit_data *pUnit)
 {
-   struct unit_affected_type *pAf;
-   int                        firstf, tickf, lastf, applyf;
+   unit_affected_type *pAf;
+   int                 firstf, tickf, lastf, applyf;
 
    for(pAf = UNIT_AFFECTED(pUnit); pAf; pAf = pAf->next)
    {
@@ -545,9 +547,9 @@ void process_affects(struct unit_data *pUnit)
    }
 }
 
-void process_funcs(struct unit_data *u)
+void process_funcs(unit_data *u)
 {
-   struct unit_fptr *fptr;
+   unit_fptr *fptr;
 
    for(fptr = UNIT_FUNC(u); fptr; fptr = fptr->next)
    {

@@ -62,13 +62,13 @@ int yylex(void);
 
 extern char cur_filename[];
 extern int linenum;
-extern struct zone_info zone;
+extern  zone_info zone;
 extern int nooutput;
-struct unit_data *cur;
+ unit_data *cur;
 struct extra_descr_data *cur_extra;
 struct reset_command *cur_cmd;
-struct unit_affected_type *cur_aff;
-struct unit_fptr *cur_func;
+ unit_affected_type *cur_aff;
+ unit_fptr *cur_func;
 struct diltemplate *cur_tmpl;
 struct dilprg *cur_prg;
 
@@ -87,7 +87,7 @@ int dilarg_top;
 /* Temporary data for moneylists */
 int mon_top, mon_list[50][2];
 
-struct unit_fptr *mcreate_func(void);
+ unit_fptr *mcreate_func(void);
 void dumpdiltemplate(struct diltemplate *tmpl);
 void dumpdil(struct dilprg *prg);
 
@@ -299,7 +299,7 @@ oroom_field	: MOVEMENT PNUM
 			}
 		| IN reference
 			{
-			  UNIT_IN(cur) = (struct unit_data *) $2;
+			  UNIT_IN(cur) = ( unit_data *) $2;
 			}
 		| SPELL number
 			{
@@ -324,12 +324,12 @@ exit_fields	: /* naught */
 exit_field	: TO reference
 			{
 			  ROOM_EXIT(cur,cur_ex)->to_room =
-			    (struct unit_data *) $2;
+			    ( unit_data *) $2;
 			}
 		| KEY reference
 			{
 			  ROOM_EXIT(cur,cur_ex)->key =
-			    (struct file_index_type *) $2;
+			    ( file_index_type *) $2;
 			}
 		| KEYWORD stringlist
 			{
@@ -717,7 +717,7 @@ unit_field	: NAMES stringlist
 			}
 		| KEY reference
 			{
-			  UNIT_KEY(cur) = (struct file_index_type *) $2;
+			  UNIT_KEY(cur) = ( file_index_type *) $2;
 			}
 		| OPEN flags
 			{
@@ -1505,4 +1505,3 @@ void dumpdil(struct dilprg *prg) {
     dumpdiltemplate(prg->stack[i].tmpl);
   }
 }
-

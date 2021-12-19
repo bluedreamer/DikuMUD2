@@ -26,6 +26,7 @@
 #ifndef _MUD_MPLEX_H
 #define _MUD_MPLEX_H
 
+#include "cHook.h"
 #include "essential.h"
 #include "network.h"
 #include "protocol.h"
