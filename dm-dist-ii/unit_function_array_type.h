@@ -11,4 +11,4 @@ struct unit_function_array_type
    int16_t  tick;     /* Default tick count */
 };
 
-extern  unit_function_array_type unit_function_array[];
+extern unit_function_array_type unit_function_array[];

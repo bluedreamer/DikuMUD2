@@ -45,7 +45,6 @@ const char *drinks[LIQ_MAX + 2] = {
    "water", "beer",   "wine",  "ale",        "dark ale", "whisky", "lemonade", "firebreather", "local speciality", "slime", "milk",
    "tea",   "coffee", "blood", "salt water", "coke",     "vodka",  "brandy",   nullptr};
 
-
 /* PS Algorithm 2                                                      */
 /* This algorithm returns the amount of points gained at a particular  */
 /* level. Level is given as an argument, and the amount of points you  */
