@@ -29,20 +29,8 @@
 #include <sys/time.h>
 
 #define MAX_MULTI 5 /* Maximum five multiconnects */
-#include "cHook.h"
 
-class cMultiHook : public cHook
-{
-public:
-   cMultiHook();
-   void Input(int nFlags) override;
-
-   void Close();
-   auto Read() -> int;
-
-   int succ_err; /* Number of successive errors */
-};
-
+#include "cMultiHook.h"
 class cMultiMaster
 {
 public:
