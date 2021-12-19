@@ -22,6 +22,7 @@
  * reproduced, translated or reduced to any medium without the prior       *
  * written consent of Valhalla.                                            *
  * *********************************************************************** */
+#include <cstddef>
 
 #define ADMIN_MAIL "mud@valhalla-usa.com"
 

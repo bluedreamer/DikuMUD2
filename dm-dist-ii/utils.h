@@ -29,6 +29,7 @@
 
 #include "essential.h"
 #include "file_index_type.h"
+#include "npc_data.h"
 #include "obj_data.h"
 #include "pc_data.h"
 #include "room_data.h"
@@ -682,7 +683,11 @@ inline auto PC_FLAGS(unit_data *unit) -> uint16_t &
 
 /* ..................................................................... */
 
-#define NPC_WPN_SKILL(ch, index) (UNPC(ch)->weapons[index])
+//#define NPC_WPN_SKILL(ch, index) (UNPC(ch)->weapons[index])
+inline auto NPC_WPN_SKILL(unit_data *ch, size_t index) -> uint8_t &
+{
+   return UNPC(ch)->weapons[index];
+}
 
 #define NPC_SPL_SKILL(ch, index) (UNPC(ch)->spells[index])
 
