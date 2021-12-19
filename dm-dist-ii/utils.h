@@ -27,6 +27,7 @@
 #include <cstdlib>
 #include <cstring>
 
+#include "char_data.h"
 #include "essential.h"
 #include "file_index_type.h"
 #include "npc_data.h"
