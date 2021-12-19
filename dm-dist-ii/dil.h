@@ -27,6 +27,7 @@
 
 #include "essential.h"
 #include "unit_data.h"
+#include "spec_arg.h"
 
 #ifndef L_tmpnam
    #define L_tmpnam 1024 /* Oh thank you Marcel! */
@@ -482,7 +483,7 @@ struct dilprg
    struct dilframe *sp;      /* stack and pointer */
    struct dilframe *stack;   /* stack frames, #0 saved */
 
-   struct spec_arg *sarg;
+   spec_arg *sarg;
    unit_data       *owner;
 
    int16_t waitcmd; /* Command countdown */

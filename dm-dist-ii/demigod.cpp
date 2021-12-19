@@ -460,7 +460,7 @@ void do_sacrifice(unit_data *ch, char *arg, const struct command_info *cmd)
    base_sacrifice(ch, arg, static_cast<int>(FALSE));
 }
 
-auto sacrifice(struct spec_arg *sarg) -> int
+auto sacrifice(spec_arg *sarg) -> int
 {
    if(sarg->cmd->no == CMD_SACRIFICE)
    {
@@ -533,7 +533,7 @@ void make_demigod(unit_data *ch)
 #endif
 }
 
-auto demi_stuff(struct spec_arg *sarg) -> int
+auto demi_stuff(spec_arg *sarg) -> int
 {
 #ifdef DEMIGOD
    int                      i, nExp, nMember;
