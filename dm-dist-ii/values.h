@@ -101,18 +101,31 @@ constexpr int ULTIMATE_LEVEL      = 255;
 
 /* How much light is in the land ? */
 
-#define SUN_DARK  0
-#define SUN_RISE  1
-#define SUN_LIGHT 2
-#define SUN_SET   3
+//#define SUN_DARK  0
+//#define SUN_RISE  1
+//#define SUN_LIGHT 2
+//#define SUN_SET   3
+enum LightInLand
+{
+   SUN_DARK  = 0,
+   SUN_RISE  = 1,
+   SUN_LIGHT = 2,
+   SUN_SET   = 3,
+};
 
 /* And how is the sky ? */
 
-#define SKY_CLOUDLESS 0
-#define SKY_CLOUDY    1
-#define SKY_RAINING   2
-#define SKY_LIGHTNING 3
-
+//#define SKY_CLOUDLESS 0
+//#define SKY_CLOUDY    1
+//#define SKY_RAINING   2
+//#define SKY_LIGHTNING 3
+enum SkyConditions
+{
+   SKY_CLOUDLESS = 0,
+   SKY_CLOUDY    = 1,
+   SKY_RAINING   = 2,
+   SKY_LIGHTNING = 3,
+};
 /* ------------------------- Directions ------------------------------
  NORTH, EAST, SOUTH, WEST, UP and DOWN
    The macros to use in exits.
@@ -207,8 +220,6 @@ enum PathTo
 #define RESET_NOT     0
 #define RESET_IFEMPTY 1
 #define RESET_ANYHOW  2
-
-
 
 /* ------------------------- Sector Types ------------------------------
  Common for all sector types are that when you specify one for your
