@@ -1202,207 +1202,209 @@ enum Race
 /* ..................................................................... */
 
 /* Spell numbers. Only use the groups for 'spell[X]'... */
+enum Spell
+{
+   SPL_NONE             = -1, /* For wand, scrolls, etc. */
+   SPL_ALL              = 0,
+   SPL_DIVINE           = 1,
+   SPL_PROTECTION       = 2,
+   SPL_DETECTION        = 3,
+   SPL_SUMMONING        = 4,
+   SPL_CREATION         = 5,
+   SPL_MIND             = 6,
+   SPL_HEAT             = 7,  /* Fire          */
+   SPL_COLD             = 8,  /* Frost         */
+   SPL_CELL             = 9,  /* Electricity   */
+   SPL_INTERNAL         = 10, /* Poison        */
+   SPL_EXTERNAL         = 11, /* Acid          */
+   SPL_GROUP_MAX        = 12, /* #[0..11] ==12, */
 
-#define SPL_NONE       -1 /* For wand, scrolls, etc. */
-#define SPL_ALL        0
-#define SPL_DIVINE     1
-#define SPL_PROTECTION 2
-#define SPL_DETECTION  3
-#define SPL_SUMMONING  4
-#define SPL_CREATION   5
-#define SPL_MIND       6
-#define SPL_HEAT       7  /* Fire          */
-#define SPL_COLD       8  /* Frost         */
-#define SPL_CELL       9  /* Electricity   */
-#define SPL_INTERNAL   10 /* Poison        */
-#define SPL_EXTERNAL   11 /* Acid          */
-#define SPL_GROUP_MAX  12 /* #[0..11] = 12 */
+   SPL_CALL_LIGHTNING   = 12, /* Cell Group  */
+   SPL_BLESS            = 13, /* D I V I N E */
+   SPL_CURSE            = 14,
+   SPL_REMOVE_CURSE     = 15,
+   SPL_CURE_WOUNDS_1    = 16,
+   SPL_CURE_WOUNDS_2    = 17,
+   SPL_CURE_WOUNDS_3    = 18,
+   SPL_CAUSE_WOUNDS_1   = 19,
+   SPL_CAUSE_WOUNDS_2   = 20,
+   SPL_CAUSE_WOUNDS_3   = 21,
+   SPL_DISPEL_EVIL      = 22,
+   SPL_REPEL_UNDEAD_1   = 23,
+   SPL_REPEL_UNDEAD_2   = 24,
+   SPL_BLIND            = 25,
+   SPL_CURE_BLIND       = 26,
+   SPL_LOCATE_OBJECT    = 27,
+   SPL_LOCATE_CHAR      = 28,
 
-#define SPL_CALL_LIGHTNING 12 /* Cell Group  */
-#define SPL_BLESS          13 /* D I V I N E */
-#define SPL_CURSE          14
-#define SPL_REMOVE_CURSE   15
-#define SPL_CURE_WOUNDS_1  16
-#define SPL_CURE_WOUNDS_2  17
-#define SPL_CURE_WOUNDS_3  18
-#define SPL_CAUSE_WOUNDS_1 19
-#define SPL_CAUSE_WOUNDS_2 20
-#define SPL_CAUSE_WOUNDS_3 21
-#define SPL_DISPEL_EVIL    22
-#define SPL_REPEL_UNDEAD_1 23
-#define SPL_REPEL_UNDEAD_2 24
-#define SPL_BLIND          25
-#define SPL_CURE_BLIND     26
-#define SPL_LOCATE_OBJECT  27
-#define SPL_LOCATE_CHAR    28
+   SPL_RAISE_MAG        = 29, /* P R O T E C T I O N */
+   SPL_RAISE_DIV        = 30,
+   SPL_RAISE_STR        = 31,
+   SPL_RAISE_DEX        = 32,
+   SPL_RAISE_CON        = 33,
+   SPL_RAISE_CHA        = 34,
+   SPL_RAISE_BRA        = 35,
+   SPL_SUN_RAY          = 36,
+   SPL_DIVINE_RESIST    = 37,
+   SPL_QUICKEN          = 38,
+   SPL_HASTE            = 39,
+   SPL_RAISE_SUMMONING  = 40,
+   SPL_AWAKEN           = 41,
+   SPL_MIND_SHIELD      = 42,
+   SPL_HEAT_RESI        = 43,
+   SPL_COLD_RESI        = 44,
+   SPL_ELECTRICITY_RESI = 45,
+   SPL_POISON_RESI      = 46,
+   SPL_ACID_RESI        = 47,
+   SPL_PRO_EVIL         = 48,
+   SPL_SANCTUARY        = 49,
+   SPL_DISPEL_MAGIC     = 50,
+   SPL_SUSTAIN          = 51,
+   SPL_LOCK             = 52,
+   SPL_UNLOCK           = 53,
+   SPL_DROWSE           = 54,
+   SPL_SLOW             = 55,
+   SPL_DUST_DEVIL       = 56,
 
-#define SPL_RAISE_MAG        29 /* P R O T E C T I O N */
-#define SPL_RAISE_DIV        30
-#define SPL_RAISE_STR        31
-#define SPL_RAISE_DEX        32
-#define SPL_RAISE_CON        33
-#define SPL_RAISE_CHA        34
-#define SPL_RAISE_BRA        35
-#define SPL_SUN_RAY          36
-#define SPL_DIVINE_RESIST    37
-#define SPL_QUICKEN          38
-#define SPL_HASTE            39
-#define SPL_RAISE_SUMMONING  40
-#define SPL_AWAKEN           41
-#define SPL_MIND_SHIELD      42
-#define SPL_HEAT_RESI        43
-#define SPL_COLD_RESI        44
-#define SPL_ELECTRICITY_RESI 45
-#define SPL_POISON_RESI      46
-#define SPL_ACID_RESI        47
-#define SPL_PRO_EVIL         48
-#define SPL_SANCTUARY        49
-#define SPL_DISPEL_MAGIC     50
-#define SPL_SUSTAIN          51
-#define SPL_LOCK             52
-#define SPL_UNLOCK           53
-#define SPL_DROWSE           54
-#define SPL_SLOW             55
-#define SPL_DUST_DEVIL       56
+   SPL_DET_ALIGN        = 57, /* D E T E C T I O N */
+   SPL_DET_INVISIBLE    = 58,
+   SPL_DET_MAGIC        = 59,
+   SPL_DET_POISON       = 60,
+   SPL_DET_UNDEAD       = 61,
+   SPL_DET_CURSE        = 62,
+   SPL_SENSE_LIFE       = 63,
+   SPL_IDENTIFY_1       = 64,
+   SPL_IDENTIFY_2       = 65,
 
-#define SPL_DET_ALIGN     57 /* D E T E C T I O N */
-#define SPL_DET_INVISIBLE 58
-#define SPL_DET_MAGIC     59
-#define SPL_DET_POISON    60
-#define SPL_DET_UNDEAD    61
-#define SPL_DET_CURSE     62
-#define SPL_SENSE_LIFE    63
-#define SPL_IDENTIFY_1    64
-#define SPL_IDENTIFY_2    65
+   SPL_RANDOM_TELEPORT  = 66, /* S U M M O N I N G */
+   SPL_CLEAR_SKIES      = 67,
+   SPL_STORM_CALL       = 68,
+   SPL_WORD_OF_RECALL   = 69,
+   SPL_CONTROL_TELEPORT = 70,
+   SPL_MINOR_GATE       = 71,
+   SPL_GATE             = 72,
 
-#define SPL_RANDOM_TELEPORT  66 /* S U M M O N I N G */
-#define SPL_CLEAR_SKIES      67
-#define SPL_STORM_CALL       68
-#define SPL_WORD_OF_RECALL   69
-#define SPL_CONTROL_TELEPORT 70
-#define SPL_MINOR_GATE       71
-#define SPL_GATE             72
+   SPL_CREATE_FOOD      = 73, /* C R E A T I O N */
+   SPL_CREATE_WATER     = 74,
+   SPL_LIGHT_1          = 75,
+   SPL_LIGHT_2          = 76,
+   SPL_DARKNESS_1       = 77,
+   SPL_DARKNESS_2       = 78,
+   SPL_STUN             = 79,
+   SPL_HOLD             = 80,
+   SPL_ANIMATE_DEAD     = 81,
+   SPL_LEATHER_SKIN     = 82,
+   SPL_BARK_SKIN        = 83,
+   SPL_CONTROL_UNDEAD   = 84,
+   SPL_BONE_SKIN        = 85,
+   SPL_STONE_SKIN       = 86,
+   SPL_AID              = 87,
 
-#define SPL_CREATE_FOOD    73 /* C R E A T I O N */
-#define SPL_CREATE_WATER   74
-#define SPL_LIGHT_1        75
-#define SPL_LIGHT_2        76
-#define SPL_DARKNESS_1     77
-#define SPL_DARKNESS_2     78
-#define SPL_STUN           79
-#define SPL_HOLD           80
-#define SPL_ANIMATE_DEAD   81
-#define SPL_LEATHER_SKIN   82
-#define SPL_BARK_SKIN      83
-#define SPL_CONTROL_UNDEAD 84
-#define SPL_BONE_SKIN      85
-#define SPL_STONE_SKIN     86
-#define SPL_AID            87
+   SPL_COLOURSPRAY_1    = 88, /* M I N D */
+   SPL_COLOURSPRAY_2    = 89,
+   SPL_COLOURSPRAY_3    = 90,
+   SPL_INVISIBILITY     = 91,
+   SPL_WIZARD_EYE       = 92,
+   SPL_FEAR             = 93,
+   SPL_CONFUSION        = 94,
+   SPL_SLEEP            = 95,
+   SPL_XRAY_VISION      = 96,
+   SPL_CALM             = 97,
+   SPL_SUMMER_RAIN      = 98,
+   SPL_COMMAND          = 99,
+   SPL_LEAVING          = 100,
 
-#define SPL_COLOURSPRAY_1 88 /* M I N D */
-#define SPL_COLOURSPRAY_2 89
-#define SPL_COLOURSPRAY_3 90
-#define SPL_INVISIBILITY  91
-#define SPL_WIZARD_EYE    92
-#define SPL_FEAR          93
-#define SPL_CONFUSION     94
-#define SPL_SLEEP         95
-#define SPL_XRAY_VISION   96
-#define SPL_CALM          97
-#define SPL_SUMMER_RAIN   98
-#define SPL_COMMAND       99
-#define SPL_LEAVING       100
+   SPL_FIREBALL_1       = 101, /* H E A T */
+   SPL_FIREBALL_2       = 102,
+   SPL_FIREBALL_3       = 103,
 
-#define SPL_FIREBALL_1 101 /* H E A T */
-#define SPL_FIREBALL_2 102
-#define SPL_FIREBALL_3 103
+   SPL_FROSTBALL_1      = 104, /* C O L D */
+   SPL_FROSTBALL_2      = 105,
+   SPL_FROSTBALL_3      = 106,
 
-#define SPL_FROSTBALL_1 104 /* C O L D */
-#define SPL_FROSTBALL_2 105
-#define SPL_FROSTBALL_3 106
+   SPL_LIGHTNING_1      = 107, /* C E L L */
+   SPL_LIGHTNING_2      = 108,
+   SPL_LIGHTNING_3      = 109,
 
-#define SPL_LIGHTNING_1 107 /* C E L L */
-#define SPL_LIGHTNING_2 108
-#define SPL_LIGHTNING_3 109
+   SPL_STINKING_CLOUD_1 = 110, /* I N T E R N A L */
+   SPL_STINKING_CLOUD_2 = 111,
+   SPL_STINKING_CLOUD_3 = 112,
+   SPL_POISON           = 113,
+   SPL_REMOVE_POISON    = 114,
+   SPL_ENERGY_DRAIN     = 115,
+   SPL_DISEASE_1        = 116,
+   SPL_DISEASE_2        = 117,
+   SPL_REM_DISEASE      = 118,
 
-#define SPL_STINKING_CLOUD_1 110 /* I N T E R N A L */
-#define SPL_STINKING_CLOUD_2 111
-#define SPL_STINKING_CLOUD_3 112
-#define SPL_POISON           113
-#define SPL_REMOVE_POISON    114
-#define SPL_ENERGY_DRAIN     115
-#define SPL_DISEASE_1        116
-#define SPL_DISEASE_2        117
-#define SPL_REM_DISEASE      118
+   SPL_ACIDBALL_1       = 119, /* E X T E R N A L */
+   SPL_ACIDBALL_2       = 120,
+   SPL_ACIDBALL_3       = 121,
 
-#define SPL_ACIDBALL_1 119 /* E X T E R N A L */
-#define SPL_ACIDBALL_2 120
-#define SPL_ACIDBALL_3 121
+   SPL_MANA_BOOST       = 122, /* Creation */
+   SPL_FIND_PATH        = 123, /* Divine   */
+   SPL_DISPEL_GOOD      = 124,
+   SPL_PRO_GOOD         = 125,
+   SPL_TRANSPORT        = 126,
 
-#define SPL_MANA_BOOST  122 /* Creation */
-#define SPL_FIND_PATH   123 /* Divine   */
-#define SPL_DISPEL_GOOD 124
-#define SPL_PRO_GOOD    125
-#define SPL_TRANSPORT   126
+   SPL_FIRE_BREATH      = 127,
+   SPL_FROST_BREATH     = 128,
+   SPL_LIGHTNING_BREATH = 129,
+   SPL_ACID_BREATH      = 130,
+   SPL_GAS_BREATH       = 131,
+   SPL_LIGHT_BREATH     = 132,
+   SPL_HOLD_MONSTER     = 133,
+   SPL_HOLD_UNDEAD      = 134,
+   SPL_RAISE_DEAD       = 135,
+   SPL_RESURRECTION     = 136,
+   SPL_TOTAL_RECALL     = 137,
+   SPL_UNDEAD_DOOR      = 138,
+   SPL_LIFE_PROTECTION  = 139,
 
-#define SPL_FIRE_BREATH      127
-#define SPL_FROST_BREATH     128
-#define SPL_LIGHTNING_BREATH 129
-#define SPL_ACID_BREATH      130
-#define SPL_GAS_BREATH       131
-#define SPL_LIGHT_BREATH     132
-#define SPL_HOLD_MONSTER     133
-#define SPL_HOLD_UNDEAD      134
-#define SPL_RAISE_DEAD       135
-#define SPL_RESURRECTION     136
-#define SPL_TOTAL_RECALL     137
-#define SPL_UNDEAD_DOOR      138
-#define SPL_LIFE_PROTECTION  139
+   SPL_ENERGY_BOLT      = 140,
+   SPL_CLENCHED_FIST    = 141,
+   SPL_METEOR_SHOWER    = 142,
+   SPL_SUN_BEAM         = 143,
+   SPL_SOLAR_FLARE      = 144,
 
-#define SPL_ENERGY_BOLT   140
-#define SPL_CLENCHED_FIST 141
-#define SPL_METEOR_SHOWER 142
-#define SPL_SUN_BEAM      143
-#define SPL_SOLAR_FLARE   144
+   SPL_SUMMON_DEVIL     = 145,
+   SPL_SUMMON_DEMON     = 146,
+   SPL_SUMMON_FIRE      = 147,
+   SPL_SUMMON_WATER     = 148,
+   SPL_SUMMON_AIR       = 149,
+   SPL_SUMMON_EARTH     = 150,
 
-#define SPL_SUMMON_DEVIL 145
-#define SPL_SUMMON_DEMON 146
-#define SPL_SUMMON_FIRE  147
-#define SPL_SUMMON_WATER 148
-#define SPL_SUMMON_AIR   149
-#define SPL_SUMMON_EARTH 150
+   SPL_CHARGE_WAND      = 151,
+   SPL_CHARGE_STAFF     = 152,
+   SPL_MENDING          = 153,
+   SPL_REPAIR           = 154,
+   SPL_RECONSTRUCT      = 155,
+   SPL_SENDING          = 156,
+   SPL_REFIT            = 157,
+   SPL_FIND_WANTED      = 158,
+   SPL_LOCATE_WANTED    = 159,
 
-#define SPL_CHARGE_WAND   151
-#define SPL_CHARGE_STAFF  152
-#define SPL_MENDING       153
-#define SPL_REPAIR        154
-#define SPL_RECONSTRUCT   155
-#define SPL_SENDING       156
-#define SPL_REFIT         157
-#define SPL_FIND_WANTED   158
-#define SPL_LOCATE_WANTED 159
+   /* Just insert any new spells here... just keep incrementing by one */
 
-/* Just insert any new spells here... just keep incrementing by one */
+   SPL_STORM_GATE       = 160,
+   SPL_SUN_GLOBE        = 161,
+   SPL_MAGIC_CANDLE     = 162,
+   SPL_SONIC_BREATH     = 163,
+   SPL_SHARD_BREATH     = 164,
+   SPL_CONE_SHARD       = 165,
+   SPL_SACRED           = 166,
 
-#define SPL_STORM_GATE   160
-#define SPL_SUN_GLOBE    161
-#define SPL_MAGIC_CANDLE 162
-#define SPL_SONIC_BREATH 163
-#define SPL_SHARD_BREATH 164
-#define SPL_CONE_SHARD   165
-#define SPL_SACRED       166
+   SPL_BLANK1           = 167,
+   SPL_BLANK2           = 168,
+   SPL_BLANK3           = 169,
+   SPL_BLANK4           = 170,
+   SPL_BLANK5           = 171,
+   SPL_BLANK6           = 172,
+   SPL_BLANK7           = 173,
+   SPL_BLANK8           = 174,
+   SPL_BLANK9           = 175,
 
-#define SPL_BLANK1 167
-#define SPL_BLANK2 168
-#define SPL_BLANK3 169
-#define SPL_BLANK4 170
-#define SPL_BLANK5 171
-#define SPL_BLANK6 172
-#define SPL_BLANK7 173
-#define SPL_BLANK8 174
-#define SPL_BLANK9 175
-
-#define SPL_TREE_MAX 220 /* #[0..167] = 168 */
+   SPL_TREE_MAX         = 220, /* #[0..167] ==168, */
+};
 
 /* ..................................................................... */
 /*                              S K I L L S                              */
