@@ -797,14 +797,13 @@ enum LiquidType
    LIQ_MAX       = 17,
 };
 /* If your can never empty it */
-#define INFINITE_LIQUID -1
+constexpr int INFINITE_LIQUID   = -1;
 
 /* ------------------------- Light Values  ------------------------------
  INFINITE_BURNTIME
-   Set this if the light source never burns out.
-
+ Set this if the light source never burns out.
 */
-#define INFINITE_BURNTIME -1
+constexpr int INFINITE_BURNTIME = -1;
 
 /* ------------------------- Speed  ------------------------------
    The combat speed is 12 by default and is lower when faster.
