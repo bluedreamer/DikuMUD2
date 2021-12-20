@@ -1479,22 +1479,23 @@ The function may share with others/continue command sequence
     When this bit is set, the next event 'time' will be randomly requested
     at (T=time):   [T-T/2..T+T/2]
 */
+enum SpecialFunctionBits
+{
+   SFB_PRIORITY = 0x0001, /* Dont allow SFUNS below when this is set   */
+   SFB_RANTIME  = 0x0002, /* Time variation                            */
+   SFB_CMD      = 0x0004, /* normal command                            */
+   SFB_TICK     = 0x0008, /* tick messages                             */
+   SFB_DEAD     = 0x0010, /* death message                             */
+   SFB_COM      = 0x0020, /* combat event                              */
+   SFB_MSG      = 0x0040, /* message event                             */
+   SFB_SAVE     = 0x0080, /* save event                                */
+   SFB_AWARE    = 0x0100, /* Activate self? (self awareness)           */
+   SFB_ACTIVATE = 0x0200, /* DIL only! .. on actiavtion                */
+   SFB_PRE      = 0x0400, /* Used to pre ack (block) messages          */
+   SFB_DONE     = 0x0800, /* Used to tell when something has been done */
 
-#define SFB_PRIORITY (0x0001) /* Dont allow SFUNS below when this is set   */
-#define SFB_RANTIME  (0x0002) /* Time variation                            */
-#define SFB_CMD      (0x0004) /* normal command                            */
-#define SFB_TICK     (0x0008) /* tick messages                             */
-#define SFB_DEAD     (0x0010) /* death message                             */
-#define SFB_COM      (0x0020) /* combat event                              */
-#define SFB_MSG      (0x0040) /* message event                             */
-#define SFB_SAVE     (0x0080) /* save event                                */
-#define SFB_AWARE    (0x0100) /* Activate self? (self awareness)           */
-#define SFB_ACTIVATE (0x0200) /* DIL only! .. on actiavtion                */
-#define SFB_PRE      (0x0400) /* Used to pre ack (block) messages          */
-#define SFB_DONE     (0x0800) /* Used to tell when something has been done */
-
-#define SFB_ALL (SFB_CMD | SFB_TICK | SFB_DEAD | SFB_COM | SFB_MSG | SFB_SAVE | SFB_PRE)
-
+   SFB_ALL      = SFB_CMD | SFB_TICK | SFB_DEAD | SFB_COM | SFB_MSG | SFB_SAVE | SFB_PRE,
+};
 /* ------------------------- Special Functions ------------------------------
 
 SFUN_DEATH_SEQ
