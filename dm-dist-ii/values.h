@@ -891,67 +891,68 @@ enum SkillType
            or use the predefined macros
 */
 
-#define WPN_ROOT      0 /* Root of weapon tree        */
-#define WPN_AXE_HAM   1 /* Axe/hammer category        */
-#define WPN_SWORD     2 /* Sword Category             */
-#define WPN_CLUB_MACE 3 /* Club/Mace/Flail Category   */
-#define WPN_POLEARM   4 /* Polearm category           */
-#define WPN_UNARMED   5 /* Natural attacks            */
-#define WPN_SPECIAL   6 /* Special weapons            */
-#define WPN_GROUP_MAX 7 /* #[0..6] of groups          */
+enum WeaponType
+{
+   WPN_ROOT         = 0, /* Root of weapon tree        */
+   WPN_AXE_HAM      = 1, /* Axe/hammer category        */
+   WPN_SWORD        = 2, /* Sword Category             */
+   WPN_CLUB_MACE    = 3, /* Club/Mace/Flail Category   */
+   WPN_POLEARM      = 4, /* Polearm category           */
+   WPN_UNARMED      = 5, /* Natural attacks            */
+   WPN_SPECIAL      = 6, /* Special weapons            */
+   WPN_GROUP_MAX    = 7, /* #[0..6] of groups          */
 
-#define WPN_BATTLE_AXE  7 /* Two Handed */
-#define WPN_HAND_AXE    8
-#define WPN_WAR_MATTOCK 9 /* Two Handed */
-#define WPN_WAR_HAMMER  10
+   WPN_BATTLE_AXE   = 7, /* Two Handed */
+   WPN_HAND_AXE     = 8,
+   WPN_WAR_MATTOCK  = 9, /* Two Handed */
+   WPN_WAR_HAMMER   = 10,
 
-#define WPN_GREAT_SWORD 11 /* Two Handed */
-#define WPN_SCIMITAR    12
-#define WPN_KATANA      13
-#define WPN_FALCHION    14
-#define WPN_KOPESH      15
-#define WPN_BROAD_SWORD 16
-#define WPN_LONG_SWORD  17
-#define WPN_RAPIER      18
-#define WPN_SHORT_SWORD 19
-#define WPN_DAGGER      20
+   WPN_GREAT_SWORD  = 11, /* Two Handed */
+   WPN_SCIMITAR     = 12,
+   WPN_KATANA       = 13,
+   WPN_FALCHION     = 14,
+   WPN_KOPESH       = 15,
+   WPN_BROAD_SWORD  = 16,
+   WPN_LONG_SWORD   = 17,
+   WPN_RAPIER       = 18,
+   WPN_SHORT_SWORD  = 19,
+   WPN_DAGGER       = 20,
 
-#define WPN_BATTLE_MACE  21 /* Two Handed */
-#define WPN_MACE         22
-#define WPN_BATTLE_CLUB  23 /* Two handed */
-#define WPN_CLUB         24
-#define WPN_MORNING_STAR 25
-#define WPN_FLAIL        26
+   WPN_BATTLE_MACE  = 21, /* Two Handed */
+   WPN_MACE         = 22,
+   WPN_BATTLE_CLUB  = 23, /* Two handed */
+   WPN_CLUB         = 24,
+   WPN_MORNING_STAR = 25,
+   WPN_FLAIL        = 26,
 
-#define WPN_QUARTERSTAFF 27
-#define WPN_SPEAR        28
-#define WPN_HALBERD      29
-#define WPN_BARDICHE     30
-#define WPN_SICKLE       31
-#define WPN_SCYTHE       32 /* Two handed */
-#define WPN_TRIDENT      33
+   WPN_QUARTERSTAFF = 27,
+   WPN_SPEAR        = 28,
+   WPN_HALBERD      = 29,
+   WPN_BARDICHE     = 30,
+   WPN_SICKLE       = 31,
+   WPN_SCYTHE       = 32, /* Two handed */
+   WPN_TRIDENT      = 33,
 
-#define WPN_FIST  34
-#define WPN_KICK  35
-#define WPN_BITE  36
-#define WPN_STING 37
-#define WPN_CLAW  38
-#define WPN_CRUSH 39
+   WPN_FIST         = 34,
+   WPN_KICK         = 35,
+   WPN_BITE         = 36,
+   WPN_STING        = 37,
+   WPN_CLAW         = 38,
+   WPN_CRUSH        = 39,
 
-#define WPN_WHIP      40
-#define WPN_WAKIZASHI 41
-#define WPN_BOW       42
-#define WPN_THROW     43
+   WPN_WHIP         = 40,
+   WPN_WAKIZASHI    = 41,
+   WPN_BOW          = 42,
+   WPN_THROW        = 43,
 
-#define WPN_BLANK0 44
-#define WPN_BLANK1 45
-#define WPN_BLANK2 46
-#define WPN_BLANK3 47
-#define WPN_BLANK4 48
-
-/* Insert any new definitions here... */
-
-#define WPN_TREE_MAX 60 /* Top of weapon list  #[0..48] = 49 */
+   WPN_BLANK_0      = 44,
+   WPN_BLANK_1      = 45,
+   WPN_BLANK_2      = 46,
+   WPN_BLANK_3      = 47,
+   WPN_BLANK_4      = 48,
+   /* Insert any new definitions here... */
+   WPN_TREE_MAX     = 60, /* Top of weapon list  #[=0,..=48,] = =49, */
+};
 
 /* For use with armours and shields, in the 'value[X]' */
 
