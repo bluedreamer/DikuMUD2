@@ -40,14 +40,14 @@ public:
    inline int size(void); // Total size of the array.
    inline int used(void); // Currently used in the array.
 
-   Type      *insert(void);    // Make room for element and returns ref for it.
-   void       remove(void);    // Remove oldest element.
-   Type      *reference(void); // Get reference for oldest element.
+   Type *insert(void);    // Make room for element and returns ref for it.
+   void  remove(void);    // Remove oldest element.
+   Type *reference(void); // Get reference for oldest element.
 
 protected:
-   int   nSize;  // Total size of the array
-   int   nElems; // How many elements currently in the array
-   int   nIdx;   // Pointer to the oldest inserted element
+   int nSize;  // Total size of the array
+   int nElems; // How many elements currently in the array
+   int nIdx;   // Pointer to the oldest inserted element
 
    Type *pArray;
 };

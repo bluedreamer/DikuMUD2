@@ -44,10 +44,10 @@ extern void stat_bank(const unit_data *ch, unit_data *u); /* bank.c */
 
 static void stat_world_extra(const unit_data *ch)
 {
-   char              buf[MAX_STRING_LENGTH];
-   char             *b;
-   struct zone_type *zp;
-   int               i;
+   char       buf[MAX_STRING_LENGTH];
+   char      *b;
+   zone_type *zp;
+   int        i;
 
    b = buf;
    sprintf(b, "World zones (%d):\n\r", zone_info.no_of_zones);
@@ -88,12 +88,12 @@ static void stat_swap(unit_data *ch)
 
 static void stat_memory(unit_data *ch)
 {
-   char       buf[MAX_STRING_LENGTH];
+   char buf[MAX_STRING_LENGTH];
 
    extern int events;
 
-   void       memory_status(char *buf);
-   void       system_memory(unit_data * ch);
+   void memory_status(char *buf);
+   void system_memory(unit_data * ch);
 
    sprintf(buf, "Event queue entries: %d\n\r\n\r", events);
    send_to_char(buf, ch);
@@ -108,10 +108,10 @@ static void stat_world(unit_data *ch)
    extern int world_nonpc;
    extern int world_nopc;
 
-   char       buf[MAX_STRING_LENGTH];
-   time_t     now   = time(nullptr);
+   char   buf[MAX_STRING_LENGTH];
+   time_t now = time(nullptr);
 
-   char      *p     = ctime(&now);
+   char *p          = ctime(&now);
    p[strlen(p) - 1] = '\0';
 
    sprintf(buf,
@@ -145,12 +145,12 @@ static void stat_world(unit_data *ch)
 
 static char *stat_buffer, *stat_p;
 
-static void  stat_zone_reset(char *indnt, zone_reset_cmd *zrip, unit_data *ch)
+static void stat_zone_reset(char *indnt, zone_reset_cmd *zrip, unit_data *ch)
 {
    static const char *nums[] = {"max", "zonemax", "local"};
 
-   char               buf[100];
-   int                i;
+   char buf[100];
+   int  i;
 
    *stat_p = 0;
 
@@ -229,15 +229,15 @@ static void  stat_zone_reset(char *indnt, zone_reset_cmd *zrip, unit_data *ch)
    }
 }
 
-static void stat_zone(unit_data *ch, struct zone_type *zone)
+static void stat_zone(unit_data *ch, zone_type *zone)
 {
    static const char *reset_modes[] = {"Never Reset", "Reset When Empty", "Reset Always", "UNKNOWN"};
 
-   char               tmp[128];
-   char               buf[MAX_STRING_LENGTH];
-   bool               errors;
-   bool               info;
-   int                reset_mode = zone->reset_mode;
+   char tmp[128];
+   char buf[MAX_STRING_LENGTH];
+   bool errors;
+   bool info;
+   int  reset_mode = zone->reset_mode;
 
    if(is_in(reset_mode, 0, 2) == 0)
    {
@@ -286,11 +286,11 @@ static void stat_zone(unit_data *ch, struct zone_type *zone)
 
 static void stat_creators(unit_data *ch, char *arg)
 {
-   char              buf[4 * MAX_STRING_LENGTH];
-   char             *b;
-   char              tmp[1024];
-   int               found;
-   struct zone_type *z;
+   char       buf[4 * MAX_STRING_LENGTH];
+   char      *b;
+   char       tmp[1024];
+   int        found;
+   zone_type *z;
 
    if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
@@ -298,7 +298,7 @@ static void stat_creators(unit_data *ch, char *arg)
       return;
    }
 
-   b   = buf;
+   b = buf;
 
    arg = one_argument(arg, tmp);
 
@@ -348,7 +348,7 @@ static void stat_creators(unit_data *ch, char *arg)
 }
 
 // MS2020 modified to get rid of warnings
-static void stat_dil(const unit_data *ch, const struct zone_type *zone)
+static void stat_dil(const unit_data *ch, const zone_type *zone)
 {
    char         buf[MAX_STRING_LENGTH];
    char         buf2[MAX_STRING_LENGTH];
@@ -384,7 +384,7 @@ static void stat_dil(const unit_data *ch, const struct zone_type *zone)
 
 // Preserved original warning ridden code :)
 #ifdef MS2020
-static void stat_dil(const unit_data *ch, const struct zone_type *zone)
+static void stat_dil(const unit_data *ch, const zone_type *zone)
 {
    char         buf[MAX_STRING_LENGTH];
    diltemplate *tmpl;
@@ -415,23 +415,23 @@ static void stat_dil(const unit_data *ch, const struct zone_type *zone)
 }
 #endif
 
-static void extra_stat_zone(unit_data *ch, char *arg, struct zone_type *zone)
+static void extra_stat_zone(unit_data *ch, char *arg, zone_type *zone)
 {
-   char               buf[MAX_STRING_LENGTH];
-   char               filename[128];
-   int                argno;
-   file_index_type   *fi;
-   int                search_type = 0;
-   int                i;
+   char             buf[MAX_STRING_LENGTH];
+   char             filename[128];
+   int              argno;
+   file_index_type *fi;
+   int              search_type = 0;
+   int              i;
 
-   void               stat_dijkstraa(unit_data * ch, struct zone_type * z);
+   void stat_dijkstraa(unit_data * ch, zone_type * z);
 
-   static const char *zone_args[]    = {"mobiles", "objects", "rooms", "reset", "errors", "info", "path", "dil", nullptr};
+   static const char *zone_args[] = {"mobiles", "objects", "rooms", "reset", "errors", "info", "path", "dil", nullptr};
 
-   static int         search_types[] = {UNIT_ST_NPC, UNIT_ST_OBJ, UNIT_ST_ROOM};
+   static int search_types[] = {UNIT_ST_NPC, UNIT_ST_OBJ, UNIT_ST_ROOM};
 
-   arg                               = one_argument(arg, buf);
-   argno                             = search_block(buf, zone_args, 0);
+   arg   = one_argument(arg, buf);
+   argno = search_block(buf, zone_args, 0);
 
    if(argno == -1) /* Asked for a specific zone? */
    {
@@ -715,11 +715,11 @@ static void stat_affect(const unit_data *ch, unit_data *u)
 
 static void stat_func(const unit_data *ch, unit_data *u)
 {
-   extern struct unit_function_array_type unit_function_array[];
+   extern unit_function_array_type unit_function_array[];
 
-   char                                   buf[4096];
-   char                                   buf2[512];
-   unit_fptr                             *f;
+   char       buf[4096];
+   char       buf2[512];
+   unit_fptr *f;
 
    if(UNIT_FUNC(u) == nullptr)
    {
@@ -733,9 +733,9 @@ static void stat_func(const unit_data *ch, unit_data *u)
    {
       if(f->index == SFUN_DIL_INTERNAL)
       {
-         struct dilprg *prg;
+         dilprg *prg;
 
-         if((prg = (struct dilprg *)f->data) != nullptr)
+         if((prg = (dilprg *)f->data) != nullptr)
          {
             sprintf(buf,
                     "DIL Name: %s@%s\n\r",
@@ -920,7 +920,7 @@ static void stat_ip(const unit_data *ch, unit_data *u)
        : (obj_data[idx].v[num] == 1 ? (OBJ_VALUE(u, num) ? sprinttype(NULL, OBJ_VALUE(u, num), spl_text) : "None")                         \
                                     : (obj_data[idx].v[num] == 2 ? sprinttype(NULL, OBJ_VALUE(u, num), wpn_text) : "")))
 
-auto stat_obj_data(unit_data *u, struct obj_type_t *obj_data) -> char *
+auto stat_obj_data(unit_data *u, obj_type_t *obj_data) -> char *
 {
    static char result[512];
    const char *special_str = "";
@@ -971,7 +971,7 @@ static void stat_data(const unit_data *ch, unit_data *u)
     *		A 6th trailing format-argument inserts a special string
     *		  as according to the switch following...
     */
-   static struct obj_type_t wstat_obj_type[] = {
+   static obj_type_t wstat_obj_type[] = {
       {"Unused", {0, 0, 0, 0, 0}},                                /*UNUSED    */
       {"Hours Left %s   Light Sources %s", {0, 0, 0, 0, 0}},      /*LIGHT     */
       {"Power %s\n\rSpells : '%s', '%s', '%s'", {0, 1, 1, 1, 0}}, /*SCROLL    */
@@ -1248,10 +1248,10 @@ static void stat_descriptor(const unit_data *ch, unit_data *u)
 
 void do_wstat(unit_data *ch, char *argument, const command_info *cmd)
 {
-   char               buf[256];
-   unit_data         *u    = nullptr;
-   struct zone_type  *zone = nullptr;
-   int                argno;
+   char       buf[256];
+   unit_data *u    = nullptr;
+   zone_type *zone = nullptr;
+   int        argno;
 
    static const char *arguments[] = {"data",
                                      "contents",

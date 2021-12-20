@@ -585,7 +585,7 @@ auto search_block_abbrevs(const char *oarg, const char **list, const char **end)
    int         match;
    int         bestidx;
 
-   i       = str_lower(skip_spaces(oarg), arg, sizeof(arg));
+   i = str_lower(skip_spaces(oarg), arg, sizeof(arg));
 
    bestidx = -1;
    bestpos = nullptr;
@@ -1020,7 +1020,7 @@ void split_fi_ref(const char *str, char *zone, char *name)
       strncpy(name, str, l);
       name[l] = '\0';
 
-      l       = std::min(strlen(c + 1), static_cast<size_t>(FI_MAX_ZONENAME));
+      l = std::min(strlen(c + 1), static_cast<size_t>(FI_MAX_ZONENAME));
       if((t = strchr(c + 1, ' ')) != nullptr)
       {
          l = std::min(static_cast<long>(l), t - (c + 1));
@@ -1034,7 +1034,7 @@ void split_fi_ref(const char *str, char *zone, char *name)
       strncpy(zone, str, l);
       zone[l] = '\0';
 
-      l       = std::min(strlen(c + 1), static_cast<size_t>(FI_MAX_UNITNAME));
+      l = std::min(strlen(c + 1), static_cast<size_t>(FI_MAX_UNITNAME));
       if((t = strchr(c + 1, ' ')) != nullptr)
       {
          l = std::min(static_cast<long>(l), t - (c + 1));

@@ -5,8 +5,9 @@
 #define UVI(i) (unit_vector.units[i])
 #define UVITOP (unit_vector.top)
 
-struct unit_vector_data
+class unit_vector_data
 {
+public:
    unit_data **units;
    int         size;
    int         top;

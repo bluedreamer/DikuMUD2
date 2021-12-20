@@ -69,10 +69,10 @@ void doasm(int asmtype)
 
 void dopragma(int aaa, int bbb, const char *ccc)
 {
-   int           ltr_flag;
-   int           no_flag;
-   struct ppdir *pp;
-   char          pragbuf[PRAGBUFSIZE];
+   int    ltr_flag;
+   int    no_flag;
+   ppdir *pp;
+   char   pragbuf[PRAGBUFSIZE];
 
    no_flag = FALSE; /* "no" not encountered */
 
@@ -202,9 +202,9 @@ void pragmsg(int aaa, int bbb, const char *ccc)
 
 void pragopt(int dummy, int no_flag, const char *name)
 {
-   char           buf[TOKENSIZE + 1];
-   struct symtab *sym;
-   char          *toptr;
+   char    buf[TOKENSIZE + 1];
+   symtab *sym;
+   char   *toptr;
 
    if(strcmp(name, "arg_string") == EQUAL)
    {

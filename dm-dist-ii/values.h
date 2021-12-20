@@ -84,10 +84,10 @@ constexpr int SECS_PER_REAL_HOUR = (60 * SECS_PER_REAL_MIN);
 constexpr int SECS_PER_REAL_DAY  = (24 * SECS_PER_REAL_HOUR);
 constexpr int SECS_PER_REAL_YEAR = (365 * SECS_PER_REAL_DAY);
 
-constexpr int MUD_DAY            = 24; /* Twentyfour hours per day    */
-constexpr int MUD_WEEK           = 7;  /* Seven mud days per mud week */
-constexpr int MUD_MONTH          = 14; /* 21 mud days per mud month   */
-constexpr int MUD_YEAR           = 9;  /* 9 mud months per mud year   */
+constexpr int MUD_DAY   = 24; /* Twentyfour hours per day    */
+constexpr int MUD_WEEK  = 7;  /* Seven mud days per mud week */
+constexpr int MUD_MONTH = 14; /* 21 mud days per mud month   */
+constexpr int MUD_YEAR  = 9;  /* 9 mud months per mud year   */
 
 constexpr int SECS_PER_MUD_HOUR  = (5 * SECS_PER_REAL_MIN);
 constexpr int SECS_PER_MUD_DAY   = (24 * SECS_PER_MUD_HOUR);
@@ -797,7 +797,7 @@ enum LiquidType
    LIQ_MAX       = 17,
 };
 /* If your can never empty it */
-constexpr int INFINITE_LIQUID   = -1;
+constexpr int INFINITE_LIQUID = -1;
 
 /* ------------------------- Light Values  ------------------------------
  INFINITE_BURNTIME
@@ -893,30 +893,30 @@ enum SkillType
 
 enum WeaponType
 {
-   WPN_ROOT         = 0, /* Root of weapon tree        */
-   WPN_AXE_HAM      = 1, /* Axe/hammer category        */
-   WPN_SWORD        = 2, /* Sword Category             */
-   WPN_CLUB_MACE    = 3, /* Club/Mace/Flail Category   */
-   WPN_POLEARM      = 4, /* Polearm category           */
-   WPN_UNARMED      = 5, /* Natural attacks            */
-   WPN_SPECIAL      = 6, /* Special weapons            */
-   WPN_GROUP_MAX    = 7, /* #[0..6] of groups          */
+   WPN_ROOT      = 0, /* Root of weapon tree        */
+   WPN_AXE_HAM   = 1, /* Axe/hammer category        */
+   WPN_SWORD     = 2, /* Sword Category             */
+   WPN_CLUB_MACE = 3, /* Club/Mace/Flail Category   */
+   WPN_POLEARM   = 4, /* Polearm category           */
+   WPN_UNARMED   = 5, /* Natural attacks            */
+   WPN_SPECIAL   = 6, /* Special weapons            */
+   WPN_GROUP_MAX = 7, /* #[0..6] of groups          */
 
-   WPN_BATTLE_AXE   = 7, /* Two Handed */
-   WPN_HAND_AXE     = 8,
-   WPN_WAR_MATTOCK  = 9, /* Two Handed */
-   WPN_WAR_HAMMER   = 10,
+   WPN_BATTLE_AXE  = 7, /* Two Handed */
+   WPN_HAND_AXE    = 8,
+   WPN_WAR_MATTOCK = 9, /* Two Handed */
+   WPN_WAR_HAMMER  = 10,
 
-   WPN_GREAT_SWORD  = 11, /* Two Handed */
-   WPN_SCIMITAR     = 12,
-   WPN_KATANA       = 13,
-   WPN_FALCHION     = 14,
-   WPN_KOPESH       = 15,
-   WPN_BROAD_SWORD  = 16,
-   WPN_LONG_SWORD   = 17,
-   WPN_RAPIER       = 18,
-   WPN_SHORT_SWORD  = 19,
-   WPN_DAGGER       = 20,
+   WPN_GREAT_SWORD = 11, /* Two Handed */
+   WPN_SCIMITAR    = 12,
+   WPN_KATANA      = 13,
+   WPN_FALCHION    = 14,
+   WPN_KOPESH      = 15,
+   WPN_BROAD_SWORD = 16,
+   WPN_LONG_SWORD  = 17,
+   WPN_RAPIER      = 18,
+   WPN_SHORT_SWORD = 19,
+   WPN_DAGGER      = 20,
 
    WPN_BATTLE_MACE  = 21, /* Two Handed */
    WPN_MACE         = 22,
@@ -933,25 +933,25 @@ enum WeaponType
    WPN_SCYTHE       = 32, /* Two handed */
    WPN_TRIDENT      = 33,
 
-   WPN_FIST         = 34,
-   WPN_KICK         = 35,
-   WPN_BITE         = 36,
-   WPN_STING        = 37,
-   WPN_CLAW         = 38,
-   WPN_CRUSH        = 39,
+   WPN_FIST  = 34,
+   WPN_KICK  = 35,
+   WPN_BITE  = 36,
+   WPN_STING = 37,
+   WPN_CLAW  = 38,
+   WPN_CRUSH = 39,
 
-   WPN_WHIP         = 40,
-   WPN_WAKIZASHI    = 41,
-   WPN_BOW          = 42,
-   WPN_THROW        = 43,
+   WPN_WHIP      = 40,
+   WPN_WAKIZASHI = 41,
+   WPN_BOW       = 42,
+   WPN_THROW     = 43,
 
-   WPN_BLANK_0      = 44,
-   WPN_BLANK_1      = 45,
-   WPN_BLANK_2      = 46,
-   WPN_BLANK_3      = 47,
-   WPN_BLANK_4      = 48,
+   WPN_BLANK_0  = 44,
+   WPN_BLANK_1  = 45,
+   WPN_BLANK_2  = 46,
+   WPN_BLANK_3  = 47,
+   WPN_BLANK_4  = 48,
    /* Insert any new definitions here... */
-   WPN_TREE_MAX     = 60, /* Top of weapon list  #[=0,..=48,] = =49, */
+   WPN_TREE_MAX = 60, /* Top of weapon list  #[=0,..=48,] = =49, */
 };
 
 /* For use with armours and shields, in the 'value[X]' */
@@ -977,175 +977,175 @@ enum ShieldMethod
 
 enum Race
 {
-   RACE_HUMAN           = 0, /* PC race */
-   RACE_ELF             = 1, /* PC race */
-   RACE_DWARF           = 2, /* PC race */
-   RACE_HALFLING        = 3, /* PC race */
-   RACE_GNOME           = 4, /* PC race */
-   RACE_HALF_ORC        = 5,
-   RACE_HALF_OGRE       = 6,
-   RACE_HALF_ELF        = 7,
-   RACE_BROWNIE         = 8,
-   RACE_GROLL           = 9,
-   RACE_DARK_ELF        = 10,
+   RACE_HUMAN     = 0, /* PC race */
+   RACE_ELF       = 1, /* PC race */
+   RACE_DWARF     = 2, /* PC race */
+   RACE_HALFLING  = 3, /* PC race */
+   RACE_GNOME     = 4, /* PC race */
+   RACE_HALF_ORC  = 5,
+   RACE_HALF_OGRE = 6,
+   RACE_HALF_ELF  = 7,
+   RACE_BROWNIE   = 8,
+   RACE_GROLL     = 9,
+   RACE_DARK_ELF  = 10,
 
-   RACE_BLANK0          = 11, /* PC race unused */
-   RACE_BLANK1          = 12, /* PC race unused */
-   RACE_BLANK2          = 13, /* PC race unused */
-   RACE_BLANK3          = 14, /* PC race unused */
-   RACE_BLANK4          = 15, /* PC race unused */
-   RACE_BLANK5          = 16, /* PC race unused */
-   RACE_BLANK6          = 17, /* PC race unused */
-   RACE_BLANK7          = 18, /* PC race unused */
-   RACE_BLANK8          = 19, /* PC race unused */
-   RACE_BLANK9          = 20, /* PC race unused */
+   RACE_BLANK0 = 11, /* PC race unused */
+   RACE_BLANK1 = 12, /* PC race unused */
+   RACE_BLANK2 = 13, /* PC race unused */
+   RACE_BLANK3 = 14, /* PC race unused */
+   RACE_BLANK4 = 15, /* PC race unused */
+   RACE_BLANK5 = 16, /* PC race unused */
+   RACE_BLANK6 = 17, /* PC race unused */
+   RACE_BLANK7 = 18, /* PC race unused */
+   RACE_BLANK8 = 19, /* PC race unused */
+   RACE_BLANK9 = 20, /* PC race unused */
 
-   PC_RACE_MAX          = 21, /* There are=21, player races [0..20] */
+   PC_RACE_MAX = 21, /* There are=21, player races [0..20] */
 
-   RACE_SKAVEN          = 120,
-   RACE_GNOLL           = 121,
-   RACE_GOBLIN          = 122,
-   RACE_HOBGOBLIN       = 123,
-   RACE_KOBOLD          = 124,
-   RACE_NIXIE           = 125,
-   RACE_NYMPH           = 126,
-   RACE_OGRE            = 127,
-   RACE_ORC             = 128,
-   RACE_SATYR           = 129,
-   RACE_FAUN            = 130,
-   RACE_SPRITE          = 131,
-   RACE_DRYAD           = 132,
-   RACE_LEPRECHAUN      = 133,
-   RACE_PIXIE           = 134,
-   RACE_SYLPH           = 135,
-   RACE_HERMIT          = 136,
-   RACE_SHARGUGH        = 137,
-   RACE_GIANT           = 138, /* Prolly a humanoid..   */
-   RACE_WARDEN          = 139, /* Warden???             */
-   RACE_TROLL           = 140,
-   RACE_NORSE_GOD       = 142, /* Hmmmm. prolly need better categories */
-   RACE_MERMAID         = 145,
-   RACE_SIREN           = 146,
-   RACE_NAIAD           = 147,
-   RACE_MERMAN          = 148,
-   RACE_MINOTAUR        = 149,
-   RACE_YETI            = 150,
+   RACE_SKAVEN     = 120,
+   RACE_GNOLL      = 121,
+   RACE_GOBLIN     = 122,
+   RACE_HOBGOBLIN  = 123,
+   RACE_KOBOLD     = 124,
+   RACE_NIXIE      = 125,
+   RACE_NYMPH      = 126,
+   RACE_OGRE       = 127,
+   RACE_ORC        = 128,
+   RACE_SATYR      = 129,
+   RACE_FAUN       = 130,
+   RACE_SPRITE     = 131,
+   RACE_DRYAD      = 132,
+   RACE_LEPRECHAUN = 133,
+   RACE_PIXIE      = 134,
+   RACE_SYLPH      = 135,
+   RACE_HERMIT     = 136,
+   RACE_SHARGUGH   = 137,
+   RACE_GIANT      = 138, /* Prolly a humanoid..   */
+   RACE_WARDEN     = 139, /* Warden???             */
+   RACE_TROLL      = 140,
+   RACE_NORSE_GOD  = 142, /* Hmmmm. prolly need better categories */
+   RACE_MERMAID    = 145,
+   RACE_SIREN      = 146,
+   RACE_NAIAD      = 147,
+   RACE_MERMAN     = 148,
+   RACE_MINOTAUR   = 149,
+   RACE_YETI       = 150,
 
-   RACE_OTHER_HUMANOID  = 999,
+   RACE_OTHER_HUMANOID = 999,
 
    /* Is Giant a humanoid or a creature? */
 
-   RACE_BEAR            = 1000,
-   RACE_DOG             = 1001,
-   RACE_WOLF            = 1002,
-   RACE_FOX             = 1003,
-   RACE_CAT             = 1004,
-   RACE_RABBIT          = 1005,
-   RACE_DEER            = 1006,
-   RACE_COW             = 1007,
-   RACE_HARE            = 1008,
-   RACE_GOAT            = 1009,
-   RACE_EAGLE           = 1010,
-   RACE_PIG             = 1011,
+   RACE_BEAR   = 1000,
+   RACE_DOG    = 1001,
+   RACE_WOLF   = 1002,
+   RACE_FOX    = 1003,
+   RACE_CAT    = 1004,
+   RACE_RABBIT = 1005,
+   RACE_DEER   = 1006,
+   RACE_COW    = 1007,
+   RACE_HARE   = 1008,
+   RACE_GOAT   = 1009,
+   RACE_EAGLE  = 1010,
+   RACE_PIG    = 1011,
 
-   RACE_DUCK            = 1100, /* This will interest the biologists... */
-   RACE_BIRD            = 1101, /* This will interest the biologists... */
-   RACE_RAT             = 1102,
-   RACE_HORSE           = 1103,
-   RACE_BADGER          = 1104,
-   RACE_SKUNK           = 1105,
-   RACE_BOAR            = 1106,
-   RACE_MOUSE           = 1107,
-   RACE_MONKEY          = 1108,
-   RACE_PORCUPINE       = 1110,
-   RACE_ELEPHANT        = 1112,
-   RACE_CAMEL           = 1113,
-   RACE_FERRET          = 1114,
-   RACE_VULTURE         = 1115,
-   RACE_SQUIRREL        = 1116,
-   RACE_OWL             = 1117,
-   RACE_LEMURE          = 1118, /* Half-monkey (Makier) */
-   RACE_ELK             = 1119, /* Larger deer (Whapiti-deer) */
-   RACE_LION            = 1120,
-   RACE_TIGER           = 1121,
-   RACE_LEOPARD         = 1122,
+   RACE_DUCK      = 1100, /* This will interest the biologists... */
+   RACE_BIRD      = 1101, /* This will interest the biologists... */
+   RACE_RAT       = 1102,
+   RACE_HORSE     = 1103,
+   RACE_BADGER    = 1104,
+   RACE_SKUNK     = 1105,
+   RACE_BOAR      = 1106,
+   RACE_MOUSE     = 1107,
+   RACE_MONKEY    = 1108,
+   RACE_PORCUPINE = 1110,
+   RACE_ELEPHANT  = 1112,
+   RACE_CAMEL     = 1113,
+   RACE_FERRET    = 1114,
+   RACE_VULTURE   = 1115,
+   RACE_SQUIRREL  = 1116,
+   RACE_OWL       = 1117,
+   RACE_LEMURE    = 1118, /* Half-monkey (Makier) */
+   RACE_ELK       = 1119, /* Larger deer (Whapiti-deer) */
+   RACE_LION      = 1120,
+   RACE_TIGER     = 1121,
+   RACE_LEOPARD   = 1122,
 
-   RACE_OTHER_MAMMAL    = 1999,
+   RACE_OTHER_MAMMAL = 1999,
 
-   RACE_TREE            = 2000,
-   RACE_VINE            = 2001,
-   RACE_FLOWER          = 2002,
-   RACE_SEAWEED         = 2003,
-   RACE_CACTUS          = 2004,
+   RACE_TREE    = 2000,
+   RACE_VINE    = 2001,
+   RACE_FLOWER  = 2002,
+   RACE_SEAWEED = 2003,
+   RACE_CACTUS  = 2004,
 
-   RACE_OTHER_PLANT     = 2999,
+   RACE_OTHER_PLANT = 2999,
 
-   RACE_MAGGOT          = 3000,
-   RACE_BEETLE          = 3001,
-   RACE_SPIDER          = 3002,
-   RACE_COCKROACH       = 3003,
-   RACE_BUTTERFLY       = 3004,
-   RACE_ANT             = 3005,
-   RACE_WORM            = 3006,
-   RACE_LEECH           = 3008,
-   RACE_DRAGONFLY       = 3009,
-   RACE_MOSQUITO        = 3010,
+   RACE_MAGGOT    = 3000,
+   RACE_BEETLE    = 3001,
+   RACE_SPIDER    = 3002,
+   RACE_COCKROACH = 3003,
+   RACE_BUTTERFLY = 3004,
+   RACE_ANT       = 3005,
+   RACE_WORM      = 3006,
+   RACE_LEECH     = 3008,
+   RACE_DRAGONFLY = 3009,
+   RACE_MOSQUITO  = 3010,
 
-   RACE_OTHER_INSECT    = 3999,
+   RACE_OTHER_INSECT = 3999,
 
-   RACE_LIZARD          = 4000,
-   RACE_SNAKE           = 4001,
-   RACE_FROG            = 4002,
-   RACE_ALLIGATOR       = 4004,
-   RACE_DINOSAUR        = 4005,
-   RACE_CHAMELEON       = 4006,
-   RACE_SCORPION        = 4007,
-   RACE_TURTLE          = 4008,
-   RACE_BAT             = 4009,
-   RACE_TOAD            = 4010,
+   RACE_LIZARD    = 4000,
+   RACE_SNAKE     = 4001,
+   RACE_FROG      = 4002,
+   RACE_ALLIGATOR = 4004,
+   RACE_DINOSAUR  = 4005,
+   RACE_CHAMELEON = 4006,
+   RACE_SCORPION  = 4007,
+   RACE_TURTLE    = 4008,
+   RACE_BAT       = 4009,
+   RACE_TOAD      = 4010,
 
-   RACE_OTHER_REPTILE   = 4999,
+   RACE_OTHER_REPTILE = 4999,
 
-   RACE_CAVE_WIGHT      = 5001, /* Some kinda creature... */
-   RACE_UR_VILE         = 5002, /* Some kinda creature... */
-   RACE_STONE_RENDER    = 5003, /* Some kinda creature... */
-   RACE_VAMPIRE         = 5005,
-   RACE_SLIME           = 5006,
-   RACE_WYRM            = 5007,
-   RACE_AUTOMATON       = 5008,
-   RACE_UNICORN         = 5009,
+   RACE_CAVE_WIGHT   = 5001, /* Some kinda creature... */
+   RACE_UR_VILE      = 5002, /* Some kinda creature... */
+   RACE_STONE_RENDER = 5003, /* Some kinda creature... */
+   RACE_VAMPIRE      = 5005,
+   RACE_SLIME        = 5006,
+   RACE_WYRM         = 5007,
+   RACE_AUTOMATON    = 5008,
+   RACE_UNICORN      = 5009,
 
-   RACE_DRAGON_MIN      = 5010, /* For use with special object */
-   RACE_DRAGON_BLACK    = 5010,
-   RACE_DRAGON_BLUE     = 5011,
-   RACE_DRAGON_GREEN    = 5012,
-   RACE_DRAGON_RED      = 5013,
-   RACE_DRAGON_WHITE    = 5014,
-   RACE_DRAGON_SILVER   = 5015,
-   RACE_DRAGON_TURTLE   = 5016,
-   RACE_DRAGON_LAVA     = 5017,
-   RACE_DRAGON_SHADOW   = 5018,
-   RACE_DRAGON_LIZARD   = 5019,
-   RACE_DRAGON_MAX      = 5020, /* For use with special object */
+   RACE_DRAGON_MIN    = 5010, /* For use with special object */
+   RACE_DRAGON_BLACK  = 5010,
+   RACE_DRAGON_BLUE   = 5011,
+   RACE_DRAGON_GREEN  = 5012,
+   RACE_DRAGON_RED    = 5013,
+   RACE_DRAGON_WHITE  = 5014,
+   RACE_DRAGON_SILVER = 5015,
+   RACE_DRAGON_TURTLE = 5016,
+   RACE_DRAGON_LAVA   = 5017,
+   RACE_DRAGON_SHADOW = 5018,
+   RACE_DRAGON_LIZARD = 5019,
+   RACE_DRAGON_MAX    = 5020, /* For use with special object */
 
-   RACE_LESSER_DEMON    = 5020, /* Approx. Level <=100,          */
-   RACE_GREATER_DEMON   = 5021, /* Approx. Level >=100,          */
-   RACE_SERVANT_DEMON   = 5022, /* Approx. < level=20,           */
-   RACE_PRINCE_DEMON    = 5023, /* Almost god, max level=149, (no more!) */
-   RACE_LESSER_DEVIL    = 5025, /* Approx. Level <=100, */
-   RACE_GREATER_DEVIL   = 5026, /* Approx. Level >=100, */
-   RACE_SHADOW_DEVIL    = 5027,
-   RACE_ARCH_DEVIL      = 5028,
+   RACE_LESSER_DEMON  = 5020, /* Approx. Level <=100,          */
+   RACE_GREATER_DEMON = 5021, /* Approx. Level >=100,          */
+   RACE_SERVANT_DEMON = 5022, /* Approx. < level=20,           */
+   RACE_PRINCE_DEMON  = 5023, /* Almost god, max level=149, (no more!) */
+   RACE_LESSER_DEVIL  = 5025, /* Approx. Level <=100, */
+   RACE_GREATER_DEVIL = 5026, /* Approx. Level >=100, */
+   RACE_SHADOW_DEVIL  = 5027,
+   RACE_ARCH_DEVIL    = 5028,
 
-   RACE_MEDUSA          = 5030,
-   RACE_WINGED_HORSE    = 5031,
-   RACE_GARGOYLE        = 5033,
-   RACE_GOLEM           = 5034,
-   RACE_YOGOLOTH        = 5035,
-   RACE_MIST_DWELLER    = 5036,
+   RACE_MEDUSA       = 5030,
+   RACE_WINGED_HORSE = 5031,
+   RACE_GARGOYLE     = 5033,
+   RACE_GOLEM        = 5034,
+   RACE_YOGOLOTH     = 5035,
+   RACE_MIST_DWELLER = 5036,
 
-   RACE_WEREWOLF        = 5037,
-   RACE_WERERAT         = 5038,
+   RACE_WEREWOLF = 5037,
+   RACE_WERERAT  = 5038,
 
    RACE_ELEMENTAL_AIR   = 5040,
    RACE_ELEMENTAL_EARTH = 5041,
@@ -1154,48 +1154,48 @@ enum Race
    RACE_ELEMENTAL_WATER = 5044,
    RACE_ELEMENTAL_LIGHT = 5045,
 
-   RACE_DEVOURER        = 5600,
-   RACE_DANALEK         = 5601,
+   RACE_DEVOURER = 5600,
+   RACE_DANALEK  = 5601,
 
-   RACE_FAMILIAR        = 5900, /* Wierdo race... */
+   RACE_FAMILIAR = 5900, /* Wierdo race... */
 
-   RACE_OTHER_CREATURE  = 5999,
+   RACE_OTHER_CREATURE = 5999,
 
-   RACE_ZOMBIE          = 6000,
-   RACE_LICH            = 6001,
-   RACE_GHOUL           = 6002,
-   RACE_SKELETON        = 6003,
-   RACE_GHOST           = 6004,
-   RACE_SPIRIT          = 6005,
-   RACE_MUMMIE          = 6006,
-   RACE_BANSHEE         = 6007,
-   RACE_NAGA_SOUL       = 6008,
+   RACE_ZOMBIE    = 6000,
+   RACE_LICH      = 6001,
+   RACE_GHOUL     = 6002,
+   RACE_SKELETON  = 6003,
+   RACE_GHOST     = 6004,
+   RACE_SPIRIT    = 6005,
+   RACE_MUMMIE    = 6006,
+   RACE_BANSHEE   = 6007,
+   RACE_NAGA_SOUL = 6008,
 
-   RACE_OTHER_UNDEAD    = 6999,
+   RACE_OTHER_UNDEAD = 6999,
 
-   RACE_CRAB            = 7000,
-   RACE_SAND_SPIDER     = 7002,
-   RACE_RIVER_LEECH     = 7003,
-   RACE_SAND_CRAWLER    = 7004,
-   RACE_SEA_HORSE       = 7005,
-   RACE_SHARK           = 7006,
-   RACE_LAMPREY         = 7007,
-   RACE_MANTA_RAY       = 7008,
-   RACE_CLIFF_HUGGER    = 7009,
-   RACE_ALGAE_MAN       = 7010,
-   RACE_WHELK           = 7011,
-   RACE_OYSTER          = 7012,
-   RACE_KRAKEN          = 7013,
-   RACE_CAVE_FISHER     = 7014, /* Tiamat: lobster / spider breed */
-   RACE_OCTOPUS         = 7015,
-   RACE_WHALE           = 7016,
-   RACE_DOLPHIN         = 7017,
-   RACE_EEL             = 7018,
+   RACE_CRAB         = 7000,
+   RACE_SAND_SPIDER  = 7002,
+   RACE_RIVER_LEECH  = 7003,
+   RACE_SAND_CRAWLER = 7004,
+   RACE_SEA_HORSE    = 7005,
+   RACE_SHARK        = 7006,
+   RACE_LAMPREY      = 7007,
+   RACE_MANTA_RAY    = 7008,
+   RACE_CLIFF_HUGGER = 7009,
+   RACE_ALGAE_MAN    = 7010,
+   RACE_WHELK        = 7011,
+   RACE_OYSTER       = 7012,
+   RACE_KRAKEN       = 7013,
+   RACE_CAVE_FISHER  = 7014, /* Tiamat: lobster / spider breed */
+   RACE_OCTOPUS      = 7015,
+   RACE_WHALE        = 7016,
+   RACE_DOLPHIN      = 7017,
+   RACE_EEL          = 7018,
 
-   RACE_FISH            = 7998,
-   RACE_OTHER_MARINE    = 7999,
+   RACE_FISH         = 7998,
+   RACE_OTHER_MARINE = 7999,
 
-   RACE_DO_NOT_USE      = 15000,
+   RACE_DO_NOT_USE = 15000,
 };
 /* ..................................................................... */
 /*                              S P E L L S                              */
@@ -1204,38 +1204,38 @@ enum Race
 /* Spell numbers. Only use the groups for 'spell[X]'... */
 enum Spell
 {
-   SPL_NONE             = -1, /* For wand, scrolls, etc. */
-   SPL_ALL              = 0,
-   SPL_DIVINE           = 1,
-   SPL_PROTECTION       = 2,
-   SPL_DETECTION        = 3,
-   SPL_SUMMONING        = 4,
-   SPL_CREATION         = 5,
-   SPL_MIND             = 6,
-   SPL_HEAT             = 7,  /* Fire          */
-   SPL_COLD             = 8,  /* Frost         */
-   SPL_CELL             = 9,  /* Electricity   */
-   SPL_INTERNAL         = 10, /* Poison        */
-   SPL_EXTERNAL         = 11, /* Acid          */
-   SPL_GROUP_MAX        = 12, /* #[0..11] =12, */
+   SPL_NONE       = -1, /* For wand, scrolls, etc. */
+   SPL_ALL        = 0,
+   SPL_DIVINE     = 1,
+   SPL_PROTECTION = 2,
+   SPL_DETECTION  = 3,
+   SPL_SUMMONING  = 4,
+   SPL_CREATION   = 5,
+   SPL_MIND       = 6,
+   SPL_HEAT       = 7,  /* Fire          */
+   SPL_COLD       = 8,  /* Frost         */
+   SPL_CELL       = 9,  /* Electricity   */
+   SPL_INTERNAL   = 10, /* Poison        */
+   SPL_EXTERNAL   = 11, /* Acid          */
+   SPL_GROUP_MAX  = 12, /* #[0..11] =12, */
 
-   SPL_CALL_LIGHTNING   = 12, /* Cell Group  */
-   SPL_BLESS            = 13, /* D I V I N E */
-   SPL_CURSE            = 14,
-   SPL_REMOVE_CURSE     = 15,
-   SPL_CURE_WOUNDS_1    = 16,
-   SPL_CURE_WOUNDS_2    = 17,
-   SPL_CURE_WOUNDS_3    = 18,
-   SPL_CAUSE_WOUNDS_1   = 19,
-   SPL_CAUSE_WOUNDS_2   = 20,
-   SPL_CAUSE_WOUNDS_3   = 21,
-   SPL_DISPEL_EVIL      = 22,
-   SPL_REPEL_UNDEAD_1   = 23,
-   SPL_REPEL_UNDEAD_2   = 24,
-   SPL_BLIND            = 25,
-   SPL_CURE_BLIND       = 26,
-   SPL_LOCATE_OBJECT    = 27,
-   SPL_LOCATE_CHAR      = 28,
+   SPL_CALL_LIGHTNING = 12, /* Cell Group  */
+   SPL_BLESS          = 13, /* D I V I N E */
+   SPL_CURSE          = 14,
+   SPL_REMOVE_CURSE   = 15,
+   SPL_CURE_WOUNDS_1  = 16,
+   SPL_CURE_WOUNDS_2  = 17,
+   SPL_CURE_WOUNDS_3  = 18,
+   SPL_CAUSE_WOUNDS_1 = 19,
+   SPL_CAUSE_WOUNDS_2 = 20,
+   SPL_CAUSE_WOUNDS_3 = 21,
+   SPL_DISPEL_EVIL    = 22,
+   SPL_REPEL_UNDEAD_1 = 23,
+   SPL_REPEL_UNDEAD_2 = 24,
+   SPL_BLIND          = 25,
+   SPL_CURE_BLIND     = 26,
+   SPL_LOCATE_OBJECT  = 27,
+   SPL_LOCATE_CHAR    = 28,
 
    SPL_RAISE_MAG        = 29, /* P R O T E C T I O N */
    SPL_RAISE_DIV        = 30,
@@ -1266,15 +1266,15 @@ enum Spell
    SPL_SLOW             = 55,
    SPL_DUST_DEVIL       = 56,
 
-   SPL_DET_ALIGN        = 57, /* D E T E C T I O N */
-   SPL_DET_INVISIBLE    = 58,
-   SPL_DET_MAGIC        = 59,
-   SPL_DET_POISON       = 60,
-   SPL_DET_UNDEAD       = 61,
-   SPL_DET_CURSE        = 62,
-   SPL_SENSE_LIFE       = 63,
-   SPL_IDENTIFY_1       = 64,
-   SPL_IDENTIFY_2       = 65,
+   SPL_DET_ALIGN     = 57, /* D E T E C T I O N */
+   SPL_DET_INVISIBLE = 58,
+   SPL_DET_MAGIC     = 59,
+   SPL_DET_POISON    = 60,
+   SPL_DET_UNDEAD    = 61,
+   SPL_DET_CURSE     = 62,
+   SPL_SENSE_LIFE    = 63,
+   SPL_IDENTIFY_1    = 64,
+   SPL_IDENTIFY_2    = 65,
 
    SPL_RANDOM_TELEPORT  = 66, /* S U M M O N I N G */
    SPL_CLEAR_SKIES      = 67,
@@ -1284,47 +1284,47 @@ enum Spell
    SPL_MINOR_GATE       = 71,
    SPL_GATE             = 72,
 
-   SPL_CREATE_FOOD      = 73, /* C R E A T I O N */
-   SPL_CREATE_WATER     = 74,
-   SPL_LIGHT_1          = 75,
-   SPL_LIGHT_2          = 76,
-   SPL_DARKNESS_1       = 77,
-   SPL_DARKNESS_2       = 78,
-   SPL_STUN             = 79,
-   SPL_HOLD             = 80,
-   SPL_ANIMATE_DEAD     = 81,
-   SPL_LEATHER_SKIN     = 82,
-   SPL_BARK_SKIN        = 83,
-   SPL_CONTROL_UNDEAD   = 84,
-   SPL_BONE_SKIN        = 85,
-   SPL_STONE_SKIN       = 86,
-   SPL_AID              = 87,
+   SPL_CREATE_FOOD    = 73, /* C R E A T I O N */
+   SPL_CREATE_WATER   = 74,
+   SPL_LIGHT_1        = 75,
+   SPL_LIGHT_2        = 76,
+   SPL_DARKNESS_1     = 77,
+   SPL_DARKNESS_2     = 78,
+   SPL_STUN           = 79,
+   SPL_HOLD           = 80,
+   SPL_ANIMATE_DEAD   = 81,
+   SPL_LEATHER_SKIN   = 82,
+   SPL_BARK_SKIN      = 83,
+   SPL_CONTROL_UNDEAD = 84,
+   SPL_BONE_SKIN      = 85,
+   SPL_STONE_SKIN     = 86,
+   SPL_AID            = 87,
 
-   SPL_COLOURSPRAY_1    = 88, /* M I N D */
-   SPL_COLOURSPRAY_2    = 89,
-   SPL_COLOURSPRAY_3    = 90,
-   SPL_INVISIBILITY     = 91,
-   SPL_WIZARD_EYE       = 92,
-   SPL_FEAR             = 93,
-   SPL_CONFUSION        = 94,
-   SPL_SLEEP            = 95,
-   SPL_XRAY_VISION      = 96,
-   SPL_CALM             = 97,
-   SPL_SUMMER_RAIN      = 98,
-   SPL_COMMAND          = 99,
-   SPL_LEAVING          = 100,
+   SPL_COLOURSPRAY_1 = 88, /* M I N D */
+   SPL_COLOURSPRAY_2 = 89,
+   SPL_COLOURSPRAY_3 = 90,
+   SPL_INVISIBILITY  = 91,
+   SPL_WIZARD_EYE    = 92,
+   SPL_FEAR          = 93,
+   SPL_CONFUSION     = 94,
+   SPL_SLEEP         = 95,
+   SPL_XRAY_VISION   = 96,
+   SPL_CALM          = 97,
+   SPL_SUMMER_RAIN   = 98,
+   SPL_COMMAND       = 99,
+   SPL_LEAVING       = 100,
 
-   SPL_FIREBALL_1       = 101, /* H E A T */
-   SPL_FIREBALL_2       = 102,
-   SPL_FIREBALL_3       = 103,
+   SPL_FIREBALL_1 = 101, /* H E A T */
+   SPL_FIREBALL_2 = 102,
+   SPL_FIREBALL_3 = 103,
 
-   SPL_FROSTBALL_1      = 104, /* C O L D */
-   SPL_FROSTBALL_2      = 105,
-   SPL_FROSTBALL_3      = 106,
+   SPL_FROSTBALL_1 = 104, /* C O L D */
+   SPL_FROSTBALL_2 = 105,
+   SPL_FROSTBALL_3 = 106,
 
-   SPL_LIGHTNING_1      = 107, /* C E L L */
-   SPL_LIGHTNING_2      = 108,
-   SPL_LIGHTNING_3      = 109,
+   SPL_LIGHTNING_1 = 107, /* C E L L */
+   SPL_LIGHTNING_2 = 108,
+   SPL_LIGHTNING_3 = 109,
 
    SPL_STINKING_CLOUD_1 = 110, /* I N T E R N A L */
    SPL_STINKING_CLOUD_2 = 111,
@@ -1336,15 +1336,15 @@ enum Spell
    SPL_DISEASE_2        = 117,
    SPL_REM_DISEASE      = 118,
 
-   SPL_ACIDBALL_1       = 119, /* E X T E R N A L */
-   SPL_ACIDBALL_2       = 120,
-   SPL_ACIDBALL_3       = 121,
+   SPL_ACIDBALL_1 = 119, /* E X T E R N A L */
+   SPL_ACIDBALL_2 = 120,
+   SPL_ACIDBALL_3 = 121,
 
-   SPL_MANA_BOOST       = 122, /* Creation */
-   SPL_FIND_PATH        = 123, /* Divine   */
-   SPL_DISPEL_GOOD      = 124,
-   SPL_PRO_GOOD         = 125,
-   SPL_TRANSPORT        = 126,
+   SPL_MANA_BOOST  = 122, /* Creation */
+   SPL_FIND_PATH   = 123, /* Divine   */
+   SPL_DISPEL_GOOD = 124,
+   SPL_PRO_GOOD    = 125,
+   SPL_TRANSPORT   = 126,
 
    SPL_FIRE_BREATH      = 127,
    SPL_FROST_BREATH     = 128,
@@ -1360,50 +1360,50 @@ enum Spell
    SPL_UNDEAD_DOOR      = 138,
    SPL_LIFE_PROTECTION  = 139,
 
-   SPL_ENERGY_BOLT      = 140,
-   SPL_CLENCHED_FIST    = 141,
-   SPL_METEOR_SHOWER    = 142,
-   SPL_SUN_BEAM         = 143,
-   SPL_SOLAR_FLARE      = 144,
+   SPL_ENERGY_BOLT   = 140,
+   SPL_CLENCHED_FIST = 141,
+   SPL_METEOR_SHOWER = 142,
+   SPL_SUN_BEAM      = 143,
+   SPL_SOLAR_FLARE   = 144,
 
-   SPL_SUMMON_DEVIL     = 145,
-   SPL_SUMMON_DEMON     = 146,
-   SPL_SUMMON_FIRE      = 147,
-   SPL_SUMMON_WATER     = 148,
-   SPL_SUMMON_AIR       = 149,
-   SPL_SUMMON_EARTH     = 150,
+   SPL_SUMMON_DEVIL = 145,
+   SPL_SUMMON_DEMON = 146,
+   SPL_SUMMON_FIRE  = 147,
+   SPL_SUMMON_WATER = 148,
+   SPL_SUMMON_AIR   = 149,
+   SPL_SUMMON_EARTH = 150,
 
-   SPL_CHARGE_WAND      = 151,
-   SPL_CHARGE_STAFF     = 152,
-   SPL_MENDING          = 153,
-   SPL_REPAIR           = 154,
-   SPL_RECONSTRUCT      = 155,
-   SPL_SENDING          = 156,
-   SPL_REFIT            = 157,
-   SPL_FIND_WANTED      = 158,
-   SPL_LOCATE_WANTED    = 159,
+   SPL_CHARGE_WAND   = 151,
+   SPL_CHARGE_STAFF  = 152,
+   SPL_MENDING       = 153,
+   SPL_REPAIR        = 154,
+   SPL_RECONSTRUCT   = 155,
+   SPL_SENDING       = 156,
+   SPL_REFIT         = 157,
+   SPL_FIND_WANTED   = 158,
+   SPL_LOCATE_WANTED = 159,
 
    /* Just insert any new spells here... just keep incrementing by one */
 
-   SPL_STORM_GATE       = 160,
-   SPL_SUN_GLOBE        = 161,
-   SPL_MAGIC_CANDLE     = 162,
-   SPL_SONIC_BREATH     = 163,
-   SPL_SHARD_BREATH     = 164,
-   SPL_CONE_SHARD       = 165,
-   SPL_SACRED           = 166,
+   SPL_STORM_GATE   = 160,
+   SPL_SUN_GLOBE    = 161,
+   SPL_MAGIC_CANDLE = 162,
+   SPL_SONIC_BREATH = 163,
+   SPL_SHARD_BREATH = 164,
+   SPL_CONE_SHARD   = 165,
+   SPL_SACRED       = 166,
 
-   SPL_BLANK1           = 167,
-   SPL_BLANK2           = 168,
-   SPL_BLANK3           = 169,
-   SPL_BLANK4           = 170,
-   SPL_BLANK5           = 171,
-   SPL_BLANK6           = 172,
-   SPL_BLANK7           = 173,
-   SPL_BLANK8           = 174,
-   SPL_BLANK9           = 175,
+   SPL_BLANK1 = 167,
+   SPL_BLANK2 = 168,
+   SPL_BLANK3 = 169,
+   SPL_BLANK4 = 170,
+   SPL_BLANK5 = 171,
+   SPL_BLANK6 = 172,
+   SPL_BLANK7 = 173,
+   SPL_BLANK8 = 174,
+   SPL_BLANK9 = 175,
 
-   SPL_TREE_MAX         = 220, /* #[0..167] =168, */
+   SPL_TREE_MAX = 220, /* #[0..167] =168, */
 };
 
 /* ..................................................................... */
@@ -1452,7 +1452,7 @@ enum Skill
    SKI_BLANK8         = 38,
    SKI_BLANK9         = 39,
 
-   SKI_TREE_MAX       = 70,
+   SKI_TREE_MAX = 70,
 };
 /* ------------------------- Special Functions ------------------------------
 When SFR_BLOCK is returned, all other scannings for further special routines
@@ -1494,7 +1494,7 @@ enum SpecialFunctionBits
    SFB_PRE      = 0x0400, /* Used to pre ack (block) messages          */
    SFB_DONE     = 0x0800, /* Used to tell when something has been done */
 
-   SFB_ALL      = SFB_CMD | SFB_TICK | SFB_DEAD | SFB_COM | SFB_MSG | SFB_SAVE | SFB_PRE,
+   SFB_ALL = SFB_CMD | SFB_TICK | SFB_DEAD | SFB_COM | SFB_MSG | SFB_SAVE | SFB_PRE,
 };
 /* ------------------------- Special Functions ------------------------------
 
@@ -1817,53 +1817,53 @@ SFUN_SACRIFICE
 
 enum SpecialFunction
 {
-   SFUN_PERSIST_INTERNAL     = 0, /* Dont use.                       */
-   SFUN_DILCOPY_INTERNAL     = 1, /* Dont use.                       */
-   SFUN_BULLETIN_BOARD       = 2, /* Bulletin Board                  */
-   SFUN_MOB_COMMAND          = 3, /* mobile command execution        */
-   SFUN_HUNTING              = 4, /* INTERNAL, DO NOT USE!           */
-   SFUN_POSTMAN              = 5, /* Mail, apply to post-man         */
-   SFUN_INTERN_SHOP          = 6,
-   SFUN_EAT_AND_DELETE       = 7,  /* INTERNAL, DO NOT USE!           */
-   SFUN_ACCUSE               = 8,  /* Accuse function for law system  */
-   SFUN_PROTECT_LAWFUL       = 9,  /* Protection of protected chars   */
-   SFUN_PAIN                 = 10, /* INTERNAL, DO NOT USE!           */
-   SFUN_PAIN_INIT            = 11, /* Basic NPC language              */
-   SFUN_NPC_VISIT_ROOM       = 12, /* INTERNAL, DO NOT USE!           */
-   SFUN_MERCENARY_HIRE       = 13, /* Mercenary hire routine          */
-   SFUN_MERCENARY_HUNT       = 14, /* INTERNAL, DO NOT USE!           */
-   SFUN_BANK                 = 15, /* Banker routine                  */
-   SFUN_PERSIST_INIT         = 16, /* Persist routine                 */
-   SFUN_FIDO                 = 17, /* Devour corpse function          */
-   SFUN_JANITOR              = 18, /* Pick up trash function          */
+   SFUN_PERSIST_INTERNAL = 0, /* Dont use.                       */
+   SFUN_DILCOPY_INTERNAL = 1, /* Dont use.                       */
+   SFUN_BULLETIN_BOARD   = 2, /* Bulletin Board                  */
+   SFUN_MOB_COMMAND      = 3, /* mobile command execution        */
+   SFUN_HUNTING          = 4, /* INTERNAL, DO NOT USE!           */
+   SFUN_POSTMAN          = 5, /* Mail, apply to post-man         */
+   SFUN_INTERN_SHOP      = 6,
+   SFUN_EAT_AND_DELETE   = 7,  /* INTERNAL, DO NOT USE!           */
+   SFUN_ACCUSE           = 8,  /* Accuse function for law system  */
+   SFUN_PROTECT_LAWFUL   = 9,  /* Protection of protected chars   */
+   SFUN_PAIN             = 10, /* INTERNAL, DO NOT USE!           */
+   SFUN_PAIN_INIT        = 11, /* Basic NPC language              */
+   SFUN_NPC_VISIT_ROOM   = 12, /* INTERNAL, DO NOT USE!           */
+   SFUN_MERCENARY_HIRE   = 13, /* Mercenary hire routine          */
+   SFUN_MERCENARY_HUNT   = 14, /* INTERNAL, DO NOT USE!           */
+   SFUN_BANK             = 15, /* Banker routine                  */
+   SFUN_PERSIST_INIT     = 16, /* Persist routine                 */
+   SFUN_FIDO             = 17, /* Devour corpse function          */
+   SFUN_JANITOR          = 18, /* Pick up trash function          */
 
-   SFUN_CHAOS_DAEMON         = 19, /* Daemon of random events         */
-   SFUN_OBSOLETE1            = 20,
-   SFUN_OBSOLETE2            = 21,
-   SFUN_OBSOLETE3            = 22,
-   SFUN_OBSOLETE4            = 23,
-   SFUN_OBSOLETE5            = 24,
+   SFUN_CHAOS_DAEMON = 19, /* Daemon of random events         */
+   SFUN_OBSOLETE1    = 20,
+   SFUN_OBSOLETE2    = 21,
+   SFUN_OBSOLETE3    = 22,
+   SFUN_OBSOLETE4    = 23,
+   SFUN_OBSOLETE5    = 24,
 
-   SFUN_TEACH_INIT           = 25, /* Midgaard teacher function       */
-   SFUN_TEACHING             = 26, /* INTERNAL DO NOT USE!            */
-   SFUN_RANDOM_GLOBAL_MOVE   = 27,
-   SFUN_RANDOM_ZONE_MOVE     = 28,
-   SFUN_SCAVENGER            = 29,
-   SFUN_AGGRESSIVE           = 30,
+   SFUN_TEACH_INIT         = 25, /* Midgaard teacher function       */
+   SFUN_TEACHING           = 26, /* INTERNAL DO NOT USE!            */
+   SFUN_RANDOM_GLOBAL_MOVE = 27,
+   SFUN_RANDOM_ZONE_MOVE   = 28,
+   SFUN_SCAVENGER          = 29,
+   SFUN_AGGRESSIVE         = 30,
 
-   SFUN_LOG_OBJECT           = 31, /* Wiz tool.                       */
-   SFUN_RECEP_DAEMON         = 32, /* Daemon to check players expiry  */
-   SFUN_COMBAT_MAGIC         = 33, /* Use magic in combat             */
+   SFUN_LOG_OBJECT   = 31, /* Wiz tool.                       */
+   SFUN_RECEP_DAEMON = 32, /* Daemon to check players expiry  */
+   SFUN_COMBAT_MAGIC = 33, /* Use magic in combat             */
 
-   SFUN_BLOW_AWAY            = 34,
-   SFUN_OBSOLETE6            = 35,
-   SFUN_COMPETITION_BOARD    = 36,
+   SFUN_BLOW_AWAY         = 34,
+   SFUN_OBSOLETE6         = 35,
+   SFUN_COMPETITION_BOARD = 36,
 
-   SFUN_COMBAT_POISON        = 37,
-   SFUN_OBSOLETE_XXX1        = 38,
-   SFUN_OBSOLETE_XXX2        = 39,
+   SFUN_COMBAT_POISON = 37,
+   SFUN_OBSOLETE_XXX1 = 38,
+   SFUN_OBSOLETE_XXX2 = 39,
 
-   SFUN_COMBAT_MAGIC_HEAL    = 40, /* Use for self-healing            */
+   SFUN_COMBAT_MAGIC_HEAL = 40, /* Use for self-healing            */
 
    SFUN_GUARD_WAY            = 41, /* Guards a direction agains move  */
    SFUN_GUARD_DOOR           = 42, /* Guard door against open/unlock  */
@@ -1881,135 +1881,135 @@ enum SpecialFunction
    SFUN_ODIN_STATUE          = 54, /* Help for beginners              */
    SFUN_FORCE_MOVE           = 55,
 
-   SFUN_WW_XXX1              = 56,
-   SFUN_WW_XXX2              = 57,
-   SFUN_WW_XXX3              = 58,
-   SFUN_WW_XXX4              = 59,
-   SFUN_WW_XXX5              = 60,
-   SFUN_WW_XXX6              = 61,
-   SFUN_WW_XXX8              = 62,
-   SFUN_WW_XXX9              = 63,
+   SFUN_WW_XXX1 = 56,
+   SFUN_WW_XXX2 = 57,
+   SFUN_WW_XXX3 = 58,
+   SFUN_WW_XXX4 = 59,
+   SFUN_WW_XXX5 = 60,
+   SFUN_WW_XXX6 = 61,
+   SFUN_WW_XXX8 = 62,
+   SFUN_WW_XXX9 = 63,
 
-   SFUN_OBJ_GOOD_ONLY        = 64,
-   SFUN_OBJ_EVIL_ONLY        = 65,
+   SFUN_OBJ_GOOD_ONLY = 64,
+   SFUN_OBJ_EVIL_ONLY = 65,
 
-   SFUN_CHANGE_HOMETOWN      = 66,
+   SFUN_CHANGE_HOMETOWN = 66,
 
-   SFUN_GUILD_GUARD_WAY      = 67,
-   SFUN_MEMBERS_ONLY         = 68,
-   SFUN_WHISTLE              = 69,
+   SFUN_GUILD_GUARD_WAY = 67,
+   SFUN_MEMBERS_ONLY    = 68,
+   SFUN_WHISTLE         = 69,
 
-   SFUN_GUILD_MASTER         = 70,
-   SFUN_GUILD_BASIS          = 71,
+   SFUN_GUILD_MASTER = 70,
+   SFUN_GUILD_BASIS  = 71,
 
-   SFUN_DEATH_ROOM           = 72,
-   SFUN_XXXALSOOBSOLETE      = 73,
-   SFUN_TUBORG               = 74,
-   SFUN_GUILD_TITLES         = 75,
-   SFUN_REWARD_BOARD         = 76,
-   SFUN_REWARD_GIVE          = 77,
-   SFUN_EVALUATE             = 78,
-   SFUN_ERROR_ERASE          = 79, /* Do not use */
-   SFUN_INFO_ERASE           = 80, /* Do not use */
-   SFUN_XXXXX                = 81,
-   SFUN_DIL_INTERNAL         = 82,
-   SFUN_ORACLE               = 83,
-   SFUN_ADMINISTRATOR        = 84,
-   SFUN_OBEY                 = 85,
-   SFUN_CRYSTAL_BALL         = 86,
-   SFUN_SLIME_ADM            = 87,
-   SFUN_FROZEN               = 88, /* Internal use only */
-   SFUN_RETURN_TO_ORIGIN     = 89, /* Internal use only */
-   SFUN_GUILD_INTERNAL       = 90, /* Internal use only */
-   SFUN_RESTRICT_OBJ         = 91,
-   SFUN_DEMI_STUFF           = 92, /* Internal use only */
-   SFUN_LINK_DEAD            = 93, /* Internal use only */
-   SFUN_SACRIFICE            = 94, /* Noble sacrifice   */
+   SFUN_DEATH_ROOM       = 72,
+   SFUN_XXXALSOOBSOLETE  = 73,
+   SFUN_TUBORG           = 74,
+   SFUN_GUILD_TITLES     = 75,
+   SFUN_REWARD_BOARD     = 76,
+   SFUN_REWARD_GIVE      = 77,
+   SFUN_EVALUATE         = 78,
+   SFUN_ERROR_ERASE      = 79, /* Do not use */
+   SFUN_INFO_ERASE       = 80, /* Do not use */
+   SFUN_XXXXX            = 81,
+   SFUN_DIL_INTERNAL     = 82,
+   SFUN_ORACLE           = 83,
+   SFUN_ADMINISTRATOR    = 84,
+   SFUN_OBEY             = 85,
+   SFUN_CRYSTAL_BALL     = 86,
+   SFUN_SLIME_ADM        = 87,
+   SFUN_FROZEN           = 88, /* Internal use only */
+   SFUN_RETURN_TO_ORIGIN = 89, /* Internal use only */
+   SFUN_GUILD_INTERNAL   = 90, /* Internal use only */
+   SFUN_RESTRICT_OBJ     = 91,
+   SFUN_DEMI_STUFF       = 92, /* Internal use only */
+   SFUN_LINK_DEAD        = 93, /* Internal use only */
+   SFUN_SACRIFICE        = 94, /* Noble sacrifice   */
 
-   SFUN_OBSOLETE_XXX5        = 95,
-   SFUN_OBSOLETE_XXX6        = 96,
-   SFUN_OBSOLETE_XXX7        = 97,
+   SFUN_OBSOLETE_XXX5 = 95,
+   SFUN_OBSOLETE_XXX6 = 96,
+   SFUN_OBSOLETE_XXX7 = 97,
 
-   SFUN_RESTRICT_QUEST       = 98,
-   SFUN_RESTRICT_GUILD       = 99,
-   SFUN_XXX                  = 100,
-   SFUN_DIL_COPY             = 101,
+   SFUN_RESTRICT_QUEST = 98,
+   SFUN_RESTRICT_GUILD = 99,
+   SFUN_XXX            = 100,
+   SFUN_DIL_COPY       = 101,
 
-   SFUN_TOP_IDX              = 101, /* SANITY CHECKING, ADJUST */
+   SFUN_TOP_IDX = 101, /* SANITY CHECKING, ADJUST */
 };
 /* ------------------------- Affect Types ------------------------------
  Dont ask, and don't use. Use the predefined macros in wmacros.h
 */
 enum AffectType
 {
-   ID_FILE_STORED         = 0, /* For empty affects in player-file */
-   ID_NONE                = 1,
-   ID_CORPSE              = 2, /* Makes corpses disappear */
-   ID_VALHALLA            = 3,
-   ID_LIFE_PROTECTION     = 4,
-   ID_RAISE_MAG           = 5,
-   ID_RAISE_DIV           = 6,
-   ID_RAISE_STR           = 7,
-   ID_RAISE_DEX           = 8,
-   ID_RAISE_CON           = 9,
-   ID_RAISE_CHA           = 10,
-   ID_RAISE_BRA           = 11,
-   ID_RAISE_HPP           = 12,
-   ID_RAISE_DIVINE        = 13,
-   ID_RAISE_SUMMONING     = 16,
-   ID_RAISE_MIND          = 18,
-   ID_RAISE_HEAT          = 19,
-   ID_RAISE_COLD          = 20,
-   ID_RAISE_CELL          = 21,
-   ID_RAISE_INTERNAL      = 22,
-   ID_RAISE_EXTERNAL      = 23,
-   ID_POISON              = 24,
-   ID_MAGIC_LIGHT         = 25, /* For magic spells              */
-   ID_LIGHT_EXTINGUISH    = 26, /* For light/extinguish commands */
-   ID_DETECT_ALIGN        = 27,
-   ID_DETECT_INVISIBLE    = 28,
-   ID_DETECT_MAGIC        = 29,
-   ID_DETECT_POISON       = 30,
-   ID_DETECT_UNDEAD       = 31,
-   ID_DETECT_CURSE        = 32,
-   ID_DETECT_LIFE         = 33,
-   ID_BLIND_CHAR          = 34,
-   ID_FEAR                = 35,
-   ID_INVISIBILITY        = 36,
-   ID_SNEAK               = 37, /* for sneak skill   */
-   ID_HIDE                = 38, /* for hide skill    */
-   ID_WITNESS             = 39, /* Used by justice.c */
-   ID_SLEEP               = 40,
-   ID_BLESS               = 41,
-   ID_CURSE               = 42,
-   ID_SANCTUARY           = 43,
-   ID_INSANITY            = 44,
-   ID_PROT_EVIL           = 45,
-   ID_SUSTAIN             = 46,
-   ID_PRISON              = 47,
-   ID_PLAGUE              = 48,
-   ID_ENCHANT_ARMOUR      = 49,
-   ID_ENCHANT_WEAPON      = 50,
-   ID_HOLD                = 51,
-   ID_CHARM               = 52,
-   ID_CLONE               = 53,
-   ID_ABSORBTION          = 54, /* for indicating absorbtion spell */
-   ID_ENERGY_DRAIN        = 55,
-   ID_SPOTTED_SECRET      = 56,
-   ID_HIDDEN_DIFFICULTY   = 57, /* Use macro: SECRET_DOOR_DIFFICULTY */
-   ID_REWARD              = 58,
-   ID_CONFUSION           = 59,
-   ID_BURIED              = 60,
-   ID_BACKSTABBED         = 61, /* When backstabbed, this improves defense */
-   ID_MAX_ATTACKER        = 62, /* Record of highest level attacker        */
-   ID_PROT_GOOD           = 63,
-   ID_NATURAL_ARMOUR      = 64,
-   ID_SPEED               = 65,
-   ID_CHARFLAGS           = 66, /* For the transfer functions */
-   ID_SPELL               = 67, /* ditto */
-   ID_SKILL               = 68, /* ditto */
-   ID_WEAPON              = 69, /* ditto */
-   ID_MAGIC_DARK          = 70, /* For magic spells              */
+   ID_FILE_STORED       = 0, /* For empty affects in player-file */
+   ID_NONE              = 1,
+   ID_CORPSE            = 2, /* Makes corpses disappear */
+   ID_VALHALLA          = 3,
+   ID_LIFE_PROTECTION   = 4,
+   ID_RAISE_MAG         = 5,
+   ID_RAISE_DIV         = 6,
+   ID_RAISE_STR         = 7,
+   ID_RAISE_DEX         = 8,
+   ID_RAISE_CON         = 9,
+   ID_RAISE_CHA         = 10,
+   ID_RAISE_BRA         = 11,
+   ID_RAISE_HPP         = 12,
+   ID_RAISE_DIVINE      = 13,
+   ID_RAISE_SUMMONING   = 16,
+   ID_RAISE_MIND        = 18,
+   ID_RAISE_HEAT        = 19,
+   ID_RAISE_COLD        = 20,
+   ID_RAISE_CELL        = 21,
+   ID_RAISE_INTERNAL    = 22,
+   ID_RAISE_EXTERNAL    = 23,
+   ID_POISON            = 24,
+   ID_MAGIC_LIGHT       = 25, /* For magic spells              */
+   ID_LIGHT_EXTINGUISH  = 26, /* For light/extinguish commands */
+   ID_DETECT_ALIGN      = 27,
+   ID_DETECT_INVISIBLE  = 28,
+   ID_DETECT_MAGIC      = 29,
+   ID_DETECT_POISON     = 30,
+   ID_DETECT_UNDEAD     = 31,
+   ID_DETECT_CURSE      = 32,
+   ID_DETECT_LIFE       = 33,
+   ID_BLIND_CHAR        = 34,
+   ID_FEAR              = 35,
+   ID_INVISIBILITY      = 36,
+   ID_SNEAK             = 37, /* for sneak skill   */
+   ID_HIDE              = 38, /* for hide skill    */
+   ID_WITNESS           = 39, /* Used by justice.c */
+   ID_SLEEP             = 40,
+   ID_BLESS             = 41,
+   ID_CURSE             = 42,
+   ID_SANCTUARY         = 43,
+   ID_INSANITY          = 44,
+   ID_PROT_EVIL         = 45,
+   ID_SUSTAIN           = 46,
+   ID_PRISON            = 47,
+   ID_PLAGUE            = 48,
+   ID_ENCHANT_ARMOUR    = 49,
+   ID_ENCHANT_WEAPON    = 50,
+   ID_HOLD              = 51,
+   ID_CHARM             = 52,
+   ID_CLONE             = 53,
+   ID_ABSORBTION        = 54, /* for indicating absorbtion spell */
+   ID_ENERGY_DRAIN      = 55,
+   ID_SPOTTED_SECRET    = 56,
+   ID_HIDDEN_DIFFICULTY = 57, /* Use macro: SECRET_DOOR_DIFFICULTY */
+   ID_REWARD            = 58,
+   ID_CONFUSION         = 59,
+   ID_BURIED            = 60,
+   ID_BACKSTABBED       = 61, /* When backstabbed, this improves defense */
+   ID_MAX_ATTACKER      = 62, /* Record of highest level attacker        */
+   ID_PROT_GOOD         = 63,
+   ID_NATURAL_ARMOUR    = 64,
+   ID_SPEED             = 65,
+   ID_CHARFLAGS         = 66, /* For the transfer functions */
+   ID_SPELL             = 67, /* ditto */
+   ID_SKILL             = 68, /* ditto */
+   ID_WEAPON            = 69, /* ditto */
+   ID_MAGIC_DARK        = 70, /* For magic spells              */
 
    ID_SPL_RAISE_MAG       = 71,
    ID_SPL_RAISE_DIV       = 72,
@@ -2028,40 +2028,40 @@ enum AffectType
    ID_SPL_RAISE_INTERNAL  = 85,
    ID_SPL_RAISE_EXTERNAL  = 86,
 
-   ID_WEAPON_DEFENSE      = 87,
-   ID_SPELL_DEFENSE       = 88,
+   ID_WEAPON_DEFENSE = 87,
+   ID_SPELL_DEFENSE  = 88,
 
-   ID_BLANK0              = 89,
-   ID_BLANK1              = 90,
-   ID_BLANK2              = 91,
-   ID_BLANK3              = 92,
-   ID_BLANK4              = 93,
-   ID_BLANK5              = 94,
-   ID_BLANK6              = 95,
-   ID_BLANK7              = 96,
-   ID_BLANK8              = 97,
-   ID_BLANK9              = 98,
-   ID_BLANK10             = 99,
-   ID_BLANK11             = 100,
+   ID_BLANK0  = 89,
+   ID_BLANK1  = 90,
+   ID_BLANK2  = 91,
+   ID_BLANK3  = 92,
+   ID_BLANK4  = 93,
+   ID_BLANK5  = 94,
+   ID_BLANK6  = 95,
+   ID_BLANK7  = 96,
+   ID_BLANK8  = 97,
+   ID_BLANK9  = 98,
+   ID_BLANK10 = 99,
+   ID_BLANK11 = 100,
 
-   ID_TOP_IDX             = 101, /* For sanity checking, adjust */
+   ID_TOP_IDX = 101, /* For sanity checking, adjust */
 
-   ID_TRANSFER_MAG        = -ID_RAISE_MAG,
-   ID_TRANSFER_DIV        = -ID_RAISE_DIV,
-   ID_TRANSFER_STR        = -ID_RAISE_STR,
-   ID_TRANSFER_DEX        = -ID_RAISE_DEX,
-   ID_TRANSFER_CON        = -ID_RAISE_CON,
-   ID_TRANSFER_CHA        = -ID_RAISE_CHA,
-   ID_TRANSFER_BRA        = -ID_RAISE_BRA,
-   ID_TRANSFER_HPP        = -ID_RAISE_HPP,
-   ID_TRANSFER_SPEED      = -ID_SPEED,
-   ID_PROT_GOOD_TRANSFER  = -ID_PROT_GOOD,
-   ID_PROT_EVIL_TRANSFER  = -ID_PROT_EVIL,
+   ID_TRANSFER_MAG       = -ID_RAISE_MAG,
+   ID_TRANSFER_DIV       = -ID_RAISE_DIV,
+   ID_TRANSFER_STR       = -ID_RAISE_STR,
+   ID_TRANSFER_DEX       = -ID_RAISE_DEX,
+   ID_TRANSFER_CON       = -ID_RAISE_CON,
+   ID_TRANSFER_CHA       = -ID_RAISE_CHA,
+   ID_TRANSFER_BRA       = -ID_RAISE_BRA,
+   ID_TRANSFER_HPP       = -ID_RAISE_HPP,
+   ID_TRANSFER_SPEED     = -ID_SPEED,
+   ID_PROT_GOOD_TRANSFER = -ID_PROT_GOOD,
+   ID_PROT_EVIL_TRANSFER = -ID_PROT_EVIL,
 
-   ID_TRANSFER_CHARFLAGS  = -ID_CHARFLAGS,
-   ID_SPELL_TRANSFER      = -ID_SPELL,
-   ID_SKILL_TRANSFER      = -ID_SKILL,
-   ID_WEAPON_TRANSFER     = -ID_WEAPON,
+   ID_TRANSFER_CHARFLAGS = -ID_CHARFLAGS,
+   ID_SPELL_TRANSFER     = -ID_SPELL,
+   ID_SKILL_TRANSFER     = -ID_SKILL,
+   ID_WEAPON_TRANSFER    = -ID_WEAPON,
 };
 
 enum Affect
@@ -2078,7 +2078,7 @@ enum Affect
    APF_NATURAL_ARMOUR = 8,
    APF_SPEED          = 9,
 
-   APF_MAX            = 9,
+   APF_MAX = 9,
 };
 
 enum TIFType
@@ -2169,123 +2169,123 @@ enum TIFType
    TIF_SPEED_BETTER     = 82,
    TIF_SPEED_WORSE      = 83,
 
-   TIF_MAX              = 83,
+   TIF_MAX = 83,
 };
 
 enum CommandType
 {
-   CMD_AUTO_DAMAGE   = -10, /* Used when any damage is given               */
-   CMD_AUTO_ENTER    = -9,  /* Used when room is entered (walk, sail, etc) */
-   CMD_AUTO_SAVE     = -8,  /* Used when player is saved                   */
-   CMD_AUTO_MSG      = -7,  /* Used to pass messages                       */
-   CMD_AUTO_EXTRACT  = -6,  /* Used when extract_unit is called            */
-   CMD_NON_USABLE    = -5,  /* Used when there is nothing apropriate       */
-   CMD_AUTO_UNKNOWN  = -4,  /* Used when cmd_interpreter doesn't recognize */
-                            /* command typed by ch. cmd->cmd_str is used   */
-   CMD_AUTO_DEATH    = -3,  /* Used when someone is killed (combat)        */
-   CMD_AUTO_COMBAT   = -2,  /* Used when combat round                      */
-   CMD_AUTO_TICK     = -1,  /* MUST BE -1 ,Used when units are "ticking"   */
+   CMD_AUTO_DAMAGE  = -10, /* Used when any damage is given               */
+   CMD_AUTO_ENTER   = -9,  /* Used when room is entered (walk, sail, etc) */
+   CMD_AUTO_SAVE    = -8,  /* Used when player is saved                   */
+   CMD_AUTO_MSG     = -7,  /* Used to pass messages                       */
+   CMD_AUTO_EXTRACT = -6,  /* Used when extract_unit is called            */
+   CMD_NON_USABLE   = -5,  /* Used when there is nothing apropriate       */
+   CMD_AUTO_UNKNOWN = -4,  /* Used when cmd_interpreter doesn't recognize */
+                           /* command typed by ch. cmd->cmd_str is used   */
+   CMD_AUTO_DEATH   = -3,  /* Used when someone is killed (combat)        */
+   CMD_AUTO_COMBAT  = -2,  /* Used when combat round                      */
+   CMD_AUTO_TICK    = -1,  /* MUST BE -1 ,Used when units are "ticking"   */
 
-   CMD_NORTH         = NORTH, /* MUST BE 0 */
-   CMD_EAST          = EAST,  /* MUST BE 1 */
-   CMD_SOUTH         = SOUTH, /* MUST BE 2 */
-   CMD_WEST          = WEST,  /* MUST BE 3 */
-   CMD_UP            = UP,    /* MUST BE 4 */
-   CMD_DOWN          = DOWN,  /* MUST BE 5 */
+   CMD_NORTH = NORTH, /* MUST BE 0 */
+   CMD_EAST  = EAST,  /* MUST BE 1 */
+   CMD_SOUTH = SOUTH, /* MUST BE 2 */
+   CMD_WEST  = WEST,  /* MUST BE 3 */
+   CMD_UP    = UP,    /* MUST BE 4 */
+   CMD_DOWN  = DOWN,  /* MUST BE 5 */
 
-   CMD_ENTER         = 7,
-   CMD_EXIT          = 8,
-   CMD_GET           = 10,
-   CMD_DRINK         = 11,
-   CMD_EAT           = 12,
-   CMD_WEAR          = 13,
-   CMD_WIELD         = 14,
-   CMD_LOOK          = 15,
-   CMD_SCORE         = 16,
-   CMD_SAY           = 17,
-   CMD_SHOUT         = 18,
-   CMD_TELL          = 19,
-   CMD_INVENTORY     = 20,
-   CMD_GUILD         = 21,
+   CMD_ENTER     = 7,
+   CMD_EXIT      = 8,
+   CMD_GET       = 10,
+   CMD_DRINK     = 11,
+   CMD_EAT       = 12,
+   CMD_WEAR      = 13,
+   CMD_WIELD     = 14,
+   CMD_LOOK      = 15,
+   CMD_SCORE     = 16,
+   CMD_SAY       = 17,
+   CMD_SHOUT     = 18,
+   CMD_TELL      = 19,
+   CMD_INVENTORY = 20,
+   CMD_GUILD     = 21,
 
-   CMD_KILL          = 25,
-   CMD_STATUS        = 26,
+   CMD_KILL   = 25,
+   CMD_STATUS = 26,
 
-   CMD_HELP          = 38,
-   CMD_WHO           = 39,
-   CMD_EMOTE         = 40,
-   CMD_STAND         = 42,
-   CMD_SIT           = 43,
-   CMD_REST          = 44,
-   CMD_SLEEP         = 45,
-   CMD_WAKE          = 46,
+   CMD_HELP  = 38,
+   CMD_WHO   = 39,
+   CMD_EMOTE = 40,
+   CMD_STAND = 42,
+   CMD_SIT   = 43,
+   CMD_REST  = 44,
+   CMD_SLEEP = 45,
+   CMD_WAKE  = 46,
 
-   CMD_NEWS          = 54,
-   CMD_EQUIPMENT     = 55,
-   CMD_BUY           = 56,
-   CMD_SELL          = 57,
-   CMD_VALUE         = 58,
-   CMD_LIST          = 59,
-   CMD_DROP          = 60,
-   CMD_GOTO          = 61,
-   CMD_WEATHER       = 62,
-   CMD_READ          = 63,
-   CMD_POUR          = 64,
+   CMD_NEWS      = 54,
+   CMD_EQUIPMENT = 55,
+   CMD_BUY       = 56,
+   CMD_SELL      = 57,
+   CMD_VALUE     = 58,
+   CMD_LIST      = 59,
+   CMD_DROP      = 60,
+   CMD_GOTO      = 61,
+   CMD_WEATHER   = 62,
+   CMD_READ      = 63,
+   CMD_POUR      = 64,
    /* CMD_GRAB is CMD_HOLD */
-   CMD_REMOVE        = 66,
-   CMD_PUT           = 67,
-   CMD_SAVE          = 69,
-   CMD_HIT           = 70,
-   CMD_SET           = 71,
-   CMD_GIVE          = 72,
-   CMD_QUIT          = 73,
-   CMD_TIME          = 76,
-   CMD_IDEA          = 80,
-   CMD_TYPO          = 81,
-   CMD_BUG           = 82,
-   CMD_WHISPER       = 83,
-   CMD_CAST          = 84,
-   CMD_AT            = 85,
-   CMD_ASK           = 86,
-   CMD_ORDER         = 87,
-   CMD_SIP           = 88,
-   CMD_TASTE         = 89,
-   CMD_FOLLOW        = 91,
-   CMD_RENT          = 92,
-   CMD_OFFER         = 93,
-   CMD_JOIN          = 94,
-   CMD_AREAS         = 95,
+   CMD_REMOVE    = 66,
+   CMD_PUT       = 67,
+   CMD_SAVE      = 69,
+   CMD_HIT       = 70,
+   CMD_SET       = 71,
+   CMD_GIVE      = 72,
+   CMD_QUIT      = 73,
+   CMD_TIME      = 76,
+   CMD_IDEA      = 80,
+   CMD_TYPO      = 81,
+   CMD_BUG       = 82,
+   CMD_WHISPER   = 83,
+   CMD_CAST      = 84,
+   CMD_AT        = 85,
+   CMD_ASK       = 86,
+   CMD_ORDER     = 87,
+   CMD_SIP       = 88,
+   CMD_TASTE     = 89,
+   CMD_FOLLOW    = 91,
+   CMD_RENT      = 92,
+   CMD_OFFER     = 93,
+   CMD_JOIN      = 94,
+   CMD_AREAS     = 95,
 
-   CMD_OPEN          = 99,
-   CMD_CLOSE         = 100,
-   CMD_LOCK          = 101,
-   CMD_UNLOCK        = 102,
-   CMD_LEAVE         = 103,
-   CMD_MOUNT         = 104,
-   CMD_DISMOUNT      = 105,
-   CMD_RIDE          = 106,
-   CMD_SAIL          = 107,
+   CMD_OPEN     = 99,
+   CMD_CLOSE    = 100,
+   CMD_LOCK     = 101,
+   CMD_UNLOCK   = 102,
+   CMD_LEAVE    = 103,
+   CMD_MOUNT    = 104,
+   CMD_DISMOUNT = 105,
+   CMD_RIDE     = 106,
+   CMD_SAIL     = 107,
 
-   CMD_WRITE         = 149,
-   CMD_HOLD          = 150,
-   CMD_FLEE          = 151,
-   CMD_SNEAK         = 152,
-   CMD_HIDE          = 153,
-   CMD_BACKSTAB      = 154,
-   CMD_PICK          = 155,
-   CMD_STEAL         = 156,
-   CMD_BASH          = 157,
-   CMD_RESCUE        = 158,
-   CMD_KICK          = 159,
-   CMD_PRACTICE      = 164,
+   CMD_WRITE    = 149,
+   CMD_HOLD     = 150,
+   CMD_FLEE     = 151,
+   CMD_SNEAK    = 152,
+   CMD_HIDE     = 153,
+   CMD_BACKSTAB = 154,
+   CMD_PICK     = 155,
+   CMD_STEAL    = 156,
+   CMD_BASH     = 157,
+   CMD_RESCUE   = 158,
+   CMD_KICK     = 159,
+   CMD_PRACTICE = 164,
 
-   CMD_EXAMINE       = 166,
-   CMD_INFO          = 168,
+   CMD_EXAMINE = 166,
+   CMD_INFO    = 168,
 
-   CMD_USE           = 172,
-   CMD_WHERE         = 173,
-   CMD_LEVEL         = 174,
-   CMD_WIZ           = 175,
+   CMD_USE   = 172,
+   CMD_WHERE = 173,
+   CMD_LEVEL = 174,
+   CMD_WIZ   = 175,
 
    CMD_BRIEF         = 199,
    CMD_WIZLIST       = 200,
@@ -2312,106 +2312,106 @@ enum CommandType
    CMD_TRIP          = 228,
    CMD_CUFF          = 229,
 
-   CMD_EXITS         = 230, /* Also 'directions' and 'doors' */
-   CMD_MAIL          = 231,
-   CMD_REQUEST       = 232,
-   CMD_CONTRACT      = 233,
-   CMD_BREAK         = 235,
-   CMD_KNOCK         = 236,
-   CMD_CHANGE        = 237,
-   CMD_SPLIT         = 238,
-   CMD_PROMPT        = 239,
-   CMD_REPLY         = 240,
-   CMD_ECHOSAY       = 241,
-   CMD_SEARCH        = 242,
-   CMD_QUESTS        = 243,
-   CMD_DECAPITATE    = 244,
-   CMD_PURSE         = 245,
-   CMD_SACRIFICE     = 246,
-   CMD_COMMANDS      = 247,
-   CMD_SOCIALS       = 248,
-   CMD_ACCOUNT       = 249,
-   CMD_INFORM        = 250,
-   CMD_EXPERT        = 251,
-   CMD_RESIZE        = 252,
-   CMD_EVALUATE      = 253,
-   CMD_DITCH         = 254,
-   CMD_IGNORE        = 255,
+   CMD_EXITS      = 230, /* Also 'directions' and 'doors' */
+   CMD_MAIL       = 231,
+   CMD_REQUEST    = 232,
+   CMD_CONTRACT   = 233,
+   CMD_BREAK      = 235,
+   CMD_KNOCK      = 236,
+   CMD_CHANGE     = 237,
+   CMD_SPLIT      = 238,
+   CMD_PROMPT     = 239,
+   CMD_REPLY      = 240,
+   CMD_ECHOSAY    = 241,
+   CMD_SEARCH     = 242,
+   CMD_QUESTS     = 243,
+   CMD_DECAPITATE = 244,
+   CMD_PURSE      = 245,
+   CMD_SACRIFICE  = 246,
+   CMD_COMMANDS   = 247,
+   CMD_SOCIALS    = 248,
+   CMD_ACCOUNT    = 249,
+   CMD_INFORM     = 250,
+   CMD_EXPERT     = 251,
+   CMD_RESIZE     = 252,
+   CMD_EVALUATE   = 253,
+   CMD_DITCH      = 254,
+   CMD_IGNORE     = 255,
 
-   CMD_PEEK          = 300,
-   CMD_FILCH         = 301,
-   CMD_PICK_POCKET   = 302,
-   CMD_DISARM        = 303,
-   CMD_DONATE        = 304,
-   CMD_ASSIST        = 305,
-   CMD_SKIN          = 306,
-   CMD_SKILL7        = 307,
-   CMD_SKILL8        = 308,
-   CMD_SKILL9        = 309,
-   CMD_SKILL10       = 310,
-   CMD_SKILL11       = 311,
-   CMD_SKILL12       = 312,
-   CMD_SKILL13       = 313,
-   CMD_SKILL14       = 314,
-   CMD_SKILL15       = 315,
-   CMD_SKILL16       = 316,
-   CMD_SKILL17       = 317,
-   CMD_SKILL18       = 318,
-   CMD_SKILL19       = 319,
-   CMD_SKILL20       = 320,
-   CMD_SKILL21       = 321,
-   CMD_SKILL22       = 322,
-   CMD_SKILL23       = 323,
-   CMD_SKILL24       = 324,
-   CMD_SKILL25       = 325,
-   CMD_SKILL26       = 326,
-   CMD_SKILL27       = 327,
-   CMD_SKILL28       = 328,
-   CMD_SKILL29       = 329,
-   CMD_SKILL30       = 330,
+   CMD_PEEK        = 300,
+   CMD_FILCH       = 301,
+   CMD_PICK_POCKET = 302,
+   CMD_DISARM      = 303,
+   CMD_DONATE      = 304,
+   CMD_ASSIST      = 305,
+   CMD_SKIN        = 306,
+   CMD_SKILL7      = 307,
+   CMD_SKILL8      = 308,
+   CMD_SKILL9      = 309,
+   CMD_SKILL10     = 310,
+   CMD_SKILL11     = 311,
+   CMD_SKILL12     = 312,
+   CMD_SKILL13     = 313,
+   CMD_SKILL14     = 314,
+   CMD_SKILL15     = 315,
+   CMD_SKILL16     = 316,
+   CMD_SKILL17     = 317,
+   CMD_SKILL18     = 318,
+   CMD_SKILL19     = 319,
+   CMD_SKILL20     = 320,
+   CMD_SKILL21     = 321,
+   CMD_SKILL22     = 322,
+   CMD_SKILL23     = 323,
+   CMD_SKILL24     = 324,
+   CMD_SKILL25     = 325,
+   CMD_SKILL26     = 326,
+   CMD_SKILL27     = 327,
+   CMD_SKILL28     = 328,
+   CMD_SKILL29     = 329,
+   CMD_SKILL30     = 330,
 
-   CMD_FREEZE        = 1000,
-   CMD_NOSHOUT       = 1002,
-   CMD_PATH          = 1003,
-   CMD_WIZINV        = 1004,
-   CMD_RESTORE       = 1005,
-   CMD_BAN           = 1006,
-   CMD_SWITCH        = 1007,
-   CMD_USERS         = 1008,
-   CMD_WIZHELP       = 1009,
-   CMD_NOTELL        = 1010,
-   CMD_FILE          = 1011,
-   CMD_CRASH         = 1012,
-   CMD_ADVANCE       = 1013,
-   CMD_LOAD          = 1014,
-   CMD_PURGE         = 1015,
-   CMD_SHUTDOWN      = 1016,
-   CMD_ECHO          = 1017,
-   CMD_FORCE         = 1018,
-   CMD_TRANSFER      = 1019,
-   CMD_REROLL        = 1020,
-   CMD_SNOOP         = 1021,
-   CMD_WSTAT         = 1022,
-   CMD_SETSKILL      = 1023,
-   CMD_FINGER        = 1024,
-   CMD_MESSAGE       = 1025,
-   CMD_BROADCAST     = 1026,
-   CMD_DELETE        = 1027,
-   CMD_TITLE         = 1028,
-   CMD_MAKEMONEY     = 1029,
-   CMD_WIZLOCK       = 1030,
-   CMD_RESET         = 1031,
-   CMD_MANIFEST      = 1032,
-   CMD_VERIFY        = 1033,
-   CMD_BOARDS        = 1034,
-   CMD_KICKIT        = 1035,
-   CMD_CORPSES       = 1036,
-   CMD_REBOOT        = 1037,
-   CMD_EXECUTE       = 1038,
+   CMD_FREEZE    = 1000,
+   CMD_NOSHOUT   = 1002,
+   CMD_PATH      = 1003,
+   CMD_WIZINV    = 1004,
+   CMD_RESTORE   = 1005,
+   CMD_BAN       = 1006,
+   CMD_SWITCH    = 1007,
+   CMD_USERS     = 1008,
+   CMD_WIZHELP   = 1009,
+   CMD_NOTELL    = 1010,
+   CMD_FILE      = 1011,
+   CMD_CRASH     = 1012,
+   CMD_ADVANCE   = 1013,
+   CMD_LOAD      = 1014,
+   CMD_PURGE     = 1015,
+   CMD_SHUTDOWN  = 1016,
+   CMD_ECHO      = 1017,
+   CMD_FORCE     = 1018,
+   CMD_TRANSFER  = 1019,
+   CMD_REROLL    = 1020,
+   CMD_SNOOP     = 1021,
+   CMD_WSTAT     = 1022,
+   CMD_SETSKILL  = 1023,
+   CMD_FINGER    = 1024,
+   CMD_MESSAGE   = 1025,
+   CMD_BROADCAST = 1026,
+   CMD_DELETE    = 1027,
+   CMD_TITLE     = 1028,
+   CMD_MAKEMONEY = 1029,
+   CMD_WIZLOCK   = 1030,
+   CMD_RESET     = 1031,
+   CMD_MANIFEST  = 1032,
+   CMD_VERIFY    = 1033,
+   CMD_BOARDS    = 1034,
+   CMD_KICKIT    = 1035,
+   CMD_CORPSES   = 1036,
+   CMD_REBOOT    = 1037,
+   CMD_EXECUTE   = 1038,
 
-   CMD_A_SOCIAL      = 1000, /* This is a little special... if set, then the executed command is a social cmd */
-   CMD_PRAY          = 1998,
-   CMD_INSULT        = 1999,
+   CMD_A_SOCIAL = 1000, /* This is a little special... if set, then the executed command is a social cmd */
+   CMD_PRAY     = 1998,
+   CMD_INSULT   = 1999,
 };
 #define CMD_BOW     "bow"
 #define CMD_NOD     "nod"

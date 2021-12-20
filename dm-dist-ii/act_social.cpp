@@ -17,8 +17,9 @@
 /* externs */
 extern char libdir[]; /* from dikumud.c */
 
-struct social_msg
+class social_msg
 {
+public:
    char   *cmd_str;     /* "hug" "kiss" etc */
    uint8_t hide_flag;   /* Should we hideinvis? */
    uint8_t min_pos;     /* Minimum position of char */
@@ -26,27 +27,27 @@ struct social_msg
    uint8_t level;       /* Is this a restricted social? (silly concept) */
 
    /* No argument was supplied */
-   char   *char_no_arg;
-   char   *others_no_arg;
+   char *char_no_arg;
+   char *others_no_arg;
 
    /* An argument was there, and a victim was found */
-   char   *char_found; /* if NULL, read no further, ignore args */
-   char   *others_found;
-   char   *vict_found;
+   char *char_found; /* if NULL, read no further, ignore args */
+   char *others_found;
+   char *vict_found;
 
    /* An argument was there, but no victim was found */
-   char   *not_found;
+   char *not_found;
 
    /* The victim turned out to be the character */
-   char   *char_auto;
-   char   *others_auto;
+   char *char_auto;
+   char *others_auto;
 };
 
 static trie_type *soc_trie;
 
-static auto       fread_action(FILE *fl) -> char *
+static auto fread_action(FILE *fl) -> char *
 {
-   char  buf[512];
+   char buf[512];
 
    char *m_tmp = fgets(buf, sizeof buf, fl);
 
@@ -126,7 +127,7 @@ static auto str_to_hide_flag(char *str) -> int
    return flag;
 }
 
-static auto soc_sort_cmp(struct social_msg *dat1, struct social_msg *dat2) -> int
+static auto soc_sort_cmp(social_msg *dat1, social_msg *dat2) -> int
 {
    return strcmp(dat1->cmd_str, dat2->cmd_str);
 }
@@ -136,17 +137,17 @@ static auto soc_sort_cmp(struct social_msg *dat1, struct social_msg *dat2) -> in
  */
 void boot_social_messages()
 {
-   FILE              *fl;
-   char               cmd[80];
-   char               hide[80];
-   char               min_pos[80];
-   char               vic_min_pos[80];
-   char               buf[256];
-   int                level;
+   FILE *fl;
+   char  cmd[80];
+   char  hide[80];
+   char  min_pos[80];
+   char  vic_min_pos[80];
+   char  buf[256];
+   int   level;
 
-   struct social_msg *list      = nullptr;
-   int                list_elms = 0;
-   int                list_size = 0;
+   social_msg *list      = nullptr;
+   int         list_elms = 0;
+   int         list_size = 0;
 
    if((fl = fopen(str_cc(libdir, SOCMESS_FILE), "r")) == nullptr)
    {
@@ -167,9 +168,9 @@ void boot_social_messages()
                fclose(fl);
 
                /* Release mem not used. */
-               RECREATE(list, struct social_msg, list_elms);
+               RECREATE(list, social_msg, list_elms);
 
-               qsort(list, list_elms, sizeof(struct social_msg), (int (*)(const void *, const void *))soc_sort_cmp);
+               qsort(list, list_elms, sizeof(social_msg), (int (*)(const void *, const void *))soc_sort_cmp);
 
                soc_trie = nullptr;
 
@@ -201,24 +202,24 @@ void boot_social_messages()
       if(list == nullptr)
       {
          list_size = 10;
-         CREATE(list, struct social_msg, list_size);
+         CREATE(list, social_msg, list_size);
       }
       else if(list_size == list_elms)
       {
          list_size *= 2;
-         RECREATE(list, struct social_msg, list_size);
+         RECREATE(list, social_msg, list_size);
       }
 
-      list[list_elms].cmd_str       = str_dup(cmd);
-      list[list_elms].hide_flag     = str_to_hide_flag(hide);
-      list[list_elms].min_pos       = str_to_min_pos(min_pos);
-      list[list_elms].vic_min_pos   = str_to_min_pos(vic_min_pos);
-      list[list_elms].level         = std::min(255, level);
+      list[list_elms].cmd_str     = str_dup(cmd);
+      list[list_elms].hide_flag   = str_to_hide_flag(hide);
+      list[list_elms].min_pos     = str_to_min_pos(min_pos);
+      list[list_elms].vic_min_pos = str_to_min_pos(vic_min_pos);
+      list[list_elms].level       = std::min(255, level);
 
       list[list_elms].char_no_arg   = fread_action(fl);
       list[list_elms].others_no_arg = fread_action(fl);
 
-      list[list_elms].char_found    = fread_action(fl);
+      list[list_elms].char_found = fread_action(fl);
 
       /* if no char_found, the rest is to be ignored */
       if(list[list_elms].char_found != nullptr)
@@ -237,21 +238,21 @@ void boot_social_messages()
 /* is cmd an nonabbreviated social-string? */
 auto cmd_is_a_social(char *cmd, int complete) -> bool
 {
-   struct social_msg *action;
+   social_msg *action;
 
    if(complete != 0)
    {
-      return (((action = (struct social_msg *)search_trie(cmd, soc_trie)) != nullptr) && str_ccmp(action->cmd_str, cmd) == 0);
+      return (((action = (social_msg *)search_trie(cmd, soc_trie)) != nullptr) && str_ccmp(action->cmd_str, cmd) == 0);
    }
    return search_trie(cmd, soc_trie) != nullptr;
 }
 
 auto perform_social(unit_data *ch, char *arg, const command_info *cmd) -> bool
 {
-   struct social_msg *action;
-   char              *oarg = arg;
+   social_msg *action;
+   char       *oarg = arg;
 
-   action                  = (struct social_msg *)search_trie(cmd->cmd_str, soc_trie);
+   action = (social_msg *)search_trie(cmd->cmd_str, soc_trie);
 
    if((action == nullptr) || (action->level > CHAR_LEVEL(ch)))
    {
@@ -306,10 +307,10 @@ auto perform_social(unit_data *ch, char *arg, const command_info *cmd) -> bool
  */
 static auto sprint_social(char *b, trie_type *t, int *no, char *cur, int idx) -> int
 {
-   struct social_msg *sm;
-   trie_type         *t2;
-   int                i;
-   int                count = 0;
+   social_msg *sm;
+   trie_type  *t2;
+   int         i;
+   int         count = 0;
 
    if(t != nullptr)
    {
@@ -320,7 +321,7 @@ static auto sprint_social(char *b, trie_type *t, int *no, char *cur, int idx) ->
          t2       = t->nexts[i].t;
          cur[idx] = t->nexts[i].c; /* extend the current string */
 
-         if(((sm = (struct social_msg *)t2->data) != nullptr)
+         if(((sm = (social_msg *)t2->data) != nullptr)
             /* also make sure it is an unabbreviated social-string! */
             && strcmp(sm->cmd_str, cur) == 0)
          {
@@ -436,8 +437,9 @@ void do_insult(unit_data *ch, char *arg, const command_info *cmd)
    }
 }
 
-struct pose_type
+class pose_type
 {
+public:
    int   level;        /* minimum level for poser */
    char *poser_msg[4]; /* message to poser        */
    char *room_msg[4];  /* message to room         */
@@ -445,9 +447,9 @@ struct pose_type
 
 #define MAX_POSES 60
 
-static struct pose_type pose_messages[MAX_POSES];
+static pose_type pose_messages[MAX_POSES];
 
-void                    boot_pose_messages()
+void boot_pose_messages()
 {
    FILE   *fl;
    int16_t counter;
@@ -484,8 +486,8 @@ void do_pose(unit_data *ch, char *argument, const command_info *cmd)
    send_to_char("Sorry Buggy command.\n\r", ch);
 
 #ifdef SUSPEKT
-   struct pose_type *to_pose;
-   int               counter = 0;
+   pose_type *to_pose;
+   int        counter = 0;
 
    if(CHAR_LEVEL(ch) < pose_messages[0].level || IS_NPC(ch))
    {

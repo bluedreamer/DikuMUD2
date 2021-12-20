@@ -34,8 +34,8 @@ struct bbs_type
    int  nLevel;
    int  nAccess;
 
-   int  bUpload;
-   int  bDownload;
+   int bUpload;
+   int bDownload;
 };
 
 extern struct bbs_type bbs;
@@ -51,16 +51,16 @@ public:
    void        Thread(void);
 
 private:
-   FILE    *f;
+   FILE *f;
 
-   char    *pFileName;
+   char *pFileName;
 
    uint32_t nState;
    uint32_t nLength;
    uint16_t nCrc;
    uint32_t nPos;
 
-   char     FileBuf[4 * (SLW_MAX_DATA + 1)];
+   char FileBuf[4 * (SLW_MAX_DATA + 1)];
 };
 
 class cDownload : public cChannel
@@ -73,13 +73,13 @@ public:
    const char *Status(void); // Returns how far we are
 
 private:
-   FILE    *f;
-   FILE    *fshadow;
+   FILE *f;
+   FILE *fshadow;
 
-   char    *pBaseName;
-   char    *pFileName;
-   char    *pShadowName;
-   char     FileBuf[4 * SLW_MAX_DATA + 4];
+   char *pBaseName;
+   char *pFileName;
+   char *pShadowName;
+   char  FileBuf[4 * SLW_MAX_DATA + 4];
 
    uint32_t nExpectedLength;
    uint16_t nExpectedCrc;

@@ -13,16 +13,17 @@ void MplexSendSetup(descriptor_data *d);
 void bzero(char *b, int length);
 #endif
 
-auto any_event(int port, struct multi_type *m) -> int;
+// TODO find out what multi_type is ADRIAN
+// auto any_event(int port,  multi_type *m) -> int;
 auto multi_any_connect(int port) -> int; /* test for event on socket port */
-auto multi_any_freaky(struct multi_type *m) -> int;
-auto multi_new(int mother, struct multi_type *m) -> int;
+// auto multi_any_freaky( multi_type *m) -> int;
+// auto multi_new(int mother,  multi_type *m) -> int;
 void multi_close_all();
 
 auto any_input(int fd) -> int;  /* test for input         */
 auto any_output(int fd) -> int; /* test for output        */
 
-auto multi_process_input(struct multi_element *pm) -> int;
+// auto multi_process_input( multi_element *pm) -> int;
 
 auto write_to_descriptor(int desc, char *txt) -> int;
 auto read_from_descriptor(int desc, char *txt) -> int;

@@ -4,8 +4,9 @@
 
 #include <cstdint>
 
-struct trie_type
+class trie_type
 {
+public:
    void       *data;
    uint8_t     size;
    trie_entry *nexts;

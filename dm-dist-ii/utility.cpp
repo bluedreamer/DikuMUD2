@@ -74,17 +74,17 @@ auto dice(int number, int size) -> int
    struct log_buffer log_buf[MAXLOG];
 
    /* writes a string to the log */
-   void              slog(enum log_level level, uint8_t wizinv_level, const char *fmt, ...)
+   void slog(enum log_level level, uint8_t wizinv_level, const char *fmt, ...)
    {
       static uint8_t  idx      = 0;
       static uint32_t log_size = 0;
 
-      char            buf[MAX_STRING_LENGTH];
-      char           *t;
-      va_list         args;
+      char    buf[MAX_STRING_LENGTH];
+      char   *t;
+      va_list args;
 
-      time_t          now      = time(nullptr);
-      char           *tmstr    = ctime(&now);
+      time_t now   = time(nullptr);
+      char  *tmstr = ctime(&now);
 
       tmstr[strlen(tmstr) - 1] = '\0';
 

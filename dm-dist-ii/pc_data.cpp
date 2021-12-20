@@ -16,9 +16,9 @@ pc_data::pc_data()
    memset(&time, 0, sizeof(setup));
    memset(&account, 0, sizeof(setup));
 
-   guild_time     = 0;
-   vlvl           = 0;
-   id             = -1;
+   guild_time = 0;
+   vlvl       = 0;
+   id         = -1;
 
    skill_points   = 0;
    ability_points = 0;

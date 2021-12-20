@@ -14,13 +14,13 @@ auto pp_main(const char *filename) -> int
 {
    //	static	char		*one_string = "1";
 
-   int            t; /* General holder for token	*/
-   struct symtab *p  = nullptr;
-   struct symtab *p1 = nullptr; /* Ptr into symbol table	*/
-   struct ppdir  *sp;           /* Ptr to predefined symbol	*/
-   int            ifile;
-   int            ofile;
-   int            i;
+   int     t; /* General holder for token	*/
+   symtab *p  = nullptr;
+   symtab *p1 = nullptr; /* Ptr into symbol table	*/
+   ppdir  *sp;           /* Ptr to predefined symbol	*/
+   int     ifile;
+   int     ofile;
+   int     i;
 
    init(); /* Initialize preprocessor	*/
 
@@ -35,10 +35,10 @@ auto pp_main(const char *filename) -> int
    {
       fatal("Unable to open input file");
    }
-   ifile   = TRUE; /* Got an input file */
+   ifile = TRUE; /* Got an input file */
 
-   Output  = stdout;
-   Nextch  = A_trigraph != 0 ? trigraph : gchbuf; /* Next char source */
+   Output = stdout;
+   Nextch = A_trigraph != 0 ? trigraph : gchbuf; /* Next char source */
 
    Do_name = TRUE; /* Force name output on #line */
    if(iInit == 0)
@@ -245,12 +245,12 @@ void init()
    Asmexpand = FALSE; /* Disabled inside asm/endasm */
 #endif                /* (TARGET == T_QC) OR (TARGET == T_QCX) OR (TARGET == T_TCX) */
 
-   Outline   = 1; /* Line number of next output line */
+   Outline = 1; /* Line number of next output line */
 
    Filelevel = -1; /* Current file level */
    if(iInit == 0)
    {
-      Pbbuf = Pbbufp = (struct pbbuf *)malloc(sizeof(struct pbbuf) * PUSHBACKSIZE);
+      Pbbuf = Pbbufp = (pbbuf *)malloc(sizeof(pbbuf) * PUSHBACKSIZE);
    }
 
    if(Pbbufp == nullptr)
@@ -258,17 +258,17 @@ void init()
       out_of_memory();
    }
 
-   Pbbufp->pb_type    = PB_TOS; /* Top of stack marker */
+   Pbbufp->pb_type = PB_TOS; /* Top of stack marker */
 
-   A_astring          =        /* Replace args within strings	*/
-      A_crecurse      =        /* No recursive comments	*/
-      A_rescan        =        /* No macro gen'd directives	*/
-      A_trigraph      = FALSE; /* No Trigraph translation	*/
+   A_astring     =        /* Replace args within strings	*/
+      A_crecurse =        /* No recursive comments	*/
+      A_rescan   =        /* No macro gen'd directives	*/
+      A_trigraph = FALSE; /* No Trigraph translation	*/
 
-   Nsyms              =    /* Number of symbols generated	*/
-      Errors          =    /* Zero the error counter	*/
-      Iflevel         =    /* #if stack pointer		*/
-      Unique          = 0; /* Zero unique # counter	*/
+   Nsyms      =    /* Number of symbols generated	*/
+      Errors  =    /* Zero the error counter	*/
+      Iflevel =    /* #if stack pointer		*/
+      Unique  = 0; /* Zero unique # counter	*/
 
    A_stack            = TRUE;             /* No stacking of macro def's	*/
    A_eolcomment       = TRUE;             /* No eol comments		*/

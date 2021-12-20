@@ -39,13 +39,13 @@ void do_manifest(unit_data *ch, char *arg, const command_info *cmd)
 #ifndef DEMIGOD
    send_to_char("This command has been removed.\r\n", ch);
 #else
-   unit_data              *player;
-   unit_data              *monster;
+   unit_data *player;
+   unit_data *monster;
 
    extern file_index_type *demigod_fi;
 
-   void                    switchbody(unit_data * ch, unit_data * victim);
-   void                    unswitchbody(unit_data * npc);
+   void switchbody(unit_data * ch, unit_data * victim);
+   void unswitchbody(unit_data * npc);
 
    if(!CHAR_DESCRIPTOR(ch))
       return;
@@ -513,12 +513,12 @@ void make_demigod(unit_data *ch)
 auto demi_stuff(spec_arg *sarg) -> int
 {
 #ifdef DEMIGOD
-   int                      i, nExp, nMember;
-   struct char_follow_type *f;
-   unit_data               *pVict, *paper;
-   char                     Buf[MAX_STRING_LENGTH];
-   int                      loaded = FALSE;
-   extra_descr_data        *exd;
+   int               i, nExp, nMember;
+   char_follow_type *f;
+   unit_data        *pVict, *paper;
+   char              Buf[MAX_STRING_LENGTH];
+   int               loaded = FALSE;
+   extra_descr_data *exd;
 
    if(cmd->no == CMD_LEVEL)
    {

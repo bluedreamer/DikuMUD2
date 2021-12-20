@@ -11,18 +11,18 @@ zone_type::zone_type()
    help     = nullptr;
    filename = nullptr;
 
-   fi       = nullptr;
-   ba       = nullptr;
+   fi = nullptr;
+   ba = nullptr;
 
-   zri      = nullptr;
-   next     = nullptr;
+   zri  = nullptr;
+   next = nullptr;
 
-   tmpl     = nullptr;
-   tmplba   = nullptr;
+   tmpl   = nullptr;
+   tmplba = nullptr;
 
    spmatrix = nullptr;
 
-   access   = 255;
+   access = 255;
 }
 
 zone_type::~zone_type()
@@ -61,8 +61,8 @@ zone_type::~zone_type()
       delete p;
    }
 
-   struct zone_reset_cmd *pzri;
-   struct zone_reset_cmd *nextzri;
+   zone_reset_cmd *pzri;
+   zone_reset_cmd *nextzri;
 
    for(pzri = zri; pzri != nullptr; pzri = nextzri)
    {

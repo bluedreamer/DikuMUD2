@@ -2,8 +2,9 @@
 
 #include <cstdint>
 
-struct flatrate_type
+class flatrate_type
 {
+public:
    char    *pMessage;
    uint16_t days;
    uint32_t price;

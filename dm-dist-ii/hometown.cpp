@@ -27,7 +27,7 @@ auto hometown_unit(char *str) -> unit_data *
    return entry_room;
 }
 
-auto change_hometown(struct spec_arg *sarg) -> int
+auto change_hometown(spec_arg *sarg) -> int
 {
    if(static_cast<unsigned int>(is_command(sarg->cmd, "moveto")) == 0U)
    {

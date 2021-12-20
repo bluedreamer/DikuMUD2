@@ -1,10 +1,10 @@
 #pragma once
 
 #include "char_data.h"
+#include "constants.h"
 #include "essential.h"
 #include "file_index_type.h"
 #include "npc_data.h"
-#include "constants.h"
 #include "obj_data.h"
 #include "pc_data.h"
 #include "room_data.h"
@@ -14,8 +14,8 @@
 #include <cstdlib>
 #include <cstring>
 
-constexpr bool      PK_RELAXED = false;
-constexpr bool      PK_STRICT  = true;
+constexpr bool PK_RELAXED = false;
+constexpr bool PK_STRICT  = true;
 
 #define IS_BEGINNER(ch)      (CHAR_LEVEL(ch) <= START_LEVEL)
 #define IS_MORTAL(ch)        (CHAR_LEVEL(ch) < IMMORTAL_LEVEL)
@@ -327,7 +327,7 @@ inline auto FI_NAME(file_index_type *fi) -> const char *
 #define UNIT_IS_TRANSPARENT(u)                                                                                                             \
    (!IS_SET(UNIT_FLAGS(u), UNIT_FL_BURIED) && IS_SET(UNIT_FLAGS(u), UNIT_FL_TRANS) && !IS_SET(UNIT_OPEN_FLAGS(u), EX_CLOSED))
 
-#define UNIT_FI_ZONE(unit) (UNIT_FILE_INDEX(unit) ? (unit)->fi->zone : (struct zone_type *)NULL)
+#define UNIT_FI_ZONE(unit) (UNIT_FILE_INDEX(unit) ? (unit)->fi->zone : (zone_type *)NULL)
 
 #define UNIT_FI_ZONENAME(unit) (FI_ZONENAME(UNIT_FILE_INDEX(unit)))
 

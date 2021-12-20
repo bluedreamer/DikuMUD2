@@ -3,8 +3,9 @@
 
 #include <cstdint>
 
-struct base_race_info_type
+class base_race_info_type
 {
+public:
    uint16_t  height;
    dice_type height_dice;
 

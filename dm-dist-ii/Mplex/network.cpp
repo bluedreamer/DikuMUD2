@@ -25,7 +25,7 @@ auto OpenMother(int nPort) -> int
    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
    server_addr.sin_port        = htons(nPort);
 
-   fdMother                    = socket(AF_INET, SOCK_STREAM, 0);
+   fdMother = socket(AF_INET, SOCK_STREAM, 0);
 
    if(fdMother == -1)
    {
@@ -95,7 +95,7 @@ auto OpenNetwork(int nPort, const char *pcAddress) -> int
    server_addr.sin_addr.s_addr = inet_addr(pcAddress);
    server_addr.sin_port        = htons(nPort);
 
-   fdClient                    = socket(AF_INET, SOCK_STREAM, 0);
+   fdClient = socket(AF_INET, SOCK_STREAM, 0);
 
    if(fdClient == -1)
    {

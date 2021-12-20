@@ -1,7 +1,8 @@
 #pragma once
 
-struct symbols
+class symbols
 {
+public:
    char *nam;
    int   val;
 } sym[] = {

@@ -4,8 +4,9 @@
 
 class command_info;
 
-struct spec_arg
+class spec_arg
 {
+public:
    unit_data    *owner;     /* Who is this?                       */
    unit_data    *activator; /* Who performed the operation        */
    unit_data    *medium;    /* Possibly what is used in operation */

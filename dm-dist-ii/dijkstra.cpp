@@ -1,7 +1,10 @@
 #include "comm.h"
 #include "common.h"
 #include "db.h"
+#include "graph.h"
+#include "graph_vertice.h"
 #include "handler.h"
+#include "hob.h"
 #include "interpreter.h"
 #include "movement.h"
 #include "structs.h"
@@ -29,57 +32,37 @@
 extern uint32_t memory_total_alloc;
 extern int      memory_dijkstra_alloc;
 
-struct dir_array
+class dir_array
 {
-   struct graph_vertice *to_vertice;
-   uint8_t               direction;
-   int16_t               weight;
+public:
+   graph_vertice *to_vertice;
+   uint8_t        direction;
+   int16_t        weight;
 };
 
-struct izone_type
+class izone_type
 {
+public:
    unit_data *room;
    uint8_t    dir;
 };
 
-struct izone_type     **iz = nullptr; /* Global for ease of use :)
-                                      I know it's nasty */
+izone_type **iz = nullptr; /* Global for ease of use :)
+                                 I know it's nasty */
 
-static struct dir_array d_array[MAX_EXITS];
+static dir_array d_array[MAX_EXITS];
 
-struct graph_vertice
+static auto hob_create(graph *g) -> hob *
 {
-   unit_data            *room;      /* Pointer to direction/edge info */
-   struct graph_vertice *parent;    /* Path info for shortest path    */
-   int32_t               dist;      /* Current Distance found         */
-   uint8_t               direction; /* Path direction found           */
-   uint16_t              hob_pos;   /* Position in Hob                */
-};
+   hob *h;
+   int  i;
 
-struct graph
-{
-   int                   no;    /* No entries in graph array      */
-   struct graph_vertice *array; /* Array for graph                */
-};
-
-struct hob
-{
-   int                    no;    /* No of entries in the Hob       */
-   int                    d;     /* d as in d-Hob (2...X)          */
-   struct graph_vertice **array; /* Array of pointers to vertices  */
-};
-
-static auto hob_create(struct graph *g) -> struct hob *
-{
-   struct hob *h;
-   int         i;
-
-   CREATE(h, struct hob, 1);
+   CREATE(h, hob, 1);
 
    h->no = g->no;
    h->d  = 4; /* Optimal is 2+m/n  (m=no edges, n = no vertices) */
    /* I estimate this is approx. 4 (5?) in a world    */
-   CREATE(h->array, struct graph_vertice *, h->no);
+   CREATE(h->array, graph_vertice *, h->no);
 
    /* We know that the Hob consists of only equal weights */
    /* no need to shift around                             */
@@ -93,16 +76,16 @@ static auto hob_create(struct graph *g) -> struct hob *
    return h;
 }
 
-static void hob_shift_up(int x, struct hob *h)
+static void hob_shift_up(int x, hob *h)
 {
-   int                   p;
-   struct graph_vertice *tmp;
+   int            p;
+   graph_vertice *tmp;
 
    p = P(x, h);
 
    while((x != 0) && (HOB_KEY(h->array[x]) < HOB_KEY(h->array[p])))
    {
-      tmp         = h->array[p];
+      tmp = h->array[p];
 
       h->array[p] = h->array[x];
       h->array[x] = tmp;
@@ -113,7 +96,7 @@ static void hob_shift_up(int x, struct hob *h)
    }
 }
 
-static auto hob_min_child(int x, struct hob *h) -> int
+static auto hob_min_child(int x, hob *h) -> int
 {
    int b;
    int minb;
@@ -138,16 +121,16 @@ static auto hob_min_child(int x, struct hob *h) -> int
    return minb;
 }
 
-static void hob_shift_down(int x, struct hob *h)
+static void hob_shift_down(int x, hob *h)
 {
-   int                   b;
-   struct graph_vertice *tmp;
+   int            b;
+   graph_vertice *tmp;
 
    b = hob_min_child(x, h);
 
    while((b != -1) && (HOB_KEY(h->array[b]) < HOB_KEY(h->array[x])))
    {
-      tmp         = h->array[b];
+      tmp = h->array[b];
 
       h->array[b] = h->array[x];
       h->array[x] = tmp;
@@ -158,10 +141,10 @@ static void hob_shift_down(int x, struct hob *h)
    }
 }
 
-static void hob_remove(int x, struct hob *h)
+static void hob_remove(int x, hob *h)
 {
-   struct graph_vertice *s;
-   struct graph_vertice *s1;
+   graph_vertice *s;
+   graph_vertice *s1;
 
    s  = h->array[x];
    s1 = h->array[h->no - 1];
@@ -187,9 +170,9 @@ static void hob_remove(int x, struct hob *h)
    /* RECREATE(h->array, struct graph_vertice *, h->no); */
 }
 
-static auto hob_remove_min(struct hob *h) -> struct graph_vertice *
+static auto hob_remove_min(hob *h) -> graph_vertice *
 {
-   struct graph_vertice *s;
+   graph_vertice *s;
 
    if(h->no == 0)
    {
@@ -236,16 +219,16 @@ static auto flag_weight(int flags) -> int
    return weight;
 }
 
-void add_exit(struct graph *g, struct graph_vertice *v, unit_data *to, int *idx, int dir, int weight)
+void add_exit(graph *g, graph_vertice *v, unit_data *to, int *idx, int dir, int weight)
 {
    int j;
 
    if(UNIT_FILE_INDEX(v->room)->zone == UNIT_FILE_INDEX(to)->zone)
    {
-      d_array[*idx].weight     = weight; /* Perhaps adjust for movement type */
+      d_array[*idx].weight = weight; /* Perhaps adjust for movement type */
 
       /* Calculate array entry for vertice of graph */
-      j                        = UNIT_FILE_INDEX(to)->room_no;
+      j = UNIT_FILE_INDEX(to)->room_no;
 
       d_array[*idx].to_vertice = &g->array[j];
       d_array[*idx].direction  = dir;
@@ -264,7 +247,7 @@ void add_exit(struct graph *g, struct graph_vertice *v, unit_data *to, int *idx,
    assert(*idx < MAX_EXITS);
 }
 
-static void outedges(struct graph *g, struct graph_vertice *v)
+static void outedges(graph *g, graph_vertice *v)
 {
    unit_data *u;
    int        i;
@@ -318,14 +301,14 @@ static void outedges(struct graph *g, struct graph_vertice *v)
    d_array[idx].to_vertice = nullptr;
 }
 
-void dijkstra(struct graph *g, struct graph_vertice *source)
+void dijkstra(graph *g, graph_vertice *source)
 {
-   struct hob           *h;
-   struct graph_vertice *v;
-   struct graph_vertice *w;
-   int                   j;
+   hob           *h;
+   graph_vertice *v;
+   graph_vertice *w;
+   int            j;
 
-   h                 = hob_create(g);
+   h = hob_create(g);
 
    source->dist      = 0;
    source->direction = DIR_HERE; /* We're at the goal */
@@ -373,15 +356,15 @@ void dijkstra(struct graph *g, struct graph_vertice *source)
 
 /* Given a zone, create the nesseceary graph structure, and  */
 /* return a matrix of shortest path for the zone             */
-auto create_graph(struct zone_type *zone) -> uint8_t **
+auto create_graph(zone_type *zone) -> uint8_t **
 {
-   static struct graph g;
-   file_index_type    *fi;
-   int                 i;
-   int                 j;
-   int                 hidx;
-   int                 vidx;
-   uint8_t           **spi;
+   static graph     g;
+   file_index_type *fi;
+   int              i;
+   int              j;
+   int              hidx;
+   int              vidx;
+   uint8_t        **spi;
 
    g.no = zone->no_rooms;
 
@@ -391,7 +374,7 @@ auto create_graph(struct zone_type *zone) -> uint8_t **
    }
 
    CREATE(spi, uint8_t *, g.no);
-   CREATE(g.array, struct graph_vertice, g.no);
+   CREATE(g.array, graph_vertice, g.no);
 
    for(i = 0, fi = zone->fi; fi != nullptr; fi = fi->next)
    {
@@ -436,13 +419,13 @@ auto create_graph(struct zone_type *zone) -> uint8_t **
    return spi;
 }
 
-void stat_dijkstraa(unit_data *ch, struct zone_type *z)
+void stat_dijkstraa(unit_data *ch, zone_type *z)
 {
-   int               i;
-   int               j;
-   char              buf[MAX_STRING_LENGTH];
-   struct zone_type *z2;
-   char             *b;
+   int        i;
+   int        j;
+   char       buf[MAX_STRING_LENGTH];
+   zone_type *z2;
+   char      *b;
 
    sprintf(buf, "%s borders the following zones (for auto-walk):\n\r\n\r", z->name);
    send_to_char(buf, ch);
@@ -519,21 +502,21 @@ void stat_dijkstraa(unit_data *ch, struct zone_type *z)
 
 void create_dijkstra()
 {
-   struct zone_type *z;
-   int               i;
-   int               j;
-   int               k;
+   zone_type *z;
+   int        i;
+   int        j;
+   int        k;
 
 #ifdef MEMORY_DEBUG
    memory_dijkstra_alloc = memory_total_alloc;
 #endif
-   CREATE(iz, struct izone_type *, zone_info.no_of_zones);
+   CREATE(iz, izone_type *, zone_info.no_of_zones);
    zone_info.spmatrix = (void **)iz;
 
    /* Initialize inter-zone matrix */
    for(i = 0; i < zone_info.no_of_zones; i++)
    {
-      CREATE(iz[i], struct izone_type, zone_info.no_of_zones);
+      CREATE(iz[i], izone_type, zone_info.no_of_zones);
       for(j = 0; j < zone_info.no_of_zones; j++)
       {
          iz[i][j].room = nullptr;

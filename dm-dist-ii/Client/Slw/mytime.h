@@ -28,15 +28,15 @@
 class cMyTime
 {
 public:
-   void     gettime(void);
+   void gettime(void);
 
-   int      operator==(const cMyTime &cT1);
-   int      operator<=(const cMyTime &cT1);
+   int operator==(const cMyTime &cT1);
+   int operator<=(const cMyTime &cT1);
 
-   void     operator+=(const int hunds);
-   void     operator+=(const cMyTime &cT1);
+   void operator+=(const int hunds);
+   void operator+=(const cMyTime &cT1);
 
-   void     operator-=(const cMyTime &cT1);
+   void operator-=(const cMyTime &cT1);
 
    uint32_t secs;  // Number of seconds passed.
    int32_t  hunds; // Number of 1/100 seconds passed.

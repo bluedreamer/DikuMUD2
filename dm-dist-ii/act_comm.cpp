@@ -12,13 +12,13 @@
 #include <cctype>
 #include <cstring>
 
-uint8_t                 g_nShout = 0;
+uint8_t g_nShout = 0;
 
 /* extern variables */
 
 extern descriptor_data *descriptor_list;
 
-auto                    is_ignored(unit_data *ch, unit_data *victim) -> int
+auto is_ignored(unit_data *ch, unit_data *victim) -> int
 {
    extra_descr_data *pexd;
    char              tmp[128];
@@ -59,7 +59,7 @@ auto drunk_speech(unit_data *ch, const char *str) -> char *
 
    for(c = result; *str != 0; str++)
    {
-      b    = tolower(*str);
+      b = tolower(*str);
 
       *c++ = b;
 
@@ -268,14 +268,14 @@ void do_shout(unit_data *ch, char *argument, const command_info *cmd)
 
 void do_tell(unit_data *ch, char *aaa, const command_info *cmd)
 {
-   unit_data               *vict = nullptr;
-   struct char_follow_type *f;
-   char                     type;
-   const char              *others;
-   const char              *me;
-   char                    *c;
-   int                      switched = static_cast<int>(FALSE);
-   char                    *argument = (char *)aaa;
+   unit_data        *vict = nullptr;
+   char_follow_type *f;
+   char              type;
+   const char       *others;
+   const char       *me;
+   char             *c;
+   int               switched = static_cast<int>(FALSE);
+   char             *argument = (char *)aaa;
 
    if(IS_PC(ch) && IS_SET(PC_FLAGS(ch), PC_NOTELLING))
    {
@@ -781,7 +781,7 @@ void do_write(unit_data *ch, char *aaa, const command_info *cmd)
    act("You begin to jot down a note on $2n.", A_ALWAYS, ch, paper, nullptr, TO_CHAR);
    act("$1n begins to jot down a note.", A_HIDEINV, ch, nullptr, nullptr, TO_ROOM);
 
-   UNIT_EXTRA_DESCR(paper)       = UNIT_EXTRA_DESCR(paper)->add((char *)nullptr, nullptr);
+   UNIT_EXTRA_DESCR(paper) = UNIT_EXTRA_DESCR(paper)->add((char *)nullptr, nullptr);
 
    CHAR_DESCRIPTOR(ch)->editref  = UNIT_EXTRA_DESCR(paper);
    CHAR_DESCRIPTOR(ch)->postedit = edit_extra;

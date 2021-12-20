@@ -12,7 +12,7 @@
 
 extern descriptor_data *descriptor_list;
 
-auto                    find_descriptor(const char *name, descriptor_data *except) -> descriptor_data *
+auto find_descriptor(const char *name, descriptor_data *except) -> descriptor_data *
 {
    descriptor_data *d;
 
@@ -32,7 +32,7 @@ auto                    find_descriptor(const char *name, descriptor_data *excep
  *  Returns pointer to element of array or null.
  *  Perhaps an index vs. -1 would be better?
  */
-auto binary_search(struct bin_search_type *ba, const char *str, int top) -> struct bin_search_type *
+auto binary_search(bin_search_type *ba, const char *str, int top) -> bin_search_type *
 {
    int mid = 0;
    int bot;
@@ -63,9 +63,9 @@ auto binary_search(struct bin_search_type *ba, const char *str, int top) -> stru
 }
 
 /* Find a named zone */
-auto find_zone(const char *zonename) -> struct zone_type *
+auto find_zone(const char *zonename) -> zone_type *
 {
-   struct bin_search_type *ba;
+   bin_search_type *ba;
 
    if((zonename == nullptr) || (*zonename == 0))
    {
@@ -74,14 +74,14 @@ auto find_zone(const char *zonename) -> struct zone_type *
 
    ba = binary_search(zone_info.ba, zonename, zone_info.no_of_zones);
 
-   return ba != nullptr ? (struct zone_type *)ba->block : nullptr;
+   return ba != nullptr ? (zone_type *)ba->block : nullptr;
 }
 
 /* Zonename & name must point to non-empty strings */
 auto find_file_index(const char *zonename, const char *name) -> file_index_type *
 {
-   struct zone_type       *zone;
-   struct bin_search_type *ba;
+   zone_type       *zone;
+   bin_search_type *ba;
 
    if(*name == 0)
    {
@@ -104,8 +104,8 @@ auto find_file_index(const char *zonename, const char *name) -> file_index_type 
 /* Zonename & name must point to non-empty strings */
 auto find_dil_index(char *zonename, char *name) -> diltemplate *
 {
-   struct zone_type       *zone;
-   struct bin_search_type *ba;
+   zone_type       *zone;
+   bin_search_type *ba;
 
    if(static_cast<unsigned int>(str_is_empty(name)) != 0U)
    {

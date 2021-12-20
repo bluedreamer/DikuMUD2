@@ -10,20 +10,20 @@ class CAccountConfig
 public:
    CAccountConfig();
 
-   void          Boot();
+   void Boot();
 
-   char         *m_pCoinName;
-   char         *m_pOverdueMessage;
-   char         *m_pClosedMessage;
-   char         *m_pPaypointMessage;
+   char *m_pCoinName;
+   char *m_pOverdueMessage;
+   char *m_pClosedMessage;
+   char *m_pPaypointMessage;
 
-   int           m_nMaxCharge;
-   int           m_nMinCharge;
-   int           m_nFreeFromLevel;
-   int           m_nAccountFree;
-   int           m_nAccountLimit;
-   int           m_nHourlyRate;
-   int           m_bCreditCard;
+   int m_nMaxCharge;
+   int m_nMinCharge;
+   int m_nFreeFromLevel;
+   int m_nAccountFree;
+   int m_nAccountLimit;
+   int m_nHourlyRate;
+   int m_bCreditCard;
 
    flatrate_type m_flatrate[MAX_FLATRATE]{};
 };

@@ -2,8 +2,9 @@
 
 #include "unit_data.h"
 
-struct visit_data
+class visit_data
 {
+public:
    int        state;
    unit_data *go_to;
 
@@ -13,7 +14,7 @@ struct visit_data
    /* Return DESTROY_ME to destroy moving function        */
    /*        SFR_SHARE to allow lower functions to handle */
    /*        SFR_SUPREME to not allow lower functions     */
-   int (*what_now)(const unit_data *, struct visit_data *);
+   int (*what_now)(const unit_data *, visit_data *);
 
    void *data;
    int   non_tick_return; /* What to return upon non-ticks (SFR_...) */

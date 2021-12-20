@@ -10,7 +10,7 @@ auto main(int argc, char *argv[]) -> int
    time_t lastcrc;
    time_t first_crc;
 
-   char  *msbuf = fgets(Buf, sizeof(Buf), stdin);
+   char *msbuf = fgets(Buf, sizeof(Buf), stdin);
    sscanf(Buf, "%08x%08x", (uint32_t *)&created, (uint32_t *)&lastcrc);
    first_crc = created;
    created ^= 0xAF876162;
@@ -34,7 +34,7 @@ auto main(int argc, char *argv[]) -> int
       int    check;
       time_t now;
 
-      char  *msbuf2 = fgets(Buf, sizeof(Buf), stdin);
+      char *msbuf2 = fgets(Buf, sizeof(Buf), stdin);
       if(feof(stdin) != 0)
       {
          break;
@@ -57,7 +57,7 @@ auto main(int argc, char *argv[]) -> int
 
       check = gid + pid + total + amount + (uint32_t)now;
 
-      mxor  = ~mxor;
+      mxor = ~mxor;
       next_crc ^= mxor;
 
       gid ^= mxor;

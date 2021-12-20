@@ -42,13 +42,13 @@
 
 #define STATE(d) ((d)->state)
 
-void                nanny_credit_card(descriptor_data *d, const char *arg);
-void                nanny_new_pwd(descriptor_data *d, char *arg);
-void                nanny_change_information(descriptor_data *d, const char *arg);
-void                nanny_change_terminal(descriptor_data *d, const char *arg);
-void                multi_close(struct multi_element *pe);
-auto                player_exists(const char *pName) -> int;
-void                save_player_file(unit_data *ch);
+void nanny_credit_card(descriptor_data *d, const char *arg);
+void nanny_new_pwd(descriptor_data *d, char *arg);
+void nanny_change_information(descriptor_data *d, const char *arg);
+void nanny_change_terminal(descriptor_data *d, const char *arg);
+void multi_close(struct multi_element *pe);
+auto player_exists(const char *pName) -> int;
+void save_player_file(unit_data *ch);
 
 extern diltemplate *nanny_dil_tmpl;
 
@@ -56,7 +56,7 @@ extern diltemplate *nanny_dil_tmpl;
  *  Stuff for controlling the non-playing sockets (get name, pwd etc)      *
  ************************************************************************* */
 
-auto                _parse_name(const char *arg, char *name) -> int
+auto _parse_name(const char *arg, char *name) -> int
 {
    int                i;
    static const char *illegal_names[] = {
@@ -239,16 +239,16 @@ void update_lasthost(unit_data *pc, uint32_t s_addr)
 /*   game, and his inventory loaded.                              */
 void enter_game(unit_data *ch)
 {
-   unit_data                 *load_room;
-   descriptor_data           *i;
-   char                       buf[256];
-   time_t                     last_connect = PC_TIME(ch).connect;
+   unit_data       *load_room;
+   descriptor_data *i;
+   char             buf[256];
+   time_t           last_connect = PC_TIME(ch).connect;
 
    extern command_info cmd_info[];
 
-   auto                       player_has_mail(unit_data * ch)->uint8_t;
-   auto                       ContentsFileName(const char *)->char *;
-   void                       start_all_special(unit_data * u);
+   auto player_has_mail(unit_data * ch)->uint8_t;
+   auto ContentsFileName(const char *)->char *;
+   void start_all_special(unit_data * u);
 
    assert(ch);
    assert(!UNIT_IN(ch));
@@ -539,8 +539,8 @@ void nanny_dil(descriptor_data *d, char *arg)
    {
       struct dilprg *prg;
 
-      prg                         = dil_copy_template(nanny_dil_tmpl, d->character, nullptr);
-      prg->waitcmd                = WAITCMD_MAXINST - 1; // The usual hack, see db_file
+      prg          = dil_copy_template(nanny_dil_tmpl, d->character, nullptr);
+      prg->waitcmd = WAITCMD_MAXINST - 1; // The usual hack, see db_file
 
       prg->sp->vars[0].val.string = str_dup(arg);
 
@@ -733,7 +733,7 @@ void nanny_kill_confirm(descriptor_data *d, char *arg)
 {
    unit_data *u;
 
-   auto       delete_player(const char *)->int;
+   auto delete_player(const char *)->int;
 
    if(STATE(d)++ == 0)
    {
@@ -1159,9 +1159,9 @@ void nanny_charge_confirm(descriptor_data *d, char *arg)
                                   "you can now continue playing.\n\r" COLOUR_NORMAL,
                       d);
 
-   char    *c = d->history;
-   char     word[200];
-   int      j;
+   char *c = d->history;
+   char  word[200];
+   int   j;
 
    uint32_t price = 0;
 
@@ -1229,7 +1229,7 @@ void nanny_charge(descriptor_data *d, char *arg)
    }
    *p = 0;
 
-   i  = atoi(arg);
+   i = atoi(arg);
 
    if(static_cast<unsigned int>(str_is_number(arg)) == 0U)
    {
@@ -1657,9 +1657,9 @@ void nanny_menu(descriptor_data *d, const char *arg)
    {
       if(wizi_level == 0)
       {
-         extern struct trie_type *intr_trie;
+         extern trie_type *intr_trie;
 
-         auto                    *cmd_ptr = (struct command_info *)search_trie("wizinv", intr_trie);
+         auto *cmd_ptr = (command_info *)search_trie("wizinv", intr_trie);
 
          if(cmd_ptr != nullptr)
          {

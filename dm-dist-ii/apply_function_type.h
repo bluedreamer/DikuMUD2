@@ -4,8 +4,9 @@
 
 /* These functions may not send messages - nor destroy units. Only */
 /* affect a units values                                           */
-struct apply_function_type
+class apply_function_type
 {
+public:
    const char *descr;
    bool (*func)(unit_affected_type *af, unit_data *unit, bool set);
 };

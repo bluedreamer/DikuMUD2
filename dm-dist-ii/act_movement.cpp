@@ -23,11 +23,11 @@ extern command_info cmd_info[];
 
 /* external functs */
 
-auto                       get_obj_in_list_vis(unit_data *ch, char *name, unit_data *list) -> unit_data *;
+auto get_obj_in_list_vis(unit_data *ch, char *name, unit_data *list) -> unit_data *;
 
 /* Has 'pc' found the door at 'dir'? If direction exits and it is closed  */
 /* and hidden then the door is found if it has been searched for.         */
-auto                       has_found_door(unit_data *pc, int dir) -> int
+auto has_found_door(unit_data *pc, int dir) -> int
 {
    unit_affected_type *af;
 
@@ -125,8 +125,8 @@ auto do_simple_sail(unit_data *boat, unit_data *captain, int direction) -> int
    assert(ROOM_EXIT(UNIT_IN(boat), direction));
    assert(ROOM_EXIT(UNIT_IN(boat), direction)->to_room);
 
-   was_in                      = UNIT_IN(boat);
-   to                          = ROOM_EXIT(was_in, direction)->to_room;
+   was_in = UNIT_IN(boat);
+   to     = ROOM_EXIT(was_in, direction)->to_room;
 
    /* Ok, the boat must always issue a special call in case some room
       might want to catch it! Not like walking! */
@@ -207,8 +207,8 @@ auto do_simple_ride(unit_data *beast, unit_data *master, int direction) -> int
    assert(ROOM_EXIT(UNIT_IN(beast), direction));
    assert(ROOM_EXIT(UNIT_IN(beast), direction)->to_room);
 
-   was_in                      = UNIT_IN(beast);
-   to                          = ROOM_EXIT(was_in, direction)->to_room;
+   was_in = UNIT_IN(beast);
+   to     = ROOM_EXIT(was_in, direction)->to_room;
 
    char mbuf[MAX_INPUT_LENGTH] = {0};
    res                         = send_preprocess(beast, &cmd_info[direction], mbuf);
@@ -389,7 +389,7 @@ auto do_simple_move(unit_data *ch, int direction, int following) -> int
 
    dirbuf[0] = dirs[direction][0];
 
-   c         = single_unit_messg(UNIT_IN(ch), "$leave_o", dirbuf, "$1n leaves $3t.");
+   c = single_unit_messg(UNIT_IN(ch), "$leave_o", dirbuf, "$1n leaves $3t.");
 
    if(!CHAR_HAS_FLAG(ch, CHAR_SNEAK) && (static_cast<unsigned int>(str_is_empty(c)) == 0U))
    {
@@ -411,7 +411,7 @@ auto do_simple_move(unit_data *ch, int direction, int following) -> int
 
    dirbuf[0] = dirs[rev_dir[direction]][0];
 
-   c         = single_unit_messg(UNIT_IN(ch), "$arrive_o", dirbuf, "$1n has arrived from $3t.");
+   c = single_unit_messg(UNIT_IN(ch), "$arrive_o", dirbuf, "$1n has arrived from $3t.");
 
    if(!CHAR_HAS_FLAG(ch, CHAR_SNEAK) && (static_cast<unsigned int>(str_is_empty(c)) == 0U))
    {
@@ -443,8 +443,8 @@ auto do_advanced_move(unit_data *ch, int direction, int following) -> int
   -1 : If dead.
   */
 {
-   unit_data               *was_in;
-   struct char_follow_type *k;
+   unit_data        *was_in;
+   char_follow_type *k;
 
    if(!IS_ROOM(UNIT_IN(ch)) || (ROOM_EXIT(UNIT_IN(ch), direction) == nullptr))
    {
@@ -894,7 +894,7 @@ auto locate_lock(unit_data *ch, char *arg) -> door_data *
 
    if((thing = find_unit(ch, &arg, nullptr, FIND_UNIT_HERE)) != nullptr)
    {
-      unit_data *u     = UNIT_IN(ch);
+      unit_data *u = UNIT_IN(ch);
 
       a_door.thing     = thing;
       a_door.room      = nullptr;
@@ -932,10 +932,10 @@ auto locate_lock(unit_data *ch, char *arg) -> door_data *
       a_door.rev_flags = nullptr;
       a_door.thing     = nullptr;
 
-      a_door.name      = ROOM_DOOR_NAME(UNIT_IN(ch), door);
-      a_door.room      = UNIT_IN(ch);
-      a_door.flags     = &ROOM_EXIT(UNIT_IN(ch), door)->exit_info;
-      a_door.key       = ROOM_EXIT(UNIT_IN(ch), door)->key;
+      a_door.name  = ROOM_DOOR_NAME(UNIT_IN(ch), door);
+      a_door.room  = UNIT_IN(ch);
+      a_door.flags = &ROOM_EXIT(UNIT_IN(ch), door)->exit_info;
+      a_door.key   = ROOM_EXIT(UNIT_IN(ch), door)->key;
 
       /* Locate other side of room */
       if((other_room = ROOM_EXIT(UNIT_IN(ch), door)->to_room) != nullptr)
@@ -1330,9 +1330,9 @@ void do_unlock(unit_data *ch, char *argument, const command_info *cmd)
 
 void do_enter(unit_data *ch, char *arg, const command_info *cmd)
 {
-   int         door;
-   unit_data  *thing;
-   char       *oarg    = arg;
+   int        door;
+   unit_data *thing;
+   char      *oarg = arg;
 
    const char *mnt_ent = (cmd->no == CMD_MOUNT ? "mount" : "enter");
 
@@ -1760,8 +1760,8 @@ void do_follow(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *leader = nullptr;
 
-   void       stop_follower(unit_data * ch);
-   void       add_follower(unit_data * ch, unit_data * leader);
+   void stop_follower(unit_data * ch);
+   void add_follower(unit_data * ch, unit_data * leader);
 
    if((static_cast<unsigned int>(str_is_empty(arg)) != 0U) || ((leader = find_unit(ch, &arg, nullptr, FIND_UNIT_SURRO)) == ch))
    {

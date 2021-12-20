@@ -188,8 +188,8 @@ static void chg_terminal(unit_data *ch, const char *arg)
 {
    const char *Terminals[] = {"dumb", "tty", "ansi", nullptr};
 
-   char        buf[1024];
-   int         n;
+   char buf[1024];
+   int  n;
 
    if(PC_SETUP_EMULATION(ch) == TERM_INTERNAL)
    {
@@ -199,7 +199,7 @@ static void chg_terminal(unit_data *ch, const char *arg)
 
    arg = one_argument(arg, buf);
 
-   n   = search_block(buf, Terminals, 0);
+   n = search_block(buf, Terminals, 0);
 
    switch(n)
    {
@@ -330,7 +330,7 @@ void do_change(unit_data *ch, char *arg, const command_info *cmd)
                                 "redraw prompt",
                                 nullptr};
 
-   char               buf[MAX_INPUT_LENGTH];
+   char buf[MAX_INPUT_LENGTH];
 
    if(!IS_PC(ch))
    {

@@ -17,36 +17,39 @@
 
 #define MAX_TOP_TEN (11)
 
-struct competition_entry
+class competition_entry
 {
+public:
    char name[PC_MAX_NAME];
    int  secs;
    int  xp;
    int  points;
 };
 
-struct top_ten_type
+class top_ten_type
 {
-   int                      max_secs;
-   int                      competitors; /* No of competitiors */
-   struct competition_entry entry[MAX_TOP_TEN];
+public:
+   int               max_secs;
+   int               competitors; /* No of competitiors */
+   competition_entry entry[MAX_TOP_TEN];
 };
 
-static struct competition_data
+static class competition_data
 {
-   char               *name;
-   char               *descr;
-   int                 ongoing;
-   int                 start;
-   int                 stop;
+public:
+   char *name;
+   char *descr;
+   int   ongoing;
+   int   start;
+   int   stop;
 
-   struct top_ten_type top_ten;
+   top_ten_type top_ten;
 
-} *competition             = nullptr;
+} *competition = nullptr;
 
 static int competition_top = 0;
 
-auto       competition_find(char *name, extra_descr_data *pexd) -> extra_descr_data *
+auto competition_find(char *name, extra_descr_data *pexd) -> extra_descr_data *
 {
    class extra_descr_data *exd;
 
@@ -82,7 +85,7 @@ static void competition_save(int idx)
 
    assert(f);
 
-   n = fwrite(&competition[idx].top_ten, sizeof(struct top_ten_type), 1, f);
+   n = fwrite(&competition[idx].top_ten, sizeof(top_ten_type), 1, f);
    assert(n == 1);
 }
 
@@ -99,7 +102,7 @@ static void competition_load(int idx)
    f = fopen_cache(buf, "rb");
    assert(f);
 
-   n = fread(&competition[idx].top_ten, sizeof(struct top_ten_type), 1, f);
+   n = fread(&competition[idx].top_ten, sizeof(top_ten_type), 1, f);
 
    if(n != 1)
    {
@@ -120,8 +123,8 @@ static void competition_load(int idx)
 
 auto competition_compare(const void *v1, const void *v2) -> int
 {
-   const struct competition_entry *e1 = (struct competition_entry *)v1;
-   const struct competition_entry *e2 = (struct competition_entry *)v2;
+   const competition_entry *e1 = (competition_entry *)v1;
+   const competition_entry *e2 = (competition_entry *)v2;
 
    if(e1->points > e2->points)
    {
@@ -179,7 +182,7 @@ static void competition_recalc(int idx, unit_data *pc, int xp, int secs)
       }
    }
 
-   qsort(&competition[idx].top_ten.entry[0], MAX_TOP_TEN, sizeof(struct competition_entry), competition_compare);
+   qsort(&competition[idx].top_ten.entry[0], MAX_TOP_TEN, sizeof(competition_entry), competition_compare);
 
    competition_save(idx);
 }
@@ -193,8 +196,8 @@ static auto competition_points(unit_data *pc, int idx) -> int
 
    if((exd = competition_find(competition[idx].name, PC_QUEST(pc))) != nullptr)
    {
-      xp     = CHAR_EXP(pc) - atoi(exd->names.Name(2));
-      secs   = PC_TIME(pc).played - atoi(exd->names.Name(3));
+      xp   = CHAR_EXP(pc) - atoi(exd->names.Name(2));
+      secs = PC_TIME(pc).played - atoi(exd->names.Name(3));
 
       points = xp * secs;
       if(competition[idx].top_ten.max_secs > 0)
@@ -350,11 +353,11 @@ void competition_boot()
 
       if(competition_top == 0)
       {
-         CREATE(competition, struct competition_data, 1);
+         CREATE(competition, competition_data, 1);
       }
       else
       {
-         RECREATE(competition, struct competition_data, competition_top + 2);
+         RECREATE(competition, competition_data, competition_top + 2);
       }
 
       competition[competition_top].name    = name;
@@ -444,7 +447,7 @@ static auto competition_read_board(unit_data *ch, const char *arg) -> int
    return SFR_BLOCK;
 }
 
-auto competition_board(struct spec_arg *sarg) -> int
+auto competition_board(spec_arg *sarg) -> int
 {
    int   i;
    char  buf[256];

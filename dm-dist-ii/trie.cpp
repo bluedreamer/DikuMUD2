@@ -9,7 +9,7 @@
 
 static int trie_size = 0, trie_nodes = 0;
 
-auto       trie_src_cmp(const void *keyval, const void *datum) -> int
+auto trie_src_cmp(const void *keyval, const void *datum) -> int
 {
    return (((char *)keyval)[0] - ((trie_entry *)datum)->c);
 }

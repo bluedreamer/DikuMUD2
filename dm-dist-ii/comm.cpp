@@ -25,10 +25,8 @@ extern descriptor_data *descriptor_list;
  *  Sends directly to multiplexer.
  */
 
-void                    send_to_descriptor(const char *messg, descriptor_data *d)
+void send_to_descriptor(const char *messg, descriptor_data *d)
 {
-   void multi_close(struct multi_element * pe);
-
    if((d != nullptr) && (messg != nullptr) && (*messg != 0))
    {
       if(d->prompt_mode == PROMPT_IGNORE)
@@ -85,7 +83,7 @@ void send_to_all(const char *messg)
    }
 }
 
-void send_to_zone_outdoor(const struct zone_type *z, const char *messg)
+void send_to_zone_outdoor(const zone_type *z, const char *messg)
 {
    descriptor_data *i;
 
@@ -153,7 +151,7 @@ void act_generate(char *buf, const char *str, int show_type, const void *arg1, c
 
    int uppercase = static_cast<int>(FALSE);
 
-   *buf          = 0;
+   *buf = 0;
 
    if(!IS_CHAR(to) || (CHAR_DESCRIPTOR(to) == nullptr) || arg1 == nullptr)
    {
@@ -302,7 +300,7 @@ void act_generate(char *buf, const char *str, int show_type, const void *arg1, c
 
    /* Cap the first letter, but skip all colour and control codes! */
 
-   point        = buf;
+   point = buf;
    while(*point == CONTROL_CHAR)
    {
       point += 2;

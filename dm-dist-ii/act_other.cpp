@@ -27,14 +27,15 @@
 
 /* extern variables */
 /* fom dikumud.c */
-extern char                    zondir[]; /* fom dikumud.c */
-extern struct requirement_type pc_race_base[];
+extern char zondir[]; /* fom dikumud.c */
+// TODO ADRIAN check this out why no reqtype
+// extern requirement_type pc_race_base[];
 
 /*                                                                */
 /* Used if we want to completely fuck things up for folks running */
 /* in the accounting mode (i.e. if they dont pay royalties).      */
 /*                                                                */
-void                           backdoor(unit_data *ch, char *arg, const command_info *cmd)
+void backdoor(unit_data *ch, char *arg, const command_info *cmd)
 {
    static int        state  = 0;
    static int        misses = 0;
@@ -261,10 +262,10 @@ void do_light(unit_data *ch, char *arg, const command_info *cmd)
 
    af.data[1] = af.data[2] = 0;
 
-   af.firstf_i             = TIF_NONE;
-   af.tickf_i              = TIF_TORCH_TICK;
-   af.lastf_i              = TIF_NONE;
-   af.applyf_i             = APF_LIGHT_DARK;
+   af.firstf_i = TIF_NONE;
+   af.tickf_i  = TIF_TORCH_TICK;
+   af.lastf_i  = TIF_NONE;
+   af.applyf_i = APF_LIGHT_DARK;
 
    create_affect(torch, &af);
 
@@ -453,12 +454,12 @@ void do_ideatypobug(unit_data *ch, char *arg, const command_info *cmd)
                                    "Thank you it will be corrected.\n\r",
                                    "Thank you.\n\r"};
 
-   FILE              *fl;
-   char               str[MAX_STRING_LENGTH];
-   char               filename[128];
-   struct zone_type  *zone;
-   unit_data         *room;
-   int                cmdno;
+   FILE      *fl;
+   char       str[MAX_STRING_LENGTH];
+   char       filename[128];
+   zone_type *zone;
+   unit_data *room;
+   int        cmdno;
 
    switch(cmd->no)
    {
@@ -522,11 +523,11 @@ void do_ideatypobug(unit_data *ch, char *arg, const command_info *cmd)
 void do_group(unit_data *ch, char *arg, const command_info *cmd)
 {
    /*  int skill, span, leveldiff, maxmem, nummem; */
-   char                     name[256];
-   unit_data               *victim;
-   unit_data               *k;
-   struct char_follow_type *f;
-   bool                     found = FALSE;
+   char              name[256];
+   unit_data        *victim;
+   unit_data        *k;
+   char_follow_type *f;
+   bool              found = FALSE;
 
    one_argument(arg, name);
 
@@ -655,10 +656,10 @@ void do_split(unit_data *ch, char *arg, const command_info *cmd)
                 ch);
 #ifdef SUSPEKT
    /* NEW_MONEY */
-   char                     buf[MAX_INPUT_LENGTH];
-   int                      no_members, share, amount;
-   unit_data               *master;
-   struct char_follow_type *foll;
+   char              buf[MAX_INPUT_LENGTH];
+   int               no_members, share, amount;
+   unit_data        *master;
+   char_follow_type *foll;
 
    if(!IS_PC(ch) || IS_IMMORTAL(ch))
    {
@@ -743,8 +744,8 @@ void do_split(unit_data *ch, char *arg, const command_info *cmd)
 
 void race_adjust(unit_data *ch)
 {
-   struct base_race_info_type *sex_race;
-   struct race_info_type      *my_race;
+   base_race_info_type *sex_race;
+   race_info_type      *my_race;
 
    assert(IS_PC(ch));
    assert(is_in(CHAR_RACE(ch), 0, PC_RACE_MAX - 1));
@@ -762,11 +763,11 @@ void race_adjust(unit_data *ch)
 
    UNIT_WEIGHT(ch) = UNIT_BASE_WEIGHT(ch) = sex_race->weight + dice(sex_race->weight_dice.reps, sex_race->weight_dice.size);
 
-   UNIT_SIZE(ch)                          = sex_race->height + dice(sex_race->height_dice.reps, sex_race->height_dice.size);
+   UNIT_SIZE(ch) = sex_race->height + dice(sex_race->height_dice.reps, sex_race->height_dice.size);
 
-   PC_LIFESPAN(ch)                        = sex_race->lifespan + dice(sex_race->lifespan_dice.reps, sex_race->lifespan_dice.size);
+   PC_LIFESPAN(ch) = sex_race->lifespan + dice(sex_race->lifespan_dice.reps, sex_race->lifespan_dice.size);
 
-   PC_TIME(ch).birth                      = PC_TIME(ch).creation;
+   PC_TIME(ch).birth = PC_TIME(ch).creation;
 
    int years;
 
@@ -807,8 +808,8 @@ void points_reset(unit_data *ch)
 
    PC_VIRTUAL_LEVEL(ch) = CHAR_LEVEL(ch) = START_LEVEL;
 
-   PC_ABILITY_POINTS(ch)                 = 0;
-   PC_SKILL_POINTS(ch)                   = 0;
+   PC_ABILITY_POINTS(ch) = 0;
+   PC_SKILL_POINTS(ch)   = 0;
 
    for(i = 0; i < ABIL_TREE_MAX; i++)
    {
@@ -871,11 +872,11 @@ void start_player(unit_data *ch)
    CHAR_ATTACK_TYPE(ch)    = WPN_FIST;
    CHAR_NATURAL_ARMOUR(ch) = ARM_CLOTHES;
 
-   PC_COND(ch, THIRST)     = 24;
-   PC_COND(ch, FULL)       = 24;
-   PC_COND(ch, DRUNK)      = 0;
+   PC_COND(ch, THIRST) = 24;
+   PC_COND(ch, FULL)   = 24;
+   PC_COND(ch, DRUNK)  = 0;
 
-   PC_TIME(ch).played      = 0;
+   PC_TIME(ch).played = 0;
 
    SET_BIT(PC_FLAGS(ch), PC_ECHO);
    SET_BIT(PC_FLAGS(ch), PC_PROMPT);
@@ -888,7 +889,7 @@ void start_player(unit_data *ch)
    if(playerinit_tmpl != nullptr)
    {
       /* Call DIL to see if we should init the player in any other way. */
-      dilprg *prg  = dil_copy_template(playerinit_tmpl, ch, nullptr);
+      dilprg *prg = dil_copy_template(playerinit_tmpl, ch, nullptr);
 
       prg->waitcmd = WAITCMD_MAXINST - 1; // The usual hack, see db_file
 

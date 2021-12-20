@@ -86,10 +86,10 @@ auto main(int argc, char *argv[]) -> int
    int       error = static_cast<int>(FALSE);
    uint32_t  count = 1;
 
-   int       day   = -1;
-   int       week  = -1;
-   int       month = -1;
-   int       year  = -1;
+   int day   = -1;
+   int week  = -1;
+   int month = -1;
+   int year  = -1;
 
    if(argc >= 2)
    {
@@ -175,8 +175,8 @@ auto main(int argc, char *argv[]) -> int
          exit(1);
       }
 
-      tm_on          = *localtime((time_t *)&on);
-      tm_off         = *localtime((time_t *)&off);
+      tm_on  = *localtime((time_t *)&on);
+      tm_off = *localtime((time_t *)&off);
 
       tm_on.tm_wday  = (tm_on.tm_yday / 7) + 1; // 1..53
       tm_off.tm_wday = (tm_off.tm_yday / 7) + 1;

@@ -50,30 +50,30 @@ help_file_type::~help_file_type(void)
 
 static class help_file_type help_file[3];
 
-extern char                 libdir[]; /* from dikumud.c        */
+extern char libdir[]; /* from dikumud.c        */
 
-auto                        search_help_cmp(const void *keyval, const void *datum) -> int
+auto search_help_cmp(const void *keyval, const void *datum) -> int
 {
-   if(is_abbrev((char *)keyval, ((struct help_index_type *)datum)->keyword) != 0u)
+   if(is_abbrev((char *)keyval, ((help_index_type *)datum)->keyword) != 0u)
    {
       return 0;
    }
-   return str_ccmp((char *)keyval, ((struct help_index_type *)datum)->keyword);
+   return str_ccmp((char *)keyval, ((help_index_type *)datum)->keyword);
 }
 
 /* Returns TRUE if help was presented */
-static auto help(struct help_file_type *hlp, descriptor_data *d, char *arg) -> int
+static auto help(help_file_type *hlp, descriptor_data *d, char *arg) -> int
 {
-   char                    buf[MAX_STRING_LENGTH];
-   char                    line[256];
-   char                    buf2[MAX_STRING_LENGTH];
-   struct help_index_type *tmp;
-   FILE                   *help_fl;
+   char             buf[MAX_STRING_LENGTH];
+   char             line[256];
+   char             buf2[MAX_STRING_LENGTH];
+   help_index_type *tmp;
+   FILE            *help_fl;
 
    if((hlp->help_idx == NULL) || (hlp->elements < 1))
       return static_cast<int>(FALSE);
 
-   if((tmp = (struct help_index_type *)bsearch(arg, hlp->help_idx, hlp->elements + 1, sizeof(struct help_index_type), search_help_cmp)))
+   if((tmp = (help_index_type *)bsearch(arg, hlp->help_idx, hlp->elements + 1, sizeof(struct help_index_type), search_help_cmp)))
    {
       int i = (tmp - hlp->help_idx);
 
@@ -118,7 +118,7 @@ auto help_base(descriptor_data *d, char *arg) -> int
 {
    uint8_t bHelp = static_cast<uint8_t>(FALSE);
 
-   arg           = skip_spaces(arg);
+   arg = skip_spaces(arg);
    str_lower(arg);
 
    if((CHAR_LEVEL(d->character) >= IMMORTAL_LEVEL) && help(&help_file[2], d, arg))
@@ -139,7 +139,7 @@ void do_help(unit_data *ch, char *arg, const command_info *cmd)
 
    if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
-      struct zone_type *zone = unit_zone(ch);
+      zone_type *zone = unit_zone(ch);
 
       page_string(CHAR_DESCRIPTOR(ch), zone->help);
       return;
@@ -162,7 +162,7 @@ auto one_word(char *arg, char *first_arg) -> char *
    {
       int look_at = 0;
 
-      arg         = skip_spaces(arg);
+      arg = skip_spaces(arg);
 
       if(*arg == '\"') /* is it a quote " */
       {
@@ -193,7 +193,7 @@ auto one_word(char *arg, char *first_arg) -> char *
 
 auto build_help_cmp(const void *keyval, const void *datum) -> int
 {
-   return str_ccmp(((struct help_index_type *)keyval)->keyword, ((struct help_index_type *)datum)->keyword);
+   return str_ccmp(((help_index_type *)keyval)->keyword, ((help_index_type *)datum)->keyword);
 }
 
 void help_file_type::generate_help_idx(char *name)
@@ -220,7 +220,7 @@ void help_file_type::generate_help_idx(char *name)
       buf[sizeof buf - 1]  = '\0'; /* Just in case... */
       buf[strlen(buf) - 1] = '\0'; /* Cut off trailing newline */
 
-      scan                 = buf;
+      scan = buf;
 
       for(;;)
       {

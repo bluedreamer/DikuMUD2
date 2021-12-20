@@ -1,7 +1,8 @@
 #pragma once
 #include <cstdint>
-struct unit_fptr
+class unit_fptr
 {
+public:
    uint16_t   index;      /* Index to function pointer array             */
    uint16_t   heart_beat; /* in 1/4 of a sec                             */
    uint16_t   flags;      /* When to override next function (boolean)    */

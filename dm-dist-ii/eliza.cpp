@@ -23,8 +23,9 @@
 #define MAX_HISTORY 4
 
 // TODO Extract this
-struct oracle_data
+class oracle_data
 {
+public:
    int       *nextrep;
    unit_data *patient;
    unit_data *doctor;
@@ -35,28 +36,31 @@ struct oracle_data
 };
 
 // TODO Extract this
-struct subject_type
+class subject_type
 {
+public:
    char **replies; /* NULL terminated         */
 } *eliza_subjects     = nullptr;
 int eliza_maxsubjects = 0;
 
-struct template_type
+class template_type
 {
+public:
    char **exp; /* What shall we react on? */
    int    subjno;
 } *eliza_template      = nullptr;
 int eliza_maxtemplates = 0;
 
-struct keyword_type
+class keyword_type
 {
+public:
    char **keyword;  /* What shall we react on? */
    char   priority; /* how important is keywd: 0 worst, 9 best */
    int    subjno;
-} *eliza_keyword              = nullptr;
-int         eliza_maxkeywords = 0;
+} *eliza_keyword      = nullptr;
+int eliza_maxkeywords = 0;
 
-int         eliza_booted      = static_cast<int>(FALSE);
+int eliza_booted = static_cast<int>(FALSE);
 
 static char words[400];
 
@@ -64,7 +68,7 @@ extern char libdir[];
 
 /* ============================================================= */
 
-void        preprocess_string(char *str, struct oracle_data *od)
+void preprocess_string(char *str, oracle_data *od)
 {
    str_lower(str);
    str_rem(str, '\'');
@@ -96,7 +100,7 @@ void        preprocess_string(char *str, struct oracle_data *od)
   Case 3. Template is of form Lexp <anything> Rexp.
 */
 
-auto match_templ(char *input, struct template_type *tem) -> char *
+auto match_templ(char *input, template_type *tem) -> char *
 {
    char *respons;
    char *rp;
@@ -368,7 +372,7 @@ void grammar(char *str)
 
 /* Remember which keywords have previously been used... */
 /* Register 'n' as the index                            */
-void eliza_store_memory(struct oracle_data *od, int n, int pri)
+void eliza_store_memory(oracle_data *od, int n, int pri)
 {
    assert(n < eliza_maxsubjects);
 
@@ -381,7 +385,7 @@ void eliza_store_memory(struct oracle_data *od, int n, int pri)
 
 /* Remember which keywords have previously been used... */
 /* Register 'n' as the index                            */
-auto eliza_retrieve_memory(struct oracle_data *od) -> int
+auto eliza_retrieve_memory(oracle_data *od) -> int
 {
    int mem;
 
@@ -493,7 +497,7 @@ auto trykeywd(char *line, int *score) -> int
    return index;
 }
 
-auto eliza_process(struct oracle_data *od, char *s) -> char *
+auto eliza_process(oracle_data *od, char *s) -> char *
 {
    int i;
    int pri;
@@ -513,7 +517,7 @@ auto eliza_process(struct oracle_data *od, char *s) -> char *
 
    words[0] = 0;
 
-   i        = trytempl(s);
+   i = trytempl(s);
    if(i >= 0)
    {
       return response(od, eliza_template[i].subjno);
@@ -569,7 +573,7 @@ void eliza_log(unit_data *who, const char *str, int comms)
    static int   idx = -1;
    static char *buf[MAX_ELIBUF];
 
-   FILE        *f;
+   FILE *f;
 
    if(idx == -1)
    {
@@ -624,17 +628,17 @@ void eliza_log(unit_data *who, const char *str, int comms)
 
 /* BUG: HAS MEMORY LEAK ERROR: WHEN KILLED, EVENTS ARE DEENQ'ed AND
         THE STRDUP'ED STRINGS ARE NOT FREED */
-auto oracle(struct spec_arg *sarg) -> int
+auto oracle(spec_arg *sarg) -> int
 {
-   static int          comms = 0;
-   char                buf[2 * MAX_INPUT_LENGTH];
-   char               *response;
-   struct oracle_data *od;
-   int                 i;
+   static int   comms = 0;
+   char         buf[2 * MAX_INPUT_LENGTH];
+   char        *response;
+   oracle_data *od;
+   int          i;
 
-   void                eliza_boot();
+   void eliza_boot();
 
-   od = (struct oracle_data *)sarg->fptr->data;
+   od = (oracle_data *)sarg->fptr->data;
 
    if(sarg->cmd->no == CMD_AUTO_EXTRACT)
    {
@@ -668,8 +672,8 @@ auto oracle(struct spec_arg *sarg) -> int
          eliza_booted = static_cast<int>(TRUE);
       }
 
-      CREATE(sarg->fptr->data, struct oracle_data, 1);
-      od             = (struct oracle_data *)sarg->fptr->data;
+      CREATE(sarg->fptr->data, oracle_data, 1);
+      od             = (oracle_data *)sarg->fptr->data;
       od->laststr[0] = 0;
       od->lastrep[0] = 0;
       strcpy(od->own_name, UNIT_NAME(sarg->owner));
@@ -742,7 +746,7 @@ auto oracle(struct spec_arg *sarg) -> int
       unit_data *u;
       char      *c = (char *)sarg->arg;
 
-      u            = find_unit(sarg->activator, &c, nullptr, FIND_UNIT_SURRO);
+      u = find_unit(sarg->activator, &c, nullptr, FIND_UNIT_SURRO);
       if(u != sarg->owner)
       {
          return SFR_SHARE;
@@ -773,7 +777,7 @@ auto oracle(struct spec_arg *sarg) -> int
 }
 
 /* ====================================================================== */
-auto eliza_find_template(int subjno) -> struct template_type *
+auto eliza_find_template(int subjno) -> template_type *
 {
    int i;
 
@@ -788,11 +792,11 @@ auto eliza_find_template(int subjno) -> struct template_type *
    eliza_maxtemplates++;
    if(eliza_maxtemplates == 1)
    {
-      CREATE(eliza_template, struct template_type, 1);
+      CREATE(eliza_template, template_type, 1);
    }
    else
    {
-      RECREATE(eliza_template, struct template_type, eliza_maxtemplates);
+      RECREATE(eliza_template, template_type, eliza_maxtemplates);
    }
 
    eliza_template[eliza_maxtemplates - 1].subjno = subjno;
@@ -801,7 +805,7 @@ auto eliza_find_template(int subjno) -> struct template_type *
    return &eliza_template[eliza_maxtemplates - 1];
 }
 
-auto eliza_find_keyword(int subjno) -> struct keyword_type *
+auto eliza_find_keyword(int subjno) -> keyword_type *
 {
    int i;
 
@@ -816,11 +820,11 @@ auto eliza_find_keyword(int subjno) -> struct keyword_type *
    eliza_maxkeywords++;
    if(eliza_maxkeywords == 1)
    {
-      CREATE(eliza_keyword, struct keyword_type, 1);
+      CREATE(eliza_keyword, keyword_type, 1);
    }
    else
    {
-      RECREATE(eliza_keyword, struct keyword_type, eliza_maxkeywords);
+      RECREATE(eliza_keyword, keyword_type, eliza_maxkeywords);
    }
 
    eliza_keyword[eliza_maxkeywords - 1].keyword  = create_namelist();
@@ -832,10 +836,10 @@ auto eliza_find_keyword(int subjno) -> struct keyword_type *
 
 void eliza_get_template(char *buf, int subjno)
 {
-   struct template_type *tem;
-   char                 *b;
-   char                  tmp[400];
-   int                   i;
+   template_type *tem;
+   char          *b;
+   char           tmp[400];
+   int            i;
 
    tem = eliza_find_template(subjno);
    b   = buf;
@@ -871,9 +875,9 @@ void eliza_get_template(char *buf, int subjno)
 
 void eliza_get_keyword(char *buf, int subjno, int priority)
 {
-   struct keyword_type *kwd;
+   keyword_type *kwd;
 
-   kwd           = eliza_find_keyword(subjno);
+   kwd = eliza_find_keyword(subjno);
 
    kwd->priority = priority;
    kwd->keyword  = add_name(buf, kwd->keyword);
@@ -942,11 +946,11 @@ void eliza_get_subjects(FILE *f)
    eliza_maxsubjects++;
    if(eliza_maxsubjects == 1)
    {
-      CREATE(eliza_subjects, struct subject_type, 1);
+      CREATE(eliza_subjects, subject_type, 1);
    }
    else
    {
-      RECREATE(eliza_subjects, struct subject_type, eliza_maxsubjects);
+      RECREATE(eliza_subjects, subject_type, eliza_maxsubjects);
    }
 
    eliza_subjects[eliza_maxsubjects - 1].replies = create_namelist();
@@ -960,14 +964,14 @@ void eliza_get_subjects(FILE *f)
          break;
       }
 
-      char *ms2020                                  = fgets(buf, 240, f);
-      buf[strlen(buf) - 1]                          = 0; /* Destroy the newline from fgets */
+      char *ms2020         = fgets(buf, 240, f);
+      buf[strlen(buf) - 1] = 0; /* Destroy the newline from fgets */
 
       eliza_subjects[eliza_maxsubjects - 1].replies = add_name(buf, eliza_subjects[eliza_maxsubjects - 1].replies);
    }
 }
 
-void eliza_gen_test_template(char *buf, struct template_type *tem)
+void eliza_gen_test_template(char *buf, template_type *tem)
 {
    int j;
 

@@ -6,7 +6,7 @@
 #include <cstdio>
 
 #define BLK_NULL -3 /* Use this constant to locally mark when a handle  is free */
-using BLK_FILE = struct blk_file_type;
+using BLK_FILE = blk_file_type;
 
 void blk_delete(BLK_FILE *bf, blk_handle index);
 auto blk_read(BLK_FILE *bf, blk_handle index, blk_length *blen) -> void *;

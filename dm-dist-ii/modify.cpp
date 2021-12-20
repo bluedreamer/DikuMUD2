@@ -334,14 +334,14 @@ auto get_type(char *typdef, const char *structure[]) -> int
 /* modification of anything in units */
 void do_set(unit_data *ch, char *argument, const command_info *cmd)
 {
-   char                arg[MAX_STRING_LENGTH];
-   char                buf[MAX_STRING_LENGTH];
-   int                 type;
+   char arg[MAX_STRING_LENGTH];
+   char buf[MAX_STRING_LENGTH];
+   int  type;
 
-   char                strarg[MAX_STRING_LENGTH];
-   int                 typarg = 0;
-   long int            valarg = 0;
-   long int            bitarg = 0;
+   char     strarg[MAX_STRING_LENGTH];
+   int      typarg = 0;
+   long int valarg = 0;
+   long int bitarg = 0;
 
    file_index_type    *untarg = nullptr;
    extra_descr_data   *ed;
@@ -418,7 +418,7 @@ void do_set(unit_data *ch, char *argument, const command_info *cmd)
       return;
    }
 
-   argument                    = skip_spaces(argument);
+   argument = skip_spaces(argument);
 
    char mbuf[MAX_INPUT_LENGTH] = {0};
 
@@ -1263,7 +1263,7 @@ void do_set(unit_data *ch, char *argument, const command_info *cmd)
 
 static const char *skill_field_names[] = {"skill", "spell", "weapon", nullptr};
 
-void               do_setskill(unit_data *ch, char *argument, const command_info *cmd)
+void do_setskill(unit_data *ch, char *argument, const command_info *cmd)
 {
    int        type;
    int        skillarg;

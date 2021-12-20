@@ -127,7 +127,7 @@ void cCombatList::PerformViolence()
 
          if(pElems[nIdx]->cmd[0] != 0) // Execute a combat command...
          {
-            char *c              = str_dup(pElems[nIdx]->cmd);
+            char *c = str_dup(pElems[nIdx]->cmd);
 
             pElems[nIdx]->cmd[0] = 0;
             command_interpreter(pElems[nIdx]->pOwner, c);

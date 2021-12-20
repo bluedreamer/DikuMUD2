@@ -17,14 +17,14 @@ auto original_main(int argc, char *argv[]) -> int
    static const char *zero_string = "0";
 #endif /* EMBEDDED_EXT */
 
-   int            t;  /* General holder for token	*/
-   struct symtab *p;  /* Ptr into symbol table	*/
-   struct ppdir  *sp; /* Ptr to predefined symbol	*/
-   int            ifile;
-   int            ofile;
-   char          *s;
-   const char    *s2;
-   int            i;
+   int         t;  /* General holder for token	*/
+   symtab     *p;  /* Ptr into symbol table	*/
+   ppdir      *sp; /* Ptr to predefined symbol	*/
+   int         ifile;
+   int         ofile;
+   char       *s;
+   const char *s2;
+   int         i;
 #if DEBUG
    int n;
 #endif       /* DEBUG */

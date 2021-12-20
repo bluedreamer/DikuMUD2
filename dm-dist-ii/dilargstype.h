@@ -7,8 +7,9 @@
    the user to enter the : dilcopy prg@zon(arg, arg, arg); instead of the
    stupid string format */
 
-struct dilargstype
+class dilargstype
 {
+public:
    uint8_t    no;
    char      *name;
    dilargtype dilarg[256];

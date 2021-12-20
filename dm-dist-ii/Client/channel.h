@@ -72,15 +72,15 @@ public:
 
    cChannel *Alloc(uint8_t nService, char *pData = NULL);
 
-   void      Close(void);
-   void      Free(uint8_t nChannel);
+   void Close(void);
+   void Free(uint8_t nChannel);
 
-   int32_t   MngrTX(uint8_t *data, uint32_t len, uint8_t nChn);
-   void      MngrRX(uint8_t *data, uint32_t len);
-   void      MngrRX(uint8_t *data, uint32_t len, uint8_t nChannel); // For direct connect
-   void      WriteQueue(void);
+   int32_t MngrTX(uint8_t *data, uint32_t len, uint8_t nChn);
+   void    MngrRX(uint8_t *data, uint32_t len);
+   void    MngrRX(uint8_t *data, uint32_t len, uint8_t nChannel); // For direct connect
+   void    WriteQueue(void);
 
-   void      Threads(void);
+   void Threads(void);
 
    cChannel *ChannelPtr(uint8_t nChn);
 

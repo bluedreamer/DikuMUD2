@@ -18,18 +18,19 @@
 
 #define HELP_INCREMENT 100
 
-struct help_file_type
+class help_file_type
 {
+public:
    help_index_type *help_idx;       /* the help keyword list */
    int              elements, size; /* info about the list   */
    char            *filename;
 };
 
-static struct help_file_type help_file[3];
+static help_file_type help_file[3];
 
-extern char                  libdir[]; /* from dikumud.c        */
+extern char libdir[]; /* from dikumud.c        */
 
-auto                         search_help_cmp(const void *keyval, const void *datum) -> int
+auto search_help_cmp(const void *keyval, const void *datum) -> int
 {
    if(static_cast<unsigned int>(is_abbrev((char *)keyval, ((help_index_type *)datum)->keyword)) != 0U)
    {
@@ -39,7 +40,7 @@ auto                         search_help_cmp(const void *keyval, const void *dat
 }
 
 /* Returns TRUE if help was presented */
-static auto help(struct help_file_type *hlp, descriptor_data *d, char *arg) -> int
+static auto help(help_file_type *hlp, descriptor_data *d, char *arg) -> int
 {
    char             buf[MAX_STRING_LENGTH];
    char             line[256];
@@ -99,7 +100,7 @@ auto help_base(descriptor_data *d, char *arg) -> int
 {
    uint8_t bHelp = static_cast<uint8_t>(FALSE);
 
-   arg           = skip_spaces(arg);
+   arg = skip_spaces(arg);
    str_lower(arg);
 
    if((CHAR_LEVEL(d->character) >= IMMORTAL_LEVEL) && (help(&help_file[2], d, arg) != 0))
@@ -124,7 +125,7 @@ void do_help(unit_data *ch, char *arg, const command_info *cmd)
 
    if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
-      struct zone_type *zone = unit_zone(ch);
+      zone_type *zone = unit_zone(ch);
 
       page_string(CHAR_DESCRIPTOR(ch), zone->help);
       return;
@@ -147,7 +148,7 @@ auto one_word(char *arg, char *first_arg) -> char *
    {
       int look_at = 0;
 
-      arg         = skip_spaces(arg);
+      arg = skip_spaces(arg);
 
       if(*arg == '\"') /* is it a quote " */
       {
@@ -181,7 +182,7 @@ auto build_help_cmp(const void *keyval, const void *datum) -> int
    return str_ccmp(((help_index_type *)keyval)->keyword, ((help_index_type *)datum)->keyword);
 }
 
-static void generate_help_idx(struct help_file_type *hlp, const char *name)
+static void generate_help_idx(help_file_type *hlp, const char *name)
 {
    FILE *fl;
    char  buf[256];
@@ -203,14 +204,14 @@ static void generate_help_idx(struct help_file_type *hlp, const char *name)
 
    for(;;)
    {
-      pos                  = ftell(fl);
+      pos = ftell(fl);
 
-      char *ms2020         = fgets(buf, sizeof buf, fl);
+      char *ms2020 = fgets(buf, sizeof buf, fl);
 
       buf[sizeof buf - 1]  = '\0'; /* Just in case... */
       buf[strlen(buf) - 1] = '\0'; /* Cut off trailing newline */
 
-      scan                 = buf;
+      scan = buf;
 
       for(;;)
       {

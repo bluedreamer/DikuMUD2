@@ -24,7 +24,7 @@ struct persist_type
 
 cNamelist persist_namelist;
 
-void      persist_save(unit_data *u, struct persist_type *pt)
+void persist_save(unit_data *u, struct persist_type *pt)
 {
    void basic_save_contents(const char *pFileName, unit_data *unit, int fast, int bContainer);
 
@@ -44,7 +44,7 @@ void persist_create(unit_data *u)
    char                *c;
    struct persist_type *pt;
 
-   CREATE(pt, struct persist_type, 1);
+   CREATE(pt, persist_type, 1);
 
    strcpy(pt->name, str_cc(libdir, PERSIST_DIR));
    strcat(pt->name, "XXXXXX");
@@ -73,9 +73,9 @@ void persist_create(unit_data *u)
 
 void persist_recreate(unit_data *u, char *name)
 {
-   struct persist_type *pt;
+   persist_type *pt;
 
-   CREATE(pt, struct persist_type, 1);
+   CREATE(pt, persist_type, 1);
 
    strcpy(pt->name, name);
 
@@ -91,7 +91,7 @@ void persist_recreate(unit_data *u, char *name)
 /* Corpses rely on this.... */
 auto persist_intern(spec_arg *sarg) -> int
 {
-   auto *pt = (struct persist_type *)sarg->fptr->data;
+   auto *pt = (persist_type *)sarg->fptr->data;
 
    assert(pt);
 
@@ -124,7 +124,7 @@ void persist_boot()
    char       name[50];
    unit_data *u;
 
-   auto       base_load_contents(const char *pFileName, const unit_data *unit)->unit_data *;
+   auto base_load_contents(const char *pFileName, const unit_data *unit)->unit_data *;
 
    for(uint32_t i = 0; i < persist_namelist.Length(); i++)
    {

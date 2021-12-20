@@ -21,8 +21,8 @@ descriptor_data::descriptor_data(cMultiHook *pe)
    }
 
    /* init desc data */
-   multi       = pe;
-   id          = ++nid;
+   multi = pe;
+   id    = ++nid;
 
    state       = 0;
    fptr        = reinterpret_cast<void (*)(descriptor_data *, const char *)>(nanny_get_name);
@@ -31,28 +31,28 @@ descriptor_data::descriptor_data(cMultiHook *pe)
    prompt_mode = PROMPT_SENT;
    *last_cmd = *history = '\0';
 
-   host[0]              = 0;
-   nPort                = 0;
-   nLine                = 255;
+   host[0] = 0;
+   nPort   = 0;
+   nLine   = 255;
 
-   localstr             = nullptr;
-   postedit             = nullptr;
-   editing              = nullptr;
-   editref              = nullptr;
+   localstr = nullptr;
+   postedit = nullptr;
+   editing  = nullptr;
+   editref  = nullptr;
 
-   original             = nullptr;
-   snoop.snooping       = nullptr;
-   snoop.snoop_by       = nullptr;
-   replyid              = (uint32_t)-1;
+   original       = nullptr;
+   snoop.snooping = nullptr;
+   snoop.snoop_by = nullptr;
+   replyid        = (uint32_t)-1;
 
    /* Make a new PC struct */
-   character            = new(unit_data)(UNIT_ST_PC);
+   character = new(unit_data)(UNIT_ST_PC);
    init_char(character);
    CHAR_DESCRIPTOR(character) = this;
 
    /* prepend to list */
-   next                       = descriptor_list;
-   descriptor_list            = this;
+   next            = descriptor_list;
+   descriptor_list = this;
 }
 
 void descriptor_data::RemoveBBS() const

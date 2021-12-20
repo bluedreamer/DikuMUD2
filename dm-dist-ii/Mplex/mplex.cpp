@@ -25,9 +25,9 @@
 void mud_went_down();
 void Idle(cConHook *con, const char *cmd);
 
-int  connections_left = 0;
+int connections_left = 0;
 
-int  bHadAlarm        = static_cast<int>(FALSE);
+int bHadAlarm = static_cast<int>(FALSE);
 
 void dumbPlayLoop(cConHook *con, const char *cmd)
 {
@@ -157,16 +157,16 @@ struct arg_type
       }                                                                                                                                    \
    } while(0);
 
-int             g_bModeANSI     = static_cast<int>(FALSE);
-int             g_bModeEcho     = static_cast<int>(FALSE);
-int             g_bModeRedraw   = static_cast<int>(FALSE);
-int             g_bModeTelnet   = static_cast<int>(FALSE);
+int g_bModeANSI   = static_cast<int>(FALSE);
+int g_bModeEcho   = static_cast<int>(FALSE);
+int g_bModeRedraw = static_cast<int>(FALSE);
+int g_bModeTelnet = static_cast<int>(FALSE);
 
 class cConHook *connection_list = nullptr;
 
-char            Outbuf[32768];
+char Outbuf[32768];
 
-void            ShowUsage(char *name)
+void ShowUsage(char *name)
 {
    fprintf(stderr, "Usage: %s [-a] [-h] [-c] [-e] [-r] [-t] [-p <num>] [-d <path>] [-s <port>] [-a <address>]\n", name);
    fprintf(stderr, "  -h  This help screen.\n");
@@ -319,8 +319,8 @@ auto cConHook::AddInputChar(uint8_t c) -> char
 
    m_nEscapeCode = 0;
 
-   *cp++         = c;
-   *cp           = 0;
+   *cp++ = c;
+   *cp   = 0;
 
    if((c < ' ') || (c == 255) || ((m_sSetup.telnet != 0u) && (c > 127)))
    {
@@ -628,22 +628,22 @@ void cConHook::SequenceCompare(uint8_t *pBuf, int *pnLen)
 
 cConHook::cConHook()
 {
-   m_nEscapeCode      = 0;
-   m_aOutput[0]       = 0;
-   m_aInputBuf[0]     = 0;
-   m_nState           = 0;
+   m_nEscapeCode  = 0;
+   m_aOutput[0]   = 0;
+   m_aInputBuf[0] = 0;
+   m_nState       = 0;
 
    m_nSequenceCompare = 0;
    m_nId              = 0;
    m_nFirst           = 0;
    m_nLine            = 255;
 
-   m_nPromptMode      = 0;
-   m_nPromptLen       = 0;
+   m_nPromptMode = 0;
+   m_nPromptLen  = 0;
 
-   m_sSetup.echo      = g_bModeEcho;
-   m_sSetup.redraw    = g_bModeRedraw;
-   m_sSetup.telnet    = g_bModeTelnet;
+   m_sSetup.echo   = g_bModeEcho;
+   m_sSetup.redraw = g_bModeRedraw;
+   m_sSetup.telnet = g_bModeTelnet;
 
    if(g_bModeANSI != 0)
    {
@@ -659,8 +659,8 @@ cConHook::cConHook()
    m_sSetup.colour_convert = 0;
    m_nBgColor              = CONTROL_BG_BLACK_CHAR;
 
-   m_pNext                 = connection_list;
-   connection_list         = this;
+   m_pNext         = connection_list;
+   connection_list = this;
 
    int                fd;
    socklen_t          size;
@@ -694,7 +694,7 @@ cConHook::cConHook()
    m_pFptr       = dumbMenuSelect;
    m_nPromptMode = 0;
 
-   size          = sizeof(sock);
+   size = sizeof(sock);
    if(getpeername(fd, (struct sockaddr *)&sock, &size) == -1)
    {
       slog(LOG_OFF, 0, "getpeername: socket %d error no %d.", fd, errno);
@@ -886,7 +886,7 @@ void cConHook::Input(int nFlags)
       char   *c;
       uint8_t buf[1024];
 
-      int     n = read(this->tfd(), buf, sizeof(buf) - 1);
+      int n = read(this->tfd(), buf, sizeof(buf) - 1);
 
       if(n == -1)
       {
@@ -1111,7 +1111,7 @@ void cConHook::ShowChunk()
    const int max_lines = m_sSetup.height;
    int       lines     = 0;
 
-   scan                = buffer;
+   scan = buffer;
 
    if(m_qPaged.IsEmpty() != 0)
    {
@@ -1120,7 +1120,7 @@ void cConHook::ShowChunk()
 
    cQueueElem *qe = m_qPaged.GetHead();
 
-   point          = (char *)qe->Data();
+   point = (char *)qe->Data();
 
    for(;;)
    {

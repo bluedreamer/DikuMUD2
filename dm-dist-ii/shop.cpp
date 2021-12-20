@@ -22,8 +22,9 @@
 #include <cstring>
 #include <ctime>
 
-struct shop_data
+class shop_data
 {
+public:
    file_index_type **prod;          /* Array of producing items, last nil   */
    int              *types;         /* Which item types to trade            */
    int               typecount;     /* The number of item types             */
@@ -61,12 +62,12 @@ auto obj_trade_price(unit_data *u) -> amount_t
    return (amount_t)d;
 }
 
-static auto is_ok(unit_data *keeper, unit_data *ch, struct shop_data *sd) -> bool
+static auto is_ok(unit_data *keeper, unit_data *ch, shop_data *sd) -> bool
 {
    char           buf[512];
    time_info_data time_info;
 
-   auto           mud_date(time_t t)->struct time_info_data;
+   auto mud_date(time_t t)->struct time_info_data;
 
    if(IS_GOD(ch))
    { /* Gods can always shop :) */
@@ -100,7 +101,7 @@ static auto is_ok(unit_data *keeper, unit_data *ch, struct shop_data *sd) -> boo
    return TRUE;
 }
 
-static auto trade_with(unit_data *item, struct shop_data *sd) -> bool
+static auto trade_with(unit_data *item, shop_data *sd) -> bool
 {
    int i;
 
@@ -125,7 +126,7 @@ static auto trade_with(unit_data *item, struct shop_data *sd) -> bool
    return FALSE;
 }
 
-static auto shop_producing(unit_data *item, struct shop_data *sd) -> bool
+static auto shop_producing(unit_data *item, shop_data *sd) -> bool
 {
    int counter = 0;
 
@@ -147,7 +148,7 @@ static auto shop_producing(unit_data *item, struct shop_data *sd) -> bool
    return FALSE;
 }
 
-static void shopping_buy(char *arg, unit_data *ch, unit_data *keeper, struct shop_data *sd)
+static void shopping_buy(char *arg, unit_data *ch, unit_data *keeper, shop_data *sd)
 {
    char       buf[MAX_STRING_LENGTH];
    unit_data *temp1;
@@ -255,7 +256,7 @@ static void shopping_buy(char *arg, unit_data *ch, unit_data *keeper, struct sho
    }
 }
 
-static void shopping_sell(char *arg, unit_data *ch, unit_data *keeper, struct shop_data *sd)
+static void shopping_sell(char *arg, unit_data *ch, unit_data *keeper, shop_data *sd)
 {
    currency_t currency = 0;
    amount_t   price    = 0;
@@ -330,7 +331,7 @@ static void shopping_sell(char *arg, unit_data *ch, unit_data *keeper, struct sh
    }
 }
 
-static void shopping_value(char *arg, unit_data *ch, unit_data *keeper, struct shop_data *sd)
+static void shopping_value(char *arg, unit_data *ch, unit_data *keeper, shop_data *sd)
 {
    char       buf[MAX_STRING_LENGTH];
    unit_data *temp1;
@@ -394,7 +395,7 @@ static void shopping_value(char *arg, unit_data *ch, unit_data *keeper, struct s
    act(buf, A_SOMEONE, keeper, temp1, ch, TO_ROOM);
 }
 
-static void shopping_list(char *arg, unit_data *ch, unit_data *keeper, struct shop_data *sd)
+static void shopping_list(char *arg, unit_data *ch, unit_data *keeper, shop_data *sd)
 {
    char        buf[MAX_STRING_LENGTH];
    char        buf2[100];
@@ -469,7 +470,7 @@ static void shopping_list(char *arg, unit_data *ch, unit_data *keeper, struct sh
    send_to_char(buf, ch);
 }
 
-static void shopping_price(char *arg, unit_data *ch, unit_data *keeper, struct shop_data *sd)
+static void shopping_price(char *arg, unit_data *ch, unit_data *keeper, shop_data *sd)
 {
    unit_data *temp1;
    bool       destruct = FALSE;
@@ -522,7 +523,7 @@ static void shopping_price(char *arg, unit_data *ch, unit_data *keeper, struct s
    act(buf, A_SOMEONE, keeper, ch, temp1, TO_ROOM);
 }
 
-static void free_shop(struct shop_data *sd)
+static void free_shop(shop_data *sd)
 {
    if(sd->prod != nullptr)
    {
@@ -580,9 +581,9 @@ static void free_shop(struct shop_data *sd)
 
 /* Special routine for all the shopkeepers */
 /* DON'T USE, use the init function */
-auto shop_keeper(struct spec_arg *sarg) -> int
+auto shop_keeper(spec_arg *sarg) -> int
 {
-   auto *sd = (struct shop_data *)sarg->fptr->data;
+   auto *sd = (shop_data *)sarg->fptr->data;
 
    if(sarg->cmd->no == CMD_BUY)
    {
@@ -625,18 +626,18 @@ auto shop_keeper(struct spec_arg *sarg) -> int
    return SFR_BLOCK;
 }
 
-static auto parse_shop(unit_data *keeper, char *data) -> struct shop_data *
+static auto parse_shop(unit_data *keeper, char *data) -> shop_data *
 {
-   int               i;
-   struct shop_data *sd;
-   char            **names;
+   int        i;
+   shop_data *sd;
+   char     **names;
 
    if(data == nullptr)
    {
       return nullptr;
    }
 
-   CREATE(sd, struct shop_data, 1);
+   CREATE(sd, shop_data, 1);
 
    parse_match_num(&data, "Profit sell", &i);
    if(is_in(i, 100, 500) == 0)
@@ -658,7 +659,7 @@ static auto parse_shop(unit_data *keeper, char *data) -> struct shop_data *
     * He will normally work with the 1st currency.
     * array is { DEF_CURRENCY } if none
     */
-   sd->currencies  = parse_match_numlist(&data, "Currencies", &sd->currencycount);
+   sd->currencies = parse_match_numlist(&data, "Currencies", &sd->currencycount);
 
    if(sd->currencycount == 0)
    {
@@ -783,9 +784,9 @@ static auto parse_shop(unit_data *keeper, char *data) -> struct shop_data *
    return sd;
 }
 
-auto shop_init(struct spec_arg *sarg) -> int
+auto shop_init(spec_arg *sarg) -> int
 {
-   struct shop_data *sd;
+   shop_data *sd;
 
    if(sarg->cmd->no != CMD_AUTO_EXTRACT)
    {

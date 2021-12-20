@@ -33,8 +33,9 @@ public:
 /* For the printing of obj_type information, as used by the identify spell and
  * wstat command.  Look in act_stat.c for details.
  */
-struct obj_type_t
+class obj_type_t
 {
+public:
    const char *fmt;
    uint8_t     v[5];
 };

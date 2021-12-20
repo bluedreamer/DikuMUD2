@@ -10,7 +10,7 @@
 
 #ifdef MEMORY_DEBUG /* Endif is at the very bottom! */
 
-uint32_t memory_total_limit     = 64L * 1024L * 1024L;
+uint32_t memory_total_limit = 64L * 1024L * 1024L;
 
 uint32_t memory_total_alloc     = 0L;
 uint32_t memory_total_overhead  = 0L;
@@ -85,9 +85,9 @@ void safe_set_info(void *p, uint32_t len)
       assert(FALSE);
    }
 
-   crc  = len ^ 0xAAAAAAAA;
+   crc = len ^ 0xAAAAAAAA;
 
-   ptr  = (uint8_t *)p;
+   ptr = (uint8_t *)p;
 
    low  = crc & 0xFFFF;
    high = crc >> 16 & 0xFFFF;

@@ -2,8 +2,9 @@
 
 #include "dilprg.h"
 #include "dilval.h"
-struct dil_func_type
+class dil_func_type
 {
+public:
    void (*func)(dilprg *, dilval *);
 };
 

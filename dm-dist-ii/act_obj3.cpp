@@ -837,7 +837,7 @@ void do_wear(unit_data *ch, char *arg, const command_info *cmd)
                                     "ankle",
                                     nullptr};
 
-   static int         keytrans[] = {WEAR_FINGER_L,
+   static int keytrans[] = {WEAR_FINGER_L,
                             WEAR_NECK_1,
                             WEAR_BODY,
                             WEAR_HEAD,
@@ -854,8 +854,8 @@ void do_wear(unit_data *ch, char *arg, const command_info *cmd)
                             WEAR_EAR_L,
                             WEAR_ANKLE_L};
 
-   unit_data         *obj;
-   char              *oarg = arg;
+   unit_data *obj;
+   char      *oarg = arg;
 
    if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
@@ -906,7 +906,7 @@ void do_wear(unit_data *ch, char *arg, const command_info *cmd)
       char buf[MAX_INPUT_LENGTH];
       int  keyword;
 
-      arg     = one_argument(arg, buf);
+      arg = one_argument(arg, buf);
 
       keyword = search_block(buf, keywords, FALSE); /* Partial Match */
 

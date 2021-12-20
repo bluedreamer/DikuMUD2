@@ -30,9 +30,9 @@ extern unit_data *combat_list;
 
 /* External procedures */
 
-void              stop_special(unit_data *u, unit_fptr *fptr);
+void stop_special(unit_data *u, unit_fptr *fptr);
 
-auto              unit_is_edited(unit_data *u) -> descriptor_data *
+auto unit_is_edited(unit_data *u) -> descriptor_data *
 {
    descriptor_data *d;
 
@@ -122,7 +122,7 @@ auto create_fptr(unit_data *u, uint16_t index, uint16_t beat, uint16_t flags, vo
 {
    unit_fptr *f;
 
-   void       start_special(unit_data * u, unit_fptr * fptr);
+   void start_special(unit_data * u, unit_fptr * fptr);
 
    CREATE(f, unit_fptr, 1);
    assert(f);
@@ -133,8 +133,8 @@ auto create_fptr(unit_data *u, uint16_t index, uint16_t beat, uint16_t flags, vo
    f->flags      = flags;
    f->data       = data;
 
-   f->next       = UNIT_FUNC(u);
-   UNIT_FUNC(u)  = f;
+   f->next      = UNIT_FUNC(u);
+   UNIT_FUNC(u) = f;
 
    start_special(u, f);
 
@@ -195,8 +195,8 @@ void destroy_fptr(unit_data *u, unit_fptr *f)
 /* Call die_follower if a person dies         */
 void stop_following(unit_data *ch)
 {
-   struct char_follow_type *j;
-   struct char_follow_type *k;
+   char_follow_type *j;
+   char_follow_type *k;
 
    assert(CHAR_MASTER(ch));
 
@@ -225,7 +225,7 @@ void stop_following(unit_data *ch)
 /* Set 'ch' to follow leader. Circles allowed. */
 void start_following(unit_data *ch, unit_data *leader)
 {
-   struct char_follow_type *k;
+   char_follow_type *k;
 
    assert(!is_destructed(DR_UNIT, leader));
    assert(!is_destructed(DR_UNIT, ch));
@@ -236,7 +236,7 @@ void start_following(unit_data *ch, unit_data *leader)
       stop_following(ch);
    }
    CHAR_MASTER(ch) = leader;
-   CREATE(k, struct char_follow_type, 1);
+   CREATE(k, char_follow_type, 1);
    k->follower            = ch;
    k->next                = CHAR_FOLLOWERS(leader);
    CHAR_FOLLOWERS(leader) = k;
@@ -247,8 +247,8 @@ void start_following(unit_data *ch, unit_data *leader)
 /* Called by extract_unit when a character that follows/is followed dies */
 void die_follower(unit_data *ch)
 {
-   struct char_follow_type *j;
-   struct char_follow_type *k;
+   char_follow_type *j;
+   char_follow_type *k;
 
    if(CHAR_MASTER(ch))
    {
@@ -476,7 +476,7 @@ auto unit_recursive(unit_data *from, unit_data *to) -> int
    return static_cast<int>(FALSE);
 }
 
-auto unit_zone(const unit_data *unit) -> struct zone_type *
+auto unit_zone(const unit_data *unit) -> zone_type *
 {
    auto *org = (unit_data *)unit;
 
@@ -786,8 +786,8 @@ void unswitchbody(unit_data *npc)
       CHAR_DESCRIPTOR(CHAR_DESCRIPTOR(npc)->snoop.snoop_by)->snoop.snooping = CHAR_ORIGINAL(npc);
    }
 
-   CHAR_DESCRIPTOR(npc)->character                  = CHAR_ORIGINAL(npc);
-   CHAR_DESCRIPTOR(npc)->original                   = nullptr;
+   CHAR_DESCRIPTOR(npc)->character = CHAR_ORIGINAL(npc);
+   CHAR_DESCRIPTOR(npc)->original  = nullptr;
 
    CHAR_DESCRIPTOR(CHAR_DESCRIPTOR(npc)->character) = CHAR_DESCRIPTOR(npc);
    CHAR_DESCRIPTOR(npc)                             = nullptr;
@@ -797,12 +797,12 @@ void unswitchbody(unit_data *npc)
 /* Extracts recursively                              */
 void extract_unit(unit_data *unit)
 {
-   descriptor_data  *d;
+   descriptor_data *d;
 
    extern unit_data *destroy_room;
 
-   void              nanny_menu(descriptor_data * d, char *arg);
-   void              stop_all_special(unit_data * u);
+   void nanny_menu(descriptor_data * d, char *arg);
+   void stop_all_special(unit_data * u);
 
    /* Prevent recursive calling on extracted units. */
    /* This happens on for example corpses. When the */
@@ -932,7 +932,7 @@ auto quest_add(unit_data *ch, const char *name, char *descr) -> extra_descr_data
 }
 
 /* void szonelog(char *zonename, const char *fmt, ...) */
-void szonelog(struct zone_type *zone, const char *fmt, ...)
+void szonelog(zone_type *zone, const char *fmt, ...)
 {
    char    name[256];
    char    buf[MAX_STRING_LENGTH];
@@ -940,8 +940,8 @@ void szonelog(struct zone_type *zone, const char *fmt, ...)
    va_list args;
    FILE   *f;
 
-   time_t  now              = time(nullptr);
-   char   *tmstr            = ctime(&now);
+   time_t now   = time(nullptr);
+   char  *tmstr = ctime(&now);
 
    tmstr[strlen(tmstr) - 1] = '\0';
 

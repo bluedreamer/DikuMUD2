@@ -9,8 +9,9 @@
 #define TREE_ISROOT(tree, node)      ((node) == (tree[node].parent))
 #define TREE_ISLEAF(tree, node)      (tree[node].isleaf)
 
-struct tree_type
+class tree_type
 {
+public:
    int     parent;
    uint8_t isleaf;
 };

@@ -9,8 +9,8 @@
 
 #undef free
 
-int          sunlight       = 0;
-//int8_t time_light[24] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+int sunlight = 0;
+// int8_t time_light[24] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 #define TFSIZE 128
 #define MAXH   4000
@@ -214,6 +214,6 @@ void destroy_fptr(unit_data *u, unit_fptr *f)
 {
 }
 
-void unlink_affect(struct unit_data *u, unit_affected_type *af)
+void unlink_affect(unit_data *u, unit_affected_type *af)
 {
 }

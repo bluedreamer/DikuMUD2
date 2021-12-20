@@ -3,8 +3,9 @@
 #include "damage_chart_element_type.h"
 #include "values.h"
 
-struct damage_chart_type
+class damage_chart_type
 {
+public:
    int                       fumble; /* from 01 - fuble => fumble      */
    damage_chart_element_type element[5];
 };

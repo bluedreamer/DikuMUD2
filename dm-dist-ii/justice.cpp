@@ -43,23 +43,24 @@
 
 static int crime_serial_no = 0;
 
-struct char_crime_data
+class char_crime_data
 {
-   uint32_t                crime_nr;            /* global unique crime number  */
-   uint8_t                 ticks_to_neutralize; /* ticks before crime deletes  */
+public:
+   uint32_t crime_nr;            /* global unique crime number  */
+   uint8_t  ticks_to_neutralize; /* ticks before crime deletes  */
 
-   int                     id;                         /* id of offender PC           */
-   char                    name_criminal[PC_MAX_NAME]; /* Name of offender            */
+   int  id;                         /* id of offender PC           */
+   char name_criminal[PC_MAX_NAME]; /* Name of offender            */
 
-   char                    victim[31]; /* name of victim              */
-   uint8_t                 crime_type; /* what crime? (kill, theft..) */
-   uint8_t                 reported;   /* Has crime been reported?    */
-   struct char_crime_data *next;       /* link->                      */
+   char             victim[31]; /* name of victim              */
+   uint8_t          crime_type; /* what crime? (kill, theft..) */
+   uint8_t          reported;   /* Has crime been reported?    */
+   char_crime_data *next;       /* link->                      */
 };
 
-struct char_crime_data *crime_list = nullptr;
+char_crime_data *crime_list = nullptr;
 
-void                    offend_legal_state(unit_data *ch, unit_data *victim)
+void offend_legal_state(unit_data *ch, unit_data *victim)
 {
    if(!IS_SET(CHAR_FLAGS(ch), CHAR_SELF_DEFENCE))
    {
@@ -184,9 +185,9 @@ void npc_set_visit(unit_data *npc, unit_data *dest_room, int what_now(const unit
 /* ---------------------------------------------------------------------- */
 
 /* The witness list takes care of itself */
-void remove_crime(struct char_crime_data *crime)
+void remove_crime(char_crime_data *crime)
 {
-   struct char_crime_data *c;
+   char_crime_data *c;
 
    if(crime == crime_list)
    {
@@ -238,7 +239,7 @@ void set_reward_char(unit_data *ch, int crimes)
    int                 xp   = 0;
    int                 gold = 0;
 
-   auto                lose_exp(unit_data * ch)->int;
+   auto lose_exp(unit_data * ch)->int;
 
    /* Just to make sure in case anyone gets randomly rewarded */
    REMOVE_BIT(CHAR_FLAGS(ch), CHAR_PROTECTED);
@@ -269,9 +270,9 @@ void set_reward_char(unit_data *ch, int crimes)
    af.lastf_i  = TIF_REWARD_OFF;
    af.applyf_i = APF_NONE;
 
-   af.data[0]  = xp;
-   af.data[1]  = gold;
-   af.data[2]  = 1;
+   af.data[0] = xp;
+   af.data[1] = gold;
+   af.data[2] = 1;
 
    create_affect(ch, &af);
 }
@@ -280,7 +281,7 @@ void set_witness(unit_data *criminal, unit_data *witness, int no, int type, int 
 {
    unit_affected_type af;
 
-   void               activate_accuse(unit_data * npc, uint8_t crime_type, const char *cname);
+   void activate_accuse(unit_data * npc, uint8_t crime_type, const char *cname);
 
    if(!IS_PC(criminal))
    {
@@ -327,7 +328,7 @@ void set_witness(unit_data *criminal, unit_data *witness, int no, int type, int 
 
 void add_crime(unit_data *criminal, unit_data *victim, int type)
 {
-   struct char_crime_data *crime;
+   char_crime_data *crime;
 
    assert(IS_PC(criminal));
 
@@ -344,9 +345,9 @@ void add_crime(unit_data *criminal, unit_data *victim, int type)
    }
 
    /* add new crime crime_list */
-   CREATE(crime, struct char_crime_data, 1);
-   crime->next     = crime_list;
-   crime_list      = crime;
+   CREATE(crime, char_crime_data, 1);
+   crime->next = crime_list;
+   crime_list  = crime;
 
    crime->crime_nr = new_crime_serial_no();
    crime->id       = PC_ID(criminal);
@@ -359,7 +360,7 @@ void add_crime(unit_data *criminal, unit_data *victim, int type)
 
 auto crime_victim_name(int crime_no, int id) -> const char *
 {
-   struct char_crime_data *c;
+   char_crime_data *c;
 
    for(c = crime_list; c != nullptr; c = c->next)
    {
@@ -428,7 +429,7 @@ void log_crime(unit_data *criminal, unit_data *victim, uint8_t crime_type, bool 
 
 /* Got to have this loaded somewhere */
 
-void save_accusation(struct char_crime_data *crime, const unit_data *accuser)
+void save_accusation(char_crime_data *crime, const unit_data *accuser)
 {
    FILE *file;
 
@@ -485,13 +486,13 @@ static void crime_counter(unit_data *criminal, int incr, int first_accuse)
    }
 }
 
-static void update_criminal(const unit_data *deputy, const char *pPlyName, int pidx, struct char_crime_data *crime, int first_accuse)
+static void update_criminal(const unit_data *deputy, const char *pPlyName, int pidx, char_crime_data *crime, int first_accuse)
 {
    unit_data *criminal = nullptr;
    int        loaded   = static_cast<int>(FALSE);
    int        incr;
 
-   void       save_player_file(unit_data * pc);
+   void save_player_file(unit_data * pc);
 
    /* Modified find_descriptor */
    for(criminal = unit_list; criminal != nullptr; criminal = criminal->gnext)
@@ -543,17 +544,17 @@ static void update_criminal(const unit_data *deputy, const char *pPlyName, int p
    }
 }
 
-auto accuse(struct spec_arg *sarg) -> int
+auto accuse(spec_arg *sarg) -> int
 {
-   unit_affected_type     *af;
-   struct char_crime_data *crime;
+   unit_affected_type *af;
+   char_crime_data    *crime;
 
-   int                     crime_type = 0; /* {CRIME_MURDER,CRIME_STEALING} */
-   char                    arg1[80];
-   char                    arg2[80]; /* will hold accused and crime    */
-   int                     pid;
+   int  crime_type = 0; /* {CRIME_MURDER,CRIME_STEALING} */
+   char arg1[80];
+   char arg2[80]; /* will hold accused and crime    */
+   int  pid;
 
-   auto                    find_player_id(char *)->int;
+   auto find_player_id(char *)->int;
 
    /* legal command ? */
    if(static_cast<unsigned int>(is_command(sarg->cmd, "accuse")) == 0U)
@@ -669,8 +670,8 @@ auto accuse(struct spec_arg *sarg) -> int
 
 void update_crimes()
 {
-   struct char_crime_data *c;
-   struct char_crime_data *next_dude;
+   char_crime_data *c;
+   char_crime_data *next_dude;
 
    for(c = crime_list; c != nullptr; c = next_dude)
    {
@@ -686,8 +687,9 @@ void update_crimes()
 /*                      A C C U S E   F U N C T I O N S                   */
 /* ---------------------------------------------------------------------- */
 
-struct npc_accuse_data
+class npc_accuse_data
 {
+public:
    char   *criminal_name;
    uint8_t crime_type;
    int     was_wimpy;
@@ -698,11 +700,11 @@ struct npc_accuse_data
 /*                                                                     */
 auto npc_accuse(const unit_data *npc, visit_data *vd) -> int
 {
-   char                    str[80];
-   unit_affected_type     *af;
-   struct npc_accuse_data *nad;
+   char                str[80];
+   unit_affected_type *af;
+   npc_accuse_data    *nad;
 
-   nad = (struct npc_accuse_data *)vd->data;
+   nad = (npc_accuse_data *)vd->data;
 
    if(npc == nullptr)
    {
@@ -752,10 +754,10 @@ auto npc_accuse(const unit_data *npc, visit_data *vd) -> int
 
 void activate_accuse(unit_data *npc, uint8_t crime_type, const char *cname)
 {
-   struct npc_accuse_data *nad;
-   unit_data              *prison;
-   unit_fptr              *fptr;
-   visit_data             *vd;
+   npc_accuse_data *nad;
+   unit_data       *prison;
+   unit_fptr       *fptr;
+   visit_data      *vd;
 
    /* GEN: get accuse room in here */
    /* How to find the nearest accuse room? */
@@ -781,7 +783,7 @@ void activate_accuse(unit_data *npc, uint8_t crime_type, const char *cname)
    if(((prison = world_room(UNIT_IN(npc)->fi->zone->name, ACCUSELOC_NAME)) != nullptr) ||
       ((prison = world_room(npc->fi->zone->name, ACCUSELOC_NAME)) != nullptr))
    {
-      CREATE(nad, struct npc_accuse_data, 1);
+      CREATE(nad, npc_accuse_data, 1);
       nad->criminal_name = str_dup(cname);
       nad->crime_type    = crime_type;
       nad->was_wimpy     = IS_SET(CHAR_FLAGS(npc), CHAR_WIMPY);
@@ -851,10 +853,10 @@ auto guard_assist(const unit_data *npc, visit_data *vd) -> int
 /*                                               */
 void call_guards(unit_data *guard)
 {
-   struct zone_type *zone;
-   unit_fptr        *fptr;
-   unit_data        *u;
-   int               ok;
+   zone_type *zone;
+   unit_fptr *fptr;
+   unit_data *u;
+   int        ok;
 
    if(!IS_ROOM(UNIT_IN(guard)))
    {
@@ -890,7 +892,7 @@ void call_guards(unit_data *guard)
 
 /* This routine protects lawful characters                               */
 /* SFUN_PROTECT_LAWFUL                                                   */
-auto protect_lawful(struct spec_arg *sarg) -> int
+auto protect_lawful(spec_arg *sarg) -> int
 {
    int i;
 
@@ -945,7 +947,7 @@ auto protect_lawful(struct spec_arg *sarg) -> int
 
 /* This routine blows the whistle when a crime is in progress            */
 /* SFUN_WHISTLE                                                          */
-auto whistle(struct spec_arg *sarg) -> int
+auto whistle(spec_arg *sarg) -> int
 {
    if(sarg->cmd->no == CMD_AUTO_EXTRACT)
    {
@@ -994,9 +996,9 @@ auto whistle(struct spec_arg *sarg) -> int
 
 /* -------------------------------------------------------------- */
 
-auto reward_give(struct spec_arg *sarg) -> int
+auto reward_give(spec_arg *sarg) -> int
 {
-   void                gain_exp(unit_data * ch, int gain);
+   void gain_exp(unit_data * ch, int gain);
 
    unit_data          *u;
    unit_affected_type *paf;
@@ -1038,7 +1040,7 @@ auto reward_give(struct spec_arg *sarg) -> int
    return SFR_BLOCK;
 }
 
-auto reward_board(struct spec_arg *sarg) -> int
+auto reward_board(spec_arg *sarg) -> int
 {
    unit_data          *u;
    unit_affected_type *af    = nullptr;

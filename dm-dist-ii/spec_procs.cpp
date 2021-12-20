@@ -36,8 +36,8 @@ extern char            *dirs[];
 
 /* extern procedures */
 
-void                    modify_hit(unit_data *ch, int hit);
-auto                    obj_trade_price(unit_data *u) -> amount_t;
+void modify_hit(unit_data *ch, int hit);
+auto obj_trade_price(unit_data *u) -> amount_t;
 
 /* ------------------------------------------------------------------------- */
 /*                        R O O M   R O U T I N E S                          */
@@ -48,7 +48,7 @@ auto                    obj_trade_price(unit_data *u) -> amount_t;
 /*   "river/gentle_stream!You flow down the stream to a more gentle area." */
 /*   "haunted_house/second_floor!The floorboards break under your weight!@$1n crashes through the floor." */
 /* Ticks. */
-auto                    force_move(struct spec_arg *sarg) -> int
+auto force_move(spec_arg *sarg) -> int
 {
    char            *c = nullptr;
    char            *c2;
@@ -168,7 +168,7 @@ auto                    force_move(struct spec_arg *sarg) -> int
 /*                     M O B I L E   R O U T I N E S                         */
 /* ------------------------------------------------------------------------- */
 
-auto combat_poison_sting(struct spec_arg *sarg) -> int
+auto combat_poison_sting(spec_arg *sarg) -> int
 {
    unit_data *activator = nullptr;
 
@@ -197,10 +197,10 @@ auto combat_poison_sting(struct spec_arg *sarg) -> int
 
 /* A restricted obey proper for animals... */
 
-auto obey_animal(struct spec_arg *sarg) -> int
+auto obey_animal(spec_arg *sarg) -> int
 {
-   char                    *arg = (char *)sarg->arg;
-   unit_data               *u;
+   char      *arg = (char *)sarg->arg;
+   unit_data *u;
 
    extern struct trie_type *intr_trie;
 
@@ -219,7 +219,7 @@ auto obey_animal(struct spec_arg *sarg) -> int
 
    if(sarg->cmd->no == CMD_TELL)
    {
-      u   = find_unit(sarg->activator, &arg, nullptr, FIND_UNIT_SURRO | FIND_UNIT_INVEN);
+      u = find_unit(sarg->activator, &arg, nullptr, FIND_UNIT_SURRO | FIND_UNIT_INVEN);
 
       arg = skip_spaces(arg);
 
@@ -296,7 +296,7 @@ auto obey_animal(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-auto obey(struct spec_arg *sarg) -> int
+auto obey(spec_arg *sarg) -> int
 {
    char      *arg = (char *)sarg->arg;
    unit_data *u;
@@ -316,7 +316,7 @@ auto obey(struct spec_arg *sarg) -> int
 
    if(sarg->cmd->no == CMD_TELL)
    {
-      u   = find_unit(sarg->activator, &arg, nullptr, FIND_UNIT_SURRO | FIND_UNIT_INVEN);
+      u = find_unit(sarg->activator, &arg, nullptr, FIND_UNIT_SURRO | FIND_UNIT_INVEN);
 
       arg = skip_spaces(arg);
 
@@ -338,7 +338,7 @@ auto obey(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-auto random_zonemove(struct spec_arg *sarg) -> int
+auto random_zonemove(spec_arg *sarg) -> int
 {
    int        door;
    unit_data *to_room;
@@ -380,7 +380,7 @@ auto random_zonemove(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-auto random_move(struct spec_arg *sarg) -> int
+auto random_move(spec_arg *sarg) -> int
 {
    int        door;
    unit_data *to_room;
@@ -424,7 +424,7 @@ auto random_move(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-auto scavenger(struct spec_arg *sarg) -> int
+auto scavenger(spec_arg *sarg) -> int
 {
    int        max;
    unit_data *best_obj;
@@ -462,7 +462,7 @@ auto scavenger(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-auto aggressive(struct spec_arg *sarg) -> int
+auto aggressive(spec_arg *sarg) -> int
 {
    int i;
 
@@ -498,7 +498,7 @@ auto aggressive(struct spec_arg *sarg) -> int
 
 /* Will make the mob attack players with reverse alignment of its own.    */
 /* Ticks.                                                                 */
-auto aggres_rev_align(struct spec_arg *sarg) -> int
+auto aggres_rev_align(spec_arg *sarg) -> int
 {
    int i;
 
@@ -532,7 +532,7 @@ auto aggres_rev_align(struct spec_arg *sarg) -> int
 /* This replaces puff() and ransay()                 */
 /* When called it executes the command in fptr->data */
 /* via command_interpreter                           */
-auto mob_command(struct spec_arg *sarg) -> int
+auto mob_command(spec_arg *sarg) -> int
 {
    if(!IS_CHAR(sarg->owner))
    {
@@ -555,7 +555,7 @@ auto mob_command(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-auto combat_magic(struct spec_arg *sarg) -> int
+auto combat_magic(spec_arg *sarg) -> int
 {
    if(!IS_CHAR(sarg->owner))
    {
@@ -586,7 +586,7 @@ auto combat_magic(struct spec_arg *sarg) -> int
 
 /* Monster magic which 'helps' the monster - will cast as soon as hp is */
 /* below 52%                                                            */
-auto combat_magic_heal(struct spec_arg *sarg) -> int
+auto combat_magic_heal(spec_arg *sarg) -> int
 {
    int left;
 
@@ -660,7 +660,7 @@ auto charname_in_list(unit_data *ch, char *arg) -> int
 /* <location> is the symbolic name of the room/obj the mobile must be in  */
 /* The message is sent to room, you can use $1 and $3n                    */
 
-auto guard_way(struct spec_arg *sarg) -> int
+auto guard_way(spec_arg *sarg) -> int
 {
    char *str;
    char *location;
@@ -714,7 +714,7 @@ auto guard_way(struct spec_arg *sarg) -> int
 /* Fptr->data is a string containing:                                */
 /*    "[location]@<unit-name>@[exclude]@<msg1>@<msg2>"               */
 
-auto guard_unit(struct spec_arg *sarg) -> int
+auto guard_unit(spec_arg *sarg) -> int
 {
    char      *arg = (char *)sarg->arg;
    char      *str = nullptr;
@@ -753,11 +753,11 @@ auto guard_unit(struct spec_arg *sarg) -> int
       }
       *unitname = '@';
 
-      *excl     = '\0';
-      c         = unitname + 1;
-      u1        = find_unit(sarg->owner, &c, nullptr, FIND_UNIT_SURRO);
-      *excl     = '@';
-      u2        = find_unit(sarg->activator, &arg, nullptr, FIND_UNIT_SURRO);
+      *excl = '\0';
+      c     = unitname + 1;
+      u1    = find_unit(sarg->owner, &c, nullptr, FIND_UNIT_SURRO);
+      *excl = '@';
+      u2    = find_unit(sarg->activator, &arg, nullptr, FIND_UNIT_SURRO);
 
       if((u1 == nullptr) || (u1 != u2))
       {
@@ -786,7 +786,7 @@ auto guard_unit(struct spec_arg *sarg) -> int
 /* Fptr->data is a string containing:                                   */
 /*    "[location]@<door-name>@[exclude]@<message>@<message>             */
 
-auto guard_door(struct spec_arg *sarg) -> int
+auto guard_door(spec_arg *sarg) -> int
 {
    char *arg  = (char *)sarg->arg;
    char *str  = nullptr;
@@ -824,9 +824,9 @@ auto guard_door(struct spec_arg *sarg) -> int
       }
       *doorname = '@';
 
-      *excl     = '\0';
-      i1        = low_find_door(sarg->owner, doorname + 1, static_cast<int>(FALSE), static_cast<int>(FALSE));
-      *excl     = '@';
+      *excl = '\0';
+      i1    = low_find_door(sarg->owner, doorname + 1, static_cast<int>(FALSE), static_cast<int>(FALSE));
+      *excl = '@';
 
       if(i1 == -1)
       {
@@ -861,7 +861,7 @@ auto guard_door(struct spec_arg *sarg) -> int
 /* <location> is the symbolic name of the room/obj the mobile must be in  */
 /* The message is sent to room, you can use $1n and $3n                   */
 
-auto guard_way_level(struct spec_arg *sarg) -> int
+auto guard_way_level(spec_arg *sarg) -> int
 {
    char *str;
    char *location;
@@ -892,7 +892,7 @@ auto guard_way_level(struct spec_arg *sarg) -> int
          *min = '@';
          return SFR_SHARE;
       }
-      *min  = '@';
+      *min = '@';
 
       *max  = '\0';
       *msg1 = '\0';
@@ -917,7 +917,7 @@ auto guard_way_level(struct spec_arg *sarg) -> int
 }
 
 /* data is sting with name(s), for example "king welmar/tim/tom" */
-auto rescue(struct spec_arg *sarg) -> int
+auto rescue(spec_arg *sarg) -> int
 {
    void base_rescue(unit_data * ch, unit_data * victim);
 
@@ -966,7 +966,7 @@ auto rescue(struct spec_arg *sarg) -> int
 
 /* data is sting with name(s), for example "king welmar/tim/tom" */
 /* Is usually used with rescue                                   */
-auto teamwork(struct spec_arg *sarg) -> int
+auto teamwork(spec_arg *sarg) -> int
 {
    if(!IS_CHAR(sarg->owner))
    {
@@ -1003,7 +1003,7 @@ auto teamwork(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-auto hideaway(struct spec_arg *sarg) -> int
+auto hideaway(spec_arg *sarg) -> int
 {
    if(sarg->cmd->no == CMD_AUTO_EXTRACT)
    {
@@ -1030,25 +1030,26 @@ auto hideaway(struct spec_arg *sarg) -> int
 
 /* ------------------------------------------------------------------------ */
 
-struct mercenary_data
+class mercenary_data
 {
+public:
    int        ticks;
    char      *victim_name;
    unit_data *destination;
 };
 
-auto mercenary_hire(struct spec_arg *sarg) -> int
+auto mercenary_hire(spec_arg *sarg) -> int
 {
-   char                  *arg = (char *)sarg->arg;
-   char                   buf2[MAX_INPUT_LENGTH];
-   unit_data             *u;
-   unit_data             *victim;
-   struct mercenary_data *md;
-   extra_descr_data      *exd;
-   amount_t               price;
-   currency_t             currency = local_currency(sarg->owner);
+   char             *arg = (char *)sarg->arg;
+   char              buf2[MAX_INPUT_LENGTH];
+   unit_data        *u;
+   unit_data        *victim;
+   mercenary_data   *md;
+   extra_descr_data *exd;
+   amount_t          price;
+   currency_t        currency = local_currency(sarg->owner);
 
-   void                   start_special(unit_data * u, unit_fptr * fptr);
+   void start_special(unit_data * u, unit_fptr * fptr);
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -1118,10 +1119,10 @@ auto mercenary_hire(struct spec_arg *sarg) -> int
 
          money_transfer(sarg->activator, sarg->owner, price, currency);
 
-         CREATE(md, struct mercenary_data, 1);
-         md->victim_name        = str_dup(sarg->arg);
-         md->ticks              = 0;
-         md->destination        = nullptr;
+         CREATE(md, mercenary_data, 1);
+         md->victim_name = str_dup(sarg->arg);
+         md->ticks       = 0;
+         md->destination = nullptr;
 
          sarg->fptr->data       = md;
          sarg->fptr->index      = SFUN_MERCENARY_HUNT;
@@ -1155,14 +1156,14 @@ auto mercenary_hire(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-auto mercenary_hunt(struct spec_arg *sarg) -> int
+auto mercenary_hunt(spec_arg *sarg) -> int
 {
-   struct mercenary_data *md;
-   unit_data             *u;
-   char                  *c;
-   int                    i;
+   mercenary_data *md;
+   unit_data      *u;
+   char           *c;
+   int             i;
 
-   md = (struct mercenary_data *)sarg->fptr->data;
+   md = (mercenary_data *)sarg->fptr->data;
 
    if(sarg->cmd->no == CMD_AUTO_TICK)
    {
@@ -1263,7 +1264,7 @@ static void tuborg_log(const char *name, int cmd)
    fprintf(f, "TUBORG %s %d %ld\n", name, cmd, (long)time(nullptr));
 }
 
-auto green_tuborg(struct spec_arg *sarg) -> int
+auto green_tuborg(spec_arg *sarg) -> int
 {
    unit_affected_type *af;
    int                 oldval;
@@ -1345,7 +1346,7 @@ auto green_tuborg(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-auto obj_guild(struct spec_arg *sarg) -> int
+auto obj_guild(spec_arg *sarg) -> int
 {
    char *guild = (char *)sarg->fptr->data;
 
@@ -1384,7 +1385,7 @@ auto obj_guild(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-auto obj_quest(struct spec_arg *sarg) -> int
+auto obj_quest(spec_arg *sarg) -> int
 {
    auto  find_quest(char *word, unit_data *unit)->extra_descr_data *;
    char *quest = (char *)sarg->fptr->data;
@@ -1418,7 +1419,7 @@ auto obj_quest(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-auto obj_good(struct spec_arg *sarg) -> int
+auto obj_good(spec_arg *sarg) -> int
 {
    if((sarg->activator != nullptr) && UNIT_IN(sarg->owner) == sarg->activator && !UNIT_IS_GOOD(sarg->activator))
    {
@@ -1441,7 +1442,7 @@ auto obj_good(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-auto obj_evil(struct spec_arg *sarg) -> int
+auto obj_evil(spec_arg *sarg) -> int
 {
    if((sarg->activator != nullptr) && UNIT_IN(sarg->owner) == sarg->activator && !UNIT_IS_EVIL(sarg->activator))
    {
@@ -1464,7 +1465,7 @@ auto obj_evil(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-auto blow_away(struct spec_arg *sarg) -> int
+auto blow_away(spec_arg *sarg) -> int
 {
    if(sarg->cmd->no == CMD_AUTO_TICK)
    {
@@ -1488,7 +1489,7 @@ auto blow_away(struct spec_arg *sarg) -> int
 
 /* Will make the user of the charm lose up to 200k less exp at death! */
 /* value[3] decides how many 'charges' are in it.                     */
-auto charm_of_death(struct spec_arg *sarg) -> int
+auto charm_of_death(spec_arg *sarg) -> int
 {
    extern auto lose_exp(unit_data *)->int;
 
@@ -1514,7 +1515,7 @@ auto charm_of_death(struct spec_arg *sarg) -> int
 }
 
 /* Used by "summoned" monsters when combat is over. */
-auto return_to_origin(struct spec_arg *sarg) -> int
+auto return_to_origin(spec_arg *sarg) -> int
 {
    if(sarg->cmd->no == CMD_AUTO_EXTRACT)
    {
@@ -1536,7 +1537,7 @@ auto return_to_origin(struct spec_arg *sarg) -> int
 }
 
 /* Used by "summoned" monsters when combat is over. */
-auto restrict_obj(struct spec_arg *sarg) -> int
+auto restrict_obj(spec_arg *sarg) -> int
 {
    if((sarg->cmd->no == CMD_WEAR || sarg->cmd->no == CMD_WIELD || sarg->cmd->no == CMD_HOLD) && IS_OBJ(sarg->owner) &&
       UNIT_IN(sarg->owner) == sarg->activator && (OBJ_EQP_POS(sarg->owner) == 0u))
@@ -1551,7 +1552,7 @@ auto restrict_obj(struct spec_arg *sarg) -> int
 
       pMsg[0] = 0;
 
-      all     = static_cast<int>(str_ccmp_next_word(arg, "all") != nullptr);
+      all = static_cast<int>(str_ccmp_next_word(arg, "all") != nullptr);
       if(all == 0)
       {
          all = static_cast<int>(str_cstr(arg, ".all") != nullptr);
@@ -1645,7 +1646,7 @@ auto restrict_obj(struct spec_arg *sarg) -> int
 /* Note that he may be extracted with less than zero hitpoints if incap   */
 /* or mortally wounded                                                    */
 
-auto link_dead(struct spec_arg *sarg) -> int
+auto link_dead(spec_arg *sarg) -> int
 {
    if((sarg->cmd->no >= CMD_NORTH) && (sarg->activator != nullptr) && (sarg->activator != sarg->owner))
    {

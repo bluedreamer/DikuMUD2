@@ -14,12 +14,12 @@ public:
    [[nodiscard]] inline auto GetReadPosition() const -> uint32_t { return m_nReadPos; }
    inline auto               GetData() -> const uint8_t               *{ return m_pData; }
 
-   void                      SetReadPosition(uint32_t nReadPosition);
-   void                      SetLength(uint32_t nLen);
-   void                      SetData(uint8_t *pData, uint32_t nLength);
+   void SetReadPosition(uint32_t nReadPosition);
+   void SetLength(uint32_t nLen);
+   void SetData(uint8_t *pData, uint32_t nLength);
 
-   inline void               Rewind() { m_nReadPos = 0; }
-   inline void               Clear()
+   inline void Rewind() { m_nReadPos = 0; }
+   inline void Clear()
    {
       m_nReadPos = 0;
       m_nLength  = 0;

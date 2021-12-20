@@ -3,8 +3,9 @@
 #include "unit_affected_type.h"
 
 /* These functions may send messages and destroy any unit. */
-struct tick_function_type
+class tick_function_type
 {
+public:
    const char *descr;
    void (*func)(unit_affected_type *af, unit_data *unit);
 };

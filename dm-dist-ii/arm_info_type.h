@@ -1,7 +1,8 @@
 #pragma once
 
-struct arm_info_type
+class arm_info_type
 {
+public:
    int slash;
    int bludgeon;
    int pierce;

@@ -77,7 +77,7 @@ auto cMultiHook::Read() -> int
    char            *data;
    uint8_t          text_type;
 
-   extern char     *logo;
+   extern char *logo;
 
    p = protocol_parse_incoming(this, &id, &len, &data, &text_type);
 
@@ -148,7 +148,7 @@ auto cMultiHook::Read() -> int
       case MULTI_HOST_CHAR:
          if((d != nullptr) && (data != nullptr))
          {
-            auto *b  = (uint8_t *)data;
+            auto *b = (uint8_t *)data;
 
             d->nPort = bread_uint16_t(&b);
             d->nLine = bread_uint8_t(&b);

@@ -22,19 +22,20 @@ extern char libdir[]; /* from dikumud.c */
 
 #define BAN_SAVE str_cc(libdir, BAN_FILE)
 
-struct ban_t
+class ban_t
 {
-   char         *site;
-   char          type;
-   time_t        until;
-   char         *textfile;
-   struct ban_t *next;
+public:
+   char  *site;
+   char   type;
+   time_t until;
+   char  *textfile;
+   ban_t *next;
 } *ban_list = nullptr;
 
 void save_ban()
 {
-   struct ban_t *tmp;
-   FILE         *bf = fopen(BAN_SAVE, "w");
+   ban_t *tmp;
+   FILE  *bf = fopen(BAN_SAVE, "w");
    assert(bf);
 
    for(tmp = ban_list; tmp != nullptr; tmp = tmp->next)
@@ -47,11 +48,11 @@ void save_ban()
 
 void load_ban()
 {
-   FILE         *bf;
-   struct ban_t *tmp;
-   char          buf[256];
-   char          site[256];
-   char          textfile[256];
+   FILE  *bf;
+   ban_t *tmp;
+   char   buf[256];
+   char   site[256];
+   char   textfile[256];
 
    touch_file(BAN_SAVE);
 
@@ -60,7 +61,7 @@ void load_ban()
 
    while(fgets(buf, sizeof buf, bf) != nullptr)
    {
-      CREATE(tmp, struct ban_t, 1);
+      CREATE(tmp, ban_t, 1);
       sscanf(buf, "%s %c %ld %s\n", site, &tmp->type, &tmp->until, textfile);
       tmp->site     = str_dup(site);
       tmp->textfile = str_dup(textfile);
@@ -79,7 +80,7 @@ auto ban_timer(char *arg) -> time_t
    {
       int mult = 0;
 
-      arg      = skip_spaces(arg);
+      arg = skip_spaces(arg);
       while(isdigit(*arg) != 0)
       {
          mult = 10 * mult + (*arg++ - '0');
@@ -108,9 +109,9 @@ auto ban_timer(char *arg) -> time_t
 
 void add_ban(unit_data *ch, char *site, char type, time_t *until, char *textfile)
 {
-   struct ban_t *entry;
-   char          d[50];
-   char          buf[MAX_STRING_LENGTH];
+   ban_t *entry;
+   char   d[50];
+   char   buf[MAX_STRING_LENGTH];
 
    for(entry = ban_list; entry != nullptr; entry = entry->next)
    {
@@ -122,7 +123,7 @@ void add_ban(unit_data *ch, char *site, char type, time_t *until, char *textfile
 
    if(entry == nullptr)
    {
-      CREATE(entry, struct ban_t, 1);
+      CREATE(entry, ban_t, 1);
       entry->site = str_dup(site);
       if(static_cast<unsigned int>(str_is_empty(textfile)) == 0U)
       {
@@ -161,7 +162,7 @@ void add_ban(unit_data *ch, char *site, char type, time_t *until, char *textfile
    save_ban();
 }
 
-void kill_entry(struct ban_t *entry)
+void kill_entry(ban_t *entry)
 {
    if(entry == ban_list)
    {
@@ -169,7 +170,7 @@ void kill_entry(struct ban_t *entry)
    }
    else
    {
-      struct ban_t *tmp;
+      ban_t *tmp;
 
       for(tmp = ban_list; tmp != nullptr; tmp = tmp->next)
       {
@@ -193,7 +194,7 @@ void kill_entry(struct ban_t *entry)
 
 void del_ban(unit_data *ch, char *site)
 {
-   struct ban_t *entry;
+   ban_t *entry;
 
    for(entry = ban_list; entry != nullptr; entry = entry->next)
    {
@@ -214,7 +215,7 @@ void del_ban(unit_data *ch, char *site)
    }
 }
 
-void show_site(unit_data *ch, struct ban_t *entry)
+void show_site(unit_data *ch, ban_t *entry)
 {
    char buf[200];
    char d[40];
@@ -233,12 +234,12 @@ void show_site(unit_data *ch, struct ban_t *entry)
 
 void do_ban(unit_data *ch, char *arg, const command_info *cmd)
 {
-   struct ban_t *tmp;
-   char          site[MAX_INPUT_LENGTH];
-   char          textfile[MAX_INPUT_LENGTH];
-   char          mode;
-   char          type;
-   time_t        until = 0;
+   ban_t *tmp;
+   char   site[MAX_INPUT_LENGTH];
+   char   textfile[MAX_INPUT_LENGTH];
+   char   mode;
+   char   type;
+   time_t until = 0;
 
    if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
@@ -334,9 +335,9 @@ auto ban_check(char *ban, char *site) -> bool /* TRUE, if banned */
 
 auto site_banned(char *cur_site) -> char
 {
-   struct ban_t *entry;
-   struct ban_t *next_entry;
-   time_t        now = time(nullptr);
+   ban_t *entry;
+   ban_t *next_entry;
+   time_t now = time(nullptr);
 
    for(entry = ban_list; entry != nullptr; entry = next_entry)
    {
@@ -357,9 +358,9 @@ auto site_banned(char *cur_site) -> char
 
 void show_ban_text(char *site, descriptor_data *d)
 {
-   struct ban_t *entry;
-   char          bantext[MAX_STRING_LENGTH];
-   char          formtext[MAX_STRING_LENGTH];
+   ban_t *entry;
+   char   bantext[MAX_STRING_LENGTH];
+   char   formtext[MAX_STRING_LENGTH];
 
    for(entry = ban_list; entry != nullptr; entry = entry->next)
    {

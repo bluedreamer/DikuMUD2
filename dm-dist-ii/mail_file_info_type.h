@@ -5,8 +5,9 @@
 #include <cstdint>
 #include <ctime>
 
-struct mail_file_info_type
+class mail_file_info_type
 {
+public:
    time_t     date; /* Date of posting the letter      */
    blk_handle handle;
    int        sender;     /* PC ID */

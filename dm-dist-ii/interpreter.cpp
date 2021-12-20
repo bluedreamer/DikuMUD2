@@ -25,272 +25,272 @@
 #include <cstring>
 
 /* external fcntls */
-extern struct unit_function_array_type unit_function_array[];
+extern unit_function_array_type unit_function_array[];
 
-auto                                   cmd_is_a_social(char *cmd, int complete) -> bool;
-auto                                   perform_social(unit_data *, char *, const command_info *) -> bool;
+auto cmd_is_a_social(char *cmd, int complete) -> bool;
+auto perform_social(unit_data *, char *, const command_info *) -> bool;
 
-struct trie_type                      *intr_trie     = nullptr;
+trie_type *intr_trie = nullptr;
 
-struct command_info                    cmd_info[]    = {{0, 0, "north", CMD_NORTH, POSITION_SITTING, do_move, 0},
-                                  {0, 0, "east", CMD_EAST, POSITION_SITTING, do_move, 0},
-                                  {0, 0, "south", CMD_SOUTH, POSITION_SITTING, do_move, 0},
-                                  {0, 0, "west", CMD_WEST, POSITION_SITTING, do_move, 0},
-                                  {0, 0, "up", CMD_UP, POSITION_SITTING, do_move, 0},
-                                  {0, 0, "down", CMD_DOWN, POSITION_SITTING, do_move, 0},
+command_info cmd_info[] = {{0, 0, "north", CMD_NORTH, POSITION_SITTING, do_move, 0},
+                           {0, 0, "east", CMD_EAST, POSITION_SITTING, do_move, 0},
+                           {0, 0, "south", CMD_SOUTH, POSITION_SITTING, do_move, 0},
+                           {0, 0, "west", CMD_WEST, POSITION_SITTING, do_move, 0},
+                           {0, 0, "up", CMD_UP, POSITION_SITTING, do_move, 0},
+                           {0, 0, "down", CMD_DOWN, POSITION_SITTING, do_move, 0},
 
-                                  {0, 0, "look", CMD_LOOK, POSITION_RESTING, do_look, 0},
-                                  {0, 0, "inventory", CMD_INVENTORY, POSITION_DEAD, do_inventory, 0},
-                                  {12, 1, "get", CMD_GET, POSITION_RESTING, do_get, 0},
-                                  {0, 0, "tell", CMD_TELL, POSITION_DEAD, do_tell, 0},
-                                  {12, 1, "take", CMD_GET, POSITION_RESTING, do_get, 0},
-                                  {6, 1, "wear", CMD_WEAR, POSITION_RESTING, do_wear, 0},
-                                  {6, 1, "wield", CMD_WIELD, POSITION_RESTING, do_wield, 0},
-                                  {0, 0, "say", CMD_SAY, POSITION_RESTING, do_say, 0},
-                                  {0, 0, "shout", CMD_SHOUT, POSITION_RESTING, do_shout, 0},
-                                  {0, 0, "help", CMD_HELP, POSITION_DEAD, do_help, 0},
-                                  {0, 0, "equipment", CMD_EQUIPMENT, POSITION_SLEEPING, do_equipment, 0},
+                           {0, 0, "look", CMD_LOOK, POSITION_RESTING, do_look, 0},
+                           {0, 0, "inventory", CMD_INVENTORY, POSITION_DEAD, do_inventory, 0},
+                           {12, 1, "get", CMD_GET, POSITION_RESTING, do_get, 0},
+                           {0, 0, "tell", CMD_TELL, POSITION_DEAD, do_tell, 0},
+                           {12, 1, "take", CMD_GET, POSITION_RESTING, do_get, 0},
+                           {6, 1, "wear", CMD_WEAR, POSITION_RESTING, do_wear, 0},
+                           {6, 1, "wield", CMD_WIELD, POSITION_RESTING, do_wield, 0},
+                           {0, 0, "say", CMD_SAY, POSITION_RESTING, do_say, 0},
+                           {0, 0, "shout", CMD_SHOUT, POSITION_RESTING, do_shout, 0},
+                           {0, 0, "help", CMD_HELP, POSITION_DEAD, do_help, 0},
+                           {0, 0, "equipment", CMD_EQUIPMENT, POSITION_SLEEPING, do_equipment, 0},
 
-                                  {0, 0, "examine", CMD_EXAMINE, POSITION_SITTING, do_examine, 0},
-                                  {6, 1, "enter", CMD_ENTER, POSITION_STANDING, do_enter, 0},
-                                  {6, 1, "exit", CMD_EXIT, POSITION_FIGHTING, do_exit, 0},
-                                  {0, 0, "exits", CMD_EXITS, POSITION_RESTING, do_exits, 0},
-                                  {6, 1, "mount", CMD_MOUNT, POSITION_STANDING, do_enter, 0},
-                                  {6, 1, "leave", CMD_LEAVE, POSITION_STANDING, do_leave, 0},
-                                  {0, 0, "doors", CMD_EXITS, POSITION_RESTING, do_exits, 0},
-                                  {0, 0, "directions", CMD_EXITS, POSITION_RESTING, do_exits, 0},
-                                  {6, 1, "dismount", CMD_DISMOUNT, POSITION_SITTING, do_exit, 0},
-                                  {6, 1, "sail", CMD_SAIL, POSITION_SITTING, do_sail, 0},
-                                  {6, 1, "ride", CMD_RIDE, POSITION_SITTING, do_ride, 0},
+                           {0, 0, "examine", CMD_EXAMINE, POSITION_SITTING, do_examine, 0},
+                           {6, 1, "enter", CMD_ENTER, POSITION_STANDING, do_enter, 0},
+                           {6, 1, "exit", CMD_EXIT, POSITION_FIGHTING, do_exit, 0},
+                           {0, 0, "exits", CMD_EXITS, POSITION_RESTING, do_exits, 0},
+                           {6, 1, "mount", CMD_MOUNT, POSITION_STANDING, do_enter, 0},
+                           {6, 1, "leave", CMD_LEAVE, POSITION_STANDING, do_leave, 0},
+                           {0, 0, "doors", CMD_EXITS, POSITION_RESTING, do_exits, 0},
+                           {0, 0, "directions", CMD_EXITS, POSITION_RESTING, do_exits, 0},
+                           {6, 1, "dismount", CMD_DISMOUNT, POSITION_SITTING, do_exit, 0},
+                           {6, 1, "sail", CMD_SAIL, POSITION_SITTING, do_sail, 0},
+                           {6, 1, "ride", CMD_RIDE, POSITION_SITTING, do_ride, 0},
 
-                                  {6, 1, "drink", CMD_DRINK, POSITION_RESTING, do_drink, 0},
-                                  {6, 1, "eat", CMD_EAT, POSITION_RESTING, do_eat, 0},
-                                  {0, 1, "kill", CMD_KILL, POSITION_FIGHTING, do_kill, 1},
-                                  {6, 1, "decapitate", CMD_DECAPITATE, POSITION_SITTING, do_decapitate, 0},
+                           {6, 1, "drink", CMD_DRINK, POSITION_RESTING, do_drink, 0},
+                           {6, 1, "eat", CMD_EAT, POSITION_RESTING, do_eat, 0},
+                           {0, 1, "kill", CMD_KILL, POSITION_FIGHTING, do_kill, 1},
+                           {6, 1, "decapitate", CMD_DECAPITATE, POSITION_SITTING, do_decapitate, 0},
 
-                                  {0, 0, "who", CMD_WHO, POSITION_DEAD, do_who, 0},
-                                  {0, 0, "emote", CMD_EMOTE, POSITION_SLEEPING, do_emote, 1},
-                                  {0, 0, "stand", CMD_STAND, POSITION_RESTING, do_stand, 0},
+                           {0, 0, "who", CMD_WHO, POSITION_DEAD, do_who, 0},
+                           {0, 0, "emote", CMD_EMOTE, POSITION_SLEEPING, do_emote, 1},
+                           {0, 0, "stand", CMD_STAND, POSITION_RESTING, do_stand, 0},
 
-                                  {0, 0, "guilds", CMD_GUILD, POSITION_DEAD, do_guild, 0},
-                                  {0, 0, "score", CMD_SCORE, POSITION_DEAD, do_score, 0},
-                                  {0, 0, "status", CMD_STATUS, POSITION_DEAD, do_status, 0},
+                           {0, 0, "guilds", CMD_GUILD, POSITION_DEAD, do_guild, 0},
+                           {0, 0, "score", CMD_SCORE, POSITION_DEAD, do_score, 0},
+                           {0, 0, "status", CMD_STATUS, POSITION_DEAD, do_status, 0},
 
-                                  {0, 0, "sit", CMD_SIT, POSITION_RESTING, do_sit, 0},
-                                  {0, 0, "rest", CMD_REST, POSITION_RESTING, do_rest, 0},
-                                  {0, 0, "sleep", CMD_SLEEP, POSITION_SLEEPING, do_sleep, 0},
-                                  {0, 0, "wake", CMD_WAKE, POSITION_SLEEPING, do_wake, 0},
-                                  {0, 0, "news", CMD_NEWS, POSITION_SLEEPING, do_news, 0},
-                                  {0, 0, "buy", CMD_BUY, POSITION_STANDING, do_not_here, 0},
-                                  {0, 0, "sell", CMD_SELL, POSITION_STANDING, do_not_here, 0},
-                                  {0, 0, "value", CMD_VALUE, POSITION_STANDING, do_not_here, 0},
-                                  {0, 0, "list", CMD_LIST, POSITION_STANDING, do_not_here, 0},
-                                  {3, 0, "drop", CMD_DROP, POSITION_RESTING, do_drop, 0},
-                                  {0, 0, "weather", CMD_WEATHER, POSITION_RESTING, do_weather, 0},
-                                  {6, 1, "read", CMD_READ, POSITION_RESTING, do_read, 0},
-                                  {0, 0, "pour", CMD_POUR, POSITION_STANDING, do_pour, 0},
-                                  {6, 1, "grab", CMD_HOLD, POSITION_RESTING, do_grab, 0},
-                                  {6, 1, "remove", CMD_REMOVE, POSITION_RESTING, do_remove, 0},
-                                  {12, 1, "put", CMD_PUT, POSITION_RESTING, do_put, 0},
-                                  {0, 0, "save", CMD_SAVE, POSITION_SLEEPING, do_save, 0},
-                                  {0, 1, "hit", CMD_HIT, POSITION_FIGHTING, do_hit, 1},
-                                  {12, 1, "give", CMD_GIVE, POSITION_RESTING, do_give, 0},
+                           {0, 0, "sit", CMD_SIT, POSITION_RESTING, do_sit, 0},
+                           {0, 0, "rest", CMD_REST, POSITION_RESTING, do_rest, 0},
+                           {0, 0, "sleep", CMD_SLEEP, POSITION_SLEEPING, do_sleep, 0},
+                           {0, 0, "wake", CMD_WAKE, POSITION_SLEEPING, do_wake, 0},
+                           {0, 0, "news", CMD_NEWS, POSITION_SLEEPING, do_news, 0},
+                           {0, 0, "buy", CMD_BUY, POSITION_STANDING, do_not_here, 0},
+                           {0, 0, "sell", CMD_SELL, POSITION_STANDING, do_not_here, 0},
+                           {0, 0, "value", CMD_VALUE, POSITION_STANDING, do_not_here, 0},
+                           {0, 0, "list", CMD_LIST, POSITION_STANDING, do_not_here, 0},
+                           {3, 0, "drop", CMD_DROP, POSITION_RESTING, do_drop, 0},
+                           {0, 0, "weather", CMD_WEATHER, POSITION_RESTING, do_weather, 0},
+                           {6, 1, "read", CMD_READ, POSITION_RESTING, do_read, 0},
+                           {0, 0, "pour", CMD_POUR, POSITION_STANDING, do_pour, 0},
+                           {6, 1, "grab", CMD_HOLD, POSITION_RESTING, do_grab, 0},
+                           {6, 1, "remove", CMD_REMOVE, POSITION_RESTING, do_remove, 0},
+                           {12, 1, "put", CMD_PUT, POSITION_RESTING, do_put, 0},
+                           {0, 0, "save", CMD_SAVE, POSITION_SLEEPING, do_save, 0},
+                           {0, 1, "hit", CMD_HIT, POSITION_FIGHTING, do_hit, 1},
+                           {12, 1, "give", CMD_GIVE, POSITION_RESTING, do_give, 0},
 
-                                  {0, 0, "time", CMD_TIME, POSITION_DEAD, do_time, 0},
-                                  {0, 0, "idea", CMD_IDEA, POSITION_DEAD, do_ideatypobug, 0},
-                                  {0, 0, "typo", CMD_TYPO, POSITION_DEAD, do_ideatypobug, 0},
-                                  {0, 0, "bug", CMD_BUG, POSITION_DEAD, do_ideatypobug, 0},
-                                  {0, 0, "whisper", CMD_WHISPER, POSITION_RESTING, do_whisper, 0},
-                                  {0, 1, "cast", CMD_CAST, POSITION_MORTALLYW, do_cast, 0},
-                                  {0, 0, "ask", CMD_ASK, POSITION_RESTING, do_ask, 0},
-                                  {0, 0, "areas", CMD_AREAS, POSITION_DEAD, do_areas, 0},
-                                  {0, 0, "order", CMD_ORDER, POSITION_RESTING, do_order, 0},
-                                  {6, 1, "sip", CMD_SIP, POSITION_RESTING, do_sip, 0},
-                                  {6, 1, "taste", CMD_TASTE, POSITION_RESTING, do_taste, 0},
-                                  {0, 0, "follow", CMD_FOLLOW, POSITION_RESTING, do_follow, 0},
-                                  {0, 0, "rent", CMD_RENT, POSITION_RESTING, do_rent, 0},
-                                  {0, 0, "offer", CMD_OFFER, POSITION_STANDING, do_not_here, 0},
-                                  {12, 1, "open", CMD_OPEN, POSITION_SITTING, do_open, 0},
-                                  {12, 1, "close", CMD_CLOSE, POSITION_SITTING, do_close, 0},
-                                  {12, 1, "lock", CMD_LOCK, POSITION_SITTING, do_lock, 0},
-                                  {12, 1, "unlock", CMD_UNLOCK, POSITION_SITTING, do_unlock, 0},
-                                  {0, 0, "write", CMD_WRITE, POSITION_RESTING, do_write, 0},
-                                  {6, 1, "hold", CMD_HOLD, POSITION_RESTING, do_grab, 0},
-                                  {6, 1, "flee", CMD_FLEE, POSITION_FIGHTING, do_flee, 0},
-                                  {0, 1, "sneak", CMD_SNEAK, POSITION_STANDING, do_sneak, 0},
-                                  {0, 1, "hide", CMD_HIDE, POSITION_RESTING, do_hide, 0},
-                                  {12, 1, "backstab", CMD_BACKSTAB, POSITION_STANDING, do_backstab, 0},
-                                  {0, 1, "pick", CMD_PICK, POSITION_STANDING, do_pick, 0},
-                                  {0, 1, "steal", CMD_STEAL, POSITION_STANDING, do_steal, 0},
-                                  {6, 1, "bash", CMD_BASH, POSITION_FIGHTING, do_bash, 0},
-                                  {12, 1, "rescue", CMD_RESCUE, POSITION_FIGHTING, do_rescue, 0},
-                                  {6, 1, "kick", CMD_KICK, POSITION_FIGHTING, nullptr, 0},
-                                  {0, 1, "search", CMD_SEARCH, POSITION_STANDING, do_search, 0},
-                                  {0, 0, "practice", CMD_PRACTICE, POSITION_STANDING, do_practice, 0},
-                                  {0, 0, "info", CMD_INFO, POSITION_SLEEPING, do_info, 0},
-                                  {0, 0, "'", CMD_SAY, POSITION_RESTING, do_say, 0},
-                                  {0, 0, "practise", CMD_PRACTICE, POSITION_STANDING, do_practice, 0},
-                                  {6, 1, "use", CMD_USE, POSITION_SITTING, do_use, 0},
-                                  {0, 0, "where", CMD_WHERE, POSITION_DEAD, do_where, 0},
-                                  {0, 0, "level", CMD_LEVEL, POSITION_DEAD, do_level, 0},
-                                  {0, 0, ",", CMD_EMOTE, POSITION_SLEEPING, do_emote, 0},
-                                  //{ 0, 0, "brief",CMD_BRIEF,POSITION_DEAD,do_brief,0},
+                           {0, 0, "time", CMD_TIME, POSITION_DEAD, do_time, 0},
+                           {0, 0, "idea", CMD_IDEA, POSITION_DEAD, do_ideatypobug, 0},
+                           {0, 0, "typo", CMD_TYPO, POSITION_DEAD, do_ideatypobug, 0},
+                           {0, 0, "bug", CMD_BUG, POSITION_DEAD, do_ideatypobug, 0},
+                           {0, 0, "whisper", CMD_WHISPER, POSITION_RESTING, do_whisper, 0},
+                           {0, 1, "cast", CMD_CAST, POSITION_MORTALLYW, do_cast, 0},
+                           {0, 0, "ask", CMD_ASK, POSITION_RESTING, do_ask, 0},
+                           {0, 0, "areas", CMD_AREAS, POSITION_DEAD, do_areas, 0},
+                           {0, 0, "order", CMD_ORDER, POSITION_RESTING, do_order, 0},
+                           {6, 1, "sip", CMD_SIP, POSITION_RESTING, do_sip, 0},
+                           {6, 1, "taste", CMD_TASTE, POSITION_RESTING, do_taste, 0},
+                           {0, 0, "follow", CMD_FOLLOW, POSITION_RESTING, do_follow, 0},
+                           {0, 0, "rent", CMD_RENT, POSITION_RESTING, do_rent, 0},
+                           {0, 0, "offer", CMD_OFFER, POSITION_STANDING, do_not_here, 0},
+                           {12, 1, "open", CMD_OPEN, POSITION_SITTING, do_open, 0},
+                           {12, 1, "close", CMD_CLOSE, POSITION_SITTING, do_close, 0},
+                           {12, 1, "lock", CMD_LOCK, POSITION_SITTING, do_lock, 0},
+                           {12, 1, "unlock", CMD_UNLOCK, POSITION_SITTING, do_unlock, 0},
+                           {0, 0, "write", CMD_WRITE, POSITION_RESTING, do_write, 0},
+                           {6, 1, "hold", CMD_HOLD, POSITION_RESTING, do_grab, 0},
+                           {6, 1, "flee", CMD_FLEE, POSITION_FIGHTING, do_flee, 0},
+                           {0, 1, "sneak", CMD_SNEAK, POSITION_STANDING, do_sneak, 0},
+                           {0, 1, "hide", CMD_HIDE, POSITION_RESTING, do_hide, 0},
+                           {12, 1, "backstab", CMD_BACKSTAB, POSITION_STANDING, do_backstab, 0},
+                           {0, 1, "pick", CMD_PICK, POSITION_STANDING, do_pick, 0},
+                           {0, 1, "steal", CMD_STEAL, POSITION_STANDING, do_steal, 0},
+                           {6, 1, "bash", CMD_BASH, POSITION_FIGHTING, do_bash, 0},
+                           {12, 1, "rescue", CMD_RESCUE, POSITION_FIGHTING, do_rescue, 0},
+                           {6, 1, "kick", CMD_KICK, POSITION_FIGHTING, nullptr, 0},
+                           {0, 1, "search", CMD_SEARCH, POSITION_STANDING, do_search, 0},
+                           {0, 0, "practice", CMD_PRACTICE, POSITION_STANDING, do_practice, 0},
+                           {0, 0, "info", CMD_INFO, POSITION_SLEEPING, do_info, 0},
+                           {0, 0, "'", CMD_SAY, POSITION_RESTING, do_say, 0},
+                           {0, 0, "practise", CMD_PRACTICE, POSITION_STANDING, do_practice, 0},
+                           {6, 1, "use", CMD_USE, POSITION_SITTING, do_use, 0},
+                           {0, 0, "where", CMD_WHERE, POSITION_DEAD, do_where, 0},
+                           {0, 0, "level", CMD_LEVEL, POSITION_DEAD, do_level, 0},
+                           {0, 0, ",", CMD_EMOTE, POSITION_SLEEPING, do_emote, 0},
+                           //{ 0, 0, "brief",CMD_BRIEF,POSITION_DEAD,do_brief,0},
 
-                                  {0, 0, "wiz", CMD_WIZ, POSITION_RESTING, do_wiz, 210}, /* lone wizcommands */
-                                  {0, 0, "echo", CMD_ECHO, POSITION_SLEEPING, do_echo, 213},
+                           {0, 0, "wiz", CMD_WIZ, POSITION_RESTING, do_wiz, 210}, /* lone wizcommands */
+                           {0, 0, "echo", CMD_ECHO, POSITION_SLEEPING, do_echo, 213},
 
-                                  {0, 0, "wizlist", CMD_WIZLIST, POSITION_DEAD, do_wizlist, 0},
-                                  {6, 1, "consider", CMD_CONSIDER, POSITION_RESTING, do_consider, 0},
-                                  {0, 0, "group", CMD_GROUP, POSITION_RESTING, do_group, 0},
-                                  {6, 1, "quaff", CMD_QUAFF, POSITION_RESTING, do_quaff, 0},
-                                  {24, 1, "recite", CMD_RECITE, POSITION_RESTING, do_recite, 0},
-                                  {0, 0, "credits", CMD_CREDITS, POSITION_DEAD, do_credits, 0},
-                                  //{ 0, 0, "compact",CMD_COMPACT,POSITION_DEAD,do_compact,0},
-                                  {0, 1, "dig", CMD_DIG, POSITION_STANDING, do_dig, 0},
-                                  {0, 1, "bury", CMD_BURY, POSITION_STANDING, do_bury, 0},
-                                  {12, 1, "turn", CMD_TURN, POSITION_FIGHTING, do_turn, 0},
-                                  {6, 1, "diagnose", CMD_DIAGNOSE, POSITION_RESTING, nullptr, 0},
-                                  {6, 1, "appraise", CMD_APPRAISE, POSITION_RESTING, do_appraise, 0},
-                                  {0, 1, "ventriloquate", CMD_VENTRILOQUATE, POSITION_RESTING, do_ventriloquate, 0},
-                                  {6, 1, "aid", CMD_AID, POSITION_RESTING, do_aid, 0},
-                                  {0, 1, "climb", CMD_CLIMB, POSITION_STANDING, do_not_here, 0},
-                                  {0, 1, "trip", CMD_TRIP, POSITION_FIGHTING, nullptr, 0},
-                                  {0, 1, "cuff", CMD_CUFF, POSITION_STANDING, nullptr, 0},
-                                  {12, 1, "light", CMD_LIGHT, POSITION_RESTING, do_light, 0},
-                                  {12, 1, "extinguish", CMD_EXTINGUISH, POSITION_RESTING, do_extinguish, 0},
-                                  //{ 0, 0, "wimpy", CMD_WIMPY,POSITION_DEAD,do_wimpy,0},
-                                  //{ 0, 0, "peaceful",CMD_PEACEFUL,POSITION_DEAD,do_peaceful,0},
-                                  {0, 1, "drag", CMD_DRAG, POSITION_STANDING, do_drag, 0},
-                                  {0, 0, "mail", CMD_MAIL, POSITION_RESTING, do_not_here, 0},
-                                  {0, 0, "request", CMD_REQUEST, POSITION_RESTING, do_not_here, 0},
-                                  {0, 0, "join", CMD_JOIN, POSITION_RESTING, do_not_here, 0},
-                                  {0, 0, "contract", CMD_CONTRACT, POSITION_RESTING, do_not_here, 0},
-                                  {0, 1, "break", CMD_BREAK, POSITION_STANDING, do_not_here, 0},
-                                  {0, 0, "knock", CMD_KNOCK, POSITION_STANDING, do_knock, 0},
-                                  {0, 0, "split", CMD_SPLIT, POSITION_RESTING, do_split, 0},
-                                  //{ 0, 0, "prompt",CMD_PROMPT,POSITION_SLEEPING,do_prompt,0},
-                                  //{ 0, 0, "reply",CMD_REPLY,POSITION_RESTING,do_not_here,0},
-                                  //{ 0, 0, "echosay",CMD_ECHOSAY,POSITION_SLEEPING,do_echosay,0},
-                                  {0, 0, "quests", CMD_QUESTS, POSITION_SLEEPING, do_quests, 0},
-                                  {0, 0, "purse", CMD_PURSE, POSITION_DEAD, do_purse, 0},
-                                  {0, 0, "change", CMD_CHANGE, POSITION_DEAD, do_change, 0},
-                                  {0, 0, "commands", CMD_COMMANDS, POSITION_DEAD, do_commands, 0},
-                                  {0, 0, "socials", CMD_SOCIALS, POSITION_DEAD, do_socials, 0},
+                           {0, 0, "wizlist", CMD_WIZLIST, POSITION_DEAD, do_wizlist, 0},
+                           {6, 1, "consider", CMD_CONSIDER, POSITION_RESTING, do_consider, 0},
+                           {0, 0, "group", CMD_GROUP, POSITION_RESTING, do_group, 0},
+                           {6, 1, "quaff", CMD_QUAFF, POSITION_RESTING, do_quaff, 0},
+                           {24, 1, "recite", CMD_RECITE, POSITION_RESTING, do_recite, 0},
+                           {0, 0, "credits", CMD_CREDITS, POSITION_DEAD, do_credits, 0},
+                           //{ 0, 0, "compact",CMD_COMPACT,POSITION_DEAD,do_compact,0},
+                           {0, 1, "dig", CMD_DIG, POSITION_STANDING, do_dig, 0},
+                           {0, 1, "bury", CMD_BURY, POSITION_STANDING, do_bury, 0},
+                           {12, 1, "turn", CMD_TURN, POSITION_FIGHTING, do_turn, 0},
+                           {6, 1, "diagnose", CMD_DIAGNOSE, POSITION_RESTING, nullptr, 0},
+                           {6, 1, "appraise", CMD_APPRAISE, POSITION_RESTING, do_appraise, 0},
+                           {0, 1, "ventriloquate", CMD_VENTRILOQUATE, POSITION_RESTING, do_ventriloquate, 0},
+                           {6, 1, "aid", CMD_AID, POSITION_RESTING, do_aid, 0},
+                           {0, 1, "climb", CMD_CLIMB, POSITION_STANDING, do_not_here, 0},
+                           {0, 1, "trip", CMD_TRIP, POSITION_FIGHTING, nullptr, 0},
+                           {0, 1, "cuff", CMD_CUFF, POSITION_STANDING, nullptr, 0},
+                           {12, 1, "light", CMD_LIGHT, POSITION_RESTING, do_light, 0},
+                           {12, 1, "extinguish", CMD_EXTINGUISH, POSITION_RESTING, do_extinguish, 0},
+                           //{ 0, 0, "wimpy", CMD_WIMPY,POSITION_DEAD,do_wimpy,0},
+                           //{ 0, 0, "peaceful",CMD_PEACEFUL,POSITION_DEAD,do_peaceful,0},
+                           {0, 1, "drag", CMD_DRAG, POSITION_STANDING, do_drag, 0},
+                           {0, 0, "mail", CMD_MAIL, POSITION_RESTING, do_not_here, 0},
+                           {0, 0, "request", CMD_REQUEST, POSITION_RESTING, do_not_here, 0},
+                           {0, 0, "join", CMD_JOIN, POSITION_RESTING, do_not_here, 0},
+                           {0, 0, "contract", CMD_CONTRACT, POSITION_RESTING, do_not_here, 0},
+                           {0, 1, "break", CMD_BREAK, POSITION_STANDING, do_not_here, 0},
+                           {0, 0, "knock", CMD_KNOCK, POSITION_STANDING, do_knock, 0},
+                           {0, 0, "split", CMD_SPLIT, POSITION_RESTING, do_split, 0},
+                           //{ 0, 0, "prompt",CMD_PROMPT,POSITION_SLEEPING,do_prompt,0},
+                           //{ 0, 0, "reply",CMD_REPLY,POSITION_RESTING,do_not_here,0},
+                           //{ 0, 0, "echosay",CMD_ECHOSAY,POSITION_SLEEPING,do_echosay,0},
+                           {0, 0, "quests", CMD_QUESTS, POSITION_SLEEPING, do_quests, 0},
+                           {0, 0, "purse", CMD_PURSE, POSITION_DEAD, do_purse, 0},
+                           {0, 0, "change", CMD_CHANGE, POSITION_DEAD, do_change, 0},
+                           {0, 0, "commands", CMD_COMMANDS, POSITION_DEAD, do_commands, 0},
+                           {0, 0, "socials", CMD_SOCIALS, POSITION_DEAD, do_socials, 0},
 
-                                  {0, 0, "pose", CMD_POSE, POSITION_STANDING, do_pose, 0},
-                                  {0, 0, "insult", CMD_INSULT, POSITION_RESTING, do_insult, 0},
-                                  {0, 0, "pray", CMD_PRAY, POSITION_DEAD, do_pray, 0},
-                                  {0, 0, "sacrifice", CMD_SACRIFICE, POSITION_RESTING, do_sacrifice, 0},
-                                  {0, 0, "ignore", CMD_IGNORE, POSITION_DEAD, do_ignore, 0},
-                                  {0, 0, "reply", CMD_REPLY, POSITION_DEAD, do_reply, 0},
+                           {0, 0, "pose", CMD_POSE, POSITION_STANDING, do_pose, 0},
+                           {0, 0, "insult", CMD_INSULT, POSITION_RESTING, do_insult, 0},
+                           {0, 0, "pray", CMD_PRAY, POSITION_DEAD, do_pray, 0},
+                           {0, 0, "sacrifice", CMD_SACRIFICE, POSITION_RESTING, do_sacrifice, 0},
+                           {0, 0, "ignore", CMD_IGNORE, POSITION_DEAD, do_ignore, 0},
+                           {0, 0, "reply", CMD_REPLY, POSITION_DEAD, do_reply, 0},
 
-                                  //{ 0, 0, "inform",CMD_INFORM,POSITION_SLEEPING,do_inform,0},
-                                  //{ 0, 0, "expert",CMD_EXPERT,POSITION_DEAD,do_expert,0},
+                           //{ 0, 0, "inform",CMD_INFORM,POSITION_SLEEPING,do_inform,0},
+                           //{ 0, 0, "expert",CMD_EXPERT,POSITION_DEAD,do_expert,0},
 
-                                  {0, 1, "quit", CMD_QUIT, POSITION_DEAD, do_quit, 0},
-                                  {0, 1, "resize", CMD_RESIZE, POSITION_STANDING, nullptr, 0},
-                                  {0, 1, "evaluate", CMD_EVALUATE, POSITION_STANDING, nullptr, 0},
-                                  {0, 1, "ditch", CMD_DITCH, POSITION_RESTING, nullptr, 0},
+                           {0, 1, "quit", CMD_QUIT, POSITION_DEAD, do_quit, 0},
+                           {0, 1, "resize", CMD_RESIZE, POSITION_STANDING, nullptr, 0},
+                           {0, 1, "evaluate", CMD_EVALUATE, POSITION_STANDING, nullptr, 0},
+                           {0, 1, "ditch", CMD_DITCH, POSITION_RESTING, nullptr, 0},
 
-                                  /* Demi Gods 200 - 219 */
-                                  {0, 0, "wizhelp", CMD_WIZHELP, POSITION_SLEEPING, do_wizhelp, 200},
+                           /* Demi Gods 200 - 219 */
+                           {0, 0, "wizhelp", CMD_WIZHELP, POSITION_SLEEPING, do_wizhelp, 200},
 
-                                  /* Extended Where at 201 */
-                                  {0, 0, "users", CMD_USERS, POSITION_DEAD, do_users, 202},
+                           /* Extended Where at 201 */
+                           {0, 0, "users", CMD_USERS, POSITION_DEAD, do_users, 202},
 
-                                  /* Extended WHO at 203 */
-                                  {0, 0, "title", CMD_TITLE, POSITION_DEAD, do_title, 204}, /* other's at 240 */
-                                  {0, 0, "wstat", CMD_WSTAT, POSITION_DEAD, do_wstat, 215},
-                                  {0, 0, "goto", CMD_GOTO, POSITION_SLEEPING, do_goto, 219},
+                           /* Extended WHO at 203 */
+                           {0, 0, "title", CMD_TITLE, POSITION_DEAD, do_title, 204}, /* other's at 240 */
+                           {0, 0, "wstat", CMD_WSTAT, POSITION_DEAD, do_wstat, 215},
+                           {0, 0, "goto", CMD_GOTO, POSITION_SLEEPING, do_goto, 219},
 
-                                  /* Foreign Gods 219..210 */
-                                  {0, 0, "message", CMD_MESSAGE, POSITION_DEAD, do_message, 220},
-                                  {0, 0, "at", CMD_AT, POSITION_DEAD, do_at, 220},
+                           /* Foreign Gods 219..210 */
+                           {0, 0, "message", CMD_MESSAGE, POSITION_DEAD, do_message, 220},
+                           {0, 0, "at", CMD_AT, POSITION_DEAD, do_at, 220},
 
-                                  /* Gods of possible creation 229..220 */
+                           /* Gods of possible creation 229..220 */
 
-                                  /* Gods of Creation 239..230 */
-                                  {0, 0, "load", CMD_LOAD, POSITION_DEAD, do_load, 230},
-                                  {0, 0, "purge", CMD_PURGE, POSITION_DEAD, do_purge, 230},
-                                  {0, 0, "wizinv", CMD_WIZINV, POSITION_DEAD, do_wizinv, 230},
-                                  {0, 0, "path", CMD_PATH, POSITION_DEAD, do_path, 230},
-                                  {0, 0, "wizlock", CMD_WIZLOCK, POSITION_DEAD, do_wizlock, 230},
-                                  {0, 0, "reset", CMD_RESET, POSITION_RESTING, do_reset, 230},
-                                  {0, 0, "boards", CMD_BOARDS, POSITION_DEAD, do_boards, 230},
-                                  {0, 0, "corpses", CMD_CORPSES, POSITION_DEAD, do_corpses, 219},
+                           /* Gods of Creation 239..230 */
+                           {0, 0, "load", CMD_LOAD, POSITION_DEAD, do_load, 230},
+                           {0, 0, "purge", CMD_PURGE, POSITION_DEAD, do_purge, 230},
+                           {0, 0, "wizinv", CMD_WIZINV, POSITION_DEAD, do_wizinv, 230},
+                           {0, 0, "path", CMD_PATH, POSITION_DEAD, do_path, 230},
+                           {0, 0, "wizlock", CMD_WIZLOCK, POSITION_DEAD, do_wizlock, 230},
+                           {0, 0, "reset", CMD_RESET, POSITION_RESTING, do_reset, 230},
+                           {0, 0, "boards", CMD_BOARDS, POSITION_DEAD, do_boards, 230},
+                           {0, 0, "corpses", CMD_CORPSES, POSITION_DEAD, do_corpses, 219},
 
-                                  /* Most trusted builders only (239) */
-                                  {0, 0, "finger", CMD_FINGER, POSITION_DEAD, do_finger, 239},
-                                  {0, 0, "transfer", CMD_TRANSFER, POSITION_SLEEPING, do_trans, 235},
-                                  {0, 0, "force", CMD_FORCE, POSITION_SLEEPING, do_force, 239},
-                                  {0, 0, "set", CMD_SET, POSITION_SLEEPING, do_set, 230},
-                                  {0, 0, "setskill", CMD_SETSKILL, POSITION_SLEEPING, do_setskill, 239},
-                                  {0, 0, "restore", CMD_RESTORE, POSITION_DEAD, do_restore, 239},
-                                  {0, 0, "snoop", CMD_SNOOP, POSITION_DEAD, do_snoop, 239},
-                                  {0, 0, "switch", CMD_SWITCH, POSITION_DEAD, do_switch, 239},
+                           /* Most trusted builders only (239) */
+                           {0, 0, "finger", CMD_FINGER, POSITION_DEAD, do_finger, 239},
+                           {0, 0, "transfer", CMD_TRANSFER, POSITION_SLEEPING, do_trans, 235},
+                           {0, 0, "force", CMD_FORCE, POSITION_SLEEPING, do_force, 239},
+                           {0, 0, "set", CMD_SET, POSITION_SLEEPING, do_set, 230},
+                           {0, 0, "setskill", CMD_SETSKILL, POSITION_SLEEPING, do_setskill, 239},
+                           {0, 0, "restore", CMD_RESTORE, POSITION_DEAD, do_restore, 239},
+                           {0, 0, "snoop", CMD_SNOOP, POSITION_DEAD, do_snoop, 239},
+                           {0, 0, "switch", CMD_SWITCH, POSITION_DEAD, do_switch, 239},
 
-                                  /* Gods of World Validation and Exploration 249..240 */
-                                  {0, 0, "advance", CMD_ADVANCE, POSITION_DEAD, do_advance, OVERSEER_LEVEL},
-                                  {0, 0, "notell", CMD_NOTELL, POSITION_SLEEPING, do_notell, 200},
-                                  {0, 0, "noshout", CMD_NOSHOUT, POSITION_SLEEPING, do_noshout, 200},
-                                  {0, 0, "broadcast", CMD_BROADCAST, POSITION_DEAD, do_broadcast, 240},
-                                  {0, 0, "ban", CMD_BAN, POSITION_DEAD, do_ban, 240},
+                           /* Gods of World Validation and Exploration 249..240 */
+                           {0, 0, "advance", CMD_ADVANCE, POSITION_DEAD, do_advance, OVERSEER_LEVEL},
+                           {0, 0, "notell", CMD_NOTELL, POSITION_SLEEPING, do_notell, 200},
+                           {0, 0, "noshout", CMD_NOSHOUT, POSITION_SLEEPING, do_noshout, 200},
+                           {0, 0, "broadcast", CMD_BROADCAST, POSITION_DEAD, do_broadcast, 240},
+                           {0, 0, "ban", CMD_BAN, POSITION_DEAD, do_ban, 240},
 
-                                  /* Gods of Honour 253..250 */
-                                  {0, 0, "freeze", CMD_FREEZE, POSITION_DEAD, do_freeze, 250},
+                           /* Gods of Honour 253..250 */
+                           {0, 0, "freeze", CMD_FREEZE, POSITION_DEAD, do_freeze, 250},
 
-                                  /* Game Administrators 254 */
-                                  {0, 0, "delete", CMD_DELETE, POSITION_DEAD, do_delete, OVERSEER_LEVEL},
-                                  {0, 0, "shutdown", CMD_SHUTDOWN, POSITION_DEAD, do_shutdown, ULTIMATE_LEVEL},
-                                  {0, 0, "reboot", CMD_REBOOT, POSITION_DEAD, do_reboot, 240},
-                                  {0, 0, "execute", CMD_EXECUTE, POSITION_DEAD, do_execute, ADMINISTRATOR_LEVEL},
-                                  {0, 0, "reroll", CMD_REROLL, POSITION_DEAD, do_reroll, 235},
+                           /* Game Administrators 254 */
+                           {0, 0, "delete", CMD_DELETE, POSITION_DEAD, do_delete, OVERSEER_LEVEL},
+                           {0, 0, "shutdown", CMD_SHUTDOWN, POSITION_DEAD, do_shutdown, ULTIMATE_LEVEL},
+                           {0, 0, "reboot", CMD_REBOOT, POSITION_DEAD, do_reboot, 240},
+                           {0, 0, "execute", CMD_EXECUTE, POSITION_DEAD, do_execute, ADMINISTRATOR_LEVEL},
+                           {0, 0, "reroll", CMD_REROLL, POSITION_DEAD, do_reroll, 235},
 
-                                  /* Implementors 255 */
-                                  {0, 0, "makemoney", CMD_MAKEMONEY, POSITION_DEAD, do_makemoney, 239},
-                                  {0, 0, "file", CMD_FILE, POSITION_DEAD, do_file, 253},
-                                  {0, 0, "crash", CMD_CRASH, POSITION_STANDING, do_crash, 255},
-                                  {0, 0, "account", CMD_ACCOUNT, POSITION_DEAD, do_account, 0},
+                           /* Implementors 255 */
+                           {0, 0, "makemoney", CMD_MAKEMONEY, POSITION_DEAD, do_makemoney, 239},
+                           {0, 0, "file", CMD_FILE, POSITION_DEAD, do_file, 253},
+                           {0, 0, "crash", CMD_CRASH, POSITION_STANDING, do_crash, 255},
+                           {0, 0, "account", CMD_ACCOUNT, POSITION_DEAD, do_account, 0},
 
-                                  {0, 0, "ski0", CMD_PEEK, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski1", CMD_FILCH, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski2", CMD_PICK_POCKET, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski3", CMD_DISARM, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski4", CMD_DONATE, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski5", CMD_ASSIST, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski6", CMD_SKIN, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski7", CMD_SKILL7, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski8", CMD_SKILL8, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL9, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL10, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL11, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL12, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL13, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL14, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL15, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL16, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL17, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL18, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL19, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL20, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL21, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL22, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL23, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL24, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL25, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL26, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL27, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL28, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL29, POSITION_DEAD, nullptr, 0},
-                                  {0, 0, "ski9", CMD_SKILL30, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski0", CMD_PEEK, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski1", CMD_FILCH, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski2", CMD_PICK_POCKET, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski3", CMD_DISARM, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski4", CMD_DONATE, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski5", CMD_ASSIST, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski6", CMD_SKIN, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski7", CMD_SKILL7, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski8", CMD_SKILL8, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL9, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL10, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL11, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL12, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL13, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL14, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL15, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL16, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL17, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL18, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL19, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL20, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL21, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL22, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL23, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL24, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL25, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL26, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL27, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL28, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL29, POSITION_DEAD, nullptr, 0},
+                           {0, 0, "ski9", CMD_SKILL30, POSITION_DEAD, nullptr, 0},
 
-                                  {0, 0, "", 0, 0, nullptr, 0}};
+                           {0, 0, "", 0, 0, nullptr, 0}};
 
 /* { 0, 0, "manifest",CMD_MANIFEST,POSITION_DEAD,do_manifest,200},*/
 /* { 0, 0, "verify",CMD_VERIFY,POSITION_DEAD,do_verify,250}, */
 /* { 0, 0, "kickit",CMD_KICKIT,POSITION_DEAD,do_kickit,230}, */
 
-struct command_info                    cmd_auto_tick = {
+command_info cmd_auto_tick = {
    0,
    0,
    nullptr,
@@ -300,7 +300,7 @@ struct command_info                    cmd_auto_tick = {
    0,
 };
 
-struct command_info cmd_auto_enter = {
+command_info cmd_auto_enter = {
    0,
    0,
    nullptr,
@@ -310,7 +310,7 @@ struct command_info cmd_auto_enter = {
    0,
 };
 
-struct command_info cmd_auto_extract = {
+command_info cmd_auto_extract = {
    0,
    0,
    nullptr,
@@ -320,7 +320,7 @@ struct command_info cmd_auto_extract = {
    0,
 };
 
-struct command_info cmd_auto_death = {
+command_info cmd_auto_death = {
    0,
    0,
    nullptr,
@@ -330,7 +330,7 @@ struct command_info cmd_auto_death = {
    0,
 };
 
-struct command_info cmd_auto_combat = {
+command_info cmd_auto_combat = {
    0,
    0,
    nullptr,
@@ -340,7 +340,7 @@ struct command_info cmd_auto_combat = {
    0,
 };
 
-struct command_info cmd_auto_unknown = {
+command_info cmd_auto_unknown = {
    0,
    0,
    nullptr,
@@ -350,7 +350,7 @@ struct command_info cmd_auto_unknown = {
    0,
 };
 
-struct command_info cmd_auto_save = {
+command_info cmd_auto_save = {
    0,
    0,
    nullptr,
@@ -360,7 +360,7 @@ struct command_info cmd_auto_save = {
    0,
 };
 
-struct command_info cmd_auto_msg = {
+command_info cmd_auto_msg = {
    0,
    0,
    nullptr,
@@ -371,7 +371,7 @@ struct command_info cmd_auto_msg = {
 };
 
 /* This is so that we can distuinguish socials and unknowns... */
-struct command_info cmd_a_social = {
+command_info cmd_a_social = {
    0,
    0,
    nullptr,
@@ -381,11 +381,11 @@ struct command_info cmd_a_social = {
    0,
 };
 
-struct command_info  cmd_auto_damage = {0, 0, nullptr, CMD_AUTO_DAMAGE, POSITION_DEAD, nullptr, 0};
+command_info cmd_auto_damage = {0, 0, nullptr, CMD_AUTO_DAMAGE, POSITION_DEAD, nullptr, 0};
 
-struct command_info *cmd_follow      = nullptr;
+command_info *cmd_follow = nullptr;
 
-void                 wrong_position(unit_data *ch)
+void wrong_position(unit_data *ch)
 {
    static const char *strings[] = {
       "Lie still; you are DEAD!!! :-( \n\r",                               /* Dead     */
@@ -422,7 +422,7 @@ public:
    file_index_type *fi;
 } command_history_data[MAX_DEBUG_HISTORY];
 
-static int  command_history_pos = 0;
+static int command_history_pos = 0;
 
 static void add_command_history(unit_data *u, const char *str)
 {
@@ -438,7 +438,7 @@ static void add_command_history(unit_data *u, const char *str)
    strcpy(command_history_data[command_history_pos].str, str);
    command_history_data[command_history_pos].fi = UNIT_FILE_INDEX(u);
 
-   command_history_pos                          = (command_history_pos + 1) % MAX_DEBUG_HISTORY;
+   command_history_pos = (command_history_pos + 1) % MAX_DEBUG_HISTORY;
 }
 
 static void dump_command_history()
@@ -474,13 +474,13 @@ public:
 
 static int func_history_pos = 0;
 
-void       add_func_history(unit_data *u, uint16_t idx, uint16_t flags)
+void add_func_history(unit_data *u, uint16_t idx, uint16_t flags)
 {
    func_history_data[func_history_pos].idx   = idx;
    func_history_data[func_history_pos].flags = flags;
    func_history_data[func_history_pos].fi    = UNIT_FILE_INDEX(u);
 
-   func_history_pos                          = (func_history_pos + 1) % MAX_DEBUG_HISTORY;
+   func_history_pos = (func_history_pos + 1) % MAX_DEBUG_HISTORY;
 }
 
 static void dump_func_history()
@@ -513,11 +513,11 @@ void dump_debug_history()
 
 void command_interpreter(unit_data *ch, const char *arg)
 {
-   char                 cmd[MAX_INPUT_LENGTH + 10];
-   char                 argstr[MAX_INPUT_LENGTH + 10];
-   const char          *orgarg = arg;
-   struct command_info *cmd_ptr;
-   int                  is_social = static_cast<int>(FALSE);
+   char          cmd[MAX_INPUT_LENGTH + 10];
+   char          argstr[MAX_INPUT_LENGTH + 10];
+   const char   *orgarg = arg;
+   command_info *cmd_ptr;
+   int           is_social = static_cast<int>(FALSE);
 
    assert(IS_CHAR(ch));
 
@@ -571,10 +571,10 @@ void command_interpreter(unit_data *ch, const char *arg)
 
    strip_trailing_spaces(argstr);
 
-   if((cmd_ptr = (struct command_info *)search_trie(cmd, intr_trie)) == nullptr ||
+   if((cmd_ptr = (command_info *)search_trie(cmd, intr_trie)) == nullptr ||
       ((is_social = static_cast<int>(cmd_is_a_social(cmd, static_cast<int>(TRUE)))) != 0))
    {
-      struct command_info the_cmd = {0, 0, nullptr, CMD_AUTO_UNKNOWN, POSITION_DEAD, nullptr, 0};
+      command_info the_cmd = {0, 0, nullptr, CMD_AUTO_UNKNOWN, POSITION_DEAD, nullptr, 0};
 
       if((is_social != 0) || (cmd_ptr == nullptr && cmd_is_a_social(cmd, static_cast<int>(FALSE))))
       {
@@ -644,10 +644,10 @@ void command_interpreter(unit_data *ch, const char *arg)
 
    if(cmd_ptr->tmpl != nullptr)
    {
-      struct dilprg *prg;
+      dilprg *prg;
 
-      prg                         = dil_copy_template(cmd_ptr->tmpl, ch, nullptr);
-      prg->waitcmd                = WAITCMD_MAXINST - 1; // The usual hack, see db_file
+      prg          = dil_copy_template(cmd_ptr->tmpl, ch, nullptr);
+      prg->waitcmd = WAITCMD_MAXINST - 1; // The usual hack, see db_file
 
       prg->sp->vars[0].val.string = str_dup(argstr);
 
@@ -700,7 +700,7 @@ auto is_command(const command_info *cmd, const char *str) -> bool
       return (static_cast<bool>(cmd->cmd_str != nullptr) && static_cast<unsigned int>(is_abbrev(cmd->cmd_str, str)) != 0U);
    }
 
-   auto *cmd_ptr = (struct command_info *)search_trie(str, intr_trie);
+   auto *cmd_ptr = (command_info *)search_trie(str, intr_trie);
 
    return (cmd_ptr != nullptr) && cmd->no == cmd_ptr->no;
 }
@@ -712,7 +712,7 @@ void argument_interpreter(const char *argument, char *first_arg, char *second_ar
    one_argument(argument, second_arg);
 }
 
-auto function_activate(unit_data *u, struct spec_arg *sarg) -> int
+auto function_activate(unit_data *u, spec_arg *sarg) -> int
 {
    if((u != sarg->activator) || IS_SET(sarg->fptr->flags, SFB_AWARE) || IS_SET(sarg->mflags, SFB_AWARE))
    {
@@ -734,7 +734,7 @@ auto function_activate(unit_data *u, struct spec_arg *sarg) -> int
 /* u is the owner of the function on which the scan is performed */
 /* This function sets the 'sarg->fptr' and 'sarg->owner'         */
 
-auto unit_function_scan(unit_data *u, struct spec_arg *sarg) -> int
+auto unit_function_scan(unit_data *u, spec_arg *sarg) -> int
 {
    int        res      = SFR_SHARE;
    int        priority = 0;
@@ -761,7 +761,7 @@ auto unit_function_scan(unit_data *u, struct spec_arg *sarg) -> int
    {
       next = sarg->fptr->next; /* Next dude trick */
 
-      res  = function_activate(u, sarg);
+      res = function_activate(u, sarg);
 
       if(res != SFR_SHARE)
       {
@@ -793,7 +793,7 @@ auto unit_function_scan(unit_data *u, struct spec_arg *sarg) -> int
    if extra_target is set, then also send message to that unit
 */
 
-auto basic_special(unit_data *ch, struct spec_arg *sarg, uint16_t mflt, unit_data *extra_target) -> int
+auto basic_special(unit_data *ch, spec_arg *sarg, uint16_t mflt, unit_data *extra_target) -> int
 {
    unit_data *u;
    unit_data *uu;
@@ -932,13 +932,13 @@ auto basic_special(unit_data *ch, struct spec_arg *sarg, uint16_t mflt, unit_dat
 /* Preprocessed commands */
 auto send_preprocess(unit_data *ch, const command_info *cmd, const char *arg) -> int
 {
-   struct spec_arg sarg;
+   spec_arg sarg;
 
    sarg.activator = ch;
    sarg.medium    = nullptr;
    sarg.target    = nullptr;
    sarg.pInt      = nullptr;
-   sarg.cmd       = (struct command_info *)cmd;
+   sarg.cmd       = (command_info *)cmd;
    sarg.arg       = arg;
 
    return basic_special(ch, &sarg, SFB_CMD);
@@ -946,7 +946,7 @@ auto send_preprocess(unit_data *ch, const command_info *cmd, const char *arg) ->
 
 auto send_message(unit_data *ch, const char *arg) -> int
 {
-   struct spec_arg sarg;
+   spec_arg sarg;
 
    sarg.activator = ch;
    sarg.medium    = nullptr;
@@ -960,7 +960,7 @@ auto send_message(unit_data *ch, const char *arg) -> int
 
 auto send_death(unit_data *ch) -> int
 {
-   struct spec_arg sarg;
+   spec_arg sarg;
 
    sarg.activator = ch;
    sarg.medium    = nullptr;
@@ -974,7 +974,7 @@ auto send_death(unit_data *ch) -> int
 
 auto send_combat(unit_data *ch) -> int
 {
-   struct spec_arg sarg;
+   spec_arg sarg;
 
    sarg.activator = ch;
    sarg.medium    = nullptr;
@@ -988,7 +988,7 @@ auto send_combat(unit_data *ch) -> int
 
 auto send_save_to(unit_data *from, unit_data *to) -> int
 {
-   struct spec_arg sarg;
+   spec_arg sarg;
 
    assert(to);
    assert(from);
@@ -1005,20 +1005,16 @@ auto send_save_to(unit_data *from, unit_data *to) -> int
    return unit_function_scan(to, &sarg);
 }
 
-auto send_ack(unit_data                 *activator,
-              unit_data                 *medium,
-              unit_data                 *target,
-              int                       *i,
-              const command_info *cmd,
-              const char                *arg,
-              unit_data                 *extra_target) -> int
+auto send_ack(
+   unit_data *activator, unit_data *medium, unit_data *target, int *i, const command_info *cmd, const char *arg, unit_data *extra_target)
+   -> int
 {
-   struct spec_arg sarg;
-   int             j = 0;
+   spec_arg sarg;
+   int      j = 0;
 
-   sarg.activator    = activator;
-   sarg.medium       = medium;
-   sarg.target       = target;
+   sarg.activator = activator;
+   sarg.medium    = medium;
+   sarg.target    = target;
 
    if(i != nullptr)
    {
@@ -1029,27 +1025,22 @@ auto send_ack(unit_data                 *activator,
       sarg.pInt = &j;
    }
 
-   sarg.cmd = (struct command_info *)cmd;
+   sarg.cmd = (command_info *)cmd;
    sarg.arg = (char *)arg;
 
    return basic_special(activator, &sarg, SFB_PRE, extra_target);
 }
 
-void send_done(unit_data                 *activator,
-               unit_data                 *medium,
-               unit_data                 *target,
-               int                        i,
-               const command_info *cmd,
-               const char                *arg,
-               unit_data                 *extra_target)
+void send_done(
+   unit_data *activator, unit_data *medium, unit_data *target, int i, const command_info *cmd, const char *arg, unit_data *extra_target)
 {
-   struct spec_arg sarg;
+   spec_arg sarg;
 
    sarg.activator = activator;
    sarg.medium    = medium;
    sarg.target    = target;
    sarg.pInt      = &i;
-   sarg.cmd       = (struct command_info *)cmd;
+   sarg.cmd       = (command_info *)cmd;
    sarg.arg       = (char *)arg;
 
    basic_special(activator, &sarg, SFB_DONE, extra_target);
@@ -1057,12 +1048,12 @@ void send_done(unit_data                 *activator,
 
 static void read_command_file()
 {
-   char                 cmd[256];
-   char                *c;
-   struct command_info *cmd_ptr;
-   FILE                *f;
-   char                 Buf[200];
-   int                  i;
+   char          cmd[256];
+   char         *c;
+   command_info *cmd_ptr;
+   FILE         *f;
+   char          Buf[200];
+   int           i;
 
    touch_file(str_cc(DFLT_DIR, COMMAND_FILE));
 
@@ -1082,7 +1073,7 @@ static void read_command_file()
          c = Buf;
          c = str_next_word(Buf, cmd);
 
-         if((cmd_ptr = (struct command_info *)search_trie(cmd, intr_trie)) != nullptr)
+         if((cmd_ptr = (command_info *)search_trie(cmd, intr_trie)) != nullptr)
          {
             c = str_next_word(c, cmd);
             i = atoi(cmd);
@@ -1130,7 +1121,7 @@ void assign_command_pointers()
 
    read_command_file();
 
-   cmd_follow = (struct command_info *)search_trie("follow", intr_trie);
+   cmd_follow = (command_info *)search_trie("follow", intr_trie);
 }
 
 void interpreter_dil_check()

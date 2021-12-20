@@ -10,8 +10,9 @@
 
 #define CODESIZE 16768 /* maximum expression size */
 
-struct exptype
+class exptype
 {
+public:
    uint8_t  dsl, typ, rtyp; /* static/dynamic/lvalue, type, req type */
    uint8_t  boolean;        /* if expression contains boolean op */
    int32_t  num;            /* static value INT or field type */

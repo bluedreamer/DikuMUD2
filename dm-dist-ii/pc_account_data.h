@@ -1,8 +1,9 @@
 #pragma once
 #include <cstdint>
 
-struct pc_account_data
+class pc_account_data
 {
+public:
    float    credit;       /* How many coin units are left on account?       */
    uint32_t credit_limit; /* In coin units (i.e. cents / oerer)             */
    uint32_t total_credit; /* Accumulated credit to date (coin units)        */

@@ -52,19 +52,19 @@ public:
    void        Receive(uint8_t *data, uint32_t len);
    const char *Status(void);
 
-   void        SetPriority(void);
-   void        RemoteOpen(int nServiceType, uint8_t nChn = 0, char *pStr = NULL);
-   void        RemoteClose(uint8_t nChn);
+   void SetPriority(void);
+   void RemoteOpen(int nServiceType, uint8_t nChn = 0, char *pStr = NULL);
+   void RemoteClose(uint8_t nChn);
 
-   uint32_t    PriorityDelay(void) { return nDelay; }
-   uint16_t    PriorityQueue(void) { return nQueue; }
-   uint16_t    PrioritySize(void) { return nSize; }
+   uint32_t PriorityDelay(void) { return nDelay; }
+   uint16_t PriorityQueue(void) { return nQueue; }
+   uint16_t PrioritySize(void) { return nSize; }
 
 private:
-   void     SystemGatherInfo(uint8_t *data, int len);
-   void     SystemNormal(uint8_t *data, int len);
-   void     SendDir(void);
-   void     CD(char *path);
+   void SystemGatherInfo(uint8_t *data, int len);
+   void SystemNormal(uint8_t *data, int len);
+   void SendDir(void);
+   void CD(char *path);
 
    char     StatusBuf[1024];
    uint32_t nState;

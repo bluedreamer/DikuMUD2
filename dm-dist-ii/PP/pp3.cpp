@@ -499,7 +499,7 @@ auto gchfile() -> int
    extern int read();
 #endif /* PP_SYSIO */
 
-   struct file *f;
+   file *f;
 
    if(Filelevel < 0)
    {
@@ -636,9 +636,9 @@ auto inc_open(const char *incfile) -> int
    extern int open();
 #endif /* PP_SYSIO */
 
-   int          v;
-   struct file *f;
-   struct file *fold;
+   int   v;
+   file *f;
+   file *fold;
 
 #if HOST == H_CPM
 
@@ -662,7 +662,7 @@ auto inc_open(const char *incfile) -> int
 
 #endif /* HOST == H_CPM */
 
-   f = Filestack[Filelevel + 1] = (struct file *)malloc(sizeof(struct file));
+   f = Filestack[Filelevel + 1] = (file *)malloc(sizeof(file));
 
    if(f == nullptr)
    {
@@ -837,7 +837,7 @@ auto popfile() -> int
 #ifdef PP_SYSIO
    extern int close();
 #endif /* PP_SYSIO */
-   struct file *f;
+   file *f;
 
 #if HOST == H_CPM
    set_user();
@@ -894,11 +894,11 @@ return (TRUE); /* All is ok -- return success */
 
 auto readline(char *buf, int bufsize, int flags) -> char *
 {
-   static char    rbo[] = "Read buffer overflow";
+   static char rbo[] = "Read buffer overflow";
 
-   char          *bufp;
-   struct symtab *sy;
-   int            t;
+   char   *bufp;
+   symtab *sy;
+   int     t;
 
    for(bufp = buf; (t = gettoken(flags)) != '\n';)
    {

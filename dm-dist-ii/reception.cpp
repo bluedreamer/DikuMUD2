@@ -18,13 +18,13 @@
 #include <cstring>
 #include <ctime>
 
-auto        write_unit_string(uint8_t *b, unit_data *u) -> int;
+auto write_unit_string(uint8_t *b, unit_data *u) -> int;
 
 /* *************************************************************************
  * Routines for calculating rent                                           *
  ************************************************************************* */
 
-static int  rent_info;
+static int rent_info;
 
 static void show_items(unit_data *ch, unit_data *item, uint32_t price)
 {
@@ -138,7 +138,7 @@ void do_rent(unit_data *ch, char *arg, const command_info *cmd)
 
    rent_info = static_cast<int>(FALSE);
 
-   sum       = subtract_recurse(ch, UNIT_CONTAINS(ch), SECS_PER_REAL_DAY, show_items);
+   sum = subtract_recurse(ch, UNIT_CONTAINS(ch), SECS_PER_REAL_DAY, show_items);
 
    if(rent_info == 0)
    {
@@ -189,7 +189,7 @@ static int membuflen = 0, mempos;
 file_index_type *slime_fi = nullptr;
 
 /* save object */
-void             enlist(CByteBuffer *pBuf, unit_data *unit, int level, int fast)
+void enlist(CByteBuffer *pBuf, unit_data *unit, int level, int fast)
 {
    int              len;
    int              diflen;
@@ -197,7 +197,7 @@ void             enlist(CByteBuffer *pBuf, unit_data *unit, int level, int fast)
    char            *buf;
    CByteBuffer      TmpBuf;
 
-   auto             diff(char *ref, uint32_t reflen, char *obj, int objlen, char *dif, int diflen, uint32_t crc)->int;
+   auto diff(char *ref, uint32_t reflen, char *obj, int objlen, char *dif, int diflen, uint32_t crc)->int;
 
    assert(IS_SET(UNIT_TYPE(unit), UNIT_ST_NPC | UNIT_ST_OBJ));
    assert(!is_destructed(DR_UNIT, unit));
@@ -321,7 +321,7 @@ auto ContentsFileName(const char *pName) -> char *
 {
    static char Buf[MAX_INPUT_LENGTH + 1];
 
-   auto        PlayerFileName(const char *)->char *;
+   auto PlayerFileName(const char *)->char *;
 
    sprintf(Buf, "%s.inv", PlayerFileName(pName));
 
@@ -424,13 +424,13 @@ auto base_load_contents(const char *pFileName, const unit_data *unit) -> unit_da
    FILE            *pFile;
    unit_data       *topu = nullptr;
 
-   CByteBuffer      InvBuf;
+   CByteBuffer InvBuf;
    InvBuf.Clear();
 
    extern unit_data *void_room;
 
-   auto              is_slimed(file_index_type * sp)->int;
-   auto              patch(char *ref, uint32_t reflen, char *dif, int diflen, char *res, int reslen, uint32_t crc)->int;
+   auto is_slimed(file_index_type * sp)->int;
+   auto patch(char *ref, uint32_t reflen, char *dif, int diflen, char *res, int reslen, uint32_t crc)->int;
 
    assert(slime_fi != nullptr);
 
@@ -473,9 +473,9 @@ auto base_load_contents(const char *pFileName, const unit_data *unit) -> unit_da
          break;
       }
 
-      fi       = find_file_index(h.zone, h.unit);
+      fi = find_file_index(h.zone, h.unit);
 
-      pnew     = nullptr;
+      pnew = nullptr;
 
       equip_ok = static_cast<int>(TRUE);
 
@@ -615,13 +615,13 @@ void reception_boot()
 /* Create difference-data (patch can reconstruct obj based on ref & dif) */
 auto diff(char *ref, uint32_t reflen, char *obj, int objlen, char *dif, int diflen, uint32_t crc) -> int
 {
-   int             dstart;
-   int             dend;
-   int             len;
-   int             rlen;
-   char           *oend;
-   char           *rend;
-   struct diffhead head;
+   int      dstart;
+   int      dend;
+   int      len;
+   int      rlen;
+   char    *oend;
+   char    *rend;
+   diffhead head;
 
    rend = ref + reflen - 1;
    oend = obj + objlen - 1;
@@ -650,8 +650,8 @@ auto diff(char *ref, uint32_t reflen, char *obj, int objlen, char *dif, int difl
    {
       return -1;
    }
-   diflen      = sizeof(head) + len;
-   head.start  = dstart;
+   diflen     = sizeof(head) + len;
+   head.start = dstart;
 
    head.end    = reflen - dend;
    head.reflen = reflen;
@@ -669,7 +669,7 @@ auto diff(char *ref, uint32_t reflen, char *obj, int objlen, char *dif, int difl
 /* reconstruct obj based on ref and diff */
 auto patch(char *ref, uint32_t reflen, char *dif, int diflen, char *res, int reslen, uint32_t crc) -> int
 {
-   struct diffhead head;
+   diffhead head;
 
    if(diflen < (int)sizeof(head))
    {
@@ -741,7 +741,7 @@ void store_unit(unit_data *u)
    pBuf->Append8(UNIT_TYPE(u));
    int len = write_unit_string(pBuf, u);
 
-   len     = pBuf->FileWrite(f);
+   len = pBuf->FileWrite(f);
    assert(len = pBuf->GetLength());
 
    fclose(f);

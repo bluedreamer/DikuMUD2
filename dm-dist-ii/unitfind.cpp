@@ -153,7 +153,7 @@ auto random_unit(unit_data *ref, int sflags, int tflags) -> unit_data *
    int        count    = 0;
    int        pset     = 0;
 
-   pset                = sflags & (FIND_UNIT_NOPAY | FIND_UNIT_PAY);
+   pset = sflags & (FIND_UNIT_NOPAY | FIND_UNIT_PAY);
    sflags &= FIND_UNIT_LOCATION_MASK;
 
    /* Needs work, there must be a better way to do this... */
@@ -255,9 +255,9 @@ auto random_unit(unit_data *ref, int sflags, int tflags) -> unit_data *
 auto find_unit_general(const unit_data *viewer, const unit_data *ch, char **arg, const unit_data *list, const uint32_t bitvector)
    -> unit_data *
 {
-   unit_data  *best     = nullptr;
-   int         best_len = 0;
-   uint32_t    bitvectorm;
+   unit_data *best     = nullptr;
+   int        best_len = 0;
+   uint32_t   bitvectorm;
 
    int         i;
    int         number;

@@ -24,7 +24,7 @@ extern unit_data *unit_list;
 /* External procedures */
 
 /* Count the number of items a unit contains */
-auto              char_carry_n(unit_data *unit) -> int
+auto char_carry_n(unit_data *unit) -> int
 {
    int i;
 
@@ -473,11 +473,11 @@ void point_update()
       {
          if(CHAR_POS(u) >= POSITION_STUNNED)
          {
-            CHAR_MANA(u)      = std::min(CHAR_MANA(u) + mana_gain(u), mana_limit(u));
+            CHAR_MANA(u) = std::min(CHAR_MANA(u) + mana_gain(u), mana_limit(u));
 
             CHAR_ENDURANCE(u) = std::min(CHAR_ENDURANCE(u) + move_gain(u), move_limit(u));
 
-            hgain             = hit_gain(u);
+            hgain = hit_gain(u);
             if(hgain >= 0)
             {
                UNIT_HIT(u) = std::min(UNIT_HIT(u) + hgain, hit_limit(u));

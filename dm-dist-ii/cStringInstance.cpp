@@ -15,7 +15,7 @@ void cStringInstance::Make(const char *str)
    uint32_t h   = Hash.Hash(str);
    uint32_t len = strlen(str);
 
-   pConst       = Hash.Lookup(str, len, h);
+   pConst = Hash.Lookup(str, len, h);
 
    if(pConst == nullptr)
    {

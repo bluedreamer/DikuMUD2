@@ -20,15 +20,15 @@
 #define MAIL_MAX_AGE    SECS_PER_REAL_DAY * 90 /* 90 days lifetime */
 #define MAIL_BLOCK_SIZE 128
 
-extern char          libdir[]; /* from dikumud.c */
+extern char libdir[]; /* from dikumud.c */
 
-mail_file_info_type *mailfile_info   = nullptr;
+mail_file_info_type *mailfile_info = nullptr;
 
-int16_t              top_of_mailfile = 0;
-BLK_FILE            *mbf; /* Mail Block File */
-auto                 find_player_id(char *pName) -> int;
+int16_t   top_of_mailfile = 0;
+BLK_FILE *mbf; /* Mail Block File */
+auto      find_player_id(char *pName) -> int;
 
-void                 read_mail_block(FILE *f, int16_t index)
+void read_mail_block(FILE *f, int16_t index)
 {
    if(fseek(f, index * sizeof(mail_file_info_type), SEEK_SET) != 0)
    {
@@ -131,22 +131,22 @@ void mail_mail(int receipient, char *rcv_name, unit_data *sender, const char *st
    time_info_data t;
    char          *all;
 
-   void           mudtime_strcpy(struct time_info_data * time, char *str);
-   auto           mud_date(time_t t)->struct time_info_data;
+   void mudtime_strcpy(struct time_info_data * time, char *str);
+   auto mud_date(time_t t)->struct time_info_data;
 
    if((f = fopen_cache(str_cc(libdir, MAIL_FILE_NAME), "r+b")) == nullptr)
    {
       assert(FALSE);
    }
 
-   index                           = find_free_index();
+   index = find_free_index();
 
    mailfile_info[index].loaded     = static_cast<uint8_t>(FALSE);
    mailfile_info[index].date       = time(nullptr);
    mailfile_info[index].receipient = receipient;
    mailfile_info[index].sender     = PC_ID(sender);
 
-   b                               = from;
+   b = from;
    sprintf(b, "From %s at ", UNIT_NAME(sender));
    TAIL(b);
 
@@ -277,17 +277,17 @@ auto eat_and_delete(struct spec_arg *sarg) -> int
 
 auto postman(struct spec_arg *sarg) -> int
 {
-   char                   *b;
-   char                   *arg = (char *)sarg->arg;
-   extra_descr_data       *exd;
-   descriptor_data        *d;
-   unit_data              *letter;
-   char                    tmpname[MAX_INPUT_LENGTH];
-   int16_t                 index;
-   int16_t                *tmp;
-   long                    rcp;
-   currency_t              currency = local_currency(sarg->owner);
-   amount_t                postage;
+   char             *b;
+   char             *arg = (char *)sarg->arg;
+   extra_descr_data *exd;
+   descriptor_data  *d;
+   unit_data        *letter;
+   char              tmpname[MAX_INPUT_LENGTH];
+   int16_t           index;
+   int16_t          *tmp;
+   long              rcp;
+   currency_t        currency = local_currency(sarg->owner);
+   amount_t          postage;
 
    extern file_index_type *letter_fi;
 

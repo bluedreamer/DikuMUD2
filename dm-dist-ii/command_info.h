@@ -4,21 +4,22 @@
 
 #include <cstdint>
 
-struct command_info
+class command_info
 {
-   uint8_t     combat_speed;  /* The speed of a combat command         */
-   uint8_t     combat_buffer; /* Use the combat speed / buffer system? */
+public:
+   uint8_t combat_speed;  /* The speed of a combat command         */
+   uint8_t combat_buffer; /* Use the combat speed / buffer system? */
 
    const char *cmd_str;
 
-   int32_t     no;
+   int32_t no;
 
-   uint8_t     minimum_position;
+   uint8_t minimum_position;
 
    void (*cmd_fptr)(unit_data *ch, char *arg, const command_info *c);
 
-   uint8_t      minimum_level;
-   uint8_t      log_level; /* For logging certain immortal commands */
+   uint8_t minimum_level;
+   uint8_t log_level; /* For logging certain immortal commands */
 
    diltemplate *tmpl; /* Perhaps a DIL template...         */
 

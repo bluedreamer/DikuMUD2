@@ -12,14 +12,14 @@
 
 #include <cstdio>
 
-void                            special_event(void *p1, void *p2);
-void                            event_enq(int when, void (*func)(), void *arg1, void *arg2);
-void                            event_deenq(void (*func)(), void *arg1, void *arg2);
+void special_event(void *p1, void *p2);
+void event_enq(int when, void (*func)(), void *arg1, void *arg2);
+void event_deenq(void (*func)(), void *arg1, void *arg2);
 
 extern zone_type               *boot_zone;
 extern unit_function_array_type unit_function_array[];
 
-void                            SetFptrTimer(unit_data *u, unit_fptr *fptr)
+void SetFptrTimer(unit_data *u, unit_fptr *fptr)
 {
    uint32_t ticks;
 
@@ -55,7 +55,7 @@ void special_event(void *p1, void *p2)
    unit_fptr *ftmp;
    spec_arg   sarg;
 
-   void       add_func_history(unit_data * u, uint16_t, uint16_t);
+   void add_func_history(unit_data * u, uint16_t, uint16_t);
 
    if(g_cServerConfig.m_bNoSpecials != 0)
    {
@@ -94,7 +94,7 @@ void special_event(void *p1, void *p2)
                   sarg.target    = nullptr;
                   sarg.pInt      = nullptr;
 
-                  ret            = (*(unit_function_array[fptr->index].func))(&sarg);
+                  ret = (*(unit_function_array[fptr->index].func))(&sarg);
                }
                assert((ret == SFR_SHARE) || (ret == SFR_BLOCK));
             }

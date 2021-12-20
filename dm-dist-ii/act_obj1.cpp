@@ -264,7 +264,7 @@ void do_get(unit_data *ch, char *argument, const command_info *cmd)
       bool       ok   = TRUE;
       bool       pick = FALSE;
 
-      thing           = from_unit != nullptr ? UNIT_CONTAINS(from_unit) : UNIT_CONTAINS(UNIT_IN(ch));
+      thing = from_unit != nullptr ? UNIT_CONTAINS(from_unit) : UNIT_CONTAINS(UNIT_IN(ch));
 
       for(; ok && (thing != nullptr); thing = next_unit)
       {
@@ -295,7 +295,7 @@ void do_get(unit_data *ch, char *argument, const command_info *cmd)
       bool       ok   = TRUE;
       bool       pick = FALSE;
 
-      thing           = from_unit != nullptr ? UNIT_CONTAINS(from_unit) : UNIT_CONTAINS(UNIT_IN(ch));
+      thing = from_unit != nullptr ? UNIT_CONTAINS(from_unit) : UNIT_CONTAINS(UNIT_IN(ch));
 
       for(; ok && (thing != nullptr); thing = next_unit)
       {

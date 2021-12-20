@@ -13,12 +13,12 @@
 
 extern file_index_type *slime_fi;
 
-extern char             libdir[];
+extern char libdir[];
 
-static int              slime_count = 0;
-file_index_type       **slime_list  = nullptr;
+static int        slime_count = 0;
+file_index_type **slime_list  = nullptr;
 
-static void             slime_save()
+static void slime_save()
 {
    int   i;
    FILE *f;
@@ -128,7 +128,7 @@ auto slime_obj(struct spec_arg *sarg) -> int
 
    sarg->arg = one_argument(sarg->arg, fi_name);
 
-   fi        = str_to_file_index(fi_name);
+   fi = str_to_file_index(fi_name);
 
    if(fi == nullptr)
    {

@@ -733,9 +733,9 @@ void tif_valhalla_ret(unit_affected_type *af, unit_data *unit)
    PC_COND(unit, THIRST) = 24;
    PC_COND(unit, DRUNK)  = 0;
 
-   CHAR_MANA(unit)       = mana_limit(unit);
-   CHAR_ENDURANCE(unit)  = move_limit(unit);
-   UNIT_HIT(unit)        = UNIT_MAX_HIT(unit);
+   CHAR_MANA(unit)      = mana_limit(unit);
+   CHAR_ENDURANCE(unit) = move_limit(unit);
+   UNIT_HIT(unit)       = UNIT_MAX_HIT(unit);
 
    if(is_destructed(DR_UNIT, unit) == 0)
    {

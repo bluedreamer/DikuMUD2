@@ -34,9 +34,9 @@
 /* extern variables */
 
 extern descriptor_data *descriptor_list;
-extern int8_t         time_light[SUN_SET + 1];
+extern int8_t           time_light[SUN_SET + 1];
 
-static void             add_to_string(char **buf, int *size, int len, const char *str)
+static void add_to_string(char **buf, int *size, int len, const char *str)
 {
    if(*buf == nullptr)
    {
@@ -76,14 +76,14 @@ auto in_string(unit_data *ch, unit_data *u) -> char *
 
 void do_exits(unit_data *ch, char *arg, const command_info *cmd)
 {
-   int         door;
-   char        buf[MAX_STRING_LENGTH];
-   char       *b;
-   unit_data  *room;
+   int        door;
+   char       buf[MAX_STRING_LENGTH];
+   char      *b;
+   unit_data *room;
 
    const char *exits[] = {"North", "East ", "South", "West ", "Up   ", "Down "};
 
-   auto        has_found_door(unit_data * pc, int dir)->int;
+   auto has_found_door(unit_data * pc, int dir)->int;
 
    send_to_char("Obvious exits:\n\r", ch);
 
@@ -217,7 +217,7 @@ static void status_spells(unit_data *ch, uint8_t realm)
    char  tmpbuf[80];
    char *b;
 
-   b  = buf;
+   b = buf;
 
    *b = 0;
 
@@ -274,20 +274,20 @@ static void status_spells(unit_data *ch, uint8_t realm)
 
 void do_status(unit_data *ch, char *arg, const command_info *cmd)
 {
-   int                idx;
-   int                i;
-   int                p;
-   int                j;
-   time_info_data     playing_time;
-   time_info_data     years;
-   char               buf[2 * MAX_STRING_LENGTH];
-   char               tmpbuf[80];
-   char              *b;
+   int            idx;
+   int            i;
+   int            p;
+   int            j;
+   time_info_data playing_time;
+   time_info_data years;
+   char           buf[2 * MAX_STRING_LENGTH];
+   char           tmpbuf[80];
+   char          *b;
 
    static const char *infos[] = {"weapons", "spells", "skills", nullptr};
 
-   auto               age(unit_data * ch)->struct time_info_data;
-   auto               real_time_passed(time_t t2, time_t t1)->struct time_info_data;
+   auto age(unit_data * ch)->time_info_data;
+   auto real_time_passed(time_t t2, time_t t1)->time_info_data;
 
    if(!IS_PC(ch))
    {
@@ -497,13 +497,13 @@ auto own_position(unit_data *ch) -> char *
 
 void do_score(unit_data *ch, char *arg, const command_info *cmd)
 {
-   static char              buf[MAX_STRING_LENGTH];
-   static char             *b;
-   unit_data               *vict;
-   struct char_follow_type *f;
-   int                      members = static_cast<int>(FALSE);
+   static char       buf[MAX_STRING_LENGTH];
+   static char      *b;
+   unit_data        *vict;
+   char_follow_type *f;
+   int               members = static_cast<int>(FALSE);
 
-   auto                     age(const unit_data *ch)->struct time_info_data;
+   auto age(const unit_data *ch)->time_info_data;
 
    if(!IS_PC(ch))
    {
@@ -690,16 +690,16 @@ void do_score(unit_data *ch, char *arg, const command_info *cmd)
 
 void do_time(unit_data *ch, char *arg, const command_info *cmd)
 {
-   char                 *b;
-   char                  buf[200];
-   struct time_info_data game_time;
+   char          *b;
+   char           buf[200];
+   time_info_data game_time;
 
-   void                  mudtime_strcpy(struct time_info_data * time, char *str);
-   auto                  mud_date(time_t t)->struct time_info_data;
+   void mudtime_strcpy(time_info_data * time, char *str);
+   auto mud_date(time_t t)->time_info_data;
 
    game_time = mud_date(time(nullptr));
 
-   b         = buf;
+   b = buf;
    strcpy(b, "It is ");
    TAIL(b);
 
@@ -841,8 +841,8 @@ void do_where(unit_data *ch, char *aaa, const command_info *cmd)
 
 void do_who(unit_data *ch, char *arg, const command_info *cmd)
 {
-   static char     *buf      = nullptr;
-   static int       cur_size = 1024;
+   static char *buf      = nullptr;
+   static int   cur_size = 1024;
 
    descriptor_data *d;
    char             tmp[256];
@@ -909,10 +909,10 @@ void do_who(unit_data *ch, char *arg, const command_info *cmd)
 
 void do_commands(unit_data *ch, char *arg, const command_info *cmd)
 {
-   char                       buf[MAX_STRING_LENGTH];
-   char                      *b;
-   int                        no;
-   int                        i;
+   char                buf[MAX_STRING_LENGTH];
+   char               *b;
+   int                 no;
+   int                 i;
    extern command_info cmd_info[];
 
    if(!IS_PC(ch))
@@ -951,10 +951,10 @@ void do_commands(unit_data *ch, char *arg, const command_info *cmd)
 
 void do_areas(unit_data *ch, char *arg, const command_info *cmd)
 {
-   char              buf[2 * MAX_STRING_LENGTH];
-   char             *b;
-   int               no;
-   struct zone_type *z;
+   char       buf[2 * MAX_STRING_LENGTH];
+   char      *b;
+   int        no;
+   zone_type *z;
 
    if(!IS_PC(ch))
    {

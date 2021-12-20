@@ -37,12 +37,12 @@
 #define PC_DEATHOBJ_NAME "death_seq"
 #define DESTROY_ROOM     "destroy_room"
 
-unit_data       *void_room     = nullptr;
-unit_data       *destroy_room  = nullptr;
-unit_data       *heaven_room   = nullptr;
-unit_data       *seq_room      = nullptr;
-unit_data       *time_room     = nullptr;
-unit_data       *entry_room    = nullptr;
+unit_data *void_room    = nullptr;
+unit_data *destroy_room = nullptr;
+unit_data *heaven_room  = nullptr;
+unit_data *seq_room     = nullptr;
+unit_data *time_room    = nullptr;
+unit_data *entry_room   = nullptr;
 
 file_index_type *demigod_fi    = nullptr; /* Default demigod shape */
 file_index_type *zombie_fi     = nullptr;
@@ -52,7 +52,7 @@ file_index_type *head_fi       = nullptr;
 file_index_type *deathobj_fi   = nullptr;
 file_index_type *beginner_note = nullptr;
 
-void             basis_boot()
+void basis_boot()
 {
    void_room = world_room(BASIS_ZONE, VOID_ROOM);
    assert(void_room);
@@ -311,7 +311,7 @@ auto recep_daemon(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-auto chaos_daemon(struct spec_arg *sarg) -> int
+auto chaos_daemon(spec_arg *sarg) -> int
 {
    char      *arg = (char *)sarg->arg;
    unit_data *u;
@@ -335,7 +335,7 @@ auto chaos_daemon(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-auto death_room(struct spec_arg *sarg) -> int
+auto death_room(spec_arg *sarg) -> int
 {
    int dam;
    int i;
@@ -372,9 +372,9 @@ auto death_room(struct spec_arg *sarg) -> int
 
 /* Log stuff below */
 
-extern struct log_buffer log_buf[];
+extern log_buffer log_buf[];
 
-auto                     log_object(struct spec_arg *sarg) -> int
+auto log_object(spec_arg *sarg) -> int
 {
    uint8_t       *ip;
    enum log_level lev = LOG_OFF;
@@ -384,7 +384,7 @@ auto                     log_object(struct spec_arg *sarg) -> int
    if(sarg->fptr->data == nullptr)
    {
       CREATE(ip, uint8_t, 1);
-      *ip                       = 0;
+      *ip = 0;
 
       OBJ_VALUE(sarg->owner, 0) = 'b';
       sarg->fptr->data          = ip;
@@ -517,11 +517,11 @@ void execute_append(unit_data *pc, char *str)
    fclose(f);
 }
 
-auto admin_obj(struct spec_arg *sarg) -> int
+auto admin_obj(spec_arg *sarg) -> int
 {
    char              buf[512];
    int               zonelist;
-   struct zone_type *zone;
+   zone_type        *zone;
    extra_descr_data *exdp;
 
    if(sarg->cmd->no != CMD_AUTO_UNKNOWN)

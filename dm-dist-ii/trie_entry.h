@@ -2,8 +2,9 @@
 
 class trie_type;
 
-struct trie_entry
+class trie_entry
 {
+public:
    char       c;
    trie_type *t;
 };

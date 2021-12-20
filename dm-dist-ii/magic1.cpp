@@ -74,7 +74,7 @@ void spell_cause_wounds_1(spell_args *sa)
    {
       int effect = dil_effect(sa->pEffect, sa);
 
-      sa->hm     = -1;
+      sa->hm = -1;
 
       damage(sa->caster,
              sa->target,
@@ -97,7 +97,7 @@ void spell_cause_wounds_2(spell_args *sa)
    {
       int effect = dil_effect(sa->pEffect, sa);
 
-      sa->hm     = -1;
+      sa->hm = -1;
 
       damage(sa->caster,
              sa->target,
@@ -197,10 +197,10 @@ void spell_repel_undead_1(spell_args *sa)
       af.beat     = WAIT_SEC * 30;
       af.data[0] = af.data[1] = af.data[2] = 0;
 
-      af.firstf_i                          = TIF_FEAR_CHECK;
-      af.tickf_i                           = TIF_FEAR_CHECK;
-      af.lastf_i                           = TIF_NONE;
-      af.applyf_i                          = APF_NONE;
+      af.firstf_i = TIF_FEAR_CHECK;
+      af.tickf_i  = TIF_FEAR_CHECK;
+      af.lastf_i  = TIF_NONE;
+      af.applyf_i = APF_NONE;
 
       create_affect(sa->target, &af);
    }
@@ -228,10 +228,10 @@ void spell_repel_undead_2(spell_args *sa)
             af.beat     = WAIT_SEC * 30;
             af.data[0] = af.data[1] = af.data[2] = 0;
 
-            af.firstf_i                          = TIF_FEAR_CHECK;
-            af.tickf_i                           = TIF_FEAR_CHECK;
-            af.lastf_i                           = TIF_NONE;
-            af.applyf_i                          = APF_NONE;
+            af.firstf_i = TIF_FEAR_CHECK;
+            af.tickf_i  = TIF_FEAR_CHECK;
+            af.lastf_i  = TIF_NONE;
+            af.applyf_i = APF_NONE;
 
             create_affect(u, &af);
          }
@@ -313,7 +313,7 @@ void spell_lock(spell_args *sa)
 {
    door_data *a_door = nullptr;
 
-   char       mbuf[MAX_INPUT_LENGTH];
+   char mbuf[MAX_INPUT_LENGTH];
    strcpy(mbuf, sa->arg);
 
    if((static_cast<unsigned int>(str_is_empty(sa->arg)) != 0U) || (a_door = locate_lock(sa->caster, mbuf)) == nullptr)
@@ -371,7 +371,7 @@ void spell_unlock(spell_args *sa)
 {
    door_data *a_door = nullptr;
 
-   char       mbuf[MAX_INPUT_LENGTH];
+   char mbuf[MAX_INPUT_LENGTH];
    strcpy(mbuf, sa->arg);
 
    if((static_cast<unsigned int>(str_is_empty(sa->arg)) != 0U) || ((a_door = locate_lock(sa->caster, mbuf)) == nullptr))
@@ -494,7 +494,7 @@ void spell_identify_1(spell_args *sa)
       char  extra[256];
       char *str = stat_obj_data(sa->target, ident_obj_type);
 
-      *extra    = '\0';
+      *extra = '\0';
 
       switch(OBJ_TYPE(sa->target))
       {

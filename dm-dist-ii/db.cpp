@@ -25,25 +25,25 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-int             room_number;         /* For counting numbers in rooms */
-unit_data      *unit_list = nullptr; /* The global unit_list          */
+int        room_number;         /* For counting numbers in rooms */
+unit_data *unit_list = nullptr; /* The global unit_list          */
 
 extern char     zondir[];
 extern uint32_t memory_total_alloc;
 
-auto            create_direction_data() -> room_direction_data *;
+auto create_direction_data() -> room_direction_data *;
 
 /*  Generate array of bin_search_type for the zone_list, and for each
  *  zone's file_index's.
  */
-void            generate_bin_arrays()
+void generate_bin_arrays()
 {
    file_index_type *fi;
    class zone_type *z;
    int              i;
 
    /* Generate array for zones */
-   CREATE(zone_info.ba, struct bin_search_type, zone_info.no_of_zones);
+   CREATE(zone_info.ba, bin_search_type, zone_info.no_of_zones);
    for(i = 0, z = zone_info.zone_list; z != nullptr; z = z->next, i++)
    {
       zone_info.ba[i].block   = z;
@@ -55,7 +55,7 @@ void            generate_bin_arrays()
    {
       if(z->no_of_fi != 0U)
       {
-         CREATE(z->ba, struct bin_search_type, z->no_of_fi);
+         CREATE(z->ba, bin_search_type, z->no_of_fi);
          for(fi = z->fi, i = 0; fi != nullptr; fi = fi->next, i++)
          {
             z->ba[i].block   = fi;
@@ -67,7 +67,7 @@ void            generate_bin_arrays()
       {
          diltemplate *tmpl;
 
-         CREATE(z->tmplba, struct bin_search_type, z->no_tmpl);
+         CREATE(z->tmplba, bin_search_type, z->no_tmpl);
          for(tmpl = z->tmpl, i = 0; tmpl != nullptr; tmpl = tmpl->next, i++)
          {
             z->tmplba[i].block   = tmpl;
@@ -131,7 +131,7 @@ void resolve_templates()
 }
 
 /* Generate and read DIL templates */
-auto generate_templates(FILE *f, struct zone_type *zone) -> diltemplate *
+auto generate_templates(FILE *f, zone_type *zone) -> diltemplate *
 {
    diltemplate *tmpllist;
    diltemplate *tmpl;
@@ -415,7 +415,7 @@ void generate_zone_indexes()
       z->filename = str_dup(zone);
 
       fstrcpy(&cBuf, f);
-      z->name      = str_dup((char *)cBuf.GetData());
+      z->name = str_dup((char *)cBuf.GetData());
 
       int ms_tmp   = fread(&z->weather.base, sizeof(int), 1, f);
       z->access    = access;
@@ -453,8 +453,8 @@ void generate_zone_indexes()
       }
 
       /* read templates */
-      z->no_tmpl  = 0;
-      z->tmpl     = generate_templates(f, z);
+      z->no_tmpl = 0;
+      z->tmpl    = generate_templates(f, z);
 
       z->no_of_fi = 0;
       z->zri      = nullptr;
@@ -534,7 +534,7 @@ auto bread_affect(CByteBuffer *pBuf, unit_data *u, uint8_t nVersion) -> int
    uint8_t            t8;
    uint16_t           t16;
 
-   auto               link_alloc_affect(unit_data * unit, unit_affected_type * orgaf)->unit_affected_type *;
+   auto link_alloc_affect(unit_data * unit, unit_affected_type * orgaf)->unit_affected_type *;
 
    if(nVersion <= 56)
    {
@@ -619,12 +619,12 @@ auto bread_affect(CByteBuffer *pBuf, unit_data *u, uint8_t nVersion) -> int
    return 0;
 }
 
-struct zone_type *unit_error_zone = nullptr;
+zone_type *unit_error_zone = nullptr;
 
-extern int        memory_pc_alloc;
-extern int        memory_npc_alloc;
-extern int        memory_obj_alloc;
-extern int        memory_room_alloc;
+extern int memory_pc_alloc;
+extern int memory_npc_alloc;
+extern int memory_obj_alloc;
+extern int memory_room_alloc;
 
 /*  Room directions points to file_indexes instead of units
  *  after a room has been read, due to initialization considerations
@@ -633,7 +633,7 @@ extern int        memory_room_alloc;
  * whom is an error message to be printed when something goes wrong.
  * bSwapin is TRUE if the swap information should be read.
  */
-auto              read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom) -> unit_data *
+auto read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom) -> unit_data *
 {
    void            *ptr;
    unit_data       *u;
@@ -667,7 +667,7 @@ auto              read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
       return nullptr;
    }
 
-   u      = new(unit_data)(type);
+   u = new(unit_data)(type);
 
    nStart = pBuf->GetReadPosition();
    g_nCorrupt += pBuf->Read8(&unit_version);
@@ -890,7 +890,7 @@ auto              read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
             {
                CHAR_RACE(u)--; /* spooky */
 
-               struct base_race_info_type *sex_race;
+               base_race_info_type *sex_race;
 
                if(CHAR_SEX(u) == SEX_MALE)
                {
@@ -1172,7 +1172,7 @@ auto              read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
                   g_nCorrupt += pBuf->ReadStringCopy(zone, sizeof(zone));
                   g_nCorrupt += pBuf->ReadStringCopy(name, sizeof(name));
 
-                  ROOM_EXIT(u, i)->key     = find_file_index(zone, name);
+                  ROOM_EXIT(u, i)->key = find_file_index(zone, name);
 
                   /* NOT fi->room_ptr! Done later */
                   ROOM_EXIT(u, i)->to_room = (unit_data *)fi;
@@ -1296,7 +1296,7 @@ void read_unit_file(file_index_type *org_fi, CByteBuffer *pBuf)
  */
 auto read_unit(file_index_type *org_fi) -> unit_data *
 {
-   auto       is_slimed(file_index_type * sp)->int;
+   auto is_slimed(file_index_type * sp)->int;
 
    unit_data *u;
 
@@ -1345,10 +1345,10 @@ auto read_unit(file_index_type *org_fi) -> unit_data *
 
 void read_all_rooms()
 {
-   struct zone_type        *z;
-   file_index_type         *fi;
+   zone_type       *z;
+   file_index_type *fi;
 
-   extern struct zone_type *boot_zone;
+   extern zone_type *boot_zone;
 
    for(z = zone_info.zone_list; z != nullptr; z = z->next)
    {
@@ -1429,24 +1429,24 @@ void normalize_world()
 #define ZON_DIR_UNNEST 2
 
 /* For local error purposes */
-static struct zone_type *read_zone_error = nullptr;
+static zone_type *read_zone_error = nullptr;
 
-auto                     read_zone(FILE *f, struct zone_reset_cmd *cmd_list) -> struct zone_reset_cmd *
+auto read_zone(FILE *f, zone_reset_cmd *cmd_list) -> zone_reset_cmd *
 {
-   struct zone_reset_cmd *cmd;
-   struct zone_reset_cmd *tmp_cmd;
-   file_index_type       *fi;
-   uint8_t                cmdno;
-   uint8_t                direction;
-   char                   zonename[FI_MAX_ZONENAME + 1];
-   char                   name[FI_MAX_UNITNAME + 1];
-   CByteBuffer            cBuf(100);
+   zone_reset_cmd  *cmd;
+   zone_reset_cmd  *tmp_cmd;
+   file_index_type *fi;
+   uint8_t          cmdno;
+   uint8_t          direction;
+   char             zonename[FI_MAX_ZONENAME + 1];
+   char             name[FI_MAX_UNITNAME + 1];
+   CByteBuffer      cBuf(100);
 
    tmp_cmd = cmd_list;
 
    while(((cmdno = (uint8_t)fgetc(f)) != 255) && (feof(f) == 0))
    {
-      CREATE(cmd, struct zone_reset_cmd, 1);
+      CREATE(cmd, zone_reset_cmd, 1);
       cmd->cmd_no = cmdno;
 
       fstrcpy(&cBuf, f);
@@ -1574,9 +1574,9 @@ auto                     read_zone(FILE *f, struct zone_reset_cmd *cmd_list) -> 
 
 void read_all_zones()
 {
-   struct zone_type *zone;
-   char              filename[FI_MAX_ZONENAME + 41];
-   FILE             *f;
+   zone_type *zone;
+   char       filename[FI_MAX_ZONENAME + 41];
+   FILE      *f;
 
    for(zone = zone_info.zone_list; zone != nullptr; zone = zone->next)
    {
@@ -1626,34 +1626,34 @@ extern int memory_roomread_alloc;
 extern int memory_zoneidx_alloc;
 extern int memory_zonereset_alloc;
 
-void       boot_db()
+void boot_db()
 {
-   void       competition_boot();
-   void       mail_boot();
-   void       create_dijkstra();
-   void       player_file_index();
-   void       reception_boot();
-   void       load_messages();
-   void       boot_social_messages();
-   void       boot_pose_messages();
-   void       assign_command_pointers();
-   void       assign_spell_pointers();
-   void       reset_all_zones();
-   void       boot_justice();
-   void       load_ban();
-   void       boot_money();
-   void       zone_boot();
-   void       slime_boot();
-   void       boot_help();
-   void       boot_swap();
-   void       boot_spell();
-   void       boot_skill();
-   void       boot_weapon();
-   void       boot_ability();
-   void       boot_race();
-   void       boot_interpreter();
-   void       interpreter_dil_check();
-   void       persist_boot();
+   void competition_boot();
+   void mail_boot();
+   void create_dijkstra();
+   void player_file_index();
+   void reception_boot();
+   void load_messages();
+   void boot_social_messages();
+   void boot_pose_messages();
+   void assign_command_pointers();
+   void assign_spell_pointers();
+   void reset_all_zones();
+   void boot_justice();
+   void load_ban();
+   void boot_money();
+   void zone_boot();
+   void slime_boot();
+   void boot_help();
+   void boot_swap();
+   void boot_spell();
+   void boot_skill();
+   void boot_weapon();
+   void boot_ability();
+   void boot_race();
+   void boot_interpreter();
+   void interpreter_dil_check();
+   void persist_boot();
 
    void       cleanup_playerfile(int argc, char *argv[]);
    extern int player_convert;

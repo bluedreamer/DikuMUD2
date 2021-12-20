@@ -20,7 +20,7 @@ extern struct arm_info_type shi_info[];
 /* 'hpp' hit-point-points is current.                                  */
 /* Example: hitpoint_total(4) returns total amount of hitpoints when   */
 /*          hpp == 4                                                   */
-auto                        hitpoint_total(int hpp) -> int
+auto hitpoint_total(int hpp) -> int
 {
    return 10 + 3 * hpp;
 }
@@ -28,14 +28,14 @@ auto                        hitpoint_total(int hpp) -> int
 const char *error_zone_name = "";
 
 /* if fatal is 2, it will NEVER be fatal */
-void        dmc_error(int fatal, const char *fmt, ...)
+void dmc_error(int fatal, const char *fmt, ...)
 {
    extern int fatal_warnings;
 
-   char       buf[512];
-   char       filename[128];
-   va_list    args;
-   FILE      *f;
+   char    buf[512];
+   char    filename[128];
+   va_list args;
+   FILE   *f;
 
    extern int errcon;
 
@@ -736,7 +736,7 @@ void process_unit(struct unit_data *u)
    int               i;
    extra_descr_data *exd;
 
-   extern int        verbose;
+   extern int verbose;
 
    process_affects(u);
    process_funcs(u);

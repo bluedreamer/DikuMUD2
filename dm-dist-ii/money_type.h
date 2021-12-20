@@ -6,8 +6,9 @@
 
 using currency_t = int16_t;
 
-struct money_type
+class money_type
 {
+public:
    currency_t       currency;         /* Which currency for money */
    char           **strings;          /* The money-strings */
    char            *tails;            /* What to print on the dark side of the coin */

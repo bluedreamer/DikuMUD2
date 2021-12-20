@@ -25,9 +25,10 @@
 #include <cstring>
 #include <ctime>
 
-struct guild_type
+class guild_type
 {
-   char  *pGuildName;
+public:
+   char *pGuildName;
 
    char **ppLeaveQuest;
    int    nLeaveCost;
@@ -83,8 +84,8 @@ void advance_guild_level(unit_data *ch)
 {
    extra_descr_data *exd;
 
-   int               lvl = char_guild_level(ch);
-   uint32_t          i;
+   int      lvl = char_guild_level(ch);
+   uint32_t i;
 
    if(!IS_PC(ch))
    {
@@ -110,7 +111,7 @@ void advance_guild_level(unit_data *ch)
    }
 }
 
-static void free_guild_data(struct guild_type *pGt)
+static void free_guild_data(guild_type *pGt)
 {
    if(pGt->pGuildName != nullptr)
    {
@@ -135,15 +136,15 @@ static void free_guild_data(struct guild_type *pGt)
    free(pGt);
 }
 
-static auto parse_guild_data(unit_data *npc, char *pStr) -> struct guild_type *
+static auto parse_guild_data(unit_data *npc, char *pStr) -> guild_type *
 {
-   char              *pTmp1;
-   struct guild_type *pG;
-   int                ok = 0;
+   char       *pTmp1;
+   guild_type *pG;
+   int         ok = 0;
 
-   CREATE(pG, struct guild_type, 1);
+   CREATE(pG, guild_type, 1);
 
-   pTmp1            = pStr;
+   pTmp1 = pStr;
 
    pG->pGuildName   = parse_match_name(&pTmp1, "Guild");
    pG->ppEnterQuest = parse_match_namelist(&pTmp1, "Guild Enter Quest");
@@ -163,13 +164,13 @@ static auto parse_guild_data(unit_data *npc, char *pStr) -> struct guild_type *
    return pG;
 }
 
-auto guild_master_init(struct spec_arg *sarg) -> int
+auto guild_master_init(spec_arg *sarg) -> int
 {
-   struct guild_type *pG;
+   guild_type *pG;
 
    if(sarg->cmd->no != CMD_AUTO_EXTRACT)
    {
-      pG = (struct guild_type *)parse_guild_data(sarg->owner, (char *)sarg->fptr->data);
+      pG = (guild_type *)parse_guild_data(sarg->owner, (char *)sarg->fptr->data);
       if(pG == nullptr)
       {
          destroy_fptr(sarg->owner, sarg->fptr);
@@ -190,7 +191,7 @@ auto guild_master_init(struct spec_arg *sarg) -> int
 /* Message will never be sent to 'nonmember'                           */
 void act_to_guild(const char *msg, char *guild, unit_data *member, unit_data *nonmember)
 {
-   descriptor_data        *d;
+   descriptor_data *d;
 
    extern descriptor_data *descriptor_list;
 
@@ -216,7 +217,7 @@ void act_to_guild(const char *msg, char *guild, unit_data *member, unit_data *no
 /* Example: "wizard#This is a members only club, $3n."                     */
 /*          $1 and $3 can be used in text string.                          */
 /*                                                                         */
-auto teach_members_only(struct spec_arg *sarg) -> int
+auto teach_members_only(spec_arg *sarg) -> int
 {
    char *str;
    int   guild;
@@ -259,7 +260,7 @@ auto teach_members_only(struct spec_arg *sarg) -> int
 /* Example: "1#warrior#midgaard/cth_square3#guard#$1n stops you and says, */
 /*          'Members only!'#$1n stops $3n, and says, 'Members only!'"     */
 
-auto guard_guild_way(struct spec_arg *sarg) -> int
+auto guard_guild_way(spec_arg *sarg) -> int
 {
    char *str;
    char *location;
@@ -269,7 +270,7 @@ auto guard_guild_way(struct spec_arg *sarg) -> int
    char *guild_no;
    int   guild_cmp;
 
-   auto  charname_in_list(unit_data * ch, char *arg)->int;
+   auto charname_in_list(unit_data * ch, char *arg)->int;
 
    if(((str = (char *)sarg->fptr->data) != nullptr) && (sarg->cmd->no == (*str - '0')) && CHAR_IS_READY(sarg->owner))
    {
@@ -391,7 +392,7 @@ void guild_banish_player(unit_data *ch)
    }
 }
 
-auto can_leave_guild(struct guild_type *pG, unit_data *master, unit_data *ch) -> int
+auto can_leave_guild(guild_type *pG, unit_data *master, unit_data *ch) -> int
 {
    char     **p;
    currency_t currency = local_currency(master);
@@ -450,12 +451,12 @@ void join_guild(unit_data *ch, char *guild_name)
    PC_GUILD(ch)      = str_dup(guild_name);
    PC_GUILD_TIME(ch) = PC_TIME(ch).played;
 
-   exd               = quest_add(ch, str_cc("$", PC_GUILD(ch)), itoa(time(nullptr)));
+   exd = quest_add(ch, str_cc("$", PC_GUILD(ch)), itoa(time(nullptr)));
    exd->names.AppendName("0");
    exd->names.AppendName("$guild");
 }
 
-auto can_join_guild(struct guild_type *pG, unit_data *master, unit_data *ch) -> int
+auto can_join_guild(guild_type *pG, unit_data *master, unit_data *ch) -> int
 {
    currency_t currency = local_currency(master);
    char     **p;
@@ -540,11 +541,11 @@ auto can_join_guild(struct guild_type *pG, unit_data *master, unit_data *ch) -> 
 /* You must be able to be expelled, to resign, to enroll and to obtain */
 /* a higher guild status. All these matters will be implemented after  */
 /* I have got the experience system to work.                           */
-auto guild_master(struct spec_arg *sarg) -> int
+auto guild_master(spec_arg *sarg) -> int
 {
    char      *arg    = (char *)sarg->arg;
    static int pc_pos = -2;
-   auto      *pG     = (struct guild_type *)sarg->fptr->data;
+   auto      *pG     = (guild_type *)sarg->fptr->data;
 
    if(pG == nullptr)
    {
@@ -638,7 +639,7 @@ auto guild_master(struct spec_arg *sarg) -> int
 
 /* Purpose: To be used as a guild general stuff routine.                   */
 /* sarg->fptr->data contains guild name.                                         */
-auto guild_basis(struct spec_arg *sarg) -> int
+auto guild_basis(spec_arg *sarg) -> int
 {
    int        i;
    unit_data *u;
@@ -674,7 +675,7 @@ auto guild_basis(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-auto guild_title(struct spec_arg *sarg) -> int
+auto guild_title(spec_arg *sarg) -> int
 {
    char  buf[MAX_STRING_LENGTH];
    char  male[MAX_STRING_LENGTH];

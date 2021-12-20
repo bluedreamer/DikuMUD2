@@ -33,28 +33,30 @@
 
 extern descriptor_data *descriptor_list;
 
-extern char            *credits;
-extern char            *news;
-extern char            *info;
-extern char            *wizlist;
+extern char *credits;
+extern char *news;
+extern char *info;
+extern char *wizlist;
 
-struct looklist_type
+class look_msg
 {
-   struct look_msg *msgs;
-   int              size;
-   int              index;
-};
-
-struct look_msg
-{
+public:
    char *msg;
    int   cnt;
+};
+
+class looklist_type
+{
+public:
+   look_msg *msgs;
+   int       size;
+   int       index;
 };
 
 void show_char_to_char_trans_cont(char *b, unit_data *i, unit_data *ch);
 
 /* To free, call with NULL msg. */
-auto add_to_look_list(struct looklist_type *list, char *msg) -> struct looklist_type *
+auto add_to_look_list(looklist_type *list, char *msg) -> looklist_type *
 {
    int i;
 
@@ -80,8 +82,8 @@ auto add_to_look_list(struct looklist_type *list, char *msg) -> struct looklist_
    if(list == nullptr)
    {
       assert(msg);
-      CREATE(list, struct looklist_type, 1);
-      CREATE(list->msgs, struct look_msg, 20);
+      CREATE(list, looklist_type, 1);
+      CREATE(list->msgs, look_msg, 20);
       list->index = 0;
       list->size  = 20;
       for(i = 0; i < list->size; i++)
@@ -102,7 +104,7 @@ auto add_to_look_list(struct looklist_type *list, char *msg) -> struct looklist_
 
    if(list->index >= list->size)
    {
-      RECREATE(list->msgs, struct look_msg, list->size + 20);
+      RECREATE(list->msgs, look_msg, list->size + 20);
       for(i = list->size; i < list->size + 20; i++)
       {
          list->msgs[i].msg = nullptr;
@@ -118,7 +120,7 @@ auto add_to_look_list(struct looklist_type *list, char *msg) -> struct looklist_
    return list;
 }
 
-void send_looklist(struct looklist_type *list, unit_data *ch)
+void send_looklist(looklist_type *list, unit_data *ch)
 {
    int  i;
    char buf[20];
@@ -661,8 +663,8 @@ void show_char_to_char_lookat(unit_data *i, unit_data *ch)
 
 auto list_obj_to_char(unit_data *i, unit_data *ch, bool show) -> int
 {
-   char                  buf[MAX_STRING_LENGTH];
-   struct looklist_type *list = nullptr;
+   char           buf[MAX_STRING_LENGTH];
+   looklist_type *list = nullptr;
 
    for(; i != nullptr; i = i->next)
    {
@@ -688,8 +690,8 @@ auto list_obj_to_char(unit_data *i, unit_data *ch, bool show) -> int
 
 auto list_char_to_char(unit_data *i, unit_data *ch) -> int
 {
-   char                  buffer[MAX_STRING_LENGTH];
-   struct looklist_type *list = nullptr;
+   char           buffer[MAX_STRING_LENGTH];
+   looklist_type *list = nullptr;
 
    for(; i != nullptr; i = i->next)
    {
@@ -733,9 +735,9 @@ auto list_room_to_char(unit_data *list, unit_data *ch) -> int
 
 void list_contents(unit_data *ch, unit_data *unit, int show)
 {
-   char                  buffer[MAX_STRING_LENGTH];
-   unit_data            *i;
-   struct looklist_type *list = nullptr;
+   char           buffer[MAX_STRING_LENGTH];
+   unit_data     *i;
+   looklist_type *list = nullptr;
 
    for(i = unit; i != nullptr; i = i->next)
    {
@@ -975,7 +977,7 @@ static void look_at(unit_data *ch, char *arg, const command_info *cmd)
             unit_data *eq = nullptr;
 
             /* now generate relevant equip descr. */
-            fnd           = 0;
+            fnd = 0;
             if(IS_CHAR(unit))
             {
                /* Is this a body part at all ? */
@@ -1237,11 +1239,11 @@ static void look_exits(unit_data *ch)
       return;
    }
 
-   int         door;
-   int         found                  = static_cast<int>(FALSE);
-   char        buf[MAX_STRING_LENGTH] = "";
-   char       *b                      = buf;
-   unit_data  *room;
+   int        door;
+   int        found                  = static_cast<int>(FALSE);
+   char       buf[MAX_STRING_LENGTH] = "";
+   char      *b                      = buf;
+   unit_data *room;
 
    const char *exits[] = {"North", "East", "South", "West", "Up", "Down"};
 
@@ -1451,8 +1453,8 @@ void do_look(unit_data *ch, char *aaa, const command_info *cmd)
                                        "", /* Look at '' case (8) */
                                        nullptr};
 
-      char               arg1[MAX_INPUT_LENGTH];
-      int                keyword_no;
+      char arg1[MAX_INPUT_LENGTH];
+      int  keyword_no;
 
       str_next_word(arg, arg1);
       keyword_no = search_block(arg1, keywords, FALSE); /* Partiel Match */
@@ -1470,7 +1472,7 @@ void do_look(unit_data *ch, char *aaa, const command_info *cmd)
       {
          char *pOrgArg = arg;
 
-         arg           = str_next_word(arg, arg1);
+         arg = str_next_word(arg, arg1);
          if((keyword_no >= 0) && (keyword_no <= 5))
          {
             if(static_cast<unsigned int>(str_is_empty(arg)) == 0U)
@@ -1563,7 +1565,7 @@ void do_examine(unit_data *ch, char *aaa, const command_info *cmd)
       return;
    }
 
-   b    = arg;
+   b = arg;
 
    unit = find_unit(ch, &arg, nullptr, FIND_UNIT_HERE);
 
@@ -1586,9 +1588,9 @@ void do_examine(unit_data *ch, char *aaa, const command_info *cmd)
 
 void do_inventory(unit_data *ch, char *arg, const command_info *cmd)
 {
-   char                  buffer[MAX_STRING_LENGTH];
-   unit_data            *thing;
-   struct looklist_type *list = nullptr;
+   char           buffer[MAX_STRING_LENGTH];
+   unit_data     *thing;
+   looklist_type *list = nullptr;
 
    send_to_char("You are carrying:\n\r", ch);
 

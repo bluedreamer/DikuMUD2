@@ -1,7 +1,8 @@
 #pragma once
 
-struct help_index_type
+class help_index_type
 {
+public:
    char *keyword;
    long  pos;
 };

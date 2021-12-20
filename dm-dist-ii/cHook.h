@@ -19,16 +19,16 @@ public:
    [[nodiscard]] auto IsHooked() const -> int;
    void               Write(uint8_t *pData, uint32_t nLen, int bCopy = static_cast<int>(TRUE));
 
-   cQueue             qRX;
+   cQueue qRX;
 
-   void               Unhook();
+   void Unhook();
 
 protected:
-   void         PushWrite();
+   void PushWrite();
 
    virtual void Input(int nFlags) = 0;
 
-   cQueue       qTX;
+   cQueue qTX;
 
 private:
    int fd;

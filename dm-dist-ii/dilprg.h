@@ -5,8 +5,9 @@
 
 #include <cstdint>
 
-struct dilprg
+class dilprg
 {
+public:
    uint8_t    flags;   /* Recall, copy, etc. */
    uint16_t   varcrc;  /* variable crc from compiler (saved) */
    uint16_t   corecrc; /* core crc from compiler (saved) */

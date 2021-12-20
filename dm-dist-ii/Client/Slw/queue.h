@@ -63,31 +63,31 @@ public:
    cQueue();
    ~cQueue();
 
-   int               IsEmpty(void);
-   uint32_t          Size(void);
-   uint32_t          Bytes(void);
+   int      IsEmpty(void);
+   uint32_t Size(void);
+   uint32_t Bytes(void);
 
-   void              Copy(uint8_t *data, uint32_t nLen);
-   void              CutCopy(uint8_t *data, uint32_t nLen);
-   void              Cut(uint32_t nLen);
+   void Copy(uint8_t *data, uint32_t nLen);
+   void CutCopy(uint8_t *data, uint32_t nLen);
+   void Cut(uint32_t nLen);
 
-   void              Append(class cQueueElem *pe);
-   void              Prepend(class cQueueElem *pe);
+   void Append(class cQueueElem *pe);
+   void Prepend(class cQueueElem *pe);
 
-   cQueueElem       *GetHead(void);
+   cQueueElem *GetHead(void);
 
    const cQueueElem *PeekHead(void);
    const cQueueElem *PeekTail(void);
 
-   void              Flush(void);
+   void Flush(void);
 
 private:
    cQueueElem *pHead;
    cQueueElem *pTail;
    cQueueElem *pPreTail;
 
-   uint32_t    nEntries;
-   uint32_t    nBytes;
+   uint32_t nEntries;
+   uint32_t nBytes;
 };
 
 #endif

@@ -18,13 +18,13 @@
 extern descriptor_data *descriptor_list;
 
 /* extern procedures */
-auto                    obj_trade_price(unit_data *u) -> amount_t;
+auto obj_trade_price(unit_data *u) -> amount_t;
 
 /* ------------------------------------------------------------------------- */
 /*                     M O B I L E   R O U T I N E S                         */
 /* ------------------------------------------------------------------------- */
 
-auto                    fido(struct spec_arg *sarg) -> int
+auto fido(struct spec_arg *sarg) -> int
 {
    unit_data *i;
    unit_data *temp;
@@ -102,7 +102,7 @@ auto janitor(struct spec_arg *sarg) -> int
    return SFR_SHARE;
 }
 
-auto evaluate(struct spec_arg *sarg) -> int
+auto evaluate(spec_arg *sarg) -> int
 {
    char      *arg = (char *)sarg->arg;
    unit_data *u1;
@@ -130,7 +130,7 @@ auto evaluate(struct spec_arg *sarg) -> int
       return SFR_BLOCK;
    }
 
-   cost     = sarg->fptr->data != nullptr ? atoi((char *)sarg->fptr->data) : 50;
+   cost = sarg->fptr->data != nullptr ? atoi((char *)sarg->fptr->data) : 50;
 
    currency = local_currency(sarg->owner);
 

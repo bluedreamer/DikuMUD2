@@ -2,8 +2,9 @@
 
 #include "unit_data.h"
 
-struct spell_args
+class spell_args
 {
+public:
    unit_data  *caster, *medium, *target;
    const char *arg;
    int         hm;

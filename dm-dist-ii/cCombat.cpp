@@ -11,11 +11,11 @@ cCombat::cCombat(unit_data *owner, int bMelee)
 {
    assert(owner);
 
-   pOwner       = owner;
-   pMelee       = nullptr;
+   pOwner = owner;
+   pMelee = nullptr;
 
-   nWhen        = SPEED_DEFAULT;
-   cmd[0]       = 0;
+   nWhen  = SPEED_DEFAULT;
+   cmd[0] = 0;
 
    pOpponents   = nullptr;
    nNoOpponents = 0;

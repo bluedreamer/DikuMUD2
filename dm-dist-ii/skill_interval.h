@@ -1,7 +1,8 @@
 #pragma once
 
-struct skill_interval
+class skill_interval
 {
+public:
    const int   skill;
    const char *descr;
 };

@@ -2,8 +2,9 @@
 #include <cstdint>
 #include <ctime>
 
-struct pc_time_data
+class pc_time_data
 {
+public:
    time_t   creation; /* This represents time when the pc was created.     */
    time_t   connect;  /* This is the last time that the pc connected.      */
    time_t   birth;    /* This represents the characters age                */

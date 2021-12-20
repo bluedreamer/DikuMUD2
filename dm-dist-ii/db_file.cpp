@@ -20,14 +20,14 @@
 #include <cstdlib>
 #include <cstring>
 
-int         g_nCorrupt = 0; /* > 0 when a unit is corrupt       */
+int g_nCorrupt = 0; /* > 0 when a unit is corrupt       */
 
 CByteBuffer g_FileBuffer(16384);
 
 // int filbuffer_length = 0;             /* The length of filbuffer         */
 // uint8_t *filbuffer = 0;                 /* Buffer for read/write unit      */
 
-auto        bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra) -> int
+auto bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra) -> int
 {
    extra_descr_data *e;
    extra_descr_data *te;
@@ -201,7 +201,7 @@ auto bread_diltemplate(CByteBuffer *pBuf) -> diltemplate *
 
    if(tmpl->xrefcount != 0U)
    {
-      CREATE(tmpl->xrefs, struct dilxref, tmpl->xrefcount);
+      CREATE(tmpl->xrefs, dilxref, tmpl->xrefcount);
 
       /* read the symbolic references */
       for(i = 0; i < tmpl->xrefcount; i++)
@@ -291,7 +291,7 @@ auto bread_diltemplate(CByteBuffer *pBuf) -> diltemplate *
 }
 
 /* Reads DIL interrupt list */
-void bread_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
+void bread_dilintr(CByteBuffer *pBuf, dilprg *prg)
 {
    int      i;
    uint32_t lab;
@@ -301,7 +301,7 @@ void bread_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
 
    if(prg->stack[0].intrcount != 0U)
    {
-      CREATE(prg->stack[0].intr, struct dilintr, prg->stack[0].intrcount);
+      CREATE(prg->stack[0].intr, dilintr, prg->stack[0].intrcount);
 
       for(i = 0; i < prg->stack[0].intrcount; i++)
       {
@@ -316,7 +316,7 @@ void bread_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
    }
 }
 
-void bwrite_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
+void bwrite_dilintr(CByteBuffer *pBuf, dilprg *prg)
 {
    uint16_t i;
    uint32_t lab;
@@ -381,19 +381,19 @@ void bwrite_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
  */
 auto bread_dil(CByteBuffer *pBuf, unit_data *owner, uint8_t version, unit_fptr *fptr) -> void *
 {
-   struct dilprg *prg;
-   diltemplate   *tmpl     = nullptr;
-   uint32_t       recallpc = 0;
-   uint16_t       t16;
-   int            i;
-   int            novar;
+   dilprg      *prg;
+   diltemplate *tmpl     = nullptr;
+   uint32_t     recallpc = 0;
+   uint16_t     t16;
+   int          i;
+   int          novar;
 #ifdef DMSERVER
    char buf[255];
    char name[255];
 #endif
 
-   CREATE(prg, struct dilprg, 1);
-   CREATE(prg->stack, struct dilframe, 1);
+   CREATE(prg, dilprg, 1);
+   CREATE(prg->stack, dilframe, 1);
    prg->sp      = prg->stack;
    prg->stacksz = 1;
    prg->owner   = owner;
@@ -465,7 +465,7 @@ auto bread_dil(CByteBuffer *pBuf, unit_data *owner, uint8_t version, unit_fptr *
 
    if(novar != 0)
    {
-      CREATE(prg->sp->vars, struct dilvar, novar); /* saved variables */
+      CREATE(prg->sp->vars, dilvar, novar); /* saved variables */
    }
    else
    {
@@ -532,7 +532,7 @@ auto bread_dil(CByteBuffer *pBuf, unit_data *owner, uint8_t version, unit_fptr *
 
       if(tmpl->varc != 0U)
       {
-         CREATE(prg->sp->vars, struct dilvar, tmpl->varc);
+         CREATE(prg->sp->vars, dilvar, tmpl->varc);
       }
       else
       {
@@ -560,7 +560,7 @@ auto bread_dil(CByteBuffer *pBuf, unit_data *owner, uint8_t version, unit_fptr *
 
       if(tmpl->intrcount != 0U)
       {
-         CREATE(prg->sp->intr, struct dilintr, tmpl->intrcount);
+         CREATE(prg->sp->intr, dilintr, tmpl->intrcount);
       }
       else
       {
@@ -594,7 +594,7 @@ auto bread_dil(CByteBuffer *pBuf, unit_data *owner, uint8_t version, unit_fptr *
 
       if(tmpl->intrcount != 0U)
       {
-         CREATE(prg->sp->intr, struct dilintr, tmpl->intrcount);
+         CREATE(prg->sp->intr, dilintr, tmpl->intrcount);
       }
       else
       {
@@ -666,14 +666,14 @@ auto bread_func(CByteBuffer *pBuf, uint8_t version, unit_data *owner) -> unit_fp
       }
       else if(fptr->index == SFUN_DILCOPY_INTERNAL)
       {
-         char        *zname;
-         char        *uname;
-         char         name[256];
-         char        *c;
+         char *zname;
+         char *uname;
+         char  name[256];
+         char *c;
 
          dilargstype *dilargs;
 
-         CREATE(dilargs, struct dilargstype, 1);
+         CREATE(dilargs, dilargstype, 1);
 
          pBuf->ReadStringCopy(name, sizeof(name));
          strcat(name, "/");
@@ -867,7 +867,7 @@ void bwrite_diltemplate(CByteBuffer *pBuf, diltemplate *tmpl)
 /*
  * This function writes a DIL program
  */
-void bwrite_dil(CByteBuffer *pBuf, struct dilprg *prg)
+void bwrite_dil(CByteBuffer *pBuf, dilprg *prg)
 {
    int          i;
    diltemplate *tmpl;
@@ -987,13 +987,13 @@ void bwrite_func(CByteBuffer *pBuf, unit_fptr *fptr)
       if(fptr->index == SFUN_DIL_INTERNAL)
       {
          assert(fptr->data);
-         bwrite_dil(pBuf, (struct dilprg *)fptr->data);
+         bwrite_dil(pBuf, (dilprg *)fptr->data);
       }
       else if(fptr->index == SFUN_DILCOPY_INTERNAL)
       {
 #ifdef DMC_SRC
          assert(fptr->data);
-         auto *dilargs = (struct dilargstype *)fptr->data;
+         auto *dilargs = (dilargstype *)fptr->data;
 
          pBuf->AppendDoubleString(dilargs->name);
 
@@ -1060,7 +1060,7 @@ auto write_unit_string(CByteBuffer *pBuf, unit_data *u) -> int
    int     i;
    uint8_t nVersion;
 
-   nVersion      = 57;
+   nVersion = 57;
 
    uint32_t nPos = pBuf->GetLength();
 
@@ -1355,7 +1355,7 @@ void write_unit(FILE *f, unit_data *u, char *fname)
    length = write_unit_string(pBuf, u);
 
    /* Calculate the CRC */
-   crc    = length;
+   crc = length;
 
    for(uint32_t i = 0; i < length; i++)
    {
@@ -1399,7 +1399,7 @@ void write_diltemplate(FILE *f, diltemplate *tmpl)
    /* We are now finished, and are positioned just beyond last data byte */
    length = pBuf->GetLength() - nStart;
 
-   nPos   = pBuf->GetLength();
+   nPos = pBuf->GetLength();
 
    pBuf->SetLength(0);
    pBuf->Append32(length);

@@ -26,7 +26,7 @@ extern unit_data *unit_list;
 
 /* Returns TRUE when effect is shown by DIL */
 
-auto              dil_effect(const char *pStr, spell_args *sa) -> int
+auto dil_effect(const char *pStr, spell_args *sa) -> int
 {
    if(static_cast<unsigned int>(str_is_empty(pStr)) != 0U)
    {
@@ -69,8 +69,8 @@ auto              dil_effect(const char *pStr, spell_args *sa) -> int
    dilprg    *prg;
    unit_fptr *fptr;
 
-   prg                          = dil_copy_template(tmpl, sa->caster, &fptr);
-   prg->waitcmd                 = WAITCMD_MAXINST - 1; // The usual hack, see db_file
+   prg          = dil_copy_template(tmpl, sa->caster, &fptr);
+   prg->waitcmd = WAITCMD_MAXINST - 1; // The usual hack, see db_file
 
    prg->sp->vars[0].val.unitptr = sa->medium;
    prg->sp->vars[1].val.unitptr = sa->target;
@@ -431,7 +431,7 @@ auto spell_offensive(spell_args *sa, int spell_number, int bonus) -> int
    roll_description(sa->caster, "spell", roll);
    bonus += roll;
 
-   sa->hm           = chart_damage(bonus, &(spell_chart[spell_number].element[armour_type]));
+   sa->hm = chart_damage(bonus, &(spell_chart[spell_number].element[armour_type]));
 
    def_shield_bonus = shield_bonus(sa->caster, sa->target, &def_shield);
 

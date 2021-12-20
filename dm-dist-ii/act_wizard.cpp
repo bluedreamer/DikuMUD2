@@ -19,6 +19,7 @@
 #include "structs.h"
 #include "system.h"
 #include "textutil.h"
+#include "time_info_data.h"
 #include "utility.h"
 #include "utils.h"
 
@@ -36,16 +37,16 @@ extern BLK_FILE *inven_bf;
 
 /* external functs */
 
-auto             age(unit_data *ch) -> struct time_info_data;
-auto             real_time_passed(time_t t2, time_t t1) -> struct time_info_data;
+auto age(unit_data *ch) -> time_info_data;
+auto real_time_passed(time_t t2, time_t t1) -> time_info_data;
 
-static int       WIZ_CMD_LEVEL = 210; /* No need to change this, it is also set
-                                         at runtime... */
+static int WIZ_CMD_LEVEL = 210; /* No need to change this, it is also set
+                                   at runtime... */
 
-auto             player_exists(const char *pName) -> int;
-auto             delete_player(const char *name) -> int;
+auto player_exists(const char *pName) -> int;
+auto delete_player(const char *name) -> int;
 
-void             do_path(unit_data *ch, char *argument, const command_info *cmd)
+void do_path(unit_data *ch, char *argument, const command_info *cmd)
 {
    int        i;
    unit_data *thing;
@@ -78,8 +79,8 @@ void             do_path(unit_data *ch, char *argument, const command_info *cmd)
 
 void do_users(unit_data *ch, char *argument, const command_info *cmd)
 {
-   static char     *buf      = nullptr;
-   static int       cur_size = 1024;
+   static char *buf      = nullptr;
+   static int   cur_size = 1024;
 
    descriptor_data *d;
    char             tmp[256];
@@ -139,9 +140,9 @@ void do_users(unit_data *ch, char *argument, const command_info *cmd)
 /* Reset the zone in which the char is in! */
 void do_reset(unit_data *ch, char *arg, const command_info *cmd)
 {
-   struct zone_type *zone;
+   zone_type *zone;
 
-   auto              zone_reset(struct zone_type *)->int;
+   auto zone_reset(zone_type *)->int;
 
    if(static_cast<unsigned int>(str_is_empty(arg)) == 0U)
    {
@@ -171,7 +172,7 @@ void do_echo(unit_data *ch, char *arg, const command_info *cmd)
    }
 }
 
-auto frozen(struct spec_arg *sarg) -> int
+auto frozen(spec_arg *sarg) -> int
 {
    if(sarg->activator != sarg->owner)
    {
@@ -307,7 +308,7 @@ void do_wizinv(unit_data *ch, char *arg, const command_info *cmd)
    unit_data *unit;
    int        level = GOD_LEVEL - 1;
 
-   arg              = skip_spaces(arg);
+   arg = skip_spaces(arg);
 
    if((static_cast<unsigned int>(str_is_empty(arg)) != 0U) || (isdigit(*arg) != 0))
    {
@@ -504,11 +505,11 @@ void do_at(unit_data *ch, char *argument, const command_info *cmd)
 
 void do_goto(unit_data *ch, char *argument, const command_info *cmd)
 {
-   unit_data        *target;
-   unit_data        *pers;
-   file_index_type  *fi;
-   struct zone_type *zone;
-   int               i;
+   unit_data       *target;
+   unit_data       *pers;
+   file_index_type *fi;
+   zone_type       *zone;
+   int              i;
 
    if(!IS_PC(ch))
    {
@@ -686,8 +687,8 @@ void do_snoop(unit_data *ch, char *argument, const command_info *cmd)
 {
    unit_data *victim;
 
-   void       unsnoop(unit_data * ch, int mode);
-   void       snoop(unit_data * ch, unit_data * victim);
+   void unsnoop(unit_data * ch, int mode);
+   void snoop(unit_data * ch, unit_data * victim);
 
    if(CHAR_DESCRIPTOR(ch) == nullptr)
    {
@@ -762,8 +763,8 @@ void do_switch(unit_data *ch, char *argument, const command_info *cmd)
 {
    unit_data *victim;
 
-   void       switchbody(unit_data * ch, unit_data * victim);
-   void       unswitchbody(unit_data * npc);
+   void switchbody(unit_data * ch, unit_data * victim);
+   void unswitchbody(unit_data * npc);
 
    if(CHAR_DESCRIPTOR(ch) == nullptr)
    {
@@ -1058,7 +1059,7 @@ void do_purge(unit_data *ch, char *argument, const command_info *cmd)
    unit_data       *next_thing;
    descriptor_data *d;
 
-   void             close_socket(descriptor_data * d);
+   void close_socket(descriptor_data * d);
 
    if(!IS_PC(ch))
    {
@@ -1263,13 +1264,13 @@ void do_advance(unit_data *ch, char *argument, const command_info *cmd)
 void do_verify(unit_data *ch, char *arg, const command_info *cmd)
 {
 #ifdef SUSPEKT
-   unit_data                     *pc, *obj;
-   int                            i, j;
-   float                          asum, ssum;
-   float                          atot, stot;
-   char                           buf[256];
+   unit_data *pc, *obj;
+   int        i, j;
+   float      asum, ssum;
+   float      atot, stot;
+   char       buf[256];
 
-   extern struct requirement_type pc_race_base[];
+   extern requirement_type pc_race_base[];
 
    if(!IS_PC(ch))
       return;
@@ -1365,10 +1366,10 @@ void reroll(unit_data *victim)
    unit_data        *obj;
    int               i;
 
-   void              race_cost(unit_data * ch);
-   void              points_reset(unit_data * ch);
+   void race_cost(unit_data * ch);
+   void points_reset(unit_data * ch);
 
-   void              clear_training_level(unit_data * ch);
+   void clear_training_level(unit_data * ch);
 
    if(IS_IMMORTAL(victim))
    {
@@ -1403,8 +1404,8 @@ void reroll(unit_data *victim)
 
    CHAR_LEVEL(victim) = PC_VIRTUAL_LEVEL(victim) = 0;
 
-   PC_SKILL_POINTS(victim)                       = skill_point_total(0);
-   PC_ABILITY_POINTS(victim)                     = ability_point_total(0);
+   PC_SKILL_POINTS(victim)   = skill_point_total(0);
+   PC_ABILITY_POINTS(victim) = ability_point_total(0);
 
    if(PC_GUILD(victim))
    {
@@ -1523,7 +1524,7 @@ void do_restore(unit_data *ch, char *argument, const command_info *cmd)
 extern char *wizlist, *news, *credits, *motd, *goodbye;
 auto         read_info_file(char *name, char *oldstr) -> char *;
 
-static auto  file_install(char *file, bool bNew) -> bool
+static auto file_install(char *file, bool bNew) -> bool
 {
    char buf[256];
 
@@ -1561,7 +1562,7 @@ void do_file(unit_data *ch, char *argument, const command_info *cmd)
    char        buf[MAX_INPUT_LENGTH];
    const char *str = "$2t installed.";
 
-   argument        = one_argument(argument, buf);
+   argument = one_argument(argument, buf);
 
    if(strcmp(buf, "new") == 0)
    {
@@ -1902,10 +1903,10 @@ void do_wizlock(unit_data *ch, char *arg, const command_info *cmd)
 
 void do_wizhelp(unit_data *ch, char *arg, const command_info *cmd)
 {
-   char                       buf[MAX_STRING_LENGTH];
-   char                      *b;
-   int                        no;
-   int                        i;
+   char                buf[MAX_STRING_LENGTH];
+   char               *b;
+   int                 no;
+   int                 i;
    extern command_info cmd_info[];
 
    if(!IS_PC(ch))
@@ -1946,11 +1947,11 @@ void do_corpses(unit_data *ch, char *arg, const command_info *cmd)
 {
    extern auto in_string(unit_data * ch, unit_data * u)->char *;
 
-   unit_data  *c;
-   bool        found = FALSE;
-   char       *c1;
-   char       *c2;
-   char        buf[512];
+   unit_data *c;
+   bool       found = FALSE;
+   char      *c1;
+   char      *c2;
+   char       buf[512];
 
    send_to_char("The following player corpses were found:\n\r", ch);
 

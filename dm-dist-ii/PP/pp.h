@@ -1,4 +1,7 @@
 #pragma once
+#include "ppdir.h"
+#include "symtab.h"
+
 #include <cctype> /* Char type info			*/
 #include <cstdio>
 #include <cstdio>  /* Standard I/O info			*/
@@ -24,23 +27,23 @@ void output_addc(int s);
 /*
  *	pp2.c
  */
-auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *;
+auto docall(symtab *p, char *internal, char *internal_limit) -> char *;
 auto _docall(char *line, char *internal, char *internal_limit) -> char *;
 void dodefine(int mactype, int izxy = 0, const char *izxz = nullptr);
 void doerror(int izxx = 0, int izxy = 0, const char *izxz = nullptr);
 void doundef(int izxx = 0, int izxy = 0, const char *izxz = nullptr);
 auto esc_str(char *old, int c, const char *limit) -> char *;
-void fbind(struct symtab **formals, char *name, const char *value);
-auto flookup(struct symtab *formals, char *name) -> char *;
-auto getparams() -> struct param *;
+void fbind(symtab **formals, char *name, const char *value);
+auto flookup(symtab *formals, char *name) -> char *;
+auto getparams() -> param *;
 auto pphash(const char *sym) -> unsigned int;
-auto lookup(char *name, struct symtab **pe) -> struct symtab *;
-auto makeparam(const char *s, int f) -> struct param *;
-auto predef(char *n, struct ppdir *table) -> struct ppdir *;
-void sbind(const char *sym, const char *defn, struct param *params);
+auto lookup(char *name, symtab **pe) -> symtab *;
+auto makeparam(const char *s, int f) -> param *;
+auto predef(char *n, ppdir *table) -> ppdir *;
+void sbind(const char *sym, const char *defn, param *params);
 auto strize(char *result, char *limit, char *msg, char *snew) -> char *;
-void unfbind(struct symtab *formals);
-void unparam(struct param *pp);
+void unfbind(symtab *formals);
+void unparam(param *pp);
 void unsbind(char *sym);
 
 /*
@@ -431,11 +434,9 @@ extern char typetab[];
  *	Pushback buffer
  */
 
-EXTERN struct pbbuf *Pbbufp I_ZERO;
-EXTERN struct pbbuf *Pbbuf  I_ZERO;
-
-struct pbbuf
+class pbbuf
 {
+public:
    char pb_type;
 #define PB_CHAR   0 /* pb_val.pb_char is character		*/
 #define PB_STRING 1 /* pb_val.pb_str is ptr to string 	*/
@@ -446,6 +447,8 @@ struct pbbuf
       int   pb_char;
    } pb_val;
 };
+EXTERN pbbuf *Pbbufp I_ZERO;
+EXTERN pbbuf *Pbbuf  I_ZERO;
 
 EXTERN FILE *Output     I_ZERO; /* Output file				*/
 EXTERN char *sOutput    I_ZERO; /* Output file			*/
@@ -453,8 +456,9 @@ EXTERN int sOutput_len  I_ZERO; /* Output file			*/
 EXTERN int sOutput_mlen I_ZERO; /* Output file			*/
 EXTERN int pponly       I_ZERO; /* Output file			*/
 EXTERN int iInit        I_ZERO;
-struct file
+class file
 {
+public:
    int f_line;                     /* Line number				*/
 #ifdef PP_SYSIO                    /* If to use direct I/O system calls?	*/
    int f_fd;                       /* A file descriptor			*/
@@ -480,9 +484,9 @@ EXTERN int LLine   I_ZERO; /* Last line number			*/
 EXTERN int (*Nextch)();    /* Next char function           */
 #define nextch (*Nextch)   /* Macro to rd chars via Nextch	*/
 
-EXTERN struct file           *Filestack[FILESTACKSIZE + 1] I_BRZERO;
-EXTERN int Filelevel          I_ZERO; /* Include level	*/
-EXTERN int Do_name            I_ZERO; /* True to put name on #line	*/
+EXTERN file         *Filestack[FILESTACKSIZE + 1] I_BRZERO;
+EXTERN int Filelevel I_ZERO; /* Include level	*/
+EXTERN int Do_name   I_ZERO; /* True to put name on #line	*/
 
 EXTERN char                   Outfile[FILENAMESIZE + 1] I_BRZERO;
 EXTERN char                   Token[TOKENSIZE + 1] I_BRZERO; /* Token buffer	*/
@@ -493,36 +497,6 @@ EXTERN int inquote            I_ZERO;
 /*
  *	Macro proto pointers.
  */
-
-struct symtab
-{
-   struct symtab *s_link;    /* Next in list for this chain		*/
-   char           disable;   /* TRUE to disable recognition for now	*/
-   char          *s_body;    /* Body of definition			*/
-   struct param  *s_params;  /* List of parameters		*/
-   char           s_name[1]; /* Name is appended to structure*/
-};
-
-struct param
-{
-   struct param *p_link;  /* Next in list				*/
-   char          p_flags; /* Flags:				*/
-#define PF_RQUOTES 0x01   /* Remove "" chars from parameter	*/
-#define PF_PNLINES 0x02   /* Preserve '\n' char in parameter	*/
-   char p_name[1];        /* Name is appended to struct	*/
-};
-
-/*
- *	Predefined symbol entry.
- */
-
-struct ppdir
-{
-   const char *pp_name;                     /* #function name		*/
-   char        pp_ifif;                     /* FALSE if ! to do on false #if*/
-   void (*pp_func)(int, int, const char *); /* Address of function		*/
-   int pp_arg;                              /* Argument to function		*/
-};
 
 /*
  *	Predefined symbols.
@@ -537,7 +511,7 @@ struct ppdir
  */
 
 #ifdef MAIN /* If in main() module			*/
-struct ppdir pptab[] = {
+ppdir pptab[] = {
 /*	 Directive	Do within	Procedure	Arg to	  */
 /*	   name		FALSE #ifxx	name		function  */
 /* --------------	-----------	----------	--------  */
@@ -562,7 +536,7 @@ struct ppdir pptab[] = {
    {NULL} /* The end */
 };
 
-struct ppdir pragtab[] = {
+ppdir pragtab[] = {
    /*	 Keyword	Do within	Procedure	Arg to	  */
    /*	   name		FALSE #ifxx	name		function  */
    /* ------------------	-----------	----------	--------  */
@@ -588,8 +562,8 @@ struct ppdir pragtab[] = {
 };
 
 #else  /* !MAIN */
-extern struct ppdir pptab[];
-extern struct ppdir pragtab[];
+extern ppdir pptab[];
+extern ppdir pragtab[];
 #endif /* MAIN */
 
 EXTERN int A_astring    I_ZERO; /* TRUE/args in strings	*/
@@ -601,22 +575,23 @@ EXTERN int A_rescan     I_ZERO; /* TRUE/direct. from macro's	*/
 EXTERN int A_stack      I_ZERO; /* TRUE/macro def's stack	*/
 EXTERN int A_trigraph   I_ZERO; /* TRUE/trigraphs active*/
 
-EXTERN struct symtab   *Macros[NUMBUCKETS] I_BRZERO; /* Ptr/macro chains*/
-EXTERN int Nsyms        I_ZERO;                      /* Number of symbols in table	*/
-EXTERN int Maxsyms      I_ZERO;                      /* Max number of symbols used	*/
+EXTERN symtab     *Macros[NUMBUCKETS] I_BRZERO; /* Ptr/macro chains*/
+EXTERN int Nsyms   I_ZERO;                      /* Number of symbols in table	*/
+EXTERN int Maxsyms I_ZERO;                      /* Max number of symbols used	*/
 
-#define NO_PARAMS (struct param *)NULL /* For sbind of 0 params*/
+#define NO_PARAMS (param *)NULL /* For sbind of 0 params*/
 
-struct ifstk
+class ifstk
 {
+public:
    char i_state; /* The ifstack state:			*/
    char i_else;  /* True if encountered an #else		*/
 };
 
 #ifdef MAIN
-struct ifstk Ifstack[IFSTACKSIZE + 1] = {{0}};
+ifstk Ifstack[IFSTACKSIZE + 1] = {{0}};
 #else             /* !MAIN */
-extern struct ifstk Ifstack[IFSTACKSIZE + 1];
+extern ifstk Ifstack[IFSTACKSIZE + 1];
 #endif            /* MAIN */
 #define IFTRUE  0 /* True - include code within #ifxx	*/
 #define IFFALSE 1 /* False - no code within #ifxx		*/

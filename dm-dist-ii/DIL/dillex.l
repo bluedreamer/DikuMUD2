@@ -159,11 +159,11 @@ void setline(const char *str)
 }
 
 
-void destroy_fptr(struct unit_data *u, struct unit_fptr *f)
+void destroy_fptr( unit_data *u,  unit_fptr *f)
 {
 }
 
-void unlink_affect(struct unit_data *u, struct unit_affected_type *af)
+void unlink_affect( unit_data *u,  unit_affected_type *af)
 {
    u->affected = 0;
 }

@@ -971,12 +971,12 @@ auto match(char *tbuf, const char *str) -> int
 
 auto readexpline(char *buf, int bufsize) -> char *
 {
-   static char    rbo[] = "Read buffer overflow";
+   static char rbo[] = "Read buffer overflow";
 
-   char          *bufp;
-   int            is_func;
-   struct symtab *sy;
-   int            t;
+   char   *bufp;
+   int     is_func;
+   symtab *sy;
+   int     t;
 
    is_func = FALSE;
 

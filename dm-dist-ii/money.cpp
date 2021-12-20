@@ -15,7 +15,7 @@
 #include <cstdlib>
 #include <cstring>
 
-extern char       libdir[]; /* from dikumud.c */
+extern char libdir[]; /* from dikumud.c */
 
 struct money_type money_types[MAX_MONEY + 1];
 char             *cur_strings[MAX_CURRENCY + 1];
@@ -23,7 +23,7 @@ char             *cur_strings[MAX_CURRENCY + 1];
 /* procedures also used in the dmc part */
 
 /* Returns the amount adjusted to closest payable value in the currency */
-static auto       adjust_money(amount_t amt, currency_t currency) -> amount_t
+static auto adjust_money(amount_t amt, currency_t currency) -> amount_t
 {
    int i;
 
@@ -90,7 +90,7 @@ auto money_string(amount_t amt, currency_t currency, bool verbose) -> const char
 
    *buf = *tmp = '\0';
 
-   amt         = adjust_money(amt, currency);
+   amt = adjust_money(amt, currency);
 
    while((nr--) != 0)
    {
@@ -603,7 +603,7 @@ auto split_money(unit_data *money, amount_t amt) -> unit_data *
    if((amount_t)MONEY_AMOUNT(money) > amt)
    {
       /* Not very pretty to use this, but I really can't find an alternative */
-      void       intern_unit_to_unit(unit_data *, unit_data *, bool);
+      void intern_unit_to_unit(unit_data *, unit_data *, bool);
 
       unit_data *pnew = make_money(money_types[MONEY_TYPE(money)].fi, amt);
       set_money(money, calc_money(MONEY_AMOUNT(money), '-', amt));
@@ -690,8 +690,8 @@ auto money_round(bool up, amount_t amt, currency_t currency, int types) -> amoun
 /* Print out representation of supplied money-object with the amount amt */
 auto obj_money_string(unit_data *obj, amount_t amt) -> char *
 {
-   static char        buf[128];
-   struct money_type *money_tmp;
+   static char buf[128];
+   money_type *money_tmp;
 
    assert(IS_MONEY(obj));
 
@@ -769,7 +769,7 @@ static void set_money_strings(FILE *fl, int idx)
       assert(FALSE);
    }
 
-   s  = buf;
+   s = buf;
 
    sc = strchr(s, ';');
    assert(sc);

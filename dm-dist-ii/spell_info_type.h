@@ -1,18 +1,20 @@
 #pragma once
 
 #include "diltemplate.h"
+#include "spell_args.h"
 
 #include <cstdint>
 
-struct spell_info_type
+class spell_info_type
 {
+public:
    uint8_t acttype;
    char   *tochar;
    char   *tovict;
    char   *torest;
    char   *toself;
    char   *toselfroom;
-   void (*spell_pointer)(struct spell_args *sa);
+   void (*spell_pointer)(spell_args *sa);
    uint8_t      minimum_position; /* Position for caster               */
    int16_t      usesmana;         /* Amount of mana used by a spell    */
    int8_t       beats;            /* Heartbeats until ready for next   */

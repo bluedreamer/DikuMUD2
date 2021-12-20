@@ -14,8 +14,9 @@
  *  Uppon call, a new stackframe is created from the called
  *  template. The needed memory is allocated in one chunk.
  */
-struct dilframe
+class dilframe
 {
+public:
    uint16_t     ret;         /* return variable # (not saved) */
    diltemplate *tmpl;        /* current template */
    dilvar      *vars;        /* variables */

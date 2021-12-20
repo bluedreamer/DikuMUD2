@@ -13,12 +13,12 @@
 
 #include <climits>
 
-void       event_enq(int when, void (*func)(), void *arg1, void *arg2);
+void event_enq(int when, void (*func)(), void *arg1, void *arg2);
 
 zone_type *boot_zone = nullptr; /* Points to the zone currently booted */
 
 /* No Operation */
-auto       zone_nop(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
+auto zone_nop(unit_data *u, zone_reset_cmd *cmd) -> unit_data *
 {
    /* Return TRUE - NOP always succeedes */
 
@@ -26,7 +26,7 @@ auto       zone_nop(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
 }
 
 /* Random */
-auto zone_random(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
+auto zone_random(unit_data *u, zone_reset_cmd *cmd) -> unit_data *
 {
    /* Return TRUE if random 0-99 less than given percent  */
    if(number(0, 99) < cmd->num[0])
@@ -74,7 +74,7 @@ void zone_loaded_a_unit(unit_data *u)
 /* num[1] is the max allowed existing in zone.              */
 /* num[2] is the max allowed existing in room (object)      */
 /* Return TRUE if conditions are met, FALSE otherwise       */
-auto zone_limit(unit_data *u, file_index_type *fi, struct zone_reset_cmd *cmd) -> bool
+auto zone_limit(unit_data *u, file_index_type *fi, zone_reset_cmd *cmd) -> bool
 {
    unit_data *tmp;
    int16_t    i;
@@ -132,7 +132,7 @@ auto zone_limit(unit_data *u, file_index_type *fi, struct zone_reset_cmd *cmd) -
 /* fi[1] is room to place loaded unit in or 0 if a PUT command    */
 /* num[0] is the max allowed existing number (0 ignores) in world */
 /* num[1] is the max allowed locally existing number              */
-auto zone_load(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
+auto zone_load(unit_data *u, zone_reset_cmd *cmd) -> unit_data *
 {
    unit_data *loaded = nullptr;
 
@@ -176,7 +176,7 @@ auto zone_load(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
 /* fi[0] is unit to be loaded and equipped on parent unit.  */
 /* num[0] is the max allowed existing number (0 ignores)    */
 /* num[1] is equipment position                             */
-auto zone_equip(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
+auto zone_equip(unit_data *u, zone_reset_cmd *cmd) -> unit_data *
 {
    unit_data *loaded = nullptr;
 
@@ -233,7 +233,7 @@ auto zone_equip(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
 /* fi[0] is room in which the door is located.              */
 /* num[0] is the exit number (0..5)                         */
 /* num[1] is the new state                                  */
-auto zone_door(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
+auto zone_door(unit_data *u, zone_reset_cmd *cmd) -> unit_data *
 {
    if((cmd->fi == nullptr) || (cmd->fi[0]->room_ptr == nullptr))
    {
@@ -252,7 +252,7 @@ auto zone_door(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
 }
 
 /* fi[0] is the room to be purged.                          */
-auto zone_purge(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
+auto zone_purge(unit_data *u, zone_reset_cmd *cmd) -> unit_data *
 {
    unit_data *next;
 
@@ -277,7 +277,7 @@ auto zone_purge(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
 
 /* fi[0] is the thing(s) to be removed.                          */
 /* fi[1] is the room to remove from.                             */
-auto zone_remove(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
+auto zone_remove(unit_data *u, zone_reset_cmd *cmd) -> unit_data *
 {
    unit_data *next;
 
@@ -305,7 +305,7 @@ auto zone_remove(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
 /* fi[1] -                                                        */
 /* num[0] is the max allowed existing number (0 ignores) in world */
 /* num[1] is the max allowed locally existing number              */
-auto zone_follow(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
+auto zone_follow(unit_data *u, zone_reset_cmd *cmd) -> unit_data *
 {
    unit_data *loaded = nullptr;
 
@@ -336,10 +336,10 @@ auto zone_follow(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
    return loaded;
 }
 
-unit_data *(*exec_zone_cmd[])(unit_data *, struct zone_reset_cmd *) = {
+unit_data *(*exec_zone_cmd[])(unit_data *, zone_reset_cmd *) = {
    zone_nop, zone_load, zone_equip, zone_door, zone_purge, zone_remove, zone_follow, zone_random};
 
-auto low_reset_zone(unit_data *u, struct zone_reset_cmd *cmd) -> bool
+auto low_reset_zone(unit_data *u, zone_reset_cmd *cmd) -> bool
 {
    unit_data *success;
    bool       ok = TRUE;
@@ -358,7 +358,7 @@ auto low_reset_zone(unit_data *u, struct zone_reset_cmd *cmd) -> bool
    return ok;
 }
 
-void zone_reset(struct zone_type *zone)
+void zone_reset(zone_type *zone)
 {
    /* extern int memory_total_alloc;
       int i = memory_total_alloc; */
@@ -380,11 +380,11 @@ void zone_reset(struct zone_type *zone)
    really fast */
 void reset_all_zones()
 {
-   int               j;
-   int               n;
-   struct zone_type *zone;
+   int        j;
+   int        n;
+   zone_type *zone;
 
-   void              zone_event(void              */*p1*/, void              */*p2*/);
+   void zone_event(void * /*p1*/, void * /*p2*/);
 
    for(n = j = 0; j <= 255; j++)
    {
@@ -408,7 +408,7 @@ void reset_all_zones()
    }
 }
 
-auto zone_is_empty(struct zone_type *zone) -> bool
+auto zone_is_empty(zone_type *zone) -> bool
 {
    descriptor_data *d;
 
@@ -429,7 +429,7 @@ auto zone_is_empty(struct zone_type *zone) -> bool
 /* Check if any zones needs updating */
 void zone_event(void *p1, void *p2)
 {
-   auto *zone = (struct zone_type *)p1;
+   auto *zone = (zone_type *)p1;
 
    if(zone->reset_mode != RESET_IFEMPTY || zone_is_empty(zone))
    {

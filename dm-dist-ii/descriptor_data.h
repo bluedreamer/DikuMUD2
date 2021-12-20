@@ -13,8 +13,8 @@ public:
    descriptor_data(cMultiHook *pe);
    ~descriptor_data();
 
-   void        CreateBBS() const;
-   void        RemoveBBS() const;
+   void CreateBBS() const;
+   void RemoveBBS() const;
 
    time_t      logon; /* Time of last connect              */
    cMultiHook *multi; /* Multi element pointer             */
@@ -29,20 +29,20 @@ public:
    uint32_t replyid;  /* Used for 'tell reply'             */
 
    /* For the 'modify-string' system.       */
-   char    *localstr; /* This string is expanded while editing */
+   char *localstr; /* This string is expanded while editing */
 
    void (*postedit)(descriptor_data *);
-   unit_data       *editing;
-   void            *editref; /* pointer to "where we are editing"     */
-                             /* when using (volatile) extras + boards */
+   unit_data *editing;
+   void      *editref; /* pointer to "where we are editing"     */
+                       /* when using (volatile) extras + boards */
 
-   int              prompt_mode;                    /* control of prompt-printing       */
-   char             last_cmd[MAX_INPUT_LENGTH + 1]; /* the last entered cmd_str         */
-   char             history[MAX_INPUT_LENGTH + 1];  /* simple command history           */
-   cQueue           qInput;                         /* q of unprocessed input           */
-   unit_data       *character;                      /* linked to char                   */
-   unit_data       *original;                       /* original char                    */
-   snoop_data       snoop;                          /* to snoop people.                 */
+   int        prompt_mode;                    /* control of prompt-printing       */
+   char       last_cmd[MAX_INPUT_LENGTH + 1]; /* the last entered cmd_str         */
+   char       history[MAX_INPUT_LENGTH + 1];  /* simple command history           */
+   cQueue     qInput;                         /* q of unprocessed input           */
+   unit_data *character;                      /* linked to char                   */
+   unit_data *original;                       /* original char                    */
+   snoop_data snoop;                          /* to snoop people.                 */
 
    descriptor_data *next; /* link to next descriptor          */
 };

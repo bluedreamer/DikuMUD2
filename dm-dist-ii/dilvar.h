@@ -5,8 +5,9 @@
 #include <cstdint>
 
 /* DIL variable structure */
-struct dilvar
+class dilvar
 {
+public:
    uint8_t type; /* variable type */
    union
    {

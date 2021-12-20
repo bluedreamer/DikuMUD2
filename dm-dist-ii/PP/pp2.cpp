@@ -61,28 +61,28 @@
 /*									*/
 /************************************************************************/
 
-auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *
+auto docall(symtab *p, char *internal, char *internal_limit) -> char *
 {
-   static char    mbomsg[]       = "Macro body overflow";
-   static char    toggle_token[] = {(char)TOGGLE_EXPAND, '\0'};
+   static char mbomsg[]       = "Macro body overflow";
+   static char toggle_token[] = {(char)TOGGLE_EXPAND, '\0'};
 
-   int            addit;
-   char          *body;
-   char          *bodyp;
-   char          *cp;
-   int            done;
-   int            expand;
-   int            flags;
-   struct symtab *formals;
-   int            had_ws;
-   int            maclevel;
-   int            nl_count;
-   int            pcount;
-   struct param  *pp;
-   int            printed;
-   struct symtab *sy;
-   int            t;
-   char           t_token[TOKENSIZE];
+   int     addit;
+   char   *body;
+   char   *bodyp;
+   char   *cp;
+   int     done;
+   int     expand;
+   int     flags;
+   symtab *formals;
+   int     had_ws;
+   int     maclevel;
+   int     nl_count;
+   int     pcount;
+   param  *pp;
+   int     printed;
+   symtab *sy;
+   int     t;
+   char    t_token[TOKENSIZE];
    /*
     *	Crack the formal parameters for the macro.
     */
@@ -92,7 +92,7 @@ auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *
    if((pp = p->s_params) != nullptr)
    {
       /* This macro has parameters: see if present on this call */
-      had_ws   = FALSE;
+      had_ws = FALSE;
 
       expand   = TRUE;
       nl_count = 0;
@@ -742,11 +742,11 @@ auto docall(struct symtab *p, char *internal, char *internal_limit) -> char *
 
 auto _docall(char *line, char *internal, char *internal_limit) -> char *
 {
-   static char   mbomsg[] = "Macro body overflow";
+   static char mbomsg[] = "Macro body overflow";
 
-   struct ppdir *d;
-   int           had_ws;
-   int           t;
+   ppdir *d;
+   int    had_ws;
+   int    t;
 
    pushback(END_MACRO);
    pbcstr(line);
@@ -855,16 +855,16 @@ auto _docall(char *line, char *internal, char *internal_limit) -> char *
 
 void dodefine(int mactype, int ixzy, const char *ixzz)
 {
-   static char    mtlmsg[] = "Macro too long";
+   static char mtlmsg[] = "Macro too long";
 
-   char           body[MACROSIZE]; /* Body of def	*/
-   char          *bodyp;           /* Pointer into body		*/
-   int            lasttok;         /* Last token fetched in loop	*/
-   int            macctr;          /* Level ctr for #macro/#endm	*/
-   char           name[TOKENSIZE]; /* Name buffer	*/
-   struct param  *pp;              /* Param proto pointer		*/
-   struct symtab *sy;              /* Symbol table ptr		*/
-   int            t;               /* Token type			*/
+   char    body[MACROSIZE]; /* Body of def	*/
+   char   *bodyp;           /* Pointer into body		*/
+   int     lasttok;         /* Last token fetched in loop	*/
+   int     macctr;          /* Level ctr for #macro/#endm	*/
+   char    name[TOKENSIZE]; /* Name buffer	*/
+   param  *pp;              /* Param proto pointer		*/
+   symtab *sy;              /* Symbol table ptr		*/
+   int     t;               /* Token type			*/
 
    if(getnstoken(GT_STR) == LETTER)
    {
@@ -1090,11 +1090,11 @@ auto esc_str(char *old, int c, const char *limit) -> char *
 /*									*/
 /************************************************************************/
 
-void fbind(struct symtab **formals, char *name, const char *value)
+void fbind(symtab **formals, char *name, const char *value)
 {
-   struct symtab *temp;
+   symtab *temp;
 
-   if((temp = (struct symtab *)malloc(sizeof(struct symtab) + (unsigned)strlen(name))) == nullptr)
+   if((temp = (symtab *)malloc(sizeof(symtab) + (unsigned)strlen(name))) == nullptr)
    {
       out_of_memory();
    }
@@ -1118,7 +1118,7 @@ void fbind(struct symtab **formals, char *name, const char *value)
 /*									*/
 /************************************************************************/
 
-auto flookup(struct symtab *formals, char *name) -> char *
+auto flookup(symtab *formals, char *name) -> char *
 {
    while(formals != nullptr)
    {
@@ -1149,16 +1149,16 @@ auto flookup(struct symtab *formals, char *name) -> char *
 /*									*/
 /************************************************************************/
 
-auto getparams() -> struct param *
+auto getparams() -> param *
 {
    static const char *iffmsg = "Invalid formal parameter flag: ";
 
-   int                flags;
-   struct param      *lh;
-   struct param      *lt;
-   struct param      *p;
-   char               pname[TOKENSIZE];
-   int                t;
+   int    flags;
+   param *lh;
+   param *lt;
+   param *p;
+   char   pname[TOKENSIZE];
+   int    t;
 
    lh = nullptr;
    lt = nullptr; /* For lint */
@@ -1287,16 +1287,16 @@ auto pphash(const char *sym) -> unsigned int
 /*									*/
 /************************************************************************/
 
-auto lookup(char *name, struct symtab **pe) -> struct symtab *
+auto lookup(char *name, symtab **pe) -> symtab *
 {
-   struct symtab *c;
-   struct symtab *p;
+   symtab *c;
+   symtab *p;
 
 #if PPDEBUG
    if(PPDEBUG)
       printf("lookup: %s - ", name);
 #endif /* PPDEBUG */
-   p = (struct symtab *)&Macros[pphash(name) & (NUMBUCKETS - 1)];
+   p = (symtab *)&Macros[pphash(name) & (NUMBUCKETS - 1)];
    c = p->s_link;
 
    while(c != nullptr)
@@ -1332,11 +1332,11 @@ auto lookup(char *name, struct symtab **pe) -> struct symtab *
 /*									*/
 /************************************************************************/
 
-auto makeparam(const char *s, int f) -> struct param *
+auto makeparam(const char *s, int f) -> param *
 {
-   struct param *p;
+   param *p;
 
-   p = (struct param *)malloc(sizeof(struct param) + strlen(s));
+   p = (param *)malloc(sizeof(param) + strlen(s));
 
    if(p == nullptr)
    {
@@ -1358,10 +1358,10 @@ auto makeparam(const char *s, int f) -> struct param *
 /*									*/
 /************************************************************************/
 
-auto predef(char *n, struct ppdir *table) -> struct ppdir *
+auto predef(char *n, ppdir *table) -> ppdir *
 {
-   char         *name;
-   struct ppdir *p;
+   char  *name;
+   ppdir *p;
 
    for(name = n, p = table; p->pp_name != nullptr; p++)
    {
@@ -1393,17 +1393,17 @@ auto predef(char *n, struct ppdir *table) -> struct ppdir *
 /*									*/
 /************************************************************************/
 
-void sbind(const char *sym, const char *defn, struct param *params)
+void sbind(const char *sym, const char *defn, param *params)
 {
-   int            i;
-   struct symtab *p;
+   int     i;
+   symtab *p;
 
 #if PPDEBUG
    if(PPDEBUG)
       printf("sbind: name <%s> with <%s>\n", sym, defn);
 #endif /* PPDEBUG */
 
-   p = (struct symtab *)malloc(sizeof(struct symtab) + (unsigned)strlen(sym));
+   p = (symtab *)malloc(sizeof(symtab) + (unsigned)strlen(sym));
 
    if((p == nullptr) || ((p->s_body = (char *)malloc((unsigned)strlen(defn) + 1)) == nullptr))
    {
@@ -1417,10 +1417,10 @@ void sbind(const char *sym, const char *defn, struct param *params)
 
    /* Add to symbol table */
 
-   i           = pphash(sym) & (NUMBUCKETS - 1); /* Hash value for symbol */
+   i = pphash(sym) & (NUMBUCKETS - 1); /* Hash value for symbol */
 
-   p->s_link   = Macros[i];
-   Macros[i]   = p; /* Link in to list */
+   p->s_link = Macros[i];
+   Macros[i] = p; /* Link in to list */
 
    if(++Nsyms > Maxsyms)
    {
@@ -1457,7 +1457,7 @@ auto strize(char *result, char *limit, char *msg, char *snew) -> char *
 
    *result++ = '"'; /* Leading " for string */
 
-   had_ws    = FALSE; /* TRUE if accumulating whitespace */
+   had_ws = FALSE; /* TRUE if accumulating whitespace */
    while((c = *snew++) != '\0')
    {
       if(c == EOF)
@@ -1539,9 +1539,9 @@ auto strize(char *result, char *limit, char *msg, char *snew) -> char *
 /*									*/
 /************************************************************************/
 
-void unfbind(struct symtab *formals)
+void unfbind(symtab *formals)
 {
-   struct symtab *temp;
+   symtab *temp;
 
    while(formals != nullptr)
    {
@@ -1560,9 +1560,9 @@ void unfbind(struct symtab *formals)
 /*									*/
 /************************************************************************/
 
-void unparam(struct param *pp)
+void unparam(param *pp)
 {
-   struct param *npp;
+   param *npp;
 
    for(; pp != nullptr; pp = npp)
    {
@@ -1581,8 +1581,8 @@ void unparam(struct param *pp)
 
 void unsbind(char *sym)
 {
-   struct symtab *p;
-   struct symtab *s;
+   symtab *p;
+   symtab *s;
 
 #if PPDEBUG
    if(PPDEBUG)

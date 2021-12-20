@@ -1,7 +1,8 @@
 #pragma once
 
-struct SFightColorSet
+class SFightColorSet
 {
+public:
    char *pAttacker;
    char *pDefender;
    char *pOthers;

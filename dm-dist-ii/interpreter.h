@@ -27,10 +27,10 @@ void half_chop(char *string, char *arg1, char *arg2);
 
 /* The routine to check for special routines */
 
-auto unit_function_scan(unit_data *u, struct spec_arg *sarg) -> int;
-auto function_activate(unit_data *u, struct spec_arg *sarg) -> int;
+auto unit_function_scan(unit_data *u, spec_arg *sarg) -> int;
+auto function_activate(unit_data *u, spec_arg *sarg) -> int;
 #ifdef DMSERVER
-auto basic_special(unit_data *ch, struct spec_arg *sarg, uint16_t mflt, unit_data *extra_target = nullptr) -> int;
+auto basic_special(unit_data *ch, spec_arg *sarg, uint16_t mflt, unit_data *extra_target = nullptr) -> int;
 #endif
 auto send_preprocess(unit_data *ch, const command_info *cmd, const char *arg) -> int;
 void send_done(unit_data          *activator,

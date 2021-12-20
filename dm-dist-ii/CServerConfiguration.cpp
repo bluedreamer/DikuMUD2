@@ -54,7 +54,7 @@ auto CServerConfiguration::ValidMplex(struct sockaddr_in *isa) -> int
 {
    struct in_addr sTmp;
 
-   int            i;
+   int i;
 
    for(i = 0; i < 10; i++)
    {
@@ -67,7 +67,7 @@ auto CServerConfiguration::ValidMplex(struct sockaddr_in *isa) -> int
    return static_cast<int>(FALSE);
 }
 
-void CServerConfiguration::TripleColorFormat(struct SFightColorSet *pSet, char **ppList)
+void CServerConfiguration::TripleColorFormat(SFightColorSet *pSet, char **ppList)
 {
    if(ppList == nullptr)
    {
@@ -287,8 +287,8 @@ void CServerConfiguration::Boot()
 
    m_sColor.pDefault = str_escape_format("&cw");
 
-   d                 = parse_match_name(&c, "color prompt");
-   m_sColor.pPrompt  = d != nullptr ? str_escape_format(d) : "";
+   d                = parse_match_name(&c, "color prompt");
+   m_sColor.pPrompt = d != nullptr ? str_escape_format(d) : "";
    free(d);
 
    d                  = parse_match_name(&c, "color who");

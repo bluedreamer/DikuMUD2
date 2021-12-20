@@ -18,14 +18,14 @@
 
 void do_decapitate(unit_data *ch, char *argument, const command_info *cmd)
 {
-   unit_data              *corpse;
-   unit_data              *head;
-   unit_affected_type     *af;
-   unit_affected_type      naf;
-   char                   *c;
-   char                   *d;
-   char                    buf[256];
-   char                    buf2[256];
+   unit_data          *corpse;
+   unit_data          *head;
+   unit_affected_type *af;
+   unit_affected_type  naf;
+   char               *c;
+   char               *d;
+   char                buf[256];
+   char                buf2[256];
 
    extern file_index_type *head_fi;
 
@@ -88,7 +88,7 @@ void do_decapitate(unit_data *ch, char *argument, const command_info *cmd)
    OBJ_VALUE(head, 3)   = OBJ_VALUE(corpse, 3); /* Copy LEVEL */
    OBJ_VALUE(corpse, 3) = 0;                    /* The corpse is not level-less (demigod reason)*/
 
-   af                   = affected_by_spell(corpse, ID_REWARD);
+   af = affected_by_spell(corpse, ID_REWARD);
 
    unit_to_unit(head, ch);
    if(af != nullptr)
@@ -187,12 +187,12 @@ void do_kill(unit_data *ch, char *argument, const command_info *cmd)
 void do_order(unit_data *ch, char *argument, const command_info *cmd)
 {
 #ifdef SUSPEKT
-   char                name[100], message[256];
-   char                buf[256];
-   bool                found = FALSE;
-   int                 org_room;
-   unit_data          *victim;
-   struct follow_type *k;
+   char         name[100], message[256];
+   char         buf[256];
+   bool         found = FALSE;
+   int          org_room;
+   unit_data   *victim;
+   follow_type *k;
 
    half_chop(argument, name, message);
 

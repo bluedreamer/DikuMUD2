@@ -241,7 +241,7 @@ auto fread_num(FILE *fl) -> long
 {
    long tmp;
 
-   int  ms2020 = fscanf(fl, " %ld ", &tmp);
+   int ms2020 = fscanf(fl, " %ld ", &tmp);
    return (tmp);
 }
 
@@ -266,15 +266,16 @@ void fstrcpy(CByteBuffer *pBuf, FILE *f)
 
 /* fopen_cache below this comment */
 
-struct fcache_type
+class fcache_type
 {
+public:
    int   hits;
    int   name_s;
    char *name;
    FILE *file;
 };
 
-static struct fcache_type fcache[FCACHE_MAX] = {
+static fcache_type fcache[FCACHE_MAX] = {
    {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
    {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
    {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr}, {0, 0, nullptr, nullptr},
@@ -337,8 +338,8 @@ auto fopen_cache(char *name, const char *mode) -> FILE *
    static int pure_hits = 0;
    static int purge     = 0;
 
-   min_i                = number(0, FCACHE_MAX - 1); /* In case many are equal */
-   hit_i                = -1;
+   min_i = number(0, FCACHE_MAX - 1); /* In case many are equal */
+   hit_i = -1;
 
    for(i = 0; i < FCACHE_MAX; i++)
    {

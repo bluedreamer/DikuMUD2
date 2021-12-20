@@ -36,8 +36,9 @@ public:
    uint8_t          loadlevel;  /* Level required to load items     */
    uint8_t          payonly;    /* TRUE when only 4 paying players  */
 
-   struct
+   class
    {
+   public:
       int pressure; /* How is the pressure ( Mb )            */
       int change;   /* How fast and what way does it change. */
       int sky;      /* How is the sky.                       */

@@ -2,6 +2,7 @@
 #include "descriptor_data.h"
 #include "essential.h"
 #include "unitfind.h"
+#include "zone_type.h"
 
 auto unit_is_edited(unit_data *u) -> descriptor_data *;
 
@@ -9,7 +10,7 @@ void unit_messg(unit_data *ch, unit_data *unit, const char *type, const char *me
 
 auto single_unit_messg(unit_data *unit, const char *type, const char *pSubStr, const char *mesg) -> const char *;
 
-void szonelog(struct zone_type *zone, const char *fmt, ...);
+void szonelog(zone_type *zone, const char *fmt, ...);
 
 /* From pcsave.c - I'm just tired of specifying them everywhere */
 void save_player(unit_data *pc);
@@ -42,7 +43,7 @@ auto unequip_object(unit_data *obj) -> unit_data *;
 void recalc_dex_red(unit_data *ch);
 
 auto unit_recursive(unit_data *from, unit_data *to) -> int;
-auto unit_zone(const unit_data *unit) -> struct zone_type *;
+auto unit_zone(const unit_data *unit) -> zone_type *;
 auto unit_room(unit_data *unit) -> unit_data *;
 
 /* If the transfered unit MIGHT be money, remember to pile_money() it!!!!! */

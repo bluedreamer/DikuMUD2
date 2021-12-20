@@ -38,7 +38,7 @@ void ConnectionBegin(unit_data *pc)
 
 void ConnectionLog(unit_data *pc)
 {
-   time_t   t0      = time(nullptr);
+   time_t t0 = time(nullptr);
 
    uint32_t nLanPay = 0;
 

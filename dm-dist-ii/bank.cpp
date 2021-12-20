@@ -10,12 +10,12 @@
 #include <cstdio>
 #include <cstring>
 
-static int      INTEREST = 5;
+static int INTEREST = 5;
 
 static amount_t balance[MAX_CURRENCY + 1];
 static bool     changed_balance;
 
-static auto     init_bank(const unit_data *pc, unit_data *clerk, bool init) -> bool
+static auto init_bank(const unit_data *pc, unit_data *clerk, bool init) -> bool
 {
    if((clerk != nullptr) && !CHAR_IS_READY(clerk))
    {
@@ -145,7 +145,7 @@ static void cmd_deposit(const unit_data *pc, unit_data *clerk, char *s)
          return;
       }
 
-      thing       = split_money(thing, amount);
+      thing = split_money(thing, amount);
 
       old_balance = balance[cur];
       balance[cur] += ((100 - INTEREST) * MONEY_VALUE(thing)) / 100;
@@ -219,7 +219,7 @@ static void cmd_exchange(const unit_data *pc, unit_data *clerk, char *s)
       return;
    }
 
-   thing  = split_money(thing, amount);
+   thing = split_money(thing, amount);
 
    cur    = MONEY_CURRENCY(thing);
    amount = ((100 - INTEREST) * MONEY_VALUE(thing)) / 100;
@@ -349,7 +349,7 @@ static void cmd_withdraw(const unit_data *pc, unit_data *clerk, char *s)
    }
 }
 
-auto bank(struct spec_arg *sarg) -> int
+auto bank(spec_arg *sarg) -> int
 {
    if(sarg->activator == nullptr)
    {
@@ -434,15 +434,15 @@ void tax_player(unit_data *ch)
    amount_t         limit = 50 * PLATINUM_MULT;
    descriptor_data *d     = CHAR_DESCRIPTOR(ch);
 
-   amount_t         holds;
-   amount_t         holds_sum;
+   amount_t holds;
+   amount_t holds_sum;
 
-   char             buf[MAX_STRING_LENGTH];
-   char            *b;
-   bool             tmp_bool = FALSE;
-   int              i;
+   char  buf[MAX_STRING_LENGTH];
+   char *b;
+   bool  tmp_bool = FALSE;
+   int   i;
 
-   *(b = buf)          = '\0';
+   *(b = buf) = '\0';
 
    CHAR_DESCRIPTOR(ch) = nullptr; /* To avoid getting text output to the player */
 

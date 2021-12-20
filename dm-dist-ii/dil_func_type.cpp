@@ -6,7 +6,7 @@
 /* Evaluating DIL-expressions/instructions				    */
 /* ************************************************************************ */
 
-struct dil_func_type dilfe_func[DILI_MAX + 1] = {
+dil_func_type dilfe_func[DILI_MAX + 1] = {
    {dilfe_illegal}, /* 0 */
    {dilfe_plus},    {dilfe_min},  {dilfe_mul},  {dilfe_div},    {dilfe_mod},     {dilfe_and},  {dilfe_or},   {dilfe_not},  {dilfe_gt},
    {dilfe_lt}, /* 10 */

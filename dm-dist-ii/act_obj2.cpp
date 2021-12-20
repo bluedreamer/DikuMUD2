@@ -59,8 +59,8 @@ static void apply_poison(unit_data *ch, int poison, int amount)
 /* Return TRUE if something was eaten/drunk */
 auto drink_eat(unit_data *ch, unit_data *obj, int amount, const command_info *cmd, char *arg) -> bool
 {
-   int  extract = static_cast<int>(FALSE);
-   int  poison  = 0; /* No poison */
+   int extract = static_cast<int>(FALSE);
+   int poison  = 0; /* No poison */
 
    void gain_condition(unit_data * ch, int condition, int value);
 

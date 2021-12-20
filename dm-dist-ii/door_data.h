@@ -4,8 +4,9 @@
 
 #include <cstdint>
 
-struct door_data
+class door_data
 {
+public:
    unit_data       *thing;
    unit_data       *room;
    unit_data       *reverse; /* Reverse Room or Inside thing */

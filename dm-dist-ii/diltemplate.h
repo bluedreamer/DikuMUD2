@@ -11,8 +11,9 @@
  *  Uppon loading old dil programs, an unlinked template is created.
  */
 class zone_type;
-struct diltemplate
+class diltemplate
 {
+public:
    const char   *prgname;      /* program name @ zone */
    zone_type    *zone;         /* Pointer to owner of structure    */
    uint8_t       flags;        /* recall, etc. */

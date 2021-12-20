@@ -93,7 +93,7 @@ void cCaptainHook::Unhook(cHook *hook)
    pfHook[nHandle]->id = -1;
    pfHook[nHandle]     = nullptr;
 
-   nMax                = 0;
+   nMax = 0;
    for(i = 0; i < nTop; i++)
    {
       if(nIdx[i] > nMax)

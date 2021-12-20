@@ -277,7 +277,7 @@ void dilfi_swt(dilprg *p, dilval *v)
 
    if(v1.val.ptr != nullptr)
    {
-      dif                                       = v2.val.num - UNIT_BASE_WEIGHT((unit_data *)v1.val.ptr);
+      dif = v2.val.num - UNIT_BASE_WEIGHT((unit_data *)v1.val.ptr);
 
       /* set new baseweight */
       UNIT_BASE_WEIGHT((unit_data *)v1.val.ptr) = v2.val.num;
@@ -423,15 +423,15 @@ void dilfi_rtf(dilprg *p, dilval *v)
       return;
    }
 
-   i     = p->sp - p->stack - 1;
+   i = p->sp - p->stack - 1;
 
-   cfrm  = p->sp;
+   cfrm = p->sp;
 
    /* pop stack frame */
    p->sp = &p->stack[i];
 
    /* copy return variable */
-   i     = p->sp->ret;
+   i = p->sp->ret;
 
    dil_free_var(&p->sp->vars[i]);
 
@@ -490,8 +490,8 @@ void dil_push_frame(dilprg *p, diltemplate *rtmpl, dilval *av)
       RECREATE(p->stack, dilframe, p->stacksz);
    }
 
-   frm              = &p->stack[i + 1];
-   p->sp            = frm;
+   frm   = &p->stack[i + 1];
+   p->sp = frm;
 
    frm->tmpl        = rtmpl;
    frm->pc          = rtmpl->core;
@@ -499,7 +499,7 @@ void dil_push_frame(dilprg *p, diltemplate *rtmpl, dilval *av)
    frm->securecount = 0;
    frm->secure      = nullptr;
 
-   frm->intrcount   = rtmpl->intrcount;
+   frm->intrcount = rtmpl->intrcount;
 
    if(rtmpl->intrcount != 0U)
    {
@@ -1799,10 +1799,10 @@ void dilfi_exec(dilprg *p, dilval *v)
 
       if(IS_IMMORTAL((unit_data *)v2.val.ptr))
       {
-         char                     buf[MAX_INPUT_LENGTH];
-         command_info            *cmd_ptr;
+         char          buf[MAX_INPUT_LENGTH];
+         command_info *cmd_ptr;
 
-         extern struct trie_type *intr_trie;
+         extern trie_type *intr_trie;
 
          str_next_word(cmd, buf);
 
@@ -2176,9 +2176,9 @@ void dilfi_ada(dilprg *p, dilval *v)
          af.duration = v3.val.num;
          af.beat     = v4.val.num;
 
-         af.data[0]  = v5.val.num;
-         af.data[1]  = v6.val.num;
-         af.data[2]  = v7.val.num;
+         af.data[0] = v5.val.num;
+         af.data[1] = v6.val.num;
+         af.data[2] = v7.val.num;
 
          af.firstf_i = v8.val.num;
          af.tickf_i  = v9.val.num;
@@ -2271,7 +2271,7 @@ void dilfi_snt(dilprg *p, dilval *v)
 
    if((v1.val.ptr != nullptr) && (v2.val.ptr != nullptr))
    {
-      struct spec_arg sarg;
+      spec_arg sarg;
 
       sarg.activator = p->sarg->owner;
       sarg.medium    = nullptr;
@@ -2320,7 +2320,7 @@ void dilfi_snta(dilprg *p, dilval *v)
 
       if((fi = str_to_file_index((char *)v2.val.ptr)) != nullptr)
       {
-         struct spec_arg sarg;
+         spec_arg sarg;
 
          sarg.activator = p->sarg->owner;
          sarg.medium    = p->sarg->owner;
@@ -2328,10 +2328,10 @@ void dilfi_snta(dilprg *p, dilval *v)
          sarg.pInt      = nullptr;
          sarg.fptr      = nullptr; /* Set by unit_function_scan */
 
-         sarg.fptr      = nullptr;
-         sarg.cmd       = &cmd_auto_msg;
-         sarg.arg       = (char *)v1.val.ptr;
-         sarg.mflags    = SFB_MSG;
+         sarg.fptr   = nullptr;
+         sarg.cmd    = &cmd_auto_msg;
+         sarg.arg    = (char *)v1.val.ptr;
+         sarg.mflags = SFB_MSG;
 
          for(u = unit_list; u != nullptr; u = u->gnext)
          {
@@ -2406,7 +2406,7 @@ void dilfi_sntadil(dilprg *p, dilval *v)
                   continue;
                }
 
-               struct spec_arg sarg;
+               spec_arg sarg;
 
                sarg.owner     = tp->owner;
                sarg.activator = p->owner;
@@ -2415,9 +2415,9 @@ void dilfi_sntadil(dilprg *p, dilval *v)
                sarg.pInt      = nullptr;
                sarg.fptr      = fptr;
 
-               sarg.cmd       = &cmd_auto_msg;
-               sarg.arg       = (char *)v1.val.ptr;
-               sarg.mflags    = SFB_MSG;
+               sarg.cmd    = &cmd_auto_msg;
+               sarg.arg    = (char *)v1.val.ptr;
+               sarg.mflags = SFB_MSG;
 
                function_activate(tp->owner, &sarg);
             }
@@ -2600,7 +2600,7 @@ void dilfi_pup(dilprg *p, dilval *v)
 {
    dilval v1;
 
-   void   die(unit_data * ch);
+   void die(unit_data * ch);
 
    if(v != nullptr)
    {

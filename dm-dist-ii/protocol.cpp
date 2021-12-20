@@ -142,7 +142,7 @@ void protocol_send_host(cHook *Hook, uint16_t id, char *host, uint16_t nPort, ui
 
    len = strlen(ptext) + 4;
 
-   b   = buf;
+   b = buf;
 
    memcpy(b, MULTI_HOST, 2);
    b += 2;
@@ -177,7 +177,7 @@ void protocol_send_text(cHook *Hook, const uint16_t id, const char *text, const 
       return;
    }
 
-   len   = strlen(text) + 1;
+   len = strlen(text) + 1;
 
    txlen = std::min(MAX_TEXT_LEN, static_cast<int>(len));
 
@@ -390,7 +390,7 @@ auto protocol_parse_incoming(cHook *Hook, uint16_t *pid, uint16_t *plen, char **
 
    data[len] = 0;
 
-   *str      = data;
+   *str = data;
 
    return buf[1];
 }

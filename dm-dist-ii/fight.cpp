@@ -30,39 +30,42 @@
 
 /* Structures */
 
-struct combat_single_msg
+class combat_single_msg
 {
+public:
    char *to_char;
    char *to_vict;
    char *to_notvict;
 };
 
-struct combat_msg_packet
+class combat_msg_packet
 {
-   struct combat_single_msg  cmiss;
-   struct combat_single_msg  shield;
-   struct combat_single_msg  nodam;
-   struct combat_single_msg  entire;
-   struct combat_single_msg  head;
-   struct combat_single_msg  hand;
-   struct combat_single_msg  arm;
-   struct combat_single_msg  body;
-   struct combat_single_msg  legs;
-   struct combat_single_msg  feet;
-   struct combat_single_msg  die;
+public:
+   combat_single_msg cmiss;
+   combat_single_msg shield;
+   combat_single_msg nodam;
+   combat_single_msg entire;
+   combat_single_msg head;
+   combat_single_msg hand;
+   combat_single_msg arm;
+   combat_single_msg body;
+   combat_single_msg legs;
+   combat_single_msg feet;
+   combat_single_msg die;
 
-   struct combat_msg_packet *next;
+   combat_msg_packet *next;
 };
 
-struct combat_msg_list
+class combat_msg_list
 {
-   int                       group;      /* Which message group      */
-   int                      *no;         /* Which message number #'s */
-   int                       no_of_msgs; /* # of msgs to choose from */
-   struct combat_msg_packet *msg;
+public:
+   int                group;      /* Which message group      */
+   int               *no;         /* Which message number #'s */
+   int                no_of_msgs; /* # of msgs to choose from */
+   combat_msg_packet *msg;
 };
 
-struct combat_msg_list fight_messages[COM_MAX_MSGS];
+combat_msg_list fight_messages[COM_MAX_MSGS];
 
 /* External structures */
 
@@ -70,13 +73,13 @@ struct combat_msg_list fight_messages[COM_MAX_MSGS];
 
 /* External procedures */
 
-void                   stop_follower(unit_data *ch);
+void stop_follower(unit_data *ch);
 
 /* Returns TRUE if combat is not allowed, and FALSE if combat is allowed */
 /* Also used for steal, etc.                                             */
 /* If message is true, then a message is sent to the 'att'               */
 
-auto                   pk_test(unit_data *att, unit_data *def, int message) -> int
+auto pk_test(unit_data *att, unit_data *def, int message) -> int
 {
    if(IS_PC(att) && IS_PC(def) && att != def)
    {
@@ -173,7 +176,7 @@ auto virtual_level(unit_data *ch) -> int
 
 /* -------------------------------------------------------------------- */
 
-auto num_in_msg(struct combat_msg_list *msg, int no) -> int
+auto num_in_msg(combat_msg_list *msg, int no) -> int
 {
    int i;
 
@@ -188,7 +191,7 @@ auto num_in_msg(struct combat_msg_list *msg, int no) -> int
    return static_cast<int>(FALSE);
 }
 
-void fread_single(FILE *f1, struct combat_single_msg *msg)
+void fread_single(FILE *f1, combat_single_msg *msg)
 {
    msg->to_char    = fread_string(f1);
    msg->to_vict    = fread_string(f1);
@@ -196,7 +199,7 @@ void fread_single(FILE *f1, struct combat_single_msg *msg)
    int ms2020      = fscanf(f1, " ");
 }
 
-auto load_msg_prehead(FILE *f1, struct combat_msg_list *msg) -> int
+auto load_msg_prehead(FILE *f1, combat_msg_list *msg) -> int
 {
    int  no[200];
    int  pos;
@@ -204,7 +207,7 @@ auto load_msg_prehead(FILE *f1, struct combat_msg_list *msg) -> int
    char shit[100];
 
    /* A group of -1 indicates end */
-   int  ms2020 = fscanf(f1, " %d", &grp);
+   int ms2020 = fscanf(f1, " %d", &grp);
 
    if(grp == -1)
    {
@@ -220,7 +223,7 @@ auto load_msg_prehead(FILE *f1, struct combat_msg_list *msg) -> int
 
    no[pos - 1] = -1;
 
-   ms2020      = fscanf(f1, " %[^\n\r] ", shit); /* Skip any remark */
+   ms2020 = fscanf(f1, " %[^\n\r] ", shit); /* Skip any remark */
 
    CREATE(msg->no, int, pos);
    for(pos--; pos >= 0; pos--)
@@ -233,10 +236,10 @@ auto load_msg_prehead(FILE *f1, struct combat_msg_list *msg) -> int
 
 void load_messages()
 {
-   FILE                     *f1;
-   int                       i;
-   int                       grp;
-   struct combat_msg_packet *messages;
+   FILE              *f1;
+   int                i;
+   int                grp;
+   combat_msg_packet *messages;
 
    if((f1 = fopen(str_cc(libdir, MESS_FILE), "r")) == nullptr)
    {
@@ -271,7 +274,7 @@ void load_messages()
          exit(1);
       }
 
-      CREATE(messages, struct combat_msg_packet, 1);
+      CREATE(messages, combat_msg_packet, 1);
 
       fight_messages[i].no_of_msgs++;
       fight_messages[i].group = grp;
@@ -541,8 +544,7 @@ auto sub_damage(char *str, char *col, int damage, int max_hp) -> char *
    return buf;
 }
 
-static void
-combat_send(struct SFightColorSet *sColors, struct combat_single_msg *msg, unit_data *arg1, unit_data *arg2, unit_data *arg3, int dam)
+static void combat_send(SFightColorSet *sColors, combat_single_msg *msg, unit_data *arg1, unit_data *arg2, unit_data *arg3, int dam)
 {
    if(msg->to_char != nullptr)
    {
@@ -570,9 +572,9 @@ combat_send(struct SFightColorSet *sColors, struct combat_single_msg *msg, unit_
 
 void combat_message(unit_data *att, unit_data *def, unit_data *medium, int damage, int msg_group, int msg_number, int hit_location)
 {
-   struct combat_msg_packet *msg;
-   int                       i;
-   int                       r;
+   combat_msg_packet *msg;
+   int                i;
+   int                r;
 
    msg = nullptr;
 
@@ -687,7 +689,7 @@ static void change_alignment(unit_data *slayer, unit_data *victim)
    int adjust = 0;
    int diff   = 0;
 
-   diff       = UNIT_ALIGNMENT(slayer) - UNIT_ALIGNMENT(victim);
+   diff = UNIT_ALIGNMENT(slayer) - UNIT_ALIGNMENT(victim);
 
    if(UNIT_IS_GOOD(slayer))
    {
@@ -808,16 +810,16 @@ static void person_gain(unit_data *ch, unit_data *dead, int share, int grouped, 
 /* when a kill has been made                                         */
 static void exp_align_gain(unit_data *ch, unit_data *victim)
 {
-   int                      rellevel;
-   int                      sumlevel;
-   int                      maxlevel;
-   int                      minlevel;
-   int                      no_members = 1;
-   int                      share;
-   unit_data               *head;
-   struct char_follow_type *f;
+   int               rellevel;
+   int               sumlevel;
+   int               maxlevel;
+   int               minlevel;
+   int               no_members = 1;
+   int               share;
+   unit_data        *head;
+   char_follow_type *f;
 
-   auto                     experience_modification(unit_data * att, unit_data * def)->int;
+   auto experience_modification(unit_data * att, unit_data * def)->int;
 
    maxlevel = CHAR_LEVEL(ch);
 
@@ -983,12 +985,12 @@ void RemoveReward(unit_data *ch)
 
 auto raw_kill(unit_data *ch) -> unit_data *
 {
-   unit_data              *death_obj;
-   unit_data              *corpse = nullptr;
+   unit_data *death_obj;
+   unit_data *corpse = nullptr;
 
    extern file_index_type *deathobj_fi;
 
-   auto                    make_corpse(unit_data * ch)->unit_data *;
+   auto make_corpse(unit_data * ch)->unit_data *;
 
 #ifdef DEMIGOD
    if(CHAR_ORIGINAL(ch) && IS_DEMIGOD(CHAR_ORIGINAL(ch)))
@@ -1098,7 +1100,7 @@ auto lose_exp(unit_data *ch) -> int
    loss = std::max(loss, level_xp(PC_VIRTUAL_LEVEL(ch)) / 5);
 
    /* This line takes care of newbies, setting the lower bound... */
-   i    = std::max(0, (CHAR_EXP(ch) - required_xp(START_LEVEL)) / 2);
+   i = std::max(0, (CHAR_EXP(ch) - required_xp(START_LEVEL)) / 2);
 
    if(loss > i)
    {
@@ -1579,13 +1581,13 @@ void damage_object(unit_data *ch, unit_data *obj, int dam)
 
 auto one_hit(unit_data *att, unit_data *def, int bonus, int att_weapon_type, int primary) -> int
 {
-   int        dam;
-   int        hm;
-   int        hit_loc;
-   int        roll;
+   int dam;
+   int hm;
+   int hit_loc;
+   int roll;
 
-   int        def_armour_type;
-   int        def_shield_bonus;
+   int def_armour_type;
+   int def_shield_bonus;
 
    unit_data *att_weapon;
    unit_data *def_armour;
@@ -1625,7 +1627,7 @@ auto one_hit(unit_data *att, unit_data *def, int bonus, int att_weapon_type, int
 
    hit_loc = hit_location(att, def);
 
-   hm      = melee_bonus(att, def, hit_loc, &att_weapon_type, &att_weapon, &def_armour_type, &def_armour, primary);
+   hm = melee_bonus(att, def, hit_loc, &att_weapon_type, &att_weapon, &def_armour_type, &def_armour, primary);
 
    hm += bonus;
 
@@ -1787,8 +1789,9 @@ void melee_violence(unit_data *ch, int primary)
 /*                      H U N T I N G   S Y S T E M                     */
 /* -------------------------------------------------------------------- */
 
-struct hunt_data
+class hunt_data
 {
+public:
    int        no;
    int        was_legal;
    unit_data *victim;
@@ -1802,17 +1805,17 @@ struct hunt_data
 /* MS: Changed only to re-attack on tick command                 */
 /*     Otherwise two characters hunting get really many attacks  */
 /*     as they were activated by the flee command                */
-auto hunting(struct spec_arg *sarg) -> int
+auto hunting(spec_arg *sarg) -> int
 {
-   struct hunt_data *h;
-   unit_data        *victim;
+   hunt_data *h;
+   unit_data *victim;
 
    if(sarg->cmd->no != CMD_AUTO_TICK)
    {
       return SFR_SHARE;
    }
 
-   h = (struct hunt_data *)sarg->fptr->data;
+   h = (hunt_data *)sarg->fptr->data;
    assert(h);
 
    h->no--;
@@ -1868,9 +1871,9 @@ auto hunting(struct spec_arg *sarg) -> int
 
 void set_hunting(unit_data *predator, unit_data *victim, int legal)
 {
-   struct hunt_data *h;
+   hunt_data *h;
 
-   CREATE(h, struct hunt_data, 1);
+   CREATE(h, hunt_data, 1);
    h->no        = 30; /* Approx. 5 minutes total */
    h->victim    = victim;
    h->was_legal = legal;

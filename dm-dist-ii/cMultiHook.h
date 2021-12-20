@@ -11,5 +11,5 @@ public:
    void Close();
    auto Read() -> int;
 
-   int  succ_err; /* Number of successive errors */
+   int succ_err; /* Number of successive errors */
 };

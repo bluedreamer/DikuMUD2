@@ -24,9 +24,9 @@
 
 int32_t day_charge[7][TIME_GRANULARITY];
 
-int     next_crc = 0;
+int next_crc = 0;
 
-void    account_cclog(unit_data *ch, int amount)
+void account_cclog(unit_data *ch, int amount)
 {
    FILE *f;
 
@@ -223,7 +223,7 @@ void account_overdue(const unit_data *ch)
 
    if(g_cServerConfig.m_bAccounting != 0)
    {
-      char     Buf[256];
+      char Buf[256];
 
       uint32_t discount = PC_ACCOUNT(ch).discount;
       uint32_t lcharge  = ((100 - discount) * g_cAccountConfig.m_nHourlyRate) / 100;
@@ -586,7 +586,7 @@ void account_flatrate_change(unit_data *god, unit_data *whom, int32_t days)
    char    Buf[256];
    int32_t add = days * SECS_PER_REAL_DAY;
 
-   time_t  now = time(nullptr);
+   time_t now = time(nullptr);
 
    if(days > 0)
    {
@@ -624,15 +624,15 @@ void account_flatrate_change(unit_data *god, unit_data *whom, int32_t days)
 
 void do_account(unit_data *ch, char *arg, const command_info *cmd)
 {
-   char                    Buf[256];
-   char                    word[MAX_INPUT_LENGTH];
-   unit_data              *u;
-   unit_data              *note;
-   char                   *c            = (char *)arg;
+   char       Buf[256];
+   char       word[MAX_INPUT_LENGTH];
+   unit_data *u;
+   unit_data *note;
+   char      *c = (char *)arg;
 
-   const char             *operations[] = {"insert", "withdraw", "limit", "discount", "flatrate", nullptr};
-   int                     i;
-   int                     amount;
+   const char *operations[] = {"insert", "withdraw", "limit", "discount", "flatrate", nullptr};
+   int         i;
+   int         amount;
 
    extern file_index_type *letter_fi;
 
@@ -656,18 +656,18 @@ void do_account(unit_data *ch, char *arg, const command_info *cmd)
    {
       struct tm btm, etm;
 
-      char      bhr[200], bmi[200], bse[200], bda[200];
-      char      ehr[200], emi[200], ese[200], eda[200];
+      char bhr[200], bmi[200], bse[200], bda[200];
+      char ehr[200], emi[200], ese[200], eda[200];
 
-      c           = str_next_word_copy(c, bhr);
-      c           = str_next_word_copy(c, bmi);
-      c           = str_next_word_copy(c, bse);
-      c           = str_next_word_copy(c, bda);
+      c = str_next_word_copy(c, bhr);
+      c = str_next_word_copy(c, bmi);
+      c = str_next_word_copy(c, bse);
+      c = str_next_word_copy(c, bda);
 
-      c           = str_next_word_copy(c, ehr);
-      c           = str_next_word_copy(c, emi);
-      c           = str_next_word_copy(c, ese);
-      c           = str_next_word_copy(c, eda);
+      c = str_next_word_copy(c, ehr);
+      c = str_next_word_copy(c, emi);
+      c = str_next_word_copy(c, ese);
+      c = str_next_word_copy(c, eda);
 
       btm.tm_hour = atoi(bhr);
       btm.tm_min  = atoi(bmi);
@@ -706,7 +706,7 @@ void do_account(unit_data *ch, char *arg, const command_info *cmd)
       return;
    }
 
-   c      = str_next_word(c, word);
+   c = str_next_word(c, word);
 
    amount = atoi(word);
 

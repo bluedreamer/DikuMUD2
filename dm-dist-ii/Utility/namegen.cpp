@@ -18,15 +18,16 @@
  * These are the structs ...
  */
 
-struct group
+class group
 {
+public:
    char prefix[MAX_PREFIX][FIX_LENGTH];
    char midfix[MAX_PREFIX][FIX_LENGTH];
    char surfix[MAX_PREFIX][FIX_LENGTH];
    int  min_midfix, max_midfix;
 };
 
-struct group groups[] =
+group groups[] =
    {
       {
          /* Wizard like names - prefixes */

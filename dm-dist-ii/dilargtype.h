@@ -5,8 +5,9 @@
    the user to enter the : dilcopy prg@zon(arg, arg, arg); instead of the
    stupid string format */
 
-struct dilargtype
+class dilargtype
 {
+public:
    uint8_t type;
    union
    {
