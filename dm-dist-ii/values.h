@@ -113,19 +113,54 @@ constexpr int ULTIMATE_LEVEL      = 255;
 #define SKY_RAINING   2
 #define SKY_LIGHTNING 3
 
+/* ------------------------- Directions ------------------------------
+ NORTH, EAST, SOUTH, WEST, UP and DOWN
+   The macros to use in exits.
+   For example:
+      exit[NORTH] to temple;
+   We recommend that you use the shorthand direction macros. For example:
+      north to temple;
+*/
+//#define NORTH 0
+//#define EAST  1
+//#define SOUTH 2
+//#define WEST  3
+//#define UP    4
+//#define DOWN  5
+enum Direction
+{
+   NORTH = 0,
+   EAST  = 1,
+   SOUTH = 2,
+   WEST  = 3,
+   UP    = 4,
+   DOWN  = 5,
+};
+
 /* Directions for use in 'pathto' */
-
-#define DIR_NORTH      NORTH
-#define DIR_EAST       EAST
-#define DIR_SOUTH      SOUTH
-#define DIR_WEST       WEST
-#define DIR_UP         UP
-#define DIR_DOWN       DOWN
-#define DIR_ENTER      6
-#define DIR_EXIT       7
-#define DIR_IMPOSSIBLE 8
-#define DIR_HERE       9
-
+//
+//#define DIR_NORTH      NORTH
+//#define DIR_EAST       EAST
+//#define DIR_SOUTH      SOUTH
+//#define DIR_WEST       WEST
+//#define DIR_UP         UP
+//#define DIR_DOWN       DOWN
+//#define DIR_ENTER      6
+//#define DIR_EXIT       7
+//#define DIR_IMPOSSIBLE 8
+//#define DIR_HERE       9
+enum PathTo
+{
+   DIR_NORTH      = NORTH,
+   DIR_SOUTH      = SOUTH,
+   DIR_WEST       = WEST,
+   DIR_UP         = UP,
+   DIR_DOWN       = DOWN,
+   DIR_ENTER      = 6,
+   DIR_EXIT       = 7,
+   DIR_IMPOSSIBLE = 8,
+   DIR_HERE       = 9,
+};
 /* ---------------------- UNIT DEFINITIONS ------------------------- */
 /* These are only flags for the purpose of quick testing, a unit     */
 /* must NEVER assume more than one of these flags.                   */
@@ -173,20 +208,7 @@ constexpr int ULTIMATE_LEVEL      = 255;
 #define RESET_IFEMPTY 1
 #define RESET_ANYHOW  2
 
-/* ------------------------- Directions ------------------------------
- NORTH, EAST, SOUTH, WEST, UP and DOWN
-   The macros to use in exits.
-   For example:
-      exit[NORTH] to temple;
-   We recommend that you use the shorthand direction macros. For example:
-      north to temple;
-*/
-#define NORTH 0
-#define EAST  1
-#define SOUTH 2
-#define WEST  3
-#define UP    4
-#define DOWN  5
+
 
 /* ------------------------- Sector Types ------------------------------
  Common for all sector types are that when you specify one for your

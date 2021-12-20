@@ -13,12 +13,12 @@
 
 #include <climits>
 
-void              event_enq(int when, void (*func)(), void *arg1, void *arg2);
+void       event_enq(int when, void (*func)(), void *arg1, void *arg2);
 
-struct zone_type *boot_zone = nullptr; /* Points to the zone currently booted */
+zone_type *boot_zone = nullptr; /* Points to the zone currently booted */
 
 /* No Operation */
-auto              zone_nop(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
+auto       zone_nop(unit_data *u, struct zone_reset_cmd *cmd) -> unit_data *
 {
    /* Return TRUE - NOP always succeedes */
 
