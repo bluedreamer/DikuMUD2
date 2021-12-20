@@ -4,9 +4,9 @@
 #include <boost/test/unit_test.hpp>
 #include <vector>
 
-struct Fixture
+struct TimeInfoDataFixture
 {
-   Fixture()
+   TimeInfoDataFixture()
    {
       populate_days();
       populate_months();
@@ -19,28 +19,28 @@ struct Fixture
    }
    void populate_months()
    {
-      months.push_back("Month of Winter");
-      months.push_back("Month of the Winter Wolf");
-      months.push_back("Month of the Frost Giant");
-      months.push_back("Month of the Spring");
-      months.push_back("Month of Futility");
-      months.push_back("Month of the Sun");
-      months.push_back("Month of the Heat");
-      months.push_back("Month of the Long Shadows");
-      months.push_back("Month of the Ancient Darkness");
+      months.emplace_back("Month of Winter");
+      months.emplace_back("Month of the Winter Wolf");
+      months.emplace_back("Month of the Frost Giant");
+      months.emplace_back("Month of the Spring");
+      months.emplace_back("Month of Futility");
+      months.emplace_back("Month of the Sun");
+      months.emplace_back("Month of the Heat");
+      months.emplace_back("Month of the Long Shadows");
+      months.emplace_back("Month of the Ancient Darkness");
    }
 
    void populate_days()
    {
-      days.push_back("the Day of the Moon");
-      days.push_back("the Day of the Bull");
-      days.push_back("the Day of the Deception");
-      days.push_back("the Day of Thunder");
-      days.push_back("the Day of Freedom");
-      days.push_back("the Day of the Great Gods");
-      days.push_back("the Day of the Sun");
+      days.emplace_back("the Day of the Moon");
+      days.emplace_back("the Day of the Bull");
+      days.emplace_back("the Day of the Deception");
+      days.emplace_back("the Day of Thunder");
+      days.emplace_back("the Day of Freedom");
+      days.emplace_back("the Day of the Great Gods");
+      days.emplace_back("the Day of the Sun");
    }
-   auto day_prefix(int day) -> std::string
+   static auto day_prefix(int day) -> std::string
    {
       if(day == 1)
       {
@@ -76,18 +76,23 @@ struct Fixture
    std::vector<std::string> months;
 };
 
+BOOST_AUTO_TEST_SUITE(time_info_data_suite);
+
 BOOST_AUTO_TEST_CASE(time_info_data_defines)
 {
+   BOOST_TEST_MESSAGE("Testing SECS_PER_REAL_* constants");
    BOOST_TEST(SECS_PER_REAL_MIN == 60);
    BOOST_TEST(SECS_PER_REAL_HOUR == 3600);
    BOOST_TEST(SECS_PER_REAL_DAY == 86400);
    BOOST_TEST(SECS_PER_REAL_YEAR == 31536000);
 
+   BOOST_TEST_MESSAGE("Testing MUD_* constants");
    BOOST_TEST(MUD_DAY == 24);
    BOOST_TEST(MUD_WEEK == 7);
    BOOST_TEST(MUD_MONTH == 14);
    BOOST_TEST(MUD_YEAR == 9);
 
+   BOOST_TEST_MESSAGE("Testing SECS_PER_MUD_* constants");
    BOOST_TEST(SECS_PER_MUD_HOUR == 300);
    BOOST_TEST(SECS_PER_MUD_DAY == 7200);
    BOOST_TEST(SECS_PER_MUD_MONTH == 100800);
@@ -98,9 +103,10 @@ BOOST_AUTO_TEST_CASE(time_info_data_defines)
 
 BOOST_AUTO_TEST_CASE(time_info_data_constants_tests)
 {
-   Fixture f;
+   TimeInfoDataFixture f;
    for(auto i = 0; i < MUD_WEEK; ++i)
    {
+      BOOST_TEST_MESSAGE("Testing weekday name: " << f.days[i]);
       BOOST_TEST(std::string(weekdays[i]) == f.days[i]);
    }
 }
@@ -114,6 +120,7 @@ BOOST_AUTO_TEST_CASE(real_time_passed_test)
 
    //////////////////////////////////////////////////////////////////////////////////////
    {
+      BOOST_TEST_MESSAGE("Testing real time passed 0: " << now << " to " << now);
       time_info_data result = real_time_passed(now, now);
       BOOST_TEST(result.hours == 0);
       BOOST_TEST(result.day == 0);
@@ -122,6 +129,7 @@ BOOST_AUTO_TEST_CASE(real_time_passed_test)
    }
    //////////////////////////////////////////////////////////////////////////////////////
    {
+      BOOST_TEST_MESSAGE("Testing real time passed hour: " << now << " to " << hour_future);
       time_info_data result = real_time_passed(now, hour_future);
       BOOST_TEST(result.hours == -1);
       BOOST_TEST(result.day == 0);
@@ -130,6 +138,7 @@ BOOST_AUTO_TEST_CASE(real_time_passed_test)
    }
    //////////////////////////////////////////////////////////////////////////////////////
    {
+      BOOST_TEST_MESSAGE("Testing real time passed hour: " << hour_future << " to " << now);
       time_info_data result = real_time_passed(hour_future, now);
       BOOST_TEST(result.hours == 1);
       BOOST_TEST(result.day == 0);
@@ -138,6 +147,7 @@ BOOST_AUTO_TEST_CASE(real_time_passed_test)
    }
    //////////////////////////////////////////////////////////////////////////////////////
    {
+      BOOST_TEST_MESSAGE("Testing real time passed day: " << now << " to " << day_future);
       time_info_data result = real_time_passed(now, day_future);
       BOOST_TEST(result.hours == 0);
       BOOST_TEST(result.day == -1);
@@ -146,6 +156,7 @@ BOOST_AUTO_TEST_CASE(real_time_passed_test)
    }
    //////////////////////////////////////////////////////////////////////////////////////
    {
+      BOOST_TEST_MESSAGE("Testing real time passed day: " << day_future << " to " << now);
       time_info_data result = real_time_passed(day_future, now);
       BOOST_TEST(result.hours == 0);
       BOOST_TEST(result.day == 1);
@@ -166,6 +177,7 @@ BOOST_AUTO_TEST_CASE(mud_time_passed_test)
    //                               << " year=" << (int)result.year);
    //////////////////////////////////////////////////////////////////////////////////////
    {
+      BOOST_TEST_MESSAGE("Testing mud time passed 0: " << now << " to " << now);
       time_info_data result = mud_time_passed(now, now);
       BOOST_TEST(result.hours == 0);
       BOOST_TEST(result.day == 0);
@@ -174,6 +186,7 @@ BOOST_AUTO_TEST_CASE(mud_time_passed_test)
    }
    //////////////////////////////////////////////////////////////////////////////////////
    {
+      BOOST_TEST_MESSAGE("Testing mud time passed real hour: " << now << " to " << hour_future);
       time_info_data result = mud_time_passed(now, hour_future);
       BOOST_TEST(result.hours == -12);
       BOOST_TEST(result.day == 0);
@@ -182,6 +195,7 @@ BOOST_AUTO_TEST_CASE(mud_time_passed_test)
    }
    //////////////////////////////////////////////////////////////////////////////////////
    {
+      BOOST_TEST_MESSAGE("Testing mud time passed real hour: " << hour_future << " to " << now);
       time_info_data result = mud_time_passed(hour_future, now);
       BOOST_TEST(result.hours == 12);
       BOOST_TEST(result.day == 0);
@@ -190,6 +204,7 @@ BOOST_AUTO_TEST_CASE(mud_time_passed_test)
    }
    //////////////////////////////////////////////////////////////////////////////////////
    {
+      BOOST_TEST_MESSAGE("Testing mud time passed real day: " << now << " to " << day_future);
       time_info_data result = mud_time_passed(now, day_future);
       BOOST_TEST(result.hours == 0);
       BOOST_TEST(result.day == -12);
@@ -198,6 +213,7 @@ BOOST_AUTO_TEST_CASE(mud_time_passed_test)
    }
    //////////////////////////////////////////////////////////////////////////////////////
    {
+      BOOST_TEST_MESSAGE("Testing mud time passed real day: " << day_future << " to " << now);
       time_info_data result = mud_time_passed(day_future, now);
       BOOST_TEST(result.hours == 0);
       BOOST_TEST(result.day == 12);
@@ -206,6 +222,7 @@ BOOST_AUTO_TEST_CASE(mud_time_passed_test)
    }
    //////////////////////////////////////////////////////////////////////////////////////
    {
+      BOOST_TEST_MESSAGE("Testing mud time passed real month: " << now << " to " << month_future);
       time_info_data result = mud_time_passed(now, month_future);
       BOOST_TEST(result.hours == 0);
       BOOST_TEST(result.day == -10);
@@ -214,6 +231,7 @@ BOOST_AUTO_TEST_CASE(mud_time_passed_test)
    }
    //////////////////////////////////////////////////////////////////////////////////////
    {
+      BOOST_TEST_MESSAGE("Testing mud time passed real month: " << month_future << " to " << now);
       time_info_data result = mud_time_passed(month_future, now);
       BOOST_TEST(result.hours == 0);
       BOOST_TEST(result.day == 10);
@@ -222,6 +240,7 @@ BOOST_AUTO_TEST_CASE(mud_time_passed_test)
    }
    //////////////////////////////////////////////////////////////////////////////////////
    {
+      BOOST_TEST_MESSAGE("Testing mud time passed real year: " << now << " to " << year_future);
       time_info_data result = mud_time_passed(now, year_future);
       BOOST_TEST(result.hours == 0);
       BOOST_TEST(result.day == -12);
@@ -230,6 +249,7 @@ BOOST_AUTO_TEST_CASE(mud_time_passed_test)
    }
    //////////////////////////////////////////////////////////////////////////////////////
    {
+      BOOST_TEST_MESSAGE("Testing mud time passed real year: " << year_future << " to " << now);
       time_info_data result = mud_time_passed(year_future, now);
       BOOST_TEST(result.hours == 0);
       BOOST_TEST(result.day == 12);
@@ -280,11 +300,11 @@ BOOST_AUTO_TEST_CASE(mudtime_strcpy_test)
    ///////////////////////////////////////////////////////////////////////////
    {
       // Test different days
-      Fixture           f;
-      const std::string start_msg{"12 o'clock after Noon, on "};
-      const std::string mid_msg{",\n\r   the "};
-      const std::string end_msg{" Day of the Month of Winter, Year 0.\n\r"};
-      time_info_data    time{};
+      TimeInfoDataFixture f;
+      const std::string   start_msg{"12 o'clock after Noon, on "};
+      const std::string   mid_msg{",\n\r   the "};
+      const std::string   end_msg{" Day of the Month of Winter, Year 0.\n\r"};
+      time_info_data      time{};
       for(time.day = 0; time.day < MUD_WEEK; ++time.day)
       {
          time.hours = 0;
@@ -303,10 +323,10 @@ BOOST_AUTO_TEST_CASE(mudtime_strcpy_test)
    ///////////////////////////////////////////////////////////////////////////
    {
       // Test different months
-      Fixture           f;
-      const std::string start_msg{"12 o'clock after Noon, on "};
-      const std::string mid_msg{",\n\r   the "};
-      time_info_data    time{};
+      TimeInfoDataFixture f;
+      const std::string   start_msg{"12 o'clock after Noon, on "};
+      const std::string   mid_msg{",\n\r   the "};
+      time_info_data      time{};
       for(time.month = 0; time.month < MUD_YEAR; ++time.month)
       {
          time.day   = 0;
@@ -328,30 +348,34 @@ BOOST_AUTO_TEST_CASE(mudtime_strcpy_test)
 BOOST_AUTO_TEST_CASE(age_test)
 {
    { // Isn't a PC
-      unit_data unit(UNIT_ST_NPC);
-      unit.next                             = nullptr;
-      unit.gnext                            = nullptr;
-      unit.gprevious                        = nullptr;
-      unit.data.ch->specific.pc->time.birth = 690399843;
+      std::unique_ptr<unit_data> unit(new unit_data(UNIT_ST_NPC));
 
-      auto result = age(&unit);
-      //      Fixture::LogTimeInfoData(result);
+      unit->next                             = nullptr;
+      unit->gnext                            = nullptr;
+      unit->gprevious                        = nullptr;
+      unit->data.ch->specific.pc->time.birth = 690399843;
+
+      auto result = age(unit.get());
+      //      TimeInfoDataFixture::LogTimeInfoData(result);
       BOOST_TEST(result.hours == 0);
       BOOST_TEST(result.day == 0);
       BOOST_TEST(result.month == 0);
       BOOST_TEST(result.year == 0);
    }
    { // Is a PC
-      unit_data unit(UNIT_ST_PC);
-      unit.next                             = nullptr;
-      unit.gnext                            = nullptr;
-      unit.gprevious                        = nullptr;
-      unit.data.ch->specific.pc->time.birth = 690399843;
-      auto result                           = age(&unit);
-      Fixture::LogTimeInfoData(result);
-      BOOST_TEST(result.hours == 23);
-      BOOST_TEST(result.day == 11);
-      BOOST_TEST(result.month == 6);
-      BOOST_TEST(result.year == 1046);
+      auto                       age_time = time(nullptr) - 69039984;
+      std::unique_ptr<unit_data> unit(new unit_data(UNIT_ST_PC));
+      unit->next                             = nullptr;
+      unit->gnext                            = nullptr;
+      unit->gprevious                        = nullptr;
+      unit->data.ch->specific.pc->time.birth = age_time;
+
+      auto result = age(unit.get());
+      TimeInfoDataFixture::LogTimeInfoData(result);
+      BOOST_TEST(result.hours == 21);
+      BOOST_TEST(result.day == 12);
+      BOOST_TEST(result.month == 0);
+      BOOST_TEST(result.year == 76);
    }
 }
+BOOST_AUTO_TEST_SUITE_END();
