@@ -4,14 +4,25 @@
 
 #define ADMIN_MAIL "mud@valhalla-usa.com"
 
-constexpr int START_LEVEL         = 1;
-constexpr int MORTAL_MAX_LEVEL    = 50;  /* Maximum level for mortal players */
-constexpr int IMMORTAL_LEVEL      = 200; /* At 200 you can't really die      */
-constexpr int GOD_LEVEL           = 220; /* Here are the *real* gods         */
-constexpr int CREATOR_LEVEL       = 230;
-constexpr int OVERSEER_LEVEL      = 253;
-constexpr int ADMINISTRATOR_LEVEL = 254;
-constexpr int ULTIMATE_LEVEL      = 255;
+// constexpr int START_LEVEL         = 1;
+// constexpr int MORTAL_MAX_LEVEL    = 50;  /* Maximum level for mortal players */
+// constexpr int IMMORTAL_LEVEL      = 200; /* At 200 you can't really die      */
+// constexpr int GOD_LEVEL           = 220; /* Here are the *real* gods         */
+// constexpr int CREATOR_LEVEL       = 230;
+// constexpr int OVERSEER_LEVEL      = 253;
+// constexpr int ADMINISTRATOR_LEVEL = 254;
+// constexpr int ULTIMATE_LEVEL      = 255;
+enum Level
+{
+   START_LEVEL         = 1,
+   MORTAL_MAX_LEVEL    = 50,  /* Maximum level for mortal players */
+   IMMORTAL_LEVEL      = 200, /* At 200 you can't really die      */
+   GOD_LEVEL           = 220, /* Here are the *real* gods         */
+   CREATOR_LEVEL       = 230,
+   OVERSEER_LEVEL      = 253,
+   ADMINISTRATOR_LEVEL = 254,
+   ULTIMATE_LEVEL      = 255,
+};
 
 #define POLICE_ACADEMY    "$Police Member"
 #define POLICE_BANNED     "$Police Banned"
