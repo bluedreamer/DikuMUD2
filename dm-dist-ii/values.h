@@ -579,25 +579,27 @@ enum ManipulateFlags
    Do not use - Internal.
 
 */
-#define CHAR_PROTECTED        0x00001
-#define CHAR_LEGAL_TARGET     0x00002
-#define CHAR_OUTLAW           0x00004
-#define CHAR_GROUP            0x00008
-#define CHAR_BLIND            0x00010
-#define CHAR_HIDE             0x00020
-#define CHAR_MUTE             0x00040
-#define CHAR_SNEAK            0x00080
-#define CHAR_DETECT_ALIGN     0x00100
-#define CHAR_DETECT_INVISIBLE 0x00200
-#define CHAR_DETECT_MAGIC     0x00400
-#define CHAR_DETECT_POISON    0x00800
-#define CHAR_DETECT_UNDEAD    0x01000
-#define CHAR_DETECT_CURSE     0x02000
-#define CHAR_DETECT_LIFE      0x04000
-#define CHAR_WIMPY            0x08000
-#define CHAR_SELF_DEFENCE     0x20000
-#define CHAR_PEACEFUL         0x40000 /* Auto-attack stuff? */
-
+enum CharacterFlags
+{
+   CHAR_PROTECTED        = 0x00001,
+   CHAR_LEGAL_TARGET     = 0x00002,
+   CHAR_OUTLAW           = 0x00004,
+   CHAR_GROUP            = 0x00008,
+   CHAR_BLIND            = 0x00010,
+   CHAR_HIDE             = 0x00020,
+   CHAR_MUTE             = 0x00040,
+   CHAR_SNEAK            = 0x00080,
+   CHAR_DETECT_ALIGN     = 0x00100,
+   CHAR_DETECT_INVISIBLE = 0x00200,
+   CHAR_DETECT_MAGIC     = 0x00400,
+   CHAR_DETECT_POISON    = 0x00800,
+   CHAR_DETECT_UNDEAD    = 0x01000,
+   CHAR_DETECT_CURSE     = 0x02000,
+   CHAR_DETECT_LIFE      = 0x04000,
+   CHAR_WIMPY            = 0x08000,
+   CHAR_SELF_DEFENCE     = 0x20000,
+   CHAR_PEACEFUL         = 0x40000, /* Auto-attack stuff? */
+};
 /* ------------------------- ITEM Types ------------------------------
  ITEM_LIGHT
    Items of this type can be lighted and extinguished.
