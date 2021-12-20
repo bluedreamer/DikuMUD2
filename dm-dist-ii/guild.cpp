@@ -751,7 +751,7 @@ auto guild_title(struct spec_arg *sarg) -> int
    return SFR_BLOCK;
 }
 
-void do_guild(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_guild(unit_data *ch, char *arg, const command_info *cmd)
 {
    char              buf[MAX_STRING_LENGTH];
    int               found = static_cast<int>(FALSE);

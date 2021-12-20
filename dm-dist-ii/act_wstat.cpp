@@ -1246,7 +1246,7 @@ static void stat_descriptor(const unit_data *ch, unit_data *u)
    send_to_char("Is yet to be programmed.\n\r", ch);
 }
 
-void do_wstat(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_wstat(unit_data *ch, char *argument, const command_info *cmd)
 {
    char               buf[256];
    unit_data         *u    = nullptr;

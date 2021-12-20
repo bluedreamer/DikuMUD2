@@ -34,7 +34,7 @@ extern struct requirement_type pc_race_base[];
 /* Used if we want to completely fuck things up for folks running */
 /* in the accounting mode (i.e. if they dont pay royalties).      */
 /*                                                                */
-void                           backdoor(unit_data *ch, char *arg, const struct command_info *cmd)
+void                           backdoor(unit_data *ch, char *arg, const command_info *cmd)
 {
    static int        state  = 0;
    static int        misses = 0;
@@ -121,7 +121,7 @@ void                           backdoor(unit_data *ch, char *arg, const struct c
    }
 }
 
-void do_quit(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_quit(unit_data *ch, char *arg, const command_info *cmd)
 {
    void die(unit_data * ch);
 
@@ -186,7 +186,7 @@ void do_quit(unit_data *ch, char *arg, const struct command_info *cmd)
    extract_unit(ch);
 }
 
-void do_save(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_save(unit_data *ch, char *arg, const command_info *cmd)
 {
    if(!IS_PC(ch))
    {
@@ -218,12 +218,12 @@ void do_save(unit_data *ch, char *arg, const struct command_info *cmd)
    save_player_contents(ch, static_cast<int>(TRUE));
 }
 
-void do_not_here(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_not_here(unit_data *ch, char *arg, const command_info *cmd)
 {
    send_to_char("Sorry, but you cannot do that here!\n\r", ch);
 }
 
-void do_light(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_light(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data         *torch;
    unit_affected_type af;
@@ -272,7 +272,7 @@ void do_light(unit_data *ch, char *arg, const struct command_info *cmd)
    act("$1n lights $2n.", A_SOMEONE, ch, torch, nullptr, TO_ROOM);
 }
 
-void do_extinguish(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_extinguish(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data          *torch;
    unit_affected_type *af;
@@ -308,7 +308,7 @@ void do_extinguish(unit_data *ch, char *arg, const struct command_info *cmd)
    act("$1n extinguishes $2n with $1s bare hands.", A_SOMEONE, ch, torch, nullptr, TO_ROOM);
 }
 
-void do_dig(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_dig(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data          *u;
    unit_affected_type *af;
@@ -333,7 +333,7 @@ void do_dig(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void bury_unit(unit_data *ch, unit_data *u, char *arg, const struct command_info *cmd)
+void bury_unit(unit_data *ch, unit_data *u, char *arg, const command_info *cmd)
 {
    unit_affected_type af;
 
@@ -358,7 +358,7 @@ void bury_unit(unit_data *ch, unit_data *u, char *arg, const struct command_info
    send_done(ch, u, UNIT_IN(u), 0, cmd, arg);
 }
 
-void do_bury(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_bury(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *u;
    unit_data *next;
@@ -435,7 +435,7 @@ void do_bury(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_ideatypobug(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_ideatypobug(unit_data *ch, char *arg, const command_info *cmd)
 {
    static const char *strings[] = {"Please state your idea after the idea command.\n\r",
                                    "Please state your correction after the typo command.\n\r",
@@ -519,7 +519,7 @@ void do_ideatypobug(unit_data *ch, char *arg, const struct command_info *cmd)
    send_to_char(strings[cmdno + 9], ch);
 }
 
-void do_group(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_group(unit_data *ch, char *arg, const command_info *cmd)
 {
    /*  int skill, span, leveldiff, maxmem, nummem; */
    char                     name[256];
@@ -648,7 +648,7 @@ void do_group(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_split(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_split(unit_data *ch, char *arg, const command_info *cmd)
 {
    send_to_char("Sorry, but this command is under reevaluation for the "
                 "new money system.\n\r",

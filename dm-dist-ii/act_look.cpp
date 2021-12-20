@@ -810,7 +810,7 @@ static void look_dir(unit_data *ch, int keyword_no)
    }
 }
 
-static void look_in(unit_data *ch, char *arg, const struct command_info *cmd)
+static void look_in(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *unit;
 
@@ -915,7 +915,7 @@ static void look_in(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-static void look_at(unit_data *ch, char *arg, const struct command_info *cmd)
+static void look_at(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data        *unit;
    extra_descr_data *ed;
@@ -1298,7 +1298,7 @@ static void look_exits(unit_data *ch)
    send_to_char(buf, ch);
 }
 
-static void look_blank(unit_data *ch, const struct command_info *cmd)
+static void look_blank(unit_data *ch, const command_info *cmd)
 {
    char buffer[MAX_STRING_LENGTH];
 
@@ -1410,7 +1410,7 @@ static void look_blank(unit_data *ch, const struct command_info *cmd)
    send_done(ch, nullptr, nullptr, 0, cmd, "");
 }
 
-void do_look(unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_look(unit_data *ch, char *aaa, const command_info *cmd)
 {
    char *arg = (char *)aaa;
    if(CHAR_DESCRIPTOR(ch) == nullptr)
@@ -1512,7 +1512,7 @@ void do_look(unit_data *ch, char *aaa, const struct command_info *cmd)
 }
 /* end of look */
 
-void do_read(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_read(unit_data *ch, char *arg, const command_info *cmd)
 {
    if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
@@ -1551,7 +1551,7 @@ void do_read(unit_data *ch, char *arg, const struct command_info *cmd)
 #endif
 }
 
-void do_examine(unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_examine(unit_data *ch, char *aaa, const command_info *cmd)
 {
    char      *arg = (char *)aaa;
    char      *b;
@@ -1584,7 +1584,7 @@ void do_examine(unit_data *ch, char *aaa, const struct command_info *cmd)
    }
 }
 
-void do_inventory(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_inventory(unit_data *ch, char *arg, const command_info *cmd)
 {
    char                  buffer[MAX_STRING_LENGTH];
    unit_data            *thing;
@@ -1627,7 +1627,7 @@ void do_inventory(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_equipment(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_equipment(unit_data *ch, char *arg, const command_info *cmd)
 {
    char       buf[MAX_STRING_LENGTH];
    unit_data *thing;

@@ -407,7 +407,7 @@ auto base_consider(unit_data *att, unit_data *def) -> int
    return UNIT_MAX_HIT(def) / dam; /* Rounds to die.... */
 }
 
-void do_consider(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_consider(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *vict;
    int        rtd;

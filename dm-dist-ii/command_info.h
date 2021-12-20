@@ -15,7 +15,7 @@ struct command_info
 
    uint8_t     minimum_position;
 
-   void (*cmd_fptr)(unit_data *ch, char *arg, const struct command_info *c);
+   void (*cmd_fptr)(unit_data *ch, char *arg, const command_info *c);
 
    uint8_t      minimum_level;
    uint8_t      log_level; /* For logging certain immortal commands */

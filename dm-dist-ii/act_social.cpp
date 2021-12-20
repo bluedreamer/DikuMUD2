@@ -341,7 +341,7 @@ static auto sprint_social(char *b, trie_type *t, int *no, char *cur, int idx) ->
    return count;
 }
 
-void do_socials(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_socials(unit_data *ch, char *arg, const command_info *cmd)
 {
    char buf[MAX_STRING_LENGTH];
    char cur[50];
@@ -365,7 +365,7 @@ void do_socials(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_insult(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_insult(unit_data *ch, char *arg, const command_info *cmd)
 {
    const char *insult;
    unit_data  *victim;
@@ -479,7 +479,7 @@ void                    boot_pose_messages()
    fclose(fl);
 }
 
-void do_pose(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_pose(unit_data *ch, char *argument, const command_info *cmd)
 {
    send_to_char("Sorry Buggy command.\n\r", ch);
 

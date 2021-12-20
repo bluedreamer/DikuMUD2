@@ -57,7 +57,7 @@ static void apply_poison(unit_data *ch, int poison, int amount)
 }
 
 /* Return TRUE if something was eaten/drunk */
-auto drink_eat(unit_data *ch, unit_data *obj, int amount, const struct command_info *cmd, char *arg) -> bool
+auto drink_eat(unit_data *ch, unit_data *obj, int amount, const command_info *cmd, char *arg) -> bool
 {
    int  extract = static_cast<int>(FALSE);
    int  poison  = 0; /* No poison */
@@ -185,7 +185,7 @@ auto drink_eat(unit_data *ch, unit_data *obj, int amount, const struct command_i
    return TRUE;
 }
 
-void do_drink(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_drink(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *drink;
    char      *oarg = arg;
@@ -224,7 +224,7 @@ void do_drink(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_eat(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_eat(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *food;
    char      *oarg = arg;
@@ -253,7 +253,7 @@ void do_eat(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_sip(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_sip(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *drink;
    char      *oarg = arg;
@@ -281,7 +281,7 @@ void do_sip(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_taste(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_taste(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *drink;
    char      *oarg = arg;
@@ -315,7 +315,7 @@ void do_taste(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_pour(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_pour(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *from_obj;
    unit_data *to_obj;

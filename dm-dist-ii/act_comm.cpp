@@ -101,7 +101,7 @@ auto drunk_speech(unit_data *ch, const char *str) -> char *
    return result;
 }
 
-void do_emote(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_emote(unit_data *ch, char *arg, const command_info *cmd)
 {
    if(IS_SET(UNIT_FLAGS(ch), UNIT_FL_BURIED))
    {
@@ -129,7 +129,7 @@ void do_emote(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_say(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_say(unit_data *ch, char *argument, const command_info *cmd)
 {
    if(CHAR_HAS_FLAG(ch, CHAR_MUTE))
    {
@@ -176,7 +176,7 @@ void do_say(unit_data *ch, char *argument, const struct command_info *cmd)
    }
 }
 
-void do_shout(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_shout(unit_data *ch, char *argument, const command_info *cmd)
 {
    descriptor_data *i;
    const char      *me     = "You shout '$3t'";
@@ -266,7 +266,7 @@ void do_shout(unit_data *ch, char *argument, const struct command_info *cmd)
    send_done(ch, nullptr, nullptr, 0, cmd, argument);
 }
 
-void do_tell(unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_tell(unit_data *ch, char *aaa, const command_info *cmd)
 {
    unit_data               *vict = nullptr;
    struct char_follow_type *f;
@@ -475,7 +475,7 @@ void do_tell(unit_data *ch, char *aaa, const struct command_info *cmd)
    }
 }
 
-void do_reply(unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_reply(unit_data *ch, char *aaa, const command_info *cmd)
 {
    do_not_here(ch, aaa, cmd);
 }
@@ -512,7 +512,7 @@ void ignore_toggle(unit_data *ch, unit_data *victim)
    }
 }
 
-void do_ignore(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_ignore(unit_data *ch, char *argument, const command_info *cmd)
 {
    char       tmp[MAX_INPUT_LENGTH];
    unit_data *victim;
@@ -541,7 +541,7 @@ void do_ignore(unit_data *ch, char *argument, const struct command_info *cmd)
    }
 }
 
-void do_whisper(unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_whisper(unit_data *ch, char *aaa, const command_info *cmd)
 {
    unit_data *vict;
    char      *arg = (char *)aaa;
@@ -619,7 +619,7 @@ void do_whisper(unit_data *ch, char *aaa, const struct command_info *cmd)
    }
 }
 
-void do_ask(unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_ask(unit_data *ch, char *aaa, const command_info *cmd)
 {
    unit_data *vict;
    char      *argument = (char *)aaa;
@@ -711,7 +711,7 @@ void do_ask(unit_data *ch, char *aaa, const struct command_info *cmd)
 
 #define MAX_NOTE_LENGTH 2000 /* arbitrary */
 
-void do_write(unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_write(unit_data *ch, char *aaa, const command_info *cmd)
 {
    extra_descr_data *exd;
    unit_data        *paper    = nullptr;

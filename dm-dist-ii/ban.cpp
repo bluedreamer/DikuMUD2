@@ -231,7 +231,7 @@ void show_site(unit_data *ch, struct ban_t *entry)
    send_to_char(buf, ch);
 }
 
-void do_ban(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_ban(unit_data *ch, char *arg, const command_info *cmd)
 {
    struct ban_t *tmp;
    char          site[MAX_INPUT_LENGTH];

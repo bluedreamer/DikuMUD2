@@ -132,7 +132,7 @@ auto rent_calc(unit_data *ch, time_t savetime) -> uint32_t
    return sum;
 }
 
-void do_rent(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_rent(unit_data *ch, char *arg, const command_info *cmd)
 {
    uint32_t sum;
 

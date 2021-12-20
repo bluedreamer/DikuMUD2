@@ -95,7 +95,7 @@ void say_spell(unit_data *ch, unit_data *target, int si)
 auto spell_perform(
    int spell_no, int spell_type, unit_data *caster, unit_data *medium, unit_data *target, char *argument, char *pEffect, int bonus) -> int
 {
-   static struct command_info *cmd = nullptr;
+   static command_info *cmd = nullptr;
    int                         hm  = -1;
 
    if(cmd == nullptr)
@@ -241,7 +241,7 @@ auto spell_perform(
 }
 
 /* Assumes that argument does start with first letter of chopped string */
-void do_cast(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_cast(unit_data *ch, char *argument, const command_info *cmd)
 {
    unit_data *unit;
    int        spl;

@@ -687,13 +687,13 @@ void descriptor_interpreter(descriptor_data *d, const char *arg)
 }
 
 /* Check to see if the full command was typed */
-auto cmd_is_abbrev(unit_data *ch, const struct command_info *cmd) -> bool
+auto cmd_is_abbrev(unit_data *ch, const command_info *cmd) -> bool
 {
    return (CHAR_DESCRIPTOR(ch) != nullptr) && (str_ccmp(CHAR_DESCRIPTOR(ch)->last_cmd, cmd->cmd_str) != 0);
 }
 
 /* To check for commands by string */
-auto is_command(const struct command_info *cmd, const char *str) -> bool
+auto is_command(const command_info *cmd, const char *str) -> bool
 {
    if((cmd->no == CMD_AUTO_UNKNOWN) || (cmd->no == CMD_A_SOCIAL))
    {
@@ -930,7 +930,7 @@ auto basic_special(unit_data *ch, struct spec_arg *sarg, uint16_t mflt, unit_dat
 }
 
 /* Preprocessed commands */
-auto send_preprocess(unit_data *ch, const struct command_info *cmd, const char *arg) -> int
+auto send_preprocess(unit_data *ch, const command_info *cmd, const char *arg) -> int
 {
    struct spec_arg sarg;
 
@@ -1009,7 +1009,7 @@ auto send_ack(unit_data                 *activator,
               unit_data                 *medium,
               unit_data                 *target,
               int                       *i,
-              const struct command_info *cmd,
+              const command_info *cmd,
               const char                *arg,
               unit_data                 *extra_target) -> int
 {
@@ -1039,7 +1039,7 @@ void send_done(unit_data                 *activator,
                unit_data                 *medium,
                unit_data                 *target,
                int                        i,
-               const struct command_info *cmd,
+               const command_info *cmd,
                const char                *arg,
                unit_data                 *extra_target)
 {

@@ -2174,19 +2174,17 @@ enum TIFType
 
 enum CommandType
 {
-   CMD_AUTO_DAMAGE  = -10, /* Used when any damage is given               */
-   CMD_AUTO_ENTER   = -9,  /* Used when room is entered (walk, sail, etc) */
-   CMD_AUTO_SAVE    = -8,  /* Used when player is saved                   */
-   CMD_AUTO_MSG     = -7,  /* Used to pass messages                       */
-   CMD_AUTO_EXTRACT = -6,  /* Used when extract_unit is called            */
-   CMD_NON_USABLE   = -5,  /* Used when there is nothing apropriate       */
-   CMD_AUTO_UNKNOWN = -4,  /* Used when cmd_interpreter doesn't recognize */
-                           /* command typed by ch. cmd->cmd_str is used   */
-   CMD_AUTO_DEATH   = -= 3,
-   , /* Used when someone is killed (combat)        */
-   CMD_AUTO_COMBAT = -= 2,
-   ,                       /* Used when combat round                      */
-   CMD_AUTO_TICK     = -1, /* MUST BE -1 ,Used when units are "ticking"   */
+   CMD_AUTO_DAMAGE   = -10, /* Used when any damage is given               */
+   CMD_AUTO_ENTER    = -9,  /* Used when room is entered (walk, sail, etc) */
+   CMD_AUTO_SAVE     = -8,  /* Used when player is saved                   */
+   CMD_AUTO_MSG      = -7,  /* Used to pass messages                       */
+   CMD_AUTO_EXTRACT  = -6,  /* Used when extract_unit is called            */
+   CMD_NON_USABLE    = -5,  /* Used when there is nothing apropriate       */
+   CMD_AUTO_UNKNOWN  = -4,  /* Used when cmd_interpreter doesn't recognize */
+                            /* command typed by ch. cmd->cmd_str is used   */
+   CMD_AUTO_DEATH    = -3,  /* Used when someone is killed (combat)        */
+   CMD_AUTO_COMBAT   = -2,  /* Used when combat round                      */
+   CMD_AUTO_TICK     = -1,  /* MUST BE -1 ,Used when units are "ticking"   */
 
    CMD_NORTH         = NORTH, /* MUST BE 0 */
    CMD_EAST          = EAST,  /* MUST BE 1 */
@@ -2349,7 +2347,6 @@ enum CommandType
    CMD_SKIN          = 306,
    CMD_SKILL7        = 307,
    CMD_SKILL8        = 308,
-   CMD_SKILL9        = 309,
    CMD_SKILL9        = 309,
    CMD_SKILL10       = 310,
    CMD_SKILL11       = 311,

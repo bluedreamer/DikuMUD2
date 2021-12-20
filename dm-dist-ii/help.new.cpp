@@ -130,7 +130,7 @@ auto help_base(descriptor_data *d, char *arg) -> int
    return static_cast<int>(TRUE);
 }
 
-void do_help(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_help(unit_data *ch, char *arg, const command_info *cmd)
 {
    if(!IS_PC(ch) || (CHAR_DESCRIPTOR(ch) == nullptr))
    {

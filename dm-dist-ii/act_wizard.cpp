@@ -45,7 +45,7 @@ static int       WIZ_CMD_LEVEL = 210; /* No need to change this, it is also set
 auto             player_exists(const char *pName) -> int;
 auto             delete_player(const char *name) -> int;
 
-void             do_path(unit_data *ch, char *argument, const struct command_info *cmd)
+void             do_path(unit_data *ch, char *argument, const command_info *cmd)
 {
    int        i;
    unit_data *thing;
@@ -76,7 +76,7 @@ void             do_path(unit_data *ch, char *argument, const struct command_inf
    send_to_char(buf, ch);
 }
 
-void do_users(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_users(unit_data *ch, char *argument, const command_info *cmd)
 {
    static char     *buf      = nullptr;
    static int       cur_size = 1024;
@@ -137,7 +137,7 @@ void do_users(unit_data *ch, char *argument, const struct command_info *cmd)
 }
 
 /* Reset the zone in which the char is in! */
-void do_reset(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_reset(unit_data *ch, char *arg, const command_info *cmd)
 {
    struct zone_type *zone;
 
@@ -159,7 +159,7 @@ void do_reset(unit_data *ch, char *arg, const struct command_info *cmd)
    zone_reset(zone);
 }
 
-void do_echo(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_echo(unit_data *ch, char *arg, const command_info *cmd)
 {
    if(static_cast<unsigned int>(str_is_empty(arg)) != 0U)
    {
@@ -192,7 +192,7 @@ auto frozen(struct spec_arg *sarg) -> int
    return SFR_BLOCK;
 }
 
-void do_freeze(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_freeze(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *unit;
    unit_fptr *fptr;
@@ -229,7 +229,7 @@ void do_freeze(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_noshout(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_noshout(unit_data *ch, char *argument, const command_info *cmd)
 {
    unit_data *victim;
 
@@ -265,7 +265,7 @@ void do_noshout(unit_data *ch, char *argument, const struct command_info *cmd)
    TOGGLE_BIT(PC_FLAGS(victim), PC_NOSHOUTING);
 }
 
-void do_notell(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_notell(unit_data *ch, char *argument, const command_info *cmd)
 {
    unit_data *victim;
 
@@ -302,7 +302,7 @@ void do_notell(unit_data *ch, char *argument, const struct command_info *cmd)
    TOGGLE_BIT(PC_FLAGS(victim), PC_NOTELLING);
 }
 
-void do_wizinv(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wizinv(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *unit;
    int        level = GOD_LEVEL - 1;
@@ -400,7 +400,7 @@ void base_trans(unit_data *ch, unit_data *victim)
    }
 }
 
-void do_trans(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_trans(unit_data *ch, char *arg, const command_info *cmd)
 {
    descriptor_data *i;
    unit_data       *victim;
@@ -443,7 +443,7 @@ void do_trans(unit_data *ch, char *arg, const struct command_info *cmd)
    send_to_char("Ok.\n\r", ch);
 }
 
-void do_at(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_at(unit_data *ch, char *argument, const command_info *cmd)
 {
    char             buf[MAX_INPUT_LENGTH];
    unit_data       *target;
@@ -502,7 +502,7 @@ void do_at(unit_data *ch, char *argument, const struct command_info *cmd)
    }
 }
 
-void do_goto(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_goto(unit_data *ch, char *argument, const command_info *cmd)
 {
    unit_data        *target;
    unit_data        *pers;
@@ -592,7 +592,7 @@ void do_goto(unit_data *ch, char *argument, const struct command_info *cmd)
    do_look(ch, mbuf, cmd);
 }
 
-void do_crash(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_crash(unit_data *ch, char *argument, const command_info *cmd)
 {
    if(static_cast<unsigned int>(cmd_is_abbrev(ch, cmd)) != 0U)
    {
@@ -610,7 +610,7 @@ void do_crash(unit_data *ch, char *argument, const struct command_info *cmd)
    }
 }
 
-void do_execute(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_execute(unit_data *ch, char *argument, const command_info *cmd)
 {
    auto system_check(unit_data * pc, char *buf)->int;
    void execute_append(unit_data * pc, char *str);
@@ -626,7 +626,7 @@ void do_execute(unit_data *ch, char *argument, const struct command_info *cmd)
    act("Executing $2t.\n\r", A_ALWAYS, ch, argument, nullptr, TO_CHAR);
 }
 
-void do_shutdown(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_shutdown(unit_data *ch, char *argument, const command_info *cmd)
 {
    char       buf[100];
    extern int mud_shutdown, mud_reboot;
@@ -647,7 +647,7 @@ void do_shutdown(unit_data *ch, char *argument, const struct command_info *cmd)
    mud_shutdown = 1;
 }
 
-void do_reboot(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_reboot(unit_data *ch, char *argument, const command_info *cmd)
 {
    char       buf[100];
    char       arg[MAX_INPUT_LENGTH];
@@ -682,7 +682,7 @@ void do_reboot(unit_data *ch, char *argument, const struct command_info *cmd)
    mud_shutdown = mud_reboot = 1;
 }
 
-void do_snoop(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_snoop(unit_data *ch, char *argument, const command_info *cmd)
 {
    unit_data *victim;
 
@@ -758,7 +758,7 @@ void do_snoop(unit_data *ch, char *argument, const struct command_info *cmd)
 
 /* return -> switch <no_arg> */
 
-void do_switch(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_switch(unit_data *ch, char *argument, const command_info *cmd)
 {
    unit_data *victim;
 
@@ -821,7 +821,7 @@ void base_force(unit_data *ch, unit_data *victim, char *arg)
    }
 }
 
-void do_force(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_force(unit_data *ch, char *argument, const command_info *cmd)
 {
    descriptor_data *i;
    unit_data       *victim;
@@ -874,7 +874,7 @@ void do_force(unit_data *ch, char *argument, const struct command_info *cmd)
    }
 }
 
-void do_finger(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_finger(unit_data *ch, char *arg, const command_info *cmd)
 {
    char buf[MAX_INPUT_LENGTH];
 
@@ -900,7 +900,7 @@ void do_finger(unit_data *ch, char *arg, const struct command_info *cmd)
                 ch);
 }
 
-void do_load(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_load(unit_data *ch, char *arg, const command_info *cmd)
 {
    char             buf[MAX_INPUT_LENGTH];
    file_index_type *fi;
@@ -1006,7 +1006,7 @@ void do_load(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_delete(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_delete(unit_data *ch, char *arg, const command_info *cmd)
 {
    char       buf[MAX_INPUT_LENGTH];
    unit_data *tmp;
@@ -1051,7 +1051,7 @@ void do_delete(unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* clean a room of all mobiles and objects */
-void do_purge(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_purge(unit_data *ch, char *argument, const command_info *cmd)
 {
    char             buf[MAX_INPUT_LENGTH];
    unit_data       *thing;
@@ -1150,7 +1150,7 @@ void do_purge(unit_data *ch, char *argument, const struct command_info *cmd)
    }
 }
 
-void do_advance(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_advance(unit_data *ch, char *argument, const command_info *cmd)
 {
    unit_data *victim;
    char       name[100];
@@ -1260,7 +1260,7 @@ void do_advance(unit_data *ch, char *argument, const struct command_info *cmd)
    }
 }
 
-void do_verify(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_verify(unit_data *ch, char *arg, const command_info *cmd)
 {
 #ifdef SUSPEKT
    unit_data                     *pc, *obj;
@@ -1423,7 +1423,7 @@ void reroll(unit_data *victim)
    }
 }
 
-void do_reroll(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_reroll(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *victim;
 
@@ -1460,7 +1460,7 @@ void do_reroll(unit_data *ch, char *arg, const struct command_info *cmd)
    send_to_char("Rerolled.\n\r", ch);
 }
 
-void do_restore(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_restore(unit_data *ch, char *argument, const command_info *cmd)
 {
    int        i;
    unit_data *victim;
@@ -1556,7 +1556,7 @@ static auto  file_install(char *file, bool bNew) -> bool
    return TRUE;
 }
 
-void do_file(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_file(unit_data *ch, char *argument, const command_info *cmd)
 {
    char        buf[MAX_INPUT_LENGTH];
    const char *str = "$2t installed.";
@@ -1621,7 +1621,7 @@ void do_file(unit_data *ch, char *argument, const struct command_info *cmd)
 
 /* end file */
 
-void do_message(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_message(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *vict;
 
@@ -1648,7 +1648,7 @@ void do_message(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_broadcast(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_broadcast(unit_data *ch, char *arg, const command_info *cmd)
 {
    descriptor_data *d;
 
@@ -1705,7 +1705,7 @@ void list_wizards(unit_data *ch, bool value)
    }
 }
 
-void do_wiz(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wiz(unit_data *ch, char *arg, const command_info *cmd)
 {
    descriptor_data *d;
    char             tmp[MAX_INPUT_LENGTH];
@@ -1817,7 +1817,7 @@ void do_wiz(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_title(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_title(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *u;
    char      *oldarg = arg;
@@ -1862,7 +1862,7 @@ void do_title(unit_data *ch, char *arg, const struct command_info *cmd)
 /*  0: free access
  * >0: locked for below this level
  */
-void do_wizlock(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wizlock(unit_data *ch, char *arg, const command_info *cmd)
 {
    int  lvl;
    char buf[128];
@@ -1900,13 +1900,13 @@ void do_wizlock(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_wizhelp(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wizhelp(unit_data *ch, char *arg, const command_info *cmd)
 {
    char                       buf[MAX_STRING_LENGTH];
    char                      *b;
    int                        no;
    int                        i;
-   extern struct command_info cmd_info[];
+   extern command_info cmd_info[];
 
    if(!IS_PC(ch))
    {
@@ -1937,12 +1937,12 @@ void do_wizhelp(unit_data *ch, char *arg, const struct command_info *cmd)
    page_string(CHAR_DESCRIPTOR(ch), buf);
 }
 
-void do_kickit(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_kickit(unit_data *ch, char *arg, const command_info *cmd)
 {
    send_to_char("No compiler in this version, I guess.\n\r", ch);
 }
 
-void do_corpses(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_corpses(unit_data *ch, char *arg, const command_info *cmd)
 {
    extern auto in_string(unit_data * ch, unit_data * u)->char *;
 

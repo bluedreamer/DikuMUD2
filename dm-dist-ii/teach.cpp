@@ -1163,7 +1163,7 @@ auto teach_init(struct spec_arg *sarg) -> int
    return teaching(sarg);
 }
 
-void do_practice(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_practice(unit_data *ch, char *arg, const command_info *cmd)
 {
    send_to_char("You can only practice at a teacher.\n\r", ch);
 }

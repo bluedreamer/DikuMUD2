@@ -16,7 +16,7 @@
 
 /* extern variables */
 
-void do_decapitate(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_decapitate(unit_data *ch, char *argument, const command_info *cmd)
 {
    unit_data              *corpse;
    unit_data              *head;
@@ -98,7 +98,7 @@ void do_decapitate(unit_data *ch, char *argument, const struct command_info *cmd
    }
 }
 
-void do_hit(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_hit(unit_data *ch, char *argument, const command_info *cmd)
 {
    unit_data *victim;
 
@@ -146,7 +146,7 @@ void do_hit(unit_data *ch, char *argument, const struct command_info *cmd)
    }
 }
 
-void do_kill(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_kill(unit_data *ch, char *argument, const command_info *cmd)
 {
    unit_data *victim;
 
@@ -184,7 +184,7 @@ void do_kill(unit_data *ch, char *argument, const struct command_info *cmd)
    }
 }
 
-void do_order(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_order(unit_data *ch, char *argument, const command_info *cmd)
 {
 #ifdef SUSPEKT
    char                name[100], message[256];

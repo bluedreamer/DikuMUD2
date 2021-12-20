@@ -244,7 +244,7 @@ void enter_game(unit_data *ch)
    char                       buf[256];
    time_t                     last_connect = PC_TIME(ch).connect;
 
-   extern struct command_info cmd_info[];
+   extern command_info cmd_info[];
 
    auto                       player_has_mail(unit_data * ch)->uint8_t;
    auto                       ContentsFileName(const char *)->char *;

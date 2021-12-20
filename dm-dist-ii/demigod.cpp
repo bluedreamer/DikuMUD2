@@ -34,7 +34,7 @@ void add_sacrifice_info(unit_data *demi, unit_data *ch, long power)
    }
 }
 
-void do_manifest(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_manifest(unit_data *ch, char *arg, const command_info *cmd)
 {
 #ifndef DEMIGOD
    send_to_char("This command has been removed.\r\n", ch);
@@ -180,7 +180,7 @@ void do_manifest(unit_data *ch, char *arg, const struct command_info *cmd)
 #endif
 }
 
-void do_pray(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_pray(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *target;
 
@@ -419,7 +419,7 @@ void base_sacrifice(unit_data *ch, char *arg, int noble)
 #endif
 }
 
-void do_sacrifice(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_sacrifice(unit_data *ch, char *arg, const command_info *cmd)
 {
 #ifndef DEMIGOD
    send_to_char("This command has been removed.\r\n", ch);

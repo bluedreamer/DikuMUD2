@@ -26,7 +26,7 @@
 #include <cstring>
 
 /* The TURN_UNDEAD skill */
-void do_turn(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_turn(unit_data *ch, char *arg, const command_info *cmd)
 /*
  * coded: Thu Jun 11 18:48:17 MET DST 1992 [HH]
  * tested: No
@@ -80,7 +80,7 @@ void do_turn(unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* Not a skill, but closely related to scroll & wand code */
-void do_quaff(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_quaff(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *potion;
    int        i;
@@ -129,7 +129,7 @@ void do_quaff(unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* The SCROLL_USE skill */
-void do_recite(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_recite(unit_data *ch, char *arg, const command_info *cmd)
 /*
  * coded: Thu Jun 11 19:10:52 MET DST 1992 [HH]
  * tested: No
@@ -227,7 +227,7 @@ void do_recite(unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* The Wand/Staff use skill */
-void do_use(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_use(unit_data *ch, char *arg, const command_info *cmd)
 /*
  * coded: Thu Jun 11 19:17:11 MET DST 1992
  * tested: No
@@ -377,7 +377,7 @@ void do_use(unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* The APPRAISAL skill */
-void do_appraise(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_appraise(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *item;
    int        skilla;
@@ -435,7 +435,7 @@ void do_appraise(unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* The VENTRILOQUATE skill */
-void do_ventriloquate(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_ventriloquate(unit_data *ch, char *arg, const command_info *cmd)
 /*
  * coded: 18/6/92 1:30:23 MET DST 1992
  * tested: No
@@ -493,7 +493,7 @@ void do_ventriloquate(unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* The WEATHER_WATCHING skill */
-void do_weather(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_weather(unit_data *ch, char *arg, const command_info *cmd)
 /*
  * coded: Tue Jul  7 17:33:28 MET DST 1992 [HH]
  * tested: No
@@ -537,7 +537,7 @@ void do_weather(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_flee(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_flee(unit_data *ch, char *arg, const command_info *cmd)
 {
    int        legal;
    int        attempt;
@@ -644,7 +644,7 @@ void do_flee(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_sneak(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_sneak(unit_data *ch, char *arg, const command_info *cmd)
 /*
  * coded: Fri. 19 Jun 1992 22.27.57
  * tested: No
@@ -697,7 +697,7 @@ void do_sneak(unit_data *ch, char *arg, const struct command_info *cmd)
    create_affect(ch, &af);
 }
 
-void do_backstab(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_backstab(unit_data *ch, char *arg, const command_info *cmd)
 /*
  * coded: Mon Jun 22 00:22:44 MET DST 1992 [HH]
  * tested: No
@@ -827,7 +827,7 @@ void do_backstab(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_hide(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_hide(unit_data *ch, char *arg, const command_info *cmd)
 /*
  * coded: Mon Jun 22 02:09:04 MET DST 1992 [HH]
  * tested: No
@@ -893,7 +893,7 @@ void do_hide(unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* The FIRST AID skill */
-void do_aid(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_aid(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *vict;
    int        skilla;
@@ -956,7 +956,7 @@ void do_aid(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_pick(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_pick(unit_data *ch, char *arg, const command_info *cmd)
 {
    int        skilla;
    int        hm;
@@ -1044,7 +1044,7 @@ void do_pick(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_steal(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_steal(unit_data *ch, char *arg, const command_info *cmd)
 /*
  * coded:Tue Jul  7 21:10:25 MET DST 1992 [HH]
  * tested: Yup
@@ -1371,7 +1371,7 @@ void base_rescue(unit_data *ch, unit_data *vict)
    }
 }
 
-void do_rescue(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_rescue(unit_data *ch, char *arg, const command_info *cmd)
 /*
  * coded: Wed Jul  8 00:21:38 MET DST 1992
  * tested: No
@@ -1395,7 +1395,7 @@ void do_rescue(unit_data *ch, char *arg, const struct command_info *cmd)
    base_rescue(ch, vict);
 }
 
-void do_bash(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_bash(unit_data *ch, char *arg, const command_info *cmd)
 /*
  * coded:Wed Jul  8 00:23:59 MET DST 1992 [HH]
  * tested: No
@@ -1484,7 +1484,7 @@ void do_bash(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_search(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_search(unit_data *ch, char *arg, const command_info *cmd)
 {
    int                 dir;
    int                 skill;

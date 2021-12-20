@@ -15,7 +15,7 @@
 /* Returns: 0 if the object was picked up.                               */
 /*          1 if the object was not picked up, but more may be picked up */
 /*          2 if no more objects can be picked up                        */
-auto get(unit_data *ch, unit_data *obj, unit_data *from_obj, const struct command_info *cmd, char *arg) -> int
+auto get(unit_data *ch, unit_data *obj, unit_data *from_obj, const command_info *cmd, char *arg) -> int
 {
    unit_data *money  = nullptr;
    amount_t   amount = 0;
@@ -218,7 +218,7 @@ auto extra_get(unit_data *ch, char *argument) -> int
    return 0; /* not found */
 }
 
-void do_get(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_get(unit_data *ch, char *argument, const command_info *cmd)
 {
    unit_data *from_unit = nullptr;
    unit_data *thing;
@@ -370,7 +370,7 @@ void do_get(unit_data *ch, char *argument, const struct command_info *cmd)
    }
 }
 
-auto drop(unit_data *ch, unit_data *unit, const struct command_info *cmd, char *arg) -> int
+auto drop(unit_data *ch, unit_data *unit, const command_info *cmd, char *arg) -> int
 {
    if(!(IS_OBJ(unit) && (OBJ_EQP_POS(unit) != 0u)))
    {
@@ -391,7 +391,7 @@ auto drop(unit_data *ch, unit_data *unit, const struct command_info *cmd, char *
    return static_cast<int>(FALSE);
 }
 
-void do_drop(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_drop(unit_data *ch, char *argument, const command_info *cmd)
 {
    unit_data *thing;
    unit_data *next_obj;
@@ -491,7 +491,7 @@ void do_drop(unit_data *ch, char *argument, const struct command_info *cmd)
 }
 
 /* Returns FALSE if there was an "error" putting the stuff */
-auto put(unit_data *ch, unit_data *unit, unit_data *tounit, const struct command_info *cmd, char *arg) -> int
+auto put(unit_data *ch, unit_data *unit, unit_data *tounit, const command_info *cmd, char *arg) -> int
 {
    unit_data *money = nullptr;
    int        weight;
@@ -570,7 +570,7 @@ auto put(unit_data *ch, unit_data *unit, unit_data *tounit, const struct command
    return static_cast<int>(TRUE);
 }
 
-void do_put(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_put(unit_data *ch, char *argument, const command_info *cmd)
 {
    unit_data *tounit;
    unit_data *thing;
@@ -678,7 +678,7 @@ void do_put(unit_data *ch, char *argument, const struct command_info *cmd)
    }
 }
 
-void give(unit_data *ch, unit_data *thing, unit_data *vict, const struct command_info *cmd, char *arg)
+void give(unit_data *ch, unit_data *thing, unit_data *vict, const command_info *cmd, char *arg)
 {
    unit_data *money = nullptr;
    int        weight;
@@ -732,7 +732,7 @@ void give(unit_data *ch, unit_data *thing, unit_data *vict, const struct command
    send_done(ch, thing, vict, 0, cmd, arg);
 }
 
-void do_give(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_give(unit_data *ch, char *argument, const command_info *cmd)
 {
    unit_data *victim;
    unit_data *thing;

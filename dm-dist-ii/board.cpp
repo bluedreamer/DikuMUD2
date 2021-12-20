@@ -695,7 +695,7 @@ auto get_board(unit_fptr *fptr) -> struct board_info *
    return tb;
 }
 
-void do_boards(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_boards(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data         *u;
    unit_fptr         *f = nullptr;

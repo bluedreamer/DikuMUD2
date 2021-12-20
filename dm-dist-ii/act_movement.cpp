@@ -19,7 +19,7 @@
 
 /*   external vars  */
 
-extern struct command_info cmd_info[];
+extern command_info cmd_info[];
 
 /* external functs */
 
@@ -499,7 +499,7 @@ auto do_advanced_move(unit_data *ch, int direction, int following) -> int
    return res;
 }
 
-void do_drag(unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_drag(unit_data *ch, char *aaa, const command_info *cmd)
 {
    char      *argument = (char *)aaa;
    unit_data *thing;
@@ -570,7 +570,7 @@ void do_drag(unit_data *ch, char *aaa, const struct command_info *cmd)
    }
 }
 
-void do_ride(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_ride(unit_data *ch, char *arg, const command_info *cmd)
 {
    /*
      To be expanded:
@@ -655,7 +655,7 @@ void do_ride(unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* Expects 'north'..'down' as argument */
-void do_sail(unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_sail(unit_data *ch, char *aaa, const command_info *cmd)
 {
    char      *arg = (char *)aaa;
    int        direction;
@@ -730,7 +730,7 @@ void do_sail(unit_data *ch, char *aaa, const struct command_info *cmd)
    do_simple_sail(boat, ch, direction);
 }
 
-void do_move(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_move(unit_data *ch, char *argument, const command_info *cmd)
 {
    /* NOTICE! It uses cmd->no for efficiency, thus cmd->no MUST */
    /* be one of CMD_NORTH..CMD_DOWN which again MUST BE 0..5    */
@@ -956,7 +956,7 @@ auto locate_lock(unit_data *ch, char *arg) -> door_data *
    return nullptr;
 }
 
-void do_knock(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_knock(unit_data *ch, char *argument, const command_info *cmd)
 {
    door_data *a_door;
 
@@ -1015,7 +1015,7 @@ void do_knock(unit_data *ch, char *argument, const struct command_info *cmd)
    }
 }
 
-void do_open(unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_open(unit_data *ch, char *aaa, const command_info *cmd)
 {
    char      *argument = (char *)aaa;
    door_data *a_door;
@@ -1086,7 +1086,7 @@ void do_open(unit_data *ch, char *aaa, const struct command_info *cmd)
    }
 }
 
-void do_close(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_close(unit_data *ch, char *argument, const command_info *cmd)
 {
    door_data *a_door;
 
@@ -1168,7 +1168,7 @@ auto has_key(unit_data *ch, file_index_type *key) -> int
    return static_cast<int>(FALSE);
 }
 
-void do_lock(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_lock(unit_data *ch, char *argument, const command_info *cmd)
 {
    door_data *a_door;
 
@@ -1248,7 +1248,7 @@ void do_lock(unit_data *ch, char *argument, const struct command_info *cmd)
    }
 }
 
-void do_unlock(unit_data *ch, char *argument, const struct command_info *cmd)
+void do_unlock(unit_data *ch, char *argument, const command_info *cmd)
 {
    door_data *a_door;
 
@@ -1328,7 +1328,7 @@ void do_unlock(unit_data *ch, char *argument, const struct command_info *cmd)
    }
 }
 
-void do_enter(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_enter(unit_data *ch, char *arg, const command_info *cmd)
 {
    int         door;
    unit_data  *thing;
@@ -1432,7 +1432,7 @@ void do_enter(unit_data *ch, char *arg, const struct command_info *cmd)
    /* Otherwise low_find_door has sent an error message to character */
 }
 
-void do_exit(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_exit(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *to_unit;
    unit_data *from_unit;
@@ -1549,7 +1549,7 @@ void do_exit(unit_data *ch, char *arg, const struct command_info *cmd)
    send_done(ch, nullptr, from_unit, 0, cmd, oarg);
 }
 
-void do_leave(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_leave(unit_data *ch, char *arg, const command_info *cmd)
 {
 #ifdef SUSPEKT
 
@@ -1573,7 +1573,7 @@ void do_leave(unit_data *ch, char *arg, const struct command_info *cmd)
 #endif
 }
 
-void do_stand(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_stand(unit_data *ch, char *arg, const command_info *cmd)
 {
    /* not on a 'horse' type char */
    if(IS_CHAR(UNIT_IN(ch)))
@@ -1610,7 +1610,7 @@ void do_stand(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_sit(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_sit(unit_data *ch, char *arg, const command_info *cmd)
 {
    switch(CHAR_POS(ch))
    {
@@ -1641,7 +1641,7 @@ void do_sit(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_rest(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_rest(unit_data *ch, char *arg, const command_info *cmd)
 {
    switch(CHAR_POS(ch))
    {
@@ -1672,7 +1672,7 @@ void do_rest(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_sleep(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_sleep(unit_data *ch, char *arg, const command_info *cmd)
 {
    switch(CHAR_POS(ch))
    {
@@ -1697,7 +1697,7 @@ void do_sleep(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_wake(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wake(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *tmp_char;
 
@@ -1756,7 +1756,7 @@ void do_wake(unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_follow(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_follow(unit_data *ch, char *arg, const command_info *cmd)
 {
    unit_data *leader = nullptr;
 

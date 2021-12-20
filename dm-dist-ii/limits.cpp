@@ -616,7 +616,7 @@ void gain_exp(unit_data *ch, int gain)
    }
 }
 
-void do_level(unit_data *ch, char *arg, const struct command_info *cmd)
+void do_level(unit_data *ch, char *arg, const command_info *cmd)
 {
    int now;
 

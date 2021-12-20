@@ -979,7 +979,7 @@ static void skill_read()
          }
          else
          {
-            extern struct command_info cmd_info[];
+            extern command_info cmd_info[];
 
             for(int i = 0; *cmd_info[i].cmd_str != 0; i++) // MS2020, missing *
             {
