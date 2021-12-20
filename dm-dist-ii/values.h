@@ -762,12 +762,14 @@ enum ObjectFlag
 #define MAX_MONEY 4 /* This is the number of strings above - 1 */
 
 /* Remember to change these if you change in the money file!! */
-#define IRON_MULT     10
-#define COPPER_MULT   (8 * IRON_MULT)
-#define SILVER_MULT   (8 * COPPER_MULT)
-#define GOLD_MULT     (8 * SILVER_MULT)
-#define PLATINUM_MULT (8 * GOLD_MULT)
-
+enum CoinMuliplier
+{
+   IRON_MULT     = 10,
+   COPPER_MULT   = (8 * IRON_MULT),
+   SILVER_MULT   = (8 * COPPER_MULT),
+   GOLD_MULT     = (8 * SILVER_MULT),
+   PLATINUM_MULT = (8 * GOLD_MULT),
+};
 /* ------------------------- Liquid Values ------------------------------
  When defining a liquid container, this specifies the liquid types to
  put into the apropriate value[]
