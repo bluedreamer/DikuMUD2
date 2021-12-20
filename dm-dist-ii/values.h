@@ -674,10 +674,12 @@ enum WearTypes
  SEX_MALE
  SEX_FEMALE
 */
-#define SEX_NEUTRAL 0
-#define SEX_MALE    1
-#define SEX_FEMALE  2
-
+enum SexType
+{
+   SEX_NEUTRAL = 0,
+   SEX_MALE    = 1,
+   SEX_FEMALE  = 2,
+};
 /* ------------------------- Lock Flags ------------------------------
  Use these values in door reset commands, or use with "open" flags in
  units.
