@@ -23,6 +23,8 @@ public:
    [[nodiscard]] auto getSite() const -> const std::string &;
    void               setSite(const std::string &site);
 
+   [[nodiscard]] auto getTypeText() const -> const std::string &;
+
    static auto to_string(ban_type_e e) -> char;
    static auto from_string(char c) -> ban_type_e;
 private:

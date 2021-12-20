@@ -33,9 +33,9 @@ auto BanEntry::getSite() const -> const std::string &
 void BanEntry::setSite(const std::string &site)
 {
    site_ = site;
-   for(auto &c: site_)
+   for(auto &c : site_)
    {
-      c=std::tolower(c);
+      c = std::tolower(c);
    }
 }
 
@@ -95,4 +95,15 @@ auto BanEntry::from_string(char c) -> BanEntry::ban_type_e
       default:
          return ban_type_e::NO_BAN;
    }
+}
+
+auto BanEntry::getTypeText() const -> const std::string &
+{
+   static const std::string total{"TOTAL"};
+   static const std::string new_chars{"NEW CHARS"};
+   if(type_ == ban_type_e::BAN_TOTAL)
+   {
+      return total;
+   }
+   return new_chars
 }

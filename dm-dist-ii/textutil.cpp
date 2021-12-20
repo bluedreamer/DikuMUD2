@@ -361,7 +361,7 @@ auto str_is_empty(const char *arg) -> bool
 {
    if(arg == nullptr)
    {
-      return TRUE;
+      return true;
    }
 
    return static_cast<bool>(*(skip_blanks(arg)) == '\0');
