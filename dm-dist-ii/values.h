@@ -826,11 +826,13 @@ enum Speed
     for the _OTHER group, one of MSG_OTHER_XXX
 */
 
-#define MSG_TYPE_WEAPON 0
-#define MSG_TYPE_SPELL  1
-#define MSG_TYPE_SKILL  2
-#define MSG_TYPE_OTHER  3
-
+enum DamageGroup
+{
+   MSG_TYPE_WEAPON = 0,
+   MSG_TYPE_SPELL  = 1,
+   MSG_TYPE_SKILL  = 2,
+   MSG_TYPE_OTHER  = 3,
+};
 /* ------------------------- Damage Groups  ------------------------------
     These are the damage identifiers fro the MSG_TYPE_OTHER damage group,
     as shown above.
