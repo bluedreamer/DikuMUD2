@@ -70,17 +70,6 @@ void                string_add(descriptor_data *d, char *str);
 
 void                boot_db();
 
-/* external functions in lib */
-#ifdef GENERIC_BSD
-void srandom(int seed);
-#endif
-#if defined(SOLARIS) || defined(HPUX)
-void srand48(long seedval);
-#endif
-
-// Don't need a prototype for this
-// int gettimeofday(struct timeval *tp, struct timezone *tzp);
-
 /* local functions */
 void run_the_game();
 void game_loop();

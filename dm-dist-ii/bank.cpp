@@ -1,6 +1,6 @@
 #include "comm.h"
-#include "handler.h"
 #include "constants.h"
+#include "handler.h"
 #include "interpreter.h"
 #include "money.h"
 #include "textutil.h"

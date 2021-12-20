@@ -4,14 +4,6 @@
 
 #define ADMIN_MAIL "mud@valhalla-usa.com"
 
-// constexpr int START_LEVEL         = 1;
-// constexpr int MORTAL_MAX_LEVEL    = 50;  /* Maximum level for mortal players */
-// constexpr int IMMORTAL_LEVEL      = 200; /* At 200 you can't really die      */
-// constexpr int GOD_LEVEL           = 220; /* Here are the *real* gods         */
-// constexpr int CREATOR_LEVEL       = 230;
-// constexpr int OVERSEER_LEVEL      = 253;
-// constexpr int ADMINISTRATOR_LEVEL = 254;
-// constexpr int ULTIMATE_LEVEL      = 255;
 enum Level
 {
    START_LEVEL         = 1,
@@ -42,19 +34,10 @@ enum Level
 #define QUEST_RABBIT_COMPLETE "Rabbit Stew Complete"
 #define QUEST_POT_COMPLETE    "Mary's Pot Retrieved"
 
-// constexpr bool FALSE=false;
-// constexpr bool TRUE=true;
-
 #define A_HIDEINV 10
 #define A_SOMEONE 11
 #define A_ALWAYS  12
 
-//#define TO_ROOM    0
-//#define TO_VICT    1
-//#define TO_NOTVICT 2
-//#define TO_CHAR    3
-//#define TO_ALL     4
-//#define TO_REST    5
 enum ToDirection
 {
    TO_ROOM    = 0,
@@ -119,11 +102,6 @@ constexpr int SECS_PER_MUD_YEAR  = (MUD_YEAR * SECS_PER_MUD_MONTH);
 #define CRIME_PK       64 /* Murder on player */
 
 /* How much light is in the land ? */
-
-//#define SUN_DARK  0
-//#define SUN_RISE  1
-//#define SUN_LIGHT 2
-//#define SUN_SET   3
 enum LightInLand
 {
    SUN_DARK  = 0,
@@ -133,11 +111,6 @@ enum LightInLand
 };
 
 /* And how is the sky ? */
-
-//#define SKY_CLOUDLESS 0
-//#define SKY_CLOUDY    1
-//#define SKY_RAINING   2
-//#define SKY_LIGHTNING 3
 enum SkyConditions
 {
    SKY_CLOUDLESS = 0,
@@ -153,12 +126,6 @@ enum SkyConditions
    We recommend that you use the shorthand direction macros. For example:
       north to temple;
 */
-//#define NORTH 0
-//#define EAST  1
-//#define SOUTH 2
-//#define WEST  3
-//#define UP    4
-//#define DOWN  5
 enum Direction
 {
    NORTH = 0,
@@ -170,17 +137,6 @@ enum Direction
 };
 
 /* Directions for use in 'pathto' */
-//
-//#define DIR_NORTH      NORTH
-//#define DIR_EAST       EAST
-//#define DIR_SOUTH      SOUTH
-//#define DIR_WEST       WEST
-//#define DIR_UP         UP
-//#define DIR_DOWN       DOWN
-//#define DIR_ENTER      6
-//#define DIR_EXIT       7
-//#define DIR_IMPOSSIBLE 8
-//#define DIR_HERE       9
 enum PathTo
 {
    DIR_NORTH      = NORTH,
@@ -205,9 +161,6 @@ enum PathTo
 /* ------------------ PC DEFINITIONS ----------------------- */
 
 /* Predifined conditions for PC's only */
-//#define DRUNK  0
-//#define FULL   1
-//#define THIRST 2
 enum PCCondition
 {
    DRUNK  = 0,
@@ -215,20 +168,6 @@ enum PCCondition
    THIRST = 2,
 };
 /* For PC flags */
-//#define PC_BRIEF      (0x0001) /* Brief descriptions?                     */
-//#define PC_PK_RELAXED (0x0002) /* Relaxed PK mode?                        */
-//#define PC_INFORM     (0x0004) /* Get `Nnn has entered the world.'?       */
-//#define PC_COMPACT    (0x0008) /* Compact Display Bit                     */
-//#define PC_NOWIZ      (0x0010) /* Can wiz? Can hear wiz?                  */
-//#define PC_SPIRIT     (0x0020) /* When player is dead                     */
-//#define PC_EXPERT     (0x0040) /* When set, get details about point system*/
-//#define PC_PROMPT     (0x0080) /* Used with prompt on/off                 */
-//#define PC_ECHO       (0x0200) /* Echo communication commands to pc?      */
-//#define PC_EXITS      (0x0400) /* Display exits                           */
-//#define PC_NOSHOUTING (0x1000) /* Can shout? (usually wiz punishment)     */
-//#define PC_NOTELLING  (0x2000) /* Can tell? (usually wiz punishment)      */
-//#define PC_NOSHOUT    (0x4000) /* Can hear shouts?                        */
-//#define PC_NOTELL     (0x8000) /* Can hear tells?                         */
 enum PCFlags
 {
    PC_BRIEF      = 0x0001, /* Brief descriptions?                     */
