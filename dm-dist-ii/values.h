@@ -696,34 +696,34 @@ enum ItemTypes
  WEAR_MAX
    Do not use - internal value.
 */
-#define WEAR_UNUSED   1
-#define WEAR_FINGER_R 2
-#define WEAR_FINGER_L 3
-#define WEAR_NECK_1   4
-#define WEAR_NECK_2   5
-#define WEAR_BODY     6
-#define WEAR_HEAD     7
-#define WEAR_LEGS     8
-#define WEAR_FEET     9
-#define WEAR_HANDS    10
-#define WEAR_ARMS     11
-#define WEAR_SHIELD   12
-#define WEAR_ABOUT    13
-#define WEAR_WAIST    14
-#define WEAR_WRIST_R  15
-#define WEAR_WRIST_L  16
-#define WEAR_WIELD    17
-#define WEAR_HOLD     18
-
-#define WEAR_CHEST   19
-#define WEAR_BACK    20
-#define WEAR_EAR_L   21
-#define WEAR_EAR_R   22
-#define WEAR_ANKLE_L 23
-#define WEAR_ANKLE_R 24
-
-#define WEAR_MAX 24 /* Top of "table" */
-
+enum WearTypes
+{
+   WEAR_UNUSED   = 1,
+   WEAR_FINGER_R = 2,
+   WEAR_FINGER_L = 3,
+   WEAR_NECK_1   = 4,
+   WEAR_NECK_2   = 5,
+   WEAR_BODY     = 6,
+   WEAR_HEAD     = 7,
+   WEAR_LEGS     = 8,
+   WEAR_FEET     = 9,
+   WEAR_HANDS    = 10,
+   WEAR_ARMS     = 11,
+   WEAR_SHIELD   = 12,
+   WEAR_ABOUT    = 13,
+   WEAR_WAIST    = 14,
+   WEAR_WRIST_R  = 15,
+   WEAR_WRIST_L  = 16,
+   WEAR_WIELD    = 17,
+   WEAR_HOLD     = 18,
+   WEAR_CHEST    = 19,
+   WEAR_BACK     = 20,
+   WEAR_EAR_L    = 21,
+   WEAR_EAR_R    = 22,
+   WEAR_ANKLE_L  = 23,
+   WEAR_ANKLE_R  = 24,
+   WEAR_MAX      = 24, /* Top of "table" */
+};
 /* ------------------------- Sex Types ------------------------------
  Obivious, aren't they?
  SEX_NEUTRAL
