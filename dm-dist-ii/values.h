@@ -1940,126 +1940,129 @@ enum SpecialFunction
 /* ------------------------- Affect Types ------------------------------
  Dont ask, and don't use. Use the predefined macros in wmacros.h
 */
-#define ID_FILE_STORED       0 /* For empty affects in player-file */
-#define ID_NONE              1
-#define ID_CORPSE            2 /* Makes corpses disappear */
-#define ID_VALHALLA          3
-#define ID_LIFE_PROTECTION   4
-#define ID_RAISE_MAG         5
-#define ID_RAISE_DIV         6
-#define ID_RAISE_STR         7
-#define ID_RAISE_DEX         8
-#define ID_RAISE_CON         9
-#define ID_RAISE_CHA         10
-#define ID_RAISE_BRA         11
-#define ID_RAISE_HPP         12
-#define ID_RAISE_DIVINE      13
-#define ID_RAISE_SUMMONING   16
-#define ID_RAISE_MIND        18
-#define ID_RAISE_HEAT        19
-#define ID_RAISE_COLD        20
-#define ID_RAISE_CELL        21
-#define ID_RAISE_INTERNAL    22
-#define ID_RAISE_EXTERNAL    23
-#define ID_POISON            24
-#define ID_MAGIC_LIGHT       25 /* For magic spells              */
-#define ID_LIGHT_EXTINGUISH  26 /* For light/extinguish commands */
-#define ID_DETECT_ALIGN      27
-#define ID_DETECT_INVISIBLE  28
-#define ID_DETECT_MAGIC      29
-#define ID_DETECT_POISON     30
-#define ID_DETECT_UNDEAD     31
-#define ID_DETECT_CURSE      32
-#define ID_DETECT_LIFE       33
-#define ID_BLIND_CHAR        34
-#define ID_FEAR              35
-#define ID_INVISIBILITY      36
-#define ID_SNEAK             37 /* for sneak skill   */
-#define ID_HIDE              38 /* for hide skill    */
-#define ID_WITNESS           39 /* Used by justice.c */
-#define ID_SLEEP             40
-#define ID_BLESS             41
-#define ID_CURSE             42
-#define ID_SANCTUARY         43
-#define ID_INSANITY          44
-#define ID_PROT_EVIL         45
-#define ID_SUSTAIN           46
-#define ID_PRISON            47
-#define ID_PLAGUE            48
-#define ID_ENCHANT_ARMOUR    49
-#define ID_ENCHANT_WEAPON    50
-#define ID_HOLD              51
-#define ID_CHARM             52
-#define ID_CLONE             53
-#define ID_ABSORBTION        54 /* for indicating absorbtion spell */
-#define ID_ENERGY_DRAIN      55
-#define ID_SPOTTED_SECRET    56
-#define ID_HIDDEN_DIFFICULTY 57 /* Use macro: SECRET_DOOR_DIFFICULTY */
-#define ID_REWARD            58
-#define ID_CONFUSION         59
-#define ID_BURIED            60
-#define ID_BACKSTABBED       61 /* When backstabbed, this improves defense */
-#define ID_MAX_ATTACKER      62 /* Record of highest level attacker        */
-#define ID_PROT_GOOD         63
-#define ID_NATURAL_ARMOUR    64
-#define ID_SPEED             65
-#define ID_CHARFLAGS         66 /* For the transfer functions */
-#define ID_SPELL             67 /* ditto */
-#define ID_SKILL             68 /* ditto */
-#define ID_WEAPON            69 /* ditto */
-#define ID_MAGIC_DARK        70 /* For magic spells              */
+enum AffectType
+{
+   ID_FILE_STORED         = 0, /* For empty affects in player-file */
+   ID_NONE                = 1,
+   ID_CORPSE              = 2, /* Makes corpses disappear */
+   ID_VALHALLA            = 3,
+   ID_LIFE_PROTECTION     = 4,
+   ID_RAISE_MAG           = 5,
+   ID_RAISE_DIV           = 6,
+   ID_RAISE_STR           = 7,
+   ID_RAISE_DEX           = 8,
+   ID_RAISE_CON           = 9,
+   ID_RAISE_CHA           = 10,
+   ID_RAISE_BRA           = 11,
+   ID_RAISE_HPP           = 12,
+   ID_RAISE_DIVINE        = 13,
+   ID_RAISE_SUMMONING     = 16,
+   ID_RAISE_MIND          = 18,
+   ID_RAISE_HEAT          = 19,
+   ID_RAISE_COLD          = 20,
+   ID_RAISE_CELL          = 21,
+   ID_RAISE_INTERNAL      = 22,
+   ID_RAISE_EXTERNAL      = 23,
+   ID_POISON              = 24,
+   ID_MAGIC_LIGHT         = 25, /* For magic spells              */
+   ID_LIGHT_EXTINGUISH    = 26, /* For light/extinguish commands */
+   ID_DETECT_ALIGN        = 27,
+   ID_DETECT_INVISIBLE    = 28,
+   ID_DETECT_MAGIC        = 29,
+   ID_DETECT_POISON       = 30,
+   ID_DETECT_UNDEAD       = 31,
+   ID_DETECT_CURSE        = 32,
+   ID_DETECT_LIFE         = 33,
+   ID_BLIND_CHAR          = 34,
+   ID_FEAR                = 35,
+   ID_INVISIBILITY        = 36,
+   ID_SNEAK               = 37, /* for sneak skill   */
+   ID_HIDE                = 38, /* for hide skill    */
+   ID_WITNESS             = 39, /* Used by justice.c */
+   ID_SLEEP               = 40,
+   ID_BLESS               = 41,
+   ID_CURSE               = 42,
+   ID_SANCTUARY           = 43,
+   ID_INSANITY            = 44,
+   ID_PROT_EVIL           = 45,
+   ID_SUSTAIN             = 46,
+   ID_PRISON              = 47,
+   ID_PLAGUE              = 48,
+   ID_ENCHANT_ARMOUR      = 49,
+   ID_ENCHANT_WEAPON      = 50,
+   ID_HOLD                = 51,
+   ID_CHARM               = 52,
+   ID_CLONE               = 53,
+   ID_ABSORBTION          = 54, /* for indicating absorbtion spell */
+   ID_ENERGY_DRAIN        = 55,
+   ID_SPOTTED_SECRET      = 56,
+   ID_HIDDEN_DIFFICULTY   = 57, /* Use macro: SECRET_DOOR_DIFFICULTY */
+   ID_REWARD              = 58,
+   ID_CONFUSION           = 59,
+   ID_BURIED              = 60,
+   ID_BACKSTABBED         = 61, /* When backstabbed, this improves defense */
+   ID_MAX_ATTACKER        = 62, /* Record of highest level attacker        */
+   ID_PROT_GOOD           = 63,
+   ID_NATURAL_ARMOUR      = 64,
+   ID_SPEED               = 65,
+   ID_CHARFLAGS           = 66, /* For the transfer functions */
+   ID_SPELL               = 67, /* ditto */
+   ID_SKILL               = 68, /* ditto */
+   ID_WEAPON              = 69, /* ditto */
+   ID_MAGIC_DARK          = 70, /* For magic spells              */
 
-#define ID_SPL_RAISE_MAG       71
-#define ID_SPL_RAISE_DIV       72
-#define ID_SPL_RAISE_STR       73
-#define ID_SPL_RAISE_DEX       74
-#define ID_SPL_RAISE_CON       75
-#define ID_SPL_RAISE_CHA       76
-#define ID_SPL_RAISE_BRA       77
-#define ID_SPL_RAISE_HPP       78
-#define ID_SPL_RAISE_DIVINE    79
-#define ID_SPL_RAISE_SUMMONING 80
-#define ID_SPL_RAISE_MIND      81
-#define ID_SPL_RAISE_HEAT      82
-#define ID_SPL_RAISE_COLD      83
-#define ID_SPL_RAISE_CELL      84
-#define ID_SPL_RAISE_INTERNAL  85
-#define ID_SPL_RAISE_EXTERNAL  86
+   ID_SPL_RAISE_MAG       = 71,
+   ID_SPL_RAISE_DIV       = 72,
+   ID_SPL_RAISE_STR       = 73,
+   ID_SPL_RAISE_DEX       = 74,
+   ID_SPL_RAISE_CON       = 75,
+   ID_SPL_RAISE_CHA       = 76,
+   ID_SPL_RAISE_BRA       = 77,
+   ID_SPL_RAISE_HPP       = 78,
+   ID_SPL_RAISE_DIVINE    = 79,
+   ID_SPL_RAISE_SUMMONING = 80,
+   ID_SPL_RAISE_MIND      = 81,
+   ID_SPL_RAISE_HEAT      = 82,
+   ID_SPL_RAISE_COLD      = 83,
+   ID_SPL_RAISE_CELL      = 84,
+   ID_SPL_RAISE_INTERNAL  = 85,
+   ID_SPL_RAISE_EXTERNAL  = 86,
 
-#define ID_WEAPON_DEFENSE 87
-#define ID_SPELL_DEFENSE  88
+   ID_WEAPON_DEFENSE      = 87,
+   ID_SPELL_DEFENSE       = 88,
 
-#define ID_BLANK0  89
-#define ID_BLANK1  90
-#define ID_BLANK2  91
-#define ID_BLANK3  92
-#define ID_BLANK4  93
-#define ID_BLANK5  94
-#define ID_BLANK6  95
-#define ID_BLANK7  96
-#define ID_BLANK8  97
-#define ID_BLANK9  98
-#define ID_BLANK10 99
-#define ID_BLANK11 100
+   ID_BLANK0              = 89,
+   ID_BLANK1              = 90,
+   ID_BLANK2              = 91,
+   ID_BLANK3              = 92,
+   ID_BLANK4              = 93,
+   ID_BLANK5              = 94,
+   ID_BLANK6              = 95,
+   ID_BLANK7              = 96,
+   ID_BLANK8              = 97,
+   ID_BLANK9              = 98,
+   ID_BLANK10             = 99,
+   ID_BLANK11             = 100,
 
-#define ID_TOP_IDX 101 /* For sanity checking, adjust */
+   ID_TOP_IDX             = 101, /* For sanity checking, adjust */
 
-#define ID_TRANSFER_MAG       (-ID_RAISE_MAG)
-#define ID_TRANSFER_DIV       (-ID_RAISE_DIV)
-#define ID_TRANSFER_STR       (-ID_RAISE_STR)
-#define ID_TRANSFER_DEX       (-ID_RAISE_DEX)
-#define ID_TRANSFER_CON       (-ID_RAISE_CON)
-#define ID_TRANSFER_CHA       (-ID_RAISE_CHA)
-#define ID_TRANSFER_BRA       (-ID_RAISE_BRA)
-#define ID_TRANSFER_HPP       (-ID_RAISE_HPP)
-#define ID_TRANSFER_SPEED     (-ID_SPEED)
-#define ID_PROT_GOOD_TRANSFER (-ID_PROT_GOOD)
-#define ID_PROT_EVIL_TRANSFER (-ID_PROT_EVIL)
+   ID_TRANSFER_MAG        = -ID_RAISE_MAG,
+   ID_TRANSFER_DIV        = -ID_RAISE_DIV,
+   ID_TRANSFER_STR        = -ID_RAISE_STR,
+   ID_TRANSFER_DEX        = -ID_RAISE_DEX,
+   ID_TRANSFER_CON        = -ID_RAISE_CON,
+   ID_TRANSFER_CHA        = -ID_RAISE_CHA,
+   ID_TRANSFER_BRA        = -ID_RAISE_BRA,
+   ID_TRANSFER_HPP        = -ID_RAISE_HPP,
+   ID_TRANSFER_SPEED      = -ID_SPEED,
+   ID_PROT_GOOD_TRANSFER  = -ID_PROT_GOOD,
+   ID_PROT_EVIL_TRANSFER  = -ID_PROT_EVIL,
 
-#define ID_TRANSFER_CHARFLAGS (-ID_CHARFLAGS)
-#define ID_SPELL_TRANSFER     (-ID_SPELL)
-#define ID_SKILL_TRANSFER     (-ID_SKILL)
-#define ID_WEAPON_TRANSFER    (-ID_WEAPON)
+   ID_TRANSFER_CHARFLAGS  = -ID_CHARFLAGS,
+   ID_SPELL_TRANSFER      = -ID_SPELL,
+   ID_SKILL_TRANSFER      = -ID_SKILL,
+   ID_WEAPON_TRANSFER     = -ID_WEAPON,
+};
 
 #define APF_NONE           -1
 #define APF_ABILITY        0
