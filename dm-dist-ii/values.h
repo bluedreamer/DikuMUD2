@@ -872,16 +872,18 @@ enum MonsterSize
    ABIL_XXX refers to the abilitity. Use 'ability[ABIL_XXX] = yyy' in
             the zone, or use predefined macros.
 */
-constexpr size_t ABIL_MAG      = 0;
-constexpr size_t ABIL_DIV      = 1;
-constexpr size_t ABIL_STR      = 2;
-constexpr size_t ABIL_DEX      = 3;
-constexpr size_t ABIL_CON      = 4;
-constexpr size_t ABIL_CHA      = 5;
-constexpr size_t ABIL_BRA      = 6;
-constexpr size_t ABIL_HP       = 7;
-constexpr size_t ABIL_TREE_MAX = 8; /* Do not use */
-
+enum SkillType
+{
+   ABIL_MAG      = 0,
+   ABIL_DIV      = 1,
+   ABIL_STR      = 2,
+   ABIL_DEX      = 3,
+   ABIL_CON      = 4,
+   ABIL_CHA      = 5,
+   ABIL_BRA      = 6,
+   ABIL_HP       = 7,
+   ABIL_TREE_MAX = 8, /* Do not use */
+};
 /* All the nodes in the weapon tree
 
    WPN_XXX refers to the weapon skills, attack types, and weapon types.
