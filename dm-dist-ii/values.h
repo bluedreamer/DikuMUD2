@@ -205,27 +205,47 @@ enum PathTo
 /* ------------------ PC DEFINITIONS ----------------------- */
 
 /* Predifined conditions for PC's only */
-#define DRUNK  0
-#define FULL   1
-#define THIRST 2
-
+//#define DRUNK  0
+//#define FULL   1
+//#define THIRST 2
+enum PCCondition
+{
+   DRUNK  = 0,
+   FULL   = 1,
+   THIRST = 2,
+};
 /* For PC flags */
-#define PC_BRIEF      (0x0001) /* Brief descriptions?                     */
-#define PC_PK_RELAXED (0x0002) /* Relaxed PK mode?                        */
-#define PC_INFORM     (0x0004) /* Get `Nnn has entered the world.'?       */
-#define PC_COMPACT    (0x0008) /* Compact Display Bit                     */
-#define PC_NOWIZ      (0x0010) /* Can wiz? Can hear wiz?                  */
-#define PC_SPIRIT     (0x0020) /* When player is dead                     */
-#define PC_EXPERT     (0x0040) /* When set, get details about point system*/
-#define PC_PROMPT     (0x0080) /* Used with prompt on/off                 */
-#define PC_ECHO       (0x0200) /* Echo communication commands to pc?      */
-#define PC_EXITS      (0x0400) /* Display exits                           */
-
-#define PC_NOSHOUTING (0x1000) /* Can shout? (usually wiz punishment)     */
-#define PC_NOTELLING  (0x2000) /* Can tell? (usually wiz punishment)      */
-#define PC_NOSHOUT    (0x4000) /* Can hear shouts?                        */
-#define PC_NOTELL     (0x8000) /* Can hear tells?                         */
-
+//#define PC_BRIEF      (0x0001) /* Brief descriptions?                     */
+//#define PC_PK_RELAXED (0x0002) /* Relaxed PK mode?                        */
+//#define PC_INFORM     (0x0004) /* Get `Nnn has entered the world.'?       */
+//#define PC_COMPACT    (0x0008) /* Compact Display Bit                     */
+//#define PC_NOWIZ      (0x0010) /* Can wiz? Can hear wiz?                  */
+//#define PC_SPIRIT     (0x0020) /* When player is dead                     */
+//#define PC_EXPERT     (0x0040) /* When set, get details about point system*/
+//#define PC_PROMPT     (0x0080) /* Used with prompt on/off                 */
+//#define PC_ECHO       (0x0200) /* Echo communication commands to pc?      */
+//#define PC_EXITS      (0x0400) /* Display exits                           */
+//#define PC_NOSHOUTING (0x1000) /* Can shout? (usually wiz punishment)     */
+//#define PC_NOTELLING  (0x2000) /* Can tell? (usually wiz punishment)      */
+//#define PC_NOSHOUT    (0x4000) /* Can hear shouts?                        */
+//#define PC_NOTELL     (0x8000) /* Can hear tells?                         */
+enum PCFlags
+{
+   PC_BRIEF      = 0x0001, /* Brief descriptions?                     */
+   PC_PK_RELAXED = 0x0002, /* Relaxed PK mode?                        */
+   PC_INFORM     = 0x0004, /* Get `Nnn has entered the world.'?       */
+   PC_COMPACT    = 0x0008, /* Compact Display Bit                     */
+   PC_NOWIZ      = 0x0010, /* Can wiz? Can hear wiz?                  */
+   PC_SPIRIT     = 0x0020, /* When player is dead                     */
+   PC_EXPERT     = 0x0040, /* When set, get details about point system*/
+   PC_PROMPT     = 0x0080, /* Used with prompt on/off                 */
+   PC_ECHO       = 0x0200, /* Echo communication commands to pc?      */
+   PC_EXITS      = 0x0400, /* Display exits                           */
+   PC_NOSHOUTING = 0x1000, /* Can shout? (usually wiz punishment)     */
+   PC_NOTELLING  = 0x2000, /* Can tell? (usually wiz punishment)      */
+   PC_NOSHOUT    = 0x4000, /* Can hear shouts?                        */
+   PC_NOTELL     = 0x8000, /* Can hear tells?                         */
+};
 /* ------------------------- Zone Reset modes ------------------------------
  RESET_NOT
    Zone is never reset, except at boot time.
