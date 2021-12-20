@@ -47,6 +47,7 @@ enum ToDirection
    TO_ALL     = 4,
    TO_REST    = 5,
 };
+
 #define FIND_UNIT_EQUIP         (0x0001)
 #define FIND_UNIT_INVEN         (0x0002)
 #define FIND_UNIT_SURRO         (0x0004)
@@ -153,11 +154,13 @@ enum PathTo
 /* These are only flags for the purpose of quick testing, a unit     */
 /* must NEVER assume more than one of these flags.                   */
 
-#define UNIT_ST_NPC  (0x01) /* Is this a NPC?                  */
-#define UNIT_ST_PC   (0x02) /* Is this a PC?                   */
-#define UNIT_ST_ROOM (0x04) /* Is this a ROOM?                 */
-#define UNIT_ST_OBJ  (0x08) /* Is this a OBJ?                  */
-
+enum UnitDefinitions
+{
+   UNIT_ST_NPC  = 0x01, /* Is this a NPC?                  */
+   UNIT_ST_PC   = 0x02, /* Is this a PC?                   */
+   UNIT_ST_ROOM = 0x04, /* Is this a ROOM?                 */
+   UNIT_ST_OBJ  = 0x08, /* Is this a OBJ?                  */
+};
 /* ------------------ PC DEFINITIONS ----------------------- */
 
 /* Predifined conditions for PC's only */
