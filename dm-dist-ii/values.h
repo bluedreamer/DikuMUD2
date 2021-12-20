@@ -448,16 +448,18 @@ enum UnitFlags
 
  POSITION_STANDING
 */
-#define POSITION_DEAD      0
-#define POSITION_MORTALLYW 1
-#define POSITION_INCAP     2
-#define POSITION_STUNNED   3
-#define POSITION_SLEEPING  4
-#define POSITION_RESTING   5
-#define POSITION_SITTING   6
-#define POSITION_FIGHTING  7
-#define POSITION_STANDING  8
-
+enum Position
+{
+   POSITION_DEAD      = 0,
+   POSITION_MORTALLYW = 1,
+   POSITION_INCAP     = 2,
+   POSITION_STUNNED   = 3,
+   POSITION_SLEEPING  = 4,
+   POSITION_RESTING   = 5,
+   POSITION_SITTING   = 6,
+   POSITION_FIGHTING  = 7,
+   POSITION_STANDING  = 8,
+};
 /* ------------------------- MANIPULATE Flags ------------------------------
  MANIPULATE_TAKE
    Set this flag if the unit can be taken (picked up/moved about).
