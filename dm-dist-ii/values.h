@@ -774,26 +774,28 @@ enum CoinMuliplier
  When defining a liquid container, this specifies the liquid types to
  put into the apropriate value[]
 */
-#define LIQ_WATER     0
-#define LIQ_BEER      1
-#define LIQ_WINE      2
-#define LIQ_ALE       3
-#define LIQ_DARKALE   4
-#define LIQ_WHISKY    5
-#define LIQ_LEMONADE  6
-#define LIQ_FIREBRT   7
-#define LIQ_LOCALSPC  8
-#define LIQ_SLIME     9
-#define LIQ_MILK      10
-#define LIQ_TEA       11
-#define LIQ_COFFE     12
-#define LIQ_BLOOD     13
-#define LIQ_SALTWATER 14
-#define LIQ_COKE      15
-#define LIQ_VODKA     16
-#define LIQ_BRANDY    17
-#define LIQ_MAX       17
-
+enum LiquidType
+{
+   LIQ_WATER     = 0,
+   LIQ_BEER      = 1,
+   LIQ_WINE      = 2,
+   LIQ_ALE       = 3,
+   LIQ_DARKALE   = 4,
+   LIQ_WHISKY    = 5,
+   LIQ_LEMONADE  = 6,
+   LIQ_FIREBRT   = 7,
+   LIQ_LOCALSPC  = 8,
+   LIQ_SLIME     = 9,
+   LIQ_MILK      = 10,
+   LIQ_TEA       = 11,
+   LIQ_COFFE     = 12,
+   LIQ_BLOOD     = 13,
+   LIQ_SALTWATER = 14,
+   LIQ_COKE      = 15,
+   LIQ_VODKA     = 16,
+   LIQ_BRANDY    = 17,
+   LIQ_MAX       = 17,
+};
 /* If your can never empty it */
 #define INFINITE_LIQUID -1
 
