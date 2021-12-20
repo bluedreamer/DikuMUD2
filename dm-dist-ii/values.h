@@ -1815,126 +1815,128 @@ SFUN_SACRIFICE
 
 */
 
-#define SFUN_PERSIST_INTERNAL 0 /* Dont use.                       */
-#define SFUN_DILCOPY_INTERNAL 1 /* Dont use.                       */
-#define SFUN_BULLETIN_BOARD   2 /* Bulletin Board                  */
-#define SFUN_MOB_COMMAND      3 /* mobile command execution        */
-#define SFUN_HUNTING          4 /* INTERNAL, DO NOT USE!           */
-#define SFUN_POSTMAN          5 /* Mail, apply to post-man         */
-#define SFUN_INTERN_SHOP      6
-#define SFUN_EAT_AND_DELETE   7  /* INTERNAL, DO NOT USE!           */
-#define SFUN_ACCUSE           8  /* Accuse function for law system  */
-#define SFUN_PROTECT_LAWFUL   9  /* Protection of protected chars   */
-#define SFUN_PAIN             10 /* INTERNAL, DO NOT USE!           */
-#define SFUN_PAIN_INIT        11 /* Basic NPC language              */
-#define SFUN_NPC_VISIT_ROOM   12 /* INTERNAL, DO NOT USE!           */
-#define SFUN_MERCENARY_HIRE   13 /* Mercenary hire routine          */
-#define SFUN_MERCENARY_HUNT   14 /* INTERNAL, DO NOT USE!           */
-#define SFUN_BANK             15 /* Banker routine                  */
-#define SFUN_PERSIST_INIT     16 /* Persist routine                 */
-#define SFUN_FIDO             17 /* Devour corpse function          */
-#define SFUN_JANITOR          18 /* Pick up trash function          */
+enum SpecialFunction
+{
+   SFUN_PERSIST_INTERNAL     = 0, /* Dont use.                       */
+   SFUN_DILCOPY_INTERNAL     = 1, /* Dont use.                       */
+   SFUN_BULLETIN_BOARD       = 2, /* Bulletin Board                  */
+   SFUN_MOB_COMMAND          = 3, /* mobile command execution        */
+   SFUN_HUNTING              = 4, /* INTERNAL, DO NOT USE!           */
+   SFUN_POSTMAN              = 5, /* Mail, apply to post-man         */
+   SFUN_INTERN_SHOP          = 6,
+   SFUN_EAT_AND_DELETE       = 7,  /* INTERNAL, DO NOT USE!           */
+   SFUN_ACCUSE               = 8,  /* Accuse function for law system  */
+   SFUN_PROTECT_LAWFUL       = 9,  /* Protection of protected chars   */
+   SFUN_PAIN                 = 10, /* INTERNAL, DO NOT USE!           */
+   SFUN_PAIN_INIT            = 11, /* Basic NPC language              */
+   SFUN_NPC_VISIT_ROOM       = 12, /* INTERNAL, DO NOT USE!           */
+   SFUN_MERCENARY_HIRE       = 13, /* Mercenary hire routine          */
+   SFUN_MERCENARY_HUNT       = 14, /* INTERNAL, DO NOT USE!           */
+   SFUN_BANK                 = 15, /* Banker routine                  */
+   SFUN_PERSIST_INIT         = 16, /* Persist routine                 */
+   SFUN_FIDO                 = 17, /* Devour corpse function          */
+   SFUN_JANITOR              = 18, /* Pick up trash function          */
 
-#define SFUN_CHAOS_DAEMON 19 /* Daemon of random events         */
-#define SFUN_OBSOLETE1    20
-#define SFUN_OBSOLETE2    21
-#define SFUN_OBSOLETE3    22
-#define SFUN_OBSOLETE4    23
-#define SFUN_OBSOLETE5    24
+   SFUN_CHAOS_DAEMON         = 19, /* Daemon of random events         */
+   SFUN_OBSOLETE1            = 20,
+   SFUN_OBSOLETE2            = 21,
+   SFUN_OBSOLETE3            = 22,
+   SFUN_OBSOLETE4            = 23,
+   SFUN_OBSOLETE5            = 24,
 
-#define SFUN_TEACH_INIT         25 /* Midgaard teacher function       */
-#define SFUN_TEACHING           26 /* INTERNAL DO NOT USE!            */
-#define SFUN_RANDOM_GLOBAL_MOVE 27
-#define SFUN_RANDOM_ZONE_MOVE   28
-#define SFUN_SCAVENGER          29
-#define SFUN_AGGRESSIVE         30
+   SFUN_TEACH_INIT           = 25, /* Midgaard teacher function       */
+   SFUN_TEACHING             = 26, /* INTERNAL DO NOT USE!            */
+   SFUN_RANDOM_GLOBAL_MOVE   = 27,
+   SFUN_RANDOM_ZONE_MOVE     = 28,
+   SFUN_SCAVENGER            = 29,
+   SFUN_AGGRESSIVE           = 30,
 
-#define SFUN_LOG_OBJECT   31 /* Wiz tool.                       */
-#define SFUN_RECEP_DAEMON 32 /* Daemon to check players expiry  */
-#define SFUN_COMBAT_MAGIC 33 /* Use magic in combat             */
+   SFUN_LOG_OBJECT           = 31, /* Wiz tool.                       */
+   SFUN_RECEP_DAEMON         = 32, /* Daemon to check players expiry  */
+   SFUN_COMBAT_MAGIC         = 33, /* Use magic in combat             */
 
-#define SFUN_BLOW_AWAY         34
-#define SFUN_OBSOLETE6         35
-#define SFUN_COMPETITION_BOARD 36
+   SFUN_BLOW_AWAY            = 34,
+   SFUN_OBSOLETE6            = 35,
+   SFUN_COMPETITION_BOARD    = 36,
 
-#define SFUN_COMBAT_POISON 37
-#define SFUN_OBSOLETE_XXX1 38
-#define SFUN_OBSOLETE_XXX2 39
+   SFUN_COMBAT_POISON        = 37,
+   SFUN_OBSOLETE_XXX1        = 38,
+   SFUN_OBSOLETE_XXX2        = 39,
 
-#define SFUN_COMBAT_MAGIC_HEAL 40 /* Use for self-healing            */
+   SFUN_COMBAT_MAGIC_HEAL    = 40, /* Use for self-healing            */
 
-#define SFUN_GUARD_WAY            41 /* Guards a direction agains move  */
-#define SFUN_GUARD_DOOR           42 /* Guard door against open/unlock  */
-#define SFUN_GUARD_UNIT           43 /* Guard unit against open/unlock  */
-#define SFUN_RESCUE               44
-#define SFUN_TEAMWORK             45
-#define SFUN_HIDEAWAY             46
-#define SFUN_OBEY_ANIMAL          47 /* Was RAN_ATTACK */
-#define SFUN_SHOP_INIT            48
-#define SFUN_AGGRES_REVERSE_ALIGN 49
-#define SFUN_CHARM_OF_DEATH       50 /* INTERNAL DO NOT USE!            */
-#define SFUN_DICTIONARY           51 /* Func for Alias object           */
-#define SFUN_XXX2                 52 /* Wiz toy? ;)                     */
-#define SFUN_GUARD_WAY_LEVEL      53 /* guards a dir from levels        */
-#define SFUN_ODIN_STATUE          54 /* Help for beginners              */
-#define SFUN_FORCE_MOVE           55
+   SFUN_GUARD_WAY            = 41, /* Guards a direction agains move  */
+   SFUN_GUARD_DOOR           = 42, /* Guard door against open/unlock  */
+   SFUN_GUARD_UNIT           = 43, /* Guard unit against open/unlock  */
+   SFUN_RESCUE               = 44,
+   SFUN_TEAMWORK             = 45,
+   SFUN_HIDEAWAY             = 46,
+   SFUN_OBEY_ANIMAL          = 47, /* Was RAN_ATTACK */
+   SFUN_SHOP_INIT            = 48,
+   SFUN_AGGRES_REVERSE_ALIGN = 49,
+   SFUN_CHARM_OF_DEATH       = 50, /* INTERNAL DO NOT USE!            */
+   SFUN_DICTIONARY           = 51, /* Func for Alias object           */
+   SFUN_XXX2                 = 52, /* Wiz toy? ;)                     */
+   SFUN_GUARD_WAY_LEVEL      = 53, /* guards a dir from levels        */
+   SFUN_ODIN_STATUE          = 54, /* Help for beginners              */
+   SFUN_FORCE_MOVE           = 55,
 
-#define SFUN_WW_XXX1 56
-#define SFUN_WW_XXX2 57
-#define SFUN_WW_XXX3 58
-#define SFUN_WW_XXX4 59
-#define SFUN_WW_XXX5 60
-#define SFUN_WW_XXX6 61
-#define SFUN_WW_XXX8 62
-#define SFUN_WW_XXX9 63
+   SFUN_WW_XXX1              = 56,
+   SFUN_WW_XXX2              = 57,
+   SFUN_WW_XXX3              = 58,
+   SFUN_WW_XXX4              = 59,
+   SFUN_WW_XXX5              = 60,
+   SFUN_WW_XXX6              = 61,
+   SFUN_WW_XXX8              = 62,
+   SFUN_WW_XXX9              = 63,
 
-#define SFUN_OBJ_GOOD_ONLY 64
-#define SFUN_OBJ_EVIL_ONLY 65
+   SFUN_OBJ_GOOD_ONLY        = 64,
+   SFUN_OBJ_EVIL_ONLY        = 65,
 
-#define SFUN_CHANGE_HOMETOWN 66
+   SFUN_CHANGE_HOMETOWN      = 66,
 
-#define SFUN_GUILD_GUARD_WAY 67
-#define SFUN_MEMBERS_ONLY    68
-#define SFUN_WHISTLE         69
+   SFUN_GUILD_GUARD_WAY      = 67,
+   SFUN_MEMBERS_ONLY         = 68,
+   SFUN_WHISTLE              = 69,
 
-#define SFUN_GUILD_MASTER 70
-#define SFUN_GUILD_BASIS  71
+   SFUN_GUILD_MASTER         = 70,
+   SFUN_GUILD_BASIS          = 71,
 
-#define SFUN_DEATH_ROOM       72
-#define SFUN_XXXALSOOBSOLETE  73
-#define SFUN_TUBORG           74
-#define SFUN_GUILD_TITLES     75
-#define SFUN_REWARD_BOARD     76
-#define SFUN_REWARD_GIVE      77
-#define SFUN_EVALUATE         78
-#define SFUN_ERROR_ERASE      79 /* Do not use */
-#define SFUN_INFO_ERASE       80 /* Do not use */
-#define SFUN_XXXXX            81
-#define SFUN_DIL_INTERNAL     82
-#define SFUN_ORACLE           83
-#define SFUN_ADMINISTRATOR    84
-#define SFUN_OBEY             85
-#define SFUN_CRYSTAL_BALL     86
-#define SFUN_SLIME_ADM        87
-#define SFUN_FROZEN           88 /* Internal use only */
-#define SFUN_RETURN_TO_ORIGIN 89 /* Internal use only */
-#define SFUN_GUILD_INTERNAL   90 /* Internal use only */
-#define SFUN_RESTRICT_OBJ     91
-#define SFUN_DEMI_STUFF       92 /* Internal use only */
-#define SFUN_LINK_DEAD        93 /* Internal use only */
-#define SFUN_SACRIFICE        94 /* Noble sacrifice   */
+   SFUN_DEATH_ROOM           = 72,
+   SFUN_XXXALSOOBSOLETE      = 73,
+   SFUN_TUBORG               = 74,
+   SFUN_GUILD_TITLES         = 75,
+   SFUN_REWARD_BOARD         = 76,
+   SFUN_REWARD_GIVE          = 77,
+   SFUN_EVALUATE             = 78,
+   SFUN_ERROR_ERASE          = 79, /* Do not use */
+   SFUN_INFO_ERASE           = 80, /* Do not use */
+   SFUN_XXXXX                = 81,
+   SFUN_DIL_INTERNAL         = 82,
+   SFUN_ORACLE               = 83,
+   SFUN_ADMINISTRATOR        = 84,
+   SFUN_OBEY                 = 85,
+   SFUN_CRYSTAL_BALL         = 86,
+   SFUN_SLIME_ADM            = 87,
+   SFUN_FROZEN               = 88, /* Internal use only */
+   SFUN_RETURN_TO_ORIGIN     = 89, /* Internal use only */
+   SFUN_GUILD_INTERNAL       = 90, /* Internal use only */
+   SFUN_RESTRICT_OBJ         = 91,
+   SFUN_DEMI_STUFF           = 92, /* Internal use only */
+   SFUN_LINK_DEAD            = 93, /* Internal use only */
+   SFUN_SACRIFICE            = 94, /* Noble sacrifice   */
 
-#define SFUN_OBSOLETE_XXX5 95
-#define SFUN_OBSOLETE_XXX6 96
-#define SFUN_OBSOLETE_XXX7 97
+   SFUN_OBSOLETE_XXX5        = 95,
+   SFUN_OBSOLETE_XXX6        = 96,
+   SFUN_OBSOLETE_XXX7        = 97,
 
-#define SFUN_RESTRICT_QUEST 98
-#define SFUN_RESTRICT_GUILD 99
-#define SFUN_XXX            100
-#define SFUN_DIL_COPY       101
+   SFUN_RESTRICT_QUEST       = 98,
+   SFUN_RESTRICT_GUILD       = 99,
+   SFUN_XXX                  = 100,
+   SFUN_DIL_COPY             = 101,
 
-#define SFUN_TOP_IDX 101 /* SANITY CHECKING, ADJUST */
-
+   SFUN_TOP_IDX              = 101, /* SANITY CHECKING, ADJUST */
+};
 /* ------------------------- Affect Types ------------------------------
  Dont ask, and don't use. Use the predefined macros in wmacros.h
 */
