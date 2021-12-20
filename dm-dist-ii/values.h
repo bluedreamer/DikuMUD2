@@ -1217,7 +1217,7 @@ enum Spell
    SPL_CELL             = 9,  /* Electricity   */
    SPL_INTERNAL         = 10, /* Poison        */
    SPL_EXTERNAL         = 11, /* Acid          */
-   SPL_GROUP_MAX        = 12, /* #[0..11] ==12, */
+   SPL_GROUP_MAX        = 12, /* #[0..11] =12, */
 
    SPL_CALL_LIGHTNING   = 12, /* Cell Group  */
    SPL_BLESS            = 13, /* D I V I N E */
@@ -1403,56 +1403,57 @@ enum Spell
    SPL_BLANK8           = 174,
    SPL_BLANK9           = 175,
 
-   SPL_TREE_MAX         = 220, /* #[0..167] ==168, */
+   SPL_TREE_MAX         = 220, /* #[0..167] =168, */
 };
 
 /* ..................................................................... */
 /*                              S K I L L S                              */
 /* ..................................................................... */
+enum Skill
+{
+   SKI_TURN_UNDEAD    = 0,
+   SKI_SCROLL_USE     = 1,
+   SKI_WAND_USE       = 2,
+   SKI_CONSIDER       = 3,
+   SKI_DIAGNOSTICS    = 4,
+   SKI_APPRAISAL      = 5,
+   SKI_VENTRILOQUATE  = 6,
+   SKI_WEATHER_WATCH  = 7,
+   SKI_FLEE           = 8,
+   SKI_SNEAK          = 9,
+   SKI_BACKSTAB       = 10,
+   SKI_HIDE           = 11,
+   SKI_FIRST_AID      = 12,
+   SKI_PICK_LOCK      = 13,
+   SKI_STEAL          = 14,
+   SKI_RESCUE         = 15,
+   SKI_SEARCH         = 16,
+   SKI_LEADERSHIP     = 17,
+   SKI_KICK           = 18,
+   SKI_SWIMMING       = 19,
+   SKI_BASH           = 20,
+   SKI_CLIMB          = 21,
+   SKI_SHIELD         = 22,
+   SKI_TRIP           = 23,
+   SKI_DUAL_WIELD     = 24,
+   SKI_CUFF           = 25,
+   SKI_RESIZE_CLOTHES = 26,
+   SKI_RESIZE_LEATHER = 27,
+   SKI_RESIZE_METAL   = 28,
+   SKI_EVALUATE       = 29, /* "Fake skill to simulate combinations */
+   SKI_PEEK           = 30,
+   SKI_PICK_POCKETS   = 31,
+   SKI_FILCH          = 32,
+   SKI_DISARM         = 33,
+   SKI_SKIN           = 34,
+   SKI_BLANK5         = 35,
+   SKI_BLANK6         = 36,
+   SKI_BLANK7         = 37,
+   SKI_BLANK8         = 38,
+   SKI_BLANK9         = 39,
 
-#define SKI_TURN_UNDEAD    0
-#define SKI_SCROLL_USE     1
-#define SKI_WAND_USE       2
-#define SKI_CONSIDER       3
-#define SKI_DIAGNOSTICS    4
-#define SKI_APPRAISAL      5
-#define SKI_VENTRILOQUATE  6
-#define SKI_WEATHER_WATCH  7
-#define SKI_FLEE           8
-#define SKI_SNEAK          9
-#define SKI_BACKSTAB       10
-#define SKI_HIDE           11
-#define SKI_FIRST_AID      12
-#define SKI_PICK_LOCK      13
-#define SKI_STEAL          14
-#define SKI_RESCUE         15
-#define SKI_SEARCH         16
-#define SKI_LEADERSHIP     17
-#define SKI_KICK           18
-#define SKI_SWIMMING       19
-#define SKI_BASH           20
-#define SKI_CLIMB          21
-#define SKI_SHIELD         22
-#define SKI_TRIP           23
-#define SKI_DUAL_WIELD     24
-#define SKI_CUFF           25
-#define SKI_RESIZE_CLOTHES 26
-#define SKI_RESIZE_LEATHER 27
-#define SKI_RESIZE_METAL   28
-#define SKI_EVALUATE       29 /* "Fake skill to simulate combinations */
-#define SKI_PEEK           30
-#define SKI_PICK_POCKETS   31
-#define SKI_FILCH          32
-#define SKI_DISARM         33
-#define SKI_SKIN           34
-#define SKI_BLANK5         35
-#define SKI_BLANK6         36
-#define SKI_BLANK7         37
-#define SKI_BLANK8         38
-#define SKI_BLANK9         39
-
-#define SKI_TREE_MAX 70
-
+   SKI_TREE_MAX       = 70,
+};
 /* ------------------------- Special Functions ------------------------------
 When SFR_BLOCK is returned, all other scannings for further special routines
 are canceled, as well as blocking any command issued.
