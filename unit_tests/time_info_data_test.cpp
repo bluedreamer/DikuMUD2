@@ -11,6 +11,12 @@ struct Fixture
       populate_days();
       populate_months();
    }
+
+   static void LogTimeInfoData(const time_info_data &result)
+   {
+      BOOST_TEST_MESSAGE("hours=" << (int)result.hours << " day=" << (int)result.day << " month=" << (int)result.month
+                                  << " year=" << (int)result.year);
+   }
    void populate_months()
    {
       months.push_back("Month of Winter");
@@ -69,6 +75,7 @@ struct Fixture
    std::vector<std::string> days;
    std::vector<std::string> months;
 };
+
 BOOST_AUTO_TEST_CASE(time_info_data_defines)
 {
    BOOST_TEST(SECS_PER_REAL_MIN == 60);
@@ -105,8 +112,6 @@ BOOST_AUTO_TEST_CASE(real_time_passed_test)
    time_t day_future  = now + (60 * 60 * 24);
    time_t year_future = now + (60 * 60 * 24 * 365);
 
-   //   BOOST_TEST_MESSAGE("hours=" << (int)result.hours << " day=" << (int)result.day << " month=" << (int)result.month
-   //                               << " year=" << (int)result.year);
    //////////////////////////////////////////////////////////////////////////////////////
    {
       time_info_data result = real_time_passed(now, now);
@@ -317,5 +322,36 @@ BOOST_AUTO_TEST_CASE(mudtime_strcpy_test)
               << ", Year 0.\n\r";
          BOOST_TEST(std::string(buffer) == strm.str());
       }
+   }
+}
+
+BOOST_AUTO_TEST_CASE(age_test)
+{
+   { // Isn't a PC
+      unit_data unit(UNIT_ST_NPC);
+      unit.next                             = nullptr;
+      unit.gnext                            = nullptr;
+      unit.gprevious                        = nullptr;
+      unit.data.ch->specific.pc->time.birth = 690399843;
+
+      auto result = age(&unit);
+      //      Fixture::LogTimeInfoData(result);
+      BOOST_TEST(result.hours == 0);
+      BOOST_TEST(result.day == 0);
+      BOOST_TEST(result.month == 0);
+      BOOST_TEST(result.year == 0);
+   }
+   { // Is a PC
+      unit_data unit(UNIT_ST_PC);
+      unit.next                             = nullptr;
+      unit.gnext                            = nullptr;
+      unit.gprevious                        = nullptr;
+      unit.data.ch->specific.pc->time.birth = 690399843;
+      auto result                           = age(&unit);
+      Fixture::LogTimeInfoData(result);
+      BOOST_TEST(result.hours == 23);
+      BOOST_TEST(result.day == 11);
+      BOOST_TEST(result.month == 6);
+      BOOST_TEST(result.year == 1046);
    }
 }
