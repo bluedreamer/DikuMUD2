@@ -319,21 +319,23 @@ enum PCFlags
 
 */
 
-constexpr int SECT_INSIDE      = 0;
-constexpr int SECT_CITY        = 1;
-constexpr int SECT_FIELD       = 2;
-constexpr int SECT_FOREST      = 3;
-constexpr int SECT_HILLS       = 4;
-constexpr int SECT_MOUNTAIN    = 5;
-constexpr int SECT_DESERT      = 6;
-constexpr int SECT_SWAMP       = 7;
-constexpr int SECT_WATER_SWIM  = 8;
-constexpr int SECT_WATER_SAIL  = 9;
-constexpr int SECT_UNDER_WATER = 10;
-constexpr int SECT_SNOW        = 11;
-constexpr int SECT_SLUSH       = 12; /* Wet snow */
-constexpr int SECT_ICE         = 13;
-
+enum SectoryType
+{
+   SECT_INSIDE      = 0,
+   SECT_CITY        = 1,
+   SECT_FIELD       = 2,
+   SECT_FOREST      = 3,
+   SECT_HILLS       = 4,
+   SECT_MOUNTAIN    = 5,
+   SECT_DESERT      = 6,
+   SECT_SWAMP       = 7,
+   SECT_WATER_SWIM  = 8,
+   SECT_WATER_SAIL  = 9,
+   SECT_UNDER_WATER = 10,
+   SECT_SNOW        = 11,
+   SECT_SLUSH       = 12, /* Wet snow */
+   SECT_ICE         = 13,
+};
 /* ------------------------- NPC Flags ------------------------------
  INFINITE_CAPACITY
    Set capacity to this if you want it to be infinitely big
@@ -406,20 +408,22 @@ constexpr int SECT_ICE         = 13;
    it is examined.
 */
 
-#define UNIT_FL_PRIVATE     0x0001
-#define UNIT_FL_INVISIBLE   0x0002
-#define UNIT_FL_NO_BURY     0x0004
-#define UNIT_FL_BURIED      0x0008
-#define UNIT_FL_NO_TELEPORT 0x0010
-#define UNIT_FL_SACRED      0x0020
-#define UNIT_FL_NO_MOB      0x0040
-#define UNIT_FL_NO_WEATHER  0x0080
-#define UNIT_FL_INDOORS     0x0100
-#define UNIT_FL_TRANS       0x0400
-#define UNIT_FL_XXXUNUSED2  0x0800
-#define UNIT_FL_NOSAVE      0x1000
-#define UNIT_FL_MAGIC       0x2000
-
+enum UnitFlags
+{
+   UNIT_FL_PRIVATE     = 0x0001,
+   UNIT_FL_INVISIBLE   = 0x0002,
+   UNIT_FL_NO_BURY     = 0x0004,
+   UNIT_FL_BURIED      = 0x0008,
+   UNIT_FL_NO_TELEPORT = 0x0010,
+   UNIT_FL_SACRED      = 0x0020,
+   UNIT_FL_NO_MOB      = 0x0040,
+   UNIT_FL_NO_WEATHER  = 0x0080,
+   UNIT_FL_INDOORS     = 0x0100,
+   UNIT_FL_TRANS       = 0x0400,
+   UNIT_FL_XXXUNUSED2  = 0x0800,
+   UNIT_FL_NOSAVE      = 0x1000,
+   UNIT_FL_MAGIC       = 0x2000,
+};
 /* ------------------------ Positions ------------------------------
 
  POSITION_DEAD
