@@ -1,5 +1,6 @@
 find_package(FLEX)
 find_package(BISON)
+include_directories(..)
 
 BISON_TARGET(Parser calcpar.y ${CMAKE_CURRENT_BINARY_DIR}/tmp_calcpar.cpp DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/tmp_calcpar.h)
 

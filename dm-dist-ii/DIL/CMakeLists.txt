@@ -1,6 +1,8 @@
 find_package(FLEX)
 find_package(BISON)
 
+include_directories(..)
+
 set(DIL_SRC
         ../db_file.cpp
         ../utility.cpp

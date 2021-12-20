@@ -1,5 +1,6 @@
 find_package(FLEX)
 find_package(BISON)
+include_directories(..)
 
 set(DMC_SRC dmc.cpp dmc_process.cpp ../utility.cpp ../string.cpp ../structs.cpp ../money.cpp ../db_file.cpp
         ../bytestring.cpp ../namelist.cpp ../memory.cpp ../textutil.cpp ../extra.cpp ../common.cpp)
