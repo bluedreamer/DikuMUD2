@@ -263,7 +263,7 @@ enum ZoneReset
 
 */
 
-enum SectoryType
+enum SectorType
 {
    SECT_INSIDE      = 0,
    SECT_CITY        = 1,
