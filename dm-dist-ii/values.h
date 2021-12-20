@@ -2081,338 +2081,341 @@ enum Affect
    APF_MAX            = 9,
 };
 
-enum TIFType {
-TIF_NONE            = -1,
-TIF_CORPSE_DECAY    =0,
-TIF_CORPSE_ZAP      =1,
-TIF_VALHALLA_RET    =2,
-TIF_HIT_INC         =3,
-TIF_HIT_DEC         =4,
-TIF_MAG_INC         =5,
-TIF_MAG_DEC         =6,
-TIF_DIV_INC         =7,
-TIF_DIV_DEC         =8,
-TIF_STR_INC         =9,
-TIF_STR_DEC         =10,
-TIF_DEX_INC         =11,
-TIF_DEX_DEC         =12,
-TIF_CON_INC         =13,
-TIF_CON_DEC         =14,
-TIF_CHA_INC         =15,
-TIF_CHA_DEC         =16,
-TIF_BRA_INC         =17,
-TIF_BRA_DEC         =18,
-TIF_TGH_INC         =19,
-TIF_TGH_DEC         =20,
-TIF_PROTECT_INC     =21,
-TIF_PROTECT_DEC     =22,
-TIF_POISON_ON       =23,
-TIF_POISON_OFF      =24,
-TIF_POISON_SUFFER   =25,
-TIF_CHANGE_LIGHT_ADD=26,
-TIF_CHANGE_LIGHT_SUB=27,
-TIF_TORCH_TICK      =28,
-TIF_EYES_TINGLE     =29,
-TIF_BLIND_ON        =30,
-TIF_BLIND_OFF       =31,
-TIF_FEAR_CHECK      =32,
-TIF_INVISIBILITY_ON =33,
-TIF_INVISIBILITY_OFF=34,
-TIF_SNEAK_ON        =35,
-TIF_SNEAK_OFF       =36,
-TIF_SNEAK_TICK      =37,
-TIF_HIDE_ON         =38,
-TIF_HIDE_OFF        =39,
-TIF_HIDE_TICK       =40,
-TIF_NOHIDE_TICK     =41,
-TIF_SLEEP_ON        =42,
-TIF_SLEEP_CHECK     =43,
-TIF_SLEEP_OFF       =44,
-TIF_BLESS_ON        =45,
-TIF_BLESS_TICK      =46,
-TIF_BLESS_OFF       =47,
-TIF_CURSE_ON        =48,
-TIF_CURSE_OFF       =49,
-TIF_SANCTUARY_ON    =50,
-TIF_SANCTUARY_TICK  =51,
-TIF_SANCTUARY_OFF   =52,
-TIF_INSANITY_ON     =53,
-TIF_INSANITY_TICK   =54,
-TIF_INSANITY_OFF    =55,
-TIF_PROT_EVIL_ON    =56,
-TIF_PROT_EVIL_OFF   =57,
-TIF_SUSTAIN_ON      =58,
-TIF_SUSTAIN_TICK    =59,
-TIF_SUSTAIN_OFF     =60,
-TIF_JAIL_WAIT       =61,
-TIF_JAIL_RELEASE    =62,
-TIF_PLAGUE_ON       =63,
-TIF_PLAGUE_TICK     =64,
-TIF_PLAGUE_OFF      =65,
-TIF_REWARD_ON       =66,
-TIF_REWARD_OFF      =67,
-TIF_SPL_INC         =68,
-TIF_SPL_DEC         =69,
-TIF_SKI_INC         =70,
-TIF_SKI_DEC         =71,
-TIF_WPN_INC         =72,
-TIF_WPN_DEC         =73,
-TIF_CONFUSION_ON    =74,
-TIF_CONFUSION_OFF   =75,
-TIF_CONFUSION_TICK  =76,
-TIF_BURIED_DESTRUCT =77,
-TIF_PROT_GOOD_ON    =78,
-TIF_PROT_GOOD_OFF   =79,
-TIF_ARMOUR_ON       =80,
-TIF_ARMOUR_OFF      =81,
-TIF_SPEED_BETTER    =82,
-TIF_SPEED_WORSE     =83,
+enum TIFType
+{
+   TIF_NONE             = -1,
+   TIF_CORPSE_DECAY     = 0,
+   TIF_CORPSE_ZAP       = 1,
+   TIF_VALHALLA_RET     = 2,
+   TIF_HIT_INC          = 3,
+   TIF_HIT_DEC          = 4,
+   TIF_MAG_INC          = 5,
+   TIF_MAG_DEC          = 6,
+   TIF_DIV_INC          = 7,
+   TIF_DIV_DEC          = 8,
+   TIF_STR_INC          = 9,
+   TIF_STR_DEC          = 10,
+   TIF_DEX_INC          = 11,
+   TIF_DEX_DEC          = 12,
+   TIF_CON_INC          = 13,
+   TIF_CON_DEC          = 14,
+   TIF_CHA_INC          = 15,
+   TIF_CHA_DEC          = 16,
+   TIF_BRA_INC          = 17,
+   TIF_BRA_DEC          = 18,
+   TIF_TGH_INC          = 19,
+   TIF_TGH_DEC          = 20,
+   TIF_PROTECT_INC      = 21,
+   TIF_PROTECT_DEC      = 22,
+   TIF_POISON_ON        = 23,
+   TIF_POISON_OFF       = 24,
+   TIF_POISON_SUFFER    = 25,
+   TIF_CHANGE_LIGHT_ADD = 26,
+   TIF_CHANGE_LIGHT_SUB = 27,
+   TIF_TORCH_TICK       = 28,
+   TIF_EYES_TINGLE      = 29,
+   TIF_BLIND_ON         = 30,
+   TIF_BLIND_OFF        = 31,
+   TIF_FEAR_CHECK       = 32,
+   TIF_INVISIBILITY_ON  = 33,
+   TIF_INVISIBILITY_OFF = 34,
+   TIF_SNEAK_ON         = 35,
+   TIF_SNEAK_OFF        = 36,
+   TIF_SNEAK_TICK       = 37,
+   TIF_HIDE_ON          = 38,
+   TIF_HIDE_OFF         = 39,
+   TIF_HIDE_TICK        = 40,
+   TIF_NOHIDE_TICK      = 41,
+   TIF_SLEEP_ON         = 42,
+   TIF_SLEEP_CHECK      = 43,
+   TIF_SLEEP_OFF        = 44,
+   TIF_BLESS_ON         = 45,
+   TIF_BLESS_TICK       = 46,
+   TIF_BLESS_OFF        = 47,
+   TIF_CURSE_ON         = 48,
+   TIF_CURSE_OFF        = 49,
+   TIF_SANCTUARY_ON     = 50,
+   TIF_SANCTUARY_TICK   = 51,
+   TIF_SANCTUARY_OFF    = 52,
+   TIF_INSANITY_ON      = 53,
+   TIF_INSANITY_TICK    = 54,
+   TIF_INSANITY_OFF     = 55,
+   TIF_PROT_EVIL_ON     = 56,
+   TIF_PROT_EVIL_OFF    = 57,
+   TIF_SUSTAIN_ON       = 58,
+   TIF_SUSTAIN_TICK     = 59,
+   TIF_SUSTAIN_OFF      = 60,
+   TIF_JAIL_WAIT        = 61,
+   TIF_JAIL_RELEASE     = 62,
+   TIF_PLAGUE_ON        = 63,
+   TIF_PLAGUE_TICK      = 64,
+   TIF_PLAGUE_OFF       = 65,
+   TIF_REWARD_ON        = 66,
+   TIF_REWARD_OFF       = 67,
+   TIF_SPL_INC          = 68,
+   TIF_SPL_DEC          = 69,
+   TIF_SKI_INC          = 70,
+   TIF_SKI_DEC          = 71,
+   TIF_WPN_INC          = 72,
+   TIF_WPN_DEC          = 73,
+   TIF_CONFUSION_ON     = 74,
+   TIF_CONFUSION_OFF    = 75,
+   TIF_CONFUSION_TICK   = 76,
+   TIF_BURIED_DESTRUCT  = 77,
+   TIF_PROT_GOOD_ON     = 78,
+   TIF_PROT_GOOD_OFF    = 79,
+   TIF_ARMOUR_ON        = 80,
+   TIF_ARMOUR_OFF       = 81,
+   TIF_SPEED_BETTER     = 82,
+   TIF_SPEED_WORSE      = 83,
 
-TIF_MAX=83,
+   TIF_MAX              = 83,
 };
 
-#define CMD_AUTO_DAMAGE  -10 /* Used when any damage is given               */
-#define CMD_AUTO_ENTER   -9  /* Used when room is entered (walk, sail, etc) */
-#define CMD_AUTO_SAVE    -8  /* Used when player is saved                   */
-#define CMD_AUTO_MSG     -7  /* Used to pass messages                       */
-#define CMD_AUTO_EXTRACT -6  /* Used when extract_unit is called            */
-#define CMD_NON_USABLE   -5  /* Used when there is nothing apropriate       */
-#define CMD_AUTO_UNKNOWN -4  /* Used when cmd_interpreter doesn't recognize */
-                             /* command typed by ch. cmd->cmd_str is used   */
-#define CMD_AUTO_DEATH  -3   /* Used when someone is killed (combat)        */
-#define CMD_AUTO_COMBAT -2   /* Used when combat round                      */
-#define CMD_AUTO_TICK   -1   /* MUST BE -1 ,Used when units are "ticking"   */
+enum CommandType
+{
+   CMD_AUTO_DAMAGE  = -10, /* Used when any damage is given               */
+   CMD_AUTO_ENTER   = -9,  /* Used when room is entered (walk, sail, etc) */
+   CMD_AUTO_SAVE    = -8,  /* Used when player is saved                   */
+   CMD_AUTO_MSG     = -7,  /* Used to pass messages                       */
+   CMD_AUTO_EXTRACT = -6,  /* Used when extract_unit is called            */
+   CMD_NON_USABLE   = -5,  /* Used when there is nothing apropriate       */
+   CMD_AUTO_UNKNOWN = -4,  /* Used when cmd_interpreter doesn't recognize */
+                           /* command typed by ch. cmd->cmd_str is used   */
+   CMD_AUTO_DEATH   = -= 3,
+   , /* Used when someone is killed (combat)        */
+   CMD_AUTO_COMBAT = -= 2,
+   ,                       /* Used when combat round                      */
+   CMD_AUTO_TICK     = -1, /* MUST BE -1 ,Used when units are "ticking"   */
 
-#define CMD_NORTH NORTH /* MUST BE 0 */
-#define CMD_EAST  EAST  /* MUST BE 1 */
-#define CMD_SOUTH SOUTH /* MUST BE 2 */
-#define CMD_WEST  WEST  /* MUST BE 3 */
-#define CMD_UP    UP    /* MUST BE 4 */
-#define CMD_DOWN  DOWN  /* MUST BE 5 */
+   CMD_NORTH         = NORTH, /* MUST BE 0 */
+   CMD_EAST          = EAST,  /* MUST BE 1 */
+   CMD_SOUTH         = SOUTH, /* MUST BE 2 */
+   CMD_WEST          = WEST,  /* MUST BE 3 */
+   CMD_UP            = UP,    /* MUST BE 4 */
+   CMD_DOWN          = DOWN,  /* MUST BE 5 */
 
-#define CMD_ENTER     7
-#define CMD_EXIT      8
-#define CMD_GET       10
-#define CMD_DRINK     11
-#define CMD_EAT       12
-#define CMD_WEAR      13
-#define CMD_WIELD     14
-#define CMD_LOOK      15
-#define CMD_SCORE     16
-#define CMD_SAY       17
-#define CMD_SHOUT     18
-#define CMD_TELL      19
-#define CMD_INVENTORY 20
-#define CMD_GUILD     21
+   CMD_ENTER         = 7,
+   CMD_EXIT          = 8,
+   CMD_GET           = 10,
+   CMD_DRINK         = 11,
+   CMD_EAT           = 12,
+   CMD_WEAR          = 13,
+   CMD_WIELD         = 14,
+   CMD_LOOK          = 15,
+   CMD_SCORE         = 16,
+   CMD_SAY           = 17,
+   CMD_SHOUT         = 18,
+   CMD_TELL          = 19,
+   CMD_INVENTORY     = 20,
+   CMD_GUILD         = 21,
 
-#define CMD_KILL   25
-#define CMD_STATUS 26
+   CMD_KILL          = 25,
+   CMD_STATUS        = 26,
 
-#define CMD_HELP  38
-#define CMD_WHO   39
-#define CMD_EMOTE 40
-#define CMD_STAND 42
-#define CMD_SIT   43
-#define CMD_REST  44
-#define CMD_SLEEP 45
-#define CMD_WAKE  46
+   CMD_HELP          = 38,
+   CMD_WHO           = 39,
+   CMD_EMOTE         = 40,
+   CMD_STAND         = 42,
+   CMD_SIT           = 43,
+   CMD_REST          = 44,
+   CMD_SLEEP         = 45,
+   CMD_WAKE          = 46,
 
-#define CMD_NEWS      54
-#define CMD_EQUIPMENT 55
-#define CMD_BUY       56
-#define CMD_SELL      57
-#define CMD_VALUE     58
-#define CMD_LIST      59
-#define CMD_DROP      60
-#define CMD_GOTO      61
-#define CMD_WEATHER   62
-#define CMD_READ      63
-#define CMD_POUR      64
-/* CMD_GRAB is CMD_HOLD */
-#define CMD_REMOVE  66
-#define CMD_PUT     67
-#define CMD_SAVE    69
-#define CMD_HIT     70
-#define CMD_SET     71
-#define CMD_GIVE    72
-#define CMD_QUIT    73
-#define CMD_TIME    76
-#define CMD_IDEA    80
-#define CMD_TYPO    81
-#define CMD_BUG     82
-#define CMD_WHISPER 83
-#define CMD_CAST    84
-#define CMD_AT      85
-#define CMD_ASK     86
-#define CMD_ORDER   87
-#define CMD_SIP     88
-#define CMD_TASTE   89
-#define CMD_FOLLOW  91
-#define CMD_RENT    92
-#define CMD_OFFER   93
-#define CMD_JOIN    94
-#define CMD_AREAS   95
+   CMD_NEWS          = 54,
+   CMD_EQUIPMENT     = 55,
+   CMD_BUY           = 56,
+   CMD_SELL          = 57,
+   CMD_VALUE         = 58,
+   CMD_LIST          = 59,
+   CMD_DROP          = 60,
+   CMD_GOTO          = 61,
+   CMD_WEATHER       = 62,
+   CMD_READ          = 63,
+   CMD_POUR          = 64,
+   /* CMD_GRAB is CMD_HOLD */
+   CMD_REMOVE        = 66,
+   CMD_PUT           = 67,
+   CMD_SAVE          = 69,
+   CMD_HIT           = 70,
+   CMD_SET           = 71,
+   CMD_GIVE          = 72,
+   CMD_QUIT          = 73,
+   CMD_TIME          = 76,
+   CMD_IDEA          = 80,
+   CMD_TYPO          = 81,
+   CMD_BUG           = 82,
+   CMD_WHISPER       = 83,
+   CMD_CAST          = 84,
+   CMD_AT            = 85,
+   CMD_ASK           = 86,
+   CMD_ORDER         = 87,
+   CMD_SIP           = 88,
+   CMD_TASTE         = 89,
+   CMD_FOLLOW        = 91,
+   CMD_RENT          = 92,
+   CMD_OFFER         = 93,
+   CMD_JOIN          = 94,
+   CMD_AREAS         = 95,
 
-#define CMD_OPEN     99
-#define CMD_CLOSE    100
-#define CMD_LOCK     101
-#define CMD_UNLOCK   102
-#define CMD_LEAVE    103
-#define CMD_MOUNT    104
-#define CMD_DISMOUNT 105
-#define CMD_RIDE     106
-#define CMD_SAIL     107
+   CMD_OPEN          = 99,
+   CMD_CLOSE         = 100,
+   CMD_LOCK          = 101,
+   CMD_UNLOCK        = 102,
+   CMD_LEAVE         = 103,
+   CMD_MOUNT         = 104,
+   CMD_DISMOUNT      = 105,
+   CMD_RIDE          = 106,
+   CMD_SAIL          = 107,
 
-#define CMD_WRITE    149
-#define CMD_HOLD     150
-#define CMD_FLEE     151
-#define CMD_SNEAK    152
-#define CMD_HIDE     153
-#define CMD_BACKSTAB 154
-#define CMD_PICK     155
-#define CMD_STEAL    156
-#define CMD_BASH     157
-#define CMD_RESCUE   158
-#define CMD_KICK     159
-#define CMD_PRACTICE 164
+   CMD_WRITE         = 149,
+   CMD_HOLD          = 150,
+   CMD_FLEE          = 151,
+   CMD_SNEAK         = 152,
+   CMD_HIDE          = 153,
+   CMD_BACKSTAB      = 154,
+   CMD_PICK          = 155,
+   CMD_STEAL         = 156,
+   CMD_BASH          = 157,
+   CMD_RESCUE        = 158,
+   CMD_KICK          = 159,
+   CMD_PRACTICE      = 164,
 
-#define CMD_EXAMINE 166
-#define CMD_INFO    168
+   CMD_EXAMINE       = 166,
+   CMD_INFO          = 168,
 
-#define CMD_USE   172
-#define CMD_WHERE 173
-#define CMD_LEVEL 174
-#define CMD_WIZ   175
+   CMD_USE           = 172,
+   CMD_WHERE         = 173,
+   CMD_LEVEL         = 174,
+   CMD_WIZ           = 175,
 
-#define CMD_BRIEF         199
-#define CMD_WIZLIST       200
-#define CMD_CONSIDER      201
-#define CMD_GROUP         202
-#define CMD_QUAFF         206
-#define CMD_RECITE        207
-#define CMD_POSE          209
-#define CMD_CREDITS       212
-#define CMD_COMPACT       213
-#define CMD_DIG           214
-#define CMD_BURY          215
-#define CMD_TURN          217
-#define CMD_DIAGNOSE      218
-#define CMD_APPRAISE      219
-#define CMD_VENTRILOQUATE 220
-#define CMD_AID           221
-#define CMD_CLIMB         222
-#define CMD_LIGHT         223
-#define CMD_EXTINGUISH    224
-#define CMD_WIMPY         225
-#define CMD_PEACEFUL      226
-#define CMD_DRAG          227
-#define CMD_TRIP          228
-#define CMD_CUFF          229
+   CMD_BRIEF         = 199,
+   CMD_WIZLIST       = 200,
+   CMD_CONSIDER      = 201,
+   CMD_GROUP         = 202,
+   CMD_QUAFF         = 206,
+   CMD_RECITE        = 207,
+   CMD_POSE          = 209,
+   CMD_CREDITS       = 212,
+   CMD_COMPACT       = 213,
+   CMD_DIG           = 214,
+   CMD_BURY          = 215,
+   CMD_TURN          = 217,
+   CMD_DIAGNOSE      = 218,
+   CMD_APPRAISE      = 219,
+   CMD_VENTRILOQUATE = 220,
+   CMD_AID           = 221,
+   CMD_CLIMB         = 222,
+   CMD_LIGHT         = 223,
+   CMD_EXTINGUISH    = 224,
+   CMD_WIMPY         = 225,
+   CMD_PEACEFUL      = 226,
+   CMD_DRAG          = 227,
+   CMD_TRIP          = 228,
+   CMD_CUFF          = 229,
 
-#define CMD_EXITS      230 /* Also 'directions' and 'doors' */
-#define CMD_MAIL       231
-#define CMD_REQUEST    232
-#define CMD_CONTRACT   233
-#define CMD_BREAK      235
-#define CMD_KNOCK      236
-#define CMD_CHANGE     237
-#define CMD_SPLIT      238
-#define CMD_PROMPT     239
-#define CMD_REPLY      240
-#define CMD_ECHOSAY    241
-#define CMD_SEARCH     242
-#define CMD_QUESTS     243
-#define CMD_DECAPITATE 244
-#define CMD_PURSE      245
-#define CMD_SACRIFICE  246
-#define CMD_COMMANDS   247
-#define CMD_SOCIALS    248
-#define CMD_ACCOUNT    249
-#define CMD_INFORM     250
-#define CMD_EXPERT     251
-#define CMD_RESIZE     252
-#define CMD_EVALUATE   253
-#define CMD_DITCH      254
-#define CMD_IGNORE     255
+   CMD_EXITS         = 230, /* Also 'directions' and 'doors' */
+   CMD_MAIL          = 231,
+   CMD_REQUEST       = 232,
+   CMD_CONTRACT      = 233,
+   CMD_BREAK         = 235,
+   CMD_KNOCK         = 236,
+   CMD_CHANGE        = 237,
+   CMD_SPLIT         = 238,
+   CMD_PROMPT        = 239,
+   CMD_REPLY         = 240,
+   CMD_ECHOSAY       = 241,
+   CMD_SEARCH        = 242,
+   CMD_QUESTS        = 243,
+   CMD_DECAPITATE    = 244,
+   CMD_PURSE         = 245,
+   CMD_SACRIFICE     = 246,
+   CMD_COMMANDS      = 247,
+   CMD_SOCIALS       = 248,
+   CMD_ACCOUNT       = 249,
+   CMD_INFORM        = 250,
+   CMD_EXPERT        = 251,
+   CMD_RESIZE        = 252,
+   CMD_EVALUATE      = 253,
+   CMD_DITCH         = 254,
+   CMD_IGNORE        = 255,
 
-#define CMD_PEEK        300
-#define CMD_FILCH       301
-#define CMD_PICK_POCKET 302
-#define CMD_DISARM      303
-#define CMD_DONATE      304
-#define CMD_ASSIST      305
-#define CMD_SKIN        306
-#define CMD_SKILL7      307
-#define CMD_SKILL8      308
-#define CMD_SKILL9      309
-#define CMD_SKILL9      309
-#define CMD_SKILL10     310
-#define CMD_SKILL11     311
-#define CMD_SKILL12     312
-#define CMD_SKILL13     313
-#define CMD_SKILL14     314
-#define CMD_SKILL15     315
-#define CMD_SKILL16     316
-#define CMD_SKILL17     317
-#define CMD_SKILL18     318
-#define CMD_SKILL19     319
-#define CMD_SKILL20     320
-#define CMD_SKILL21     321
-#define CMD_SKILL22     322
-#define CMD_SKILL23     323
-#define CMD_SKILL24     324
-#define CMD_SKILL25     325
-#define CMD_SKILL26     326
-#define CMD_SKILL27     327
-#define CMD_SKILL28     328
-#define CMD_SKILL29     329
-#define CMD_SKILL30     330
+   CMD_PEEK          = 300,
+   CMD_FILCH         = 301,
+   CMD_PICK_POCKET   = 302,
+   CMD_DISARM        = 303,
+   CMD_DONATE        = 304,
+   CMD_ASSIST        = 305,
+   CMD_SKIN          = 306,
+   CMD_SKILL7        = 307,
+   CMD_SKILL8        = 308,
+   CMD_SKILL9        = 309,
+   CMD_SKILL9        = 309,
+   CMD_SKILL10       = 310,
+   CMD_SKILL11       = 311,
+   CMD_SKILL12       = 312,
+   CMD_SKILL13       = 313,
+   CMD_SKILL14       = 314,
+   CMD_SKILL15       = 315,
+   CMD_SKILL16       = 316,
+   CMD_SKILL17       = 317,
+   CMD_SKILL18       = 318,
+   CMD_SKILL19       = 319,
+   CMD_SKILL20       = 320,
+   CMD_SKILL21       = 321,
+   CMD_SKILL22       = 322,
+   CMD_SKILL23       = 323,
+   CMD_SKILL24       = 324,
+   CMD_SKILL25       = 325,
+   CMD_SKILL26       = 326,
+   CMD_SKILL27       = 327,
+   CMD_SKILL28       = 328,
+   CMD_SKILL29       = 329,
+   CMD_SKILL30       = 330,
 
-#define CMD_FREEZE    1000
-#define CMD_NOSHOUT   1002
-#define CMD_PATH      1003
-#define CMD_WIZINV    1004
-#define CMD_RESTORE   1005
-#define CMD_BAN       1006
-#define CMD_SWITCH    1007
-#define CMD_USERS     1008
-#define CMD_WIZHELP   1009
-#define CMD_NOTELL    1010
-#define CMD_FILE      1011
-#define CMD_CRASH     1012
-#define CMD_ADVANCE   1013
-#define CMD_LOAD      1014
-#define CMD_PURGE     1015
-#define CMD_SHUTDOWN  1016
-#define CMD_ECHO      1017
-#define CMD_FORCE     1018
-#define CMD_TRANSFER  1019
-#define CMD_REROLL    1020
-#define CMD_SNOOP     1021
-#define CMD_WSTAT     1022
-#define CMD_SETSKILL  1023
-#define CMD_FINGER    1024
-#define CMD_MESSAGE   1025
-#define CMD_BROADCAST 1026
-#define CMD_DELETE    1027
-#define CMD_TITLE     1028
-#define CMD_MAKEMONEY 1029
-#define CMD_WIZLOCK   1030
-#define CMD_RESET     1031
-#define CMD_MANIFEST  1032
-#define CMD_VERIFY    1033
-#define CMD_BOARDS    1034
-#define CMD_KICKIT    1035
-#define CMD_CORPSES   1036
-#define CMD_REBOOT    1037
-#define CMD_EXECUTE   1038
+   CMD_FREEZE        = 1000,
+   CMD_NOSHOUT       = 1002,
+   CMD_PATH          = 1003,
+   CMD_WIZINV        = 1004,
+   CMD_RESTORE       = 1005,
+   CMD_BAN           = 1006,
+   CMD_SWITCH        = 1007,
+   CMD_USERS         = 1008,
+   CMD_WIZHELP       = 1009,
+   CMD_NOTELL        = 1010,
+   CMD_FILE          = 1011,
+   CMD_CRASH         = 1012,
+   CMD_ADVANCE       = 1013,
+   CMD_LOAD          = 1014,
+   CMD_PURGE         = 1015,
+   CMD_SHUTDOWN      = 1016,
+   CMD_ECHO          = 1017,
+   CMD_FORCE         = 1018,
+   CMD_TRANSFER      = 1019,
+   CMD_REROLL        = 1020,
+   CMD_SNOOP         = 1021,
+   CMD_WSTAT         = 1022,
+   CMD_SETSKILL      = 1023,
+   CMD_FINGER        = 1024,
+   CMD_MESSAGE       = 1025,
+   CMD_BROADCAST     = 1026,
+   CMD_DELETE        = 1027,
+   CMD_TITLE         = 1028,
+   CMD_MAKEMONEY     = 1029,
+   CMD_WIZLOCK       = 1030,
+   CMD_RESET         = 1031,
+   CMD_MANIFEST      = 1032,
+   CMD_VERIFY        = 1033,
+   CMD_BOARDS        = 1034,
+   CMD_KICKIT        = 1035,
+   CMD_CORPSES       = 1036,
+   CMD_REBOOT        = 1037,
+   CMD_EXECUTE       = 1038,
 
-#define CMD_A_SOCIAL                                                                                                                       \
-   1000 /* This is a little special... if set,                                                                                             \
-           then the executed command is a social cmd */
-#define CMD_PRAY   1998
-#define CMD_INSULT 1999
-
+   CMD_A_SOCIAL      = 1000, /* This is a little special... if set, then the executed command is a social cmd */
+   CMD_PRAY          = 1998,
+   CMD_INSULT        = 1999,
+};
 #define CMD_BOW     "bow"
 #define CMD_NOD     "nod"
 #define CMD_SHAKE   "shake"
