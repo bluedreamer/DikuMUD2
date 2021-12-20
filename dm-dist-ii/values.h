@@ -644,33 +644,35 @@ enum CharacterFlags
    Spell book
  ITEM_SHIELD
 */
-#define ITEM_LIGHT      1
-#define ITEM_SCROLL     2
-#define ITEM_WAND       3
-#define ITEM_STAFF      4
-#define ITEM_WEAPON     5
-#define ITEM_FIREWEAPON 6
-#define ITEM_MISSILE    7
-#define ITEM_TREASURE   8
-#define ITEM_ARMOR      9
-#define ITEM_POTION     10
-#define ITEM_WORN       11
-#define ITEM_OTHER      12
-#define ITEM_TRASH      13
-#define ITEM_TRAP       14
-#define ITEM_CONTAINER  15
-#define ITEM_NOTE       16
-#define ITEM_DRINKCON   17
-#define ITEM_KEY        18
-#define ITEM_FOOD       19
-#define ITEM_MONEY      20
-#define ITEM_PEN        21
-#define ITEM_BOAT       22
-#define ITEM_SPELL      23
-#define ITEM_BOOK       24
-#define ITEM_SHIELD     25
-#define ITEM_SKIN       26
-
+enum ItemTypes
+{
+   ITEM_LIGHT      = 1,
+   ITEM_SCROLL     = 2,
+   ITEM_WAND       = 3,
+   ITEM_STAFF      = 4,
+   ITEM_WEAPON     = 5,
+   ITEM_FIREWEAPON = 6,
+   ITEM_MISSILE    = 7,
+   ITEM_TREASURE   = 8,
+   ITEM_ARMOR      = 9,
+   ITEM_POTION     = 10,
+   ITEM_WORN       = 11,
+   ITEM_OTHER      = 12,
+   ITEM_TRASH      = 13,
+   ITEM_TRAP       = 14,
+   ITEM_CONTAINER  = 15,
+   ITEM_NOTE       = 16,
+   ITEM_DRINKCON   = 17,
+   ITEM_KEY        = 18,
+   ITEM_FOOD       = 19,
+   ITEM_MONEY      = 20,
+   ITEM_PEN        = 21,
+   ITEM_BOAT       = 22,
+   ITEM_SPELL      = 23,
+   ITEM_BOOK       = 24,
+   ITEM_SHIELD     = 25,
+   ITEM_SKIN       = 26,
+};
 /* ------------------------- ITEM Types ------------------------------
  WEAR_UNUSED
    Do not use.
