@@ -963,11 +963,12 @@ enum ShieldSize
    SHIELD_LARGE  = 2, /* Large Shield */
 };
 /* Shield methods set for each weapon type & spell type */
-
-#define SHIELD_M_BLOCK   0 /* Can completely block the attack              */
-#define SHIELD_M_REDUCE  1 /* Can partially reduce the damage of an attack */
-#define SHIELD_M_USELESS 2 /* Can not help at all against an attack        */
-
+enum ShieldMethod
+{
+   SHIELD_M_BLOCK   = 0, /* Can completely block the attack              */
+   SHIELD_M_REDUCE  = 1, /* Can partially reduce the damage of an attack */
+   SHIELD_M_USELESS = 2, /* Can not help at all against an attack        */
+};
 /*
    Races. If the race you are seeking isn't here, mail to seifert@diku.dk
    and request a name, and a number. This will aid compatibility between
