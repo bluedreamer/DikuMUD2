@@ -2081,93 +2081,95 @@ enum Affect
    APF_MAX            = 9,
 };
 
-#define TIF_NONE             -1
-#define TIF_CORPSE_DECAY     0
-#define TIF_CORPSE_ZAP       1
-#define TIF_VALHALLA_RET     2
-#define TIF_HIT_INC          3
-#define TIF_HIT_DEC          4
-#define TIF_MAG_INC          5
-#define TIF_MAG_DEC          6
-#define TIF_DIV_INC          7
-#define TIF_DIV_DEC          8
-#define TIF_STR_INC          9
-#define TIF_STR_DEC          10
-#define TIF_DEX_INC          11
-#define TIF_DEX_DEC          12
-#define TIF_CON_INC          13
-#define TIF_CON_DEC          14
-#define TIF_CHA_INC          15
-#define TIF_CHA_DEC          16
-#define TIF_BRA_INC          17
-#define TIF_BRA_DEC          18
-#define TIF_TGH_INC          19
-#define TIF_TGH_DEC          20
-#define TIF_PROTECT_INC      21
-#define TIF_PROTECT_DEC      22
-#define TIF_POISON_ON        23
-#define TIF_POISON_OFF       24
-#define TIF_POISON_SUFFER    25
-#define TIF_CHANGE_LIGHT_ADD 26
-#define TIF_CHANGE_LIGHT_SUB 27
-#define TIF_TORCH_TICK       28
-#define TIF_EYES_TINGLE      29
-#define TIF_BLIND_ON         30
-#define TIF_BLIND_OFF        31
-#define TIF_FEAR_CHECK       32
-#define TIF_INVISIBILITY_ON  33
-#define TIF_INVISIBILITY_OFF 34
-#define TIF_SNEAK_ON         35
-#define TIF_SNEAK_OFF        36
-#define TIF_SNEAK_TICK       37
-#define TIF_HIDE_ON          38
-#define TIF_HIDE_OFF         39
-#define TIF_HIDE_TICK        40
-#define TIF_NOHIDE_TICK      41
-#define TIF_SLEEP_ON         42
-#define TIF_SLEEP_CHECK      43
-#define TIF_SLEEP_OFF        44
-#define TIF_BLESS_ON         45
-#define TIF_BLESS_TICK       46
-#define TIF_BLESS_OFF        47
-#define TIF_CURSE_ON         48
-#define TIF_CURSE_OFF        49
-#define TIF_SANCTUARY_ON     50
-#define TIF_SANCTUARY_TICK   51
-#define TIF_SANCTUARY_OFF    52
-#define TIF_INSANITY_ON      53
-#define TIF_INSANITY_TICK    54
-#define TIF_INSANITY_OFF     55
-#define TIF_PROT_EVIL_ON     56
-#define TIF_PROT_EVIL_OFF    57
-#define TIF_SUSTAIN_ON       58
-#define TIF_SUSTAIN_TICK     59
-#define TIF_SUSTAIN_OFF      60
-#define TIF_JAIL_WAIT        61
-#define TIF_JAIL_RELEASE     62
-#define TIF_PLAGUE_ON        63
-#define TIF_PLAGUE_TICK      64
-#define TIF_PLAGUE_OFF       65
-#define TIF_REWARD_ON        66
-#define TIF_REWARD_OFF       67
-#define TIF_SPL_INC          68
-#define TIF_SPL_DEC          69
-#define TIF_SKI_INC          70
-#define TIF_SKI_DEC          71
-#define TIF_WPN_INC          72
-#define TIF_WPN_DEC          73
-#define TIF_CONFUSION_ON     74
-#define TIF_CONFUSION_OFF    75
-#define TIF_CONFUSION_TICK   76
-#define TIF_BURIED_DESTRUCT  77
-#define TIF_PROT_GOOD_ON     78
-#define TIF_PROT_GOOD_OFF    79
-#define TIF_ARMOUR_ON        80
-#define TIF_ARMOUR_OFF       81
-#define TIF_SPEED_BETTER     82
-#define TIF_SPEED_WORSE      83
+enum TIFType {
+TIF_NONE            = -1,
+TIF_CORPSE_DECAY    =0,
+TIF_CORPSE_ZAP      =1,
+TIF_VALHALLA_RET    =2,
+TIF_HIT_INC         =3,
+TIF_HIT_DEC         =4,
+TIF_MAG_INC         =5,
+TIF_MAG_DEC         =6,
+TIF_DIV_INC         =7,
+TIF_DIV_DEC         =8,
+TIF_STR_INC         =9,
+TIF_STR_DEC         =10,
+TIF_DEX_INC         =11,
+TIF_DEX_DEC         =12,
+TIF_CON_INC         =13,
+TIF_CON_DEC         =14,
+TIF_CHA_INC         =15,
+TIF_CHA_DEC         =16,
+TIF_BRA_INC         =17,
+TIF_BRA_DEC         =18,
+TIF_TGH_INC         =19,
+TIF_TGH_DEC         =20,
+TIF_PROTECT_INC     =21,
+TIF_PROTECT_DEC     =22,
+TIF_POISON_ON       =23,
+TIF_POISON_OFF      =24,
+TIF_POISON_SUFFER   =25,
+TIF_CHANGE_LIGHT_ADD=26,
+TIF_CHANGE_LIGHT_SUB=27,
+TIF_TORCH_TICK      =28,
+TIF_EYES_TINGLE     =29,
+TIF_BLIND_ON        =30,
+TIF_BLIND_OFF       =31,
+TIF_FEAR_CHECK      =32,
+TIF_INVISIBILITY_ON =33,
+TIF_INVISIBILITY_OFF=34,
+TIF_SNEAK_ON        =35,
+TIF_SNEAK_OFF       =36,
+TIF_SNEAK_TICK      =37,
+TIF_HIDE_ON         =38,
+TIF_HIDE_OFF        =39,
+TIF_HIDE_TICK       =40,
+TIF_NOHIDE_TICK     =41,
+TIF_SLEEP_ON        =42,
+TIF_SLEEP_CHECK     =43,
+TIF_SLEEP_OFF       =44,
+TIF_BLESS_ON        =45,
+TIF_BLESS_TICK      =46,
+TIF_BLESS_OFF       =47,
+TIF_CURSE_ON        =48,
+TIF_CURSE_OFF       =49,
+TIF_SANCTUARY_ON    =50,
+TIF_SANCTUARY_TICK  =51,
+TIF_SANCTUARY_OFF   =52,
+TIF_INSANITY_ON     =53,
+TIF_INSANITY_TICK   =54,
+TIF_INSANITY_OFF    =55,
+TIF_PROT_EVIL_ON    =56,
+TIF_PROT_EVIL_OFF   =57,
+TIF_SUSTAIN_ON      =58,
+TIF_SUSTAIN_TICK    =59,
+TIF_SUSTAIN_OFF     =60,
+TIF_JAIL_WAIT       =61,
+TIF_JAIL_RELEASE    =62,
+TIF_PLAGUE_ON       =63,
+TIF_PLAGUE_TICK     =64,
+TIF_PLAGUE_OFF      =65,
+TIF_REWARD_ON       =66,
+TIF_REWARD_OFF      =67,
+TIF_SPL_INC         =68,
+TIF_SPL_DEC         =69,
+TIF_SKI_INC         =70,
+TIF_SKI_DEC         =71,
+TIF_WPN_INC         =72,
+TIF_WPN_DEC         =73,
+TIF_CONFUSION_ON    =74,
+TIF_CONFUSION_OFF   =75,
+TIF_CONFUSION_TICK  =76,
+TIF_BURIED_DESTRUCT =77,
+TIF_PROT_GOOD_ON    =78,
+TIF_PROT_GOOD_OFF   =79,
+TIF_ARMOUR_ON       =80,
+TIF_ARMOUR_OFF      =81,
+TIF_SPEED_BETTER    =82,
+TIF_SPEED_WORSE     =83,
 
-#define TIF_MAX 83
+TIF_MAX=83,
+};
 
 #define CMD_AUTO_DAMAGE  -10 /* Used when any damage is given               */
 #define CMD_AUTO_ENTER   -9  /* Used when room is entered (walk, sail, etc) */
