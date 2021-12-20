@@ -350,7 +350,7 @@ BOOST_AUTO_TEST_CASE(mudtime_strcpy_test)
 BOOST_AUTO_TEST_CASE(age_test)
 {
    { // Isn't a PC
-      std::unique_ptr<unit_data> unit(new unit_data(UNIT_ST_NPC));
+      auto unit=std::make_unique<unit_data>(UNIT_ST_NPC);
 
       unit->next                             = nullptr;
       unit->gnext                            = nullptr;
@@ -366,7 +366,7 @@ BOOST_AUTO_TEST_CASE(age_test)
    }
    { // Is a PC
       auto                       age_time = time(nullptr) - 69039984;
-      std::unique_ptr<unit_data> unit(new unit_data(UNIT_ST_PC));
+      auto unit=std::make_unique<unit_data>(UNIT_ST_NPC);
       unit->next                             = nullptr;
       unit->gnext                            = nullptr;
       unit->gprevious                        = nullptr;

@@ -3,7 +3,13 @@
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
 
-//BOOST_AUTO_TEST_CASE(LineTest)
-//{
-//   BOOST_CHECK(5 == 6);
-//}
+void boot_db(void);
+struct GlobalFixture
+{
+   GlobalFixture() { boot_db(); }
+   void setup() {}
+   void teardown() {}
+   ~GlobalFixture() {}
+};
+
+BOOST_TEST_GLOBAL_FIXTURE(GlobalFixture);
