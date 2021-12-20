@@ -705,13 +705,15 @@ enum SexType
    When bit is set the exit is only revealed by a command to 'search' in
    a specific direction.
 */
-#define EX_OPEN_CLOSE  0x01
-#define EX_CLOSED      0x02
-#define EX_LOCKED      0x04
-#define EX_PICKPROOF   0x08
-#define EX_INSIDE_OPEN 0x10
-#define EX_HIDDEN      0x20
-
+enum LockFlag
+{
+   EX_OPEN_CLOSE  = 0x01,
+   EX_CLOSED      = 0x02,
+   EX_LOCKED      = 0x04,
+   EX_PICKPROOF   = 0x08,
+   EX_INSIDE_OPEN = 0x10,
+   EX_HIDDEN      = 0x20,
+};
 /* ------------------------- Room Flags ------------------------------
  Use the room flags with "romflags" when defining a room.
 
