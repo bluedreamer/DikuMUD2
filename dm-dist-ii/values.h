@@ -813,10 +813,12 @@ constexpr int INFINITE_BURNTIME = -1;
    SPEED_DEFAULT is also the same as the duration of one combat round.
 */
 
-#define SPEED_DEFAULT 12
-#define SPEED_MIN     4
-#define SPEED_MAX     200
-
+enum Speed
+{
+   SPEED_DEFAULT = 12,
+   SPEED_MIN     = 4,
+   SPEED_MAX     = 200,
+};
 /* ------------------------- Damage Groups  ------------------------------
     These are the possible damage groups... For the weapon group, the
     attack number is one of WPN_XXX, for the spell group attack number
