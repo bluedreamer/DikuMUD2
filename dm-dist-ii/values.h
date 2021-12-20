@@ -49,13 +49,21 @@ enum Level
 #define A_SOMEONE 11
 #define A_ALWAYS  12
 
-#define TO_ROOM    0
-#define TO_VICT    1
-#define TO_NOTVICT 2
-#define TO_CHAR    3
-#define TO_ALL     4
-#define TO_REST    5
-
+//#define TO_ROOM    0
+//#define TO_VICT    1
+//#define TO_NOTVICT 2
+//#define TO_CHAR    3
+//#define TO_ALL     4
+//#define TO_REST    5
+enum ToDirection
+{
+   TO_ROOM    = 0,
+   TO_VICT    = 1,
+   TO_NOTVICT = 2,
+   TO_CHAR    = 3,
+   TO_ALL     = 4,
+   TO_REST    = 5,
+};
 #define FIND_UNIT_EQUIP         (0x0001)
 #define FIND_UNIT_INVEN         (0x0002)
 #define FIND_UNIT_SURRO         (0x0004)
@@ -87,20 +95,20 @@ enum Level
 #define PULSE_POINTS   (60 * PULSE_SEC) /* Pointupdate every 60 secs */
 #define PULSE_ROUND    (1 * PULSE_SEC)
 
-#define SECS_PER_REAL_MIN  60
-#define SECS_PER_REAL_HOUR (60 * SECS_PER_REAL_MIN)
-#define SECS_PER_REAL_DAY  (24 * SECS_PER_REAL_HOUR)
-#define SECS_PER_REAL_YEAR (365 * SECS_PER_REAL_DAY)
+constexpr int SECS_PER_REAL_MIN  = 60;
+constexpr int SECS_PER_REAL_HOUR = (60 * SECS_PER_REAL_MIN);
+constexpr int SECS_PER_REAL_DAY  = (24 * SECS_PER_REAL_HOUR);
+constexpr int SECS_PER_REAL_YEAR = (365 * SECS_PER_REAL_DAY);
 
-#define MUD_DAY   24 /* Twentyfour hours per day    */
-#define MUD_WEEK  7  /* Seven mud days per mud week */
-#define MUD_MONTH 14 /* 21 mud days per mud month   */
-#define MUD_YEAR  9  /* 9 mud months per mud year   */
+constexpr int MUD_DAY            = 24; /* Twentyfour hours per day    */
+constexpr int MUD_WEEK           = 7;  /* Seven mud days per mud week */
+constexpr int MUD_MONTH          = 14; /* 21 mud days per mud month   */
+constexpr int MUD_YEAR           = 9;  /* 9 mud months per mud year   */
 
-#define SECS_PER_MUD_HOUR  (5 * SECS_PER_REAL_MIN)
-#define SECS_PER_MUD_DAY   (24 * SECS_PER_MUD_HOUR)
-#define SECS_PER_MUD_MONTH (MUD_MONTH * SECS_PER_MUD_DAY)
-#define SECS_PER_MUD_YEAR  (MUD_YEAR * SECS_PER_MUD_MONTH)
+constexpr int SECS_PER_MUD_HOUR  = (5 * SECS_PER_REAL_MIN);
+constexpr int SECS_PER_MUD_DAY   = (24 * SECS_PER_MUD_HOUR);
+constexpr int SECS_PER_MUD_MONTH = (MUD_MONTH * SECS_PER_MUD_DAY);
+constexpr int SECS_PER_MUD_YEAR  = (MUD_YEAR * SECS_PER_MUD_MONTH);
 
 /* These number must be unique AND at the same time it represents */
 /* how much each crime is weighted, thus it is four times as bad  */
