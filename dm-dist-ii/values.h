@@ -2064,19 +2064,22 @@ enum AffectType
    ID_WEAPON_TRANSFER     = -ID_WEAPON,
 };
 
-#define APF_NONE           -1
-#define APF_ABILITY        0
-#define APF_SPELL_ADJ      1
-#define APF_LIGHT_DARK     2
-#define APF_MOD_CHAR_FLAGS 3
-#define APF_MOD_UNIT_FLAGS 4
-#define APF_MOD_OBJ_FLAGS  5
-#define APF_SKILL_ADJ      6
-#define APF_WEAPON_ADJ     7
-#define APF_NATURAL_ARMOUR 8
-#define APF_SPEED          9
+enum Affect
+{
+   APF_NONE           = -1,
+   APF_ABILITY        = 0,
+   APF_SPELL_ADJ      = 1,
+   APF_LIGHT_DARK     = 2,
+   APF_MOD_CHAR_FLAGS = 3,
+   APF_MOD_UNIT_FLAGS = 4,
+   APF_MOD_OBJ_FLAGS  = 5,
+   APF_SKILL_ADJ      = 6,
+   APF_WEAPON_ADJ     = 7,
+   APF_NATURAL_ARMOUR = 8,
+   APF_SPEED          = 9,
 
-#define APF_MAX 9
+   APF_MAX            = 9,
+};
 
 #define TIF_NONE             -1
 #define TIF_CORPSE_DECAY     0
