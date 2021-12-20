@@ -846,24 +846,28 @@ enum DamageGroup
    ARM_XXX is the armour type. Use the definied macros instead of these
            values when defining armours.
 */
-#define ARM_CLOTHES  0 /* Naked / clothes is only protection    */
-#define ARM_LEATHER  1 /* A soft flexible leather base armour   */
-#define ARM_HLEATHER 2 /* A hard unflexible leather base armour */
-#define ARM_CHAIN    3 /* A flexible armour composed of interlocking rings */
-#define ARM_PLATE    4 /* An unflexible plate armour. */
+enum ArmorType
+{
+   ARM_CLOTHES  = 0, /* Naked / clothes is only protection    */
+   ARM_LEATHER  = 1, /* A soft flexible leather base armour   */
+   ARM_HLEATHER = 2, /* A hard unflexible leather base armour */
+   ARM_CHAIN    = 3, /* A flexible armour composed of interlocking rings */
+   ARM_PLATE    = 4, /* An unflexible plate armour. */
+};
 
 /* ------------------------- Monster Size  ------------------------------
    SIZ_XXX is the size of the monster. This has effect on the maximum
            damage it can give with NATURAL attacks (hand, bite, etc).
            The size is dependant on WEIGHT only.
 */
-
-#define SIZ_TINY   0 /*   0 -   5 lbs */
-#define SIZ_SMALL  1 /*  11 -  40 lbs */
-#define SIZ_MEDIUM 2 /*  41 - 160 lbs */
-#define SIZ_LARGE  3 /* 161 - 500 lbs */
-#define SIZ_HUGE   4 /* 500+ lbs      */
-
+enum MonsterSize
+{
+   SIZ_TINY   = 0, /*   0 -   5 lbs */
+   SIZ_SMALL  = 1, /*  11 -  40 lbs */
+   SIZ_MEDIUM = 2, /*  41 - 160 lbs */
+   SIZ_LARGE  = 3, /* 161 - 500 lbs */
+   SIZ_HUGE   = 4, /* 500+ lbs      */
+};
 /* ------------------------- Skill Values  ------------------------------
    ABIL_XXX refers to the abilitity. Use 'ability[ABIL_XXX] = yyy' in
             the zone, or use predefined macros.
