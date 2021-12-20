@@ -294,7 +294,9 @@ BOOST_AUTO_TEST_CASE(mudtime_strcpy_test)
             strm << "past Midnight";
          }
          strm << msg;
-         BOOST_TEST(std::string(buffer) == strm.str());
+         std::string left(buffer);
+         std::string right(strm.str());
+         BOOST_TEST(left == right);
       }
    }
    ///////////////////////////////////////////////////////////////////////////

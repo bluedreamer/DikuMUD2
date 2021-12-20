@@ -33,6 +33,9 @@ class cNamelist
   public:
    cNamelist(void);
    cNamelist(const char **list);
+   cNamelist(const cNamelist &)=delete;
+   cNamelist(cNamelist&&)=delete;
+   cNamelist& operator=(const cNamelist&) =delete ;
    ~cNamelist(void);
 
    void Free(void);
