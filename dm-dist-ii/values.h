@@ -198,10 +198,12 @@ enum PCFlags
  RESET_ANYHOW
    A zone is reset regardless of wheter it contains players or not.
 */
-#define RESET_NOT     0
-#define RESET_IFEMPTY 1
-#define RESET_ANYHOW  2
-
+enum ZoneReset
+{
+   RESET_NOT     = 0,
+   RESET_IFEMPTY = 1,
+   RESET_ANYHOW  = 2,
+};
 /* ------------------------- Sector Types ------------------------------
  Common for all sector types are that when you specify one for your
  location, it does not mean that your location is that type, but
