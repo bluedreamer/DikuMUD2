@@ -738,11 +738,13 @@ enum LockFlag
    Used on weapons to indicate that it can not be used as a secondary
    weapon in a dual-wield.
 */
-#define OBJ_NO_UNEQUIP 0x0001
-#define OBJ_TWO_HANDS  0x0002
-#define OBJ_NOCOVER    0x0004
-#define OBJ_NO_DUAL    0x0008
-
+enum ObjectFlag
+{
+   OBJ_NO_UNEQUIP = 0x0001,
+   OBJ_TWO_HANDS  = 0x0002,
+   OBJ_NOCOVER    = 0x0004,
+   OBJ_NO_DUAL    = 0x0008,
+};
 /* ------------------------- Money Values -------------------------------
  */
 
