@@ -90,17 +90,10 @@ enum log_level { LOG_OFF, LOG_BRIEF, LOG_EXTENSIVE, LOG_ALL };
 
 #define SWITCH(a,b) { (a) ^= (b); (b) ^= (a); (a) ^= (b); }
 
-#ifdef isascii
-   #undef isascii
-#endif
-
-
 #define DEBUG(a...) \
    do { \
    fprintf(stderr, a); \
    } while (0)
-
-#define isascii(ch) ((ch >= 32) && (ch <= 126))
 
 #ifndef HPUX
 typedef signed char        sbit8;

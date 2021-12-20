@@ -89,11 +89,6 @@ enum log_level { LOG_OFF, LOG_BRIEF, LOG_EXTENSIVE, LOG_ALL };
 
 #define SWITCH(a,b) { (a) ^= (b); (b) ^= (a); (a) ^= (b); }
 
-#ifdef isascii
-   #undef isascii
-#endif
-
-
 #define DEBUG(a...) \
    do { \
    fprintf(stderr, a); \
