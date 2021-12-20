@@ -975,226 +975,228 @@ enum ShieldMethod
    different versions of Valhalla
 */
 
-#define RACE_HUMAN     0 /* PC race */
-#define RACE_ELF       1 /* PC race */
-#define RACE_DWARF     2 /* PC race */
-#define RACE_HALFLING  3 /* PC race */
-#define RACE_GNOME     4 /* PC race */
-#define RACE_HALF_ORC  5
-#define RACE_HALF_OGRE 6
-#define RACE_HALF_ELF  7
-#define RACE_BROWNIE   8
-#define RACE_GROLL     9
-#define RACE_DARK_ELF  10
+enum Race
+{
+   RACE_HUMAN           = 0, /* PC race */
+   RACE_ELF             = 1, /* PC race */
+   RACE_DWARF           = 2, /* PC race */
+   RACE_HALFLING        = 3, /* PC race */
+   RACE_GNOME           = 4, /* PC race */
+   RACE_HALF_ORC        = 5,
+   RACE_HALF_OGRE       = 6,
+   RACE_HALF_ELF        = 7,
+   RACE_BROWNIE         = 8,
+   RACE_GROLL           = 9,
+   RACE_DARK_ELF        = 10,
 
-#define RACE_BLANK0 11 /* PC race unused */
-#define RACE_BLANK1 12 /* PC race unused */
-#define RACE_BLANK2 13 /* PC race unused */
-#define RACE_BLANK3 14 /* PC race unused */
-#define RACE_BLANK4 15 /* PC race unused */
-#define RACE_BLANK5 16 /* PC race unused */
-#define RACE_BLANK6 17 /* PC race unused */
-#define RACE_BLANK7 18 /* PC race unused */
-#define RACE_BLANK8 19 /* PC race unused */
-#define RACE_BLANK9 20 /* PC race unused */
+   RACE_BLANK0          = 11, /* PC race unused */
+   RACE_BLANK1          = 12, /* PC race unused */
+   RACE_BLANK2          = 13, /* PC race unused */
+   RACE_BLANK3          = 14, /* PC race unused */
+   RACE_BLANK4          = 15, /* PC race unused */
+   RACE_BLANK5          = 16, /* PC race unused */
+   RACE_BLANK6          = 17, /* PC race unused */
+   RACE_BLANK7          = 18, /* PC race unused */
+   RACE_BLANK8          = 19, /* PC race unused */
+   RACE_BLANK9          = 20, /* PC race unused */
 
-#define PC_RACE_MAX 21 /* There are 21 player races [0..20] */
+   PC_RACE_MAX          = 21, /* There are=21, player races [0..20] */
 
-#define RACE_SKAVEN     120
-#define RACE_GNOLL      121
-#define RACE_GOBLIN     122
-#define RACE_HOBGOBLIN  123
-#define RACE_KOBOLD     124
-#define RACE_NIXIE      125
-#define RACE_NYMPH      126
-#define RACE_OGRE       127
-#define RACE_ORC        128
-#define RACE_SATYR      129
-#define RACE_FAUN       130
-#define RACE_SPRITE     131
-#define RACE_DRYAD      132
-#define RACE_LEPRECHAUN 133
-#define RACE_PIXIE      134
-#define RACE_SYLPH      135
-#define RACE_HERMIT     136
-#define RACE_SHARGUGH   137
-#define RACE_GIANT      138 /* Prolly a humanoid..   */
-#define RACE_WARDEN     139 /* Warden???             */
-#define RACE_TROLL      140
-#define RACE_NORSE_GOD  142 /* Hmmmm. prolly need better categories */
-#define RACE_MERMAID    145
-#define RACE_SIREN      146
-#define RACE_NAIAD      147
-#define RACE_MERMAN     148
-#define RACE_MINOTAUR   149
-#define RACE_YETI       150
+   RACE_SKAVEN          = 120,
+   RACE_GNOLL           = 121,
+   RACE_GOBLIN          = 122,
+   RACE_HOBGOBLIN       = 123,
+   RACE_KOBOLD          = 124,
+   RACE_NIXIE           = 125,
+   RACE_NYMPH           = 126,
+   RACE_OGRE            = 127,
+   RACE_ORC             = 128,
+   RACE_SATYR           = 129,
+   RACE_FAUN            = 130,
+   RACE_SPRITE          = 131,
+   RACE_DRYAD           = 132,
+   RACE_LEPRECHAUN      = 133,
+   RACE_PIXIE           = 134,
+   RACE_SYLPH           = 135,
+   RACE_HERMIT          = 136,
+   RACE_SHARGUGH        = 137,
+   RACE_GIANT           = 138, /* Prolly a humanoid..   */
+   RACE_WARDEN          = 139, /* Warden???             */
+   RACE_TROLL           = 140,
+   RACE_NORSE_GOD       = 142, /* Hmmmm. prolly need better categories */
+   RACE_MERMAID         = 145,
+   RACE_SIREN           = 146,
+   RACE_NAIAD           = 147,
+   RACE_MERMAN          = 148,
+   RACE_MINOTAUR        = 149,
+   RACE_YETI            = 150,
 
-#define RACE_OTHER_HUMANOID 999
+   RACE_OTHER_HUMANOID  = 999,
 
-/* Is Giant a humanoid or a creature? */
+   /* Is Giant a humanoid or a creature? */
 
-#define RACE_BEAR   1000
-#define RACE_DOG    1001
-#define RACE_WOLF   1002
-#define RACE_FOX    1003
-#define RACE_CAT    1004
-#define RACE_RABBIT 1005
-#define RACE_DEER   1006
-#define RACE_COW    1007
-#define RACE_HARE   1008
-#define RACE_GOAT   1009
-#define RACE_EAGLE  1010
-#define RACE_PIG    1011
+   RACE_BEAR            = 1000,
+   RACE_DOG             = 1001,
+   RACE_WOLF            = 1002,
+   RACE_FOX             = 1003,
+   RACE_CAT             = 1004,
+   RACE_RABBIT          = 1005,
+   RACE_DEER            = 1006,
+   RACE_COW             = 1007,
+   RACE_HARE            = 1008,
+   RACE_GOAT            = 1009,
+   RACE_EAGLE           = 1010,
+   RACE_PIG             = 1011,
 
-#define RACE_DUCK      1100 /* This will interest the biologists... */
-#define RACE_BIRD      1101 /* This will interest the biologists... */
-#define RACE_RAT       1102
-#define RACE_HORSE     1103
-#define RACE_BADGER    1104
-#define RACE_SKUNK     1105
-#define RACE_BOAR      1106
-#define RACE_MOUSE     1107
-#define RACE_MONKEY    1108
-#define RACE_PORCUPINE 1110
-#define RACE_ELEPHANT  1112
-#define RACE_CAMEL     1113
-#define RACE_FERRET    1114
-#define RACE_VULTURE   1115
-#define RACE_SQUIRREL  1116
-#define RACE_OWL       1117
-#define RACE_LEMURE    1118 /* Half-monkey (Makier) */
-#define RACE_ELK       1119 /* Larger deer (Whapiti-deer) */
-#define RACE_LION      1120
-#define RACE_TIGER     1121
-#define RACE_LEOPARD   1122
+   RACE_DUCK            = 1100, /* This will interest the biologists... */
+   RACE_BIRD            = 1101, /* This will interest the biologists... */
+   RACE_RAT             = 1102,
+   RACE_HORSE           = 1103,
+   RACE_BADGER          = 1104,
+   RACE_SKUNK           = 1105,
+   RACE_BOAR            = 1106,
+   RACE_MOUSE           = 1107,
+   RACE_MONKEY          = 1108,
+   RACE_PORCUPINE       = 1110,
+   RACE_ELEPHANT        = 1112,
+   RACE_CAMEL           = 1113,
+   RACE_FERRET          = 1114,
+   RACE_VULTURE         = 1115,
+   RACE_SQUIRREL        = 1116,
+   RACE_OWL             = 1117,
+   RACE_LEMURE          = 1118, /* Half-monkey (Makier) */
+   RACE_ELK             = 1119, /* Larger deer (Whapiti-deer) */
+   RACE_LION            = 1120,
+   RACE_TIGER           = 1121,
+   RACE_LEOPARD         = 1122,
 
-#define RACE_OTHER_MAMMAL 1999
+   RACE_OTHER_MAMMAL    = 1999,
 
-#define RACE_TREE    2000
-#define RACE_VINE    2001
-#define RACE_FLOWER  2002
-#define RACE_SEAWEED 2003
-#define RACE_CACTUS  2004
+   RACE_TREE            = 2000,
+   RACE_VINE            = 2001,
+   RACE_FLOWER          = 2002,
+   RACE_SEAWEED         = 2003,
+   RACE_CACTUS          = 2004,
 
-#define RACE_OTHER_PLANT 2999
+   RACE_OTHER_PLANT     = 2999,
 
-#define RACE_MAGGOT    3000
-#define RACE_BEETLE    3001
-#define RACE_SPIDER    3002
-#define RACE_COCKROACH 3003
-#define RACE_BUTTERFLY 3004
-#define RACE_ANT       3005
-#define RACE_WORM      3006
-#define RACE_LEECH     3008
-#define RACE_DRAGONFLY 3009
-#define RACE_MOSQUITO  3010
+   RACE_MAGGOT          = 3000,
+   RACE_BEETLE          = 3001,
+   RACE_SPIDER          = 3002,
+   RACE_COCKROACH       = 3003,
+   RACE_BUTTERFLY       = 3004,
+   RACE_ANT             = 3005,
+   RACE_WORM            = 3006,
+   RACE_LEECH           = 3008,
+   RACE_DRAGONFLY       = 3009,
+   RACE_MOSQUITO        = 3010,
 
-#define RACE_OTHER_INSECT 3999
+   RACE_OTHER_INSECT    = 3999,
 
-#define RACE_LIZARD    4000
-#define RACE_SNAKE     4001
-#define RACE_FROG      4002
-#define RACE_ALLIGATOR 4004
-#define RACE_DINOSAUR  4005
-#define RACE_CHAMELEON 4006
-#define RACE_SCORPION  4007
-#define RACE_TURTLE    4008
-#define RACE_BAT       4009
-#define RACE_TOAD      4010
+   RACE_LIZARD          = 4000,
+   RACE_SNAKE           = 4001,
+   RACE_FROG            = 4002,
+   RACE_ALLIGATOR       = 4004,
+   RACE_DINOSAUR        = 4005,
+   RACE_CHAMELEON       = 4006,
+   RACE_SCORPION        = 4007,
+   RACE_TURTLE          = 4008,
+   RACE_BAT             = 4009,
+   RACE_TOAD            = 4010,
 
-#define RACE_OTHER_REPTILE 4999
+   RACE_OTHER_REPTILE   = 4999,
 
-#define RACE_CAVE_WIGHT   5001 /* Some kinda creature... */
-#define RACE_UR_VILE      5002 /* Some kinda creature... */
-#define RACE_STONE_RENDER 5003 /* Some kinda creature... */
-#define RACE_VAMPIRE      5005
-#define RACE_SLIME        5006
-#define RACE_WYRM         5007
-#define RACE_AUTOMATON    5008
-#define RACE_UNICORN      5009
+   RACE_CAVE_WIGHT      = 5001, /* Some kinda creature... */
+   RACE_UR_VILE         = 5002, /* Some kinda creature... */
+   RACE_STONE_RENDER    = 5003, /* Some kinda creature... */
+   RACE_VAMPIRE         = 5005,
+   RACE_SLIME           = 5006,
+   RACE_WYRM            = 5007,
+   RACE_AUTOMATON       = 5008,
+   RACE_UNICORN         = 5009,
 
-#define RACE_DRAGON_MIN    5010 /* For use with special object */
-#define RACE_DRAGON_BLACK  5010
-#define RACE_DRAGON_BLUE   5011
-#define RACE_DRAGON_GREEN  5012
-#define RACE_DRAGON_RED    5013
-#define RACE_DRAGON_WHITE  5014
-#define RACE_DRAGON_SILVER 5015
-#define RACE_DRAGON_TURTLE 5016
-#define RACE_DRAGON_LAVA   5017
-#define RACE_DRAGON_SHADOW 5018
-#define RACE_DRAGON_LIZARD 5019
-#define RACE_DRAGON_MAX    5020 /* For use with special object */
+   RACE_DRAGON_MIN      = 5010, /* For use with special object */
+   RACE_DRAGON_BLACK    = 5010,
+   RACE_DRAGON_BLUE     = 5011,
+   RACE_DRAGON_GREEN    = 5012,
+   RACE_DRAGON_RED      = 5013,
+   RACE_DRAGON_WHITE    = 5014,
+   RACE_DRAGON_SILVER   = 5015,
+   RACE_DRAGON_TURTLE   = 5016,
+   RACE_DRAGON_LAVA     = 5017,
+   RACE_DRAGON_SHADOW   = 5018,
+   RACE_DRAGON_LIZARD   = 5019,
+   RACE_DRAGON_MAX      = 5020, /* For use with special object */
 
-#define RACE_LESSER_DEMON  5020 /* Approx. Level < 100          */
-#define RACE_GREATER_DEMON 5021 /* Approx. Level > 100          */
-#define RACE_SERVANT_DEMON 5022 /* Approx. < level 20           */
-#define RACE_PRINCE_DEMON  5023 /* Almost god, max level 149 (no more!) */
-#define RACE_LESSER_DEVIL  5025 /* Approx. Level < 100 */
-#define RACE_GREATER_DEVIL 5026 /* Approx. Level > 100 */
-#define RACE_SHADOW_DEVIL  5027
-#define RACE_ARCH_DEVIL    5028
+   RACE_LESSER_DEMON    = 5020, /* Approx. Level <=100,          */
+   RACE_GREATER_DEMON   = 5021, /* Approx. Level >=100,          */
+   RACE_SERVANT_DEMON   = 5022, /* Approx. < level=20,           */
+   RACE_PRINCE_DEMON    = 5023, /* Almost god, max level=149, (no more!) */
+   RACE_LESSER_DEVIL    = 5025, /* Approx. Level <=100, */
+   RACE_GREATER_DEVIL   = 5026, /* Approx. Level >=100, */
+   RACE_SHADOW_DEVIL    = 5027,
+   RACE_ARCH_DEVIL      = 5028,
 
-#define RACE_MEDUSA       5030
-#define RACE_WINGED_HORSE 5031
-#define RACE_GARGOYLE     5033
-#define RACE_GOLEM        5034
-#define RACE_YOGOLOTH     5035
-#define RACE_MIST_DWELLER 5036
+   RACE_MEDUSA          = 5030,
+   RACE_WINGED_HORSE    = 5031,
+   RACE_GARGOYLE        = 5033,
+   RACE_GOLEM           = 5034,
+   RACE_YOGOLOTH        = 5035,
+   RACE_MIST_DWELLER    = 5036,
 
-#define RACE_WEREWOLF 5037
-#define RACE_WERERAT  5038
+   RACE_WEREWOLF        = 5037,
+   RACE_WERERAT         = 5038,
 
-#define RACE_ELEMENTAL_AIR   5040
-#define RACE_ELEMENTAL_EARTH 5041
-#define RACE_ELEMENTAL_FIRE  5042
-#define RACE_ELEMENTAL_FROST 5043
-#define RACE_ELEMENTAL_WATER 5044
-#define RACE_ELEMENTAL_LIGHT 5045
+   RACE_ELEMENTAL_AIR   = 5040,
+   RACE_ELEMENTAL_EARTH = 5041,
+   RACE_ELEMENTAL_FIRE  = 5042,
+   RACE_ELEMENTAL_FROST = 5043,
+   RACE_ELEMENTAL_WATER = 5044,
+   RACE_ELEMENTAL_LIGHT = 5045,
 
-#define RACE_DEVOURER 5600
-#define RACE_DANALEK  5601
+   RACE_DEVOURER        = 5600,
+   RACE_DANALEK         = 5601,
 
-#define RACE_FAMILIAR 5900 /* Wierdo race... */
+   RACE_FAMILIAR        = 5900, /* Wierdo race... */
 
-#define RACE_OTHER_CREATURE 5999
+   RACE_OTHER_CREATURE  = 5999,
 
-#define RACE_ZOMBIE    6000
-#define RACE_LICH      6001
-#define RACE_GHOUL     6002
-#define RACE_SKELETON  6003
-#define RACE_GHOST     6004
-#define RACE_SPIRIT    6005
-#define RACE_MUMMIE    6006
-#define RACE_BANSHEE   6007
-#define RACE_NAGA_SOUL 6008
+   RACE_ZOMBIE          = 6000,
+   RACE_LICH            = 6001,
+   RACE_GHOUL           = 6002,
+   RACE_SKELETON        = 6003,
+   RACE_GHOST           = 6004,
+   RACE_SPIRIT          = 6005,
+   RACE_MUMMIE          = 6006,
+   RACE_BANSHEE         = 6007,
+   RACE_NAGA_SOUL       = 6008,
 
-#define RACE_OTHER_UNDEAD 6999
+   RACE_OTHER_UNDEAD    = 6999,
 
-#define RACE_CRAB         7000
-#define RACE_SAND_SPIDER  7002
-#define RACE_RIVER_LEECH  7003
-#define RACE_SAND_CRAWLER 7004
-#define RACE_SEA_HORSE    7005
-#define RACE_SHARK        7006
-#define RACE_LAMPREY      7007
-#define RACE_MANTA_RAY    7008
-#define RACE_CLIFF_HUGGER 7009
-#define RACE_ALGAE_MAN    7010
-#define RACE_WHELK        7011
-#define RACE_OYSTER       7012
-#define RACE_KRAKEN       7013
-#define RACE_CAVE_FISHER  7014 /* Tiamat: lobster / spider breed */
-#define RACE_OCTOPUS      7015
-#define RACE_WHALE        7016
-#define RACE_DOLPHIN      7017
-#define RACE_EEL          7018
+   RACE_CRAB            = 7000,
+   RACE_SAND_SPIDER     = 7002,
+   RACE_RIVER_LEECH     = 7003,
+   RACE_SAND_CRAWLER    = 7004,
+   RACE_SEA_HORSE       = 7005,
+   RACE_SHARK           = 7006,
+   RACE_LAMPREY         = 7007,
+   RACE_MANTA_RAY       = 7008,
+   RACE_CLIFF_HUGGER    = 7009,
+   RACE_ALGAE_MAN       = 7010,
+   RACE_WHELK           = 7011,
+   RACE_OYSTER          = 7012,
+   RACE_KRAKEN          = 7013,
+   RACE_CAVE_FISHER     = 7014, /* Tiamat: lobster / spider breed */
+   RACE_OCTOPUS         = 7015,
+   RACE_WHALE           = 7016,
+   RACE_DOLPHIN         = 7017,
+   RACE_EEL             = 7018,
 
-#define RACE_FISH         7998
-#define RACE_OTHER_MARINE 7999
+   RACE_FISH            = 7998,
+   RACE_OTHER_MARINE    = 7999,
 
-#define RACE_DO_NOT_USE 15000
-
+   RACE_DO_NOT_USE      = 15000,
+};
 /* ..................................................................... */
 /*                              S P E L L S                              */
 /* ..................................................................... */
