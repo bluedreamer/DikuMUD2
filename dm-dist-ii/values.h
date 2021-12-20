@@ -956,10 +956,12 @@ enum WeaponType
 
 /* For use with armours and shields, in the 'value[X]' */
 
-#define SHIELD_SMALL  0 /* Small Shield */
-#define SHIELD_MEDIUM 1 /* Medium Shield */
-#define SHIELD_LARGE  2 /* Large Shield */
-
+enum ShieldSize
+{
+   SHIELD_SMALL  = 0, /* Small Shield */
+   SHIELD_MEDIUM = 1, /* Medium Shield */
+   SHIELD_LARGE  = 2, /* Large Shield */
+};
 /* Shield methods set for each weapon type & spell type */
 
 #define SHIELD_M_BLOCK   0 /* Can completely block the attack              */
