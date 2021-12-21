@@ -1,4 +1,5 @@
 core.*
+dmc
 vgcore.*
 *.o
 *~

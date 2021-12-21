@@ -68,15 +68,21 @@ struct bin_search_type
 
 class zone_type;
 /* A linked sorted list of all units within a zone file */
-class file_index_type
+class file_index_type : public std::enable_shared_from_this<file_index_type>
 {
-public:
    file_index_type();
-   ~file_index_type()                       = default;
    file_index_type(const file_index_type &) = delete;
    file_index_type(file_index_type &&)      = delete;
    auto operator=(const file_index_type &) -> file_index_type & = delete;
    auto operator=(file_index_type &&) -> file_index_type & = delete;
+public:
+   ~file_index_type()                       = default;
+   std::shared_ptr<file_index_type> getptr() {
+      return shared_from_this();
+   }
+   [[nodiscard]] static std::shared_ptr<file_index_type> Create() {
+      return std::shared_ptr<file_index_type>(new file_index_type);
+   }
 
    std::string                      name;     /* Unique within this list          */
    std::shared_ptr<zone_type>       zone;     /* Pointer to owner of structure    */
@@ -94,7 +100,7 @@ public:
 };
 
 /* A linked list of commands to execute */
-struct zone_reset_cmd
+struct zone_reset_cmd : public std::enable_shared_from_this<zone_reset_cmd>
 {
    ubit8 cmd_no; /* Index to array of func() ptrs */
    ubit8 cmpl;   /* Complete flag                 */
@@ -104,14 +110,30 @@ struct zone_reset_cmd
 
    std::shared_ptr<zone_reset_cmd> next;
    std::shared_ptr<zone_reset_cmd> nested;
+
+   std::shared_ptr<zone_reset_cmd> getptr() {
+      return shared_from_this();
+   }
+   [[nodiscard]] static std::shared_ptr<zone_reset_cmd> Create() {
+      return std::shared_ptr<zone_reset_cmd>(new zone_reset_cmd);
+   }
+
+private:
+   zone_reset_cmd()=default;
 };
 
 /* A linked/sorted list of all the zones in the game */
-class zone_type
+class zone_type : public std::enable_shared_from_this<zone_type>
 {
-public:
    zone_type(void);
+public:
    ~zone_type(void);
+   std::shared_ptr<zone_type> getptr() {
+      return shared_from_this();
+   }
+   [[nodiscard]] static std::shared_ptr<zone_type> Create() {
+      return std::shared_ptr<zone_type>(new zone_type);
+   }
 
    class cNamelist creators; /* List of creators of zone         */
    char           *name;     /* Unique in list                   */
@@ -211,11 +233,18 @@ public:
 
 /* ----------------- ROOM SPECIFIC STRUCTURES ----------------------- */
 
-class room_direction_data
+class room_direction_data : public std::enable_shared_from_this<room_direction_data>
 {
+   room_direction_data();
 public:
-   room_direction_data(void);
-   ~room_direction_data(void);
+   ~room_direction_data();
+
+   std::shared_ptr<room_direction_data> getptr() {
+      return shared_from_this();
+   }
+   [[nodiscard]] static std::shared_ptr<room_direction_data> Create() {
+      return std::shared_ptr<room_direction_data>(new room_direction_data);
+   }
 
    class cNamelist open_name; /* For Open & Enter                  */
 
@@ -231,7 +260,7 @@ public:
    room_data(void);
    ~room_data(void);
 
-   class room_direction_data *dir_option[6]; /* Her?? */
+   std::shared_ptr<room_direction_data> dir_option[6]; /* Her?? */
 
    ubit8 flags;         /* Room flags                              */
    ubit8 movement_type; /* The type of movement (city, hills etc.) */

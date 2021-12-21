@@ -72,16 +72,12 @@ room_data::room_data(void)
    world_norooms++;
 }
 
-room_data::~room_data(void)
+room_data::~room_data()
 {
    world_norooms--;
-
-   for(int i = 0; i <= 5; i++)
-      if(dir_option[i])
-         delete dir_option[i];
 }
 
-obj_data::obj_data(void)
+obj_data::obj_data()
 {
    world_noobjects++;
 

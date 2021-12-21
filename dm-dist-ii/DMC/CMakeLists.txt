@@ -17,6 +17,9 @@ set(DMC_SRC
         dmc_process.cpp
         dmclex.l
         dmcpar.y
+        ${CMAKE_CURRENT_BINARY_DIR}/tmp_dmclex.cpp
+        ${CMAKE_CURRENT_BINARY_DIR}/tmp_dmcpar.cpp
+        ${CMAKE_CURRENT_BINARY_DIR}/tmp_dmcpar.h
         )
 
 set(DMC_H dmc.h dmctok.h)

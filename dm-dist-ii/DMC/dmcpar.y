@@ -328,7 +328,7 @@ exit_field	: TO reference
 			}
 		| KEY reference
 			{
-			  ROOM_EXIT(cur,cur_ex)->key=std::shared_ptr<file_index_type>(reinterpret_cast<file_index_type*>($2));
+			  ROOM_EXIT(cur,cur_ex)->key=file_index_type::Create();
 			}
 		| KEYWORD stringlist
 			{
@@ -716,7 +716,7 @@ unit_field	: NAMES stringlist
 			}
 		| KEY reference
 			{
-			  UNIT_KEY(cur)=std::shared_ptr<file_index_type>(reinterpret_cast<file_index_type*>($2));
+			  UNIT_KEY(cur)=file_index_type::Create();
 			}
 		| OPEN flags
 			{

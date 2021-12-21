@@ -248,7 +248,7 @@ std::shared_ptr<file_index_type> generate_file_indexes(FILE *f, std::shared_ptr<
       if(feof(f))
          break;
 
-      fi = std::make_shared<struct file_index_type>();
+      fi = file_index_type::Create();
       zone->no_of_fi++;
 
       fi->name     = (char *)cBuf.GetData();
@@ -387,7 +387,7 @@ void generate_zone_indexes(void)
 
       slog(LOG_ALL, 0, "Indexing %s AC[%3d] LL[%d] PO[%d]", filename, access, loadlevel, payonly);
 
-      z = std::make_shared<zone_type>();
+      z = zone_type::Create();
       zone_info.no_of_zones++;
 
       z->zone_no  = zone_info.no_of_zones - 1;
@@ -1026,7 +1026,7 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
             {
                if((fi = find_file_index(zone, name)))
                {
-                  ROOM_EXIT(u, i) = new(class room_direction_data);
+                  ROOM_EXIT(u, i) = room_direction_data::Create();
                   g_nCorrupt += ROOM_EXIT(u, i)->open_name.ReadBuffer(pBuf);
 
                   g_nCorrupt += pBuf->Read16(&t16);
@@ -1284,7 +1284,7 @@ std::shared_ptr<zone_reset_cmd> read_zone(FILE *f, std::shared_ptr<zone_reset_cm
 
    while(((cmdno = (ubit8)fgetc(f)) != 255) && !feof(f))
    {
-      cmd         = std::make_shared<zone_reset_cmd>();
+      cmd         = zone_reset_cmd::Create();
       cmd->cmd_no = cmdno;
 
       fstrcpy(&cBuf, f);

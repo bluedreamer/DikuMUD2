@@ -413,11 +413,11 @@ struct unit_fptr *mcreate_func(void)
    return (struct unit_fptr *)mmalloc(sizeof(struct unit_fptr));
 }
 
-struct room_direction_data *mcreate_exit(void)
+std::shared_ptr<room_direction_data> mcreate_exit()
 {
-   struct room_direction_data *rslt;
+   std::shared_ptr<room_direction_data> rslt;
 
-   rslt = new(struct room_direction_data);
+   rslt = room_direction_data::Create();
 
    rslt->open_name = 0;
    rslt->exit_info = 0;
