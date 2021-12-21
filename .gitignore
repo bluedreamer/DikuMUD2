@@ -2,3 +2,4 @@
 .*.swp
 .swp
 cmake-build-debug/
+dm-dist-ii/test_runner

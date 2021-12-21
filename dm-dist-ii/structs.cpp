@@ -109,8 +109,8 @@ pc_data::pc_data(void)
    quest    = NULL;
 
    memset(&setup, 0, sizeof(setup));
-   memset(&time, 0, sizeof(setup));
-   memset(&account, 0, sizeof(setup));
+   memset(&time, 0, sizeof(time));
+   memset(&account, 0, sizeof(account));
 
    guild_time = 0;
    vlvl       = 0;
