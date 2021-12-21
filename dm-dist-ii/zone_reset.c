@@ -52,7 +52,7 @@ void event_enq(int when, void (*func)(), void *arg1, void *arg2);
 struct zone_type *boot_zone = NULL; /* Points to the zone currently booted */
 
 /* No Operation */
-struct unit_data *zone_nop(struct unit_data *u, struct zone_reset_cmd *cmd)
+struct unit_data *zone_nop(struct unit_data *u, std::shared_ptr<zone_reset_cmd> cmd)
 {
   /* Return TRUE - NOP always succeedes */
 
@@ -61,7 +61,7 @@ struct unit_data *zone_nop(struct unit_data *u, struct zone_reset_cmd *cmd)
 
 
 /* Random */
-struct unit_data *zone_random(struct unit_data *u, struct zone_reset_cmd *cmd)
+struct unit_data *zone_random(struct unit_data *u, std::shared_ptr<zone_reset_cmd> cmd)
 {
   /* Return TRUE if random 0-99 less than given percent  */
   if (number(0,99) < cmd->num[0])
@@ -104,8 +104,8 @@ void zone_loaded_a_unit(struct unit_data *u)
 /* num[1] is the max allowed existing in zone.              */
 /* num[2] is the max allowed existing in room (object)      */
 /* Return TRUE if conditions are met, FALSE otherwise       */
-bool zone_limit(struct unit_data *u, struct file_index_type *fi, 
-	       struct zone_reset_cmd *cmd)
+bool zone_limit(struct unit_data *u, struct file_index_type *fi,
+                std::shared_ptr<zone_reset_cmd> cmd)
 {
   struct unit_data *tmp;
   sbit16 i;
@@ -150,7 +150,7 @@ bool zone_limit(struct unit_data *u, struct file_index_type *fi,
 /* fi[1] is room to place loaded unit in or 0 if a PUT command    */
 /* num[0] is the max allowed existing number (0 ignores) in world */
 /* num[1] is the max allowed locally existing number              */
-struct unit_data *zone_load(struct unit_data *u, struct zone_reset_cmd *cmd)
+struct unit_data *zone_load(struct unit_data *u, std::shared_ptr<zone_reset_cmd> cmd)
 {
    struct unit_data *loaded = NULL;
 
@@ -190,7 +190,7 @@ struct unit_data *zone_load(struct unit_data *u, struct zone_reset_cmd *cmd)
 /* fi[0] is unit to be loaded and equipped on parent unit.  */
 /* num[0] is the max allowed existing number (0 ignores)    */
 /* num[1] is equipment position                             */
-struct unit_data *zone_equip(struct unit_data *u, struct zone_reset_cmd *cmd)
+struct unit_data *zone_equip(struct unit_data *u, std::shared_ptr<zone_reset_cmd> cmd)
 {
   struct unit_data *loaded = NULL;
 
@@ -247,7 +247,7 @@ struct unit_data *zone_equip(struct unit_data *u, struct zone_reset_cmd *cmd)
 /* fi[0] is room in which the door is located.              */
 /* num[0] is the exit number (0..5)                         */
 /* num[1] is the new state                                  */
-struct unit_data *zone_door(struct unit_data *u, struct zone_reset_cmd *cmd)
+struct unit_data *zone_door(struct unit_data *u, std::shared_ptr<zone_reset_cmd> cmd)
 {
   if (!cmd->fi || !cmd->fi[0]->room_ptr)
     szonelog(boot_zone, "Zone Reset Error: Not a room in door reference!");
@@ -263,7 +263,7 @@ struct unit_data *zone_door(struct unit_data *u, struct zone_reset_cmd *cmd)
 
 
 /* fi[0] is the room to be purged.                          */
-struct unit_data *zone_purge(struct unit_data *u, struct zone_reset_cmd *cmd)
+struct unit_data *zone_purge(struct unit_data *u, std::shared_ptr<zone_reset_cmd> cmd)
 {
   struct unit_data *next;
 
@@ -283,7 +283,7 @@ struct unit_data *zone_purge(struct unit_data *u, struct zone_reset_cmd *cmd)
 
 /* fi[0] is the thing(s) to be removed.                          */
 /* fi[1] is the room to remove from.                             */
-struct unit_data *zone_remove(struct unit_data *u, struct zone_reset_cmd *cmd)
+struct unit_data *zone_remove(struct unit_data *u, std::shared_ptr<zone_reset_cmd> cmd)
 {
   struct unit_data *next;
 
@@ -306,7 +306,7 @@ struct unit_data *zone_remove(struct unit_data *u, struct zone_reset_cmd *cmd)
 /* fi[1] -                                                        */
 /* num[0] is the max allowed existing number (0 ignores) in world */
 /* num[1] is the max allowed locally existing number              */
-struct unit_data *zone_follow(struct unit_data *u, struct zone_reset_cmd *cmd)
+struct unit_data *zone_follow(struct unit_data *u, std::shared_ptr<zone_reset_cmd> cmd)
 {
   struct unit_data *loaded = NULL;
 
@@ -334,7 +334,7 @@ struct unit_data *zone_follow(struct unit_data *u, struct zone_reset_cmd *cmd)
 
 
 struct unit_data
-  *(*exec_zone_cmd[])(struct unit_data *, struct zone_reset_cmd *) =
+  *(*exec_zone_cmd[])(struct unit_data *, std::shared_ptr<zone_reset_cmd>) =
 {
   zone_nop,
   zone_load,
@@ -347,7 +347,7 @@ struct unit_data
 };
 
 
-bool low_reset_zone(struct unit_data *u, struct zone_reset_cmd *cmd)
+bool low_reset_zone(struct unit_data *u, std::shared_ptr<zone_reset_cmd> cmd)
 {
   struct unit_data *success;
   bool ok = TRUE;

@@ -38,7 +38,7 @@ LINK.c	=	$(LD) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS)
 DEBUG	=	-g
 
 CFL	=	$(DEBUG) $(SYSPORT) $(SYSFLAGS) $(EXTRA_CFLAGS)
-CFLAGS	=	$(CFL)   -Wall -Wno-unused -Wno-format-overflow -Wno-stringop-truncation
+CFLAGS	=	$(CFL)   -Wall -Wno-unused -Wno-format-overflow -Wno-stringop-truncation -Wno-register
 
 # (f)lex/yacc/bison generated c-files are notorious for their lousy C
 # hence, no warnings...

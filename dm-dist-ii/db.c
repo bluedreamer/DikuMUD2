@@ -1274,9 +1274,10 @@ void normalize_world(void)
 /* For local error purposes */
 static struct zone_type *read_zone_error = NULL;
 
-struct zone_reset_cmd *read_zone(FILE *f, struct zone_reset_cmd *cmd_list)
+std::shared_ptr<zone_reset_cmd> read_zone(FILE *f, std::shared_ptr<zone_reset_cmd> cmd_list)
 {
-   struct zone_reset_cmd *cmd, *tmp_cmd;
+   std::shared_ptr<zone_reset_cmd> cmd;
+   std::shared_ptr<zone_reset_cmd> tmp_cmd;
    struct file_index_type *fi;
    ubit8 cmdno, direction;
    char zonename[FI_MAX_ZONENAME+1], name[FI_MAX_UNITNAME+1];
@@ -1288,7 +1289,7 @@ struct zone_reset_cmd *read_zone(FILE *f, struct zone_reset_cmd *cmd_list)
 
    while (((cmdno = (ubit8) fgetc(f)) != 255) && !feof(f))
    {
-      CREATE(cmd, struct zone_reset_cmd, 1);
+      cmd = std::make_shared<zone_reset_cmd>();
       cmd->cmd_no = cmdno;
 
       fstrcpy(&cBuf, f);

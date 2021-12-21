@@ -24,6 +24,8 @@
 #ifndef _MUD_STRUCTS_H
 #define _MUD_STRUCTS_H
 
+#include <memory>
+
 #include "essential.h"
 #include "values.h"
 #include "blkfile.h"
@@ -93,8 +95,8 @@ struct zone_reset_cmd
    struct file_index_type *fi[2];
    sbit16 num[3];
 
-   struct zone_reset_cmd *next;
-   struct zone_reset_cmd *nested;
+   std::shared_ptr<zone_reset_cmd> next;
+   std::shared_ptr<zone_reset_cmd> nested;
 };
 
 
@@ -115,7 +117,7 @@ class zone_type
    struct file_index_type *fi;    /* Pointer to list of file-index's  */
    struct bin_search_type *ba;    /* Pointer to binarray of type      */
 
-   struct zone_reset_cmd *zri;    /* List of Zone reset commands      */
+   std::shared_ptr<zone_reset_cmd> zri;    /* List of Zone reset commands      */
    struct zone_type *next;        /* Next Zone                        */
 
    struct diltemplate *tmpl;      /* DIL templates in zone            */

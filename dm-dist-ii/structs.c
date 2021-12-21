@@ -232,14 +232,6 @@ zone_type::~zone_type(void)
       delete p;
    }
 
-   struct zone_reset_cmd *pzri, *nextzri;
-
-   for (pzri = zri; pzri; pzri = nextzri)
-   {
-      nextzri = pzri->next;
-      free(pzri);
-   }
-
    /*
    struct diltemplate *pt, *nextpt;
 

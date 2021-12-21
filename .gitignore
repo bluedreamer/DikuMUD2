@@ -1,0 +1,3 @@
+.idea/
+#temp add below to stop my flex/bison code going into repo
+dm-dist-ii/DMC/tmp_dmcpar.h
