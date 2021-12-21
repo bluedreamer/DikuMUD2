@@ -13,7 +13,7 @@ struct AccountsFixture
    //   std::unique_ptr<unit_data> room_data;
    //   unit_data *obj_data{nullptr};
    //   std::unique_ptr<unit_data> npc_data;
-   std::unique_ptr<unit_data> pc_data;
+   //std::unique_ptr<unit_data> pc_data;
 };
 
 AccountsFixture::AccountsFixture()
@@ -75,9 +75,12 @@ BOOST_AUTO_TEST_CASE(account_closed_test)
 }
 BOOST_AUTO_TEST_CASE(account_is_closed_test)
 {
-   AccountsFixture f;
+   auto pc       = std::make_unique<unit_data>(UNIT_ST_PC);
+   pc->next      = nullptr;
+   pc->gnext     = nullptr;
+   pc->gprevious = nullptr;
    //   BOOST_TEST(account_is_closed(f.npc_data.get()) == 0);
    // BOOST_TEST(account_is_closed(f.room_data.get()) == 0);
-   BOOST_TEST(account_is_closed(f.pc_data.get()) == 0);
+   BOOST_TEST(account_is_closed(pc.get()) == 0);
 }
 BOOST_AUTO_TEST_SUITE_END();

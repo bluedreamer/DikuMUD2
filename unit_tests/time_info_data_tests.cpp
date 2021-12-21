@@ -363,7 +363,7 @@ BOOST_AUTO_TEST_CASE(age_test)
       BOOST_TEST(result.year == 0);
    }
    { // Is a PC
-      auto age_time                        = 1640048814 - 7654321;
+      auto age_time                        = time(nullptr) - 7654321;
       auto pc                              = std::make_unique<unit_data>(UNIT_ST_PC);
       pc->next                             = nullptr;
       pc->gnext                            = nullptr;
