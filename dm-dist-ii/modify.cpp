@@ -480,7 +480,7 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
             send_to_char("Invalid or missing unit path for field.\n\r", ch);
             return;
          }
-         sprintf(buf, "Unit pointer is [%s@%s]\n\r", untarg->name, untarg->zone->name);
+         sprintf(buf, "Unit pointer is [%s@%s]\n\r", untarg->name.c_str(), untarg->zone->name);
          send_to_char(buf, ch);
          break;
 
@@ -580,7 +580,7 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
             send_to_char("Invalid or missing unit path for field.\n\r", ch);
             return;
          }
-         sprintf(buf, "Unit pointer is [%s@%s]\n\r", untarg->name, untarg->zone->name);
+         sprintf(buf, "Unit pointer is [%s@%s]\n\r", untarg->name.c_str(), untarg->zone->name);
          send_to_char(buf, ch);
          break;
 

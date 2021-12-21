@@ -35,6 +35,7 @@
 #include "values.h"
 
 #include <memory>
+#include <string>
 #include <variant>
 
 #define FI_MAX_ZONENAME 30 /* Max length of any zone-name    */
@@ -55,23 +56,30 @@
 /* ----------------- DATABASE STRUCTURES ----------------------- */
 
 class file_index_type;
+class zone_type;
+class diltemplate;
 /* This must be maintained as an array for use with binary search methods */
 struct bin_search_type
 {
-   const char                      *compare; /* Points to the comparison string  */
-   void                            *block;   /* Points to the relevant block     */
-   std::shared_ptr<file_index_type> fi_block;
+   const char                                                             *compare; /* Points to the comparison string  */
+   std::variant<std::monostate, std::shared_ptr<zone_type>, diltemplate *> block;   /* Points to the relevant block     */
+   std::shared_ptr<file_index_type>                                        fi_block;
 };
 
+class zone_type;
 /* A linked sorted list of all units within a zone file */
 class file_index_type
 {
 public:
-   file_index_type(void);
-   ~file_index_type(void);
+   file_index_type();
+   ~file_index_type()                       = default;
+   file_index_type(const file_index_type &) = delete;
+   file_index_type(file_index_type &&)      = delete;
+   auto operator=(const file_index_type &) -> file_index_type & = delete;
+   auto operator=(file_index_type &&) -> file_index_type & = delete;
 
-   char                            *name;     /* Unique within this list          */
-   class zone_type                 *zone;     /* Pointer to owner of structure    */
+   std::string                      name;     /* Unique within this list          */
+   std::shared_ptr<zone_type>       zone;     /* Pointer to owner of structure    */
    std::shared_ptr<file_index_type> next;     /* Next File Index                  */
    class unit_data                 *room_ptr; /* Pointer to room if is room       */
 
@@ -116,7 +124,7 @@ public:
    struct bin_search_type          *ba; /* Pointer to binarray of type      */
 
    std::shared_ptr<zone_reset_cmd> zri;  /* List of Zone reset commands      */
-   struct zone_type               *next; /* Next Zone                        */
+   std::shared_ptr<zone_type>      next; /* Next Zone                        */
 
    struct diltemplate     *tmpl;   /* DIL templates in zone            */
    struct bin_search_type *tmplba; /* Pointer to binarray of type      */

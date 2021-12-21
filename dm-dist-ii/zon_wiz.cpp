@@ -93,10 +93,10 @@ int ball(struct spec_arg *sarg)
             sprintf(buf,
                     "%4ld %-15s@%-15s  IN  %s [%s@%s]\n\r",
                     (signed long)OBJ_VALUE(top[i], v2),
-                    UNIT_FI_NAME(top[i]),
+                    UNIT_FI_NAME(top[i]).c_str(),
                     UNIT_FI_ZONENAME(top[i]),
                     UNIT_NAME(UNIT_IN(top[i])),
-                    UNIT_FI_NAME(UNIT_IN(top[i])),
+                    UNIT_FI_NAME(UNIT_IN(top[i])).c_str(),
                     UNIT_FI_ZONENAME(UNIT_IN(top[i])));
             send_to_char(buf, sarg->activator);
          }

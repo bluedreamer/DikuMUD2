@@ -1017,7 +1017,7 @@ int write_unit_string(CByteBuffer *pBuf, struct unit_data *u)
       if(inu && UNIT_FILE_INDEX(inu))
       {
          pBuf->AppendString(UNIT_FI_ZONENAME(inu));
-         pBuf->AppendString(UNIT_FI_NAME(inu));
+         pBuf->AppendString(UNIT_FI_NAME(inu).c_str());
       }
       else
       {
@@ -1189,14 +1189,7 @@ int write_unit_string(CByteBuffer *pBuf, struct unit_data *u)
                pBuf->AppendDoubleString((char *)ROOM_EXIT(u, i)->to_room);
                ROOM_EXIT(u, i)->open_name.AppendBuffer(pBuf);
                pBuf->Append16(ROOM_EXIT(u, i)->exit_info);
-               //	       pBuf->AppendDoubleString((char *) ROOM_EXIT(u,i)->key);
-               // TODO ADRIAN
-               // TODO This looks really broken - using a raw pointer into the first two class members hoping they are null terminated
-               // strings
-               // TODO Needs to be split into 2 AppendStrings to proper members
-               //   pBuf->AppendDoubleString((char *) ROOM_EXIT(u,i)->key);
-               pBuf->AppendString(ROOM_EXIT(u, i)->key->name);
-               pBuf->AppendString(""); /* Null name      */
+               pBuf->AppendDoubleString((char *)ROOM_EXIT(u, i)->key.get());
             }
             else
             {

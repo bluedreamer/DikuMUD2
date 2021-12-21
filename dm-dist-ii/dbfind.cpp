@@ -80,7 +80,7 @@ struct bin_search_type *binary_search(struct bin_search_type *ba, const char *st
 }
 
 /* Find a named zone */
-struct zone_type *find_zone(const char *zonename)
+std::shared_ptr<zone_type> find_zone(const char *zonename)
 {
    struct bin_search_type *ba;
 
@@ -88,14 +88,18 @@ struct zone_type *find_zone(const char *zonename)
       return NULL;
 
    ba = binary_search(zone_info.ba, zonename, zone_info.no_of_zones);
+   if(ba)
+   {
+      return std::get<std::shared_ptr<zone_type>>(ba->block);
+   }
 
-   return ba ? (struct zone_type *)ba->block : NULL;
+   return {};
 }
 
 /* Zonename & name must point to non-empty strings */
 std::shared_ptr<file_index_type> find_file_index(const char *zonename, const char *name)
 {
-   struct zone_type       *zone;
+   std::shared_ptr<zone_type> zone;
    struct bin_search_type *ba;
 
    if(!*name)
@@ -113,7 +117,7 @@ std::shared_ptr<file_index_type> find_file_index(const char *zonename, const cha
 /* Zonename & name must point to non-empty strings */
 struct diltemplate *find_dil_index(char *zonename, char *name)
 {
-   struct zone_type       *zone;
+   std::shared_ptr<zone_type> zone;
    struct bin_search_type *ba;
 
    if(str_is_empty(name))
@@ -125,7 +129,7 @@ struct diltemplate *find_dil_index(char *zonename, char *name)
    if((ba = binary_search(zone->tmplba, name, zone->no_tmpl)) == NULL)
       return NULL;
 
-   return (struct diltemplate *)ba->block;
+   return std::get<diltemplate *>(ba->block);
 }
 
 /*

@@ -59,7 +59,7 @@ static void slime_save(void)
    {
       fputs(slime->zone->name, f);
       fputc(0, f);
-      fputs(slime->name, f);
+      fputs(slime->name.c_str(), f);
       fputc(0, f);
    }
    fclose(f);
@@ -119,7 +119,7 @@ int slime_obj(struct spec_arg *sarg)
       send_to_char("List of slimed units:\n\r", sarg->activator);
       for(const auto &slime : slime_list)
       {
-         sprintf(buf, "%s@%s\n\r", slime->name, slime->zone->name);
+         sprintf(buf, "%s@%s\n\r", slime->name.c_str(), slime->zone->name);
          send_to_char(buf, sarg->activator);
       }
 

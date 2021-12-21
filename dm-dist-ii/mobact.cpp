@@ -39,7 +39,7 @@ void special_event(void *p1, void *p2);
 void event_enq(int when, void (*func)(), void *arg1, void *arg2);
 void event_deenq(void (*func)(), void *arg1, void *arg2);
 
-extern struct zone_type               *boot_zone;
+extern std::shared_ptr<zone_type> boot_zone;
 extern struct unit_function_array_type unit_function_array[];
 
 void SetFptrTimer(struct unit_data *u, struct unit_fptr *fptr)

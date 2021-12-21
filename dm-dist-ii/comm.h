@@ -25,10 +25,12 @@
 #ifndef _MUD_COMM_H
 #define _MUD_COMM_H
 
-void page_string(struct descriptor_data *d, const char *);
+#include <memory>
 
+class zone_type;
+void page_string(struct descriptor_data *d, const char *);
 void send_to_outdoor(const char *messg);
-void send_to_zone_outdoor(const struct zone_type *z, const char *messg);
+void send_to_zone_outdoor(const std::shared_ptr<zone_type> z, const char *messg);
 void send_to_descriptor(const char *messg, struct descriptor_data *d);
 void send_to_all(const char *messg);
 void send_to_char(const char *messg, const struct unit_data *ch);

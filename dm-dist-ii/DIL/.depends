@@ -1,0 +1,26 @@
+tmp_dilpar.o: tmp_dilpar.cpp ../structs.h ../blkfile.h ../essential.h \
+ ../combat.h ../extra.h ../namelist.h ../bytestring.h ../hashstring.h \
+ ../protocol.h ../select.h ../queue.h ../system.h ../values.h ../utils.h \
+ ../structs.h dilpar.h ../textutil.h ../db_file.h ../dil.h ../dil.h
+tmp_dillex.o: tmp_dillex.cpp ../essential.h dilpar.h ../dil.h \
+ ../essential.h tmp_dilpar.h diltok.h ../textutil.h ../structs.h \
+ ../blkfile.h ../combat.h ../extra.h ../namelist.h ../bytestring.h \
+ ../hashstring.h ../protocol.h ../select.h ../queue.h ../system.h \
+ ../values.h
+utility.o: utility.cpp ../utility.h ../essential.h ../comm.h ../db.h \
+ ../bytestring.h ../config.h ../fight.h ../dbfind.h ../files.h \
+ ../structs.h ../blkfile.h ../combat.h ../extra.h ../namelist.h \
+ ../hashstring.h ../protocol.h ../select.h ../queue.h ../system.h \
+ ../values.h ../textutil.h ../unixshit.h ../utils.h ../structs.h
+string.o: string.cpp ../comm.h ../hashstring.h ../essential.h \
+ ../textutil.h ../utility.h ../utils.h ../structs.h ../blkfile.h \
+ ../combat.h ../extra.h ../namelist.h ../bytestring.h ../hashstring.h \
+ ../protocol.h ../select.h ../queue.h ../system.h ../values.h
+structs.o: structs.cpp ../structs.h ../blkfile.h ../essential.h \
+ ../combat.h ../extra.h ../namelist.h ../bytestring.h ../hashstring.h \
+ ../protocol.h ../select.h ../queue.h ../system.h ../values.h \
+ ../handler.h ../unitfind.h ../structs.h ../main.h ../utils.h
+files.o: files.cpp ../files.h ../bytestring.h ../essential.h \
+ ../textutil.h ../unixshit.h ../utility.h ../utils.h ../structs.h \
+ ../blkfile.h ../combat.h ../extra.h ../namelist.h ../hashstring.h \
+ ../protocol.h ../select.h ../queue.h ../system.h ../values.h

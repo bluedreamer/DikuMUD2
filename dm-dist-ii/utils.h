@@ -160,18 +160,29 @@ inline auto UNIT_IN(class unit_data *unit) -> unit_data *&
 
 #define FI_ZONENAME(fi) ((fi) ? (fi)->zone->name : "NO-ZONE")
 
-#define FI_NAME(fi) ((fi) ? (fi)->name : "NO-NAME")
+inline auto FI_NAME(std::shared_ptr<file_index_type> fi) -> std::string &
+{
+   if(fi!=nullptr)
+   {
+      return fi->name;
+   }
+   static std::string no_name{"NO-NAME"};
+   return no_name;
+}
 
 /* ............................UNIT SUPERSTRUCTURES..................... */
 
 #define UNIT_IS_TRANSPARENT(u)                                                                                                             \
    (!IS_SET(UNIT_FLAGS(u), UNIT_FL_BURIED) && IS_SET(UNIT_FLAGS(u), UNIT_FL_TRANS) && !IS_SET(UNIT_OPEN_FLAGS(u), EX_CLOSED))
 
-#define UNIT_FI_ZONE(unit) (UNIT_FILE_INDEX(unit) ? (unit)->fi->zone : (struct zone_type *)NULL)
+#define UNIT_FI_ZONE(unit) (UNIT_FILE_INDEX(unit) ? (unit)->fi->zone : std::shared_ptr<zone_type>{})
 
 #define UNIT_FI_ZONENAME(unit) (FI_ZONENAME(UNIT_FILE_INDEX(unit)))
 
-#define UNIT_FI_NAME(unit) (FI_NAME(UNIT_FILE_INDEX(unit)))
+inline auto UNIT_FI_NAME(unit_data *unit) -> std::string &
+{
+   return FI_NAME(UNIT_FILE_INDEX(unit));
+}
 
 #define UNIT_WEAR(unit, part) (IS_SET(UNIT_MANIPULATE(unit), part))
 

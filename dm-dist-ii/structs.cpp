@@ -239,18 +239,9 @@ zone_type::~zone_type(void)
    free(spmatrix);
 }
 
-file_index_type::file_index_type(void)
+file_index_type::file_index_type()
 {
-   name     = NULL;
-   zone     = NULL;
-   next     = NULL;
    room_ptr = NULL;
-}
-
-file_index_type::~file_index_type(void)
-{
-   if(name)
-      free(name);
 }
 
 unit_data::unit_data(ubit8 type)

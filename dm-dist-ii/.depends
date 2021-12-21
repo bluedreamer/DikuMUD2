@@ -1,448 +1,452 @@
-account.o: account.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h handler.h unitfind.h utility.h db.h \
- dbfind.h config.h fight.h comm.h interpreter.h dil.h spec_assign.h \
- textutil.h account.h common.h files.h str_parse.h main.h
-act_change.o: act_change.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h comm.h textutil.h interpreter.h dil.h \
- spec_assign.h
-act_comm.o: act_comm.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h comm.h handler.h unitfind.h interpreter.h \
- dil.h spec_assign.h db.h dbfind.h config.h fight.h spells.h spelldef.h \
- textutil.h modify.h utility.h
-act_info.o: act_info.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h comm.h handler.h unitfind.h interpreter.h \
- dil.h spec_assign.h files.h skills.h db.h dbfind.h config.h fight.h \
- spells.h spelldef.h limits.h affect.h utility.h trie.h textutil.h \
- money.h movement.h dijkstra.h constants.h common.h guild.h
-act_movement.o: act_movement.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h skills.h textutil.h comm.h interpreter.h \
- dil.h spec_assign.h handler.h unitfind.h db.h dbfind.h config.h fight.h \
- spells.h spelldef.h affect.h movement.h dijkstra.h constants.h limits.h \
- main.h account.h common.h
-act_obj1.o: act_obj1.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h skills.h textutil.h comm.h interpreter.h \
- dil.h spec_assign.h handler.h unitfind.h db.h dbfind.h config.h fight.h \
- spells.h spelldef.h utility.h money.h limits.h
-act_obj2.o: act_obj2.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h skills.h common.h textutil.h comm.h \
- interpreter.h dil.h spec_assign.h handler.h unitfind.h db.h dbfind.h \
- config.h fight.h spells.h spelldef.h affect.h utility.h constants.h
-act_obj3.o: act_obj3.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h constants.h skills.h utils.h common.h textutil.h \
- comm.h interpreter.h dil.h spec_assign.h handler.h unitfind.h db.h \
- dbfind.h config.h fight.h spells.h spelldef.h affect.h utility.h act.h
-act_offensive.o: act_offensive.cpp structs.h essential.h values.h \
- blkfile.h protocol.h select.h queue.h combat.h hashstring.h extra.h \
- namelist.h bytestring.h system.h utils.h skills.h textutil.h comm.h \
- interpreter.h dil.h spec_assign.h handler.h unitfind.h db.h dbfind.h \
- config.h fight.h spells.h spelldef.h limits.h affect.h utility.h
-act_other.o: act_other.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h files.h skills.h common.h textutil.h \
- comm.h interpreter.h dil.h spec_assign.h handler.h unitfind.h db.h \
- dbfind.h config.h fight.h spells.h spelldef.h affect.h utility.h \
- limits.h account.h weather.h constants.h dilrun.h
-act_skills.o: act_skills.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h textutil.h skills.h comm.h interpreter.h \
- dil.h spec_assign.h affect.h handler.h unitfind.h spells.h spelldef.h \
- justice.h magic.h utility.h movement.h dijkstra.h money.h common.h \
- dbfind.h fight.h limits.h
-act_social.o: act_social.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h comm.h handler.h unitfind.h db.h dbfind.h \
- config.h fight.h textutil.h utility.h interpreter.h dil.h spec_assign.h \
- trie.h movement.h dijkstra.h
-act_wizard.o: act_wizard.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h skills.h textutil.h comm.h interpreter.h \
- dil.h spec_assign.h handler.h unitfind.h db.h dbfind.h config.h fight.h \
- db_file.h spells.h spelldef.h limits.h affect.h magic.h common.h \
- utility.h money.h files.h dijkstra.h main.h
-act_wstat.o: act_wstat.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h skills.h textutil.h comm.h interpreter.h \
- dil.h spec_assign.h handler.h unitfind.h db.h dbfind.h config.h fight.h \
- db_file.h spells.h spelldef.h limits.h affect.h magic.h utility.h \
- files.h common.h account.h constants.h main.h
-affect.o: affect.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h affect.h utility.h main.h
-apf_affect.o: apf_affect.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h handler.h unitfind.h comm.h spells.h \
- spelldef.h dil.h skills.h affect.h db.h dbfind.h config.h fight.h \
- utility.h interpreter.h spec_assign.h magic.h common.h limits.h
-ban.o: ban.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h comm.h textutil.h interpreter.h dil.h spec_assign.h \
- utility.h db_file.h db.h dbfind.h config.h fight.h ban.h files.h
-bank.o: bank.cpp utils.h structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h textutil.h comm.h interpreter.h dil.h \
- spec_assign.h handler.h unitfind.h money.h utility.h
-blkfile.o: blkfile.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h db.h dbfind.h config.h fight.h db_file.h \
- dil.h utility.h textutil.h files.h unixshit.h
-board.o: board.cpp utils.h structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h comm.h textutil.h interpreter.h dil.h \
- spec_assign.h utility.h db.h dbfind.h config.h fight.h db_file.h files.h \
- handler.h unitfind.h weather.h
-comm.o: comm.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h utility.h comm.h textutil.h interpreter.h dil.h \
- spec_assign.h handler.h unitfind.h sysport.h constants.h skills.h \
- unixshit.h
-common.o: common.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h common.h skills.h utility.h db.h dbfind.h config.h \
- fight.h
-constants.o: constants.cpp utils.h structs.h essential.h values.h \
- blkfile.h protocol.h select.h queue.h combat.h hashstring.h extra.h \
- namelist.h bytestring.h system.h limits.h skills.h constants.h
-convert.o: convert.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h textutil.h db_file.h dil.h db.h dbfind.h \
- config.h fight.h postoffice.h handler.h unitfind.h common.h skills.h \
- utility.h files.h affect.h money.h
-create.o: create.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h skills.h comm.h handler.h unitfind.h interpreter.h \
- dil.h spec_assign.h db.h dbfind.h config.h fight.h spells.h spelldef.h \
- textutil.h affect.h utility.h
-db.o: db.cpp structs.h essential.h values.h blkfile.h protocol.h select.h \
- queue.h combat.h hashstring.h extra.h namelist.h bytestring.h system.h \
- utils.h db.h dbfind.h config.h fight.h db_file.h dil.h comm.h handler.h \
- unitfind.h limits.h textutil.h skills.h affect.h utility.h money.h \
- files.h common.h account.h weather.h connectionlog.h dilrun.h unixshit.h
-db_file.o: db_file.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h textutil.h interpreter.h dil.h \
- spec_assign.h dilrun.h utility.h db_file.h handler.h unitfind.h \
- unixshit.h db.h dbfind.h config.h fight.h
-db_utils.o: db_utils.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h db.h dbfind.h config.h fight.h db_file.h \
- dil.h comm.h handler.h unitfind.h limits.h textutil.h skills.h affect.h \
- utility.h
-demigod.o: demigod.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h skills.h textutil.h comm.h interpreter.h \
- dil.h spec_assign.h handler.h unitfind.h db.h dbfind.h config.h fight.h \
- spells.h spelldef.h limits.h affect.h utility.h money.h
-destruct.o: destruct.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h textutil.h skills.h comm.h db.h dbfind.h \
- config.h fight.h handler.h unitfind.h interpreter.h dil.h spec_assign.h \
- affect.h utility.h
-dictionary.o: dictionary.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h comm.h textutil.h interpreter.h dil.h \
- spec_assign.h utility.h db_file.h trie.h handler.h unitfind.h config.h \
- fight.h
-dijkstra.o: dijkstra.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h interpreter.h dil.h spec_assign.h comm.h \
- db.h dbfind.h config.h fight.h handler.h unitfind.h movement.h \
- dijkstra.h utility.h common.h
-main.o: main.cpp sysport.h structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h utility.h handler.h unitfind.h comm.h db.h \
- dbfind.h config.h fight.h interpreter.h dil.h spec_assign.h main.h \
- textutil.h files.h unixshit.h
-eliza.o: eliza.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h interpreter.h dil.h spec_assign.h textutil.h handler.h \
- unitfind.h db.h dbfind.h config.h fight.h comm.h utility.h files.h \
- main.h
-experience.o: experience.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h textutil.h skills.h comm.h interpreter.h \
- dil.h spec_assign.h affect.h handler.h unitfind.h spells.h spelldef.h \
- justice.h magic.h utility.h common.h movement.h dijkstra.h fight.h
-fight.o: fight.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h skills.h common.h limits.h comm.h handler.h unitfind.h \
- interpreter.h dil.h spec_assign.h db.h dbfind.h config.h fight.h \
- spells.h spelldef.h textutil.h affect.h justice.h utility.h files.h
-files.o: files.cpp utils.h structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utility.h textutil.h unixshit.h files.h
-guild.o: guild.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h skills.h textutil.h comm.h interpreter.h dil.h \
- spec_assign.h handler.h unitfind.h db.h dbfind.h config.h fight.h \
- spells.h spelldef.h limits.h justice.h affect.h movement.h dijkstra.h \
- magic.h utility.h common.h money.h str_parse.h
-handler.o: handler.cpp utils.h structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h textutil.h skills.h comm.h db.h dbfind.h config.h \
- fight.h handler.h unitfind.h interpreter.h dil.h spec_assign.h affect.h \
- utility.h money.h files.h unixshit.h main.h dilrun.h
-help.o: help.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h db.h dbfind.h config.h fight.h textutil.h utility.h \
- interpreter.h dil.h spec_assign.h comm.h files.h handler.h unitfind.h
-act_look.o: act_look.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h comm.h handler.h unitfind.h interpreter.h \
- dil.h spec_assign.h files.h skills.h db.h dbfind.h config.h fight.h \
- spells.h spelldef.h limits.h affect.h utility.h trie.h textutil.h \
- money.h movement.h dijkstra.h constants.h common.h guild.h dilrun.h
-hometown.o: hometown.cpp utils.h structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h comm.h textutil.h interpreter.h dil.h \
- spec_assign.h utility.h db_file.h db.h dbfind.h config.h fight.h
-interpreter.o: interpreter.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h textutil.h comm.h interpreter.h dil.h \
- spec_assign.h db.h dbfind.h config.h fight.h utils.h limits.h skills.h \
- trie.h utility.h files.h common.h constants.h unitfind.h dilrun.h
-justice.o: justice.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h handler.h unitfind.h textutil.h \
- interpreter.h dil.h spec_assign.h db.h dbfind.h config.h fight.h comm.h \
- justice.h skills.h affect.h movement.h dijkstra.h utility.h money.h \
- files.h common.h
-limits.o: limits.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h skills.h common.h limits.h utils.h spells.h spelldef.h dil.h \
- comm.h utility.h textutil.h handler.h unitfind.h interpreter.h \
- spec_assign.h guild.h fight.h constants.h
-magic.o: magic.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h skills.h common.h textutil.h comm.h spells.h spelldef.h \
- dil.h handler.h unitfind.h limits.h affect.h magic.h utility.h fight.h \
- dbfind.h dilrun.h interpreter.h spec_assign.h
-magic1.o: magic1.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h skills.h common.h textutil.h comm.h spells.h spelldef.h \
- dil.h handler.h unitfind.h limits.h affect.h db.h dbfind.h config.h \
- fight.h magic.h movement.h dijkstra.h interpreter.h spec_assign.h \
- utility.h
-magic2.o: magic2.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h skills.h textutil.h comm.h spells.h spelldef.h dil.h \
- handler.h unitfind.h limits.h affect.h magic.h db.h dbfind.h config.h \
- fight.h interpreter.h spec_assign.h utility.h movement.h dijkstra.h \
- common.h
-memory.o: memory.cpp essential.h
-mobact.o: mobact.cpp utils.h structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h skills.h db.h dbfind.h config.h fight.h comm.h \
- interpreter.h dil.h spec_assign.h handler.h unitfind.h utility.h main.h
-modify.o: modify.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h interpreter.h dil.h spec_assign.h handler.h unitfind.h \
- db.h dbfind.h config.h fight.h comm.h textutil.h utility.h trie.h \
- affect.h common.h money.h constants.h skills.h
-money.o: money.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h textutil.h handler.h unitfind.h utility.h db.h dbfind.h \
- config.h fight.h money.h limits.h interpreter.h dil.h spec_assign.h \
- comm.h
-nanny.o: nanny.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h textutil.h comm.h db.h dbfind.h config.h fight.h \
- utility.h handler.h unitfind.h interpreter.h dil.h spec_assign.h ban.h \
- money.h files.h common.h affect.h limits.h account.h competition.h \
- trie.h constants.h skills.h main.h modify.h dilrun.h connectionlog.h
-nice.o: nice.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h interpreter.h dil.h spec_assign.h handler.h unitfind.h db.h \
- dbfind.h config.h fight.h comm.h textutil.h utility.h
-pain.o: pain.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h trie.h handler.h unitfind.h textutil.h interpreter.h \
- dil.h spec_assign.h db.h dbfind.h config.h fight.h comm.h justice.h \
- movement.h dijkstra.h utility.h unixshit.h money.h common.h
-pcsave.o: pcsave.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h textutil.h handler.h unitfind.h comm.h db.h dbfind.h \
- config.h fight.h interpreter.h dil.h spec_assign.h utility.h money.h \
- files.h affect.h account.h unixshit.h competition.h db_file.h \
- connectionlog.h dilrun.h
-postoffice.o: postoffice.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h textutil.h handler.h unitfind.h comm.h \
- db.h dbfind.h config.h fight.h interpreter.h dil.h spec_assign.h \
- postoffice.h utility.h money.h unixshit.h files.h
-protocol.o: protocol.cpp essential.h protocol.h select.h queue.h \
- utility.h db_file.h structs.h values.h blkfile.h combat.h hashstring.h \
- extra.h namelist.h bytestring.h system.h dil.h unixshit.h
-queue.o: queue.cpp queue.h essential.h utility.h
-reception.o: reception.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h textutil.h comm.h handler.h unitfind.h \
- db.h dbfind.h config.h fight.h interpreter.h dil.h spec_assign.h \
- affect.h utility.h spells.h spelldef.h money.h files.h db_file.h
-shop.o: shop.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h skills.h comm.h handler.h unitfind.h db.h dbfind.h \
- config.h fight.h interpreter.h dil.h spec_assign.h textutil.h utility.h \
- money.h common.h str_parse.h limits.h act.h
-signals.o: signals.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h utility.h
-skills.o: skills.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h skills.h common.h utils.h utility.h comm.h files.h db.h \
- dbfind.h config.h fight.h textutil.h interpreter.h dil.h spec_assign.h \
- trie.h spelldef.h
-slime.o: slime.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h textutil.h interpreter.h dil.h spec_assign.h db.h \
- dbfind.h config.h fight.h utility.h files.h comm.h
-spec_assign.o: spec_assign.cpp utils.h structs.h essential.h values.h \
- blkfile.h protocol.h select.h queue.h combat.h hashstring.h extra.h \
- namelist.h bytestring.h system.h interpreter.h dil.h spec_assign.h \
- handler.h unitfind.h
-spec_procs.o: spec_procs.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h skills.h textutil.h comm.h interpreter.h \
- dil.h spec_assign.h handler.h unitfind.h db.h dbfind.h config.h fight.h \
- spells.h spelldef.h limits.h justice.h affect.h movement.h dijkstra.h \
- magic.h utility.h money.h str_parse.h files.h trie.h
-spell_parser.o: spell_parser.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h skills.h comm.h db.h dbfind.h config.h \
- fight.h interpreter.h dil.h spec_assign.h spells.h spelldef.h handler.h \
- unitfind.h textutil.h utility.h dilrun.h db_file.h common.h magic.h \
- justice.h files.h trie.h
-str_parse.o: str_parse.cpp essential.h textutil.h
-string.o: string.cpp utils.h structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h textutil.h comm.h utility.h
-swap.o: swap.cpp utils.h structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h db_file.h dil.h textutil.h db.h dbfind.h config.h \
- fight.h comm.h utility.h handler.h unitfind.h main.h files.h
-sysport.o: sysport.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h utility.h handler.h unitfind.h comm.h
-system.o: system.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h db.h dbfind.h config.h fight.h utility.h comm.h \
- textutil.h ban.h handler.h unitfind.h sysport.h files.h unixshit.h \
- main.h account.h limits.h db_file.h dil.h str_parse.h common.h
-teach.o: teach.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h skills.h textutil.h comm.h interpreter.h dil.h \
- spec_assign.h handler.h unitfind.h common.h utility.h money.h limits.h \
- guild.h spells.h spelldef.h
-textutil.o: textutil.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h utility.h textutil.h common.h
-tif_affect.o: tif_affect.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h handler.h unitfind.h comm.h spells.h \
- spelldef.h dil.h skills.h affect.h db.h dbfind.h config.h fight.h \
- utility.h interpreter.h spec_assign.h magic.h money.h limits.h
-trie.o: trie.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h trie.h utility.h
-utility.o: utility.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h files.h textutil.h comm.h db.h dbfind.h \
- config.h fight.h utility.h unixshit.h
-weather.o: weather.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h comm.h handler.h unitfind.h interpreter.h \
- dil.h spec_assign.h db.h dbfind.h config.h fight.h utility.h main.h \
+account.o: account.cpp account.h essential.h comm.h common.h db.h \
+ bytestring.h config.h fight.h dbfind.h files.h handler.h unitfind.h \
+ structs.h blkfile.h combat.h extra.h namelist.h hashstring.h protocol.h \
+ select.h queue.h system.h values.h interpreter.h dil.h spec_assign.h \
+ main.h str_parse.h textutil.h utility.h utils.h
+act_change.o: act_change.cpp comm.h interpreter.h dil.h essential.h \
+ spec_assign.h structs.h blkfile.h combat.h extra.h namelist.h \
+ bytestring.h hashstring.h protocol.h select.h queue.h system.h values.h \
+ textutil.h utils.h
+act_comm.o: act_comm.cpp comm.h db.h bytestring.h essential.h config.h \
+ fight.h dbfind.h handler.h unitfind.h structs.h blkfile.h combat.h \
+ extra.h namelist.h hashstring.h protocol.h select.h queue.h system.h \
+ values.h interpreter.h dil.h spec_assign.h modify.h spells.h spelldef.h \
+ textutil.h utility.h utils.h
+act_info.o: act_info.cpp affect.h essential.h blkfile.h comm.h common.h \
+ constants.h skills.h values.h db.h bytestring.h config.h fight.h \
+ dbfind.h files.h guild.h handler.h unitfind.h structs.h combat.h extra.h \
+ namelist.h hashstring.h protocol.h select.h queue.h system.h \
+ interpreter.h dil.h spec_assign.h limits.h money.h movement.h dijkstra.h \
+ spells.h spelldef.h textutil.h trie.h utility.h utils.h
+act_movement.o: act_movement.cpp account.h essential.h affect.h comm.h \
+ common.h constants.h skills.h values.h db.h bytestring.h config.h \
+ fight.h dbfind.h handler.h unitfind.h structs.h blkfile.h combat.h \
+ extra.h namelist.h hashstring.h protocol.h select.h queue.h system.h \
+ interpreter.h dil.h spec_assign.h limits.h main.h movement.h dijkstra.h \
+ spells.h spelldef.h textutil.h utils.h
+act_obj1.o: act_obj1.cpp comm.h db.h bytestring.h essential.h config.h \
+ fight.h dbfind.h handler.h unitfind.h structs.h blkfile.h combat.h \
+ extra.h namelist.h hashstring.h protocol.h select.h queue.h system.h \
+ values.h interpreter.h dil.h spec_assign.h limits.h money.h skills.h \
+ spells.h spelldef.h textutil.h utility.h utils.h
+act_obj2.o: act_obj2.cpp affect.h essential.h comm.h common.h constants.h \
+ skills.h values.h db.h bytestring.h config.h fight.h dbfind.h handler.h \
+ unitfind.h structs.h blkfile.h combat.h extra.h namelist.h hashstring.h \
+ protocol.h select.h queue.h system.h interpreter.h dil.h spec_assign.h \
+ spells.h spelldef.h textutil.h utility.h utils.h
+act_obj3.o: act_obj3.cpp act.h affect.h essential.h comm.h common.h \
+ constants.h skills.h values.h db.h bytestring.h config.h fight.h \
+ dbfind.h handler.h unitfind.h structs.h blkfile.h combat.h extra.h \
+ namelist.h hashstring.h protocol.h select.h queue.h system.h \
+ interpreter.h dil.h spec_assign.h spells.h spelldef.h textutil.h \
+ utility.h utils.h
+act_offensive.o: act_offensive.cpp affect.h essential.h comm.h db.h \
+ bytestring.h config.h fight.h dbfind.h handler.h unitfind.h structs.h \
+ blkfile.h combat.h extra.h namelist.h hashstring.h protocol.h select.h \
+ queue.h system.h values.h interpreter.h dil.h spec_assign.h limits.h \
+ skills.h spells.h spelldef.h textutil.h utility.h utils.h
+act_other.o: act_other.cpp account.h essential.h affect.h blkfile.h \
+ comm.h common.h constants.h skills.h values.h db.h bytestring.h config.h \
+ fight.h dbfind.h dilrun.h files.h handler.h unitfind.h structs.h \
+ combat.h extra.h namelist.h hashstring.h protocol.h select.h queue.h \
+ system.h interpreter.h dil.h spec_assign.h limits.h spells.h spelldef.h \
+ textutil.h utility.h utils.h weather.h
+act_skills.o: act_skills.cpp affect.h essential.h comm.h common.h \
+ dbfind.h fight.h handler.h unitfind.h structs.h blkfile.h combat.h \
+ extra.h namelist.h bytestring.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h interpreter.h dil.h spec_assign.h justice.h limits.h \
+ magic.h money.h movement.h dijkstra.h skills.h spells.h spelldef.h \
+ textutil.h utility.h utils.h
+act_social.o: act_social.cpp comm.h db.h bytestring.h essential.h \
+ config.h fight.h dbfind.h handler.h unitfind.h structs.h blkfile.h \
+ combat.h extra.h namelist.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h interpreter.h dil.h spec_assign.h movement.h \
+ dijkstra.h textutil.h trie.h utility.h utils.h
+act_wizard.o: act_wizard.cpp affect.h essential.h blkfile.h comm.h \
+ common.h db.h bytestring.h config.h fight.h dbfind.h db_file.h dil.h \
+ structs.h combat.h extra.h namelist.h hashstring.h protocol.h select.h \
+ queue.h system.h values.h dijkstra.h files.h handler.h unitfind.h \
+ interpreter.h spec_assign.h limits.h magic.h main.h money.h skills.h \
+ spells.h spelldef.h textutil.h utility.h utils.h zone_reset.h
+act_wstat.o: act_wstat.cpp account.h essential.h affect.h blkfile.h \
+ comm.h common.h constants.h skills.h values.h db.h bytestring.h config.h \
+ fight.h dbfind.h db_file.h dil.h structs.h combat.h extra.h namelist.h \
+ hashstring.h protocol.h select.h queue.h system.h files.h handler.h \
+ unitfind.h interpreter.h spec_assign.h limits.h magic.h main.h spells.h \
+ spelldef.h textutil.h utility.h utils.h
+affect.o: affect.cpp affect.h essential.h main.h structs.h blkfile.h \
+ combat.h extra.h namelist.h bytestring.h hashstring.h protocol.h \
+ select.h queue.h system.h values.h utility.h utils.h
+apf_affect.o: apf_affect.cpp affect.h essential.h comm.h common.h db.h \
+ bytestring.h config.h fight.h dbfind.h handler.h unitfind.h structs.h \
+ blkfile.h combat.h extra.h namelist.h hashstring.h protocol.h select.h \
+ queue.h system.h values.h interpreter.h dil.h spec_assign.h limits.h \
+ magic.h skills.h spells.h spelldef.h utility.h utils.h
+ban.o: ban.cpp ban.h comm.h db.h bytestring.h essential.h config.h \
+ fight.h dbfind.h db_file.h dil.h structs.h blkfile.h combat.h extra.h \
+ namelist.h hashstring.h protocol.h select.h queue.h system.h values.h \
+ files.h interpreter.h spec_assign.h textutil.h utility.h utils.h
+bank.o: bank.cpp comm.h handler.h unitfind.h essential.h structs.h \
+ blkfile.h combat.h extra.h namelist.h bytestring.h hashstring.h \
+ protocol.h select.h queue.h system.h values.h interpreter.h dil.h \
+ spec_assign.h money.h textutil.h utility.h utils.h
+blkfile.o: blkfile.cpp blkfile.h essential.h db.h bytestring.h config.h \
+ fight.h dbfind.h db_file.h dil.h structs.h combat.h extra.h namelist.h \
+ hashstring.h protocol.h select.h queue.h system.h values.h files.h \
+ textutil.h unixshit.h utility.h utils.h
+board.o: board.cpp blkfile.h essential.h comm.h db.h bytestring.h \
+ config.h fight.h dbfind.h db_file.h dil.h structs.h combat.h extra.h \
+ namelist.h hashstring.h protocol.h select.h queue.h system.h values.h \
+ files.h handler.h unitfind.h interpreter.h spec_assign.h textutil.h \
+ utility.h utils.h weather.h
+comm.o: comm.cpp comm.h constants.h skills.h essential.h values.h \
+ handler.h unitfind.h structs.h blkfile.h combat.h extra.h namelist.h \
+ bytestring.h hashstring.h protocol.h select.h queue.h system.h \
+ interpreter.h dil.h spec_assign.h sysport.h textutil.h unixshit.h \
+ utility.h utils.h
+common.o: common.cpp common.h essential.h db.h bytestring.h config.h \
+ fight.h dbfind.h skills.h values.h structs.h blkfile.h combat.h extra.h \
+ namelist.h hashstring.h protocol.h select.h queue.h system.h utility.h \
+ utils.h
+constants.o: constants.cpp constants.h skills.h essential.h values.h \
+ limits.h structs.h blkfile.h combat.h extra.h namelist.h bytestring.h \
+ hashstring.h protocol.h select.h queue.h system.h utils.h
+convert.o: convert.cpp affect.h essential.h blkfile.h common.h db.h \
+ bytestring.h config.h fight.h dbfind.h db_file.h dil.h structs.h \
+ combat.h extra.h namelist.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h files.h handler.h unitfind.h money.h postoffice.h \
+ skills.h textutil.h utility.h utils.h
+create.o: create.cpp affect.h essential.h comm.h db.h bytestring.h \
+ config.h fight.h dbfind.h handler.h unitfind.h structs.h blkfile.h \
+ combat.h extra.h namelist.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h interpreter.h dil.h spec_assign.h skills.h spells.h \
+ spelldef.h textutil.h utility.h utils.h
+db.o: db.cpp db.h bytestring.h essential.h config.h fight.h dbfind.h \
+ account.h affect.h comm.h common.h connectionlog.h structs.h blkfile.h \
+ combat.h extra.h namelist.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h db_file.h dil.h dilrun.h files.h handler.h unitfind.h \
+ limits.h money.h skills.h textutil.h unixshit.h utility.h utils.h \
  weather.h
-zon_basis.o: zon_basis.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h skills.h textutil.h comm.h interpreter.h \
- dil.h spec_assign.h handler.h unitfind.h db.h dbfind.h config.h fight.h \
- spells.h spelldef.h limits.h justice.h affect.h magic.h utility.h \
- money.h main.h common.h
-zon_midgaard.o: zon_midgaard.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h skills.h textutil.h comm.h interpreter.h \
- dil.h spec_assign.h handler.h unitfind.h db.h dbfind.h config.h fight.h \
- spells.h spelldef.h limits.h justice.h affect.h common.h utility.h \
- money.h constants.h
-zon_wiz.o: zon_wiz.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h skills.h textutil.h comm.h interpreter.h \
- dil.h spec_assign.h handler.h unitfind.h db.h dbfind.h config.h fight.h \
- spells.h spelldef.h limits.h justice.h affect.h magic.h utility.h
+db_file.o: db_file.cpp db_file.h bytestring.h essential.h dil.h structs.h \
+ blkfile.h combat.h extra.h namelist.h hashstring.h protocol.h select.h \
+ queue.h system.h values.h db.h config.h fight.h dbfind.h dilrun.h \
+ handler.h unitfind.h interpreter.h spec_assign.h textutil.h unixshit.h \
+ utility.h utils.h
+db_utils.o: db_utils.cpp affect.h essential.h blkfile.h comm.h db.h \
+ bytestring.h config.h fight.h dbfind.h db_file.h dil.h structs.h \
+ combat.h extra.h namelist.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h handler.h unitfind.h limits.h skills.h textutil.h \
+ utility.h utils.h
+demigod.o: demigod.cpp affect.h essential.h comm.h db.h bytestring.h \
+ config.h fight.h dbfind.h handler.h unitfind.h structs.h blkfile.h \
+ combat.h extra.h namelist.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h interpreter.h dil.h spec_assign.h limits.h money.h \
+ skills.h spells.h spelldef.h textutil.h utility.h utils.h
+destruct.o: destruct.cpp affect.h essential.h comm.h db.h bytestring.h \
+ config.h fight.h dbfind.h handler.h unitfind.h structs.h blkfile.h \
+ combat.h extra.h namelist.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h interpreter.h dil.h spec_assign.h skills.h textutil.h \
+ utility.h utils.h
+dictionary.o: dictionary.cpp comm.h config.h fight.h essential.h \
+ db_file.h bytestring.h dil.h structs.h blkfile.h combat.h extra.h \
+ namelist.h hashstring.h protocol.h select.h queue.h system.h values.h \
+ handler.h unitfind.h interpreter.h spec_assign.h textutil.h trie.h \
+ utility.h utils.h
+dijkstra.o: dijkstra.cpp comm.h common.h essential.h db.h bytestring.h \
+ config.h fight.h dbfind.h handler.h unitfind.h structs.h blkfile.h \
+ combat.h extra.h namelist.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h interpreter.h dil.h spec_assign.h movement.h \
+ dijkstra.h utility.h utils.h
+main.o: main.cpp comm.h db.h bytestring.h essential.h config.h fight.h \
+ dbfind.h files.h handler.h unitfind.h structs.h blkfile.h combat.h \
+ extra.h namelist.h hashstring.h protocol.h select.h queue.h system.h \
+ values.h interpreter.h dil.h spec_assign.h main.h sysport.h textutil.h \
+ unixshit.h utility.h utils.h
+eliza.o: eliza.cpp comm.h db.h bytestring.h essential.h config.h fight.h \
+ dbfind.h files.h handler.h unitfind.h structs.h blkfile.h combat.h \
+ extra.h namelist.h hashstring.h protocol.h select.h queue.h system.h \
+ values.h interpreter.h dil.h spec_assign.h main.h textutil.h utility.h \
+ utils.h
+experience.o: experience.cpp affect.h essential.h comm.h common.h fight.h \
+ handler.h unitfind.h structs.h blkfile.h combat.h extra.h namelist.h \
+ bytestring.h hashstring.h protocol.h select.h queue.h system.h values.h \
+ interpreter.h dil.h spec_assign.h justice.h magic.h movement.h \
+ dijkstra.h skills.h spells.h spelldef.h textutil.h utility.h utils.h
+fight.o: fight.cpp fight.h essential.h affect.h combat.h comm.h common.h \
+ db.h bytestring.h config.h dbfind.h files.h handler.h unitfind.h \
+ structs.h blkfile.h extra.h namelist.h hashstring.h protocol.h select.h \
+ queue.h system.h values.h interpreter.h dil.h spec_assign.h justice.h \
+ limits.h skills.h spells.h spelldef.h textutil.h utility.h utils.h
+files.o: files.cpp files.h bytestring.h essential.h textutil.h unixshit.h \
+ utility.h utils.h structs.h blkfile.h combat.h extra.h namelist.h \
+ hashstring.h protocol.h select.h queue.h system.h values.h
+guild.o: guild.cpp affect.h essential.h comm.h common.h db.h bytestring.h \
+ config.h fight.h dbfind.h handler.h unitfind.h structs.h blkfile.h \
+ combat.h extra.h namelist.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h interpreter.h dil.h spec_assign.h justice.h limits.h \
+ magic.h money.h movement.h dijkstra.h skills.h spells.h spelldef.h \
+ str_parse.h textutil.h utility.h utils.h
+handler.o: handler.cpp handler.h unitfind.h essential.h structs.h \
+ blkfile.h combat.h extra.h namelist.h bytestring.h hashstring.h \
+ protocol.h select.h queue.h system.h values.h affect.h comm.h db.h \
+ config.h fight.h dbfind.h dilrun.h files.h interpreter.h dil.h \
+ spec_assign.h main.h money.h skills.h textutil.h unixshit.h utility.h \
+ utils.h
+help.o: help.cpp comm.h db.h bytestring.h essential.h config.h fight.h \
+ dbfind.h files.h handler.h unitfind.h structs.h blkfile.h combat.h \
+ extra.h namelist.h hashstring.h protocol.h select.h queue.h system.h \
+ values.h interpreter.h dil.h spec_assign.h textutil.h utility.h utils.h
+act_look.o: act_look.cpp affect.h essential.h blkfile.h comm.h common.h \
+ constants.h skills.h values.h db.h bytestring.h config.h fight.h \
+ dbfind.h dilrun.h files.h guild.h handler.h unitfind.h structs.h \
+ combat.h extra.h namelist.h hashstring.h protocol.h select.h queue.h \
+ system.h interpreter.h dil.h spec_assign.h limits.h money.h movement.h \
+ dijkstra.h spells.h spelldef.h textutil.h trie.h utility.h utils.h
+hometown.o: hometown.cpp comm.h db.h bytestring.h essential.h config.h \
+ fight.h dbfind.h db_file.h dil.h structs.h blkfile.h combat.h extra.h \
+ namelist.h hashstring.h protocol.h select.h queue.h system.h values.h \
+ interpreter.h spec_assign.h textutil.h utility.h utils.h
+interpreter.o: interpreter.cpp interpreter.h dil.h essential.h \
+ spec_assign.h comm.h common.h constants.h skills.h values.h db.h \
+ bytestring.h config.h fight.h dbfind.h dilrun.h files.h limits.h \
+ structs.h blkfile.h combat.h extra.h namelist.h hashstring.h protocol.h \
+ select.h queue.h system.h textutil.h trie.h unitfind.h utility.h utils.h
+justice.o: justice.cpp justice.h essential.h affect.h blkfile.h comm.h \
+ common.h db.h bytestring.h config.h fight.h dbfind.h dijkstra.h files.h \
+ handler.h unitfind.h structs.h combat.h extra.h namelist.h hashstring.h \
+ protocol.h select.h queue.h system.h values.h interpreter.h dil.h \
+ spec_assign.h money.h movement.h skills.h textutil.h utility.h utils.h
+limits.o: limits.cpp limits.h structs.h blkfile.h essential.h combat.h \
+ extra.h namelist.h bytestring.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h comm.h common.h constants.h skills.h fight.h guild.h \
+ handler.h unitfind.h interpreter.h dil.h spec_assign.h spells.h \
+ spelldef.h textutil.h utility.h utils.h
+magic.o: magic.cpp magic.h essential.h affect.h comm.h common.h dbfind.h \
+ dil.h dilrun.h fight.h handler.h unitfind.h structs.h blkfile.h combat.h \
+ extra.h namelist.h bytestring.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h interpreter.h spec_assign.h limits.h skills.h spells.h \
+ spelldef.h textutil.h utility.h utils.h
+magic1.o: magic1.cpp affect.h essential.h comm.h common.h db.h \
+ bytestring.h config.h fight.h dbfind.h handler.h unitfind.h structs.h \
+ blkfile.h combat.h extra.h namelist.h hashstring.h protocol.h select.h \
+ queue.h system.h values.h interpreter.h dil.h spec_assign.h limits.h \
+ magic.h movement.h dijkstra.h skills.h spells.h spelldef.h textutil.h \
+ utility.h utils.h
+magic2.o: magic2.cpp affect.h essential.h comm.h common.h db.h \
+ bytestring.h config.h fight.h dbfind.h handler.h unitfind.h structs.h \
+ blkfile.h combat.h extra.h namelist.h hashstring.h protocol.h select.h \
+ queue.h system.h values.h interpreter.h dil.h spec_assign.h limits.h \
+ magic.h movement.h dijkstra.h skills.h spells.h spelldef.h textutil.h \
+ utility.h utils.h
+memory.o: memory.cpp essential.h
+mobact.o: mobact.cpp comm.h db.h bytestring.h essential.h config.h \
+ fight.h dbfind.h handler.h unitfind.h structs.h blkfile.h combat.h \
+ extra.h namelist.h hashstring.h protocol.h select.h queue.h system.h \
+ values.h interpreter.h dil.h spec_assign.h main.h skills.h utility.h \
+ utils.h
+modify.o: modify.cpp affect.h essential.h blkfile.h comm.h common.h \
+ constants.h skills.h values.h db.h bytestring.h config.h fight.h \
+ dbfind.h handler.h unitfind.h structs.h combat.h extra.h namelist.h \
+ hashstring.h protocol.h select.h queue.h system.h interpreter.h dil.h \
+ spec_assign.h money.h textutil.h trie.h utility.h utils.h
+money.o: money.cpp money.h structs.h blkfile.h essential.h combat.h \
+ extra.h namelist.h bytestring.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h db.h config.h fight.h dbfind.h handler.h unitfind.h \
+ limits.h textutil.h utility.h utils.h comm.h interpreter.h dil.h \
+ spec_assign.h
+nanny.o: nanny.cpp account.h essential.h affect.h ban.h blkfile.h comm.h \
+ common.h competition.h connectionlog.h structs.h combat.h extra.h \
+ namelist.h bytestring.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h constants.h skills.h db.h config.h fight.h dbfind.h \
+ dilrun.h files.h handler.h unitfind.h interpreter.h dil.h spec_assign.h \
+ limits.h main.h modify.h money.h textutil.h trie.h utility.h utils.h
+nice.o: nice.cpp comm.h db.h bytestring.h essential.h config.h fight.h \
+ dbfind.h handler.h unitfind.h structs.h blkfile.h combat.h extra.h \
+ namelist.h hashstring.h protocol.h select.h queue.h system.h values.h \
+ interpreter.h dil.h spec_assign.h textutil.h utility.h
+pain.o: pain.cpp comm.h common.h essential.h db.h bytestring.h config.h \
+ fight.h dbfind.h handler.h unitfind.h structs.h blkfile.h combat.h \
+ extra.h namelist.h hashstring.h protocol.h select.h queue.h system.h \
+ values.h interpreter.h dil.h spec_assign.h justice.h money.h movement.h \
+ dijkstra.h textutil.h trie.h unixshit.h utility.h utils.h
+pcsave.o: pcsave.cpp account.h essential.h affect.h blkfile.h comm.h \
+ competition.h connectionlog.h structs.h combat.h extra.h namelist.h \
+ bytestring.h hashstring.h protocol.h select.h queue.h system.h values.h \
+ db.h config.h fight.h dbfind.h db_file.h dil.h dilrun.h files.h \
+ handler.h unitfind.h interpreter.h spec_assign.h money.h textutil.h \
+ unixshit.h utility.h utils.h
+postoffice.o: postoffice.cpp postoffice.h blkfile.h essential.h comm.h \
+ db.h bytestring.h config.h fight.h dbfind.h files.h handler.h unitfind.h \
+ structs.h combat.h extra.h namelist.h hashstring.h protocol.h select.h \
+ queue.h system.h values.h interpreter.h dil.h spec_assign.h money.h \
+ textutil.h unixshit.h utility.h utils.h
+protocol.o: protocol.cpp protocol.h essential.h select.h queue.h \
+ db_file.h bytestring.h dil.h structs.h blkfile.h combat.h extra.h \
+ namelist.h hashstring.h system.h values.h unixshit.h utility.h
+queue.o: queue.cpp queue.h essential.h utility.h
+reception.o: reception.cpp affect.h essential.h blkfile.h comm.h db.h \
+ bytestring.h config.h fight.h dbfind.h db_file.h dil.h structs.h \
+ combat.h extra.h namelist.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h files.h handler.h unitfind.h interpreter.h \
+ spec_assign.h money.h spells.h spelldef.h textutil.h utility.h utils.h
+shop.o: shop.cpp act.h comm.h common.h essential.h db.h bytestring.h \
+ config.h fight.h dbfind.h handler.h unitfind.h structs.h blkfile.h \
+ combat.h extra.h namelist.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h interpreter.h dil.h spec_assign.h limits.h money.h \
+ skills.h str_parse.h textutil.h utility.h utils.h
+signals.o: signals.cpp structs.h blkfile.h essential.h combat.h extra.h \
+ namelist.h bytestring.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h utility.h utils.h
+skills.o: skills.cpp skills.h essential.h values.h comm.h common.h db.h \
+ bytestring.h config.h fight.h dbfind.h files.h interpreter.h dil.h \
+ spec_assign.h spelldef.h structs.h blkfile.h combat.h extra.h namelist.h \
+ hashstring.h protocol.h select.h queue.h system.h textutil.h trie.h \
+ utility.h utils.h
+slime.o: slime.cpp comm.h db.h bytestring.h essential.h config.h fight.h \
+ dbfind.h files.h interpreter.h dil.h spec_assign.h structs.h blkfile.h \
+ combat.h extra.h namelist.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h textutil.h utility.h utils.h
+spec_assign.o: spec_assign.cpp spec_assign.h interpreter.h dil.h \
+ essential.h handler.h unitfind.h structs.h blkfile.h combat.h extra.h \
+ namelist.h bytestring.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h utils.h
+spec_procs.o: spec_procs.cpp affect.h essential.h comm.h db.h \
+ bytestring.h config.h fight.h dbfind.h files.h handler.h unitfind.h \
+ structs.h blkfile.h combat.h extra.h namelist.h hashstring.h protocol.h \
+ select.h queue.h system.h values.h interpreter.h dil.h spec_assign.h \
+ justice.h limits.h magic.h money.h movement.h dijkstra.h skills.h \
+ spells.h spelldef.h str_parse.h textutil.h trie.h utility.h utils.h
+spell_parser.o: spell_parser.cpp comm.h common.h essential.h db.h \
+ bytestring.h config.h fight.h dbfind.h db_file.h dil.h structs.h \
+ blkfile.h combat.h extra.h namelist.h hashstring.h protocol.h select.h \
+ queue.h system.h values.h dilrun.h files.h handler.h unitfind.h \
+ interpreter.h spec_assign.h justice.h magic.h skills.h spells.h \
+ spelldef.h textutil.h trie.h utility.h utils.h
+str_parse.o: str_parse.cpp essential.h textutil.h
+string.o: string.cpp comm.h hashstring.h essential.h textutil.h utility.h \
+ utils.h structs.h blkfile.h combat.h extra.h namelist.h bytestring.h \
+ protocol.h select.h queue.h system.h values.h
+swap.o: swap.cpp comm.h db.h bytestring.h essential.h config.h fight.h \
+ dbfind.h db_file.h dil.h structs.h blkfile.h combat.h extra.h namelist.h \
+ hashstring.h protocol.h select.h queue.h system.h values.h files.h \
+ handler.h unitfind.h main.h textutil.h utility.h utils.h
+sysport.o: sysport.cpp comm.h handler.h unitfind.h essential.h structs.h \
+ blkfile.h combat.h extra.h namelist.h bytestring.h hashstring.h \
+ protocol.h select.h queue.h system.h values.h utility.h utils.h
+system.o: system.cpp account.h essential.h ban.h comm.h common.h db.h \
+ bytestring.h config.h fight.h dbfind.h db_file.h dil.h structs.h \
+ blkfile.h combat.h extra.h namelist.h hashstring.h protocol.h select.h \
+ queue.h system.h values.h files.h handler.h unitfind.h limits.h main.h \
+ str_parse.h sysport.h textutil.h unixshit.h utility.h utils.h
+teach.o: teach.cpp comm.h common.h essential.h guild.h handler.h \
+ unitfind.h structs.h blkfile.h combat.h extra.h namelist.h bytestring.h \
+ hashstring.h protocol.h select.h queue.h system.h values.h interpreter.h \
+ dil.h spec_assign.h limits.h money.h skills.h spells.h spelldef.h \
+ textutil.h utility.h utils.h
+textutil.o: textutil.cpp textutil.h essential.h common.h structs.h \
+ blkfile.h combat.h extra.h namelist.h bytestring.h hashstring.h \
+ protocol.h select.h queue.h system.h values.h utility.h utils.h
+tif_affect.o: tif_affect.cpp affect.h essential.h comm.h db.h \
+ bytestring.h config.h fight.h dbfind.h handler.h unitfind.h structs.h \
+ blkfile.h combat.h extra.h namelist.h hashstring.h protocol.h select.h \
+ queue.h system.h values.h interpreter.h dil.h spec_assign.h limits.h \
+ magic.h money.h skills.h spells.h spelldef.h utility.h utils.h
+trie.o: trie.cpp trie.h essential.h structs.h blkfile.h combat.h extra.h \
+ namelist.h bytestring.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h utility.h utils.h
+utility.o: utility.cpp utility.h essential.h comm.h db.h bytestring.h \
+ config.h fight.h dbfind.h files.h structs.h blkfile.h combat.h extra.h \
+ namelist.h hashstring.h protocol.h select.h queue.h system.h values.h \
+ textutil.h unixshit.h utils.h
+weather.o: weather.cpp weather.h comm.h db.h bytestring.h essential.h \
+ config.h fight.h dbfind.h handler.h unitfind.h structs.h blkfile.h \
+ combat.h extra.h namelist.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h interpreter.h dil.h spec_assign.h main.h utility.h \
+ utils.h
+zon_basis.o: zon_basis.cpp affect.h essential.h comm.h common.h db.h \
+ bytestring.h config.h fight.h dbfind.h handler.h unitfind.h structs.h \
+ blkfile.h combat.h extra.h namelist.h hashstring.h protocol.h select.h \
+ queue.h system.h values.h interpreter.h dil.h spec_assign.h justice.h \
+ limits.h magic.h main.h money.h skills.h spells.h spelldef.h textutil.h \
+ utility.h utils.h
+zon_midgaard.o: zon_midgaard.cpp affect.h essential.h comm.h common.h \
+ constants.h skills.h values.h db.h bytestring.h config.h fight.h \
+ dbfind.h handler.h unitfind.h structs.h blkfile.h combat.h extra.h \
+ namelist.h hashstring.h protocol.h select.h queue.h system.h \
+ interpreter.h dil.h spec_assign.h justice.h limits.h money.h spells.h \
+ spelldef.h textutil.h utility.h utils.h
+zon_wiz.o: zon_wiz.cpp affect.h essential.h comm.h db.h bytestring.h \
+ config.h fight.h dbfind.h handler.h unitfind.h structs.h blkfile.h \
+ combat.h extra.h namelist.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h interpreter.h dil.h spec_assign.h justice.h limits.h \
+ magic.h skills.h spells.h spelldef.h textutil.h utility.h utils.h
 zone_boot.o: zone_boot.cpp
-zone_reset.o: zone_reset.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h db.h dbfind.h config.h fight.h db_file.h \
- dil.h comm.h handler.h unitfind.h limits.h textutil.h skills.h common.h \
- affect.h utility.h money.h interpreter.h spec_assign.h main.h
-namelist.o: namelist.cpp namelist.h hashstring.h essential.h bytestring.h \
- textutil.h db_file.h structs.h values.h blkfile.h protocol.h select.h \
- queue.h combat.h extra.h system.h dil.h
-structs.o: structs.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h main.h handler.h unitfind.h
-dilfld.o: dilfld.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h dil.h dilexp.h dilrun.h textutil.h db_file.h handler.h \
- unitfind.h interpreter.h spec_assign.h utility.h common.h main.h \
- limits.h config.h fight.h
-extra.o: extra.cpp extra.h essential.h namelist.h hashstring.h \
- bytestring.h utils.h structs.h values.h blkfile.h protocol.h select.h \
- queue.h combat.h system.h utility.h textutil.h
-dilinst.o: dilinst.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h handler.h unitfind.h textutil.h interpreter.h \
- dil.h spec_assign.h comm.h movement.h dijkstra.h affect.h utility.h \
- utils.h db.h dbfind.h config.h fight.h db_file.h limits.h common.h \
- spells.h spelldef.h unixshit.h dilinst.h dilrun.h magic.h trie.h main.h \
- account.h justice.h
-dilexp.o: dilexp.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h handler.h unitfind.h textutil.h interpreter.h dil.h \
- spec_assign.h comm.h movement.h dijkstra.h affect.h utility.h utils.h \
- db.h dbfind.h config.h fight.h limits.h common.h spells.h spelldef.h \
- db_file.h unixshit.h dilexp.h dilrun.h money.h magic.h skills.h
-dilrun.o: dilrun.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h handler.h unitfind.h textutil.h interpreter.h dil.h \
- spec_assign.h comm.h movement.h dijkstra.h affect.h utility.h utils.h \
- db.h dbfind.h config.h fight.h db_file.h limits.h common.h spells.h \
- spelldef.h unixshit.h dilinst.h dilexp.h dilrun.h
-dbfind.o: dbfind.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h db.h dbfind.h config.h fight.h dil.h textutil.h \
- utility.h handler.h unitfind.h unixshit.h
-competition.o: competition.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h handler.h unitfind.h utility.h db.h \
- dbfind.h config.h fight.h comm.h interpreter.h dil.h spec_assign.h \
- textutil.h common.h files.h str_parse.h competition.h
-unitfind.o: unitfind.cpp utils.h structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h db.h dbfind.h config.h fight.h unitfind.h \
- handler.h textutil.h utility.h common.h
-combat.o: combat.cpp structs.h essential.h values.h blkfile.h protocol.h \
- select.h queue.h combat.h hashstring.h extra.h namelist.h bytestring.h \
- system.h utils.h fight.h comm.h textutil.h interpreter.h dil.h \
- spec_assign.h utility.h
+zone_reset.o: zone_reset.cpp affect.h essential.h comm.h common.h db.h \
+ bytestring.h config.h fight.h dbfind.h db_file.h dil.h structs.h \
+ blkfile.h combat.h extra.h namelist.h hashstring.h protocol.h select.h \
+ queue.h system.h values.h handler.h unitfind.h interpreter.h \
+ spec_assign.h limits.h main.h money.h skills.h textutil.h utility.h \
+ utils.h
+namelist.o: namelist.cpp namelist.h bytestring.h essential.h hashstring.h \
+ db_file.h dil.h structs.h blkfile.h combat.h extra.h protocol.h select.h \
+ queue.h system.h values.h textutil.h
+structs.o: structs.cpp structs.h blkfile.h essential.h combat.h extra.h \
+ namelist.h bytestring.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h handler.h unitfind.h main.h utils.h
+dilfld.o: dilfld.cpp common.h essential.h config.h fight.h db_file.h \
+ bytestring.h dil.h structs.h blkfile.h combat.h extra.h namelist.h \
+ hashstring.h protocol.h select.h queue.h system.h values.h dilexp.h \
+ dilrun.h handler.h unitfind.h interpreter.h spec_assign.h limits.h \
+ main.h textutil.h utility.h utils.h
+extra.o: extra.cpp extra.h essential.h namelist.h bytestring.h \
+ hashstring.h textutil.h utility.h utils.h structs.h blkfile.h combat.h \
+ protocol.h select.h queue.h system.h values.h
+dilinst.o: dilinst.cpp dilinst.h account.h essential.h affect.h comm.h \
+ common.h db.h bytestring.h config.h fight.h dbfind.h db_file.h dil.h \
+ structs.h blkfile.h combat.h extra.h namelist.h hashstring.h protocol.h \
+ select.h queue.h system.h values.h dilrun.h handler.h unitfind.h \
+ interpreter.h spec_assign.h justice.h limits.h magic.h main.h movement.h \
+ dijkstra.h spells.h spelldef.h textutil.h trie.h unixshit.h utility.h \
+ utils.h
+dilexp.o: dilexp.cpp dilexp.h dil.h essential.h affect.h comm.h common.h \
+ db.h bytestring.h config.h fight.h dbfind.h db_file.h structs.h \
+ blkfile.h combat.h extra.h namelist.h hashstring.h protocol.h select.h \
+ queue.h system.h values.h dilrun.h handler.h unitfind.h interpreter.h \
+ spec_assign.h limits.h magic.h money.h movement.h dijkstra.h skills.h \
+ spells.h spelldef.h textutil.h unixshit.h utility.h utils.h
+dilrun.o: dilrun.cpp dilrun.h essential.h affect.h comm.h common.h db.h \
+ bytestring.h config.h fight.h dbfind.h db_file.h dil.h structs.h \
+ blkfile.h combat.h extra.h namelist.h hashstring.h protocol.h select.h \
+ queue.h system.h values.h dilexp.h dilinst.h handler.h unitfind.h \
+ interpreter.h spec_assign.h limits.h movement.h dijkstra.h spells.h \
+ spelldef.h textutil.h unixshit.h utility.h utils.h
+dbfind.o: dbfind.cpp dbfind.h db.h bytestring.h essential.h config.h \
+ fight.h dil.h handler.h unitfind.h structs.h blkfile.h combat.h extra.h \
+ namelist.h hashstring.h protocol.h select.h queue.h system.h values.h \
+ textutil.h unixshit.h utility.h utils.h
+competition.o: competition.cpp competition.h comm.h common.h essential.h \
+ db.h bytestring.h config.h fight.h dbfind.h files.h handler.h unitfind.h \
+ structs.h blkfile.h combat.h extra.h namelist.h hashstring.h protocol.h \
+ select.h queue.h system.h values.h interpreter.h dil.h spec_assign.h \
+ str_parse.h textutil.h utility.h utils.h
+unitfind.o: unitfind.cpp unitfind.h essential.h structs.h blkfile.h \
+ combat.h extra.h namelist.h bytestring.h hashstring.h protocol.h \
+ select.h queue.h system.h values.h common.h db.h config.h fight.h \
+ dbfind.h handler.h textutil.h utility.h utils.h
+combat.o: combat.cpp comm.h fight.h essential.h interpreter.h dil.h \
+ spec_assign.h structs.h blkfile.h combat.h extra.h namelist.h \
+ bytestring.h hashstring.h protocol.h select.h queue.h system.h values.h \
+ textutil.h utility.h utils.h
 select.o: select.cpp select.h essential.h queue.h utility.h
-persist.o: persist.cpp structs.h essential.h values.h blkfile.h \
- protocol.h select.h queue.h combat.h hashstring.h extra.h namelist.h \
- bytestring.h system.h utils.h textutil.h handler.h unitfind.h db.h \
- dbfind.h config.h fight.h utility.h files.h common.h spec_assign.h \
- interpreter.h dil.h
-bytestring.o: bytestring.cpp essential.h bytestring.h textutil.h
-config.o: config.cpp essential.h config.h fight.h files.h bytestring.h \
- textutil.h db.h dbfind.h str_parse.h common.h
-connectionlog.o: connectionlog.cpp essential.h values.h utils.h structs.h \
- blkfile.h protocol.h select.h queue.h combat.h hashstring.h extra.h \
- namelist.h bytestring.h system.h files.h textutil.h common.h db.h \
- dbfind.h config.h fight.h account.h connectionlog.h
+persist.o: persist.cpp common.h essential.h db.h bytestring.h config.h \
+ fight.h dbfind.h files.h handler.h unitfind.h structs.h blkfile.h \
+ combat.h extra.h namelist.h hashstring.h protocol.h select.h queue.h \
+ system.h values.h spec_assign.h interpreter.h dil.h textutil.h utility.h \
+ utils.h
+bytestring.o: bytestring.cpp bytestring.h essential.h textutil.h
+config.o: config.cpp config.h fight.h essential.h common.h db.h \
+ bytestring.h dbfind.h files.h str_parse.h textutil.h
+connectionlog.o: connectionlog.cpp connectionlog.h structs.h blkfile.h \
+ essential.h combat.h extra.h namelist.h bytestring.h hashstring.h \
+ protocol.h select.h queue.h system.h values.h account.h common.h db.h \
+ config.h fight.h dbfind.h files.h textutil.h utils.h

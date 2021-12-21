@@ -29,6 +29,8 @@
 
 #include "essential.h"
 
+#include <memory>
+
 #ifndef L_tmpnam
    #define L_tmpnam 1024 /* Oh thank you Marcel! */
 #endif
@@ -410,10 +412,11 @@ struct dilxref
  *  Inline code is registered as local instances.
  *  Uppon loading old dil programs, an unlinked template is created.
  */
+class zone_type;
 struct diltemplate
 {
-   const char       *prgname; /* program name @ zone */
-   struct zone_type *zone;    /* Pointer to owner of structure    */
+   const char                *prgname; /* program name @ zone */
+   std::shared_ptr<zone_type> zone;    /* Pointer to owner of structure    */
 
    ubit8  flags;     /* recall, etc. */
    ubit16 intrcount; /* max number of interrupts */

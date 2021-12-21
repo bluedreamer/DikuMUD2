@@ -100,7 +100,7 @@ struct unit_data *convert_item(struct unit_data *u, struct unit_data *pc, int bL
    if(bList)
    {
       if(strcmp(UNIT_FI_ZONE(u)->name, "treasure") == 0)
-         printf("\n%s@treasure", UNIT_FI_NAME(u));
+         printf("\n%s@treasure", UNIT_FI_NAME(u).c_str());
       return u;
    }
 

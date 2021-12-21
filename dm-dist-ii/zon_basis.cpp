@@ -231,7 +231,7 @@ void random_event_player(struct unit_data *u, struct unit_data *daemon)
 
 int error_rod(struct spec_arg *sarg)
 {
-   struct zone_type *zone;
+   std::shared_ptr<zone_type> zone;
    FILE             *fl;
    char              filename[256];
 
@@ -268,7 +268,7 @@ int error_rod(struct spec_arg *sarg)
 
 int info_rod(struct spec_arg *sarg)
 {
-   struct zone_type *zone;
+   std::shared_ptr<zone_type> zone;
    FILE             *fl;
    char              filename[256];
 
@@ -521,7 +521,7 @@ int admin_obj(struct spec_arg *sarg)
 {
    char                     buf[512];
    int                      zonelist;
-   struct zone_type        *zone;
+   std::shared_ptr<zone_type> zone;
    struct extra_descr_data *exdp;
 
    if(sarg->cmd->no != CMD_AUTO_UNKNOWN)

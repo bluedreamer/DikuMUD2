@@ -134,7 +134,7 @@ void do_help(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
    if(str_is_empty(arg))
    {
-      struct zone_type *zone = unit_zone(ch);
+      std::shared_ptr<zone_type> zone = unit_zone(ch);
 
       page_string(CHAR_DESCRIPTOR(ch), zone->help);
       return;

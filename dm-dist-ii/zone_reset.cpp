@@ -49,24 +49,24 @@
 
 void event_enq(int when, void (*func)(), void *arg1, void *arg2);
 
-struct zone_type *boot_zone = NULL; /* Points to the zone currently booted */
+std::shared_ptr<zone_type> boot_zone; /* Points to the zone currently booted */
 
 /* No Operation */
-struct unit_data *zone_nop(struct unit_data *u, std::shared_ptr<zone_reset_cmd> cmd)
+unit_data *zone_nop(struct unit_data *u, std::shared_ptr<zone_reset_cmd> cmd)
 {
    /* Return TRUE - NOP always succeedes */
 
-   return (struct unit_data *)boot_zone; /* dummy */
+   return reinterpret_cast<unit_data*>(boot_zone.get()); /* dummy */
 }
 
 /* Random */
-struct unit_data *zone_random(struct unit_data *u, std::shared_ptr<zone_reset_cmd> cmd)
+unit_data *zone_random(struct unit_data *u, std::shared_ptr<zone_reset_cmd> cmd)
 {
    /* Return TRUE if random 0-99 less than given percent  */
    if(number(0, 99) < cmd->num[0])
-      return (struct unit_data *)boot_zone; /* dummy */
+      return reinterpret_cast<unit_data*>(boot_zone.get()); /* dummy */
    else
-      return NULL;
+      return {};
 }
 
 /* Count ->no_in_zone for current 'boot_zone' (above) */
@@ -77,7 +77,7 @@ void zone_update_no_in_zone(void)
 
    register struct unit_data       *u;
    std::shared_ptr<file_index_type> fi;
-   register struct zone_type       *tmp_zone;
+   std::shared_ptr<zone_type>       tmp_zone;
 
    /* Clear ALL ->no_in_zone */
    for(tmp_zone = zone_info.zone_list; tmp_zone; tmp_zone = tmp_zone->next)
@@ -330,7 +330,7 @@ bool low_reset_zone(struct unit_data *u, std::shared_ptr<zone_reset_cmd> cmd)
    return ok;
 }
 
-void zone_reset(struct zone_type *zone)
+void zone_reset(std::shared_ptr<zone_type> zone)
 {
    /* extern int memory_total_alloc;
       int i = memory_total_alloc; */
@@ -352,8 +352,8 @@ void zone_reset(struct zone_type *zone)
    really fast */
 void reset_all_zones(void)
 {
-   int               j, n;
-   struct zone_type *zone;
+   int                        j, n;
+   std::shared_ptr<zone_type> zone;
 
    void zone_event(void *, void *);
 
@@ -370,12 +370,12 @@ void reset_all_zones(void)
             continue;
 
          if(zone->zone_time > 0)
-            event_enq(++n * PULSE_SEC, zone_event, zone, 0);
+            event_enq(++n * PULSE_SEC, zone_event, zone.get(), 0);
       }
    }
 }
 
-bool zone_is_empty(struct zone_type *zone)
+bool zone_is_empty(std::shared_ptr<zone_type> zone)
 {
    extern struct descriptor_data *descriptor_list;
 
@@ -392,7 +392,7 @@ bool zone_is_empty(struct zone_type *zone)
 /* Check if any zones needs updating */
 void zone_event(void *p1, void *p2)
 {
-   struct zone_type *zone = (struct zone_type *)p1;
+   std::shared_ptr<zone_type> zone = std::shared_ptr<zone_type>(reinterpret_cast<zone_type*>(p1));
 
    if(zone->reset_mode != RESET_IFEMPTY || zone_is_empty(zone))
    {
@@ -403,8 +403,8 @@ void zone_event(void *p1, void *p2)
        */
 
       if(zone->reset_mode != RESET_NOT)
-         event_enq(zone->zone_time * PULSE_ZONE + number(0, WAIT_SEC * 180), zone_event, zone, 0);
+         event_enq(zone->zone_time * PULSE_ZONE + number(0, WAIT_SEC * 180), zone_event, zone.get(), 0);
    }
    else
-      event_enq(1 * PULSE_ZONE, zone_event, zone, 0);
+      event_enq(1 * PULSE_ZONE, zone_event, zone.get(), 0);
 }

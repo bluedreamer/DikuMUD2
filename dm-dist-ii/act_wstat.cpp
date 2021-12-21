@@ -69,9 +69,9 @@ extern void stat_bank(const struct unit_data *ch, struct unit_data *u); /* bank.
 
 static void stat_world_extra(const struct unit_data *ch)
 {
-   char              buf[MAX_STRING_LENGTH], *b;
-   struct zone_type *zp;
-   int               i;
+   char                       buf[MAX_STRING_LENGTH], *b;
+   std::shared_ptr<zone_type> zp;
+   int                        i;
 
    b = buf;
    sprintf(b, "World zones (%d):\n\r", zone_info.no_of_zones);
@@ -185,12 +185,12 @@ static void stat_zone_reset(char *indnt, std::shared_ptr<zone_reset_cmd> zrip, s
          break;
 
       case 1:
-         sprintf(stat_p, "Load %s", zrip->fi[0]->name);
+         sprintf(stat_p, "Load %s", zrip->fi[0]->name.c_str());
          TAIL(stat_p);
 
          if(zrip->fi[1])
          {
-            sprintf(stat_p, " into %s", zrip->fi[1]->name);
+            sprintf(stat_p, " into %s", zrip->fi[1]->name.c_str());
             TAIL(stat_p);
          }
 
@@ -205,19 +205,19 @@ static void stat_zone_reset(char *indnt, std::shared_ptr<zone_reset_cmd> zrip, s
          break;
 
       case 2:
-         sprintf(stat_p, "Equip %s %s max %d %s", zrip->fi[0]->name, where[zrip->num[1]], zrip->num[0], zrip->cmpl ? "Complete" : "");
+         sprintf(stat_p, "Equip %s %s max %d %s", zrip->fi[0]->name.c_str(), where[zrip->num[1]], zrip->num[0], zrip->cmpl ? "Complete" : "");
          break;
 
       case 3:
-         sprintf(stat_p, "Door at %s : %s : %s", zrip->fi[0]->name, dirs[zrip->num[0]], sprintbit(buf, zrip->num[1], unit_open_flags));
+         sprintf(stat_p, "Door at %s : %s : %s", zrip->fi[0]->name.c_str(), dirs[zrip->num[0]], sprintbit(buf, zrip->num[1], unit_open_flags));
          break;
 
       case 4:
-         sprintf(stat_p, "Purge %s", zrip->fi[0]->name);
+         sprintf(stat_p, "Purge %s", zrip->fi[0]->name.c_str());
          break;
 
       case 5:
-         sprintf(stat_p, "Remove %s in %s", zrip->fi[0]->name, zrip->fi[1]->name);
+         sprintf(stat_p, "Remove %s in %s", zrip->fi[0]->name.c_str(), zrip->fi[1]->name.c_str());
          break;
    }
 
@@ -247,7 +247,7 @@ static void stat_zone_reset(char *indnt, std::shared_ptr<zone_reset_cmd> zrip, s
       stat_zone_reset(indnt, zrip->next, ch);
 }
 
-static void stat_zone(struct unit_data *ch, struct zone_type *zone)
+static void stat_zone(struct unit_data *ch, std::shared_ptr<zone_type> zone)
 {
    static const char *reset_modes[] = {"Never Reset", "Reset When Empty", "Reset Always", "UNKNOWN"};
 
@@ -300,10 +300,10 @@ static void stat_zone(struct unit_data *ch, struct zone_type *zone)
 
 static void stat_creators(struct unit_data *ch, char *arg)
 {
-   char              buf[4 * MAX_STRING_LENGTH], *b;
-   char              tmp[1024];
-   int               found;
-   struct zone_type *z;
+   char                       buf[4 * MAX_STRING_LENGTH], *b;
+   char                       tmp[1024];
+   int                        found;
+   std::shared_ptr<zone_type> z;
 
    if(str_is_empty(arg))
    {
@@ -359,7 +359,7 @@ static void stat_creators(struct unit_data *ch, char *arg)
 }
 
 // MS2020 modified to get rid of warnings
-static void stat_dil(const struct unit_data *ch, const struct zone_type *zone)
+static void stat_dil(const struct unit_data *ch, std::shared_ptr<zone_type> zone)
 {
    char                buf[MAX_STRING_LENGTH], buf2[MAX_STRING_LENGTH];
    struct diltemplate *tmpl;
@@ -425,14 +425,14 @@ static void stat_dil(const struct unit_data *ch, const struct zone_type *zone)
 }
 #endif
 
-static void extra_stat_zone(struct unit_data *ch, char *arg, struct zone_type *zone)
+static void extra_stat_zone(struct unit_data *ch, char *arg, std::shared_ptr<zone_type> zone)
 {
    char                             buf[MAX_STRING_LENGTH], filename[128];
    int                              argno;
    std::shared_ptr<file_index_type> fi;
    int                              search_type = 0, i;
 
-   void stat_dijkstraa(struct unit_data * ch, struct zone_type * z);
+   void stat_dijkstraa(struct unit_data * ch, std::shared_ptr<zone_type> z);
 
    static const char *zone_args[] = {"mobiles", "objects", "rooms", "reset", "errors", "info", "path", "dil", NULL};
 
@@ -517,7 +517,7 @@ static void extra_stat_zone(struct unit_data *ch, char *arg, struct zone_type *z
    for(*buf = 0, fi = zone->fi, i = 0; fi; fi = fi->next)
       if(fi->type == search_type)
       {
-         sprintf(buf2, "%s%-20s", buf, fi->name);
+         sprintf(buf2, "%s%-20s", buf, fi->name.c_str());
          memcpy(buf, buf2, MAX_STRING_LENGTH); // MS2020 hack
          /* Enough to fill a whole line */
          if(++i == 4)
@@ -767,7 +767,7 @@ static void stat_normal(struct unit_data *ch, struct unit_data *u)
            "Inside_descr:\n\r\"%s\"\n\r",
 
            sprintbit(tmpbuf2, UNIT_TYPE(u), unit_status),
-           UNIT_FI_NAME(u),
+           UNIT_FI_NAME(u).c_str(),
            UNIT_FI_ZONENAME(u),
            UNIT_FILE_INDEX(u) ? UNIT_FILE_INDEX(u)->no_in_mem : -1,
            UNIT_FILE_INDEX(u) ? (unsigned long)UNIT_FILE_INDEX(u)->crc : 0,
@@ -803,7 +803,7 @@ static void stat_normal(struct unit_data *ch, struct unit_data *u)
            "Key name: [%s]  Open flags: %s\n\r"
            "Base weight : [%d] Weight : [%d] Capacity : [%d] Size [%d]\n\r",
 
-           UNIT_KEY(u) ? UNIT_FI_NAME(u) : "none",
+           UNIT_KEY(u) ? UNIT_FI_NAME(u).c_str() : "none",
            sprintbit(tmpbuf1, UNIT_OPEN_FLAGS(u), unit_open_flags),
            UNIT_BASE_WEIGHT(u),
            UNIT_WEIGHT(u),
@@ -1140,7 +1140,7 @@ static void stat_data(const struct unit_data *ch, struct unit_data *u)
               "Magic resistance [%d]\n\rOutside Environment: %s\n\r",
 
               UNIT_TITLE_STRING(u),
-              UNIT_FI_NAME(u),
+              UNIT_FI_NAME(u).c_str(),
               UNIT_FI_ZONENAME(u),
               sprinttype(NULL, ROOM_LANDSCAPE(u), room_landscape),
               ROOM_RESISTANCE(u),
@@ -1160,7 +1160,7 @@ static void stat_data(const struct unit_data *ch, struct unit_data *u)
                        "   Exit Name: [%s]\n\r"
                        "   Exit Bits: [%s]\n\r",
                        dirs[i],
-                       UNIT_FI_NAME(ROOM_EXIT(u, i)->to_room),
+                       UNIT_FI_NAME(ROOM_EXIT(u, i)->to_room).c_str(),
                        UNIT_FI_ZONENAME(ROOM_EXIT(u, i)->to_room),
                        UNIT_TITLE_STRING(ROOM_EXIT(u, i)->to_room),
                        tmpbuf1,
@@ -1193,7 +1193,7 @@ static void stat_contents(const struct unit_data *ch, struct unit_data *u)
          {
             sprintf(buf,
                     "[%s@%s] Name '%s', Title '%s'  %s\n\r",
-                    UNIT_FI_NAME(u),
+                    UNIT_FI_NAME(u).c_str(),
                     UNIT_FI_ZONENAME(u),
                     UNIT_NAME(u),
                     UNIT_TITLE_STRING(u),
@@ -1212,10 +1212,10 @@ static void stat_descriptor(const struct unit_data *ch, struct unit_data *u)
 
 void do_wstat(struct unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   char              buf[256];
-   struct unit_data *u    = NULL;
-   struct zone_type *zone = NULL;
-   int               argno;
+   char                       buf[256];
+   struct unit_data          *u = NULL;
+   std::shared_ptr<zone_type> zone;
+   int                        argno;
 
    static const char *arguments[] = {"data",
                                      "contents",

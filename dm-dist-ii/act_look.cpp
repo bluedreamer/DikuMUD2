@@ -1178,7 +1178,7 @@ static void look_blank(struct unit_data *ch, const struct command_info *cmd)
                  g_cServerConfig.m_sColor.pRoomTitle,
                  UNIT_TITLE_STRING(UNIT_IN(ch)),
                  g_cServerConfig.m_sColor.pDefault,
-                 UNIT_FI_NAME(UNIT_IN(ch)),
+                 UNIT_FI_NAME(UNIT_IN(ch)).c_str(),
                  UNIT_FI_ZONENAME(UNIT_IN(ch)));
       else
          sprintf(

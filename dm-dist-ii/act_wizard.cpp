@@ -60,6 +60,7 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include "zone_reset.h"
 
 #include <ctype.h>
 #include <stdio.h>
@@ -78,7 +79,7 @@ extern BLK_FILE               *inven_bf;
 
 struct time_info_data age(struct unit_data *ch);
 struct time_info_data real_time_passed(time_t t2, time_t t1);
-struct zone_type     *find_zone(const char *zonename);
+std::shared_ptr<zone_type> find_zone(const char *zonename);
 
 static int WIZ_CMD_LEVEL = 210; /* No need to change this, it is also set
                                    at runtime... */
@@ -180,9 +181,7 @@ void do_users(struct unit_data *ch, char *argument, const struct command_info *c
 /* Reset the zone in which the char is in! */
 void do_reset(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   struct zone_type *zone;
-
-   int zone_reset(struct zone_type *);
+   std::shared_ptr<zone_type> zone;
 
    if(!str_is_empty(arg))
    {
@@ -500,7 +499,7 @@ void do_goto(struct unit_data *ch, char *argument, const struct command_info *cm
 {
    struct unit_data                *target, *pers;
    std::shared_ptr<file_index_type> fi;
-   struct zone_type                *zone;
+   std::shared_ptr<zone_type>       zone;
    int                              i;
 
    if(!IS_PC(ch))

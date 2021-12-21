@@ -46,12 +46,12 @@ OPT	=	#-O2 	# -O might be a good idea, but we have a tough time just getting the
 # SOURCES
 
 # c-files for the multiplexer
-MPLEX_SRCS = mplex.cpp network.cpp translate.cpp bytestring.cpp
+MPLEX_SRCS = mplex.cpp network.cpp translate.cpp bytestring.cpp select.cpp queue.cpp textutil.cpp memory.cpp utility.cpp \
+	common.cpp protocol.cpp
 
 # OBJECTS
 
-MPLEX_OBJS = $(MPLEX_SRCS:.cpp=.o) ../select.o ../queue.o ../textutil.o \
-        ../memory.o ../utility.o ../common.o ../protocol.o
+MPLEX_OBJS = $(MPLEX_SRCS:.cpp=.o)
 
    # ------------------------------ oOoOoOo ------------------------------ #
 

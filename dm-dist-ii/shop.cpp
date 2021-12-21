@@ -580,7 +580,7 @@ static struct shop_data *parse_shop(struct unit_data *keeper, char *data)
          free_shop(sd);
          return NULL;
       }
-   // TODO ADRIAN come look at this
+   // TODO ADRIAN come look at this and use decltype or something
    names = parse_match_namelist(&data, "Production");
    if(names == NULL)
    {

@@ -452,11 +452,11 @@ void do_ideatypobug(struct unit_data *ch, char *arg, const struct command_info *
                                    "Thank you it will be corrected.\n\r",
                                    "Thank you.\n\r"};
 
-   FILE             *fl;
-   char              str[MAX_STRING_LENGTH], filename[128];
-   struct zone_type *zone;
-   struct unit_data *room;
-   int               cmdno;
+   FILE                      *fl;
+   char                       str[MAX_STRING_LENGTH], filename[128];
+   std::shared_ptr<zone_type> zone;
+   struct unit_data          *room;
+   int                        cmdno;
 
    switch(cmd->no)
    {
@@ -495,7 +495,7 @@ void do_ideatypobug(struct unit_data *ch, char *arg, const struct command_info *
            timetodate(time(0)),
            strings[cmdno + 6],
            UNIT_NAME(CHAR_ORIGINAL(ch)),
-           UNIT_FI_NAME(room),
+           UNIT_FI_NAME(room).c_str(),
            UNIT_FI_ZONENAME(room),
            arg);
    fputs(str, fl);

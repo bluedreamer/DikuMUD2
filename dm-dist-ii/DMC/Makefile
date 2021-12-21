@@ -60,16 +60,22 @@ OPT	=	#-O2 	# -O might be a good idea, but we have a tough time
 SRCS	=	$(SERV_SRCS) $(DMC_SRCS) $(DIL_SRCS) $(BLKT_SRCS) $(MPLEX_SRCS)
 
 # c-files for dmc
-DMC_SRCS = dmc.cpp dmc_process.cpp tmp_dmcpar.cpp \
-  tmp_dmclex.cpp utility.cpp string.cpp structs.cpp
+DMC_SRCS = dmc.cpp dmc_process.cpp tmp_dmcpar.cpp tmp_dmclex.cpp
+PARENT_SRC = ../utility.cpp ../string.cpp ../structs.cpp ../namelist.cpp ../common.cpp ../memory.cpp ../textutil.cpp ../extra.cpp ../bytestring.cpp
 
 # OBJECTS
 
-DMC_OBJS  =	$(DMC_SRCS:.cpp=.o)  dmc_db_file.o dmc_money.o
+DMC_OBJS  = $(DMC_SRCS:.cpp=.o)  dmc_db_file.o dmc_money.o
+PARENT_OBJ = $(notdir $(PARENT_SRC:.cpp=.o))
 
    # ------------------------------ oOoOoOo ------------------------------ #
 
 all:	dmc
+
+show:
+	@echo $(SRCS)
+	@echo $(DMC_SRCS)
+	@echo $(DMC_OBJS)
 
 clean:
 	-rm -f *.o tmp_* dmc core
@@ -117,9 +123,8 @@ src:
 DMC_PWD=      # If you prefer to set CPPI in dmc.h
 #DMC_PWD=-DCPPI=\"`pwd`\"
 
-dmc:	$(DMC_OBJS)
-	$(LINK.cpp) $(OPT) $(DMC_OBJS) ../namelist.o ../common.o \
-        ../memory.o ../textutil.o ../extra.o ../bytestring.o -o $@ $(LDLIBS)
+dmc:	$(DMC_OBJS) $(PARENT_OBJS)
+	$(LINK.cpp) $(OPT) $(DMC_OBJS) $(PARENT_OBJS) -o $@ $(LDLIBS)
 
 # All tmp_* files could/should be deleted along with *.o files
 
@@ -137,13 +142,14 @@ tmp_dmclex.o:	tmp_dmclex.cpp
 
 # dmc_db_file.o is dependant on db_file.o to inherit its dependencies...
 # This may mean that db_file.cpp is compiled twice when not needed, but hey!
-dmc_db_file.o:	db_file.cpp
-	$(CPP) $(OPT) $(CFLAGS) -c db_file.cpp -o $@
+dmc_db_file.o:	../db_file.cpp
+	$(CPP) $(OPT) $(CFLAGS) -c ../db_file.cpp -o $(notdir $@)
 
 # This version of money is different from money.o in that it is much smaller
-dmc_money.o:	money.cpp
-	$(CPP) $(CFLAGS) -c money.cpp -o $@
+dmc_money.o: ../money.cpp
+	$(CPP) $(CFLAGS) -c ../money.cpp -o $(notdir $@)
 
+$(PARENT_OBJ): $(PARENT_SRC)
 
 #.include ".depends"		# For `normal' make
 include .depends		# For gnu-make

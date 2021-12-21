@@ -1,0 +1,17 @@
+dmc.o: dmc.cpp dmc.h ../utils.h ../essential.h ../structs.h ../blkfile.h \
+ ../combat.h ../extra.h ../namelist.h ../bytestring.h ../hashstring.h \
+ ../protocol.h ../select.h ../queue.h ../system.h ../values.h ../common.h \
+ ../db_file.h ../dil.h ../dil.h ../textutil.h ../utility.h
+dmc_process.o: dmc_process.cpp ../common.h ../essential.h dmc.h \
+ ../utils.h ../structs.h ../blkfile.h ../combat.h ../extra.h \
+ ../namelist.h ../bytestring.h ../hashstring.h ../protocol.h ../select.h \
+ ../queue.h ../system.h ../values.h ../money.h ../skills.h ../textutil.h \
+ ../unixshit.h ../utility.h
+tmp_dmcpar.o: tmp_dmcpar.cpp dmc.h ../utils.h ../essential.h ../structs.h \
+ ../blkfile.h ../combat.h ../extra.h ../namelist.h ../bytestring.h \
+ ../hashstring.h ../protocol.h ../select.h ../queue.h ../system.h \
+ ../values.h ../dil.h ../textutil.h ../money.h ../db_file.h ../dil.h
+tmp_dmclex.o: tmp_dmclex.cpp dmc.h ../utils.h ../essential.h ../structs.h \
+ ../blkfile.h ../combat.h ../extra.h ../namelist.h ../bytestring.h \
+ ../hashstring.h ../protocol.h ../select.h ../queue.h ../system.h \
+ ../values.h tmp_dmcpar.h dmctok.h ../textutil.h

@@ -656,7 +656,7 @@ int guard_way(struct spec_arg *sarg)
       }
 
       *excl = '\0';
-      if(*location && strcmp(location, UNIT_FI_NAME(UNIT_IN(sarg->owner))))
+      if(*location && strcmp(location, UNIT_FI_NAME(UNIT_IN(sarg->owner)).c_str()))
       {
          *excl = '@';
          return SFR_SHARE;
@@ -710,7 +710,7 @@ int guard_unit(struct spec_arg *sarg)
       }
 
       *unitname = '\0';
-      if(*location && strcmp(location, UNIT_FI_NAME(UNIT_IN(sarg->owner))))
+      if(*location && strcmp(location, UNIT_FI_NAME(UNIT_IN(sarg->owner)).c_str()))
       {
          *unitname = '@';
          return SFR_SHARE;
@@ -773,7 +773,7 @@ int guard_door(struct spec_arg *sarg)
       }
 
       *doorname = '\0';
-      if(*location && strcmp(location, UNIT_FI_NAME(UNIT_IN(sarg->owner))))
+      if(*location && strcmp(location, UNIT_FI_NAME(UNIT_IN(sarg->owner)).c_str()))
       {
          *doorname = '@';
          return SFR_SHARE;
@@ -834,7 +834,7 @@ int guard_way_level(struct spec_arg *sarg)
       }
 
       *min = '\0';
-      if(*location && strcmp(location, UNIT_FI_NAME(UNIT_IN(sarg->owner))))
+      if(*location && strcmp(location, UNIT_FI_NAME(UNIT_IN(sarg->owner)).c_str()))
       {
          *min = '@';
          return SFR_SHARE;

@@ -1,0 +1,12 @@
+mplex.o: mplex.cpp mplex.h ../essential.h network.h ../protocol.h \
+ ../essential.h ../select.h ../queue.h ../queue.h ../select.h ../common.h \
+ ../db.h ../bytestring.h ../config.h ../fight.h ../dbfind.h ../structs.h \
+ ../blkfile.h ../combat.h ../extra.h ../namelist.h ../hashstring.h \
+ ../protocol.h ../system.h ../values.h ../textutil.h ../translate.h \
+ ../ttydef.h ../unixshit.h ../utility.h
+network.o: network.cpp network.h ../protocol.h ../essential.h ../select.h \
+ ../queue.h ../textutil.h ../unixshit.h
+translate.o: translate.cpp mplex.h ../essential.h network.h ../protocol.h \
+ ../essential.h ../select.h ../queue.h ../queue.h ../select.h ../ttydef.h
+bytestring.o: bytestring.cpp ../bytestring.h ../essential.h \
+ ../essential.h ../textutil.h

@@ -247,7 +247,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_SP;
-                  v->val.ptr = (void *)UNIT_FI_NAME((struct unit_data *)v1.val.ptr);
+                  v->val.ptr = (void *)UNIT_FI_NAME((struct unit_data *)v1.val.ptr).c_str();
                }
                else
                   v->type = DILV_FAIL; /* not applicable */

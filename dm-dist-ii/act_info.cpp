@@ -89,7 +89,7 @@ char *in_string(struct unit_data *ch, struct unit_data *u)
    while((u = UNIT_IN(u)))
       if(IS_ROOM(u))
       {
-         sprintf(tmp, "%s@%s", UNIT_FI_NAME(u), UNIT_FI_ZONENAME(u));
+         sprintf(tmp, "%s@%s", UNIT_FI_NAME(u).c_str(), UNIT_FI_ZONENAME(u));
          return in_str;
       }
       else
@@ -849,9 +849,9 @@ void do_commands(struct unit_data *ch, char *arg, const struct command_info *cmd
 
 void do_areas(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   char              buf[2 * MAX_STRING_LENGTH], *b;
-   int               no;
-   struct zone_type *z;
+   char                       buf[2 * MAX_STRING_LENGTH], *b;
+   int                        no;
+   std::shared_ptr<zone_type> z;
 
    if(!IS_PC(ch))
       return;

@@ -242,7 +242,7 @@ void enlist(CByteBuffer *pBuf, struct unit_data *unit, int level, int fast)
    }
 
    strcpy(h.zone, UNIT_FI_ZONENAME(unit));
-   strcpy(h.unit, UNIT_FI_NAME(unit));
+   UNIT_FI_NAME(unit)=h.unit;
 
    h.type  = UNIT_TYPE(unit);
    h.level = level;
@@ -522,7 +522,7 @@ struct unit_data *base_load_contents(const char *pFileName, const struct unit_da
          }
          else
          {
-            pnew = read_unit_string(&InvBuf, h.type, h.length, TRUE, str_cc(fi->name, fi->zone->name));
+            pnew = read_unit_string(&InvBuf, h.type, h.length, TRUE, str_cc(fi->name.c_str(), fi->zone->name));
             if(g_nCorrupt)
             {
                slog(LOG_ALL, 0, "Inventory UNIT corrupt!");
@@ -671,7 +671,7 @@ void store_unit(struct unit_data *u)
    FILE *f;
    char  buf[MAX_INPUT_LENGTH + 1];
 
-   sprintf(buf, DFLT_DIR UNIT_DIR "%s.%s", UNIT_FI_ZONENAME(u), UNIT_FI_NAME(u));
+   sprintf(buf, DFLT_DIR UNIT_DIR "%s.%s", UNIT_FI_ZONENAME(u), UNIT_FI_NAME(u).c_str());
 
    f = fopen(buf, "wb");
 

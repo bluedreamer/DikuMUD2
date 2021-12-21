@@ -467,7 +467,7 @@ int unit_recursive(struct unit_data *from, struct unit_data *to)
    return FALSE;
 }
 
-struct zone_type *unit_zone(const struct unit_data *unit)
+std::shared_ptr<zone_type> unit_zone(const struct unit_data *unit)
 {
    struct unit_data *org = (struct unit_data *)unit;
 
@@ -847,7 +847,7 @@ struct extra_descr_data *quest_add(struct unit_data *ch, char *name, char *descr
 }
 
 /* void szonelog(char *zonename, const char *fmt, ...) */
-void szonelog(struct zone_type *zone, const char *fmt, ...)
+void szonelog(std::shared_ptr<zone_type> zone, const char *fmt, ...)
 {
    char    name[256];
    char    buf[MAX_STRING_LENGTH], buf2[MAX_STRING_LENGTH];

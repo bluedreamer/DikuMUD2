@@ -94,10 +94,10 @@ struct help_index_type
 
 struct zone_info_type
 {
-   int                     no_of_zones; /* Total number of zones       */
-   struct zone_type       *zone_list;   /* The Linked List of Zones    */
-   struct bin_search_type *ba;          /* Array of structs for search */
-   void                  **spmatrix;    /* Inter zone shortest paths   */
+   int                        no_of_zones; /* Total number of zones       */
+   std::shared_ptr<zone_type> zone_list;   /* The Linked List of Zones    */
+   struct bin_search_type    *ba;          /* Array of structs for search */
+   void                     **spmatrix;    /* Inter zone shortest paths   */
 };
 
 struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom);

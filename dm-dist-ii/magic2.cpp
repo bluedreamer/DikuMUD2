@@ -63,7 +63,7 @@ extern struct zone_info_type zone_info;
 struct unit_data *random_room(void)
 {
    struct unit_data                *room = NULL;
-   struct zone_type                *zone;
+   std::shared_ptr<zone_type> zone;
    std::shared_ptr<file_index_type> fi;
    int                              no;
 

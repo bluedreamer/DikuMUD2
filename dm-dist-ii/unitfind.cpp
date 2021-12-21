@@ -167,7 +167,7 @@ struct unit_data *random_unit(struct unit_data *ref, int sflags, int tflags)
    }
    else if(sflags == FIND_UNIT_ZONE)
    {
-      struct zone_type *z;
+      std::shared_ptr<zone_type> z;
 
       if(UNIT_FI_ZONE(ref))
          z = UNIT_FI_ZONE(ref);

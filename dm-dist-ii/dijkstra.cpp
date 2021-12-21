@@ -370,7 +370,7 @@ void dijkstra(struct graph *g, struct graph_vertice *source)
 
 /* Given a zone, create the nesseceary graph structure, and  */
 /* return a matrix of shortest path for the zone             */
-ubit8 **create_graph(struct zone_type *zone)
+ubit8 **create_graph(std::shared_ptr<zone_type> zone)
 {
    static struct graph              g;
    std::shared_ptr<file_index_type> fi;
@@ -424,11 +424,11 @@ ubit8 **create_graph(struct zone_type *zone)
    return spi;
 }
 
-void stat_dijkstraa(struct unit_data *ch, struct zone_type *z)
+void stat_dijkstraa(struct unit_data *ch, std::shared_ptr<zone_type> z)
 {
    int               i, j;
    char              buf[MAX_STRING_LENGTH];
-   struct zone_type *z2;
+   std::shared_ptr<zone_type> z2;
    char             *b;
 
    sprintf(buf, "%s borders the following zones (for auto-walk):\n\r\n\r", z->name);
@@ -468,15 +468,15 @@ void stat_dijkstraa(struct unit_data *ch, struct zone_type *z)
             sprintf(b,
                     "To %s via %s@%s to %s@%s\n\r",
                     z2->name,
-                    UNIT_FI_NAME(iz[z->zone_no][i].room),
+                    UNIT_FI_NAME(iz[z->zone_no][i].room).c_str(),
                     UNIT_FI_ZONENAME(iz[z->zone_no][i].room),
-                    UNIT_FI_NAME(ROOM_EXIT(iz[z->zone_no][i].room, iz[z->zone_no][i].dir)->to_room),
+                    UNIT_FI_NAME(ROOM_EXIT(iz[z->zone_no][i].room, iz[z->zone_no][i].dir)->to_room).c_str(),
                     UNIT_FI_ZONENAME(ROOM_EXIT(iz[z->zone_no][i].room, iz[z->zone_no][i].dir)->to_room));
          else
             sprintf(b,
                     "To %s via %s@%s (enter / leave / here) \n\r",
                     z2->name,
-                    UNIT_FI_NAME(iz[z->zone_no][i].room),
+                    UNIT_FI_NAME(iz[z->zone_no][i].room).c_str(),
                     UNIT_FI_ZONENAME(iz[z->zone_no][i].room));
          send_to_char(buf, ch);
       }
@@ -484,7 +484,7 @@ void stat_dijkstraa(struct unit_data *ch, struct zone_type *z)
 
 void create_dijkstra(void)
 {
-   struct zone_type *z;
+   std::shared_ptr<zone_type> z;
    int               i, j, k;
 
 #ifdef MEMORY_DEBUG

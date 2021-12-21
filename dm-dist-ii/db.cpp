@@ -75,7 +75,7 @@ struct room_direction_data *create_direction_data(void);
 void generate_bin_arrays(void)
 {
    std::shared_ptr<file_index_type> fi;
-   class zone_type                 *z;
+   std::shared_ptr<zone_type> z;
    int                              i;
 
    /* Generate array for zones */
@@ -96,7 +96,7 @@ void generate_bin_arrays(void)
          {
             z->ba[i].block    = nullptr;
             z->ba[i].fi_block = fi;
-            z->ba[i].compare  = fi->name;
+            z->ba[i].compare  = fi->name.c_str();
          }
       }
 
@@ -117,7 +117,7 @@ void generate_bin_arrays(void)
 /* Resolves DIL templates loaded boottime */
 void resolve_templates(void)
 {
-   class zone_type    *z;
+   std::shared_ptr<zone_type> z;
    struct diltemplate *tmpl;
    int                 i, j, valid;
 
@@ -160,7 +160,7 @@ void resolve_templates(void)
 }
 
 /* Generate and read DIL templates */
-struct diltemplate *generate_templates(FILE *f, struct zone_type *zone)
+struct diltemplate *generate_templates(FILE *f, std::shared_ptr<zone_type> zone)
 {
    struct diltemplate *tmpllist, *tmpl;
    CByteBuffer         Buf;
@@ -230,7 +230,7 @@ struct diltemplate *generate_templates(FILE *f, struct zone_type *zone)
 }
 
 /* Generate index's for each unit in the file 'f', zone 'zone' */
-std::shared_ptr<file_index_type> generate_file_indexes(FILE *f, class zone_type *zone)
+std::shared_ptr<file_index_type> generate_file_indexes(FILE *f, std::shared_ptr<zone_type> zone)
 {
    std::shared_ptr<file_index_type> fi;
    std::shared_ptr<file_index_type> fi_list;
@@ -251,7 +251,7 @@ std::shared_ptr<file_index_type> generate_file_indexes(FILE *f, class zone_type 
       fi = std::make_shared<struct file_index_type>();
       zone->no_of_fi++;
 
-      fi->name     = str_dup((char *)cBuf.GetData());
+      fi->name     = (char *)cBuf.GetData();
       fi->zone     = zone;
       fi->room_ptr = NULL;
       fi->crc      = 0;
@@ -284,7 +284,7 @@ std::shared_ptr<file_index_type> generate_file_indexes(FILE *f, class zone_type 
       {
          for(tfi2 = NULL, tfi1 = fi_list; tfi1; tfi1 = tfi1->next)
          {
-            if(strcmp(tfi1->name, fi->name) > 0)
+            if(strcmp(tfi1->name.c_str(), fi->name.c_str()) > 0)
                break;
             tfi2 = tfi1;
          }
@@ -307,7 +307,9 @@ std::shared_ptr<file_index_type> generate_file_indexes(FILE *f, class zone_type 
 /* Call this routine at boot time, to index all zones */
 void generate_zone_indexes(void)
 {
-   class zone_type *z, *tz1, *tz2;
+   std::shared_ptr<zone_type> z;
+   std::shared_ptr<zone_type> tz1;
+   std::shared_ptr<zone_type> tz2;
    extern int       mud_bootzone;
    char             zone[82], tmpbuf[82], filename[82 + 41];
    char             buf[MAX_STRING_LENGTH];
@@ -385,7 +387,7 @@ void generate_zone_indexes(void)
 
       slog(LOG_ALL, 0, "Indexing %s AC[%3d] LL[%d] PO[%d]", filename, access, loadlevel, payonly);
 
-      z = new(class zone_type);
+      z = std::make_shared<zone_type>();
       zone_info.no_of_zones++;
 
       z->zone_no  = zone_info.no_of_zones - 1;
@@ -562,7 +564,7 @@ int bread_affect(CByteBuffer *pBuf, struct unit_data *u, ubit8 nVersion)
    return 0;
 }
 
-struct zone_type *unit_error_zone = NULL;
+std::shared_ptr<zone_type> unit_error_zone;
 
 extern int memory_pc_alloc;
 extern int memory_npc_alloc;
@@ -1168,7 +1170,7 @@ struct unit_data *read_unit(std::shared_ptr<file_index_type> org_fi)
 
    unit_error_zone = org_fi->zone;
 
-   u = read_unit_string(&g_FileBuffer, org_fi->type, org_fi->length, FALSE, str_cc(org_fi->name, org_fi->zone->name));
+   u = read_unit_string(&g_FileBuffer, org_fi->type, org_fi->length, FALSE, str_cc(org_fi->name.c_str(), org_fi->zone->name));
 
    UNIT_FILE_INDEX(u) = org_fi;
 
@@ -1195,10 +1197,10 @@ struct unit_data *read_unit(std::shared_ptr<file_index_type> org_fi)
 
 void read_all_rooms(void)
 {
-   struct zone_type                *z;
+   std::shared_ptr<zone_type>       z;
    std::shared_ptr<file_index_type> fi;
 
-   extern struct zone_type *boot_zone;
+   extern std::shared_ptr<zone_type> boot_zone;
 
    for(z = zone_info.zone_list; z; z = z->next)
    {
@@ -1265,7 +1267,7 @@ void normalize_world(void)
 #define ZON_DIR_UNNEST 2
 
 /* For local error purposes */
-static struct zone_type *read_zone_error = NULL;
+static std::shared_ptr<zone_type> read_zone_error;
 
 std::shared_ptr<zone_reset_cmd> read_zone(FILE *f, std::shared_ptr<zone_reset_cmd> cmd_list)
 {
@@ -1382,9 +1384,9 @@ std::shared_ptr<zone_reset_cmd> read_zone(FILE *f, std::shared_ptr<zone_reset_cm
 
 void read_all_zones(void)
 {
-   struct zone_type *zone;
-   char              filename[FI_MAX_ZONENAME + 41];
-   FILE             *f;
+   std::shared_ptr<zone_type> zone;
+   char                       filename[FI_MAX_ZONENAME + 41];
+   FILE                      *f;
 
    for(zone = zone_info.zone_list; zone; zone = zone->next)
    {
@@ -1612,12 +1614,4 @@ void db_shutdown(void)
    }
 
    slog(LOG_OFF, 0, "Destroying zone list.");
-
-   class zone_type *z, *nextz;
-
-   for(z = zone_info.zone_list; z; z = nextz)
-   {
-      nextz = z->next;
-      delete z;
-   }
 }

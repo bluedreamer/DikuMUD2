@@ -33,7 +33,7 @@ void unit_messg(struct unit_data *ch, struct unit_data *unit, const char *type, 
 
 const char *single_unit_messg(struct unit_data *unit, const char *type, const char *pSubStr, const char *mesg);
 
-void szonelog(struct zone_type *zone, const char *fmt, ...);
+void szonelog(std::shared_ptr<zone_type> zone, const char *fmt, ...);
 
 /* From pcsave.c - I'm just tired of specifying them everywhere */
 void              save_player(struct unit_data *pc);
@@ -66,7 +66,7 @@ struct unit_data *unequip_object(struct unit_data *obj);
 void              recalc_dex_red(struct unit_data *ch);
 
 int               unit_recursive(struct unit_data *from, struct unit_data *to);
-struct zone_type *unit_zone(const struct unit_data *unit);
+std::shared_ptr<zone_type> unit_zone(const struct unit_data *unit);
 struct unit_data *unit_room(struct unit_data *unit);
 
 /* If the transfered unit MIGHT be money, remember to pile_money() it!!!!! */

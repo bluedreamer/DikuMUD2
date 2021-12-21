@@ -163,7 +163,7 @@ static void another_hour(struct time_info_data time_data)
    }
 }
 
-static void weather_change(struct zone_type *zone, struct time_info_data time_data)
+static void weather_change(std::shared_ptr<zone_type> zone, struct time_info_data time_data)
 {
    int diff, change;
 
@@ -290,7 +290,7 @@ static void weather_change(struct zone_type *zone, struct time_info_data time_da
 void update_time_and_weather(void)
 {
    struct time_info_data time_info;
-   struct zone_type     *z;
+   std::shared_ptr<zone_type> z;
 
    time_info = mud_date(time(0));
 
@@ -359,7 +359,7 @@ static void weather_and_time_event(void *p1, void *p2)
 /* reset the time in the game from file */
 void boot_time_and_weather(void)
 {
-   struct zone_type     *z;
+   std::shared_ptr<zone_type> z;
    struct time_info_data mud_time_passed(time_t t2, time_t t1);
 
    extern char world_boottime[];

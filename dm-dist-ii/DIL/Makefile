@@ -55,7 +55,8 @@ OPT	=	#-O2 	# -O might be a good idea, but we have a tough time
 # SOURCES
 
 # c-files for dil
-DIL_SRCS = tmp_dilpar.cpp tmp_dillex.cpp utility.cpp string.cpp structs.cpp
+DIL_SRCS = tmp_dilpar.cpp tmp_dillex.cpp utility.cpp string.cpp structs.cpp files.cpp bytestring.cpp memory.cpp \
+	textutil.cpp namelist.cpp extra.cpp common.cpp
 
 # OBJECTS
 
@@ -66,7 +67,7 @@ DIL_OBJS  =	$(DIL_SRCS:.cpp=.o)  dmc_db_file.o
 all:	dil
 
 clean:
-	-rm -f *.o tmp_* dil core
+	-rm -f *.o tmp_* dil core.* core
 
 realclean:	clean
 	-rm -f $(SERVER) blktest dil dmc mplex header
@@ -107,8 +108,7 @@ src:
           | gzip -1 > Src.tgz
 
 dil:	$(DIL_OBJS)
-	$(LINK.cpp) $(OPT) $(DIL_OBJS) ../memory.o ../textutil.o \
-        ../namelist.o ../files.o ../extra.o ../bytestring.o ../common.o -o $@
+	$(LINK.cpp) $(OPT) $(DIL_OBJS) -o $@
 
 tmp_dilpar.cpp: dilpar.y
 	$(YACC) $(YFLAGS) dilpar.y
@@ -127,8 +127,8 @@ tmp_dillex.o:	tmp_dillex.cpp
 
 # dmc_db_file.o is dependant on db_file.o to inherit its dependencies...
 # This may mean that db_file.cpp is compiled twice when not needed, but hey!
-dmc_db_file.o:	db_file.cpp
-	$(CPP) -DDMC $(OPT) $(CFLAGS) -c db_file.cpp -o $@
+dmc_db_file.o:	../db_file.cpp
+	$(CPP) -DDMC $(OPT) $(CFLAGS) -c ../db_file.cpp -o $@
 
 
 #.include ".depends"		# For `normal' make

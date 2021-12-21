@@ -665,7 +665,7 @@ void do_boards(struct unit_data *ch, char *arg, const struct command_info *cmd)
          {
             one_argument((char *)f->data, tmp);
 
-            sprintf(buf, "%-30s %-12s [%s@%s]\n\r", UNIT_SEE_TITLE(ch, u), tmp, UNIT_FI_NAME(UNIT_IN(u)), UNIT_FI_ZONENAME(UNIT_IN(u)));
+            sprintf(buf, "%-30s %-12s [%s@%s]\n\r", UNIT_SEE_TITLE(ch, u), tmp, UNIT_FI_NAME(UNIT_IN(u)).c_str(), UNIT_FI_ZONENAME(UNIT_IN(u)));
             send_to_char(buf, ch);
          }
       }
