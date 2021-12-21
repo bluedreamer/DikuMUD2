@@ -54,10 +54,10 @@ struct unit_data *find_unit_general(const struct unit_data *viewer,
 			    const struct unit_data *list,
 			    const ubit32 bitvector);
 
-struct unit_data *find_symbolic_instance(struct file_index_type *fi);
+struct unit_data *find_symbolic_instance(std::shared_ptr<file_index_type> fi);
 struct unit_data *find_symbolic(char *zone, char *name);
 struct unit_data *find_symbolic_instance_ref(struct unit_data *ref,
-					     struct file_index_type *fi,
+                    std::shared_ptr<file_index_type> fi,
 					     ubit16 bitvector);
 struct unit_data *random_unit(struct unit_data *ref, int sflags, int tflags);
 

@@ -304,7 +304,7 @@ int postman(struct spec_arg *sarg)
    currency_t currency = local_currency(sarg->owner);
    amount_t postage;
 
-   extern struct file_index_type *letter_fi;
+   extern std::shared_ptr<file_index_type> letter_fi;
 
    struct descriptor_data *find_descriptor(const char *,
 					   struct descriptor_data *);
@@ -439,4 +439,3 @@ int postman(struct spec_arg *sarg)
       return SFR_BLOCK;
    }
 }
-

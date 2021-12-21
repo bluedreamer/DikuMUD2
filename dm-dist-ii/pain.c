@@ -32,6 +32,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdarg.h>  /* va_args in pain_error()        */
+#include <variant>
 
 #include "structs.h"
 #include "utils.h"
@@ -326,7 +327,13 @@ struct pain_cmd_type
 
    sbit32 gotoline;
    sbit32 data[2];
-   void   *ptr[2];
+//   void   *ptr[2];
+   std::variant<
+      std::monostate,
+      std::shared_ptr<file_index_type>
+      ,char *
+      ,char **
+      ,unit_data *> ptr[2];
 };
 
 /* Intended to be used for error-reports */
@@ -377,7 +384,7 @@ void pain_gotoline(struct pain_type *pain)
 /* 'A' command */
 int pain_act(struct unit_data *npc, struct pain_type *pain)
 {
-   act((char *) pain->cmds[pain->idx].ptr[0], A_SOMEONE, npc, 0, 0, TO_ROOM);
+   act(std::get<char *>(pain->cmds[pain->idx].ptr[0]), A_SOMEONE, npc, 0, 0, TO_ROOM);
    pain_next_cmd(pain);
    return FALSE;    /* Stop command loop until next tick */
 }
@@ -386,7 +393,7 @@ int pain_act(struct unit_data *npc, struct pain_type *pain)
 /* 'C' command */
 int pain_command(struct unit_data *npc, struct pain_type *pain)
 {
-   command_interpreter(npc, (char *) pain->cmds[pain->idx].ptr[0]);
+   command_interpreter(npc, std::get<char*>(pain->cmds[pain->idx].ptr[0]));
    pain_next_cmd(pain);
    return FALSE;    /* Stop command loop until next tick */
 }
@@ -439,7 +446,7 @@ int pain_charcmd(struct unit_data *npc, struct pain_type *pain)
    }
 
    /* Great! The CHAR is still here! */
-   sprintf(buf, (char *) pain->cmds[pain->idx].ptr[0], UNIT_NAME(u));
+   sprintf(buf, std::get<char*>(pain->cmds[pain->idx].ptr[0]), UNIT_NAME(u));
    command_interpreter(npc, buf);
    pain_next_cmd(pain);
    return FALSE;    /* Stop command loop until next tick */
@@ -450,10 +457,10 @@ int pain_charcmd(struct unit_data *npc, struct pain_type *pain)
 /* 'G' command */
 int pain_goto(struct unit_data *npc, struct pain_type *pain)
 {
-   struct file_index_type *fi;
+   std::shared_ptr<file_index_type> fi;
    int res;
 
-   fi = (struct file_index_type *) pain->cmds[pain->idx].ptr[0];
+   fi = std::get<std::shared_ptr<file_index_type>>(pain->cmds[pain->idx].ptr[0]);
 
    if (fi->room_ptr)
       res = npc_move(npc, fi->room_ptr);
@@ -477,7 +484,7 @@ int pain_has(struct unit_data *npc, struct pain_type *pain)
 {
    char *c;
 
-   c = (char *) pain->cmds[pain->idx].ptr[0];
+   c = std::get<char *>(pain->cmds[pain->idx].ptr[0]);
 
    if (find_unit(npc, &c, 0, FIND_UNIT_IN_ME))
    {
@@ -498,7 +505,7 @@ int pain_in_room(struct unit_data *npc, struct pain_type *pain)
    struct unit_data *u;
    char *c, buf[256];
 
-   c = (char *) pain->cmds[pain->idx].ptr[0];
+   c = std::get<char *>(pain->cmds[pain->idx].ptr[0]);
 
    if ((u = find_unit(npc, &c, 0, FIND_UNIT_SURRO)))
    {
@@ -509,7 +516,7 @@ int pain_in_room(struct unit_data *npc, struct pain_type *pain)
       }
       else
       {
-	 c = (char *) pain->cmds[pain->idx].ptr[0];
+	 c = std::get<char *>(pain->cmds[pain->idx].ptr[0]);
 	 sprintf(buf, "2.%s", c);
 	 if (find_unit(npc, &c, 0, FIND_UNIT_SURRO))
 	 {
@@ -573,7 +580,7 @@ int pain_load(struct unit_data *npc, struct pain_type *pain)
 {
    struct unit_data *u;
 
-   u = read_unit((struct file_index_type *) pain->cmds[pain->idx].ptr[0]);
+   u = read_unit(std::get<std::shared_ptr<file_index_type>>(pain->cmds[pain->idx].ptr[0]));
    unit_to_unit(u, npc);
    pain_next_cmd(pain);
    return TRUE;  /* Continue command loop immediately */
@@ -586,8 +593,8 @@ int pain_remote_load(struct unit_data *npc, struct pain_type *pain)
 {
    struct unit_data *u;
 
-   u = read_unit((struct file_index_type *) pain->cmds[pain->idx].ptr[0]);
-   unit_to_unit(u, (struct unit_data *) pain->cmds[pain->idx].ptr[1]);
+   u = read_unit(std::get<std::shared_ptr<file_index_type>>(pain->cmds[pain->idx].ptr[0]));
+   unit_to_unit(u, std::get<unit_data *>(pain->cmds[pain->idx].ptr[1]));
    pain_next_cmd(pain);
    return TRUE;  /* Continue command loop immediately */
 }
@@ -700,16 +707,16 @@ void pain_free(struct pain_type *p)
    {
       for (i=0; i < p->top; i++)
       {
-	 if (p->cmds[i].ptr[0])
+	 if (std::holds_alternative<char *>(p->cmds[i].ptr[0]) || std::holds_alternative<char **>(p->cmds[i].ptr[0]))
 	 {
 	    if ((p->cmds[i].func == pain_act) ||
 		(p->cmds[i].func == pain_command) ||
 		(p->cmds[i].func == pain_charcmd) ||
 		(p->cmds[i].func == pain_has) ||
 		(p->cmds[i].func == pain_in_room))
-	       free(p->cmds[i].ptr[0]);
+	       free(std::get<char*>(p->cmds[i].ptr[0]));
 	    else if (p->cmds[i].func == pain_waitmsg)
-	       free_namelist((char **) p->cmds[i].ptr[0]);
+	       free_namelist(std::get<char **>(p->cmds[i].ptr[0]));
 	 }
       }
       free(p->cmds);
@@ -751,7 +758,7 @@ int pain_exec(struct spec_arg *sarg)
   if (p->cmds[p->idx].func == pain_intercept)
   {
      if ((sarg->cmd->no == p->cmds[p->idx].data[0]) &&
-	 (p->cmds[p->idx].ptr[0] == UNIT_FILE_INDEX(sarg->activator)))
+	 (std::get<std::shared_ptr<file_index_type>>(p->cmds[p->idx].ptr[0]) == UNIT_FILE_INDEX(sarg->activator)))
      {
 	pain_intercept(sarg->owner, p);
 	return SFR_SHARE;
@@ -763,7 +770,7 @@ int pain_exec(struct spec_arg *sarg)
   if ((p->cmds[p->idx].func == pain_waitmsg) &&
       (sarg->cmd->no == p->cmds[p->idx].data[0]) &&
       (p->vars[0]) && (p->vars[0]==sarg->activator)&&
-      (is_name(sarg->arg, (const char **) p->cmds[p->idx].ptr[0])))
+      (is_name(sarg->arg, const_cast<const char**>(std::get<char **>(p->cmds[p->idx].ptr[0])))))
   {
     cont = TRUE;
     pain_next_cmd(p);
@@ -859,360 +866,344 @@ int translate_line(int top, int sym, struct line_no_convert *line_numbers)
    return -1;
 }
 
-
 struct pain_type *pain_doinit(struct unit_data *npc, char *text)
 {
-   int    i, j, top, error;
-   char   buf[MAX_STRING_LENGTH], zone[80], name[80], *b=NULL;
+   int               i, j, top, error;
+   char              buf[MAX_STRING_LENGTH], zone[80], name[80], *b = NULL;
    struct pain_type *pain;
 
-   struct pain_cmd_type *cmd_list = 0;
+   struct pain_cmd_type   *cmd_list     = 0;
    struct line_no_convert *line_numbers = 0;
 
-   struct pain_cmd_type cmd;
+   struct pain_cmd_type   cmd;
    struct line_no_convert line_no = {-1, -1};
-   struct command_info *cmd_ptr;
-   char **namelist=NULL;
+   struct command_info   *cmd_ptr;
+   char                 **namelist = NULL;
 
    extern struct trie_type *intr_trie;
 
-   static const char *specmsg[]={
-     "_dead",
-     "_combat",
-     "_unknown",
-     NULL
-   };
+   static const char *specmsg[] = {"_dead", "_combat", "_unknown", NULL};
 
-   top = 0;
-   i = 0;
+   top   = 0;
+   i     = 0;
    error = FALSE;
 
-   while (*text && !error)
+   while(*text && !error)
    {
       /* Skip all blanks */
-      if ((*text==' ') || (*text=='\n') || (*text=='\r'))
+      if((*text == ' ') || (*text == '\n') || (*text == '\r'))
       {
-	 text++;
-	 continue;
+         text++;
+         continue;
       }
 
       cmd.gotoline = -1;
       cmd.data[0] = cmd.data[1] = 0;
-      cmd.ptr[0]  = cmd.ptr[1]  = 0;
-      cmd.func = 0;
+      cmd.ptr[0] = std::monostate{};
+      cmd.ptr[1] = std::monostate{};
+      cmd.func                = 0;
 
       /* Read symbolic line number */
       text = pi_getnum(text, &i);
-      if (i==-1)
+      if(i == -1)
       {
-	 error = TRUE;
-	 continue;
+         error = TRUE;
+         continue;
       }
-      if (i <= line_no.symbolic)
+      if(i <= line_no.symbolic)
       {
-	 pain_error("PAIN: 'Repeating' or 'less than previous' symbolic "
-		    "line num.");
-	 error = TRUE;
-	 continue;
+         pain_error("PAIN: 'Repeating' or 'less than previous' symbolic "
+                    "line num.");
+         error = TRUE;
+         continue;
       }
       line_no.symbolic = i;
-      line_no.actual = top;
+      line_no.actual   = top;
 
-      while (*text && ((*text==' ') || (*text=='\n') || (*text=='\r')))
-	 text++;
+      while(*text && ((*text == ' ') || (*text == '\n') || (*text == '\r')))
+         text++;
 
-      if (!*text)
-	continue;
+      if(!*text)
+         continue;
 
-      switch (*text++)
+      switch(*text++)
       {
-	  case 'A':
-	   text = pi_getstr(text, buf);
-	   cmd.ptr[0] = str_dup(buf);
-	   cmd.func = pain_act;
-	   break;
+         case 'A':
+            text       = pi_getstr(text, buf);
+            cmd.ptr[0] = str_dup(buf);
+            cmd.func   = pain_act;
+            break;
 
+         case 'C':
+            text       = pi_getstr(text, buf);
+            cmd.ptr[0] = str_dup(buf);
+            cmd.func   = pain_command;
+            break;
 
-	  case 'C':
-	   text = pi_getstr(text, buf);
-	   cmd.ptr[0] = str_dup(buf);
-	   cmd.func = pain_command;
-	   break;
+         case 'd':
+            text         = pi_getnum(text, &i);
+            cmd.gotoline = i;
+            text         = pi_getstr(text, buf);
+            cmd.ptr[0]   = str_dup(buf);
+            cmd.func     = pain_charcmd;
+            break;
 
+         case 'D':
+            text         = pi_getnum(text, &i);
+            cmd.gotoline = i;
+            text         = pi_getstr(text, buf);
+            i            = search_block(buf, dirs, FALSE); /* partial match */
+            cmd.data[0]  = i;
+            cmd.func     = pain_closed;
+            if(i == -1)
+            {
+               pain_error("PAIN - Illegal direction in Closed door test");
+               error = TRUE;
+            }
+            break;
 
-	  case 'd':
-	   text = pi_getnum(text, &i);
-	   cmd.gotoline = i;
-	   text = pi_getstr(text, buf);
-	   cmd.ptr[0] = str_dup(buf);
-	   cmd.func = pain_charcmd;
-	   break;
+         case 'G':
+            text       = pi_getstr(text, buf);
+            cmd.ptr[0] = pc_str_to_file_index(npc, buf);
+            cmd.func   = pain_goto;
+            if(std::get<std::shared_ptr<file_index_type>>(cmd.ptr[0]) != nullptr)
+            {
+               pain_error("Unknown unit referece in PAIN-Goto: %s", buf);
+               error = TRUE;
+               continue;
+            }
+            break;
 
-	  case 'D':
-	   text = pi_getnum(text, &i);
-	   cmd.gotoline = i;
-	   text = pi_getstr(text, buf);
-	   i = search_block(buf, dirs, FALSE); /* partial match */
-	   cmd.data[0] = i;
-	   cmd.func = pain_closed;
-	   if (i == -1)
-	   {
-	      pain_error("PAIN - Illegal direction in Closed door test");
-	      error = TRUE;
-	   }
-	   break;
+         case 'H':
+            text         = pi_getnum(text, &i);
+            cmd.gotoline = i;
+            text         = pi_getstr(text, buf);
+            cmd.ptr[0]   = str_dup(buf);
+            cmd.func     = pain_has;
+            break;
 
+         case 'I':
+            text         = pi_getnum(text, &i);
+            cmd.gotoline = i;
+            text         = pi_getstr(text, buf);
+            cmd.ptr[0]   = str_dup(buf);
+            cmd.func     = pain_in_room;
+            break;
 
-	  case 'G':
-	   text = pi_getstr(text, buf);
-	   cmd.ptr[0] = pc_str_to_file_index(npc, buf);
-	   cmd.func = pain_goto;
-	   if (!cmd.ptr[0])
-	   {
-	      pain_error("Unknown unit referece in PAIN-Goto: %s", buf);
-	      error = TRUE;
-	      continue;
-	   }
-	   break;
+         case 'i':
+            text = pi_getstr(text, buf); /* Command */
+            if(!(cmd_ptr = (struct command_info *)search_trie(buf, intr_trie)))
+            {
+               pain_error("PAIN - Illegal interpreter 'command'"
+                          " reference: %s",
+                          buf);
+               error = TRUE;
+            }
+            cmd.data[0] = cmd_ptr->no;
 
+            text++; /* Skip '@' */
+            text = pi_getstr(text, buf);
+            split_fi_ref(buf, zone, name);
+            if(*zone == 0)
+               strcpy(zone, UNIT_FI_ZONENAME(npc));
 
-	  case 'H':
-	   text = pi_getnum(text, &i);
-	   cmd.gotoline = i;
-	   text = pi_getstr(text, buf);
-	   cmd.ptr[0] = str_dup(buf);
-	   cmd.func = pain_has;
-	   break;
+            if(cmd.ptr[0] = find_file_index(zone, name); std::get<std::shared_ptr<file_index_type>>(cmd.ptr[0]) != nullptr)
+            {
+               pain_error("PAIN - Illegal symbolic reference: %s/%s", zone, name);
+               error = TRUE;
+            }
+            cmd.func = pain_intercept;
+            break;
 
+         case 'J':
+            text         = pi_getnum(text, &i);
+            cmd.gotoline = i;
+            cmd.func     = pain_jump;
+            break;
 
-	  case 'I':
-	   text = pi_getnum(text, &i);
-	   cmd.gotoline = i;
-	   text = pi_getstr(text, buf);
-	   cmd.ptr[0] = str_dup(buf);
-	   cmd.func = pain_in_room;
-	   break;
+         case 'L':
+            text         = pi_getnum(text, &i);
+            cmd.gotoline = i;
+            text         = pi_getstr(text, buf);
+            i            = search_block(buf, dirs, FALSE); /* partial match */
+            cmd.data[0]  = i;
+            cmd.func     = pain_locked;
+            if(i == -1)
+            {
+               pain_error("PAIN - Illegal direction in Lock door test");
+               error = TRUE;
+            }
+            break;
 
+         case 'l':
+            text = pi_getstr(text, buf);
+            split_fi_ref(buf, zone, name);
+            if(auto fi = find_file_index(zone, name); fi != nullptr)
+            {
+               cmd.ptr[0] = fi;
+               pain_error("PAIN - Illegal symbolic reference: %s", buf);
+               error = TRUE;
+            }
+            cmd.func = pain_load;
+            break;
 
-	  case 'i':
-	   text = pi_getstr(text, buf);  /* Command */
-	   if (!(cmd_ptr = (struct command_info *)
-		    search_trie(buf, intr_trie)))
-	   {
-	     pain_error("PAIN - Illegal interpreter 'command'"
-			" reference: %s", buf);
-	     error = TRUE;
-	   }
-	   cmd.data[0] = cmd_ptr->no;
+         case 'R':
+            text         = pi_getnum(text, &i);
+            cmd.gotoline = i;
+            text++; /* Skip ',' */
+            text        = pi_getnum(text, &i);
+            cmd.data[0] = i;
+            cmd.func    = pain_random;
+            break;
 
-	   text++; /* Skip '@' */
-	   text = pi_getstr(text, buf);
-	   split_fi_ref(buf, zone, name);
-	   if (*zone == 0)
-	     strcpy(zone, UNIT_FI_ZONENAME(npc));
+         case 'r':
+            text = pi_getstr_excla(text, buf);
+            split_fi_ref(buf, zone, name);
+            if(auto fi = find_file_index(zone, name); fi != nullptr)
+            {
+               cmd.ptr[0] = fi;
+               pain_error("PAIN - Illegal symbolic reference: %s", buf);
+               error = TRUE;
+            }
 
-	   if (!(cmd.ptr[0] = find_file_index(zone, name)))
-	   {
-	      pain_error("PAIN - Illegal symbolic reference: %s/%s",
-			 zone, name);
-	      error = TRUE;
-	   }
-	   cmd.func = pain_intercept;
-	   break;
+            text = pi_getstr(text, buf);
+            split_fi_ref(buf, zone, name);
+            if(cmd.ptr[1] = world_room(zone, name); std::get<unit_data*>(cmd.ptr[1]) != nullptr)
+            {
+               pain_error("PAIN 'r': - Illegal symbolic ROOM reference: %s", buf);
+               error = TRUE;
+            }
+            cmd.func = pain_remote_load;
+            break;
 
+         case 'S':
+            text         = pi_getnum(text, &i);
+            cmd.gotoline = i;
+            cmd.func     = pain_scan_pc;
+            break;
 
-	  case 'J':
-	   text = pi_getnum(text, &i);
-	   cmd.gotoline = i;
-	   cmd.func = pain_jump;
-	   break;
+         case 'T':
+            text         = pi_getnum(text, &i);
+            cmd.gotoline = i;
+            text++; /* Skip ',' */
+            text        = pi_getnum(text, &i);
+            cmd.data[0] = i;
+            cmd.func    = pain_trash;
+            break;
 
+         case 'W':
+            text         = pi_getnum(text, &i);
+            cmd.gotoline = i;
+            text++; /* Skip ',' */
+            text        = pi_getnum(text, &i);
+            cmd.data[0] = i;
+            cmd.func    = pain_wait;
+            break;
 
-	  case 'L':
-	   text = pi_getnum(text, &i);
-	   cmd.gotoline = i;
-	   text = pi_getstr(text, buf);
-	   i = search_block(buf, dirs, FALSE); /* partial match */
-	   cmd.data[0] = i;
-	   cmd.func = pain_locked;
-	   if (i == -1)
-	   {
-	      pain_error("PAIN - Illegal direction in Lock door test");
-	      error = TRUE;
-	   }
-	   break;
+         case 'M':
+            text         = pi_getnum(text, &i);
+            cmd.gotoline = i;
+            text         = pi_getstr(text, buf);
+            if(!(cmd_ptr = (struct command_info *)search_trie(buf, intr_trie)))
+            {
+               if((i = search_block(buf, specmsg, TRUE)) != -1)
+               {
+                  pain_error("PAIN - Illegal interpreter 'command'"
+                             " reference: %s",
+                             buf);
+                  error = TRUE;
+               }
+               else
+                  switch(i)
+                  {
+                     case 0:
+                        cmd.data[0] = CMD_AUTO_DEATH;
+                        break;
+                     case 1:
+                        cmd.data[0] = CMD_AUTO_COMBAT;
+                        break;
+                     case 2:
+                        cmd.data[0] = CMD_AUTO_UNKNOWN;
+                        break;
+                  }
+            }
+            else
+               cmd.data[0] = cmd_ptr->no;
+            text       = pi_getstr(text, buf);
+            namelist   = create_namelist();
+            cmd.ptr[0] = namelist;
+            for(b = buf; *b; b = pi_getstr(b, name))
+               add_name(name, namelist);
+            text        = pi_getnum(text, &i);
+            cmd.data[1] = i;
+            cmd.func    = pain_waitmsg;
+            break;
 
+         case '*':
+            text = pi_getstr(text, buf);
+            if(*text) /* Skip separator if any (or end) */
+               text++;
+            continue; /* Skip alloc stuff */
+            break;
 
-	  case 'l':
-	   text = pi_getstr(text, buf);
-	   split_fi_ref(buf, zone, name);
-	   if (!(cmd.ptr[0] = find_file_index(zone, name)))
-	   {
-	      pain_error("PAIN - Illegal symbolic reference: %s", buf);
-	      error = TRUE;
-	   }
-	   cmd.func = pain_load;
-	   break;
-
-
-	  case 'R':
-	   text = pi_getnum(text, &i);
-	   cmd.gotoline = i;
-	   text++;  /* Skip ',' */
-	   text = pi_getnum(text, &i);
-	   cmd.data[0] = i;
-	   cmd.func = pain_random;
-	   break;
-
-
-	  case 'r':
-	   text = pi_getstr_excla(text, buf);
-	   split_fi_ref(buf, zone, name);
-	   if (!(cmd.ptr[0] = find_file_index(zone, name)))
-	   {
-	      pain_error("PAIN - Illegal symbolic reference: %s", buf);
-	      error = TRUE;
-	   }
-
-	   text = pi_getstr(text, buf);
-	   split_fi_ref(buf, zone, name);
-	   if (!(cmd.ptr[1] = world_room(zone, name)))
-	   {
-	      pain_error( "PAIN 'r': - Illegal symbolic ROOM reference: %s",
-		   buf);
-	      error = TRUE;
-	   }
-	   cmd.func = pain_remote_load;
-	   break;
-
-
-	  case 'S':
-	   text = pi_getnum(text, &i);
-	   cmd.gotoline = i;
-	   cmd.func = pain_scan_pc;
-	   break;
-
-
-	  case 'T':
-	   text = pi_getnum(text, &i);
-	   cmd.gotoline = i;
-	   text++;  /* Skip ',' */
-	   text = pi_getnum(text, &i);
-	   cmd.data[0] = i;
-	   cmd.func = pain_trash;
-	   break;
-
-
-	  case 'W':
-	   text = pi_getnum(text, &i);
-	   cmd.gotoline = i;
-	   text++;  /* Skip ',' */
-	   text = pi_getnum(text, &i);
-	   cmd.data[0] = i;
-	   cmd.func = pain_wait;
-	   break;
-
-	  case 'M':
-	   text = pi_getnum(text, &i);
-	   cmd.gotoline = i;
-	   text = pi_getstr(text, buf);
-	   if (!(cmd_ptr = (struct command_info *)
-		    search_trie(buf, intr_trie)))
-	   {
-	      if ((i = search_block(buf, specmsg, TRUE))!=-1)
-	      {
-		pain_error("PAIN - Illegal interpreter 'command'"
-		     " reference: %s", buf);
-		error = TRUE;
-	      } else
-		switch (i) {
-		  case 0:cmd.data[0] = CMD_AUTO_DEATH; break;
-		  case 1:cmd.data[0] = CMD_AUTO_COMBAT; break;
-		  case 2:cmd.data[0] = CMD_AUTO_UNKNOWN; break;
-		}
-	   } else
-	     cmd.data[0] = cmd_ptr->no;
-	   text = pi_getstr(text, buf);
-	   namelist=create_namelist();
-	   cmd.ptr[0] = namelist;
-	   for(b=buf;*b;b=pi_getstr(b,name))
-	     add_name(name,namelist);
-	   text = pi_getnum(text, &i);
-	   cmd.data[1] = i;
-	   cmd.func = pain_waitmsg;
-	   break;
-
-	  case '*':
-	   text = pi_getstr(text, buf);
-	   if (*text) /* Skip separator if any (or end) */
-	     text++;
-	   continue; /* Skip alloc stuff */
-	   break;
-
-
-	 default:
-	   pain_error("Illegal routine in pain init: %s", text);
-	   error = TRUE;
-	   break;
+         default:
+            pain_error("Illegal routine in pain init: %s", text);
+            error = TRUE;
+            break;
       } /* switch */
 
-      if (!error)
+      if(!error)
       {
-	 if (++top == 1)
-	 {
-	    CREATE(line_numbers, struct line_no_convert, 1);
-	    CREATE(cmd_list, struct pain_cmd_type, 1);
-	 }
-	 else
-	 {
-	    RECREATE(line_numbers, struct line_no_convert, top);
-	    RECREATE(cmd_list, struct pain_cmd_type, top);
-	 }
-	 line_numbers[top-1] = line_no;
-	 cmd_list[top-1] = cmd;
+         if(++top == 1)
+         {
+            CREATE(line_numbers, struct line_no_convert, 1);
+            CREATE(cmd_list, struct pain_cmd_type, 1);
+         }
+         else
+         {
+            RECREATE(line_numbers, struct line_no_convert, top);
+            RECREATE(cmd_list, struct pain_cmd_type, top);
+         }
+         line_numbers[top - 1] = line_no;
+         cmd_list[top - 1]     = cmd;
       }
-      if (*text)  /* Skip the pain separator, or the 0 when at end */
-	text++;
+      if(*text) /* Skip the pain separator, or the 0 when at end */
+         text++;
    }
 
-
-   if (cmd_list)
+   if(cmd_list)
    {
       CREATE(pain, struct pain_type, 1);
       pain->top  = top;
       pain->idx  = 0;
       pain->cmds = cmd_list;
-      for (i=0; (i < top) && !error; i++)
+      for(i = 0; (i < top) && !error; i++)
       {
-	 if (cmd_list[i].gotoline != -1)
-	 {
-	    if ((j = translate_line(top, cmd_list[i].gotoline, line_numbers))
-		 == -1)
-	    {
-	       pain_error("PAIN: Unknown symbolic line number %d",
-		    cmd_list[i].gotoline);
-	       error = TRUE;
-	    }
-	    else
-	      cmd_list[i].gotoline = j;
-	 }
+         if(cmd_list[i].gotoline != -1)
+         {
+            if((j = translate_line(top, cmd_list[i].gotoline, line_numbers)) == -1)
+            {
+               pain_error("PAIN: Unknown symbolic line number %d", cmd_list[i].gotoline);
+               error = TRUE;
+            }
+            else
+               cmd_list[i].gotoline = j;
+         }
       }
 
       free(line_numbers);
 
-      if (error)
+      if(error)
       {
-	 pain_error( "PAIN error - PAIN aborted.");
-	 pain_free(pain);
-	 return NULL;
+         pain_error("PAIN error - PAIN aborted.");
+         pain_free(pain);
+         return NULL;
       }
       return pain;
    }
 
    return NULL;
 }
-
-
 
 int pain_init(struct spec_arg *sarg)
 {
@@ -1251,5 +1242,3 @@ int pain_init(struct spec_arg *sarg)
 
   return SFR_SHARE;
 }
-
-

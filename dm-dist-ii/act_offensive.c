@@ -52,7 +52,7 @@ void do_decapitate(struct unit_data *ch, char *argument,
    char *c, *d;
    char buf[256], buf2[256];
 
-   extern struct file_index_type *head_fi;
+   extern std::shared_ptr<file_index_type> head_fi;
 
    if (str_is_empty(argument))
    {
@@ -274,6 +274,3 @@ void do_order(struct unit_data *ch, char *argument,
   }
 #endif
 }
-
-
-

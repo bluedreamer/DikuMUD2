@@ -67,7 +67,7 @@ struct unit_data *random_room(void)
 {
    struct unit_data *room = NULL;
    struct zone_type *zone;
-   struct file_index_type *fi;
+   std::shared_ptr<file_index_type> fi;
    int no;
 
    for (;;)
@@ -635,7 +635,7 @@ void spell_summon_char_2(struct spell_args *sa)
 
 void spell_animate_dead(struct spell_args *sa)
 {
-   extern struct file_index_type *zombie_fi;
+   extern std::shared_ptr<file_index_type> zombie_fi;
    struct unit_data *u, *zombie;
    char buf[1024];
 

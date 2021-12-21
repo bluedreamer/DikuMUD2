@@ -33,7 +33,7 @@
 #include "essential.h"
 
 extern const sbit8 time_light[];
-
+inline auto UNIT_IN(class unit_data *unit) -> unit_data *&;
 /* ..................................................................... */
 
 #define PK_RELAXED            0
@@ -83,8 +83,10 @@ extern const sbit8 time_light[];
 #define UNIT_FUNC(unit) \
    ((unit)->func)
 
-#define UNIT_FILE_INDEX(unit)   \
-   ((unit)->fi)
+inline auto UNIT_FILE_INDEX(unit_data *unit) -> std::shared_ptr<file_index_type>
+{
+   return unit->fi;
+}
 
 #define UNIT_MANIPULATE(unit)  \
   ((unit)->manipulate)
@@ -119,8 +121,10 @@ extern const sbit8 time_light[];
 #define UNIT_CONTAINS(unit)   \
   ((unit)->inside)
 
-#define UNIT_IN(unit)  \
-  ((unit)->outside)
+inline auto UNIT_IN(class unit_data *unit) -> unit_data *&
+{
+   return unit->outside;
+}
 
 #define UNIT_AFFECTED(unit)   \
   ((unit)->affected)

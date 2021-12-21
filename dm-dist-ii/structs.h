@@ -25,6 +25,7 @@
 #define _MUD_STRUCTS_H
 
 #include <memory>
+#include <variant>
 
 #include "essential.h"
 #include "values.h"
@@ -54,12 +55,13 @@
 
 /* ----------------- DATABASE STRUCTURES ----------------------- */
 
-
+class file_index_type;
 /* This must be maintained as an array for use with binary search methods */
 struct bin_search_type
 {
    const char *compare;               /* Points to the comparison string  */
    void *block;                 /* Points to the relevant block     */
+   std::shared_ptr<file_index_type> fi_block;
 };
 
 
@@ -72,7 +74,7 @@ class file_index_type
 
    char *name;                    /* Unique within this list          */
    class zone_type *zone;        /* Pointer to owner of structure    */
-   struct file_index_type *next;  /* Next File Index                  */
+   std::shared_ptr<file_index_type> next;  /* Next File Index                  */
    class unit_data *room_ptr;    /* Pointer to room if is room       */
 
    long   filepos;                /* Byte offset into file            */
@@ -92,7 +94,7 @@ struct zone_reset_cmd
    ubit8 cmd_no;                    /* Index to array of func() ptrs */
    ubit8 cmpl;                      /* Complete flag                 */
 
-   struct file_index_type *fi[2];
+   std::shared_ptr<file_index_type> fi[2];
    sbit16 num[3];
 
    std::shared_ptr<zone_reset_cmd> next;
@@ -114,7 +116,7 @@ class zone_type
    char *help;                    /* User-Help to zone                */
    char *filename;                /* The filename of this file        */
 
-   struct file_index_type *fi;    /* Pointer to list of file-index's  */
+   std::shared_ptr<file_index_type> fi;    /* Pointer to list of file-index's  */
    struct bin_search_type *ba;    /* Pointer to binarray of type      */
 
    std::shared_ptr<zone_reset_cmd> zri;    /* List of Zone reset commands      */
@@ -215,7 +217,7 @@ class room_direction_data
 
    class cNamelist open_name;    /* For Open & Enter                  */
 
-   struct file_index_type *key;
+   std::shared_ptr<file_index_type> key;
    class unit_data *to_room;
 
    ubit8 exit_info;              /* Door info flags                   */
@@ -463,15 +465,14 @@ class unit_data
    struct unit_affected_type
      *affected;
 
-   struct file_index_type
-     *fi;                /* Unit file-index                               */
+   std::shared_ptr<file_index_type> fi;   /* Unit file-index                               */
 
-   struct file_index_type
-     *key;               /* Pointer to fileindex to Unit which is the key */
+   std::shared_ptr<file_index_type> key;  /* Pointer to fileindex to Unit which is the key */
 
-   class unit_data
-     *outside;           /* Pointer out of the unit, ei. from an object   */
-                         /* out to the char carrying it                   */
+   /* Pointer out of the unit, ei. from an object   */
+   /* out to the char carrying it                   */
+   unit_data *outside;
+
    class unit_data
      *inside;            /* Linked list of chars,rooms & objs             */
 

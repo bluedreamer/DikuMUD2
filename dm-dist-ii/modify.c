@@ -404,7 +404,7 @@ void do_set(struct unit_data *ch, char *argument,
    long int valarg = 0;
    long int bitarg = 0;
 
-   struct file_index_type *untarg = NULL;
+   std::shared_ptr<file_index_type> untarg;
    struct extra_descr_data *ed;
    struct unit_data *unt;
    struct unit_affected_type *aff;

@@ -494,11 +494,11 @@ struct zone_type *unit_zone(const struct unit_data *unit)
 {
    struct unit_data *org = (struct unit_data *) unit;
 
-   for(; unit; unit = UNIT_IN(unit))
-     if (!UNIT_IN(unit))
+   for(; unit; unit = UNIT_IN(const_cast<unit_data*>(unit)))
+     if (!UNIT_IN(const_cast<unit_data*>(unit)))
      {
 	assert(IS_ROOM(unit));
-	return UNIT_FILE_INDEX(unit)->zone;
+	return UNIT_FILE_INDEX(const_cast<unit_data*>(unit))->zone;
      }
 
    slog(LOG_ALL, 0,"ZONE: FATAL: %s@%s IN NO ROOMS WHILE NOT A ROOM!!",

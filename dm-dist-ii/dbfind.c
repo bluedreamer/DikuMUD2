@@ -98,7 +98,7 @@ struct zone_type *find_zone(const char *zonename)
 
 
 /* Zonename & name must point to non-empty strings */
-struct file_index_type *find_file_index(const char *zonename, const char *name)
+std::shared_ptr<file_index_type> find_file_index(const char *zonename, const char *name)
 {
    struct zone_type *zone;
    struct bin_search_type *ba;
@@ -112,7 +112,7 @@ struct file_index_type *find_file_index(const char *zonename, const char *name)
    if ((ba = binary_search(zone->ba, name, zone->no_of_fi)) == NULL)
      return NULL;
    
-   return (struct file_index_type *) ba->block;
+   return ba->fi_block;
 }
 
 /* Zonename & name must point to non-empty strings */
@@ -158,7 +158,7 @@ struct diltemplate *find_dil_template(const char *name)
  */
 struct unit_data *world_room(const char *zone, const char *name)
 {
-  struct file_index_type *fi;
+  std::shared_ptr<file_index_type> fi;
   
   return (fi = find_file_index(zone, name)) ? fi->room_ptr : NULL;
 }
@@ -167,7 +167,7 @@ struct unit_data *world_room(const char *zone, const char *name)
 /*  Find file index.
  *  String MUST be in format 'name@zone\0' or 'zone/name'.
  */
-struct file_index_type *str_to_file_index(const char *str)
+std::shared_ptr<file_index_type> str_to_file_index(const char *str)
 {
    char name[FI_MAX_UNITNAME + 1], zone[FI_MAX_ZONENAME + 1];
 
@@ -179,7 +179,7 @@ struct file_index_type *str_to_file_index(const char *str)
 /*  As str_to_file_index, except that if no zone is given, the
  *  zone of the 'ch' is assumed
  */
-struct file_index_type *pc_str_to_file_index(const struct unit_data *ch, const char *str)
+std::shared_ptr<file_index_type> pc_str_to_file_index(const struct unit_data *ch, const char *str)
 {
    char name[MAX_INPUT_LENGTH+1], zone[MAX_INPUT_LENGTH+1];
 
@@ -190,5 +190,3 @@ struct file_index_type *pc_str_to_file_index(const struct unit_data *ch, const c
 
    return find_file_index(zone, name);
 }
-
-

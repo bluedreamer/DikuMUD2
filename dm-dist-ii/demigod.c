@@ -77,7 +77,7 @@ void do_manifest(struct unit_data *ch, char *arg,
    struct unit_data *player;
    struct unit_data *monster;
 
-   extern struct file_index_type *demigod_fi;
+   extern std::shared_ptr<file_index_type> demigod_fi;
 
    void switchbody(struct unit_data *ch, struct unit_data *victim);
    void unswitchbody(struct unit_data *npc);
@@ -196,7 +196,7 @@ void do_manifest(struct unit_data *ch, char *arg,
    else
    {
       char tmpbuf[50];
-      struct file_index_type *fi;
+      std::shared_ptr<file_index_type> fi;
 
       sprintf(tmpbuf, UNIT_NAME(ch));
       str_lower(tmpbuf);

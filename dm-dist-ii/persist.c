@@ -48,7 +48,7 @@
 struct persist_type
 {
    char name[30];
-   struct file_index_type *in;
+   std::shared_ptr<file_index_type> in;
    sbit32 weight;
 };
 
@@ -173,4 +173,3 @@ void persist_boot(void)
 
    persist_namelist.Free();
 }
-

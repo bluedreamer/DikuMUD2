@@ -224,14 +224,6 @@ zone_type::~zone_type(void)
    if (filename)
      free(filename);
 
-   struct file_index_type *p, *nextfi;
-
-   for (p = fi; p; p = nextfi)
-   {
-      nextfi = p->next;
-      delete p;
-   }
-
    /*
    struct diltemplate *pt, *nextpt;
 

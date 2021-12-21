@@ -1099,7 +1099,7 @@ void do_close(struct unit_data *ch, char *argument,
 }
 
 
-int has_key(struct unit_data *ch, struct file_index_type *key)
+int has_key(struct unit_data *ch, std::shared_ptr<file_index_type> key)
 {
    struct unit_data *o;
 

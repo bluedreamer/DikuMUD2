@@ -27,6 +27,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
+#include <vector>
 
 #include "structs.h"
 #include "utils.h"
@@ -37,16 +38,15 @@
 #include "files.h"
 #include "comm.h"
 
-extern struct file_index_type *slime_fi;
+extern std::shared_ptr<file_index_type> slime_fi;
 
 extern char libdir[];
 
-static int slime_count = 0;
-struct file_index_type **slime_list = NULL;
+//struct file_index_type **slime_list = NULL;
+std::vector<std::shared_ptr<file_index_type>> slime_list;
 
 static void slime_save(void)
 {
-   int i;
    FILE *f;
 
    if (!(f = fopen(str_cc(libdir, SLIME_FILE), "wb")))
@@ -55,72 +55,59 @@ static void slime_save(void)
       assert(FALSE);
    }
 
-   for (i = 0; i < slime_count; i++)
+   for (const auto &slime: slime_list)
    {
-      fputs(slime_list[i]->zone->name, f);
+      fputs(slime->zone->name, f);
       fputc(0, f);
-      fputs(slime_list[i]->name, f);
+      fputs(slime->name, f);
       fputc(0, f);
    }
    fclose(f);
 }
 
 
-static void slime_add(struct file_index_type *sp)
+static void slime_add(std::shared_ptr<file_index_type> sp)
 {
    if (sp == NULL)
      return;
 
-   if (slime_count++ == 0)
-     CREATE(slime_list, struct file_index_type *, slime_count);
-   else
-     RECREATE(slime_list, struct file_index_type *, slime_count);
-
-   slime_list[slime_count-1] = sp;
+   slime_list.push_back(sp);
 }
 
-
-static void slime_remove(struct file_index_type *sp)
+static void slime_remove(std::shared_ptr<file_index_type> sp)
 {
-   int i;
-
-   for (i=0; i < slime_count; i++)
-     if (slime_list[i] == sp)
-     {
-	slime_list[i] = slime_list[slime_count - 1];
-	slime_count--;
-	if (slime_count == 0)
-	{
-	   free(slime_list);
-	   slime_list = NULL;
-	}
-	break;
-     }
+   for(auto i=slime_list.begin(); i!=slime_list.end(); )
+   {
+      if(*i == sp)
+      {
+         i=slime_list.erase(i);
+         break;
+      }
+      else
+      {
+         ++i;
+      }
+   }
 }
 
-
-int is_slimed(struct file_index_type *sp)
+int is_slimed(std::shared_ptr<file_index_type> sp)
 {
-   int i;
-
-   for (i=0; i < slime_count; i++)
-     if (slime_list[i] == sp)
+   for (auto i=slime_list.begin(); i!=slime_list.end(); ++i)
+     if (*i == sp)
        return TRUE;
 
    return FALSE;
 }
 
-
 int slime_obj(struct spec_arg *sarg)
-
 {
-   char buf[MAX_INPUT_LENGTH], fi_name[MAX_INPUT_LENGTH];
-   struct file_index_type *fi;
+   char                             buf[MAX_INPUT_LENGTH], fi_name[MAX_INPUT_LENGTH];
+   std::shared_ptr<file_index_type> fi;
 
-   if (!is_command(sarg->cmd, "slime"))
-     return SFR_SHARE;
+   if(!is_command(sarg->cmd, "slime"))
+      return SFR_SHARE;
 
-   if (!IS_OVERSEER(sarg->activator))
+   if(!IS_OVERSEER(sarg->activator))
    {
       send_to_char("Only overseers can use this function.\n\r", sarg->activator);
       return SFR_BLOCK;
@@ -128,16 +115,13 @@ int slime_obj(struct spec_arg *sarg)
 
    sarg->arg = one_argument(sarg->arg, buf);
 
-   if (is_abbrev(buf, "list"))
+   if(is_abbrev(buf, "list"))
    {
-      int i;
       send_to_char("List of slimed units:\n\r", sarg->activator);
-      for (i=0; i < slime_count; i++)
+      for(const auto &slime: slime_list)
       {
-	 sprintf(buf, "%s@%s\n\r",
-		 slime_list[i]->name,
-		 slime_list[i]->zone->name);
-	 send_to_char(buf, sarg->activator);
+         sprintf(buf, "%s@%s\n\r", slime->name, slime->zone->name);
+         send_to_char(buf, sarg->activator);
       }
 
       return SFR_BLOCK;
@@ -147,60 +131,55 @@ int slime_obj(struct spec_arg *sarg)
 
    fi = str_to_file_index(fi_name);
 
-   if (fi == NULL)
+   if(fi == NULL)
    {
-      act("No such file index '$2t'.",
-	  A_ALWAYS, sarg->activator, fi_name, 0, TO_CHAR);
+      act("No such file index '$2t'.", A_ALWAYS, sarg->activator, fi_name, 0, TO_CHAR);
       return SFR_BLOCK;
    }
 
-   if (fi->zone == find_zone(BASIS_ZONE))
+   if(fi->zone == find_zone(BASIS_ZONE))
    {
-      act("Basis zone is not allowed slimed.",
-	  A_ALWAYS, sarg->activator, 0, 0, TO_CHAR);
-      return SFR_BLOCK;      
+      act("Basis zone is not allowed slimed.", A_ALWAYS, sarg->activator, 0, 0, TO_CHAR);
+      return SFR_BLOCK;
    }
 
-   if (is_abbrev(buf, "add"))
+   if(is_abbrev(buf, "add"))
    {
-      if (is_slimed(fi))
+      if(is_slimed(fi))
       {
-	 send_to_char("Already slimed.\n\r", sarg->activator);
+         send_to_char("Already slimed.\n\r", sarg->activator);
       }
       else
       {
-	 slime_add(fi);
-	 slime_save();
-	 send_to_char("Added.\n\r", sarg->activator);
+         slime_add(fi);
+         slime_save();
+         send_to_char("Added.\n\r", sarg->activator);
       }
    }
-   else if (is_abbrev(buf, "remove"))
+   else if(is_abbrev(buf, "remove"))
    {
-      if (!is_slimed(fi))
+      if(!is_slimed(fi))
       {
-	 send_to_char("No such file index is slimed!\n\r", sarg->activator);
+         send_to_char("No such file index is slimed!\n\r", sarg->activator);
       }
       else
       {
-	 slime_remove(fi);
-	 slime_save();
-	 send_to_char("Removed.\n\r", sarg->activator);
+         slime_remove(fi);
+         slime_save();
+         send_to_char("Removed.\n\r", sarg->activator);
       }
    }
    else
    {
-      act("Please specify 'add' or 'remove'.",
-	  A_ALWAYS, sarg->activator, 0, 0, TO_CHAR);
+      act("Please specify 'add' or 'remove'.", A_ALWAYS, sarg->activator, 0, 0, TO_CHAR);
    }
 
    return SFR_BLOCK;
 }
 
-
-
 void slime_boot(void)
 {
-   struct file_index_type *fi;
+   std::shared_ptr<file_index_type> fi;
    CByteBuffer cBuf(100);
    char buf1[256], buf2[256];
    FILE *f;
@@ -225,4 +204,3 @@ void slime_boot(void)
    }
    fclose(f);
 }
-

@@ -78,7 +78,7 @@ void zone_update_no_in_zone(void)
   extern struct zone_info_type zone_info;
 
   register struct unit_data *u;
-  register struct file_index_type *fi;
+  std::shared_ptr<file_index_type> fi;
   register struct zone_type *tmp_zone;
 
   /* Clear ALL ->no_in_zone */
@@ -104,7 +104,7 @@ void zone_loaded_a_unit(struct unit_data *u)
 /* num[1] is the max allowed existing in zone.              */
 /* num[2] is the max allowed existing in room (object)      */
 /* Return TRUE if conditions are met, FALSE otherwise       */
-bool zone_limit(struct unit_data *u, struct file_index_type *fi,
+bool zone_limit(struct unit_data *u, std::shared_ptr<file_index_type> fi,
                 std::shared_ptr<zone_reset_cmd> cmd)
 {
   struct unit_data *tmp;

@@ -980,7 +980,7 @@ int write_unit_string(CByteBuffer *pBuf, struct unit_data *u)
 
    bwrite_swap(pBuf, u);
 
-   pBuf->AppendDoubleString((char *) UNIT_KEY(u));
+   pBuf->AppendDoubleString((char *) UNIT_KEY(u).get());
 
    pBuf->Append32(UNIT_MANIPULATE(u));
    pBuf->Append16(UNIT_FLAGS(u));
@@ -1196,7 +1196,13 @@ int write_unit_string(CByteBuffer *pBuf, struct unit_data *u)
 	       pBuf->AppendDoubleString((char *) ROOM_EXIT(u, i)->to_room);
 	       ROOM_EXIT(u,i)->open_name.AppendBuffer(pBuf);
 	       pBuf->Append16(ROOM_EXIT(u,i)->exit_info);
-	       pBuf->AppendDoubleString((char *) ROOM_EXIT(u,i)->key);
+//	       pBuf->AppendDoubleString((char *) ROOM_EXIT(u,i)->key);
+// TODO ADRIAN
+// TODO This looks really broken - using a raw pointer into the first two class members hoping they are null terminated strings
+// TODO Needs to be split into 2 AppendStrings to proper members
+	    //   pBuf->AppendDoubleString((char *) ROOM_EXIT(u,i)->key);
+          pBuf->AppendString(ROOM_EXIT(u,i)->key->name);
+               pBuf->AppendString("");   /* Null name      */
 	    }
 	    else
 	    {
@@ -1299,4 +1305,3 @@ void write_diltemplate(FILE *f, struct diltemplate *tmpl)
 
    pBuf->FileWrite(f);
 }  
-

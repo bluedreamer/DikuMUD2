@@ -438,7 +438,7 @@ static void extra_stat_zone(struct unit_data *ch, char *arg,
 {
   char buf[MAX_STRING_LENGTH], filename[128];
   int argno;
-  struct file_index_type *fi;
+  std::shared_ptr<file_index_type> fi;
   int search_type = 0, i;
 
   void stat_dijkstraa(struct unit_data *ch, struct zone_type *z);
@@ -1328,7 +1328,7 @@ void do_wstat(struct unit_data *ch, char *argument,
   }
   else
   {
-     struct file_index_type *fi;
+     std::shared_ptr<file_index_type> fi;
 
      u = find_unit(ch, &argument, 0, FIND_UNIT_GLOBAL);
 
