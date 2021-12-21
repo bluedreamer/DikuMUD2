@@ -112,6 +112,3 @@ void dilfe_pck(struct dilprg *, struct dilval *);
 void dilfe_act(struct dilprg *, struct dilval *);
 
 #endif
-
-
-

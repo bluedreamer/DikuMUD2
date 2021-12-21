@@ -26,29 +26,29 @@
 
 /* 16/03/94 MS: Corrected 'i' bug which made program continue...           */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <time.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdarg.h>  /* va_args in pain_error()        */
-#include <variant>
-
-#include "structs.h"
-#include "utils.h"
-#include "trie.h"
-#include "handler.h"
-#include "textutil.h"
-#include "interpreter.h"
-#include "db.h"
 #include "comm.h"
-#include "justice.h"
-#include "movement.h"
-#include "utility.h"
-#include "unixshit.h"
-#include "spec_assign.h"
-#include "money.h"
 #include "common.h"
+#include "db.h"
+#include "handler.h"
+#include "interpreter.h"
+#include "justice.h"
+#include "money.h"
+#include "movement.h"
+#include "spec_assign.h"
+#include "structs.h"
+#include "textutil.h"
+#include "trie.h"
+#include "unixshit.h"
+#include "utility.h"
+#include "utils.h"
+
+#include <ctype.h>
+#include <stdarg.h> /* va_args in pain_error()        */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <variant>
 
 /*
 
@@ -59,194 +59,194 @@
 
      A<string>
 
-	TICK: Wait one tick.
+        TICK: Wait one tick.
 
-	The supplied string will be displayed in the room using the
-	act routine - $1X refers to the NPC.
+        The supplied string will be displayed in the room using the
+        act routine - $1X refers to the NPC.
 
-	$1n is the name (title) of the NPC.
-	$1s is his/her/its
-	$1e is he/she/it
-	$1m is him/her/it
-	$1N is the first name of the npc.
+        $1n is the name (title) of the NPC.
+        $1s is his/her/its
+        $1e is he/she/it
+        $1m is him/her/it
+        $1N is the first name of the npc.
 
-	Example: "120 AYou notice that $1n appears as if $1e is...@"
+        Example: "120 AYou notice that $1n appears as if $1e is...@"
 
      C<string>
 
-	TICK: Wait one tick.
+        TICK: Wait one tick.
 
-	The command will be sent through the command interpreter.
+        The command will be sent through the command interpreter.
 
-	Example: "110 Claugh@"
+        Example: "110 Claugh@"
 
      d<instruction-no><string>
 
-	If the PC found with the 'S' instruction is still in the room
-	execute the command-string <string>. Otherwise continue at
-	instruction <instruction-no> since the PC is no longer here.
+        If the PC found with the 'S' instruction is still in the room
+        execute the command-string <string>. Otherwise continue at
+        instruction <instruction-no> since the PC is no longer here.
 
-	Example: "155 d150follow %s@"
-		 "160 d150say %s, you smell of elderberry!@"
-		 "170 d150say %s your brain is the size of a pea!@"
+        Example: "155 d150follow %s@"
+                 "160 d150say %s, you smell of elderberry!@"
+                 "170 d150say %s your brain is the size of a pea!@"
 
      D<instruction no><direction>
 
-	TICK: Continue with next instruction immediately.
+        TICK: Continue with next instruction immediately.
 
-	Tests if a door in the specified direction is closed.
-	If there is no door, then it is considered to be closed
-	(to avoid an possible endless loop).
-	If the internal command was successful, then execution
-	continues at instruction number <instruction no>.
+        Tests if a door in the specified direction is closed.
+        If there is no door, then it is considered to be closed
+        (to avoid an possible endless loop).
+        If the internal command was successful, then execution
+        continues at instruction number <instruction no>.
 
-	Example: "150 D130north@"
+        Example: "150 D130north@"
 
      G<symbolic unit names>
 
-	TICK: Continue with next instruction when done.
+        TICK: Continue with next instruction when done.
 
-	Will cause the NPC to go to the specified location.
-	If the location is a room it will go to that room,
-	otherwise it will go to the npc/object.
-	PAIN Routine will not continue until the NPC has
-	reached its goal. NPC will be very keen on opening
-	doors/unlocking etc.
+        Will cause the NPC to go to the specified location.
+        If the location is a room it will go to that room,
+        otherwise it will go to the npc/object.
+        PAIN Routine will not continue until the NPC has
+        reached its goal. NPC will be very keen on opening
+        doors/unlocking etc.
 
-	Example: "100 Gmidgaard/cth_nave@"
-		 "50 Gelfdom/bones@"
+        Example: "100 Gmidgaard/cth_nave@"
+                 "50 Gelfdom/bones@"
 
      H<instruction no><string>
 
-	TICK: Continue with next instruction immediately.
+        TICK: Continue with next instruction immediately.
 
-	Tests if the npc is has item <string> in inventory, or equipped.
-	If the internal command was successful, then execution
-	continues at instruction number <instruction no>.
+        Tests if the npc is has item <string> in inventory, or equipped.
+        If the internal command was successful, then execution
+        continues at instruction number <instruction no>.
 
-	Example: "140 H110city key@"
+        Example: "140 H110city key@"
 
 
      i<command>@<symbolic-npc-name>@
 
-	TICK: Pauses until condition has been satisfied, then
-	      pauses one tick.
+        TICK: Pauses until condition has been satisfied, then
+              pauses one tick.
 
-	Waits until the npc <symbolic-npc-name> has executed the
-	command <command>, and then continues with next instruction
-	immediately. This can be used as a way to make NPC's
-	interact with each other. For example the guard says
-	('say' command) 'give me some food for the prisoner'.
-	The cook might react on 'guard' and 'say', load some
-	food and give it to the guard. Meanwhile the guard
-	waits in a loop checking if he has got the food in
-	his inventory.
+        Waits until the npc <symbolic-npc-name> has executed the
+        command <command>, and then continues with next instruction
+        immediately. This can be used as a way to make NPC's
+        interact with each other. For example the guard says
+        ('say' command) 'give me some food for the prisoner'.
+        The cook might react on 'guard' and 'say', load some
+        food and give it to the guard. Meanwhile the guard
+        waits in a loop checking if he has got the food in
+        his inventory.
 
-	Example: "170 isay@king_cook@"
-		 "180 iask@kingc/king_cook@"
+        Example: "170 isay@king_cook@"
+                 "180 iask@kingc/king_cook@"
 
 
      I<instruction no><string>
 
-	TICK: Continue with next instruction immediately.
+        TICK: Continue with next instruction immediately.
 
-	If the unit <string> is in the same room as the npc, then
-	execute <instruction no>, otherwise execute next instruction.
-	Will not find itself.
+        If the unit <string> is in the same room as the npc, then
+        execute <instruction no>, otherwise execute next instruction.
+        Will not find itself.
 
-	Example: "200 I180city key@"
+        Example: "200 I180city key@"
 
      J<instruction no>
 
-	TICK: Wait one tick.
+        TICK: Wait one tick.
 
-	The execution will continue at the instruction <instruction no>.
-	First instruction has number one. Will wait for tick after jump.
+        The execution will continue at the instruction <instruction no>.
+        First instruction has number one. Will wait for tick after jump.
 
-	Example: "130 J100@"
+        Example: "130 J100@"
 
 
      L<instruction no><direction>
 
-	TICK: Continue with next instruction immediately.
+        TICK: Continue with next instruction immediately.
 
-	Tests if a door in the specified direction is locked.
-	If there is no door, then it is considered to be locked
-	(to avoid an possible endless loop).
-	If the internal command was successful, then execution
-	continues at instruction number <instruction no>.
+        Tests if a door in the specified direction is locked.
+        If there is no door, then it is considered to be locked
+        (to avoid an possible endless loop).
+        If the internal command was successful, then execution
+        continues at instruction number <instruction no>.
 
-	Example: "160 L170east@"
+        Example: "160 L170east@"
 
      l<symbolic name>
 
-	TICK: Continue with next instruction immediately.
+        TICK: Continue with next instruction immediately.
 
-	Loads the unit 'symbolic name' into the npc owing the PAIN
-	routine. The command is always successful.
+        Loads the unit 'symbolic name' into the npc owing the PAIN
+        routine. The command is always successful.
 
-	Example: "170 lkingc/gruel@"
+        Example: "170 lkingc/gruel@"
 
      r<symbolic name>!<room>    REMOTE-LOAD NOT YET TESTED
 
-	TICK: Continue with next instruction immediately.
+        TICK: Continue with next instruction immediately.
 
-	Loads the unit 'symbolic name' into the specified room.
-	The command is always successful (or the PAIN wont exist).
+        Loads the unit 'symbolic name' into the specified room.
+        The command is always successful (or the PAIN wont exist).
 
-	Example: "170 volcano/lava_warning!volcano/lava_path2"
+        Example: "170 volcano/lava_warning!volcano/lava_path2"
 
      R<instruction no>,<num>
 
-	TICK: Continue with next instruction immediately.
+        TICK: Continue with next instruction immediately.
 
-	If a random number in the interval [1..100] is less than or
-	equals to <num>, then goto <instruction no>, otherwise execute
-	next instruction.
+        If a random number in the interval [1..100] is less than or
+        equals to <num>, then goto <instruction no>, otherwise execute
+        next instruction.
 
-	Example: "190 R130,80@"
+        Example: "190 R130,80@"
 
      S<instruction-no>
 
-	TICK: Continues immediately if PC found.
-	      Otherwise waits one tick.
+        TICK: Continues immediately if PC found.
+              Otherwise waits one tick.
 
-	Scans the room for a random Player (PC). If found the reference to
-	the player is stored in memory, and the npc remembers this value.
-	Otherwise instruction <instruction-no> is executed at next tick.
+        Scans the room for a random Player (PC). If found the reference to
+        the player is stored in memory, and the npc remembers this value.
+        Otherwise instruction <instruction-no> is executed at next tick.
 
-	Example: "150 S150@"
+        Example: "150 S150@"
 
      T<instruction no>,<value>  : NOT YET TESTED
 
-	Tick: Wait one tick
+        Tick: Wait one tick
 
-	A kind of janitor service. Will pick up any object worth
-	less than <value>, corpses and drink containers.
-	If trash was picked up, then execution continues at
-	instruction number <instruction no> (next tick).
-	The trash is extracted, this might be changed?
+        A kind of janitor service. Will pick up any object worth
+        less than <value>, corpses and drink containers.
+        If trash was picked up, then execution continues at
+        instruction number <instruction no> (next tick).
+        The trash is extracted, this might be changed?
 
-	Example: " 90 T200,50@"
+        Example: " 90 T200,50@"
 
 
      W<instruction no>,<time>
 
-	TICK: Continue with next instruction immediately.
+        TICK: Continue with next instruction immediately.
 
-	If the current time (24 hour system [0..23]) is as specified,
-	then immediately execute the instruction <instruction no>.
-	Otherwise continue with next instruction at next tick.
+        If the current time (24 hour system [0..23]) is as specified,
+        then immediately execute the instruction <instruction no>.
+        Otherwise continue with next instruction at next tick.
 
-	Example: "180 W200,7@"
+        Example: "180 W200,7@"
 
      *<string>
 
-	TICK: N/A.
+        TICK: N/A.
 
-	The string is treated as a remark.
+        The string is treated as a remark.
 
-	Example: "10 *This is a remark which ends here:@"
+        Example: "10 *This is a remark which ends here:@"
 
      M<instruction no>@<cmd>@<keywords>@<timeout>  : NOT YET TESTED
 
@@ -285,37 +285,37 @@ These have not yet been made/or have been deleted
 
      K<instruction-with-one-%s>
 
-	TICK: Wait one tick.
+        TICK: Wait one tick.
 
-	Finds random PC in room and executes the instruction
-	on it, where the name of the pc it set into the %s.
-	If no PC is found, no instruction is executed.
+        Finds random PC in room and executes the instruction
+        on it, where the name of the pc it set into the %s.
+        If no PC is found, no instruction is executed.
 
-	Example: "150 Ksteal coins from %s"
+        Example: "150 Ksteal coins from %s"
 
      P<instruction no><symbolic unit name>
 
-	TICK: Waits one tick.
+        TICK: Waits one tick.
 
-	Inventory is searched for <symbolic unit name>. If
-	<symbolic unit name> is null (none) then the first
-	object in inventory is selected. The selected unit
-	is then destroyed if it was found.
+        Inventory is searched for <symbolic unit name>. If
+        <symbolic unit name> is null (none) then the first
+        object in inventory is selected. The selected unit
+        is then destroyed if it was found.
 
-	If something was purged execution continues at the
-	next instruction - otherwise at <instruction no>.
+        If something was purged execution continues at the
+        next instruction - otherwise at <instruction no>.
 
-	Examples: "799 P10basis/corpse"
-		  "799 P10@"
+        Examples: "799 P10basis/corpse"
+                  "799 P10@"
 
 */
 
-#define PAIN_SEPARATOR  '@'
+#define PAIN_SEPARATOR '@'
 
 struct pain_type
 {
-   ubit16 top;   /* No of commands          */
-   ubit16 idx;   /* Current command pointer */
+   ubit16                top; /* No of commands          */
+   ubit16                idx; /* Current command pointer */
    struct pain_cmd_type *cmds;
 
    void *vars[1]; /* Global Working Variable! */
@@ -323,17 +323,12 @@ struct pain_type
 
 struct pain_cmd_type
 {
-   int    (*func) (struct unit_data *npc, struct pain_type *pain);
+   int (*func)(struct unit_data *npc, struct pain_type *pain);
 
-   sbit32 gotoline;
-   sbit32 data[2];
-//   void   *ptr[2];
-   std::variant<
-      std::monostate,
-      std::shared_ptr<file_index_type>
-      ,char *
-      ,char **
-      ,unit_data *> ptr[2];
+   sbit32                                                                                       gotoline;
+   sbit32                                                                                       data[2];
+   //   void   *ptr[2];
+   std::variant<std::monostate, std::shared_ptr<file_index_type>, char *, char **, unit_data *> ptr[2];
 };
 
 /* Intended to be used for error-reports */
@@ -345,30 +340,27 @@ static struct unit_data *p_error_unit = NULL;
 
 void pain_error(const char *str, ...)
 {
-  char buf[MAX_STRING_LENGTH];
-  va_list args;
+   char    buf[MAX_STRING_LENGTH];
+   va_list args;
 
-  va_start(args, str);
-  vsprintf(buf, str, args);
-  va_end(args);
+   va_start(args, str);
+   vsprintf(buf, str, args);
+   va_end(args);
 
-  buf[155] = 0; /* Make sure it is not too long! */
+   buf[155] = 0; /* Make sure it is not too long! */
 
-  szonelog(UNIT_FI_ZONE(p_error_unit), "%s@%s: %s",
-	   UNIT_FI_NAME(p_error_unit), UNIT_FI_ZONENAME(p_error_unit), buf);
+   szonelog(UNIT_FI_ZONE(p_error_unit), "%s@%s: %s", UNIT_FI_NAME(p_error_unit), UNIT_FI_ZONENAME(p_error_unit), buf);
 }
-
 
 void pain_next_cmd(struct pain_type *pain)
 {
-   if (++pain->idx >= pain->top)
+   if(++pain->idx >= pain->top)
       pain->idx = 0;
 }
 
-
 void pain_gotoline(struct pain_type *pain)
 {
-   if (pain->cmds[pain->idx].gotoline >= pain->top)
+   if(pain->cmds[pain->idx].gotoline >= pain->top)
    {
       pain_error("PAIN error - jump to undefined instruction number.");
       pain_next_cmd(pain);
@@ -377,41 +369,36 @@ void pain_gotoline(struct pain_type *pain)
       pain->idx = pain->cmds[pain->idx].gotoline;
 }
 
-
 /* . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . */
-
 
 /* 'A' command */
 int pain_act(struct unit_data *npc, struct pain_type *pain)
 {
    act(std::get<char *>(pain->cmds[pain->idx].ptr[0]), A_SOMEONE, npc, 0, 0, TO_ROOM);
    pain_next_cmd(pain);
-   return FALSE;    /* Stop command loop until next tick */
+   return FALSE; /* Stop command loop until next tick */
 }
-
 
 /* 'C' command */
 int pain_command(struct unit_data *npc, struct pain_type *pain)
 {
-   command_interpreter(npc, std::get<char*>(pain->cmds[pain->idx].ptr[0]));
+   command_interpreter(npc, std::get<char *>(pain->cmds[pain->idx].ptr[0]));
    pain_next_cmd(pain);
-   return FALSE;    /* Stop command loop until next tick */
+   return FALSE; /* Stop command loop until next tick */
 }
-
 
 /* 'D' Command */
 int pain_closed(struct unit_data *npc, struct pain_type *pain)
 {
    int i;
 
-   if (IS_ROOM(UNIT_IN(npc)) &&
-       ROOM_EXIT(UNIT_IN(npc), pain->cmds[pain->idx].data[0]))
+   if(IS_ROOM(UNIT_IN(npc)) && ROOM_EXIT(UNIT_IN(npc), pain->cmds[pain->idx].data[0]))
    {
       i = ROOM_EXIT(UNIT_IN(npc), pain->cmds[pain->idx].data[0])->exit_info;
-      if (IS_SET(i, EX_CLOSED))
+      if(IS_SET(i, EX_CLOSED))
       {
-	 pain_gotoline(pain);
-	 return TRUE; /* Continue command loop immediately */
+         pain_gotoline(pain);
+         return TRUE; /* Continue command loop immediately */
       }
    }
 
@@ -420,25 +407,23 @@ int pain_closed(struct unit_data *npc, struct pain_type *pain)
    return TRUE; /* Continue command loop immediately */
 }
 
-
-
 /* 'd' command */
 int pain_charcmd(struct unit_data *npc, struct pain_type *pain)
 {
    struct unit_data *u;
-   char buf[MAX_INPUT_LENGTH];
+   char              buf[MAX_INPUT_LENGTH];
 
-   if (!pain->vars[0])   /* Is there a PC target? */
+   if(!pain->vars[0]) /* Is there a PC target? */
    {
       pain_gotoline(pain);
       return FALSE; /* Wait a tick */
    }
 
-   for (u = UNIT_CONTAINS(UNIT_IN(npc)); u; u = u->next)
-      if (u == pain->vars[0])
-	 break;
+   for(u = UNIT_CONTAINS(UNIT_IN(npc)); u; u = u->next)
+      if(u == pain->vars[0])
+         break;
 
-   if (!u)
+   if(!u)
    {
       pain->vars[0] = 0;
       pain_gotoline(pain);
@@ -446,23 +431,21 @@ int pain_charcmd(struct unit_data *npc, struct pain_type *pain)
    }
 
    /* Great! The CHAR is still here! */
-   sprintf(buf, std::get<char*>(pain->cmds[pain->idx].ptr[0]), UNIT_NAME(u));
+   sprintf(buf, std::get<char *>(pain->cmds[pain->idx].ptr[0]), UNIT_NAME(u));
    command_interpreter(npc, buf);
    pain_next_cmd(pain);
-   return FALSE;    /* Stop command loop until next tick */
+   return FALSE; /* Stop command loop until next tick */
 }
-
-
 
 /* 'G' command */
 int pain_goto(struct unit_data *npc, struct pain_type *pain)
 {
    std::shared_ptr<file_index_type> fi;
-   int res;
+   int                              res;
 
    fi = std::get<std::shared_ptr<file_index_type>>(pain->cmds[pain->idx].ptr[0]);
 
-   if (fi->room_ptr)
+   if(fi->room_ptr)
       res = npc_move(npc, fi->room_ptr);
    else
    {
@@ -471,13 +454,11 @@ int pain_goto(struct unit_data *npc, struct pain_type *pain)
       return FALSE;
    }
 
-   if (res == MOVE_GOAL)  /* Destination reached! */
+   if(res == MOVE_GOAL) /* Destination reached! */
       pain_next_cmd(pain);
 
-   return FALSE;    /* Stop command loop until next tick */
+   return FALSE; /* Stop command loop until next tick */
 }
-
-
 
 /* 'H' command */
 int pain_has(struct unit_data *npc, struct pain_type *pain)
@@ -486,7 +467,7 @@ int pain_has(struct unit_data *npc, struct pain_type *pain)
 
    c = std::get<char *>(pain->cmds[pain->idx].ptr[0]);
 
-   if (find_unit(npc, &c, 0, FIND_UNIT_IN_ME))
+   if(find_unit(npc, &c, 0, FIND_UNIT_IN_ME))
    {
       pain_gotoline(pain);
       return TRUE; /* Continue command loop immediately */
@@ -497,32 +478,30 @@ int pain_has(struct unit_data *npc, struct pain_type *pain)
    return TRUE; /* Continue command loop immediately */
 }
 
-
-
 /* 'I' command */
 int pain_in_room(struct unit_data *npc, struct pain_type *pain)
 {
    struct unit_data *u;
-   char *c, buf[256];
+   char             *c, buf[256];
 
    c = std::get<char *>(pain->cmds[pain->idx].ptr[0]);
 
-   if ((u = find_unit(npc, &c, 0, FIND_UNIT_SURRO)))
+   if((u = find_unit(npc, &c, 0, FIND_UNIT_SURRO)))
    {
-      if (u != npc)
+      if(u != npc)
       {
-	 pain_gotoline(pain);
-	 return TRUE;
+         pain_gotoline(pain);
+         return TRUE;
       }
       else
       {
-	 c = std::get<char *>(pain->cmds[pain->idx].ptr[0]);
-	 sprintf(buf, "2.%s", c);
-	 if (find_unit(npc, &c, 0, FIND_UNIT_SURRO))
-	 {
-	    pain_gotoline(pain);
-	    return TRUE;
-	 }
+         c = std::get<char *>(pain->cmds[pain->idx].ptr[0]);
+         sprintf(buf, "2.%s", c);
+         if(find_unit(npc, &c, 0, FIND_UNIT_SURRO))
+         {
+            pain_gotoline(pain);
+            return TRUE;
+         }
       }
    }
 
@@ -530,8 +509,6 @@ int pain_in_room(struct unit_data *npc, struct pain_type *pain)
 
    return TRUE; /* Continue command loop immediately */
 }
-
-
 
 /* 'i' command */
 int pain_intercept(struct unit_data *npc, struct pain_type *pain)
@@ -541,8 +518,6 @@ int pain_intercept(struct unit_data *npc, struct pain_type *pain)
    return FALSE; /* Stop ticking right away. :) */
 }
 
-
-
 /* 'J' command */
 int pain_jump(struct unit_data *npc, struct pain_type *pain)
 {
@@ -550,30 +525,25 @@ int pain_jump(struct unit_data *npc, struct pain_type *pain)
    return FALSE; /* Command loop will stall one tick */
 }
 
-
-
 /* 'L' command */
 int pain_locked(struct unit_data *npc, struct pain_type *pain)
 {
    int i;
 
-   if (IS_ROOM(UNIT_IN(npc)) &&
-       ROOM_EXIT(UNIT_IN(npc), pain->cmds[pain->idx].data[0]))
+   if(IS_ROOM(UNIT_IN(npc)) && ROOM_EXIT(UNIT_IN(npc), pain->cmds[pain->idx].data[0]))
    {
       i = ROOM_EXIT(UNIT_IN(npc), pain->cmds[pain->idx].data[0])->exit_info;
-      if (IS_SET(i, EX_LOCKED))
+      if(IS_SET(i, EX_LOCKED))
       {
-	 pain_gotoline(pain);
-	 return TRUE; /* Continue command loop immediately */
+         pain_gotoline(pain);
+         return TRUE; /* Continue command loop immediately */
       }
    }
-   else   /* Not closed */
-     pain_next_cmd(pain);
+   else /* Not closed */
+      pain_next_cmd(pain);
 
    return TRUE; /* Continue command loop immediately */
 }
-
-
 
 /* 'l' command */
 int pain_load(struct unit_data *npc, struct pain_type *pain)
@@ -583,10 +553,8 @@ int pain_load(struct unit_data *npc, struct pain_type *pain)
    u = read_unit(std::get<std::shared_ptr<file_index_type>>(pain->cmds[pain->idx].ptr[0]));
    unit_to_unit(u, npc);
    pain_next_cmd(pain);
-   return TRUE;  /* Continue command loop immediately */
+   return TRUE; /* Continue command loop immediately */
 }
-
-
 
 /* 'r' command */
 int pain_remote_load(struct unit_data *npc, struct pain_type *pain)
@@ -596,23 +564,19 @@ int pain_remote_load(struct unit_data *npc, struct pain_type *pain)
    u = read_unit(std::get<std::shared_ptr<file_index_type>>(pain->cmds[pain->idx].ptr[0]));
    unit_to_unit(u, std::get<unit_data *>(pain->cmds[pain->idx].ptr[1]));
    pain_next_cmd(pain);
-   return TRUE;  /* Continue command loop immediately */
+   return TRUE; /* Continue command loop immediately */
 }
-
-
 
 /* 'R' command */
 int pain_random(struct unit_data *npc, struct pain_type *pain)
 {
-   if (number(1, 100) <= pain->cmds[pain->idx].data[0])
+   if(number(1, 100) <= pain->cmds[pain->idx].data[0])
       pain_gotoline(pain);
    else
       pain_next_cmd(pain);
 
    return TRUE; /* Continue command loop immediately */
 }
-
-
 
 /* 'S' command */
 int pain_scan_pc(struct unit_data *npc, struct pain_type *pain)
@@ -621,7 +585,7 @@ int pain_scan_pc(struct unit_data *npc, struct pain_type *pain)
 
    int i = number(0, unit_vector.top);
 
-   if ((unit_vector.top < 1) || !CHAR_CAN_SEE(npc, UVI(i)))
+   if((unit_vector.top < 1) || !CHAR_CAN_SEE(npc, UVI(i)))
    {
       pain_gotoline(pain);
       return FALSE; /* Wait a tick */
@@ -632,35 +596,29 @@ int pain_scan_pc(struct unit_data *npc, struct pain_type *pain)
    return TRUE; /* Wait no more */
 }
 
-
-
 /* 'T' command */
 int pain_trash(struct unit_data *npc, struct pain_type *pain)
 {
    struct unit_data *u;
 
-   amount_t obj_trade_price(struct unit_data *u);
+   amount_t obj_trade_price(struct unit_data * u);
 
-   for (u = UNIT_CONTAINS(UNIT_IN(npc)); u; u = u->next)
+   for(u = UNIT_CONTAINS(UNIT_IN(npc)); u; u = u->next)
    {
-      if (UNIT_WEAR(u, MANIPULATE_TAKE) &&
-	  (UNIT_WEIGHT(u) <= 200) &&
-	  ((OBJ_TYPE(u) == ITEM_DRINKCON) ||
-	   (obj_trade_price(u) <= (sbit32) pain->cmds[pain->idx].data[0])))
+      if(UNIT_WEAR(u, MANIPULATE_TAKE) && (UNIT_WEIGHT(u) <= 200) &&
+         ((OBJ_TYPE(u) == ITEM_DRINKCON) || (obj_trade_price(u) <= (sbit32)pain->cmds[pain->idx].data[0])))
       {
-	 act("$1n picks up $3n.", A_SOMEONE, npc, 0, u, TO_ROOM);
-	 /* unit_down(u, npc); */
-	 extract_unit(u);   /* Not sure this is fair... */
-	 pain_gotoline(pain);
-	 return FALSE;  /* Wait one tick */
+         act("$1n picks up $3n.", A_SOMEONE, npc, 0, u, TO_ROOM);
+         /* unit_down(u, npc); */
+         extract_unit(u); /* Not sure this is fair... */
+         pain_gotoline(pain);
+         return FALSE; /* Wait one tick */
       }
    }
 
    pain_next_cmd(pain);
-   return FALSE;   /* Wait one tick */
+   return FALSE; /* Wait one tick */
 }
-
-
 
 /* 'W' command */
 int pain_wait(struct unit_data *npc, struct pain_type *pain)
@@ -670,13 +628,13 @@ int pain_wait(struct unit_data *npc, struct pain_type *pain)
 
    time_info = mud_date(time(0));
 
-   if (pain->cmds[pain->idx].data[0] == time_info.hours)
+   if(pain->cmds[pain->idx].data[0] == time_info.hours)
    {
       pain_gotoline(pain);
       return TRUE; /* Continue command loop immediately */
    }
    else
-     pain_next_cmd(pain);
+      pain_next_cmd(pain);
 
    return TRUE; /* Continue command loop immediately */
 }
@@ -684,123 +642,115 @@ int pain_wait(struct unit_data *npc, struct pain_type *pain)
 /* 'M' command */
 int pain_waitmsg(struct unit_data *npc, struct pain_type *pain)
 {
-   if (pain->cmds[pain->idx].data[0]){
-     pain->cmds[pain->idx].data[0]--;
-     return FALSE; /* Wait yet another tick */
-   } else {
-     pain_gotoline(pain);
-     return TRUE; /* Continue command loop immediately */
+   if(pain->cmds[pain->idx].data[0])
+   {
+      pain->cmds[pain->idx].data[0]--;
+      return FALSE; /* Wait yet another tick */
+   }
+   else
+   {
+      pain_gotoline(pain);
+      return TRUE; /* Continue command loop immediately */
    }
 }
-
 
 /* ---------------------------------------------------------------------- */
 /*                P A I N   E X E C U T I O N   L O O P                   */
 /* ---------------------------------------------------------------------- */
 
-
 void pain_free(struct pain_type *p)
 {
    int i;
 
-   if (p->top > 0)
+   if(p->top > 0)
    {
-      for (i=0; i < p->top; i++)
+      for(i = 0; i < p->top; i++)
       {
-	 if (std::holds_alternative<char *>(p->cmds[i].ptr[0]) || std::holds_alternative<char **>(p->cmds[i].ptr[0]))
-	 {
-	    if ((p->cmds[i].func == pain_act) ||
-		(p->cmds[i].func == pain_command) ||
-		(p->cmds[i].func == pain_charcmd) ||
-		(p->cmds[i].func == pain_has) ||
-		(p->cmds[i].func == pain_in_room))
-	       free(std::get<char*>(p->cmds[i].ptr[0]));
-	    else if (p->cmds[i].func == pain_waitmsg)
-	       free_namelist(std::get<char **>(p->cmds[i].ptr[0]));
-	 }
+         if(std::holds_alternative<char *>(p->cmds[i].ptr[0]) || std::holds_alternative<char **>(p->cmds[i].ptr[0]))
+         {
+            if((p->cmds[i].func == pain_act) || (p->cmds[i].func == pain_command) || (p->cmds[i].func == pain_charcmd) ||
+               (p->cmds[i].func == pain_has) || (p->cmds[i].func == pain_in_room))
+               free(std::get<char *>(p->cmds[i].ptr[0]));
+            else if(p->cmds[i].func == pain_waitmsg)
+               free_namelist(std::get<char **>(p->cmds[i].ptr[0]));
+         }
       }
       free(p->cmds);
    }
    free(p);
 }
 
-
-
 int pain_exec(struct spec_arg *sarg)
 {
-  int i, cont;
-  struct pain_type *p;
+   int               i, cont;
+   struct pain_type *p;
 
-  p = (struct pain_type *) sarg->fptr->data;
+   p = (struct pain_type *)sarg->fptr->data;
 
-  if (sarg->cmd->no == CMD_AUTO_EXTRACT)
-  {
-     if (p)
-       pain_free(p);
-     sarg->fptr->data = NULL;
-     return SFR_SHARE;
-  }
-
-  if (!IS_CHAR(sarg->owner))
-  {
-    slog(LOG_ALL, 0, "PAIN on unit %s@%s",
-	 UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
-    destroy_fptr(sarg->owner, sarg->fptr);
-    return SFR_BLOCK;
-  }
-
-  if (is_destructed(DR_UNIT, sarg->owner))
-    return SFR_BLOCK;
-
-  /* for pain-error-info */
-  p_error_unit = sarg->owner;
-
-  if (p->cmds[p->idx].func == pain_intercept)
-  {
-     if ((sarg->cmd->no == p->cmds[p->idx].data[0]) &&
-	 (std::get<std::shared_ptr<file_index_type>>(p->cmds[p->idx].ptr[0]) == UNIT_FILE_INDEX(sarg->activator)))
-     {
-	pain_intercept(sarg->owner, p);
-	return SFR_SHARE;
-     }
-     else
-       return SFR_SHARE;
-  }
-
-  if ((p->cmds[p->idx].func == pain_waitmsg) &&
-      (sarg->cmd->no == p->cmds[p->idx].data[0]) &&
-      (p->vars[0]) && (p->vars[0]==sarg->activator)&&
-      (is_name(sarg->arg, const_cast<const char**>(std::get<char **>(p->cmds[p->idx].ptr[0])))))
-  {
-    cont = TRUE;
-    pain_next_cmd(p);
-    return SFR_SHARE;
-  }
-
-  if ((sarg->cmd->no == CMD_AUTO_TICK) && !CHAR_FIGHTING(sarg->owner))
-  {
-    for (cont = TRUE, i = 0; cont && (i < 100); i++)
-      cont = ((*p->cmds[p->idx].func) (sarg->owner, p));
-
-    if (i >= 100)
-    {
-      pain_error("PAIN - Endless loop in execution.");
-      pain_free(p);
+   if(sarg->cmd->no == CMD_AUTO_EXTRACT)
+   {
+      if(p)
+         pain_free(p);
       sarg->fptr->data = NULL;
+      return SFR_SHARE;
+   }
+
+   if(!IS_CHAR(sarg->owner))
+   {
+      slog(LOG_ALL, 0, "PAIN on unit %s@%s", UNIT_FI_NAME(sarg->owner), UNIT_FI_ZONENAME(sarg->owner));
       destroy_fptr(sarg->owner, sarg->fptr);
-      return SFR_SHARE;
-    }
-/*
-    if (IS_SET(sarg->fptr->flags, SFB_SUPREME))
-      return SFR_SUPREME;
-    else
-      return SFR_SHARE;
-*/
-  }
+      return SFR_BLOCK;
+   }
 
-  return SFR_SHARE;  /* Other commands may pass through */
+   if(is_destructed(DR_UNIT, sarg->owner))
+      return SFR_BLOCK;
+
+   /* for pain-error-info */
+   p_error_unit = sarg->owner;
+
+   if(p->cmds[p->idx].func == pain_intercept)
+   {
+      if((sarg->cmd->no == p->cmds[p->idx].data[0]) &&
+         (std::get<std::shared_ptr<file_index_type>>(p->cmds[p->idx].ptr[0]) == UNIT_FILE_INDEX(sarg->activator)))
+      {
+         pain_intercept(sarg->owner, p);
+         return SFR_SHARE;
+      }
+      else
+         return SFR_SHARE;
+   }
+
+   if((p->cmds[p->idx].func == pain_waitmsg) && (sarg->cmd->no == p->cmds[p->idx].data[0]) && (p->vars[0]) &&
+      (p->vars[0] == sarg->activator) && (is_name(sarg->arg, const_cast<const char **>(std::get<char **>(p->cmds[p->idx].ptr[0])))))
+   {
+      cont = TRUE;
+      pain_next_cmd(p);
+      return SFR_SHARE;
+   }
+
+   if((sarg->cmd->no == CMD_AUTO_TICK) && !CHAR_FIGHTING(sarg->owner))
+   {
+      for(cont = TRUE, i = 0; cont && (i < 100); i++)
+         cont = ((*p->cmds[p->idx].func)(sarg->owner, p));
+
+      if(i >= 100)
+      {
+         pain_error("PAIN - Endless loop in execution.");
+         pain_free(p);
+         sarg->fptr->data = NULL;
+         destroy_fptr(sarg->owner, sarg->fptr);
+         return SFR_SHARE;
+      }
+      /*
+          if (IS_SET(sarg->fptr->flags, SFB_SUPREME))
+            return SFR_SUPREME;
+          else
+            return SFR_SHARE;
+      */
+   }
+
+   return SFR_SHARE; /* Other commands may pass through */
 }
-
 
 /* ---------------------------------------------------------------------- */
 /*                  P A I N   I N I T   R O U T I N E S                   */
@@ -810,44 +760,44 @@ int pain_exec(struct spec_arg *sarg)
 /*                                                          */
 char *pi_getstr(char *c, char *buf)
 {
-   for (; (*buf = *c) && (*c++ != PAIN_SEPARATOR); buf++)   ;
+   for(; (*buf = *c) && (*c++ != PAIN_SEPARATOR); buf++)
+      ;
 
-   *buf = '\0';  /* Erase last separator */
+   *buf = '\0'; /* Erase last separator */
 
-   if (*c)
-     return c-1;
+   if(*c)
+      return c - 1;
    else
-     return c;
+      return c;
 }
 
 /* Gets the next string from buf up until the next '!' mark */
 /*                                                          */
 char *pi_getstr_excla(char *c, char *buf)
 {
-   for (; (*buf = *c) && (*c++ != '!'); buf++)   ;
+   for(; (*buf = *c) && (*c++ != '!'); buf++)
+      ;
 
-   *buf = '\0';  /* Erase last separator */
+   *buf = '\0'; /* Erase last separator */
 
-   if (*c)
-     return c-1;
+   if(*c)
+      return c - 1;
    else
-     return c;
+      return c;
 }
-
 
 char *pi_getnum(char *c, int *res)
 {
-   if (!isdigit(*c))
+   if(!isdigit(*c))
       *res = -1;
    else
       *res = 0;
 
-   for (*res = 0; *c && isdigit(*c);  c++)
-      *res = 10*(*res) + (*c - '0');
+   for(*res = 0; *c && isdigit(*c); c++)
+      *res = 10 * (*res) + (*c - '0');
 
    return c;
 }
-
 
 struct line_no_convert
 {
@@ -855,13 +805,12 @@ struct line_no_convert
    int actual;
 };
 
-
 int translate_line(int top, int sym, struct line_no_convert *line_numbers)
 {
    int i;
-   for (i=0; i < top; i++)
-      if (sym == line_numbers[i].symbolic)
-	 return line_numbers[i].actual;
+   for(i = 0; i < top; i++)
+      if(sym == line_numbers[i].symbolic)
+         return line_numbers[i].actual;
 
    return -1;
 }
@@ -899,9 +848,9 @@ struct pain_type *pain_doinit(struct unit_data *npc, char *text)
 
       cmd.gotoline = -1;
       cmd.data[0] = cmd.data[1] = 0;
-      cmd.ptr[0] = std::monostate{};
-      cmd.ptr[1] = std::monostate{};
-      cmd.func                = 0;
+      cmd.ptr[0]                = std::monostate{};
+      cmd.ptr[1]                = std::monostate{};
+      cmd.func                  = 0;
 
       /* Read symbolic line number */
       text = pi_getnum(text, &i);
@@ -1068,7 +1017,7 @@ struct pain_type *pain_doinit(struct unit_data *npc, char *text)
 
             text = pi_getstr(text, buf);
             split_fi_ref(buf, zone, name);
-            if(cmd.ptr[1] = world_room(zone, name); std::get<unit_data*>(cmd.ptr[1]) != nullptr)
+            if(cmd.ptr[1] = world_room(zone, name); std::get<unit_data *>(cmd.ptr[1]) != nullptr)
             {
                pain_error("PAIN 'r': - Illegal symbolic ROOM reference: %s", buf);
                error = TRUE;
@@ -1209,36 +1158,36 @@ int pain_init(struct spec_arg *sarg)
 {
    struct pain_type *p;
 
-   if (sarg->fptr->data)
+   if(sarg->fptr->data)
    {
-      if (sarg->cmd->no == CMD_AUTO_EXTRACT)
+      if(sarg->cmd->no == CMD_AUTO_EXTRACT)
       {
-	 free(sarg->fptr->data);
-	 sarg->fptr->data = NULL;
-	 return SFR_SHARE;
+         free(sarg->fptr->data);
+         sarg->fptr->data = NULL;
+         return SFR_SHARE;
       }
 
       p_error_unit = sarg->owner;
 
-      if ((p = pain_doinit(sarg->owner, (char *) sarg->fptr->data)))
+      if((p = pain_doinit(sarg->owner, (char *)sarg->fptr->data)))
       {
-	 sarg->fptr->index = SFUN_PAIN;
+         sarg->fptr->index = SFUN_PAIN;
 
-	 free(sarg->fptr->data);
-	 sarg->fptr->data = NULL;
+         free(sarg->fptr->data);
+         sarg->fptr->data = NULL;
 
-	 sarg->fptr->data = p;
-	 if (sarg->fptr->heart_beat < WAIT_SEC * 5)
-	 {
-	    pain_error("PAIN had less than 5 sec. PAIN beat.");
-	    sarg->fptr->heart_beat = WAIT_SEC * 15;
-	 }
+         sarg->fptr->data = p;
+         if(sarg->fptr->heart_beat < WAIT_SEC * 5)
+         {
+            pain_error("PAIN had less than 5 sec. PAIN beat.");
+            sarg->fptr->heart_beat = WAIT_SEC * 15;
+         }
       }
       else
       {
-	 destroy_fptr(sarg->owner, sarg->fptr);
+         destroy_fptr(sarg->owner, sarg->fptr);
       }
-  }
+   }
 
-  return SFR_SHARE;
+   return SFR_SHARE;
 }

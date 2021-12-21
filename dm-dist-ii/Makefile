@@ -39,7 +39,7 @@ DEBUG	=	-g
 
 CFL	=	$(DEBUG) $(SYSPORT) $(SYSFLAGS) $(EXTRA_CFLAGS)
 CFLAGS	=	$(CFL)   -Wall -Wno-unused -Wno-format-overflow -Wno-stringop-truncation -Wno-register
-
+CPPFLAGS = $(CFLAGS)
 # (f)lex/yacc/bison generated c-files are notorious for their lousy C
 # hence, no warnings...
 CFLAGS2	= 	$(CFL) -ansi

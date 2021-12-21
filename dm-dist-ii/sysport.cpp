@@ -42,146 +42,138 @@
  * + #endif
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <ctype.h>
-
-#include "structs.h"
-#include "utils.h"
-#include "utility.h"
-#include "handler.h"
 #include "comm.h"
+#include "handler.h"
+#include "structs.h"
 #include "system.h"
+#include "utility.h"
+#include "utils.h"
+
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #ifdef DOS
 char *crypt(char *salt, char *password)
 {
-  return password;
+   return password;
 }
 #endif /* DOS */
-
 
 #ifdef SUNOS4
 /* I know, not very pretty, but it should work on all SunOS machines... */
 double difftime(time_t t1, time_t t2)
 {
-  /* Can't remember the right order... oh well... */
-  if (t1 < t2)
-    return (double) t2 - t1;
-  else
-    return (double) t1 - t2;
+   /* Can't remember the right order... oh well... */
+   if(t1 < t2)
+      return (double)t2 - t1;
+   else
+      return (double)t1 - t2;
 }
 #endif /* SUNOS4 */
 
-
 #ifdef AMIGA1
-  /* These cmd's clash rather unfortunately with AmigaDOS functionality. */
-  #ifdef CMD_RESET
-    #undef CMD_RESET
-  #endif
-  #ifdef CMD_READ
-    #undef CMD_READ
-  #endif
-  #ifdef CMD_WRITE
-    #undef CMD_WRITE
-  #endif
+   /* These cmd's clash rather unfortunately with AmigaDOS functionality. */
+   #ifdef CMD_RESET
+      #undef CMD_RESET
+   #endif
+   #ifdef CMD_READ
+      #undef CMD_READ
+   #endif
+   #ifdef CMD_WRITE
+      #undef CMD_WRITE
+   #endif
 
-  #include <devices/timer.h>
-  #include <time.h>
-
-  #include <exec/semaphores.h>
-  #include <exec/memory.h>
-
-  #include <clib/alib_protos.h>
-  #include <clib/exec_protos.h>
+   #include <clib/alib_protos.h>
+   #include <clib/exec_protos.h>
+   #include <devices/timer.h>
+   #include <exec/memory.h>
+   #include <exec/semaphores.h>
+   #include <time.h>
 
 /* Routines specifically for the Amiga version */
 
 struct timerequest *tr = NULL;
-struct timeval tval;
-time_t oldtime, newtime;
+struct timeval      tval;
+time_t              oldtime, newtime;
 
 char *crypt(char *text, char *key)
 {
-  return text;
+   return text;
 }
-
 
 void CloseTimer(void)
 {
-  struct MsgPort *tp;
+   struct MsgPort *tp;
 
-  if (tr)
-  {
-    tp = tr->tr_node.io_Message.mn_ReplyPort;
+   if(tr)
+   {
+      tp = tr->tr_node.io_Message.mn_ReplyPort;
 
-    if (tp != 0)
-      DeletePort(tp);
+      if(tp != 0)
+         DeletePort(tp);
 
-    CloseDevice((struct IORequest *) tr);
-    DeleteExtIO((struct IORequest *) tr);
-  }
+      CloseDevice((struct IORequest *)tr);
+      DeleteExtIO((struct IORequest *)tr);
+   }
 }
-
 
 int OpenTimer(void)
 {
-  struct MsgPort *timerport;
+   struct MsgPort *timerport;
 
-  if (!(timerport = (struct MsgPort *)CreatePort( 0, 0 )))
-  {
-    perror("No TimerPort!");
-    return 0;
-  }
+   if(!(timerport = (struct MsgPort *)CreatePort(0, 0)))
+   {
+      perror("No TimerPort!");
+      return 0;
+   }
 
-  if (!(tr = (struct timerequest *)
-	CreateExtIO( timerport, sizeof(struct timerequest))))
-  {
-    perror("TimerExtIO not got!");
-    DeletePort(timerport);
-    return 0;
-  }
+   if(!(tr = (struct timerequest *)CreateExtIO(timerport, sizeof(struct timerequest))))
+   {
+      perror("TimerExtIO not got!");
+      DeletePort(timerport);
+      return 0;
+   }
 
-  if (OpenDevice((UBYTE *)TIMERNAME, UNIT_MICROHZ, (struct IORequest *)tr, 0L))
-  {
-    perror("Timer.device out for lunch");
-    DeleteExtIO( (struct IORequest *) tr );
-    DeletePort(timerport);
-    return 0;
-  }
+   if(OpenDevice((UBYTE *)TIMERNAME, UNIT_MICROHZ, (struct IORequest *)tr, 0L))
+   {
+      perror("Timer.device out for lunch");
+      DeleteExtIO((struct IORequest *)tr);
+      DeletePort(timerport);
+      return 0;
+   }
 
-  time(&oldtime);
+   time(&oldtime);
 
-  return 42;
+   return 42;
 }
-
 
 int WaitForPulse(void)
 {
-  tval.tv_secs = 0;
-  tr->tr_node.io_Command = TR_ADDREQUEST;
-  tr->tr_time = tval;
+   tval.tv_secs           = 0;
+   tr->tr_node.io_Command = TR_ADDREQUEST;
+   tr->tr_time            = tval;
 
-  time(&newtime);
-  if ((int) difftime(newtime, oldtime) > 25)
-  {
-    oldtime += 25;
-    return 0;
-  }
+   time(&newtime);
+   if((int)difftime(newtime, oldtime) > 25)
+   {
+      oldtime += 25;
+      return 0;
+   }
 
-  tr->tr_time.tv_micro = 250000 - ((int) difftime(newtime, oldtime)) * 10000;
+   tr->tr_time.tv_micro = 250000 - ((int)difftime(newtime, oldtime)) * 10000;
 
-  if (tr->tr_time.tv_micro < 20000L)
-  {
-    oldtime += 25;
-    return 0;
-  }
+   if(tr->tr_time.tv_micro < 20000L)
+   {
+      oldtime += 25;
+      return 0;
+   }
 
-  DoIO((struct IORequest *) tr );
+   DoIO((struct IORequest *)tr);
 
-  oldtime = newtime;
+   oldtime = newtime;
 
-  return 0;
+   return 0;
 }
 
 #endif /* AMIGA */

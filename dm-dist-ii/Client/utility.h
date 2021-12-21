@@ -26,11 +26,11 @@
 #define _MUD_UTILITY_H
 
 #ifdef MIN
-#undef MIN
+   #undef MIN
 #endif
 
 #ifdef MAX
-#undef MAX
+   #undef MAX
 #endif
 
 int MIN(int a, int b);
@@ -55,12 +55,12 @@ struct unit_data *hometown_unit(char *str);
 
 class log_buffer
 {
-  public:
+public:
    log_buffer(void) { str[0] = 0; }
 
-   char str[MAX_INPUT_LENGTH + 50];
+   char           str[MAX_INPUT_LENGTH + 50];
    enum log_level level;
-   ubit8 wizinv_level;
+   ubit8          wizinv_level;
 };
 
 /* For the printing of obj_type information, as used by the identify spell and
@@ -68,11 +68,10 @@ class log_buffer
  */
 struct obj_type_t
 {
-  char *fmt;
-  ubit8 v[5];
+   char *fmt;
+   ubit8 v[5];
 };
 
 char *stat_obj_data(struct unit_data *u, struct obj_type_t *obj_data);
-
 
 #endif

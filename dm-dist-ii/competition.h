@@ -28,6 +28,4 @@
 void competition_enroll(struct unit_data *pc);
 void competition_update(struct unit_data *pc);
 
-
 #endif
-

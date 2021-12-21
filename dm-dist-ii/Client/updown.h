@@ -26,14 +26,13 @@
 
 #include "channel.h"
 
-
 struct bbs_type
 {
-   int bOverdue;
-   int nTotalCredit;
+   int  bOverdue;
+   int  nTotalCredit;
    char name[512];
-   int nLevel;
-   int nAccess;
+   int  nLevel;
+   int  nAccess;
 
    int bUpload;
    int bDownload;
@@ -41,18 +40,17 @@ struct bbs_type
 
 extern struct bbs_type bbs;
 
-
 class cUpload : public cChannel
 {
-  public:
+public:
    cUpload(ubit8 nChn, char *file);
    ~cUpload(void);
-   
-   void Receive(ubit8 *data, ubit32 len);
-   const char *Status(void); // Returns how far we are
-   void Thread(void);
 
-  private:
+   void        Receive(ubit8 *data, ubit32 len);
+   const char *Status(void); // Returns how far we are
+   void        Thread(void);
+
+private:
    FILE *f;
 
    char *pFileName;
@@ -65,25 +63,23 @@ class cUpload : public cChannel
    char FileBuf[4 * (SLW_MAX_DATA + 1)];
 };
 
-
-
 class cDownload : public cChannel
 {
-  public:
+public:
    cDownload(ubit8 nChn, char *file);
    ~cDownload(void);
 
-   void Receive(ubit8 *data, ubit32 len);
+   void        Receive(ubit8 *data, ubit32 len);
    const char *Status(void); // Returns how far we are
 
-  private:
+private:
    FILE *f;
    FILE *fshadow;
 
    char *pBaseName;
    char *pFileName;
    char *pShadowName;
-   char FileBuf[4 * SLW_MAX_DATA + 4];
+   char  FileBuf[4 * SLW_MAX_DATA + 4];
 
    ubit32 nExpectedLength;
    ubit16 nExpectedCrc;
@@ -95,5 +91,3 @@ class cDownload : public cChannel
 };
 
 #endif
-
-

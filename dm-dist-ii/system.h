@@ -25,35 +25,36 @@
 #ifndef _MUD_SYSTEM_H
 #define _MUD_SYSTEM_H
 
-#include <sys/time.h>
 #include "select.h"
 
-#define MAX_MULTI      5  /* Maximum five multiconnects */
+#include <sys/time.h>
+
+#define MAX_MULTI 5 /* Maximum five multiconnects */
 
 class cMultiHook : public cHook
 {
-  public:
+public:
    cMultiHook(void);
    void Input(int nFlags);
 
    void Close(void);
    int  Read(void);
 
-   int succ_err;           /* Number of successive errors */
+   int succ_err; /* Number of successive errors */
 };
 
 class cMultiMaster
 {
-  public:
+public:
    cMultiMaster(void);
 
-   int nCount;
+   int        nCount;
    cMultiHook Multi[MAX_MULTI];
 };
 
 extern class cMultiMaster Multi;
 
-#define MAX_HOSTNAME   256
+#define MAX_HOSTNAME 256
 
 void init_mother(int nPort);
 void descriptor_close(struct descriptor_data *d, int bSendClose = TRUE);
@@ -63,14 +64,14 @@ void MplexSendSetup(struct descriptor_data *d);
 void bzero(char *b, int length);
 #endif
 
-int any_event(int port, struct multi_type *m);
-int multi_any_connect(int port);  /* test for event on socket port */
-int multi_any_freaky(struct multi_type *m);
-int multi_new(int mother, struct multi_type *m);
+int  any_event(int port, struct multi_type *m);
+int  multi_any_connect(int port); /* test for event on socket port */
+int  multi_any_freaky(struct multi_type *m);
+int  multi_new(int mother, struct multi_type *m);
 void multi_close_all(void);
 
-int any_input(int fd);        /* test for input         */
-int any_output(int fd);       /* test for output        */
+int any_input(int fd);  /* test for input         */
+int any_output(int fd); /* test for output        */
 
 int multi_process_input(struct multi_element *pm);
 

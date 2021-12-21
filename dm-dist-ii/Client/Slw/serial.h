@@ -24,36 +24,36 @@
 #ifndef _MS_SERIAL_H
 #define _MS_SERIAL_H
 
-#include <termios.h>
-
 #include "interfc.h"
 #include "select.h"
 
+#include <termios.h>
+
 class cSerial : public cNetInterface, public cHook
 {
-  public:
+public:
    cSerial();
    cSerial(char *pDev);
    virtual ~cSerial();
-   
-   int  Open(char *cpDev, int nBaud = 38400);
-   int  Close(void);
 
-   int  Online(void);
-   int  Hangup(void);
-   int  ModemInit(char **init_string[]);
+   int Open(char *cpDev, int nBaud = 38400);
+   int Close(void);
 
-   int  Send(ubit8 data);
-   int  Send(const ubit8 *pData, ubit32 nLen);
+   int Online(void);
+   int Hangup(void);
+   int ModemInit(char **init_string[]);
 
-   int  SendString(char *pStr);
+   int Send(ubit8 data);
+   int Send(const ubit8 *pData, ubit32 nLen);
+
+   int          SendString(char *pStr);
    virtual void Receive(ubit8 *pChunk, ubit32 nSize) = 0;
 
    void Poll(void);
-   int WaitOnline(void);  // Wait for modem to become active
-   int Flush(void);
+   int  WaitOnline(void); // Wait for modem to become active
+   int  Flush(void);
 
-  private:
+private:
    int ReadBlock(ubit8 *pChunk, ubit32 nSize);
    int DisplayStatus(void);
    int Status(void);
@@ -66,8 +66,8 @@ class cSerial : public cNetInterface, public cHook
 
    struct termios org_tty;
    struct termios raw_tty;
-   int ori_flags;
-   int raw_flags;
+   int            ori_flags;
+   int            raw_flags;
 };
 
 #endif

@@ -26,7 +26,7 @@
 
 #include "channel.h"
 
-#define  DIR_FILE  ".filelist"
+#define DIR_FILE ".filelist"
 
 /*
    There is always exactly one system class at a fixed channel.
@@ -42,16 +42,14 @@
    Status() will then quickly be updated with the response.
 
 */
-   
-   
 
 class cSystem : public cChannel
 {
-  public:
+public:
    cSystem(ubit8 nChn);
    ~cSystem(void);
-   
-   void Receive(ubit8 *data, ubit32 len);
+
+   void        Receive(ubit8 *data, ubit32 len);
    const char *Status(void);
 
    void SetPriority(void);
@@ -60,19 +58,19 @@ class cSystem : public cChannel
 
    ubit32 PriorityDelay(void) { return nDelay; }
    ubit16 PriorityQueue(void) { return nQueue; }
-   ubit16 PrioritySize(void)  { return nSize; }
+   ubit16 PrioritySize(void) { return nSize; }
 
-  private:
+private:
    void SystemGatherInfo(ubit8 *data, int len);
    void SystemNormal(ubit8 *data, int len);
    void SendDir(void);
    void CD(char *path);
 
-   char StatusBuf[1024];
+   char   StatusBuf[1024];
    ubit32 nState;
-   ubit8 nPriorityQueue;
-   ubit8 nPriorityDelay;
-   ubit8 nPrioritySize;
+   ubit8  nPriorityQueue;
+   ubit8  nPriorityDelay;
+   ubit8  nPrioritySize;
 
    ubit16 nQueue;
    ubit32 nSize;

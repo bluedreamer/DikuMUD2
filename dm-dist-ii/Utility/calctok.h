@@ -22,19 +22,15 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-
 #ifndef _MUD_DMCTOK_H
 #define _MUD_DMCTOK_H
 
 struct symbols
 {
-	char *nam;
-	int val;
+   char *nam;
+   int   val;
 } sym[] = {
-	/* Unit fields */
-	{0,0}
-};
+   /* Unit fields */
+   {0, 0}};
 
 #endif /* _MUD_DMCTOK_H */
-
-

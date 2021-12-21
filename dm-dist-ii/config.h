@@ -25,20 +25,21 @@
 #ifndef _MUD_CONFIG_H
 #define _MUD_CONFIG_H
 
-#include <arpa/inet.h>
 #include "fight.h"
+
+#include <arpa/inet.h>
 
 void ShowUsage(const char *c);
 
 class CServerConfiguration
 {
-  public:
+public:
    CServerConfiguration(void);
 
    void Boot(void);
 
-   int FromLAN(char *pFromHost);
-   int ValidMplex(struct sockaddr_in *isa);
+   int  FromLAN(char *pFromHost);
+   int  ValidMplex(struct sockaddr_in *isa);
    void TripleColorFormat(struct SFightColorSet *pSet, char **ppList);
 
    int m_nMotherPort;
@@ -74,14 +75,14 @@ class CServerConfiguration
 
    struct in_addr m_aMplexHosts[10];
 
-   char *m_pCredits;         /* the Credits List                */
-   char *m_pNews;            /* the news                        */
-   char *m_pMotd;            /* the messages of today           */
-   char *m_pWizlist;         /* the wizlist                     */
-   char *m_pLogo;            /* Intro screen                    */
-   char *m_pWelcome;         /* Welcome Message                 */
-   char *m_pGoodbye;         /* Goodbye message                 */
-   char *m_pNewbie;          /* Newbie message                 */
+   char *m_pCredits; /* the Credits List                */
+   char *m_pNews;    /* the news                        */
+   char *m_pMotd;    /* the messages of today           */
+   char *m_pWizlist; /* the wizlist                     */
+   char *m_pLogo;    /* Intro screen                    */
+   char *m_pWelcome; /* Welcome Message                 */
+   char *m_pGoodbye; /* Goodbye message                 */
+   char *m_pNewbie;  /* Newbie message                 */
 };
 
 extern class CServerConfiguration g_cServerConfig;

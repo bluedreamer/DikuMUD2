@@ -24,15 +24,14 @@
 #ifndef _MUD_NETWORK_H
 #define _MUD_NETWORK_H
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <arpa/inet.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <sys/types.h>
 
-#define DEF_SERVER_ADDR  "127.0.0.1"
+#define DEF_SERVER_ADDR "127.0.0.1"
 
 int OpenMother(int port);
 int OpenNetwork(int nMudPort, const char *pMudAddr);
 
 #endif
-

@@ -22,40 +22,40 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include "comm.h"
+#include "db.h"
+#include "files.h"
+#include "interpreter.h"
+#include "structs.h"
+#include "textutil.h"
+#include "utility.h"
+#include "utils.h"
+
 #include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #include <vector>
-
-#include "structs.h"
-#include "utils.h"
-#include "textutil.h"
-#include "interpreter.h"
-#include "db.h"
-#include "utility.h"
-#include "files.h"
-#include "comm.h"
 
 extern std::shared_ptr<file_index_type> slime_fi;
 
 extern char libdir[];
 
-//struct file_index_type **slime_list = NULL;
+// struct file_index_type **slime_list = NULL;
 std::vector<std::shared_ptr<file_index_type>> slime_list;
 
 static void slime_save(void)
 {
    FILE *f;
 
-   if (!(f = fopen(str_cc(libdir, SLIME_FILE), "wb")))
+   if(!(f = fopen(str_cc(libdir, SLIME_FILE), "wb")))
    {
       slog(LOG_ALL, 0, "Slime file could not be opened.");
       assert(FALSE);
    }
 
-   for (const auto &slime: slime_list)
+   for(const auto &slime : slime_list)
    {
       fputs(slime->zone->name, f);
       fputc(0, f);
@@ -65,22 +65,21 @@ static void slime_save(void)
    fclose(f);
 }
 
-
 static void slime_add(std::shared_ptr<file_index_type> sp)
 {
-   if (sp == NULL)
-     return;
+   if(sp == NULL)
+      return;
 
    slime_list.push_back(sp);
 }
 
 static void slime_remove(std::shared_ptr<file_index_type> sp)
 {
-   for(auto i=slime_list.begin(); i!=slime_list.end(); )
+   for(auto i = slime_list.begin(); i != slime_list.end();)
    {
       if(*i == sp)
       {
-         i=slime_list.erase(i);
+         i = slime_list.erase(i);
          break;
       }
       else
@@ -92,9 +91,9 @@ static void slime_remove(std::shared_ptr<file_index_type> sp)
 
 int is_slimed(std::shared_ptr<file_index_type> sp)
 {
-   for (auto i=slime_list.begin(); i!=slime_list.end(); ++i)
-     if (*i == sp)
-       return TRUE;
+   for(auto i = slime_list.begin(); i != slime_list.end(); ++i)
+      if(*i == sp)
+         return TRUE;
 
    return FALSE;
 }
@@ -118,7 +117,7 @@ int slime_obj(struct spec_arg *sarg)
    if(is_abbrev(buf, "list"))
    {
       send_to_char("List of slimed units:\n\r", sarg->activator);
-      for(const auto &slime: slime_list)
+      for(const auto &slime : slime_list)
       {
          sprintf(buf, "%s@%s\n\r", slime->name, slime->zone->name);
          send_to_char(buf, sarg->activator);
@@ -180,24 +179,24 @@ int slime_obj(struct spec_arg *sarg)
 void slime_boot(void)
 {
    std::shared_ptr<file_index_type> fi;
-   CByteBuffer cBuf(100);
-   char buf1[256], buf2[256];
-   FILE *f;
+   CByteBuffer                      cBuf(100);
+   char                             buf1[256], buf2[256];
+   FILE                            *f;
 
    touch_file(str_cc(libdir, SLIME_FILE));
-   if (!(f = fopen(str_cc(libdir, SLIME_FILE), "rb")))
+   if(!(f = fopen(str_cc(libdir, SLIME_FILE), "rb")))
    {
       slog(LOG_ALL, 0, "Slime file could not be opened.");
       assert(FALSE);
    }
 
-   while (!feof(f))
+   while(!feof(f))
    {
       fstrcpy(&cBuf, f);
-      strcpy(buf1, (char *) cBuf.GetData());
+      strcpy(buf1, (char *)cBuf.GetData());
 
       fstrcpy(&cBuf, f);
-      strcpy(buf2, (char *) cBuf.GetData());
+      strcpy(buf2, (char *)cBuf.GetData());
 
       fi = find_file_index(buf1, buf2);
       slime_add(fi);

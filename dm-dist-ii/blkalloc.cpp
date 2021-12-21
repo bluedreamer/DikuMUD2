@@ -23,25 +23,25 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#define BLOCKSIZE = 256000  /* nothing bigger than this please */
+#define BLOCKSIZE = 256000 /* nothing bigger than this please */
 
-void *blkalloc_start=0;
-void *blkalloc_end=0;
+void *blkalloc_start = 0;
+void *blkalloc_end   = 0;
 
 void *blkalloc(size_t size)
 {
-   void *res=0;
+   void *res = 0;
 
-   if (size>=BLOCKSIZE)
-     return(malloc(size));
+   if(size >= BLOCKSIZE)
+      return (malloc(size));
 
-   if (blkalloc_start+size>=blkalloc_end)
+   if(blkalloc_start + size >= blkalloc_end)
    {
-      blkalloc_start=malloc(BLOCKSIZE);
-      blkalloc_end=blkalloc_start+BLOCKSIZE;
+      blkalloc_start = malloc(BLOCKSIZE);
+      blkalloc_end   = blkalloc_start + BLOCKSIZE;
    }
 
-   res=blkalloc_start;
-   blkalloc_start+=size;
+   res = blkalloc_start;
+   blkalloc_start += size;
    return res;
 }

@@ -34,5 +34,4 @@ void show_ban_text(char *site, struct descriptor_data *d);
 
 #define BAN_FILE "ban_list"
 
-
 #endif /* _MUD_BAN_H */

@@ -30,10 +30,10 @@
 
 struct arg_type
 {
-   int  nConnections;
-   int  nPort;
-   int  bModem;
-   int  nBaud;
+   int nConnections;
+   int nPort;
+   int bModem;
+   int nBaud;
 
    char *pcAddress;
 

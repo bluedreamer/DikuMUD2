@@ -30,7 +30,7 @@ int vsprintf(char *s, const char *format, va_list ap);
 #endif
 
 #ifdef GENERIC_SYSV
-#define O_NDELAY FNDELAY
+   #define O_NDELAY FNDELAY
 #endif
 
 /* UNIX stinks! I hate all thoses incomplete include files, so I have */
@@ -41,9 +41,7 @@ int vsprintf(char *s, const char *format, va_list ap);
 /* Mark this day: 27 April, 1995... Linux compiles without this shit,
    guess it should be... burn all commercial unix vendors... */
 
-
 /* ======================== UNISTD.H ============================= */
-
 
 #if defined(GENERIC_BSD)
 int getdtablesize(void);
@@ -51,25 +49,25 @@ int getdtablesize(void);
 
 /* ======================== STDIO.H ============================= */
 
-#if defined(VAX) 
+#if defined(VAX)
 
 void perror(const char *s);
 
-#ifndef SEEK_SET
-  #define SEEK_SET 0
-  #define SEEK_CUR 1
-  #define SEEK_END 2
-#endif
+   #ifndef SEEK_SET
+      #define SEEK_SET 0
+      #define SEEK_CUR 1
+      #define SEEK_END 2
+   #endif
 
 typedef char *va_list;
-int sscanf(const char *s, const char *format, ...);
+int           sscanf(const char *s, const char *format, ...);
 /* int vsprintf(char *s, const char *format, va_list ap); */
-size_t fread(void *ptr, size_t size, size_t nobj, FILE *stream);
-size_t fwrite(const void *ptr, size_t size, size_t nobj, FILE *stream);
-int ungetc(int c, FILE *stream);
+size_t        fread(void *ptr, size_t size, size_t nobj, FILE *stream);
+size_t        fwrite(const void *ptr, size_t size, size_t nobj, FILE *stream);
+int           ungetc(int c, FILE *stream);
 
-int fseek(FILE *stream, long offset, int origin);
-int fclose(FILE *stream);
+int  fseek(FILE *stream, long offset, int origin);
+int  fclose(FILE *stream);
 void rewind(FILE *stream);
 
 int fscanf(FILE *stream, const char *format, ...);
@@ -86,11 +84,11 @@ int fputs(const char *s, FILE *stream);
 
 #if defined(DOS)
 
-#ifndef SEEK_SET
-  #define SEEK_SET 0
-  #define SEEK_CUR 1
-  #define SEEK_END 2
-#endif
+   #ifndef SEEK_SET
+      #define SEEK_SET 0
+      #define SEEK_CUR 1
+      #define SEEK_END 2
+   #endif
 
 #endif
 
@@ -98,7 +96,7 @@ int fputs(const char *s, FILE *stream);
 
 #if defined(SUNOS4)
 
-//MS2020: Oddity - char *strchr(const char *cs, int c);
+// MS2020: Oddity - char *strchr(const char *cs, int c);
 time_t time(time_t *tp);
 
 /*  difftime() is not supported at all under SunOS, so I hacked one together
@@ -110,10 +108,10 @@ double difftime(time_t t1, time_t t2);
 /* ======================== STRING.H ============================= */
 
 #if defined(SUNOS4)
- #ifdef GENERIC_BSD
-  void bcopy(char *, char *, int);
-  #define memmove(dst, src, len) bcopy((char *)(src),(char *)(dst),(int)(len))
- #endif
+   #ifdef GENERIC_BSD
+void bcopy(char *, char *, int);
+      #define memmove(dst, src, len) bcopy((char *)(src), (char *)(dst), (int)(len))
+   #endif
 #endif
 
 /* ======================== STDLIB.H ============================= */

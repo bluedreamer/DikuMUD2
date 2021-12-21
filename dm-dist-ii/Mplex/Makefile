@@ -37,7 +37,7 @@ LINK.c	=	$(LD) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS)
 DEBUG	=	-g -O6
 
 CFL	=	$(DEBUG) $(SYSPORT) $(SYSFLAGS) $(EXTRA_CFLAGS)
-CFLAGS	=	-I .. $(CFL) -pedantic -Wall -Wno-unused -Wno-variadic-macros
+CFLAGS	=	-I .. $(CFL) -pedantic -Wall -Wno-unused -Wno-variadic-macros -Wno-register
 CPPFLAGS	=	$(CFLAGS)
 
 #LDFLAGS	=	-static
@@ -100,5 +100,3 @@ src:
 
 #.include ".depends"		# For `normal' make
 include .depends		# For gnu-make
-
-

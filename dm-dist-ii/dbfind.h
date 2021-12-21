@@ -27,13 +27,12 @@
 #include <memory>
 
 class file_index_type;
-struct descriptor_data *find_descriptor(const char *name,
-					struct descriptor_data *except);
-struct zone_type *find_zone(const char *zonename);
+struct descriptor_data          *find_descriptor(const char *name, struct descriptor_data *except);
+struct zone_type                *find_zone(const char *zonename);
 std::shared_ptr<file_index_type> find_file_index(const char *zonename, const char *name);
-struct diltemplate *find_dil_index(char *zonename, char *name);
-struct unit_data *world_room(const char *zone, const char *name);
-struct diltemplate *find_dil_template(const char *name);
+struct diltemplate              *find_dil_index(char *zonename, char *name);
+struct unit_data                *world_room(const char *zone, const char *name);
+struct diltemplate              *find_dil_template(const char *name);
 
 std::shared_ptr<file_index_type> str_to_file_index(const char *str);
 std::shared_ptr<file_index_type> pc_str_to_file_index(const struct unit_data *ch, const char *str);

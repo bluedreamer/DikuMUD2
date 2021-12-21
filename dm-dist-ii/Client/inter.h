@@ -24,13 +24,12 @@
 #ifndef INTERACTIVE_H
 #define INTERACTIVE_H
 
-#include <string.h>
-#include <netinet/in.h>
-
-#include "essential.h"
 #include "channel.h"
+#include "essential.h"
 #include "select.h"
 
+#include <netinet/in.h>
+#include <string.h>
 
 class cBaseInteractive;
 class cMud;
@@ -39,12 +38,12 @@ class cZload;
 
 class cText : public cChannel
 {
-  public:
+public:
    cText(ubit8 nChn);
    virtual ~cText(void);
 
    void Receive(ubit8 *data, ubit32 len);
-   int SendString(char *pString);
+   int  SendString(char *pString);
 
    int Change(cBaseInteractive *pcNew);
 
@@ -53,9 +52,7 @@ class cText : public cChannel
    cMud      *pcMud;
    cMainMenu *pcMainMenu;
    cZload    *pcZload;
-
 };
-
 
 // Interactive classes must inherit the Channel Base, such that each will
 // fit nicely in a channel. Also, activate and stop are made virtual for
@@ -63,15 +60,14 @@ class cText : public cChannel
 //
 class cBaseInteractive
 {
-  public:
+public:
    cBaseInteractive(cText *pcNew) { pcInteractive = pcNew; }
 
    virtual void Receive(ubit8 *data, ubit32 len) = 0;
 
-   int SendString(char *str) { return Send((ubit8 *) str, strlen(str)); }
+   int SendString(char *str) { return Send((ubit8 *)str, strlen(str)); }
 
    int Send(ubit8 *data, int len) { return pcInteractive->Send(data, len); }
-
 
    virtual int Activate(void) { return 0; };
    virtual int End(void) { return 0; };
@@ -79,11 +75,11 @@ class cBaseInteractive
    cText *pcInteractive;
 };
 
-
 class cMud : public cBaseInteractive, public cHook
 {
-  public:
-   cMud(cText *pcNew) : cBaseInteractive(pcNew) { };
+public:
+   cMud(cText *pcNew)
+      : cBaseInteractive(pcNew){};
    virtual ~cMud(void);
 
    void Input(int nFlags);
@@ -92,31 +88,33 @@ class cMud : public cBaseInteractive, public cHook
    int Activate(void);
    int End(void);
 
-  private:
+private:
    struct sockaddr_in server_addr;
 };
 
 class cMainMenu : public cBaseInteractive
 {
-  public:
-   cMainMenu(cText *pcNew) : cBaseInteractive(pcNew) {};
+public:
+   cMainMenu(cText *pcNew)
+      : cBaseInteractive(pcNew){};
 
    void Receive(ubit8 *data, ubit32 len);
-   int Activate(void);
+   int  Activate(void);
 
-  protected:
+protected:
    int Menu(char c);
 };
 
 class cZload : public cBaseInteractive
 {
-  public:
-   cZload(cText *pcNew) : cBaseInteractive(pcNew) {};
+public:
+   cZload(cText *pcNew)
+      : cBaseInteractive(pcNew){};
 
    void Receive(ubit8 *data, ubit32 len);
-   int Activate(void);
+   int  Activate(void);
 
-  protected:
+protected:
    int Menu(char c);
 };
 

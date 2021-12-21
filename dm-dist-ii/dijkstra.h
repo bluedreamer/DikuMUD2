@@ -22,7 +22,6 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-
 #ifndef _MUD_DIJKSTRA_H
 #define _MUD_DIJKSTRA_H
 

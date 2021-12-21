@@ -22,111 +22,108 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <ctype.h>
-#include <string.h>
-
 #include "namelist.h"
+
+#include "db_file.h"
 #include "essential.h"
 #include "textutil.h"
-#include "db_file.h"
+
+#include <ctype.h>
+#include <string.h>
 
 cNamelist::cNamelist(void)
 {
    namelist = NULL;
-   length = 0;
+   length   = 0;
 }
 
-void cNamelist::CopyList(const char * const * const list)
+void cNamelist::CopyList(const char *const *const list)
 {
-   if (list)
-     for (int i = 0; list[i]; i++)
-       AppendName(list[i]);
+   if(list)
+      for(int i = 0; list[i]; i++)
+         AppendName(list[i]);
 }
 
 void cNamelist::CopyList(class cNamelist *cn)
 {
-   for (ubit32 i = 0; i < cn->Length(); i++)
-     AppendName(cn->Name(i));
+   for(ubit32 i = 0; i < cn->Length(); i++)
+      AppendName(cn->Name(i));
 }
-
 
 void cNamelist::AppendBuffer(CByteBuffer *pBuf)
 {
-   for (ubit32 i = 0; i < length; i++)
-     if (!str_is_empty(Name(i)))
-       pBuf->AppendString(Name(i));
-   
+   for(ubit32 i = 0; i < length; i++)
+      if(!str_is_empty(Name(i)))
+         pBuf->AppendString(Name(i));
+
    pBuf->AppendString("");
 }
-
 
 int cNamelist::ReadBuffer(CByteBuffer *pBuf)
 {
    char *c;
 
-   for (;;)
+   for(;;)
    {
-      if (pBuf->SkipString(&c))
-        return 1;
+      if(pBuf->SkipString(&c))
+         return 1;
 
-      if (*c)
-	AppendName(c);
+      if(*c)
+         AppendName(c);
       else
-	break;
+         break;
    }
 
    return 0;
 }
 
-
 void cNamelist::bread(ubit8 **b)
 {
    char *c;
 
-   for (;;)
+   for(;;)
    {
       c = bread_str_skip(b);
 
-      if (*c)
-        AppendName(c);
+      if(*c)
+         AppendName(c);
       else
-        break;
+         break;
    }
 }
-
 
 void cNamelist::catnames(char *s)
 {
    ubit32 i;
-   ubit1 ok = FALSE;
+   ubit1  ok = FALSE;
 
    strcpy(s, "{");
    TAIL(s);
-   if (Length() > 0)
+   if(Length() > 0)
    {
-      for (i = 0; i < Length(); i++)
+      for(i = 0; i < Length(); i++)
       {
-	 ok = TRUE;
-	 sprintf(s, "\"%s\",", Name(i));
-	 TAIL(s);
+         ok = TRUE;
+         sprintf(s, "\"%s\",", Name(i));
+         TAIL(s);
       }
-      if (ok)
-	s--;			/* remove the comma */
+      if(ok)
+         s--; /* remove the comma */
    }
    strcpy(s, "}");
 }
 
 void cNamelist::Remove(ubit32 idx)
 {
-   if (length > idx)
+   if(length > idx)
    {
       delete namelist[idx];
-      namelist[idx] = namelist[length-1];
+      namelist[idx] = namelist[length - 1];
       length--;
-      if (length == 0)
+      if(length == 0)
       {
-	 free(namelist);
-	 namelist = NULL;
+         free(namelist);
+         namelist = NULL;
       }
    }
 }
@@ -135,24 +132,24 @@ void cNamelist::RemoveName(const char *name)
 {
    register ubit32 i, j;
 
-   for (i=0; i < length; i++)
+   for(i = 0; i < length; i++)
    {
-      for (j=0; namelist[i]->String()[j]; j++)
-	if ( tolower(name[j]) != tolower(namelist[i]->String()[j]) )
-	  break;
+      for(j = 0; namelist[i]->String()[j]; j++)
+         if(tolower(name[j]) != tolower(namelist[i]->String()[j]))
+            break;
 
-      if (!namelist[i]->String()[j])
-	if ( !name[j] || isaspace(name[j]) )
-	{
-	   Remove(i);
-	   return;
-	}
+      if(!namelist[i]->String()[j])
+         if(!name[j] || isaspace(name[j]))
+         {
+            Remove(i);
+            return;
+         }
    }
 }
 
 void cNamelist::Substitute(ubit32 idx, const char *newname)
 {
-   if (length > idx)
+   if(length > idx)
    {
       delete namelist[idx];
       namelist[idx] = new cStringInstance(newname);
@@ -167,58 +164,53 @@ cNamelist::cNamelist(const char **list)
    CopyList(list);
 }
 
-
 void cNamelist::Free(void)
 {
    ubit32 i;
 
-   for (i=0; i < length; i++)
-     delete namelist[i];
+   for(i = 0; i < length; i++)
+      delete namelist[i];
 
-   if (namelist)
-     free(namelist);
+   if(namelist)
+      free(namelist);
 
    namelist = NULL;
    length   = 0;
 }
-
 
 cNamelist::~cNamelist(void)
 {
    Free();
 }
 
-
 cNamelist *cNamelist::Duplicate(void)
 {
    cNamelist *pNl = new cNamelist;
-   ubit32 i = 0;
+   ubit32     i   = 0;
 
-   for (i = 0; i < length; i++)
-     pNl->AppendName((char *) namelist[i]->String());
+   for(i = 0; i < length; i++)
+      pNl->AppendName((char *)namelist[i]->String());
 
    return pNl;
 }
-
 
 const char *cNamelist::IsNameRaw(const char *name)
 {
    register ubit32 i, j;
 
-   for (i=0; i < length; i++)
+   for(i = 0; i < length; i++)
    {
-      for (j=0; namelist[i]->String()[j]; j++)
-	if ( tolower(name[j]) != tolower(namelist[i]->String()[j]) )
-	  break;
+      for(j = 0; namelist[i]->String()[j]; j++)
+         if(tolower(name[j]) != tolower(namelist[i]->String()[j]))
+            break;
 
-      if (!namelist[i]->String()[j])
-	if ( !name[j] || isaspace(name[j]) )
-	  return ((char *) name)+j;
+      if(!namelist[i]->String()[j])
+         if(!name[j] || isaspace(name[j]))
+            return ((char *)name) + j;
    }
 
    return NULL;
 }
-
 
 const char *cNamelist::IsName(const char *name)
 {
@@ -226,8 +218,8 @@ const char *cNamelist::IsName(const char *name)
 
    name = skip_spaces(name);
 
-   if (str_is_empty(name))
-     return 0;
+   if(str_is_empty(name))
+      return 0;
 
    strcpy(buf, name);
    str_remspc(buf);
@@ -240,15 +232,15 @@ const int cNamelist::IsNameRawIdx(const char *name)
 {
    register ubit32 i, j;
 
-   for (i=0; i < length; i++)
+   for(i = 0; i < length; i++)
    {
-      for (j=0; namelist[i]->String()[j]; j++)
-	if ( tolower(name[j]) != tolower(namelist[i]->String()[j]) )
-	  break;
+      for(j = 0; namelist[i]->String()[j]; j++)
+         if(tolower(name[j]) != tolower(namelist[i]->String()[j]))
+            break;
 
-      if (!namelist[i]->String()[j])
-	if ( !name[j] || isaspace(name[j]) )
-	  return i;
+      if(!namelist[i]->String()[j])
+         if(!name[j] || isaspace(name[j]))
+            return i;
    }
 
    return -1;
@@ -261,8 +253,8 @@ const int cNamelist::IsNameIdx(const char *name)
 
    name = skip_spaces(name);
 
-   if (str_is_empty(name))
-     return -1;
+   if(str_is_empty(name))
+      return -1;
 
    strcpy(buf, name);
    str_remspc(buf);
@@ -270,54 +262,51 @@ const int cNamelist::IsNameIdx(const char *name)
    return IsNameRawIdx(buf);
 }
 
-
 const char *cNamelist::Name(ubit32 idx)
 {
-   if (idx < length)
-     return namelist[idx]->String();
+   if(idx < length)
+      return namelist[idx]->String();
 
    return NULL;
 }
 
 cStringInstance *cNamelist::InstanceName(ubit32 idx)
 {
-   if (idx < length)
-     return namelist[idx];
+   if(idx < length)
+      return namelist[idx];
 
    return NULL;
 }
 
 void cNamelist::AppendName(const char *name)
 {
-   if (!str_is_empty(name))
+   if(!str_is_empty(name))
    {
       length++;
 
-      if (namelist == NULL)
-	CREATE(namelist, class cStringInstance *, length);
+      if(namelist == NULL)
+         CREATE(namelist, class cStringInstance *, length);
       else
-	RECREATE(namelist, class cStringInstance *, length);
+         RECREATE(namelist, class cStringInstance *, length);
 
-      namelist[length - 1]     = new cStringInstance(name);
+      namelist[length - 1] = new cStringInstance(name);
    }
 }
 
 void cNamelist::PrependName(const char *name)
 {
-   if (!str_is_empty(name))
+   if(!str_is_empty(name))
    {
       length++;
 
-      if (namelist == NULL)
-	CREATE(namelist, class cStringInstance *, length);
+      if(namelist == NULL)
+         CREATE(namelist, class cStringInstance *, length);
       else
-	RECREATE(namelist, class cStringInstance *, length);
+         RECREATE(namelist, class cStringInstance *, length);
 
-      if (length > 1)
-	memmove(&namelist[1], &namelist[0],
-		sizeof(class cStringInstance *) * (length - 1));
+      if(length > 1)
+         memmove(&namelist[1], &namelist[0], sizeof(class cStringInstance *) * (length - 1));
 
-      namelist[0]     = new cStringInstance(name);
+      namelist[0] = new cStringInstance(name);
    }
 }
-

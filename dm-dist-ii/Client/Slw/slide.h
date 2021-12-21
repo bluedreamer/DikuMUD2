@@ -24,8 +24,8 @@
 #ifndef SLW_H
 #define SLW_H
 
-#include "packet.h"
 #include "mytime.h"
+#include "packet.h"
 #include "queue.h"
 #include "timeout.h"
 
@@ -34,31 +34,33 @@
 
 class cSlwErrors
 {
-  public:
+public:
    int AnyActivity(void) { return (nTxPackets > 0) || (nRxPackets > 0); }
 
    void Reset(void)
    {
-      nTxPackets = 0;
-      nRxPackets = 0;
-      nCrcError = 0;
+      nTxPackets  = 0;
+      nRxPackets  = 0;
+      nCrcError   = 0;
       nAckPackets = 0;
       nNakPackets = 0;
    }
-   
-   cSlwErrors() { Reset(); }
 
+   cSlwErrors() { Reset(); }
 
    void Status(char *Buf)
    {
-      sprintf(Buf, "\nSliding Windows Layer\n"
-	      "        TX: %5ld   RX: %5ld   Ack: %5ld   Nak: %5ld\n"
+      sprintf(Buf,
+              "\nSliding Windows Layer\n"
+              "        TX: %5ld   RX: %5ld   Ack: %5ld   Nak: %5ld\n"
               "Errors: Packet Layer %5ld\n",
-              (signed long) nTxPackets,   (signed long) nRxPackets,
-	      (signed long) nAckPackets,  (signed long) nNakPackets,
-              (signed long) nCrcError);
+              (signed long)nTxPackets,
+              (signed long)nRxPackets,
+              (signed long)nAckPackets,
+              (signed long)nNakPackets,
+              (signed long)nCrcError);
    }
- 
+
    ubit32 nRxPackets;
    ubit32 nTxPackets;
 
@@ -68,53 +70,51 @@ class cSlwErrors
    ubit32 nNakPackets;
 };
 
-
 typedef void (*pfSlwReceive)(ubit8 *pData, ubit32 len);
 
 struct rx_frame_type
 {
-   ubit8 bArrived;  // True if the frame has already arrived.
-   ubit8 nNaks;     // Number of Naks that has been TX'ed for the frame.
-   ubit8 nLen;
-   ubit8 *pData;    // The data received is pre-allocated
+   ubit8  bArrived; // True if the frame has already arrived.
+   ubit8  nNaks;    // Number of Naks that has been TX'ed for the frame.
+   ubit8  nLen;
+   ubit8 *pData; // The data received is pre-allocated
 };
 
 struct tx_frame_type
 {
-   int nSeq;        // Sanity checking for the timer.
+   int nSeq; // Sanity checking for the timer.
 
    ubit8 nLen;
    ubit8 aData[SLW_HEADER + SLW_MAX_DATA];
 };
 
-
 // Constant basic definitions.
 //
-#define MAX_SEQ   (63)               // 0..63 are the sequence numbers
-#define NO_BUFS   ((MAX_SEQ+1) / 2)  // We only need half the amount of buffers
-#define MAX_BUF   (NO_BUFS - 1)
+#define MAX_SEQ (63)                // 0..63 are the sequence numbers
+#define NO_BUFS ((MAX_SEQ + 1) / 2) // We only need half the amount of buffers
+#define MAX_BUF (NO_BUFS - 1)
 
 class cSlw : private cSlwTimeout, public cPacketLayer
 {
-  public:
+public:
    cSlw(char *logfile = NULL);
    ~cSlw(void);
 
-   int  Open(char *pDevice, int nBaud = 38400, pfSlwReceive pfRcv = NULL);
+   int Open(char *pDevice, int nBaud = 38400, pfSlwReceive pfRcv = NULL);
 
    void SetArrivalFunction(pfSlwReceive pfNLE);
 
-   int isActive(void) { return bActive; }
+   int  isActive(void) { return bActive; }
    void Activate(void);
    void Deactivate(void);
    void Input(int nFlags);
-   
+
    void Poll(void) { cSerial::Poll(); }
 
    // Call when you have data to transmit. Returns -1 if there is no more
    // room (i.e. ENOBUFS), -2 on error, 0 on success.
    //
-   int  Transmit(const ubit8 *pData, ubit32 nLen);
+   int Transmit(const ubit8 *pData, ubit32 nLen);
 
    cSlwErrors SlwError;
 
@@ -122,11 +122,10 @@ class cSlw : private cSlwTimeout, public cPacketLayer
    // Called from the packet layer when a damage frame arrives.
    // Only called between successful reception of a packet.
    //
-   void EventPacketError(void);
+   void   EventPacketError(void);
    sbit32 nBuffered(void);
 
-  protected:
-
+protected:
    // ------------------ TIMEOUT INTERFACE --------------------
    // Called from the cSlwTimeout layer when a timeout occurs.
    // These are inherited as virtuals.
@@ -138,9 +137,8 @@ class cSlw : private cSlwTimeout, public cPacketLayer
    // Inherited from the packet layer
    //
    void EventFrameArrival(ubit8 *data, ubit32 len);
-   
 
-  private:
+private:
    void Reset(void);
    void SendACK(void);
    void SendNAK(int nSeq);
@@ -150,21 +148,20 @@ class cSlw : private cSlwTimeout, public cPacketLayer
    void ArrivedData(ubit8 *data, int len);
    void ArrivedAck(ubit8 seq, int len);
    void ArrivedNak(ubit8 seq, int len);
-   
+
    struct rx_frame_type aRxBuf[NO_BUFS];
    struct tx_frame_type aTxBuf[NO_BUFS];
-   cQueue SlwFifo;
-   pfSlwReceive pfNetworkLayerEvent;
+   cQueue               SlwFifo;
+   pfSlwReceive         pfNetworkLayerEvent;
 
-   int   nTxLowWin;       // Low edge of senders window
-   int   nTxHighWin;      // Upper edge of senders window + 1
-   sbit32 nNoBuffered;     // How many output buffers currently used?
-   
-   int   nRxLowWin;       // Low edge of receivers window
-   int   nRxHighWin;      // Upper edge of receivers window + 1
-   int   nRxTop;          // Sequence of highest window frame
-   int   bActive;         // TRUE when the sliding windows is active
+   int    nTxLowWin;   // Low edge of senders window
+   int    nTxHighWin;  // Upper edge of senders window + 1
+   sbit32 nNoBuffered; // How many output buffers currently used?
+
+   int nRxLowWin;  // Low edge of receivers window
+   int nRxHighWin; // Upper edge of receivers window + 1
+   int nRxTop;     // Sequence of highest window frame
+   int bActive;    // TRUE when the sliding windows is active
 };
-
 
 #endif

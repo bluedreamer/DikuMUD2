@@ -40,11 +40,11 @@ DEBUG	=	-g # -O6
 
 CFL	=	$(DEBUG) $(SYSPORT) $(SYSFLAGS) $(EXTRA_CFLAGS) 
 CFLAGS	=	-DDMC_SRC -I .. $(CFL) -pedantic -Wall -Wno-unused -Wno-variadic-macros -Wno-format-overflow -Wno-stringop-truncation -Wno-register
-CPPFLAGS	=	$(CLFAGS)
+CPPFLAGS	=	$(CFLAGS)
 
 # (f)lex/yacc/bison generated c-files are notorious for their lousy C
 # hence, no warnings...
-CFLAGS2	= 	$(CFL)
+CFLAGS2	= 	$(CFL) -Wno-register
 
 YFLAGS	=	-d -v 	# y.tab.h generator, and verbose output
 
@@ -147,4 +147,3 @@ dmc_money.o:	money.cpp
 
 #.include ".depends"		# For `normal' make
 include .depends		# For gnu-make
-

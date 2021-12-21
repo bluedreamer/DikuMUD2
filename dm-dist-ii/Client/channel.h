@@ -24,19 +24,19 @@
 #ifndef CHANNELS_H
 #define CHANNELS_H
 
-#include <assert.h>
 #include "essential.h"
 #include "slide.h"
+
+#include <assert.h>
 
 extern cSlw *Slw;
 
 // Reserved channels.
 //
-#define SERVICE_SYSTEM      1
-#define SERVICE_TEXT        2
-#define SERVICE_UPLOAD      3
-#define SERVICE_DOWNLOAD    4
-
+#define SERVICE_SYSTEM   1
+#define SERVICE_TEXT     2
+#define SERVICE_UPLOAD   3
+#define SERVICE_DOWNLOAD 4
 
 #define CHN_MAX_DATA (SLW_MAX_DATA - 1)
 
@@ -45,20 +45,19 @@ extern cSlw *Slw;
 //
 class cChannel
 {
-  public:
+public:
    cChannel(ubit8 n);
    virtual ~cChannel();
 
-   ubit8 ChannelNo(void) { return nChannel; }
-   sbit32 Send(ubit8 *data, ubit32 len);
-   virtual void Receive(ubit8 *data, ubit32 len) = NULL;
-   virtual void Thread(void);
+   ubit8               ChannelNo(void) { return nChannel; }
+   sbit32              Send(ubit8 *data, ubit32 len);
+   virtual void        Receive(ubit8 *data, ubit32 len) = NULL;
+   virtual void        Thread(void);
    virtual const char *Status(void);
 
-  private:
+private:
    ubit8 nChannel;
 };
-
 
 // This is the class that maintains the channels. It consists of 256
 // base channels (above).
@@ -67,7 +66,7 @@ class cChannelManager
 {
    friend class cChannel;
 
-  public:
+public:
    cChannelManager(ubit8 bArg);
    cChannel *Set(ubit8 nService, ubit8 nChn, char *pData = NULL);
 
@@ -77,18 +76,18 @@ class cChannelManager
    void Free(ubit8 nChannel);
 
    sbit32 MngrTX(ubit8 *data, ubit32 len, ubit8 nChn);
-   void MngrRX(ubit8 *data, ubit32 len);
-   void MngrRX(ubit8 *data, ubit32 len, ubit8 nChannel); // For direct connect
-   void WriteQueue(void);
+   void   MngrRX(ubit8 *data, ubit32 len);
+   void   MngrRX(ubit8 *data, ubit32 len, ubit8 nChannel); // For direct connect
+   void   WriteQueue(void);
 
    void Threads(void);
 
    cChannel *ChannelPtr(ubit8 nChn);
-   
-  private:
-   ubit8 bServer;  // TRUE if server (host), FALSE if client (caller)
+
+private:
+   ubit8           bServer; // TRUE if server (host), FALSE if client (caller)
    class cChannel *BaseChannel[256];
-   cQueue qTx;
+   cQueue          qTx;
 };
 
 extern cChannelManager ChannelManager;

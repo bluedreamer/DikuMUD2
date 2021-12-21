@@ -32,15 +32,15 @@ typedef sbit32 amount_t;
 
 struct money_type
 {
-  currency_t currency;         /* Which currency for money */
-  char **strings;              /* The money-strings */
-  char *tails;                 /* What to print on the dark side of the coin */
-  char *abbrev;                /* Small string for lists */
-  ubit8 pl_idx;                /* The index in above to first plural string */
-  sbit32 relative_value;       /* Relative to the internal value */
-  sbit32 min_value;            /* Minimum internal value of the currency */
-  ubit8 coins_per_weight;      /* How many coins per weight unit */
-  std::shared_ptr<file_index_type> fi;  /* Where is coin object in file */
+   currency_t                       currency;         /* Which currency for money */
+   char                           **strings;          /* The money-strings */
+   char                            *tails;            /* What to print on the dark side of the coin */
+   char                            *abbrev;           /* Small string for lists */
+   ubit8                            pl_idx;           /* The index in above to first plural string */
+   sbit32                           relative_value;   /* Relative to the internal value */
+   sbit32                           min_value;        /* Minimum internal value of the currency */
+   ubit8                            coins_per_weight; /* How many coins per weight unit */
+   std::shared_ptr<file_index_type> fi;               /* Where is coin object in file */
 };
 
 /* You shouldn't have to refer to this array yourself.
@@ -59,8 +59,7 @@ void coins_to_unit(struct unit_data *, amount_t amt, int type);
  *
  * Impossible amounts are converted automagically
  */
-void money_transfer(struct unit_data *from, struct unit_data *to,
-		    amount_t amt, currency_t currency);
+void money_transfer(struct unit_data *from, struct unit_data *to, amount_t amt, currency_t currency);
 
 /*  Counts up what amount of a given currency a unit holds recursively in
  *  inventory.
@@ -101,8 +100,8 @@ void pile_money(struct unit_data *money);
  */
 amount_t money_round(ubit1 up, amount_t amt, currency_t currency, int types);
 
-#define money_round_up(a, c, t)		(money_round(TRUE,  (a), (c), (t)))
-#define money_round_down(a, c, t)	(money_round(FALSE, (a), (c), (t)))
+#define money_round_up(a, c, t)   (money_round(TRUE, (a), (c), (t)))
+#define money_round_down(a, c, t) (money_round(FALSE, (a), (c), (t)))
 
 /* Local currency of unit, or DEF_CURRENCY if not defined.
  */
@@ -125,49 +124,33 @@ const char *money_string(amount_t amt, currency_t currency, ubit1 verbose);
 amount_t char_can_carry_amount(struct unit_data *ch, struct unit_data *money);
 amount_t unit_can_hold_amount(struct unit_data *unit, struct unit_data *money);
 
+#define money_pluralis_type(type) (money_types[(type)].strings[money_types[(type)].pl_idx])
+#define money_pluralis(unit)      (money_pluralis_type(MONEY_TYPE(unit)))
 
-#define money_pluralis_type(type) \
-  (money_types[(type)].strings[money_types[(type)].pl_idx])
-#define money_pluralis(unit) \
-  (money_pluralis_type(MONEY_TYPE(unit)))
+#define money_singularis_type(type) (money_types[(type)].strings[0])
+#define money_singularis(unit)      (money_singularis_type(MONEY_TYPE(unit)))
 
-#define money_singularis_type(type) \
-  (money_types[(type)].strings[0])
-#define money_singularis(unit) \
-  (money_singularis_type(MONEY_TYPE(unit)))
+#define money_from_unit(unit, amt, currency) (money_transfer((unit), NULL, (amt), (currency)))
 
-#define money_from_unit(unit, amt, currency) \
-  (money_transfer((unit), NULL, (amt), (currency)))
+#define money_to_unit(unit, amt, currency) (money_transfer(NULL, (unit), (amt), (currency)))
 
-#define money_to_unit(unit, amt, currency) \
-  (money_transfer(NULL, (unit), (amt), (currency)))
+#define IS_MONEY(unit) (IS_OBJ(unit) && OBJ_TYPE(unit) == ITEM_MONEY)
 
-#define IS_MONEY(unit) \
-  (IS_OBJ(unit) && OBJ_TYPE(unit) == ITEM_MONEY)
-
-#define MONEY_AMOUNT(unit) \
-  (OBJ_PRICE(unit))   // MS2020: was  ((amount_t) OBJ_PRICE(unit))
+#define MONEY_AMOUNT(unit) (OBJ_PRICE(unit)) // MS2020: was  ((amount_t) OBJ_PRICE(unit))
 
 /* Index into money-array */
-#define MONEY_TYPE(obj) \
-  (OBJ_VALUE((obj), 0))
+#define MONEY_TYPE(obj) (OBJ_VALUE((obj), 0))
 
-#define MONEY_CURRENCY(obj) \
-  (money_types[MONEY_TYPE(obj)].currency)
+#define MONEY_CURRENCY(obj) (money_types[MONEY_TYPE(obj)].currency)
 
-#define MONEY_RELATIVE(obj) \
-  (money_types[MONEY_TYPE(obj)].relative_value)
+#define MONEY_RELATIVE(obj) (money_types[MONEY_TYPE(obj)].relative_value)
 
-#define MONEY_MIN_VALUE(obj) \
-  (money_types[MONEY_TYPE(obj)].min_value)
+#define MONEY_MIN_VALUE(obj) (money_types[MONEY_TYPE(obj)].min_value)
 
-#define MONEY_WEIGHT(obj) \
-  (money_types[MONEY_TYPE(obj)].coins_per_weight)
+#define MONEY_WEIGHT(obj) (money_types[MONEY_TYPE(obj)].coins_per_weight)
 
-#define MONEY_VALUE(obj) \
-  (MONEY_AMOUNT(obj) * MONEY_RELATIVE(obj))
+#define MONEY_VALUE(obj) (MONEY_AMOUNT(obj) * MONEY_RELATIVE(obj))
 
-#define MONEY_WEIGHT_SUM(obj1, obj2) \
-  ((MONEY_AMOUNT(obj1) + MONEY_AMOUNT(obj2)) / MONEY_WEIGHT(obj1))
+#define MONEY_WEIGHT_SUM(obj1, obj2) ((MONEY_AMOUNT(obj1) + MONEY_AMOUNT(obj2)) / MONEY_WEIGHT(obj1))
 
 #endif /* _MUD_MONEY_H */

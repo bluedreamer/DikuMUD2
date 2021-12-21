@@ -25,8 +25,7 @@
 #ifndef _MUD_GUILD_H
 #define _MUD_GUILD_H
 
-int char_guild_level(struct unit_data *ch);
+int  char_guild_level(struct unit_data *ch);
 void advance_guild_level(struct unit_data *ch);
-
 
 #endif

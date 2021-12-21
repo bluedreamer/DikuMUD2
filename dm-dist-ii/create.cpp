@@ -22,74 +22,73 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-
-#include "structs.h"
-#include "utils.h"
-#include "skills.h"
+#include "affect.h"
 #include "comm.h"
+#include "db.h"
 #include "handler.h"
 #include "interpreter.h"
-#include "db.h"
+#include "skills.h"
 #include "spells.h"
+#include "structs.h"
 #include "textutil.h"
-#include "affect.h"
 #include "utility.h"
+#include "utils.h"
 
-extern struct unit_data *unit_list;
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+extern struct unit_data                *unit_list;
 extern std::shared_ptr<file_index_type> corpse_fi;
-
 
 struct unit_data *make_corpse(struct unit_data *ch)
 {
-   char buf[MAX_INPUT_LENGTH];
-   struct unit_data *corpse, *u, *next_dude;
+   char                      buf[MAX_INPUT_LENGTH];
+   struct unit_data         *corpse, *u, *next_dude;
    struct unit_affected_type af, *taf1;
 
-   void persist_create(struct unit_data *u);
+   void persist_create(struct unit_data * u);
 
    corpse = read_unit(corpse_fi);
 
    sprintf(buf, STR(UNIT_OUT_DESCR_STRING(corpse)), TITLENAME(ch));
    UNIT_OUT_DESCR(corpse).Reassign(buf);
 
-   if (IS_PC(ch))
-     UNIT_NAMES(corpse).PrependName(str_cc("corpse of ", UNIT_NAME(ch)));
+   if(IS_PC(ch))
+      UNIT_NAMES(corpse).PrependName(str_cc("corpse of ", UNIT_NAME(ch)));
 
-   UNIT_WEIGHT(corpse) = UNIT_BASE_WEIGHT(ch);
+   UNIT_WEIGHT(corpse)      = UNIT_BASE_WEIGHT(ch);
    UNIT_BASE_WEIGHT(corpse) = UNIT_WEIGHT(corpse);
 
-   OBJ_TYPE(corpse) = ITEM_CONTAINER;
-   OBJ_PRICE(corpse) = 0;
+   OBJ_TYPE(corpse)      = ITEM_CONTAINER;
+   OBJ_PRICE(corpse)     = 0;
    OBJ_PRICE_DAY(corpse) = 0;
 
    /* *** pointers *** */
 
-   for (u = UNIT_CONTAINS(ch); u; u = u->next)
-     if (UNIT_IS_EQUIPPED(u))
-       unequip_object(u);
+   for(u = UNIT_CONTAINS(ch); u; u = u->next)
+      if(UNIT_IS_EQUIPPED(u))
+         unequip_object(u);
 
-   for (u = UNIT_CONTAINS(ch); u; u = next_dude)
+   for(u = UNIT_CONTAINS(ch); u; u = next_dude)
    {
       next_dude = u->next;
 
-      if (CHAR_LEVEL(ch) >= UNIT_MINV(u))
+      if(CHAR_LEVEL(ch) >= UNIT_MINV(u))
       {
-	 unit_from_unit(u);
-	 unit_to_unit(u, corpse);
+         unit_from_unit(u);
+         unit_to_unit(u, corpse);
       }
    }
 
    unit_to_unit(corpse, UNIT_IN(ch));
 
-   af.id = ID_CORPSE;
-   af.duration = (IS_PC(ch) ? (2*60) : 5);  /* In minutes, ply corpses 2hr */
+   af.id       = ID_CORPSE;
+   af.duration = (IS_PC(ch) ? (2 * 60) : 5); /* In minutes, ply corpses 2hr */
    af.beat     = (WAIT_SEC * 60);
-   af.data[0] = 0;
-   af.data[1] = 0;
-   af.data[2] = 0;
+   af.data[0]  = 0;
+   af.data[1]  = 0;
+   af.data[2]  = 0;
    af.firstf_i = TIF_NONE;
    af.tickf_i  = TIF_CORPSE_DECAY;
    af.lastf_i  = TIF_CORPSE_ZAP;
@@ -101,14 +100,13 @@ struct unit_data *make_corpse(struct unit_data *ch)
    OBJ_VALUE(corpse, 3) = CHAR_LEVEL(ch);
    OBJ_VALUE(corpse, 4) = CHAR_RACE(ch);
 
-   if (IS_PC(ch))
+   if(IS_PC(ch))
    {
-      if (UNIT_CONTAINS(corpse))
-	persist_create(corpse);
+      if(UNIT_CONTAINS(corpse))
+         persist_create(corpse);
 
-      if (IS_SET(PC_FLAGS(ch), PC_PK_RELAXED))
-	UNIT_EXTRA_DESCR(corpse) =
-	  UNIT_EXTRA_DESCR(corpse)->add("$BOB", "");
+      if(IS_SET(PC_FLAGS(ch), PC_PK_RELAXED))
+         UNIT_EXTRA_DESCR(corpse) = UNIT_EXTRA_DESCR(corpse)->add("$BOB", "");
    }
 
    return corpse;

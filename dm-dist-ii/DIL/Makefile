@@ -42,7 +42,7 @@ CPPFLAGS	=	$(CFLAGS)
 
 # (f)lex/yacc/bison generated c-files are notorious for their lousy C
 # hence, no warnings...
-CFLAGS2	= 	$(CFL) -Wno-format-overflow -Wno-variadic-macros
+CFLAGS2	= 	$(CFL) -Wno-format-overflow -Wno-variadic-macros -Wno-register
 
 YFLAGS	=	-d -v 	# y.tab.h generator, and verbose output
 
@@ -133,5 +133,3 @@ dmc_db_file.o:	db_file.cpp
 
 #.include ".depends"		# For `normal' make
 include .depends		# For gnu-make
-
-

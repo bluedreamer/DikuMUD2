@@ -29,7 +29,7 @@
 
 class cCombatList
 {
-  public:
+public:
    cCombatList();
    ~cCombatList();
    void PerformViolence();
@@ -37,20 +37,20 @@ class cCombatList
    void sub(class cCombat *pc);
    void status(const struct unit_data *ch);
 
-  private:
+private:
    void Sort();
 
    class cCombat **pElems;
-   int nMaxTop;   // No of allocated elements
-   int nTop;      // Current Max
-   int nIdx;      // Updated when in Perform() and doing Sub()
+   int             nMaxTop; // No of allocated elements
+   int             nTop;    // Current Max
+   int             nIdx;    // Updated when in Perform() and doing Sub()
 };
 
 class cCombat
 {
-  friend class cCombatList;
+   friend class cCombatList;
 
-  public:
+public:
    cCombat(struct unit_data *owner, int bMelee = FALSE);
    ~cCombat();
 
@@ -59,8 +59,8 @@ class cCombat
 
    inline struct unit_data *Owner(void) { return pOwner; }
    inline struct unit_data *Melee(void) { return pMelee; }
-   inline int When() { return nWhen; }
-   inline int NoOpponents(void) { return nNoOpponents; }
+   inline int               When() { return nWhen; }
+   inline int               NoOpponents(void) { return nNoOpponents; }
 
    void changeSpeed(int delta);
    void setMelee(struct unit_data *victim);
@@ -70,23 +70,22 @@ class cCombat
    void subOpponent(struct unit_data *victim);
    void status(const struct unit_data *ch);
 
-  private:
+private:
    void add(struct unit_data *victim);
    void sub(int idx);
-   int findOpponentIdx(struct unit_data *tmp);
+   int  findOpponentIdx(struct unit_data *tmp);
 
-   int nWhen;                     // What tick to attack / command at
-   struct unit_data *pOwner;      // The owning unit
-   struct unit_data *pMelee;      // The melee or kill pointer
-   struct unit_data **pOpponents; // Array of opponents (given damage)
-   int nNoOpponents;              // Number of opponents
-   char cmd[MAX_INPUT_LENGTH+1];  // A combat command
+   int                nWhen;                     // What tick to attack / command at
+   struct unit_data  *pOwner;                    // The owning unit
+   struct unit_data  *pMelee;                    // The melee or kill pointer
+   struct unit_data **pOpponents;                // Array of opponents (given damage)
+   int                nNoOpponents;              // Number of opponents
+   char               cmd[MAX_INPUT_LENGTH + 1]; // A combat command
 };
 
 extern class cCombatList CombatList;
 
-void set_fighting(struct unit_data *ch,
-		  struct unit_data *vict, int bMelee = FALSE);
+void set_fighting(struct unit_data *ch, struct unit_data *vict, int bMelee = FALSE);
 void stop_fighting(struct unit_data *ch, struct unit_data *victim = NULL);
 
 void stat_combat(const struct unit_data *ch, struct unit_data *u);

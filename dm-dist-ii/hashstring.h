@@ -37,33 +37,32 @@ class cStringConstant
    /* None of these definitions ought to be used by anything but the
       friends of this class */
 
-  private:
+private:
    cStringConstant(const char *c, ubit32 len, ubit32 h);
    ~cStringConstant(void);
-   inline const char *String(void) { return pStr; }
+   inline const char      *String(void) { return pStr; }
    inline cStringConstant *Next(void) { return pNext; }
 
-   char   *pStr;
-   ubit32 nReferences;
-   class  cStringConstant *pNext;
-   ubit32 nStrLen;
+   char                  *pStr;
+   ubit32                 nReferences;
+   class cStringConstant *pNext;
+   ubit32                 nStrLen;
    // Possibly consider storing the Hash value for speed on destruction
 };
 
-
 class cStringInstance
 {
-  public:
+public:
    cStringInstance(void);
    cStringInstance(const char *str);
    ~cStringInstance(void);
-   inline const char *StringPtr(void) { return pConst ? pConst->pStr : 0; }
-   inline const char *String(void) { return pConst ? pConst->pStr : ""; }
-   void Reassign(const char *c);
+   inline const char  *StringPtr(void) { return pConst ? pConst->pStr : 0; }
+   inline const char  *String(void) { return pConst ? pConst->pStr : ""; }
+   void                Reassign(const char *c);
    inline const ubit32 Length(void) { return pConst ? pConst->nStrLen : 0; }
 
-  private:
-   void Make(const char *str);
+private:
+   void                   Make(const char *str);
    class cStringConstant *pConst;
 };
 

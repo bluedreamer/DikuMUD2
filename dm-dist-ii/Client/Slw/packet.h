@@ -24,36 +24,39 @@
 #ifndef PCKT_H
 #define PCKT_H
 
-#include <stdio.h>
-
 #include "essential.h"
 #include "serial.h"
 
+#include <stdio.h>
+
 class cPcktErrors
 {
-  public:
+public:
    void Reset(void)
    {
-      nTxPackets = 0;
-      nRxPackets = 0;
+      nTxPackets   = 0;
+      nRxPackets   = 0;
       nLengthError = 0;
-      nCrcError = 0;
-      nEscError = 0;
+      nCrcError    = 0;
+      nEscError    = 0;
    }
 
    cPcktErrors() { Reset(); }
 
    void Status(char *Buf)
    {
-      sprintf(Buf, "\nPacket Layer:\n"
-	      "        TX: %5ld   RX:    %5ld\n"
+      sprintf(Buf,
+              "\nPacket Layer:\n"
+              "        TX: %5ld   RX:    %5ld\n"
               "Errors: CRC %5ld   Length %5ld   Garbled %5ld\n",
 
-              (signed long) nTxPackets, (signed long) nRxPackets,
-              (signed long) nCrcError,  (signed long) nLengthError,
-	      (signed long) nEscError);
+              (signed long)nTxPackets,
+              (signed long)nRxPackets,
+              (signed long)nCrcError,
+              (signed long)nLengthError,
+              (signed long)nEscError);
    }
- 
+
    ubit32 nTxPackets;
    ubit32 nRxPackets;
 
@@ -62,10 +65,9 @@ class cPcktErrors
    ubit32 nEscError;
 };
 
-
 class cPacketLayer : public cSerial
 {
-  public:
+public:
    cPacketLayer(void);
    ~cPacketLayer(void);
 
@@ -86,7 +88,6 @@ class cPacketLayer : public cSerial
    //
    virtual void EventFrameArrival(ubit8 *pTmpData, ubit32 nTmpLen) = 0;
 
-
    // Called from the physical layer in one of two ways.
    //   if bPcktRXBlocked is TRUE
    //      Called with a garbage character to try to make the layer
@@ -101,34 +102,33 @@ class cPacketLayer : public cSerial
 
    cPcktErrors PcktError;
 
-  private:
+private:
    inline ubit16 UpdateCRC(register ubit8 c, register ubit16 crc);
-   inline void TransmitStuffCharacter(register ubit8 c);
-   void   FrameError(void);
-   inline int FrameCheck(void);
-   void   DeliverPacket(void);
+   inline void   TransmitStuffCharacter(register ubit8 c);
+   void          FrameError(void);
+   inline int    FrameCheck(void);
+   void          DeliverPacket(void);
 
    // It's nasty that these are "global", but I dont want one big messy
    // function, neither do I want to pass millions of arguments and get
    // huge overheads in processing.
    //
 
-   ubit8    bActive;
-   ubit8    bHadError;
-   ubit8    bEscaped;
+   ubit8 bActive;
+   ubit8 bHadError;
+   ubit8 bEscaped;
 
-   ubit32   nLength;
-   ubit16   nCrc;
-   ubit8    *pData;
+   ubit32 nLength;
+   ubit16 nCrc;
+   ubit8 *pData;
 };
-
 
 // The maximum amount of data in a packet (excl. header).
 //
-#define PCKT_DATA_LEN     (256)
+#define PCKT_DATA_LEN (256)
 
 // The maximum amount of header data in a packet.
 //
-#define PCKT_HEADER_LEN   (3)
+#define PCKT_HEADER_LEN (3)
 
 #endif

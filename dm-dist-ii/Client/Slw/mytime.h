@@ -27,7 +27,7 @@
 
 class cMyTime
 {
-  public:
+public:
    void gettime(void);
 
    int operator==(const cMyTime &cT1);

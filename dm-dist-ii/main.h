@@ -44,10 +44,10 @@ extern int mud_reboot;
 extern int wizlock;
 extern int tics;
 
-extern int world_norooms;
-extern int world_noobjects;
-extern int world_nochars;
-extern int world_nozones;
+extern int  world_norooms;
+extern int  world_noobjects;
+extern int  world_nochars;
+extern int  world_nozones;
 extern char world_boottime[64];
 
 extern char zondir[64];

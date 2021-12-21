@@ -21,32 +21,31 @@
  * authorization of Valhalla is prohobited.                                *
  * *********************************************************************** */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <netinet/tcp.h>
-
-#include <unistd.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <sys/un.h>
-#include <fcntl.h>
-#include <errno.h>
-
 #include "network.h"
+
 #include "protocol.h"
 #include "textutil.h"
 #include "unixshit.h"
 
-#if defined(MARCEL) || defined(AMIGA)
-#include <machine/endian.h>
-#endif
+#include <errno.h>
+#include <fcntl.h>
+#include <netinet/tcp.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/un.h>
+#include <unistd.h>
 
+#if defined(MARCEL) || defined(AMIGA)
+   #include <machine/endian.h>
+#endif
 
 int OpenMother(int nPort)
 {
-   int n, fdMother;
-   struct linger ld;
+   int                n, fdMother;
+   struct linger      ld;
    struct sockaddr_in server_addr;
 
    memset(&server_addr, 0, sizeof(struct sockaddr_in));
@@ -56,7 +55,7 @@ int OpenMother(int nPort)
 
    fdMother = socket(AF_INET, SOCK_STREAM, 0);
 
-   if (fdMother == -1)
+   if(fdMother == -1)
    {
       slog(LOG_OFF, 0, "Can't open Mother Connection");
       exit(1);
@@ -64,7 +63,7 @@ int OpenMother(int nPort)
 
    n = fcntl(fdMother, F_SETFL, FNDELAY);
 
-   if (n == -1)
+   if(n == -1)
    {
       close(fdMother);
       slog(LOG_OFF, 0, "Non blocking set error.");
@@ -72,37 +71,35 @@ int OpenMother(int nPort)
    }
 
    n = 1;
-   if (setsockopt(fdMother,SOL_SOCKET,SO_REUSEADDR,(char *) &n, sizeof(n)) < 0)
+   if(setsockopt(fdMother, SOL_SOCKET, SO_REUSEADDR, (char *)&n, sizeof(n)) < 0)
    {
       close(fdMother);
       slog(LOG_OFF, 0, "setsockopt REUSEADDR");
       exit(1);
    }
 
-   ld.l_onoff = 0;
+   ld.l_onoff  = 0;
    ld.l_linger = 1000;
 
-   if (setsockopt(fdMother,SOL_SOCKET,SO_LINGER, (char *)&ld, sizeof(ld)) < 0)
+   if(setsockopt(fdMother, SOL_SOCKET, SO_LINGER, (char *)&ld, sizeof(ld)) < 0)
    {
       close(fdMother);
       slog(LOG_OFF, 0, "setsockopt LINGER");
       exit(1);
    }
 
-   n = bind(fdMother, (struct sockaddr *) &server_addr,
-            sizeof(struct sockaddr_in));
+   n = bind(fdMother, (struct sockaddr *)&server_addr, sizeof(struct sockaddr_in));
 
-   if (n != 0)
+   if(n != 0)
    {
       close(fdMother);
-      slog(LOG_OFF, 0, "Can't bind Mother Connection port %d (errno %d).",
-	   nPort, errno);
+      slog(LOG_OFF, 0, "Can't bind Mother Connection port %d (errno %d).", nPort, errno);
       exit(1);
    }
 
    n = listen(fdMother, 5);
 
-   if (n != 0)
+   if(n != 0)
    {
       close(fdMother);
       slog(LOG_OFF, 0, "Can't listen on Mother Connection.");
@@ -112,35 +109,31 @@ int OpenMother(int nPort)
    return fdMother;
 }
 
-
 int OpenNetwork(int nPort, const char *pcAddress)
 {
    struct sockaddr_in server_addr;
-   int fdClient;
-   int n;
+   int                fdClient;
+   int                n;
 
-   slog(LOG_ALL, 0, "Open connection to server on %s %d.",
-	pcAddress, nPort);
+   slog(LOG_ALL, 0, "Open connection to server on %s %d.", pcAddress, nPort);
 
-   memset((char *) &server_addr, 0, sizeof(struct sockaddr_in));
+   memset((char *)&server_addr, 0, sizeof(struct sockaddr_in));
 
-   server_addr.sin_family         = AF_INET;
-   server_addr.sin_addr.s_addr    = inet_addr(pcAddress);
-   server_addr.sin_port           = htons(nPort);
+   server_addr.sin_family      = AF_INET;
+   server_addr.sin_addr.s_addr = inet_addr(pcAddress);
+   server_addr.sin_port        = htons(nPort);
 
    fdClient = socket(AF_INET, SOCK_STREAM, 0);
 
-   if (fdClient == -1)
+   if(fdClient == -1)
    {
       slog(LOG_OFF, 0, "No TCP/IP connection to server.");
       return -1;
    }
 
-   n = connect(fdClient,
-	       (struct sockaddr *) &server_addr,
-	       sizeof(struct sockaddr_in));
+   n = connect(fdClient, (struct sockaddr *)&server_addr, sizeof(struct sockaddr_in));
 
-   if (n == -1)
+   if(n == -1)
    {
       close(fdClient);
       slog(LOG_OFF, 0, "No connect allowed to server.");
@@ -149,7 +142,7 @@ int OpenNetwork(int nPort, const char *pcAddress)
 
    n = fcntl(fdClient, F_SETFL, FNDELAY);
 
-   if (n == -1)
+   if(n == -1)
    {
       close(fdClient);
       slog(LOG_OFF, 0, "Non blocking set error on server connection.");
@@ -158,7 +151,7 @@ int OpenNetwork(int nPort, const char *pcAddress)
 
    int i;
    n = setsockopt(fdClient, IPPROTO_TCP, TCP_NODELAY, &i, sizeof(i));
-   if (n == -1)
+   if(n == -1)
    {
       close(fdClient);
       slog(LOG_OFF, 0, "Setsockopt TCP_NODELAY failed on server connection.");

@@ -27,12 +27,12 @@
    the linked list should be a doubly linked list for speed.
 */
 
+#include "queue.h"
+
+#include "utility.h"
 
 #include <assert.h>
 #include <string.h>
-
-#include "queue.h"
-#include "utility.h"
 
 cQueueElem::cQueueElem(char *pStr, int bCopy)
 {
@@ -40,33 +40,33 @@ cQueueElem::cQueueElem(char *pStr, int bCopy)
 
    ubit32 n = strlen(pStr) + 1;
 
-   if (bCopy)
+   if(bCopy)
    {
       CREATE(pData, ubit8, n);
       memcpy(pData, pStr, n);
    }
    else
-     pData = (ubit8 *) pStr;
+      pData = (ubit8 *)pStr;
 
-   nSize = n; 
+   nSize = n;
 }
 
 cQueueElem::cQueueElem(ubit8 *d, ubit32 n, int bCopy)
 {
-   if (bCopy)
+   if(bCopy)
    {
-      if (n > 0)
+      if(n > 0)
       {
-	 CREATE(pData, ubit8, n);
-	 memcpy(pData, d, n);
+         CREATE(pData, ubit8, n);
+         memcpy(pData, d, n);
       }
       else
-	pData = NULL;
+         pData = NULL;
    }
    else
-     pData = d;
-   
-   nSize = n; 
+      pData = d;
+
+   nSize = n;
 }
 
 cQueue::cQueue()
@@ -77,38 +77,32 @@ cQueue::cQueue()
    nBytes   = 0;
 }
 
-
 cQueue::~cQueue()
 {
    Flush();
 }
-
 
 ubit32 cQueue::Size(void)
 {
    return nEntries;
 }
 
-
 ubit32 cQueue::Bytes(void)
 {
    return nBytes;
 }
-
-
 
 int cQueue::IsEmpty(void)
 {
    return nEntries == 0;
 }
 
-
 void cQueue::Copy(ubit8 *data, ubit32 nLen)
 {
    assert(nLen <= nBytes);
 
-   int now;
-   cQueueElem *qe = (cQueueElem *) PeekHead();
+   int         now;
+   cQueueElem *qe = (cQueueElem *)PeekHead();
 
    do
    {
@@ -118,15 +112,13 @@ void cQueue::Copy(ubit8 *data, ubit32 nLen)
       nLen -= now;
       data += now;
       qe = qe->PeekNext();
-   }
-   while (nLen > 0);
+   } while(nLen > 0);
 }
-
 
 void cQueue::Cut(ubit32 nLen)
 {
-   if (nLen < 1)
-     return;
+   if(nLen < 1)
+      return;
 
    assert(nLen <= nBytes);
 
@@ -138,15 +130,13 @@ void cQueue::Cut(ubit32 nLen)
 
       assert(qe);
 
-      if (nLen < qe->Bytes())
-	Prepend(new cQueueElem(qe->Data()+nLen, qe->Bytes()-nLen));
+      if(nLen < qe->Bytes())
+         Prepend(new cQueueElem(qe->Data() + nLen, qe->Bytes() - nLen));
 
       nLen -= MIN(qe->Bytes(), nLen);
       delete qe;
-   }
-   while (nLen > 0);
+   } while(nLen > 0);
 }
-
 
 void cQueue::CutCopy(ubit8 *data, ubit32 nLen)
 {
@@ -154,17 +144,16 @@ void cQueue::CutCopy(ubit8 *data, ubit32 nLen)
    Cut(nLen);
 }
 
-
 void cQueue::Append(class cQueueElem *pe)
 {
-   if (IsEmpty())
+   if(IsEmpty())
    {
       pHead = pTail = pe;
    }
    else
    {
-      pTail->pNext  = pe;
-      pTail         = pe;
+      pTail->pNext = pe;
+      pTail        = pe;
    }
 
    pe->pNext = NULL;
@@ -173,8 +162,6 @@ void cQueue::Append(class cQueueElem *pe)
    nBytes += pe->Bytes();
 }
 
-
-
 /*  Quinn's Immortal Remark...
  *
  *  Listen...
@@ -182,7 +169,7 @@ void cQueue::Append(class cQueueElem *pe)
  */
 void cQueue::Prepend(class cQueueElem *pe)
 {
-   if (IsEmpty())
+   if(IsEmpty())
    {
       pe->pNext = NULL;
       pTail     = pe;
@@ -198,29 +185,29 @@ void cQueue::Prepend(class cQueueElem *pe)
    nBytes += pe->Bytes();
 }
 
-const cQueueElem * cQueue::PeekHead(void)
+const cQueueElem *cQueue::PeekHead(void)
 {
    return pHead;
 }
 
-const class cQueueElem * cQueue::PeekTail(void)
+const class cQueueElem *cQueue::PeekTail(void)
 {
    return pTail;
 }
 
-class cQueueElem * cQueue::GetHead(void)
+class cQueueElem *cQueue::GetHead(void)
 {
    class cQueueElem *pTmp;
 
-   if (IsEmpty())
-     return NULL;
+   if(IsEmpty())
+      return NULL;
 
    pTmp = pHead;
 
-   if (nEntries == 1)
-     pHead = pTail = NULL;
+   if(nEntries == 1)
+      pHead = pTail = NULL;
    else
-     pHead = pHead->pNext;
+      pHead = pHead->pNext;
 
    nEntries--;
    nBytes -= pTmp->Bytes();
@@ -228,11 +215,10 @@ class cQueueElem * cQueue::GetHead(void)
    return pTmp;
 }
 
-
 void cQueue::Flush(void)
 {
    class cQueueElem *pTmp;
 
-   while ((pTmp = GetHead()))
-     delete pTmp;
+   while((pTmp = GetHead()))
+      delete pTmp;
 }

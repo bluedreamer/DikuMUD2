@@ -42,7 +42,7 @@ class cHook
 {
    friend cCaptainHook;
 
-  public:
+public:
    cHook(void);
    virtual ~cHook(void);
 
@@ -54,32 +54,31 @@ class cHook
 
    void Unhook(void);
 
-  protected:
+protected:
    void PushWrite(void);
 
    virtual void Input(int nFlags) = 0;
 
    cQueue qTX;
 
-  private:
+private:
    int fd;
    int id;
 };
-
 
 class cCaptainHook
 {
    friend cHook;
 
-  public:
+public:
    cCaptainHook(void);
    ~cCaptainHook(void);
 
    void Close(void);
    void Hook(int nHandle, cHook *hook);
-   int Wait(struct timeval *timeout);
+   int  Wait(struct timeval *timeout);
 
-  private:
+private:
    void Unhook(cHook *hook);
 
    fd_set read_set, write_set;
@@ -92,6 +91,5 @@ class cCaptainHook
 };
 
 extern cCaptainHook CaptainHook;
-
 
 #endif

@@ -328,8 +328,7 @@ exit_field	: TO reference
 			}
 		| KEY reference
 			{
-			  ROOM_EXIT(cur,cur_ex)->key =
-			    (struct file_index_type *) $2;
+			  ROOM_EXIT(cur,cur_ex)->key=std::shared_ptr<file_index_type>(reinterpret_cast<file_index_type*>($2));
 			}
 		| KEYWORD stringlist
 			{
@@ -717,7 +716,7 @@ unit_field	: NAMES stringlist
 			}
 		| KEY reference
 			{
-			  UNIT_KEY(cur) = (struct file_index_type *) $2;
+			  UNIT_KEY(cur)=std::shared_ptr<file_index_type>(reinterpret_cast<file_index_type*>($2));
 			}
 		| OPEN flags
 			{
@@ -1505,4 +1504,3 @@ void dumpdil(struct dilprg *prg) {
     dumpdiltemplate(prg->stack[i].tmpl);
   }
 }
-
