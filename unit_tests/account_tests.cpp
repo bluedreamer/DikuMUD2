@@ -5,20 +5,20 @@
 #include <boost/test/unit_test.hpp>
 #include <memory>
 
-void init_char(struct unit_data * ch);
+void init_char(struct unit_data *ch);
 struct AccountsFixture
 {
    AccountsFixture();
    ~AccountsFixture();
    //   std::unique_ptr<unit_data> room_data;
    //   unit_data *obj_data{nullptr};
-//   std::unique_ptr<unit_data> npc_data;
+   //   std::unique_ptr<unit_data> npc_data;
    std::unique_ptr<unit_data> pc_data;
 };
 
 AccountsFixture::AccountsFixture()
 {
-//   npc_data = std::make_unique<unit_data>(UNIT_ST_NPC);
+   //   npc_data = std::make_unique<unit_data>(UNIT_ST_NPC);
 }
 
 AccountsFixture::~AccountsFixture()
@@ -53,11 +53,14 @@ BOOST_AUTO_TEST_CASE(account_subtract_test)
 
 BOOST_AUTO_TEST_CASE(account_is_overdue_test)
 {
-   auto pc_data  = std::make_unique<unit_data>(UNIT_ST_PC);
-//   init_char(pc_data.get());
+   auto pc       = std::make_unique<unit_data>(UNIT_ST_PC);
+   pc->next      = nullptr;
+   pc->gnext     = nullptr;
+   pc->gprevious = nullptr;
+   //   init_char(pc.get());
 
    g_cServerConfig.m_bAccounting = 1;
-   BOOST_TEST(account_is_overdue(pc_data.get()) == 0);
+   BOOST_TEST(account_is_overdue(pc.get()) == 0);
 }
 
 BOOST_AUTO_TEST_CASE(account_overdue_test)

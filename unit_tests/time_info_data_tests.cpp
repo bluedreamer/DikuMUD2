@@ -350,34 +350,32 @@ BOOST_AUTO_TEST_CASE(mudtime_strcpy_test)
 BOOST_AUTO_TEST_CASE(age_test)
 {
    { // Isn't a PC
-      auto unit=std::make_unique<unit_data>(UNIT_ST_NPC);
+      auto npc       = std::make_unique<unit_data>(UNIT_ST_NPC);
+      npc->next      = nullptr;
+      npc->gnext     = nullptr;
+      npc->gprevious = nullptr;
 
-      unit->next                             = nullptr;
-      unit->gnext                            = nullptr;
-      unit->gprevious                        = nullptr;
-      unit->data.ch->specific.pc->time.birth = 690399843;
-
-      auto result = age(unit.get());
-      //      TimeInfoDataFixture::LogTimeInfoData(result);
+      auto result = age(npc.get());
+      TimeInfoDataFixture::LogTimeInfoData(result);
       BOOST_TEST(result.hours == 0);
       BOOST_TEST(result.day == 0);
       BOOST_TEST(result.month == 0);
       BOOST_TEST(result.year == 0);
    }
    { // Is a PC
-      auto                       age_time = time(nullptr) - 69039984;
-      auto unit=std::make_unique<unit_data>(UNIT_ST_NPC);
-      unit->next                             = nullptr;
-      unit->gnext                            = nullptr;
-      unit->gprevious                        = nullptr;
-      unit->data.ch->specific.pc->time.birth = age_time;
+      auto age_time                        = 1640048814 - 7654321;
+      auto pc                              = std::make_unique<unit_data>(UNIT_ST_PC);
+      pc->next                             = nullptr;
+      pc->gnext                            = nullptr;
+      pc->gprevious                        = nullptr;
+      pc->data.ch->specific.pc->time.birth = age_time;
 
-      auto result = age(unit.get());
+      auto result = age(pc.get());
       TimeInfoDataFixture::LogTimeInfoData(result);
-      BOOST_TEST(result.hours == 21);
-      BOOST_TEST(result.day == 12);
-      BOOST_TEST(result.month == 0);
-      BOOST_TEST(result.year == 76);
+      BOOST_TEST(result.hours == 2);
+      BOOST_TEST(result.day == 13);
+      BOOST_TEST(result.month == 3);
+      BOOST_TEST(result.year == 8);
    }
 }
 BOOST_AUTO_TEST_SUITE_END();
