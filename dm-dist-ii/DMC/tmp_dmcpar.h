@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.4.1.  */
+/* A Bison parser, made by GNU Bison 3.7.6.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_YY_Y_TAB_H_INCLUDED
 # define YY_YY_Y_TAB_H_INCLUDED
@@ -44,108 +45,117 @@
 extern int yydebug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    FLAGS = 258,
-    END = 259,
-    UNKNOWN = 260,
-    OBJECTS = 261,
-    ZONE = 262,
-    RESET = 263,
-    ROOMS = 264,
-    MOBILES = 265,
-    ENDMARK = 266,
-    DIL = 267,
-    DILPRG = 268,
-    STRING = 269,
-    SYMBOL = 270,
-    PNUM = 271,
-    NAMES = 272,
-    TITLE = 273,
-    DESCR = 274,
-    OUT_DESCR = 275,
-    IN_DESCR = 276,
-    EXTRA = 277,
-    KEY = 278,
-    OPEN = 279,
-    MANIPULATE = 280,
-    UFLAGS = 281,
-    WEIGHT = 282,
-    CAPACITY = 283,
-    SPECIAL = 284,
-    LIGHT = 285,
-    BRIGHT = 286,
-    MINV = 287,
-    RANDOM = 288,
-    DILCOPY = 289,
-    ID = 290,
-    DATA = 291,
-    DURATION = 292,
-    FIRSTF = 293,
-    TICKF = 294,
-    LASTF = 295,
-    APPLYF = 296,
-    TIME = 297,
-    BITS = 298,
-    STRINGT = 299,
-    EXIT = 300,
-    MOVEMENT = 301,
-    IN = 302,
-    SPELL = 303,
-    LINK = 304,
-    TO = 305,
-    KEYWORD = 306,
-    VALUE = 307,
-    COST = 308,
-    RENT = 309,
-    TYPE = 310,
-    AFFECT = 311,
-    MANA = 312,
-    HIT = 313,
-    MONEY = 314,
-    EXP = 315,
-    ALIGNMENT = 316,
-    SEX = 317,
-    LEVEL = 318,
-    HEIGHT = 319,
-    RACE = 320,
-    POSITION = 321,
-    ABILITY = 322,
-    WEAPON = 323,
-    ATTACK = 324,
-    ARMOUR = 325,
-    DEFENSIVE = 326,
-    OFFENSIVE = 327,
-    SPEED = 328,
-    DEFAULT = 329,
-    ACT = 330,
-    RESET_F = 331,
-    LIFESPAN = 332,
-    CREATORS = 333,
-    NOTES = 334,
-    HELP = 335,
-    WEATHER = 336,
-    LOAD = 337,
-    FOLLOW = 338,
-    MAX = 339,
-    ZONEMAX = 340,
-    LOCAL = 341,
-    INTO = 342,
-    NOP = 343,
-    EQUIP = 344,
-    DOOR = 345,
-    PURGE = 346,
-    REMOVE = 347,
-    COMPLETE = 348,
-    SPLUS = 349,
-    UMINUS = 350,
-    UPLUS = 351
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    FLAGS = 258,                   /* FLAGS  */
+    END = 259,                     /* END  */
+    UNKNOWN = 260,                 /* UNKNOWN  */
+    OBJECTS = 261,                 /* OBJECTS  */
+    ZONE = 262,                    /* ZONE  */
+    RESET = 263,                   /* RESET  */
+    ROOMS = 264,                   /* ROOMS  */
+    MOBILES = 265,                 /* MOBILES  */
+    ENDMARK = 266,                 /* ENDMARK  */
+    DIL = 267,                     /* DIL  */
+    DILPRG = 268,                  /* DILPRG  */
+    STRING = 269,                  /* STRING  */
+    SYMBOL = 270,                  /* SYMBOL  */
+    PNUM = 271,                    /* PNUM  */
+    NAMES = 272,                   /* NAMES  */
+    TITLE = 273,                   /* TITLE  */
+    DESCR = 274,                   /* DESCR  */
+    OUT_DESCR = 275,               /* OUT_DESCR  */
+    IN_DESCR = 276,                /* IN_DESCR  */
+    EXTRA = 277,                   /* EXTRA  */
+    KEY = 278,                     /* KEY  */
+    OPEN = 279,                    /* OPEN  */
+    MANIPULATE = 280,              /* MANIPULATE  */
+    UFLAGS = 281,                  /* UFLAGS  */
+    WEIGHT = 282,                  /* WEIGHT  */
+    CAPACITY = 283,                /* CAPACITY  */
+    SPECIAL = 284,                 /* SPECIAL  */
+    LIGHT = 285,                   /* LIGHT  */
+    BRIGHT = 286,                  /* BRIGHT  */
+    MINV = 287,                    /* MINV  */
+    RANDOM = 288,                  /* RANDOM  */
+    DILCOPY = 289,                 /* DILCOPY  */
+    ID = 290,                      /* ID  */
+    DATA = 291,                    /* DATA  */
+    DURATION = 292,                /* DURATION  */
+    FIRSTF = 293,                  /* FIRSTF  */
+    TICKF = 294,                   /* TICKF  */
+    LASTF = 295,                   /* LASTF  */
+    APPLYF = 296,                  /* APPLYF  */
+    TIME = 297,                    /* TIME  */
+    BITS = 298,                    /* BITS  */
+    STRINGT = 299,                 /* STRINGT  */
+    EXIT = 300,                    /* EXIT  */
+    MOVEMENT = 301,                /* MOVEMENT  */
+    IN = 302,                      /* IN  */
+    SPELL = 303,                   /* SPELL  */
+    LINK = 304,                    /* LINK  */
+    TO = 305,                      /* TO  */
+    KEYWORD = 306,                 /* KEYWORD  */
+    VALUE = 307,                   /* VALUE  */
+    COST = 308,                    /* COST  */
+    RENT = 309,                    /* RENT  */
+    TYPE = 310,                    /* TYPE  */
+    AFFECT = 311,                  /* AFFECT  */
+    MANA = 312,                    /* MANA  */
+    HIT = 313,                     /* HIT  */
+    MONEY = 314,                   /* MONEY  */
+    EXP = 315,                     /* EXP  */
+    ALIGNMENT = 316,               /* ALIGNMENT  */
+    SEX = 317,                     /* SEX  */
+    LEVEL = 318,                   /* LEVEL  */
+    HEIGHT = 319,                  /* HEIGHT  */
+    RACE = 320,                    /* RACE  */
+    POSITION = 321,                /* POSITION  */
+    ABILITY = 322,                 /* ABILITY  */
+    WEAPON = 323,                  /* WEAPON  */
+    ATTACK = 324,                  /* ATTACK  */
+    ARMOUR = 325,                  /* ARMOUR  */
+    DEFENSIVE = 326,               /* DEFENSIVE  */
+    OFFENSIVE = 327,               /* OFFENSIVE  */
+    SPEED = 328,                   /* SPEED  */
+    DEFAULT = 329,                 /* DEFAULT  */
+    ACT = 330,                     /* ACT  */
+    RESET_F = 331,                 /* RESET_F  */
+    LIFESPAN = 332,                /* LIFESPAN  */
+    CREATORS = 333,                /* CREATORS  */
+    NOTES = 334,                   /* NOTES  */
+    HELP = 335,                    /* HELP  */
+    WEATHER = 336,                 /* WEATHER  */
+    LOAD = 337,                    /* LOAD  */
+    FOLLOW = 338,                  /* FOLLOW  */
+    MAX = 339,                     /* MAX  */
+    ZONEMAX = 340,                 /* ZONEMAX  */
+    LOCAL = 341,                   /* LOCAL  */
+    INTO = 342,                    /* INTO  */
+    NOP = 343,                     /* NOP  */
+    EQUIP = 344,                   /* EQUIP  */
+    DOOR = 345,                    /* DOOR  */
+    PURGE = 346,                   /* PURGE  */
+    REMOVE = 347,                  /* REMOVE  */
+    COMPLETE = 348,                /* COMPLETE  */
+    SPLUS = 349,                   /* SPLUS  */
+    UMINUS = 350,                  /* UMINUS  */
+    UPLUS = 351                    /* UPLUS  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
-/* Tokens.  */
+/* Token kinds.  */
+#define YYEMPTY -2
+#define YYEOF 0
+#define YYerror 256
+#define YYUNDEF 257
 #define FLAGS 258
 #define END 259
 #define UNKNOWN 260
@@ -254,7 +264,7 @@ union YYSTYPE
   struct dilargstype *dilargs;
   int num;
 
-#line 258 "y.tab.h"
+#line 268 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

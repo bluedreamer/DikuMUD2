@@ -5,4 +5,6 @@ tmp/
 tmp_dilpar.output
 tmp_dillex.c
 tmp_dilpar.c
+tmp_dillex.cpp
+tmp_dilpar.cpp
 tmp_dilpar.h

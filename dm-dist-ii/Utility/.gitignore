@@ -11,3 +11,6 @@ namegen
 tuborg
 verify
 tmp_calcpar.output
+tmp_calclex.cpp
+tmp_calcpar.cpp
+tmp_calcpar.h

@@ -37,7 +37,8 @@ LINK.c	=	$(LD) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS)
 DEBUG	=	-g #-O6
 
 CFL	=	$(DEBUG) $(SYSPORT) $(SYSFLAGS) $(EXTRA_CFLAGS)
-CFLAGS	=	-I .. -DDIL $(CFL) -pedantic -Wall -Wno-unused -Wno-format-overflow -Wno-variadic-macros
+CFLAGS	=	-I .. -DDIL $(CFL) -pedantic -Wall -Wno-unused -Wno-format-overflow -Wno-variadic-macros -Wno-register
+CPPFLAGS	=	$(CFLAGS)
 
 # (f)lex/yacc/bison generated c-files are notorious for their lousy C
 # hence, no warnings...
@@ -54,11 +55,11 @@ OPT	=	#-O2 	# -O might be a good idea, but we have a tough time
 # SOURCES
 
 # c-files for dil
-DIL_SRCS = tmp_dilpar.c tmp_dillex.c utility.c string.c structs.c
+DIL_SRCS = tmp_dilpar.cpp tmp_dillex.cpp utility.cpp string.cpp structs.cpp
 
 # OBJECTS
 
-DIL_OBJS  =	$(DIL_SRCS:.c=.o)  dmc_db_file.o
+DIL_OBJS  =	$(DIL_SRCS:.cpp=.o)  dmc_db_file.o
 
    # ------------------------------ oOoOoOo ------------------------------ #
 
@@ -70,8 +71,8 @@ clean:
 realclean:	clean
 	-rm -f $(SERVER) blktest dil dmc mplex header
 
-# Need to get the tmp_*.c files into .depends as well
-depend:	tmp_dilpar.c tmp_dillex.c
+# Need to get the tmp_*.cpp files into .depends as well
+depend:	tmp_dilpar.cpp tmp_dillex.cpp
 	@echo Updating dependencies...
 	@$(MKDPND) -I .. $(DIL_SRCS) > .depends
 	@echo Done.
@@ -106,28 +107,28 @@ src:
           | gzip -1 > Src.tgz
 
 dil:	$(DIL_OBJS)
-	$(LINK.c) $(OPT) $(DIL_OBJS) ../memory.o ../textutil.o \
+	$(LINK.cpp) $(OPT) $(DIL_OBJS) ../memory.o ../textutil.o \
         ../namelist.o ../files.o ../extra.o ../bytestring.o ../common.o -o $@
 
-tmp_dilpar.c: dilpar.y
+tmp_dilpar.cpp: dilpar.y
 	$(YACC) $(YFLAGS) dilpar.y
 	@-if [ -f y.output ]; then mv y.output tmp_dilpar.output; fi
-	@mv y.tab.c tmp_dilpar.c
+	@mv y.tab.c tmp_dilpar.cpp
 	@mv y.tab.h tmp_dilpar.h
 
-tmp_dilpar.o:	tmp_dilpar.c
-	$(CC) -I .. $(OPT) $(CFLAGS2) -c tmp_dilpar.c
+tmp_dilpar.o:	tmp_dilpar.cpp
+	$(CPP) -I .. $(OPT) $(CFLAGS2) -c tmp_dilpar.cpp
 
-tmp_dillex.c:	dillex.l
-	$(LEX) -t dillex.l $(LEXFILTER) > tmp_dillex.c
+tmp_dillex.cpp:	dillex.l
+	$(LEX) -t dillex.l $(LEXFILTER) > tmp_dillex.cpp
 
-tmp_dillex.o:	tmp_dillex.c
-	$(CC) -I .. $(OPT) $(CFLAGS2) -c tmp_dillex.c
+tmp_dillex.o:	tmp_dillex.cpp
+	$(CPP) -I .. $(OPT) $(CFLAGS2) -c tmp_dillex.cpp
 
 # dmc_db_file.o is dependant on db_file.o to inherit its dependencies...
-# This may mean that db_file.c is compiled twice when not needed, but hey!
-dmc_db_file.o:	db_file.c
-	$(CC) -DDMC $(OPT) $(CFLAGS) -c db_file.c -o $@
+# This may mean that db_file.cpp is compiled twice when not needed, but hey!
+dmc_db_file.o:	db_file.cpp
+	$(CPP) -DDMC $(OPT) $(CFLAGS) -c db_file.cpp -o $@
 
 
 #.include ".depends"		# For `normal' make

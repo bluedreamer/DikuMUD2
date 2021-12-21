@@ -38,6 +38,7 @@ DEBUG	=	-g -O6
 
 CFL	=	$(DEBUG) $(SYSPORT) $(SYSFLAGS) $(EXTRA_CFLAGS)
 CFLAGS	=	-I .. $(CFL) -pedantic -Wall -Wno-unused -Wno-variadic-macros
+CPPFLAGS	=	$(CFLAGS)
 
 #LDFLAGS	=	-static
 OPT	=	#-O2 	# -O might be a good idea, but we have a tough time just getting the show on the road.   :)
@@ -45,11 +46,11 @@ OPT	=	#-O2 	# -O might be a good idea, but we have a tough time just getting the
 # SOURCES
 
 # c-files for the multiplexer
-MPLEX_SRCS = mplex.c network.c translate.c bytestring.c
+MPLEX_SRCS = mplex.cpp network.cpp translate.cpp bytestring.cpp
 
 # OBJECTS
 
-MPLEX_OBJS = $(MPLEX_SRCS:.c=.o) ../select.o ../queue.o ../textutil.o \
+MPLEX_OBJS = $(MPLEX_SRCS:.cpp=.o) ../select.o ../queue.o ../textutil.o \
         ../memory.o ../utility.o ../common.o ../protocol.o
 
    # ------------------------------ oOoOoOo ------------------------------ #
@@ -57,12 +58,12 @@ MPLEX_OBJS = $(MPLEX_SRCS:.c=.o) ../select.o ../queue.o ../textutil.o \
 all:	mplex
 
 mplex:	$(MPLEX_OBJS)
-	$(LINK.c) $(OPT) $(MPLEX_OBJS) -o $@
+	$(LINK.cpp) $(OPT) $(MPLEX_OBJS) -o $@
 
 clean:
 	-rm -f *.o mplex core
 
-# Need to get the tmp_*.c files into .depends as well
+# Need to get the tmp_*.cpp files into .depends as well
 depend:
 	@echo Updating dependencies...
 	@$(MKDPND) -I .. $(MPLEX_SRCS) > .depends
