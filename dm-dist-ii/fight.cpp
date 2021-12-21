@@ -970,7 +970,7 @@ class unit_data *raw_kill(struct unit_data *ch)
    struct unit_data *death_obj, *corpse = NULL;
 
    extern struct unit_data *seq_room;
-   extern struct file_index_type *deathobj_fi;
+   extern std::shared_ptr<file_index_type> deathobj_fi;
 
    struct unit_data *make_corpse(struct unit_data *ch);
 

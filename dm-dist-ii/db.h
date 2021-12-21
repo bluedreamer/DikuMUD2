@@ -103,8 +103,8 @@ struct zone_info_type
 
 struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len,
 				   int bSwapin, char *whom);
-void read_unit_file(struct file_index_type *org_fi, CByteBuffer *pBuf);
-struct unit_data *read_unit(struct file_index_type *fi);
+void read_unit_file(std::shared_ptr<file_index_type> org_fi, CByteBuffer *pBuf);
+struct unit_data *read_unit(std::shared_ptr<file_index_type> fi);
 void free_unit(struct unit_data *ch);
 void free_extra_descr(struct extra_descr_data *ex);
 void free_extra_descr_list(struct extra_descr_data *ex);

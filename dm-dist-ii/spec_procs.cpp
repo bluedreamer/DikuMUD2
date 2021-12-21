@@ -79,7 +79,7 @@ amount_t obj_trade_price(struct unit_data *u);
 int force_move(struct spec_arg *sarg)
 {
    char *c = NULL, *c2, *s = (char *) sarg->fptr->data;
-   struct file_index_type *fi;
+   std::shared_ptr<file_index_type> fi;
    struct unit_data *u, *ut, *next;
 
    if (sarg->cmd->no != CMD_AUTO_TICK)

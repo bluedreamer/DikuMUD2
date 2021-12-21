@@ -252,7 +252,7 @@ struct unit_data *set_money(struct unit_data *money, amount_t amt)
 }
 
 
-static struct unit_data *make_money(struct file_index_type *fi, amount_t amt)
+static struct unit_data *make_money(std::shared_ptr<file_index_type> fi, amount_t amt)
 {
    struct unit_data *money = read_unit(fi);
    char buf[512];

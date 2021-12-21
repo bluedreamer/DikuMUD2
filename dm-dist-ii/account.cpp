@@ -656,7 +656,7 @@ void do_account(struct unit_data *ch,
    };
    int i, amount;
 
-   extern struct file_index_type *letter_fi;
+   extern std::shared_ptr<file_index_type> letter_fi;
 
    if (!g_cServerConfig.m_bAccounting || !IS_PC(ch))
    {

@@ -403,7 +403,7 @@ class command_hist
 
    char str[MAX_INPUT_LENGTH+50];
    char pcname[PC_MAX_NAME+1];
-   struct file_index_type *fi;
+   std::shared_ptr<file_index_type> fi;
 } command_history_data[MAX_DEBUG_HISTORY];
 
 static int command_history_pos = 0;
@@ -446,7 +446,7 @@ class func_hist
    func_hist(void) { idx=0; flags=0; fi=NULL;}
    ubit16 idx;
    ubit16 flags;
-   struct file_index_type *fi;
+   std::shared_ptr<file_index_type> fi;
 } func_history_data[MAX_DEBUG_HISTORY];
 
 static int func_history_pos = 0;

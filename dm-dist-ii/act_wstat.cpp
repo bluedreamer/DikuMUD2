@@ -30,6 +30,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
+#include <memory>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -167,7 +168,7 @@ static void stat_world(struct unit_data *ch)
 
 static char *stat_buffer, *stat_p;
 
-static void stat_zone_reset(char *indnt, struct zone_reset_cmd *zrip,
+static void stat_zone_reset(char *indnt, std::shared_ptr<zone_reset_cmd> zrip,
 			    struct unit_data *ch)
 {
   static const char *nums[] = { "max", "zonemax", "local" };
@@ -437,7 +438,7 @@ static void extra_stat_zone(struct unit_data *ch, char *arg,
 {
   char buf[MAX_STRING_LENGTH], filename[128];
   int argno;
-  struct file_index_type *fi;
+  std::shared_ptr<file_index_type> fi;
   int search_type = 0, i;
 
   void stat_dijkstraa(struct unit_data *ch, struct zone_type *z);
@@ -1327,7 +1328,7 @@ void do_wstat(struct unit_data *ch, char *argument,
   }
   else
   {
-     struct file_index_type *fi;
+     std::shared_ptr<file_index_type> fi;
 
      u = find_unit(ch, &argument, 0, FIND_UNIT_GLOBAL);
 
@@ -1378,5 +1379,3 @@ void do_wstat(struct unit_data *ch, char *argument,
   else
     stat_normal(ch, u);
 }
-
-

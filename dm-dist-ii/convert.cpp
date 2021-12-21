@@ -121,7 +121,7 @@ struct unit_data *convert_item(struct unit_data *u,
       }
       else
       {
-	 extern struct file_index_type *slime_fi;
+	 std::shared_ptr<file_index_type> slime_fi;
 	 
 	 nu = read_unit(slime_fi);
       }
@@ -144,7 +144,7 @@ struct unit_data *convert_item(struct unit_data *u,
       }
       else
       {
-	 extern struct file_index_type *slime_fi;
+	 std::shared_ptr<file_index_type> slime_fi;
 
 	 nu = read_unit(slime_fi);
 	 slog(LOG_ALL, 0, "Slimed DIL item.");

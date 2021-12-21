@@ -304,7 +304,7 @@ struct unit_data *find_unit_general(const struct unit_data *viewer,
       if (IS_SET(bitvectorm, FIND_UNIT_EQUIP))
 	for (u = UNIT_CONTAINS(ch); u; u = u->next)
 	  if (IS_OBJ(u) && OBJ_EQP_POS(u) &&
-	      ((viewer == ch) || CHAR_CAN_SEE(viewer, u)) &&
+	      ((viewer == ch) || CHAR_CAN_SEE(const_cast<unit_data*>(viewer), u)) &&
 	      (CHAR_LEVEL(viewer) >= UNIT_MINV(u)) &&
 	      (ct = UNIT_NAMES(u).IsNameRaw(c)) && (ct - c >= best_len))
 	  {
@@ -321,7 +321,7 @@ struct unit_data *find_unit_general(const struct unit_data *viewer,
       if (IS_SET(bitvectorm, FIND_UNIT_INVEN))
 	for (u = UNIT_CONTAINS(ch); u; u = u->next)
 	  if ((ct = UNIT_NAMES(u).IsNameRaw(c)) &&
-	      ((viewer == ch) || CHAR_CAN_SEE(viewer, u)) &&
+	      ((viewer == ch) || CHAR_CAN_SEE(const_cast<unit_data*>(viewer), u)) &&
 	      (CHAR_LEVEL(viewer) >= UNIT_MINV(u)) &&
 	      !(IS_OBJ(u) && OBJ_EQP_POS(u)) && (ct - c >= best_len))
 	  {
@@ -348,8 +348,8 @@ struct unit_data *find_unit_general(const struct unit_data *viewer,
 
 	 /* MS: Removed !IS_ROOM(UNIT_IN(ch)) because you must be able to
 	        open rooms from the inside... */
-	 if ((ct = UNIT_NAMES(UNIT_IN(ch)).IsNameRaw(c))
-	     && CHAR_CAN_SEE(viewer, UNIT_IN(ch)) && (ct - c >= best_len))
+	 if ((ct = UNIT_NAMES(UNIT_IN(const_cast<unit_data *>(ch))).IsNameRaw(c))
+	     && CHAR_CAN_SEE(const_cast<unit_data *>(viewer), UNIT_IN(const_cast<unit_data *>(ch))) && (ct - c >= best_len))
 	 {
 	    if (ct - c > best_len)
 	    {
@@ -358,13 +358,13 @@ struct unit_data *find_unit_general(const struct unit_data *viewer,
 	    }
 
 	    if (--number == 0)
-	      best = UNIT_IN(ch);
+	      best = UNIT_IN(const_cast<unit_data*>(ch));
 	 }
 
 	 /* Run through units in local environment */
-	 for (u = UNIT_CONTAINS(UNIT_IN(ch)); u; u = u->next)
+	 for (u = UNIT_CONTAINS(UNIT_IN(const_cast<unit_data *>(ch))); u; u = u->next)
 	 {
-	    if (IS_ROOM(u) || CHAR_CAN_SEE(viewer,u)) /* Cansee room in dark */
+	    if (IS_ROOM(u) || CHAR_CAN_SEE(const_cast<unit_data *>(viewer),u)) /* Cansee room in dark */
 	    {
 	       if ((ct = UNIT_NAMES(u).IsNameRaw(c)) &&
 		   (ct - c >= best_len))
@@ -383,7 +383,7 @@ struct unit_data *find_unit_general(const struct unit_data *viewer,
 	       if (UNIT_CHARS(u) && UNIT_IS_TRANSPARENT(u))
 		 for (uu = UNIT_CONTAINS(u); uu; uu = uu->next)
 		   if (IS_CHAR(uu) && (ct = UNIT_NAMES(uu).IsNameRaw(c)) &&
-		       CHAR_CAN_SEE(viewer,uu) && (ct - c >= best_len))
+		       CHAR_CAN_SEE(const_cast<unit_data*>(viewer),uu) && (ct - c >= best_len))
 		   {
 		      if (ct - c > best_len)
 		      {
@@ -400,10 +400,10 @@ struct unit_data *find_unit_general(const struct unit_data *viewer,
 	 } /* End for */
 
 	 /* Run through units in local environment if upwards transparent */
-	 if ((u = UNIT_IN(UNIT_IN(ch))) && UNIT_IS_TRANSPARENT(UNIT_IN(ch)))
+	 if ((u = UNIT_IN(UNIT_IN(const_cast<unit_data *>(ch)))) && UNIT_IS_TRANSPARENT(UNIT_IN(const_cast<unit_data *>(ch))))
 	 {
 	    for (u = UNIT_CONTAINS(u); u; u = u->next)
-	      if (u != UNIT_IN(ch) && CHAR_CAN_SEE(viewer,u))
+	      if (u != UNIT_IN(const_cast<unit_data *>(ch)) && CHAR_CAN_SEE(const_cast<unit_data*>(viewer),u))
 	      {
 		 if ((ct = UNIT_NAMES(u).IsNameRaw(c)) &&
 		     (ct - c >= best_len))
@@ -423,7 +423,7 @@ struct unit_data *find_unit_general(const struct unit_data *viewer,
 		   for (uu = UNIT_CONTAINS(u); uu; uu = uu->next)
 		     if (IS_CHAR(uu) &&
 			 (ct = UNIT_NAMES(uu).IsNameRaw(c)) &&
-			 CHAR_CAN_SEE(viewer,uu) && (ct - c >= best_len))
+			 CHAR_CAN_SEE(const_cast<unit_data*>(viewer),uu) && (ct - c >= best_len))
 		     {
 			if (ct - c > best_len)
 			{
@@ -440,7 +440,7 @@ struct unit_data *find_unit_general(const struct unit_data *viewer,
 
       if (IS_SET(bitvectorm, FIND_UNIT_ZONE))
 	for (u = unit_list; u; u = u->gnext)
-	  if ((ct = UNIT_NAMES(u).IsNameRaw(c)) && CHAR_CAN_SEE(viewer,u) &&
+	  if ((ct = UNIT_NAMES(u).IsNameRaw(c)) && CHAR_CAN_SEE(const_cast<unit_data *>(viewer),u) &&
 	      unit_zone(u) == unit_zone(ch) &&  (ct - c >= best_len))
 	  {
 	     if (ct - c > best_len)
@@ -456,7 +456,7 @@ struct unit_data *find_unit_general(const struct unit_data *viewer,
       if (IS_SET(bitvectorm, FIND_UNIT_WORLD))
 	for (u = unit_list; u; u = u->gnext)
 	  if ((ct = UNIT_NAMES(u).IsNameRaw(c)) &&
-	      CHAR_CAN_SEE(viewer, u) && (ct - c >= best_len))
+	      CHAR_CAN_SEE(const_cast<unit_data *>(viewer), u) && (ct - c >= best_len))
 	  {
 	     if (ct - c > best_len)
 	     {
@@ -532,7 +532,7 @@ struct unit_data *find_unit(const struct unit_data *ch, char **arg,
 
 
 struct unit_data *find_symbolic_instance_ref(struct unit_data *ref,
-					     struct file_index_type *fi,
+                    std::shared_ptr<file_index_type> fi,
 					     ubit16 bitvector)
 {
    register struct unit_data *u, *uu;
@@ -608,7 +608,7 @@ struct unit_data *find_symbolic_instance_ref(struct unit_data *ref,
 }
 
 
-struct unit_data *find_symbolic_instance(struct file_index_type *fi)
+struct unit_data *find_symbolic_instance(std::shared_ptr<file_index_type> fi)
 {
    struct unit_data *u;
 

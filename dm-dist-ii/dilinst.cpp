@@ -2186,7 +2186,7 @@ void dilfi_snta(register struct dilprg *p, register class dilval *v)
       extern struct unit_data *unit_list;
 
       struct unit_data *u;
-      struct file_index_type *fi;
+      std::shared_ptr<file_index_type> fi;
 
       if ((fi = str_to_file_index((char *) v2.val.ptr)))
       {

@@ -477,7 +477,7 @@ void do_at(struct unit_data *ch, char *argument,
 {
    char buf[MAX_INPUT_LENGTH];
    struct unit_data *target, *original_loc;
-   struct file_index_type *fi;
+   std::shared_ptr<file_index_type> fi;
 
    if (!IS_PC(ch))
      return;
@@ -532,7 +532,7 @@ void do_goto(struct unit_data *ch, char *argument,
 	     const struct command_info *cmd)
 {
    struct unit_data *target, *pers;
-   struct file_index_type *fi;
+   std::shared_ptr<file_index_type> fi;
    struct zone_type *zone;
    int i;
 
@@ -896,7 +896,7 @@ void do_load(struct unit_data *ch, char *arg,
 	     const struct command_info *cmd)
 {
    char buf[MAX_INPUT_LENGTH];
-   struct file_index_type *fi;
+   std::shared_ptr<file_index_type> fi;
    struct unit_data *u, *tmp;
 
    void reset_char(struct unit_data *ch);

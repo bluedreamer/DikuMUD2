@@ -74,7 +74,7 @@ struct room_direction_data *create_direction_data(void);
  */
 void generate_bin_arrays(void)
 {
-   struct file_index_type *fi;
+   std::shared_ptr<file_index_type> fi;
    class zone_type *z;
    int i;
 
@@ -94,7 +94,8 @@ void generate_bin_arrays(void)
 	 CREATE(z->ba, struct bin_search_type, z->no_of_fi);
 	 for (fi = z->fi, i = 0;  fi;  fi = fi->next, i++)
 	 {
-	    z->ba[i].block   = fi;
+	    z->ba[i].block   = nullptr;
+       z->ba[i].fi_block = fi;
 	    z->ba[i].compare = fi->name;
 	 }
       }
@@ -230,9 +231,12 @@ struct diltemplate *generate_templates(FILE *f, struct zone_type *zone)
 }
 
 /* Generate index's for each unit in the file 'f', zone 'zone' */
-struct file_index_type *generate_file_indexes(FILE *f, class zone_type *zone)
+std::shared_ptr<file_index_type> generate_file_indexes(FILE *f, class zone_type *zone)
 {
-   class file_index_type *fi, *fi_list, *tfi1, *tfi2;
+   std::shared_ptr<file_index_type> fi;
+   std::shared_ptr<file_index_type> fi_list;
+   std::shared_ptr<file_index_type> tfi1;
+   std::shared_ptr<file_index_type> tfi2;
    CByteBuffer cBuf(100);
 
    fi_list = NULL;
@@ -245,7 +249,7 @@ struct file_index_type *generate_file_indexes(FILE *f, class zone_type *zone)
       if (feof(f))
 	break;
 
-      fi = new file_index_type();
+      fi = std::make_shared<struct file_index_type>();
       zone->no_of_fi++;
 
       fi->name      = str_dup((char *) cBuf.GetData());
@@ -582,9 +586,8 @@ extern int memory_room_alloc;
 struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len,
 				   int bSwapin, char *whom)
 {
-   void *ptr;
    struct unit_data *u;
-   struct file_index_type *fi;
+   std::shared_ptr<file_index_type> fi;
    char zone[FI_MAX_ZONENAME+1], name[FI_MAX_UNITNAME+1], *tmp;
    int i, j;
    ubit8 unit_version;
@@ -689,12 +692,15 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len,
       g_nCorrupt += pBuf->ReadStringCopy(zone, sizeof(zone));
       g_nCorrupt += pBuf->ReadStringCopy(name, sizeof(name));
 
-      struct file_index_type *tmpfi = find_file_index(zone, name);
+      std::shared_ptr<file_index_type> tmpfi = find_file_index(zone, name);
 
       if (tmpfi)
       {
 	 if (UNIT_TYPE(u) == UNIT_ST_ROOM)
-	   UNIT_IN(u) = (struct unit_data *) tmpfi; /* To be normalized! */
+         {
+            // TODO no way this should be casting file_index_type to unit_data - but lets go with it for the moment
+            UNIT_IN(u) = (struct unit_data *)tmpfi.get(); /* To be normalized! */
+         }
 	 else
 	 {
 	    if (IS_PC(u))
@@ -830,8 +836,8 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len,
 	    g_nCorrupt += pBuf->ReadStringCopy(zone, sizeof(zone));
 	    g_nCorrupt += pBuf->ReadStringCopy(name, sizeof(name));
        
-	    if ((ptr = find_file_index(zone, name)))
-	      CHAR_LAST_ROOM(u) = ((struct file_index_type *) ptr)->room_ptr;
+	    if (auto ptr = find_file_index(zone, name))
+	      CHAR_LAST_ROOM(u) = ptr->room_ptr;
 	 }
 
 	 if (unit_version >= 42)
@@ -1009,7 +1015,10 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len,
 	 g_nCorrupt += pBuf->ReadStringCopy(zone, sizeof(zone));
 	 g_nCorrupt += pBuf->ReadStringCopy(name, sizeof(name));
 	 if ((fi = find_file_index(zone, name)))
-	   UNIT_IN(u) = (struct unit_data *) fi; /* A file index */
+         {
+            // TODO no way this should be casting file_index_type to unit_data - but lets go with it for the moment
+            UNIT_IN(u) = (struct unit_data *)fi.get(); /* A file index */
+         }
 	 else
 	   UNIT_IN(u) = NULL;
       }
@@ -1037,7 +1046,8 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len,
 	       ROOM_EXIT(u, i)->key = find_file_index(zone, name);
 	  
 	       /* NOT fi->room_ptr! Done later */
-	       ROOM_EXIT(u, i)->to_room = (struct unit_data *) fi;
+               // TODO no way this should be casting file_index_type to unit_data - but lets go with it for the moment
+	       ROOM_EXIT(u, i)->to_room = (struct unit_data *) fi.get();
 	    }
 	    else
 	    {			/* Exit not existing, skip the junk info! */
@@ -1100,7 +1110,7 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len,
    }
    else
    {
-      extern struct file_index_type *slime_fi;
+      extern std::shared_ptr<file_index_type> slime_fi;
 
       slog(LOG_ALL, 0, "FATAL: UNIT CORRUPT: %s", u->names.Name());
 
@@ -1133,7 +1143,7 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len,
 /*  Room directions points to file_indexes instead of units
  *  after a room has been read, due to initialization considerations
  */
-void read_unit_file(struct file_index_type *org_fi, CByteBuffer *pBuf)
+void read_unit_file(std::shared_ptr<file_index_type> org_fi, CByteBuffer *pBuf)
 {
    FILE *f;
    char buf[256];
@@ -1154,11 +1164,11 @@ void read_unit_file(struct file_index_type *org_fi, CByteBuffer *pBuf)
 /*  Room directions points to file_indexes instead of units
  *  after a room has been read, due to initialization considerations
  */
-struct unit_data *read_unit(struct file_index_type *org_fi)
+struct unit_data *read_unit(std::shared_ptr<file_index_type> org_fi)
 {
-   int is_slimed(struct file_index_type *sp);
+   int is_slimed(std::shared_ptr<file_index_type> sp);
 
-   extern struct file_index_type *slime_fi;
+   extern std::shared_ptr<file_index_type> slime_fi;
 
    struct unit_data *u;
 
@@ -1202,7 +1212,7 @@ struct unit_data *read_unit(struct file_index_type *org_fi)
 void read_all_rooms(void)
 {
    struct zone_type *z;
-   struct file_index_type *fi;
+   std::shared_ptr<file_index_type> fi;
 
    extern struct zone_type *boot_zone;
   
@@ -1222,7 +1232,7 @@ void read_all_rooms(void)
 /* After boot time, normalize all room exits */
 void normalize_world(void)
 {
-   struct file_index_type *fi;
+   std::shared_ptr<file_index_type> fi;
    struct unit_data *u, *tmpu;
    int i;
 
@@ -1274,21 +1284,22 @@ void normalize_world(void)
 /* For local error purposes */
 static struct zone_type *read_zone_error = NULL;
 
-struct zone_reset_cmd *read_zone(FILE *f, struct zone_reset_cmd *cmd_list)
+std::shared_ptr<zone_reset_cmd> read_zone(FILE *f, std::shared_ptr<zone_reset_cmd> cmd_list)
 {
-   struct zone_reset_cmd *cmd, *tmp_cmd;
-   struct file_index_type *fi;
+   std::shared_ptr<zone_reset_cmd> cmd;
+   std::shared_ptr<zone_reset_cmd> tmp_cmd;
+   std::shared_ptr<file_index_type> fi;
    ubit8 cmdno, direction;
    char zonename[FI_MAX_ZONENAME+1], name[FI_MAX_UNITNAME+1];
    CByteBuffer cBuf(100);
 
-   extern struct file_index_type *slime_fi;
+   extern std::shared_ptr<file_index_type> slime_fi;
 
    tmp_cmd = cmd_list;
 
    while (((cmdno = (ubit8) fgetc(f)) != 255) && !feof(f))
    {
-      CREATE(cmd, struct zone_reset_cmd, 1);
+      cmd = std::make_shared<zone_reset_cmd>();
       cmd->cmd_no = cmdno;
 
       fstrcpy(&cBuf, f);

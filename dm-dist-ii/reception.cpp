@@ -213,7 +213,7 @@ static int membuflen = 0, mempos;
 */
 
 /* Global variables */
-struct file_index_type *slime_fi = NULL;
+std::shared_ptr<file_index_type> slime_fi;
 
 /* save object */
 void enlist(CByteBuffer *pBuf, struct unit_data *unit, int level, int fast)
@@ -438,7 +438,7 @@ struct unit_data *base_load_contents(const char *pFileName,
 				     const struct unit_data *unit)
 {
    struct objheader h;
-   struct file_index_type *fi;
+   std::shared_ptr<file_index_type> fi;
    struct unit_data *pnew, *pstack[25];
    int len, init;
    int frame, plen, n;
@@ -452,7 +452,7 @@ struct unit_data *base_load_contents(const char *pFileName,
 
    extern struct unit_data *void_room;
 
-   int is_slimed(struct file_index_type *sp);
+   int is_slimed(std::shared_ptr<file_index_type> sp);
    int patch(char *ref, ubit32 reflen, char *dif, int diflen, char *res,
 	     int reslen, ubit32 crc);
 
@@ -740,7 +740,7 @@ void store_unit(struct unit_data *u)
 
 struct unit_data *restore_unit(char *zonename, char *unitname)
 {
-   struct file_index_type *fi = find_file_index(zonename, unitname);
+   std::shared_ptr<file_index_type> fi = find_file_index(zonename, unitname);
    CByteBuffer *pBuf = &g_FileBuffer;
    pBuf->Clear();
 
@@ -798,5 +798,3 @@ struct unit_data *restore_unit(char *zonename, char *unitname)
 
    return u;
 }
-
-

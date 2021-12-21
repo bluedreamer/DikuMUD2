@@ -32,6 +32,7 @@
 #include <string.h>
 #include <time.h>
 #include <ctype.h>
+#include <vector>
 
 #include "structs.h"
 #include "utils.h"
@@ -52,7 +53,7 @@
 
 struct shop_data
 {
-   struct file_index_type **prod; /* Array of producing items, last nil   */
+   std::vector<std::shared_ptr<file_index_type>> prod; /* Array of producing items, last nil   */
    int *types;                    /* Which item types to trade            */
    int typecount;                 /* The number of item types             */
    float  profit_buy;             /* Factor to multiply cost with.        */
@@ -154,7 +155,7 @@ static bool shop_producing(struct unit_data *item, struct shop_data *sd)
    if (!UNIT_FILE_INDEX(item))
      return FALSE;
 
-   if (sd->prod)
+   if (!sd->prod.empty())
    {
       while (sd->prod[counter])
 	if (sd->prod[counter++] == UNIT_FILE_INDEX(item))
@@ -520,7 +521,6 @@ static void shopping_price(char *arg, struct unit_data *ch,
 
 static void free_shop(struct shop_data *sd)
 {
-   if (sd->prod)          free(sd->prod);
    if (sd->types)         free(sd->types);
    if (sd->no_such_item1) free(sd->no_such_item1);
    if (sd->no_such_item2) free(sd->no_such_item2);
@@ -623,17 +623,20 @@ static struct shop_data *parse_shop(struct unit_data *keeper, char *data)
 	free_shop(sd);
 	return NULL;
      }
-
+// TODO ADRIAN come look at this
    names = parse_match_namelist(&data, "Production");
    if (names == NULL)
-     sd->prod = NULL;
+   {
+      std::vector<std::shared_ptr<file_index_type>> empty;
+      sd->prod.swap(empty);
+   }
    else
    {
       int j;
 
       for (i=0; names[i]; i++)
 	;
-      CREATE(sd->prod, struct file_index_type *, i + 1);
+      sd->prod.resize(i+1);
 
       for (j=i=0; names[i]; i++)
       {

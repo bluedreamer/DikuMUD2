@@ -40,7 +40,7 @@ struct money_type
   sbit32 relative_value;       /* Relative to the internal value */
   sbit32 min_value;            /* Minimum internal value of the currency */
   ubit8 coins_per_weight;      /* How many coins per weight unit */
-  struct file_index_type *fi;  /* Where is coin object in file */
+  std::shared_ptr<file_index_type> fi;  /* Where is coin object in file */
 };
 
 /* You shouldn't have to refer to this array yourself.

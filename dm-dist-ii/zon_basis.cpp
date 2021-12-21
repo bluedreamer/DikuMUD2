@@ -73,13 +73,13 @@ struct unit_data *seq_room    = 0;
 struct unit_data *time_room   = 0;
 struct unit_data *entry_room  = 0;
 
-struct file_index_type *demigod_fi  = 0; /* Default demigod shape */
-struct file_index_type *zombie_fi   = 0;
-struct file_index_type *letter_fi   = 0;
-struct file_index_type *corpse_fi   = 0;
-struct file_index_type *head_fi     = 0;
-struct file_index_type *deathobj_fi = 0;
-struct file_index_type *beginner_note = 0;
+std::shared_ptr<file_index_type> demigod_fi; /* Default demigod shape */
+std::shared_ptr<file_index_type> zombie_fi;
+std::shared_ptr<file_index_type> letter_fi;
+std::shared_ptr<file_index_type> corpse_fi;
+std::shared_ptr<file_index_type> head_fi;
+std::shared_ptr<file_index_type> deathobj_fi;
+std::shared_ptr<file_index_type> beginner_note;
 
 extern char zondir[];
 
