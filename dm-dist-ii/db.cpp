@@ -39,6 +39,7 @@
 #include "db_file.h"
 #include "dil.h"
 #include "dilrun.h"
+#include "external_funcs.h"
 #include "files.h"
 #include "handler.h"
 #include "limits.h"
@@ -50,7 +51,6 @@
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
-#include "external_funcs.h"
 
 #include <ctype.h>
 #include <stdio.h>
@@ -58,7 +58,7 @@
 #include <string.h>
 #include <time.h>
 
-int               room_number;      /* For counting numbers in rooms */
+int                        room_number;      /* For counting numbers in rooms */
 std::shared_ptr<unit_data> unit_list = NULL; /* The global unit_list          */
 
 /* Global permanent element of zone info */
@@ -499,7 +499,7 @@ int bread_affect(CByteBuffer *pBuf, std::shared_ptr<unit_data> u, ubit8 nVersion
    ubit8                     t8;
    ubit16                    t16;
 
-   struct unit_affected_type *link_alloc_affect(std::shared_ptr<unit_data>  unit, struct unit_affected_type * orgaf);
+   struct unit_affected_type *link_alloc_affect(std::shared_ptr<unit_data> unit, struct unit_affected_type * orgaf);
 
    if(nVersion <= 56)
    {
@@ -571,7 +571,7 @@ std::shared_ptr<zone_type> unit_error_zone;
  */
 std::shared_ptr<unit_data> read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom)
 {
-   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data>       u;
    std::shared_ptr<file_index_type> fi;
    char                             zone[FI_MAX_ZONENAME + 1], name[FI_MAX_UNITNAME + 1], *tmp;
    int                              i, j;
@@ -585,7 +585,7 @@ std::shared_ptr<unit_data> read_unit_string(CByteBuffer *pBuf, int type, int len
    int memory_start;
 #endif
 
-   void start_all_special(std::shared_ptr<unit_data>  u);
+   void start_all_special(std::shared_ptr<unit_data> u);
 
    g_nCorrupt = 0;
 
@@ -686,7 +686,7 @@ std::shared_ptr<unit_data> read_unit_string(CByteBuffer *pBuf, int type, int len
          {
             // TODO no way this should be casting file_index_type to unit_data - but lets go with it for the moment
             assert(0);
-//            UNIT_IN(u) = (std::shared_ptr<unit_data> )tmpfi.get(); /* To be normalized! */
+            //            UNIT_IN(u) = (std::shared_ptr<unit_data> )tmpfi.get(); /* To be normalized! */
          }
          else
          {
@@ -876,7 +876,7 @@ std::shared_ptr<unit_data> read_unit_string(CByteBuffer *pBuf, int type, int len
 
             if(unit_version < 44)
             {
-               void race_adjust(std::shared_ptr<unit_data> );
+               void race_adjust(std::shared_ptr<unit_data>);
                race_adjust(u);
             }
 
@@ -1001,7 +1001,7 @@ std::shared_ptr<unit_data> read_unit_string(CByteBuffer *pBuf, int type, int len
             if((fi = find_file_index(zone, name)))
             {
                // TODO ADRIAN no way this should be casting file_index_type to unit_data - but lets go with it for the moment
-               //UNIT_IN(u) = fi; /* A file index */
+               // UNIT_IN(u) = fi; /* A file index */
                assert(0);
             }
             else
@@ -1033,7 +1033,7 @@ std::shared_ptr<unit_data> read_unit_string(CByteBuffer *pBuf, int type, int len
                   /* NOT fi->room_ptr! Done later */
                   // TODO no way this should be casting file_index_type to unit_data - but lets go with it for the moment
                   assert(0);
-//                  ROOM_EXIT(u, i)->to_room = (std::shared_ptr<unit_data> )fi.get();
+                  //                  ROOM_EXIT(u, i)->to_room = (std::shared_ptr<unit_data> )fi.get();
                }
                else
                { /* Exit not existing, skip the junk info! */
@@ -1205,7 +1205,7 @@ void normalize_world(void)
 {
    std::shared_ptr<unit_data> u;
    std::shared_ptr<unit_data> tmpu;
-   int               i;
+   int                        i;
 
    for(u = unit_list; u; u = u->gnext)
       if(IS_ROOM(u))
@@ -1215,7 +1215,7 @@ void normalize_world(void)
          {
             // TODO ADRIAN fix this
             assert(0);
-//            file_index_type *fi = (struct file_index_type *)UNIT_IN(u);
+            //            file_index_type *fi = (struct file_index_type *)UNIT_IN(u);
             std::shared_ptr<file_index_type> fi;
             assert(fi->room_ptr);
 
@@ -1228,7 +1228,7 @@ void normalize_world(void)
             {
                // TODO ADRIAN fix this odd casting
                assert(0);
-//               ROOM_EXIT(u, i)->to_room = ((struct file_index_type *)ROOM_EXIT(u, i)->to_room)->room_ptr;
+               //               ROOM_EXIT(u, i)->to_room = ((struct file_index_type *)ROOM_EXIT(u, i)->to_room)->room_ptr;
             }
       }
 
@@ -1584,7 +1584,7 @@ void db_shutdown(void)
       clear_destructed();
    }
 
-   void stop_all_special(std::shared_ptr<unit_data>  u);
+   void stop_all_special(std::shared_ptr<unit_data> u);
 
    while((tmpu = unit_list))
    {

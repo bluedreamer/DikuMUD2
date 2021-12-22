@@ -1,3 +1,3 @@
 * Change event_enq and all that to use functors/lambda or something beside func pointers
-* Remove register keyword
 * Remove function proto's in functions
+* Turn unit_affected_type into shared_ptr

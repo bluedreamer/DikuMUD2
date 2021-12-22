@@ -72,7 +72,7 @@ unit_data *zone_random(std::shared_ptr<unit_data> u, std::shared_ptr<zone_reset_
 /* Count ->no_in_zone for current 'boot_zone' (above) */
 void zone_update_no_in_zone(void)
 {
-   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data>       u;
    std::shared_ptr<file_index_type> fi;
    std::shared_ptr<zone_type>       tmp_zone;
 
@@ -100,7 +100,7 @@ void zone_loaded_a_unit(std::shared_ptr<unit_data> u)
 bool zone_limit(std::shared_ptr<unit_data> u, std::shared_ptr<file_index_type> fi, std::shared_ptr<zone_reset_cmd> cmd)
 {
    std::shared_ptr<unit_data> tmp;
-   sbit16            i;
+   sbit16                     i;
 
    if(fi->type == UNIT_ST_NPC)
    {
@@ -305,13 +305,13 @@ std::shared_ptr<unit_data> zone_follow(std::shared_ptr<unit_data> u, std::shared
    return loaded;
 }
 
-std::shared_ptr<unit_data> (*exec_zone_cmd[])(std::shared_ptr<unit_data> , std::shared_ptr<zone_reset_cmd>) = {
+std::shared_ptr<unit_data> (*exec_zone_cmd[])(std::shared_ptr<unit_data>, std::shared_ptr<zone_reset_cmd>) = {
    zone_nop, zone_load, zone_equip, zone_door, zone_purge, zone_remove, zone_follow, zone_random};
 
 bool low_reset_zone(std::shared_ptr<unit_data> u, std::shared_ptr<zone_reset_cmd> cmd)
 {
    std::shared_ptr<unit_data> success;
-   bool              ok = TRUE;
+   bool                       ok = TRUE;
 
    for(; cmd; cmd = cmd->next)
    {

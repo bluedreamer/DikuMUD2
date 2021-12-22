@@ -196,7 +196,7 @@ void do_shout(std::shared_ptr<unit_data> ch, char *argument, const struct comman
    {
       char buf[256];
 
-      act("You can not shout until you are level $2d.", A_ALWAYS, ch, reinterpret_cast<int*>(&g_nShout), {}, TO_CHAR);
+      act("You can not shout until you are level $2d.", A_ALWAYS, ch, reinterpret_cast<int *>(&g_nShout), {}, TO_CHAR);
       return;
    }
 
@@ -266,12 +266,12 @@ void do_shout(std::shared_ptr<unit_data> ch, char *argument, const struct comman
 void do_tell(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
    std::shared_ptr<unit_data> vict = 0;
-   struct char_follow_type *f;
-   char                     type;
-   const char              *others, *me;
-   char                    *c;
-   int                      switched = FALSE;
-   char                    *argument = (char *)aaa;
+   struct char_follow_type   *f;
+   char                       type;
+   const char                *others, *me;
+   char                      *c;
+   int                        switched = FALSE;
+   char                      *argument = (char *)aaa;
 
    if(IS_PC(ch) && IS_SET(PC_FLAGS(ch), PC_NOTELLING))
    {
@@ -490,7 +490,7 @@ void ignore_toggle(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> vic
 
 void do_ignore(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   char             tmp[MAX_INPUT_LENGTH];
+   char                       tmp[MAX_INPUT_LENGTH];
    std::shared_ptr<unit_data> victim;
 
    if(!IS_PC(ch))
@@ -516,8 +516,8 @@ void do_ignore(std::shared_ptr<unit_data> ch, char *argument, const struct comma
 void do_whisper(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
    std::shared_ptr<unit_data> vict;
-   char             *arg = (char *)aaa;
-   char             *c;
+   char                      *arg = (char *)aaa;
+   char                      *c;
 
    if(CHAR_HAS_FLAG(ch, CHAR_MUTE))
    {
@@ -584,8 +584,8 @@ void do_whisper(std::shared_ptr<unit_data> ch, char *aaa, const struct command_i
 void do_ask(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
    std::shared_ptr<unit_data> vict;
-   char             *argument = (char *)aaa;
-   char             *c;
+   char                      *argument = (char *)aaa;
+   char                      *c;
 
    if(CHAR_HAS_FLAG(ch, CHAR_MUTE))
    {
@@ -661,9 +661,9 @@ void do_ask(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info 
 
 void do_write(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
-   struct extra_descr_data *exd;
+   struct extra_descr_data   *exd;
    std::shared_ptr<unit_data> paper    = NULL;
-   char                    *argument = (char *)aaa;
+   char                      *argument = (char *)aaa;
 
    void interpreter_string_add(struct descriptor_data * d, char *str);
 

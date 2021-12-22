@@ -31,6 +31,7 @@
 #include "comm.h"
 #include "db.h"
 #include "db_file.h"
+#include "external_funcs.h"
 #include "files.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -40,7 +41,6 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
-#include "external_funcs.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -86,7 +86,7 @@ static void subtract_rent(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_da
 
 static ubit32 subtract_recurse(std::shared_ptr<unit_data> ch,
                                std::shared_ptr<unit_data> item,
-                               ubit32            seconds,
+                               ubit32                     seconds,
                                void (*fptr)(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, ubit32 price))
 {
    ubit32 sum = 0;
@@ -266,7 +266,7 @@ void enlist(CByteBuffer *pBuf, std::shared_ptr<unit_data> unit, int level, int f
 
 void add_units(CByteBuffer *pBuf, std::shared_ptr<unit_data> parent, std::shared_ptr<unit_data> unit, int level, int fast)
 {
-   int               tmp_i = 0;
+   int                        tmp_i = 0;
    std::shared_ptr<unit_data> tmp_u;
 
    if(IS_ROOM(unit))
@@ -408,14 +408,14 @@ std::shared_ptr<unit_data> base_load_contents(const char *pFileName, const std::
 {
    struct objheader                 h;
    std::shared_ptr<file_index_type> fi;
-   std::shared_ptr<unit_data> pnew;
-   std::shared_ptr<unit_data> pstack[25];
+   std::shared_ptr<unit_data>       pnew;
+   std::shared_ptr<unit_data>       pstack[25];
    int                              len, init;
    int                              frame, plen, n;
    struct descriptor_data          *tmp_descr = NULL;
    int                              equip_ok;
    FILE                            *pFile;
-   std::shared_ptr<unit_data> topu = NULL;
+   std::shared_ptr<unit_data>       topu = NULL;
 
    CByteBuffer InvBuf;
    InvBuf.Clear();
@@ -444,7 +444,7 @@ std::shared_ptr<unit_data> base_load_contents(const char *pFileName, const std::
    }
 
    frame         = 0;
-   pstack[frame] = (std::shared_ptr<unit_data> )unit;
+   pstack[frame] = (std::shared_ptr<unit_data>)unit;
 
    if(unit && IS_CHAR(unit))
    {

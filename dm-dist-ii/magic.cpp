@@ -391,21 +391,21 @@ int spell_cast_check(std::shared_ptr<unit_data> att, int spell)
 /* of each spell                                             */
 int spell_offensive(struct spell_args *sa, int spell_number, int bonus)
 {
-   int               def_shield_bonus;
-   int               armour_type;
-   int               hit_loc;
-   int               roll;
-   int               bEffect;
+   int                        def_shield_bonus;
+   int                        armour_type;
+   int                        hit_loc;
+   int                        roll;
+   int                        bEffect;
    std::shared_ptr<unit_data> def_shield;
 
    int  spell_bonus(std::shared_ptr<unit_data>  att,
                     std::shared_ptr<unit_data>  medium,
                     std::shared_ptr<unit_data>  def,
-                    int                hit_loc,
-                    int                spell_number,
-                    int               *pDef_armour_type,
+                    int                         hit_loc,
+                    int                         spell_number,
+                    int                        *pDef_armour_type,
                     std::shared_ptr<unit_data> *pDef_armour);
-   void damage_object(std::shared_ptr<unit_data>  ch, std::shared_ptr<unit_data>  obj, int dam);
+   void damage_object(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, int dam);
 
    /* Does the spell perhaps only hit head / body? All?? Right now I
       do it randomly */

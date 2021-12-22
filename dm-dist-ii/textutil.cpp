@@ -196,9 +196,9 @@ int str_nccmp(const char *s, const char *d, int n)
 }
 
 /* Allocate space for a copy of source */
-char *str_dup(register const char *source)
+char *str_dup(const char *source)
 {
-   register char *dest;
+   char *dest;
 
    if(source)
    {
@@ -215,10 +215,10 @@ char *str_dup(register const char *source)
  *  Return pointer to first occurence of ct in cs - or NULL
  *  Used to determine ei. "from" and "in"
  */
-char *str_str(register const char *cs, register const char *ct)
+char *str_str(const char *cs, const char *ct)
 {
-   register char *si;
-   register char *ti;
+   char *si;
+   char *ti;
 
    do
    {
@@ -238,10 +238,10 @@ char *str_str(register const char *cs, register const char *ct)
  *  Return pointer to first occurence of ct in cs - or NULL
  *  Used to determine ei. "from" and "in"
  */
-char *str_cstr(register const char *cs, register const char *ct)
+char *str_cstr(const char *cs, const char *ct)
 {
-   register char *si;
-   register char *ti;
+   char *si;
+   char *ti;
 
    do
    {
@@ -346,8 +346,8 @@ ubit1 next_word_is_number(const char *str)
 /* Warning, list of names must be in lowercase to match up! */
 int search_block(const char *oarg, const char **list, ubit1 exact)
 {
-   char         arg[4096];
-   register int i, l;
+   char arg[4096];
+   int  i, l;
 
    /* Make into lower case, and get length of string */
    l = str_lower(oarg, arg, sizeof(arg));
@@ -375,8 +375,8 @@ int search_block(const char *oarg, const char **list, ubit1 exact)
 /* Warning, argument 1 is made into lowercase!                       */
 int search_block_length(const char *oarg, int length, const char **list, ubit1 exact)
 {
-   char         arg[4096];
-   register int i;
+   char arg[4096];
+   int  i;
 
    /* Make into lower case, and get length of string */
    str_lower(oarg, arg, sizeof(arg));
@@ -628,9 +628,9 @@ void str_blank_punct(char *s)
 }
 
 /* Remove all multiple space occurences in s */
-void str_remspc(register char *s)
+void str_remspc(char *s)
 {
-   register char *cp;
+   char *cp;
 
    while(*s && (*s != ' ' || *(s + 1) != ' '))
       s++;
@@ -669,9 +669,9 @@ void str_chraround(char *str, char c)
 /*   Assumes nothing that arg is without leading spaces,  */
 /*   no double spaces and contains text                   */
 
-char *is_name_raw(register const char *arg, register const char *names[])
+char *is_name_raw(const char *arg, const char *names[])
 {
-   register int i, j;
+   int i, j;
 
    for(i = 0; names[i]; i++)
    {
@@ -700,7 +700,7 @@ char *is_name_raw(register const char *arg, register const char *names[])
 /* We need to copy to BUF in order to prevent crash when */
 /* str_remspc might want to change "constant" strings    */
 
-char *is_name(register const char *arg, register const char *names[])
+char *is_name(const char *arg, const char *names[])
 {
    char buf[MAX_INPUT_LENGTH];
 

@@ -47,6 +47,7 @@
 #include "comm.h"
 #include "common.h"
 #include "db.h"
+#include "external_funcs.h"
 #include "files.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -59,7 +60,6 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
-#include "external_funcs.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -532,12 +532,12 @@ char *sub_damage(char *str, char *col, int damage, int max_hp)
    return buf;
 }
 
-static void combat_send(struct SFightColorSet    *sColors,
-                        struct combat_single_msg *msg,
+static void combat_send(struct SFightColorSet     *sColors,
+                        struct combat_single_msg  *msg,
                         std::shared_ptr<unit_data> arg1,
                         std::shared_ptr<unit_data> arg2,
                         std::shared_ptr<unit_data> arg3,
-                        int                       dam)
+                        int                        dam)
 {
    if(msg->to_char)
    {
@@ -563,8 +563,13 @@ static void combat_send(struct SFightColorSet    *sColors,
 /* Use COM_MSG_MISS when a complete miss                  */
 /* Use COM_MSG_NODAM when a hit but no damage is given    */
 
-void combat_message(
-   std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, std::shared_ptr<unit_data> medium, int damage, int msg_group, int msg_number, int hit_location)
+void combat_message(std::shared_ptr<unit_data> att,
+                    std::shared_ptr<unit_data> def,
+                    std::shared_ptr<unit_data> medium,
+                    int                        damage,
+                    int                        msg_group,
+                    int                        msg_number,
+                    int                        hit_location)
 {
    struct combat_msg_packet *msg;
    int                       i, r;
@@ -757,11 +762,11 @@ static void person_gain(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data
 /* when a kill has been made                                         */
 static void exp_align_gain(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> victim)
 {
-   int                      rellevel, sumlevel, maxlevel, minlevel, no_members = 1, share;
+   int                        rellevel, sumlevel, maxlevel, minlevel, no_members = 1, share;
    std::shared_ptr<unit_data> head;
-   struct char_follow_type *f;
+   struct char_follow_type   *f;
 
-   int experience_modification(std::shared_ptr<unit_data>  att, std::shared_ptr<unit_data>  def);
+   int experience_modification(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def);
 
    maxlevel = CHAR_LEVEL(ch);
 
@@ -1101,11 +1106,11 @@ void modify_hit(std::shared_ptr<unit_data> ch, int hit)
 void damage(std::shared_ptr<unit_data> ch,
             std::shared_ptr<unit_data> victim,
             std::shared_ptr<unit_data> medium,
-            int               dam,
-            int               attack_group,
-            int               attack_number,
-            int               hit_location,
-            int               bDisplay)
+            int                        dam,
+            int                        attack_group,
+            int                        attack_number,
+            int                        hit_location,
+            int                        bDisplay)
 {
    int                        max_hit;
    struct unit_affected_type *paf;
@@ -1594,8 +1599,8 @@ void melee_violence(std::shared_ptr<unit_data> ch, int primary)
 
 struct hunt_data
 {
-   int               no;
-   int               was_legal;
+   int                        no;
+   int                        was_legal;
    std::shared_ptr<unit_data> victim;
 };
 
@@ -1609,7 +1614,7 @@ struct hunt_data
 /*     as they were activated by the flee command                */
 int hunting(struct spec_arg *sarg)
 {
-   struct hunt_data *h;
+   struct hunt_data          *h;
    std::shared_ptr<unit_data> victim;
 
    if(sarg->cmd->no != CMD_AUTO_TICK)

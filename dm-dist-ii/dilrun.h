@@ -65,9 +65,9 @@ void dil_add_secure(struct dilprg *prg, std::shared_ptr<unit_data> sup, ubit8 *l
 void dil_sub_secure(struct dilframe *frm, std::shared_ptr<unit_data> sup, int bForeach = FALSE);
 int  same_environment(std::shared_ptr<unit_data> u1, std::shared_ptr<unit_data> u2);
 void unhash_str(char **s);
-void dil_clear_non_secured(register struct dilprg *prg);
-void dil_clear_lost_reference(register struct dilframe *frm, void *ptr);
-void dil_test_secure(register struct dilprg *prg);
+void dil_clear_non_secured(struct dilprg *prg);
+void dil_clear_lost_reference(struct dilframe *frm, void *ptr);
+void dil_test_secure(struct dilprg *prg);
 int  dil_destroy(char *name, std::shared_ptr<unit_data> u);
 
 /* NULL fptr creates one...  */

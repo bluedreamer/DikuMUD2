@@ -30,6 +30,7 @@
 #include "common.h"
 #include "db.h"
 #include "db_file.h"
+#include "external_funcs.h"
 #include "files.h"
 #include "handler.h"
 #include "money.h"
@@ -39,7 +40,6 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
-#include "external_funcs.h"
 
 #include <cctype>
 #include <limits.h>

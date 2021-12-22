@@ -44,6 +44,7 @@
 #include "comm.h"
 #include "db.h"
 #include "dilrun.h"
+#include "external_funcs.h"
 #include "files.h"
 #include "interpreter.h"
 #include "main.h"
@@ -53,7 +54,6 @@
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
-#include "external_funcs.h"
 
 #include <ctype.h>
 #include <stdarg.h>
@@ -136,7 +136,7 @@ struct unit_fptr *create_fptr(std::shared_ptr<unit_data> u, ubit16 index, ubit16
 {
    struct unit_fptr *f;
 
-   void start_special(std::shared_ptr<unit_data>  u, struct unit_fptr * fptr);
+   void start_special(std::shared_ptr<unit_data> u, struct unit_fptr * fptr);
 
    CREATE(f, struct unit_fptr, 1);
    assert(f);
@@ -162,7 +162,7 @@ void destroy_fptr(std::shared_ptr<unit_data> u, struct unit_fptr *f)
    struct spec_arg   sarg;
 
    void register_destruct(int i, void *ptr);
-   void add_func_history(std::shared_ptr<unit_data>  u, ubit16, ubit16);
+   void add_func_history(std::shared_ptr<unit_data> u, ubit16, ubit16);
 
    assert(f);
    assert(!is_destructed(DR_FUNC, f));
@@ -173,7 +173,7 @@ void destroy_fptr(std::shared_ptr<unit_data> u, struct unit_fptr *f)
    add_func_history(u, f->index, 0);
 #endif
 
-   sarg.owner     = (std::shared_ptr<unit_data> )u;
+   sarg.owner     = (std::shared_ptr<unit_data>)u;
    sarg.activator = NULL;
    sarg.medium    = NULL;
    sarg.target    = NULL;
@@ -187,7 +187,7 @@ void destroy_fptr(std::shared_ptr<unit_data> u, struct unit_fptr *f)
 
    /* Data is free'ed in destruct() if it is not NULL now */
 
-   stop_special((std::shared_ptr<unit_data> )u, f);
+   stop_special((std::shared_ptr<unit_data>)u, f);
 
    /* Only unlink function, do not free it! */
    if(UNIT_FUNC(u) == f)
@@ -300,7 +300,7 @@ void modify_bright(std::shared_ptr<unit_data> unit, int bright)
 void trans_set(std::shared_ptr<unit_data> u)
 {
    std::shared_ptr<unit_data> u2;
-   int               sum = 0;
+   int                        sum = 0;
 
    for(u2 = UNIT_CONTAINS(u); u2; u2 = u2->next)
       sum += UNIT_BRIGHT(u2);
@@ -489,7 +489,7 @@ void intern_unit_up(std::shared_ptr<unit_data> unit, ubit1 pile)
    std::shared_ptr<unit_data> in;
    std::shared_ptr<unit_data> toin;
    std::shared_ptr<unit_data> extin;
-   sbit8             bright, selfb;
+   sbit8                      bright, selfb;
 
    assert(UNIT_IN(unit));
 
@@ -561,7 +561,7 @@ void intern_unit_down(std::shared_ptr<unit_data> unit, std::shared_ptr<unit_data
    std::shared_ptr<unit_data> u;
    std::shared_ptr<unit_data> in;
    std::shared_ptr<unit_data> extin;
-   sbit8             bright, selfb;
+   sbit8                      bright, selfb;
 
    assert(UNIT_IN(unit) == UNIT_IN(to));
    assert(unit != to);
@@ -748,7 +748,7 @@ void extract_unit(std::shared_ptr<unit_data> unit)
 
    // TODO ADRIAN this should go away I think
    assert(0);
-//   register_destruct(DR_UNIT, unit);
+   //   register_destruct(DR_UNIT, unit);
 
    if(UNIT_IS_EQUIPPED(unit))
       unequip_object(unit);
@@ -786,7 +786,7 @@ void extract_unit(std::shared_ptr<unit_data> unit)
 
          if(CHAR_DESCRIPTOR(unit))
          {
-            void disconnect_game(std::shared_ptr<unit_data>  pc);
+            void disconnect_game(std::shared_ptr<unit_data> pc);
 
             disconnect_game(unit);
          }

@@ -63,7 +63,7 @@ void do_turn(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
  * tested: No
  */
 {
-   int               skilla, skilld, hm;
+   int                        skilla, skilld, hm;
    std::shared_ptr<unit_data> vict;
 
    if(IS_PC(ch) && PC_SKI_SKILL(ch, SKI_TURN_UNDEAD) == 0)
@@ -112,7 +112,7 @@ void do_turn(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
 void do_quaff(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    std::shared_ptr<unit_data> potion;
-   int               i;
+   int                        i;
 
    if(str_is_empty(arg))
    {
@@ -164,7 +164,7 @@ void do_recite(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
 {
    std::shared_ptr<unit_data> scroll;
    std::shared_ptr<unit_data> target;
-   int               i, skilla, abila, hm;
+   int                        i, skilla, abila, hm;
 
    if(str_is_empty(arg))
    {
@@ -225,7 +225,7 @@ void do_recite(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
       return;
    }
 
-   act("You recite $2n which dissolves.", A_SOMEONE, ch, scroll,{}, TO_CHAR);
+   act("You recite $2n which dissolves.", A_SOMEONE, ch, scroll, {}, TO_CHAR);
 
    /* Value 1, 2, 3 are spells to cast (or SPL_NONE) */
    for(i = 1; i < 4; i++)
@@ -251,7 +251,7 @@ void do_use(std::shared_ptr<unit_data> ch, char *arg, const struct command_info 
 {
    std::shared_ptr<unit_data> stick;
    std::shared_ptr<unit_data> target;
-   int               skilla, abila, i, hm;
+   int                        skilla, abila, i, hm;
 
    if(str_is_empty(arg))
    {
@@ -383,7 +383,7 @@ void do_use(std::shared_ptr<unit_data> ch, char *arg, const struct command_info 
 void do_appraise(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    std::shared_ptr<unit_data> item;
-   int               skilla, hm, val;
+   int                        skilla, hm, val;
 
    if(IS_PC(ch) && PC_SKI_SKILL(ch, SKI_APPRAISAL) == 0)
    {
@@ -412,7 +412,7 @@ void do_appraise(std::shared_ptr<unit_data> ch, char *arg, const struct command_
    skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_APPRAISAL) : CHAR_BRA(ch);
    hm     = resistance_skill_check(CHAR_BRA(ch), 50, skilla, 0);
 
-   amount_t obj_trade_price(std::shared_ptr<unit_data>  u);
+   amount_t obj_trade_price(std::shared_ptr<unit_data> u);
 
    val = obj_trade_price(item);
 
@@ -441,7 +441,7 @@ void do_ventriloquate(std::shared_ptr<unit_data> ch, char *arg, const struct com
  */
 {
    std::shared_ptr<unit_data> vict;
-   int               skilla, skillb, abila, abilb, hm;
+   int                        skilla, skillb, abila, abilb, hm;
 
    if(IS_PC(ch) && PC_SKI_SKILL(ch, SKI_VENTRILOQUATE) == 0)
    {
@@ -526,12 +526,12 @@ void do_weather(std::shared_ptr<unit_data> ch, char *arg, const struct command_i
 
 void do_flee(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   int               legal, attempt, die, hm, opos;
+   int                        legal, attempt, die, hm, opos;
    std::shared_ptr<unit_data> predator;
    std::shared_ptr<unit_data> u;
 
-   void set_hunting(std::shared_ptr<unit_data>  p, std::shared_ptr<unit_data>  v, int legal);
-   int  do_simple_move(std::shared_ptr<unit_data>  ch, int direction, int following);
+   void set_hunting(std::shared_ptr<unit_data> p, std::shared_ptr<unit_data> v, int legal);
+   int  do_simple_move(std::shared_ptr<unit_data> ch, int direction, int following);
 
    if(CHAR_POS(ch) < POSITION_FIGHTING)
    {
@@ -671,11 +671,11 @@ void do_backstab(std::shared_ptr<unit_data> ch, char *arg, const struct command_
  * tested: No
  */
 {
-   struct unit_affected_type af, *paf = NULL;
+   struct unit_affected_type  af, *paf = NULL;
    std::shared_ptr<unit_data> vict;
    std::shared_ptr<unit_data> stabber;
-   int                       skilla, skillb, hm;
-   char                     *oarg = arg;
+   int                        skilla, skillb, hm;
+   char                      *oarg = arg;
 
    if(str_is_empty(arg))
    {
@@ -849,9 +849,9 @@ void do_hide(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
 void do_aid(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    std::shared_ptr<unit_data> vict;
-   int               skilla, hm;
+   int                        skilla, hm;
 
-   void modify_hit(std::shared_ptr<unit_data>  ch, int hit);
+   void modify_hit(std::shared_ptr<unit_data> ch, int hit);
 
    skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_FIRST_AID) : (CHAR_BRA(ch) + CHAR_DIV(ch)) / 2;
    if(!skilla)
@@ -914,7 +914,7 @@ void do_pick(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
    struct door_data *a_door;
    char             *oarg = arg;
 
-   struct door_data *locate_lock(std::shared_ptr<unit_data>  ch, char *arg);
+   struct door_data *locate_lock(std::shared_ptr<unit_data> ch, char *arg);
 
    skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_PICK_LOCK) : (CHAR_DEX(ch) + CHAR_BRA(ch)) / 2;
 
@@ -981,10 +981,10 @@ void do_steal(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
 {
    std::shared_ptr<unit_data> vict;
    std::shared_ptr<unit_data> obj;
-   char             *split, *oarg = arg;
-   int               hm, skilla, skillb;
+   char                      *split, *oarg = arg;
+   int                        hm, skilla, skillb;
 
-   int hands_used(std::shared_ptr<unit_data>  ch);
+   int hands_used(std::shared_ptr<unit_data> ch);
 
    if(str_is_empty(arg))
    {
@@ -1179,7 +1179,7 @@ void do_steal(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
 void base_rescue(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> vict)
 {
    std::shared_ptr<unit_data> tmp_ch;
-   int               hm, skilla, skillb;
+   int                        hm, skilla, skillb;
 
    if(vict == ch)
    {
@@ -1285,8 +1285,8 @@ void do_bash(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
 {
    std::shared_ptr<unit_data> vict;
    std::shared_ptr<unit_data> shield;
-   int               hm, att_skill, def_skill;
-   char             *oarg = arg;
+   int                        hm, att_skill, def_skill;
+   char                      *oarg = arg;
 
    att_skill = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_BASH) : CHAR_STR(ch);
 

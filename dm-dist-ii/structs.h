@@ -84,7 +84,7 @@ public:
    std::string                      name;     /* Unique within this list          */
    std::shared_ptr<zone_type>       zone;     /* Pointer to owner of structure    */
    std::shared_ptr<file_index_type> next;     /* Next File Index                  */
-   std::shared_ptr<unit_data> room_ptr; /* Pointer to room if is room       */
+   std::shared_ptr<unit_data>       room_ptr; /* Pointer to room if is room       */
 
    long   filepos; /* Byte offset into file            */
    ubit32 length;  /* No of bytes to read              */
@@ -208,16 +208,16 @@ public:
 
    void (*postedit)(struct descriptor_data *);
    std::shared_ptr<unit_data> editing;
-   void            *editref; /* pointer to "where we are editing"     */
-                             /* when using (volatile) extras + boards */
+   void                      *editref; /* pointer to "where we are editing"     */
+                                       /* when using (volatile) extras + boards */
 
-   int               prompt_mode;                    /* control of prompt-printing       */
-   char              last_cmd[MAX_INPUT_LENGTH + 1]; /* the last entered cmd_str         */
-   char              history[MAX_INPUT_LENGTH + 1];  /* simple command history           */
-   cQueue            qInput;                         /* q of unprocessed input           */
+   int                        prompt_mode;                    /* control of prompt-printing       */
+   char                       last_cmd[MAX_INPUT_LENGTH + 1]; /* the last entered cmd_str         */
+   char                       history[MAX_INPUT_LENGTH + 1];  /* simple command history           */
+   cQueue                     qInput;                         /* q of unprocessed input           */
    std::shared_ptr<unit_data> character;                      /* linked to char                   */
    std::shared_ptr<unit_data> original;                       /* original char                    */
-   struct snoop_data snoop;                          /* to snoop people.                 */
+   struct snoop_data          snoop;                          /* to snoop people.                 */
 
    class descriptor_data *next; /* link to next descriptor          */
 };
@@ -240,7 +240,7 @@ public:
    class cNamelist open_name; /* For Open & Enter                  */
 
    std::shared_ptr<file_index_type> key;
-   std::shared_ptr<unit_data> to_room;
+   std::shared_ptr<unit_data>       to_room;
 
    ubit8 exit_info; /* Door info flags                   */
 };
@@ -266,6 +266,7 @@ public:
 class obj_data : public std::enable_shared_from_this<obj_data>
 {
    obj_data();
+
 public:
    ~obj_data();
    std::shared_ptr<obj_data>                      getptr() { return shared_from_this(); }
@@ -406,7 +407,7 @@ struct char_point_data
 struct char_follow_type
 {
    std::shared_ptr<unit_data> follower; /* Must be a char */
-   struct char_follow_type *next;
+   struct char_follow_type   *next;
 };
 
 class char_data : public std::enable_shared_from_this<char_data>
@@ -435,7 +436,7 @@ public:
 
    class cCombat *Combat;
 
-   struct char_follow_type *followers;
+   struct char_follow_type   *followers;
    std::shared_ptr<unit_data> master; /* Must be a char */
 
    std::shared_ptr<unit_data> last_room; /* Last location of character */
@@ -478,9 +479,7 @@ public:
 
    class cNamelist                                 names; /* Name Keyword list for get, enter, etc.      */
    std::shared_ptr<unit_data>                      getptr() { return shared_from_this(); }
-   [[nodiscard]] static std::shared_ptr<unit_data> Create(ubit8 type) {
-      return std::shared_ptr<unit_data>(new unit_data(type));
-   }
+   [[nodiscard]] static std::shared_ptr<unit_data> Create(ubit8 type) { return std::shared_ptr<unit_data>(new unit_data(type)); }
 
    struct
    {
@@ -501,12 +500,12 @@ public:
    std::shared_ptr<unit_data> outside;
    std::shared_ptr<unit_data> inside; /* Linked list of chars,rooms & objs             */
 
-                                      /* For next unit in 'inside' linked list         */
-   std::shared_ptr<unit_data>      next;
+   /* For next unit in 'inside' linked list         */
+   std::shared_ptr<unit_data> next;
 
    /* global l-list of objects, chars & rooms       */
-      std::shared_ptr<unit_data> gnext;
-      std::shared_ptr<unit_data> gprevious;
+   std::shared_ptr<unit_data> gnext;
+   std::shared_ptr<unit_data> gprevious;
 
    ubit32 manipulate;  /* WEAR_XXX macros                               */
    ubit16 flags;       /* Invisible, can_bury, burried...               */

@@ -49,21 +49,25 @@
 /* Returns: 0 if the object was picked up.                               */
 /*          1 if the object was not picked up, but more may be picked up */
 /*          2 if no more objects can be picked up                        */
-int get(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, std::shared_ptr<unit_data> from_obj, const struct command_info *cmd, char *arg)
+int get(std::shared_ptr<unit_data> ch,
+        std::shared_ptr<unit_data> obj,
+        std::shared_ptr<unit_data> from_obj,
+        const struct command_info *cmd,
+        char                      *arg)
 {
    std::shared_ptr<unit_data> money  = NULL;
-   amount_t          amount = 0;
-   int               weight;
+   amount_t                   amount = 0;
+   int                        weight;
 
    if(UNIT_IN(ch) == obj)
    {
-      act("Pulling $3n from down under you seems quite impossible.", A_ALWAYS, ch, {},obj, TO_CHAR);
+      act("Pulling $3n from down under you seems quite impossible.", A_ALWAYS, ch, {}, obj, TO_CHAR);
       return 1;
    }
 
    if(IS_OBJ(obj) && OBJ_EQP_POS(obj))
    {
-      act("The $3N is equipped, you can't take $3m.", A_SOMEONE, ch, {},obj, TO_CHAR);
+      act("The $3N is equipped, you can't take $3m.", A_SOMEONE, ch, {}, obj, TO_CHAR);
       return 1;
    }
 
@@ -92,13 +96,13 @@ int get(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, std::shar
 
    if(IS_ROOM(obj) || !UNIT_WEAR(obj, MANIPULATE_TAKE))
    {
-      act("$2N: You can't take that.", A_SOMEONE, ch,obj, {}, TO_CHAR);
+      act("$2N: You can't take that.", A_SOMEONE, ch, obj, {}, TO_CHAR);
       return 1;
    }
 
    if(!IS_MONEY(obj) && !char_can_carry_n(ch, 1))
    {
-      act("$2n: You can not carry that many items.", A_SOMEONE, ch,obj, {}, TO_CHAR);
+      act("$2n: You can not carry that many items.", A_SOMEONE, ch, obj, {}, TO_CHAR);
       return 2;
    }
 
@@ -119,7 +123,7 @@ int get(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, std::shar
       if(!char_can_carry_w(ch, weight))
          if(!IS_MONEY(obj) || ((amount = char_can_carry_amount(ch, obj)) <= 0))
          {
-            act("$2n: You can't carry that much weight.", A_SOMEONE, ch,obj, {}, TO_CHAR);
+            act("$2n: You can't carry that much weight.", A_SOMEONE, ch, obj, {}, TO_CHAR);
             return 1;
          }
 
@@ -177,8 +181,8 @@ int get(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, std::shar
    {
       if(from_obj)
       {
-         act("You get $2n from $3n.", A_SOMEONE, ch,obj, from_obj, TO_CHAR);
-         act(UNIT_IN(from_obj) == ch ? "$1n gets $2n from $1s $3N." : "$1n gets $2n from $3n.", A_HIDEINV, ch,obj, from_obj, TO_ROOM);
+         act("You get $2n from $3n.", A_SOMEONE, ch, obj, from_obj, TO_CHAR);
+         act(UNIT_IN(from_obj) == ch ? "$1n gets $2n from $1s $3N." : "$1n gets $2n from $3n.", A_HIDEINV, ch, obj, from_obj, TO_ROOM);
       }
       else
       {
@@ -200,7 +204,7 @@ int get(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, std::shar
 */
 int extra_get(std::shared_ptr<unit_data> ch, char *argument)
 {
-   struct extra_descr_data *p;
+   struct extra_descr_data   *p;
    std::shared_ptr<unit_data> room = UNIT_IN(ch);
 
    if(!IS_ROOM(room) && UNIT_IS_TRANSPARENT(room))
@@ -231,7 +235,7 @@ void do_get(std::shared_ptr<unit_data> ch, char *argument, const struct command_
 {
    std::shared_ptr<unit_data> from_unit;
    std::shared_ptr<unit_data> thing;
-   char              arg1[MAX_INPUT_LENGTH], *arg2, *oarg = argument;
+   char                       arg1[MAX_INPUT_LENGTH], *arg2, *oarg = argument;
 
    if(str_is_empty(argument))
    {
@@ -266,7 +270,7 @@ void do_get(std::shared_ptr<unit_data> ch, char *argument, const struct command_
    if(str_ccmp_next_word(arg1, "all"))
    {
       std::shared_ptr<unit_data> next_unit;
-      bool              ok = TRUE, pick = FALSE;
+      bool                       ok = TRUE, pick = FALSE;
 
       thing = from_unit ? UNIT_CONTAINS(from_unit) : UNIT_CONTAINS(UNIT_IN(ch));
 
@@ -292,7 +296,7 @@ void do_get(std::shared_ptr<unit_data> ch, char *argument, const struct command_
    else if(str_ccmp_next_word(arg1, "money"))
    {
       std::shared_ptr<unit_data> next_unit;
-      bool              ok = TRUE, pick = FALSE;
+      bool                       ok = TRUE, pick = FALSE;
 
       thing = from_unit ? UNIT_CONTAINS(from_unit) : UNIT_CONTAINS(UNIT_IN(ch));
 
@@ -382,9 +386,9 @@ void do_drop(std::shared_ptr<unit_data> ch, char *argument, const struct command
 {
    std::shared_ptr<unit_data> thing;
    std::shared_ptr<unit_data> next_obj;
-   char              arg[MAX_INPUT_LENGTH];
-   amount_t          amount = 0;
-   char             *oarg   = argument;
+   char                       arg[MAX_INPUT_LENGTH];
+   amount_t                   amount = 0;
+   char                      *oarg   = argument;
 
    if(str_is_empty(argument))
    {
@@ -468,11 +472,15 @@ void do_drop(std::shared_ptr<unit_data> ch, char *argument, const struct command
 }
 
 /* Returns FALSE if there was an "error" putting the stuff */
-int put(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> unit, std::shared_ptr<unit_data> tounit, const struct command_info *cmd, char *arg)
+int put(std::shared_ptr<unit_data> ch,
+        std::shared_ptr<unit_data> unit,
+        std::shared_ptr<unit_data> tounit,
+        const struct command_info *cmd,
+        char                      *arg)
 {
    std::shared_ptr<unit_data> money = NULL;
-   int               weight;
-   sbit32            amt = 0;
+   int                        weight;
+   sbit32                     amt = 0;
 
    /* Curse check if carrying? */
 
@@ -537,11 +545,11 @@ void do_put(std::shared_ptr<unit_data> ch, char *argument, const struct command_
 {
    std::shared_ptr<unit_data> tounit;
    std::shared_ptr<unit_data> thing;
-   char             *arg2, arg1[MAX_INPUT_LENGTH];
-   char              buf[MAX_INPUT_LENGTH];
-   amount_t          amount = 0;
-   int               all;
-   char             *oarg = argument;
+   char                      *arg2, arg1[MAX_INPUT_LENGTH];
+   char                       buf[MAX_INPUT_LENGTH];
+   amount_t                   amount = 0;
+   int                        all;
+   char                      *oarg = argument;
 
    if(str_is_empty(argument))
    {
@@ -628,10 +636,14 @@ void do_put(std::shared_ptr<unit_data> ch, char *argument, const struct command_
       send_to_char("No such thing to put here.\n\r", ch);
 }
 
-void give(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> thing, std::shared_ptr<unit_data> vict, const struct command_info *cmd, char *arg)
+void give(std::shared_ptr<unit_data> ch,
+          std::shared_ptr<unit_data> thing,
+          std::shared_ptr<unit_data> vict,
+          const struct command_info *cmd,
+          char                      *arg)
 {
    std::shared_ptr<unit_data> money = NULL;
-   int               weight;
+   int                        weight;
 
    if(!IS_CHAR(vict))
    {
@@ -682,9 +694,9 @@ void do_give(std::shared_ptr<unit_data> ch, char *argument, const struct command
 {
    std::shared_ptr<unit_data> victim;
    std::shared_ptr<unit_data> thing;
-   char              buf[MAX_INPUT_LENGTH];
-   amount_t          amount = 0;
-   char             *oarg   = argument;
+   char                       buf[MAX_INPUT_LENGTH];
+   amount_t                   amount = 0;
+   char                      *oarg   = argument;
 
    if(str_is_empty(argument))
    {

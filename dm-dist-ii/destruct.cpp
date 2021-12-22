@@ -29,6 +29,7 @@
 #include "affect.h"
 #include "comm.h"
 #include "db.h"
+#include "external_funcs.h"
 #include "externals.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -37,7 +38,6 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
-#include "external_funcs.h"
 
 #include <ctype.h>
 #include <stdio.h>
@@ -84,7 +84,6 @@ void destruct_unit(std::shared_ptr<unit_data> unit)
 {
    struct descriptor_data *d;
    int                     in_menu = FALSE;
-
 
    /* Remove all snooping, snoopers and return from any body */
    if(IS_CHAR(unit))
@@ -220,7 +219,7 @@ void clear_destructed(void)
    {
       // TODO ADRIAN - figure out this destruct stuff
       assert(0);
-//      destruct_unit(destructed[DR_UNIT][i]);
+      //      destruct_unit(destructed[DR_UNIT][i]);
    }
    destructed_idx[DR_UNIT] = 0;
 }

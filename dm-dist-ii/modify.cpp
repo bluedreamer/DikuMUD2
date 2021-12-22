@@ -204,7 +204,7 @@ void edit_inside_descr(struct descriptor_data *d)
 
 int search_block_set(char *arg, const char **list, bool exact)
 {
-   register int i, l;
+   int i, l;
 
    /* Substitute '_' and get length of string */
    for(l = 0; arg[l]; l++)
@@ -334,7 +334,7 @@ void do_set(std::shared_ptr<unit_data> ch, char *argument, const struct command_
 
    std::shared_ptr<file_index_type> untarg;
    struct extra_descr_data         *ed;
-   std::shared_ptr<unit_data> unt;
+   std::shared_ptr<unit_data>       unt;
    struct unit_affected_type       *aff;
 
    int required_xp(int level);
@@ -1206,8 +1206,8 @@ static const char *skill_field_names[] = {"skill", "spell", "weapon", NULL};
 
 void do_setskill(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   int               type, skillarg, valarg = 0;
-   char              buf[MAX_STRING_LENGTH], arg[MAX_STRING_LENGTH];
+   int                        type, skillarg, valarg = 0;
+   char                       buf[MAX_STRING_LENGTH], arg[MAX_STRING_LENGTH];
    std::shared_ptr<unit_data> unt;
 
    if(!CHAR_DESCRIPTOR(ch))

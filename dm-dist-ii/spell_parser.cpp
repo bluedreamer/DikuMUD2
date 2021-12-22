@@ -46,7 +46,12 @@
 
 struct spell_info_type spell_info[SPL_TREE_MAX];
 
-void set_spellargs(struct spell_args *sa, std::shared_ptr<unit_data> caster, std::shared_ptr<unit_data> medium, std::shared_ptr<unit_data> target, char *arg, int hm)
+void set_spellargs(struct spell_args         *sa,
+                   std::shared_ptr<unit_data> caster,
+                   std::shared_ptr<unit_data> medium,
+                   std::shared_ptr<unit_data> target,
+                   char                      *arg,
+                   int                        hm)
 {
    sa->caster  = caster;
    sa->medium  = medium;
@@ -67,7 +72,7 @@ ubit1 spell_legal_type(int spl, int type)
 /* above. Useable with for example wand checks to see if target is legal  */
 ubit1 spell_legal_target(int spl, std::shared_ptr<unit_data> caster, std::shared_ptr<unit_data> target)
 {
-   int pk_test(std::shared_ptr<unit_data>  att, std::shared_ptr<unit_data>  def, int message);
+   int pk_test(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, int message);
 
    if(IS_SET(spell_info[spl].targets, TAR_IGNORE))
       return TRUE;
@@ -106,14 +111,14 @@ void say_spell(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> target,
    }
 }
 
-int spell_perform(int               spell_no,
-                  int               spell_type,
+int spell_perform(int                        spell_no,
+                  int                        spell_type,
                   std::shared_ptr<unit_data> caster,
                   std::shared_ptr<unit_data> medium,
                   std::shared_ptr<unit_data> target,
-                  char             *argument,
-                  char             *pEffect,
-                  int               bonus)
+                  char                      *argument,
+                  char                      *pEffect,
+                  int                        bonus)
 {
    static struct command_info *cmd = NULL;
    int                         hm  = -1;
@@ -250,9 +255,9 @@ int spell_perform(int               spell_no,
 void do_cast(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
    std::shared_ptr<unit_data> unit;
-   int               spl;
-   ubit1             target_ok;
-   char             *orgarg, *c;
+   int                        spl;
+   ubit1                      target_ok;
+   char                      *orgarg, *c;
 
    if(str_is_empty(argument))
    {
@@ -272,7 +277,7 @@ void do_cast(std::shared_ptr<unit_data> ch, char *argument, const struct command
 
    if(spl < SPL_GROUP_MAX)
    {
-      act("$2t is not a spell.", A_ALWAYS, ch, spl_text[spl],{}, TO_CHAR);
+      act("$2t is not a spell.", A_ALWAYS, ch, spl_text[spl], {}, TO_CHAR);
       return;
    }
 

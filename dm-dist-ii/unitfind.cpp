@@ -144,7 +144,7 @@ static inline int findcheck(std::shared_ptr<unit_data> u, int pset, int tflags)
 
 std::shared_ptr<unit_data> random_unit(std::shared_ptr<unit_data> ref, int sflags, int tflags)
 {
-   register std::shared_ptr<unit_data> u, *selected = NULL;
+   std::shared_ptr<unit_data> u, *selected = NULL;
    int                        count = 0;
    int                        pset  = 0;
 
@@ -235,17 +235,20 @@ std::shared_ptr<unit_data> random_unit(std::shared_ptr<unit_data> ref, int sflag
 /* As find_unit below, except visibility is relative to
    viewer with respect to CHAR_CAN_SEE */
 
-std::shared_ptr<unit_data> find_unit_general(
-   const std::shared_ptr<unit_data> viewer, const std::shared_ptr<unit_data> ch, char **arg, const std::shared_ptr<unit_data> list, const ubit32 bitvector)
+std::shared_ptr<unit_data> find_unit_general(const std::shared_ptr<unit_data> viewer,
+                                             const std::shared_ptr<unit_data> ch,
+                                             char                           **arg,
+                                             const std::shared_ptr<unit_data> list,
+                                             const ubit32                     bitvector)
 {
    std::shared_ptr<unit_data> best     = NULL;
-   int               best_len = 0;
-   ubit32            bitvectorm;
+   int                        best_len = 0;
+   ubit32                     bitvectorm;
 
-   int               i, number, original_number;
-   const char       *ct = NULL;
-   char              name[256], *c;
-   ubit1             is_fillword = TRUE;
+   int                        i, number, original_number;
+   const char                *ct = NULL;
+   char                       name[256], *c;
+   ubit1                      is_fillword = TRUE;
    std::shared_ptr<unit_data> u, *uu;
 
    /* Eliminate the 'pay' bits */
@@ -328,7 +331,7 @@ std::shared_ptr<unit_data> find_unit_general(
          if((ct = is_name_raw(c, tmp_self)))
          {
             *arg = (char *)ct;
-            return (std::shared_ptr<unit_data> )ch;
+            return (std::shared_ptr<unit_data>)ch;
          }
 
          /* MS: Removed !IS_ROOM(UNIT_IN(ch)) because you must be able to
@@ -450,7 +453,7 @@ std::shared_ptr<unit_data> find_unit_general(
    }
 
    for(; list; list = list->next)
-      if((ct = UNIT_NAMES((std::shared_ptr<unit_data> )list).IsNameRaw(c)) && (ct - c >= best_len))
+      if((ct = UNIT_NAMES((std::shared_ptr<unit_data>)list).IsNameRaw(c)) && (ct - c >= best_len))
       {
          if(ct - c > best_len)
          {
@@ -459,7 +462,7 @@ std::shared_ptr<unit_data> find_unit_general(
          }
 
          if(--number == 0)
-            best = (std::shared_ptr<unit_data> )list;
+            best = (std::shared_ptr<unit_data>)list;
       }
 
    *arg = (c + best_len);
@@ -501,14 +504,15 @@ std::shared_ptr<unit_data> find_unit_general(
 
   */
 
-std::shared_ptr<unit_data> find_unit(const std::shared_ptr<unit_data> ch, char **arg, const std::shared_ptr<unit_data> list, const ubit32 bitvector)
+std::shared_ptr<unit_data>
+find_unit(const std::shared_ptr<unit_data> ch, char **arg, const std::shared_ptr<unit_data> list, const ubit32 bitvector)
 {
    return find_unit_general(ch, ch, arg, list, bitvector);
 }
 
 std::shared_ptr<unit_data> find_symbolic_instance_ref(std::shared_ptr<unit_data> ref, std::shared_ptr<file_index_type> fi, ubit16 bitvector)
 {
-   register std::shared_ptr<unit_data> u, *uu;
+   std::shared_ptr<unit_data> u, *uu;
 
    if((fi == NULL) || (ref == NULL))
       return NULL;
@@ -606,7 +610,7 @@ static void init_unit_vector(void)
 {
    unit_vector.size = 10;
 
-   CREATE(unit_vector.units, std::shared_ptr<unit_data> , unit_vector.size);
+   CREATE(unit_vector.units, std::shared_ptr<unit_data>, unit_vector.size);
 }
 
 /* If things get too cramped, double size of unit_vector */
@@ -614,7 +618,7 @@ static void double_unit_vector(void)
 {
    unit_vector.size *= 2;
 
-   RECREATE(unit_vector.units, std::shared_ptr<unit_data> , unit_vector.size);
+   RECREATE(unit_vector.units, std::shared_ptr<unit_data>, unit_vector.size);
 }
 
 /* Scan the chars surroundings and all transparent surroundings for all  */

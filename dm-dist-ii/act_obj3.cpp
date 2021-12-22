@@ -52,7 +52,7 @@
 int hands_used(std::shared_ptr<unit_data> ch)
 {
    std::shared_ptr<unit_data> i;
-   int               hands = 0;
+   int                        hands = 0;
 
    /* This is faster than calling the equipment() function */
    for(i = UNIT_CONTAINS(ch); i; i = i->next)
@@ -741,7 +741,7 @@ void do_wear(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
                             WEAR_ANKLE_L};
 
    std::shared_ptr<unit_data> obj;
-   char             *oarg = arg;
+   char                      *oarg = arg;
 
    if(str_is_empty(arg))
       send_to_char("Wear what (where)?\n\r", ch);
@@ -754,7 +754,7 @@ void do_wear(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
       if(!strcmp(buf, "all"))
       {
          std::shared_ptr<unit_data> next;
-         bool              worn = FALSE;
+         bool                       worn = FALSE;
 
          for(obj = UNIT_CONTAINS(ch); obj; obj = next)
          {
@@ -798,7 +798,7 @@ void do_wear(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
 void do_wield(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    std::shared_ptr<unit_data> obj;
-   char             *oarg = arg;
+   char                      *oarg = arg;
 
    if(str_is_empty(arg))
       send_to_char("Wield which weapon?\n\r", ch);
@@ -834,7 +834,7 @@ void do_wield(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
 void do_grab(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    std::shared_ptr<unit_data> obj;
-   char             *oarg = arg;
+   char                      *oarg = arg;
 
    if(str_is_empty(arg))
       send_to_char("Grab what?\n\r", ch);
@@ -867,7 +867,7 @@ bool remove_equip(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj,
 void do_remove(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    std::shared_ptr<unit_data> obj;
-   char             *oarg = arg;
+   char                      *oarg = arg;
 
    if(str_is_empty(arg))
       send_to_char("Remove what?\n\r", ch);
@@ -880,7 +880,7 @@ void do_remove(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
       if(!strcmp(buf, "all"))
       {
          std::shared_ptr<unit_data> next;
-         bool              removed = FALSE;
+         bool                       removed = FALSE;
 
          for(obj = UNIT_CONTAINS(ch); obj; obj = next)
          {

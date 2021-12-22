@@ -242,9 +242,9 @@ void mail_boot(void)
 
 int eat_and_delete(struct spec_arg *sarg)
 {
-   sbit16            index;
+   sbit16                     index;
    std::shared_ptr<unit_data> u;
-   char             *arg = (char *)sarg->arg;
+   char                      *arg = (char *)sarg->arg;
 
    if(sarg->cmd->no == CMD_EAT)
    {
@@ -270,15 +270,15 @@ int eat_and_delete(struct spec_arg *sarg)
 
 int postman(struct spec_arg *sarg)
 {
-   char                    *b, *arg = (char *)sarg->arg;
-   struct extra_descr_data *exd;
-   struct descriptor_data  *d;
+   char                      *b, *arg = (char *)sarg->arg;
+   struct extra_descr_data   *exd;
+   struct descriptor_data    *d;
    std::shared_ptr<unit_data> letter;
-   char                     tmpname[MAX_INPUT_LENGTH];
-   sbit16                   index, *tmp;
-   long                     rcp;
-   currency_t               currency = local_currency(sarg->owner);
-   amount_t                 postage;
+   char                       tmpname[MAX_INPUT_LENGTH];
+   sbit16                     index, *tmp;
+   long                       rcp;
+   currency_t                 currency = local_currency(sarg->owner);
+   amount_t                   postage;
 
    struct descriptor_data *find_descriptor(const char *, struct descriptor_data *);
 

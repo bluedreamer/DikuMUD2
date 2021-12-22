@@ -26,6 +26,7 @@
 #define _MUD_COMMON_H
 
 #include "essential.h"
+
 #include <memory>
 class unit_data;
 
@@ -48,9 +49,9 @@ int apply_quality(int num, int quality);
 
 int hitpoint_total(int hpp);
 
-void set_weapon(std::shared_ptr<unit_data> );
-void set_shield(std::shared_ptr<unit_data> );
-void set_armour(std::shared_ptr<unit_data> );
+void set_weapon(std::shared_ptr<unit_data>);
+void set_shield(std::shared_ptr<unit_data>);
+void set_armour(std::shared_ptr<unit_data>);
 
 /* ..................................................................... */
 /*                           A B I L I T I E S                           */

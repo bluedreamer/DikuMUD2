@@ -301,7 +301,7 @@ void do_pour(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
    char                      *oarg = arg;
 
    if(str_is_empty(arg)) /* No arguments */
-      act("What do you want to pour from?", A_SOMEONE, ch, {},{}, TO_CHAR);
+      act("What do you want to pour from?", A_SOMEONE, ch, {}, {}, TO_CHAR);
    else if(!(from_obj = find_unit(ch, &arg, 0, FIND_UNIT_HERE)))
       act("You can't find it!", A_SOMEONE, ch, {}, {}, TO_CHAR);
    else if(!(IS_OBJ(from_obj) && OBJ_TYPE(from_obj) == ITEM_DRINKCON))
@@ -317,7 +317,7 @@ void do_pour(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
       else if(!(IS_OBJ(to_obj) && OBJ_TYPE(to_obj) == ITEM_DRINKCON))
          act("You can't pour anything into that.", A_SOMEONE, ch, {}, {}, TO_CHAR);
       else if(OBJ_VALUE(to_obj, 1) != 0 && OBJ_VALUE(to_obj, 2) != OBJ_VALUE(from_obj, 2))
-         act("There is already another liquid in it!", A_SOMEONE, ch, {},{}, TO_CHAR);
+         act("There is already another liquid in it!", A_SOMEONE, ch, {}, {}, TO_CHAR);
       else if(OBJ_VALUE(to_obj, 0) <= OBJ_VALUE(to_obj, 1))
          act("There is no room for more.", A_SOMEONE, ch, {}, {}, TO_CHAR);
       else

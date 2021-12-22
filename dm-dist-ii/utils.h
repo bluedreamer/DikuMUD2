@@ -301,11 +301,11 @@ inline auto UNIT_FI_NAME(std::shared_ptr<unit_data> unit) -> std::string &
 
 #define CHAR_IS_READY(ch) (CHAR_AWAKE(ch) && (CHAR_POS(ch) != POSITION_FIGHTING))
 
-#define CHAR_IS_SNOOPING(ch) (CHAR_DESCRIPTOR(ch) ? (CHAR_DESCRIPTOR(ch)->snoop.snooping) : (std::shared_ptr<unit_data> )NULL)
+#define CHAR_IS_SNOOPING(ch) (CHAR_DESCRIPTOR(ch) ? (CHAR_DESCRIPTOR(ch)->snoop.snooping) : (std::shared_ptr<unit_data>)NULL)
 
-#define CHAR_IS_SNOOPED(ch) (CHAR_DESCRIPTOR(ch) ? (CHAR_DESCRIPTOR(ch)->snoop.snoop_by) : (std::shared_ptr<unit_data> )NULL)
+#define CHAR_IS_SNOOPED(ch) (CHAR_DESCRIPTOR(ch) ? (CHAR_DESCRIPTOR(ch)->snoop.snoop_by) : (std::shared_ptr<unit_data>)NULL)
 
-#define CHAR_IS_SWITCHED(ch) (CHAR_DESCRIPTOR(ch) ? (CHAR_DESCRIPTOR(ch)->original) : (std::shared_ptr<unit_data> )NULL)
+#define CHAR_IS_SWITCHED(ch) (CHAR_DESCRIPTOR(ch) ? (CHAR_DESCRIPTOR(ch)->original) : (std::shared_ptr<unit_data>)NULL)
 
 #define CHAR_SNOOPING(ch) (CHAR_IS_SNOOPING(ch) ? (CHAR_DESCRIPTOR(ch)->snoop.snooping) : (ch))
 
@@ -317,7 +317,7 @@ inline auto UNIT_FI_NAME(std::shared_ptr<unit_data> unit) -> std::string &
 
 #define CHAR_HAS_FLAG(ch, flags) (IS_SET(CHAR_FLAGS(ch), (flags)))
 
-#define CHAR_ROOM_EXIT(ch, door) (IS_ROOM(UNIT_IN(ch)) ? ROOM_EXIT(UNIT_IN(ch), (door)) : (std::shared_ptr<unit_data> )NULL)
+#define CHAR_ROOM_EXIT(ch, door) (IS_ROOM(UNIT_IN(ch)) ? ROOM_EXIT(UNIT_IN(ch), (door)) : (std::shared_ptr<unit_data>)NULL)
 
 #define CHAR_VISION(ch) (!CHAR_HAS_FLAG(ch, CHAR_BLIND))
 

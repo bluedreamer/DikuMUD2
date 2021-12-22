@@ -51,7 +51,7 @@ struct money_type
  * (type == -1 means money_to_unit with local_currency(unit)
  *  Used for database backwards compatibility...)
  */
-void coins_to_unit(std::shared_ptr<unit_data> , amount_t amt, int type);
+void coins_to_unit(std::shared_ptr<unit_data>, amount_t amt, int type);
 
 /* Use this if an amount needs to be physically transfered.
  * Money is created/deleted if either unit is NULL.

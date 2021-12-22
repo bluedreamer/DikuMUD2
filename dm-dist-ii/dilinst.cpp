@@ -676,7 +676,7 @@ void dilfi_rsproc(struct dilprg *p, class dilval *v)
 }
 
 /* Remote function call */
-void dilfi_rfunc(register struct dilprg *p, register class dilval *v)
+void dilfi_rfunc(struct dilprg *p, class dilval *v)
 {
    int                 xrefi, vari, i;
    struct diltemplate *ctmpl;
@@ -727,7 +727,7 @@ void dilfi_rfunc(register struct dilprg *p, register class dilval *v)
 }
 
 /* Remote symbolic function call */
-void dilfi_rsfunc(register struct dilprg *p, register class dilval *v)
+void dilfi_rsfunc(struct dilprg *p, class dilval *v)
 {
    int                 vari, i;
    struct diltemplate *ctmpl, *ntmpl;
@@ -810,7 +810,7 @@ void dilfi_rsfunc(register struct dilprg *p, register class dilval *v)
 }
 
 /* Assignment of value to reference */
-void dilfi_ass(register struct dilprg *p, register class dilval *v)
+void dilfi_ass(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2;
 
@@ -1070,7 +1070,7 @@ void dilfi_ass(register struct dilprg *p, register class dilval *v)
 }
 
 /* Link unit into other unit */
-void dilfi_lnk(register struct dilprg *p, register class dilval *v)
+void dilfi_lnk(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2;
 
@@ -1105,7 +1105,7 @@ void dilfi_lnk(register struct dilprg *p, register class dilval *v)
 }
 
 /* dilcopy */
-void dilfi_dlc(register struct dilprg *p, register class dilval *v)
+void dilfi_dlc(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2;
 
@@ -1129,7 +1129,7 @@ void dilfi_dlc(register struct dilprg *p, register class dilval *v)
 }
 
 /* sendtext */
-void dilfi_sete(register struct dilprg *p, register class dilval *v)
+void dilfi_sete(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2;
 
@@ -1153,7 +1153,7 @@ void dilfi_sete(register struct dilprg *p, register class dilval *v)
 }
 
 /* Set one char to follow another unconditionally */
-void dilfi_folo(register struct dilprg *p, register class dilval *v)
+void dilfi_folo(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2;
    sbit32       value = 0;
@@ -1183,7 +1183,7 @@ void dilfi_folo(register struct dilprg *p, register class dilval *v)
 }
 
 /* logcrime */
-void dilfi_lcri(register struct dilprg *p, register class dilval *v)
+void dilfi_lcri(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2, v3;
    sbit32       value = 0;
@@ -1211,7 +1211,7 @@ void dilfi_lcri(register struct dilprg *p, register class dilval *v)
 }
 
 /* Assign EXP to player */
-void dilfi_exp(register struct dilprg *p, register class dilval *v)
+void dilfi_exp(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2;
    sbit32       value = 0;
@@ -1252,7 +1252,7 @@ void dilfi_exp(register struct dilprg *p, register class dilval *v)
 }
 
 /* Branch on expression */
-void dilfi_if(register struct dilprg *p, register class dilval *v)
+void dilfi_if(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
    ubit32       coreptr;
@@ -1273,7 +1273,7 @@ void dilfi_if(register struct dilprg *p, register class dilval *v)
 }
 
 /* Set bits in integer */
-void dilfi_set(register struct dilprg *p, register class dilval *v)
+void dilfi_set(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2;
 
@@ -1323,7 +1323,7 @@ void dilfi_set(register struct dilprg *p, register class dilval *v)
 }
 
 /* Unset bits in integer */
-void dilfi_uset(register struct dilprg *p, register class dilval *v)
+void dilfi_uset(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2;
 
@@ -1374,7 +1374,7 @@ void dilfi_uset(register struct dilprg *p, register class dilval *v)
 }
 
 /* Add element to string list (addstring) */
-void dilfi_adl(register struct dilprg *p, register class dilval *v)
+void dilfi_adl(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2;
 
@@ -1412,7 +1412,7 @@ void dilfi_adl(register struct dilprg *p, register class dilval *v)
 }
 
 /* Substract element from stringlist */
-void dilfi_sul(register struct dilprg *p, register class dilval *v)
+void dilfi_sul(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2;
 
@@ -1450,7 +1450,7 @@ void dilfi_sul(register struct dilprg *p, register class dilval *v)
 }
 
 /* add element to extra description */
-void dilfi_ade(register struct dilprg *p, register class dilval *v)
+void dilfi_ade(struct dilprg *p, class dilval *v)
 {
    /* add entry to extradescription */
    class dilval v1, v2, v3;
@@ -1495,7 +1495,7 @@ void dilfi_ade(register struct dilprg *p, register class dilval *v)
 }
 
 /* Substract elemnt from extra description */
-void dilfi_sue(register struct dilprg *p, register class dilval *v)
+void dilfi_sue(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2;
 
@@ -1534,7 +1534,7 @@ void dilfi_sue(register struct dilprg *p, register class dilval *v)
 }
 
 /* Destroy unit */
-void dilfi_dst(register struct dilprg *p, register class dilval *v)
+void dilfi_dst(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
 
@@ -1568,7 +1568,7 @@ void dilfi_dst(register struct dilprg *p, register class dilval *v)
 }
 
 /* Make NPC walk to room */
-void dilfi_walk(register struct dilprg *p, register class dilval *v)
+void dilfi_walk(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
    ubit16       i;
@@ -1621,7 +1621,7 @@ void dilfi_walk(register struct dilprg *p, register class dilval *v)
 }
 
 /* Execute command */
-void dilfi_exec(register struct dilprg *p, register class dilval *v)
+void dilfi_exec(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2;
 
@@ -1698,7 +1698,7 @@ void dilfi_exec(register struct dilprg *p, register class dilval *v)
 }
 
 /* Wait */
-void dilfi_wit(register struct dilprg *p, register class dilval *v)
+void dilfi_wit(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2;
    ubit8       *oldpc;
@@ -1742,7 +1742,7 @@ void dilfi_wit(register struct dilprg *p, register class dilval *v)
 }
 
 /* Act call */
-void dilfi_act(register struct dilprg *p, register class dilval *v)
+void dilfi_act(struct dilprg *p, class dilval *v)
 {
    /* Act call */
 
@@ -1819,7 +1819,7 @@ void dilfi_act(register struct dilprg *p, register class dilval *v)
 }
 
 /* Goto new command */
-void dilfi_goto(register struct dilprg *p, register class dilval *v)
+void dilfi_goto(struct dilprg *p, class dilval *v)
 {
    ubit32 adr;
 
@@ -1836,7 +1836,7 @@ void dilfi_goto(register struct dilprg *p, register class dilval *v)
 }
 
 /* Goto new command */
-void dilfi_on(register struct dilprg *p, register class dilval *v)
+void dilfi_on(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
    ubit32       adr;
@@ -1878,7 +1878,7 @@ void dilfi_on(register struct dilprg *p, register class dilval *v)
 }
 
 /* Substract affect from unit */
-void dilfi_sua(register struct dilprg *p, register class dilval *v)
+void dilfi_sua(struct dilprg *p, class dilval *v)
 {
    class dilval               v1, v2;
    struct unit_affected_type *af;
@@ -1906,7 +1906,7 @@ void dilfi_sua(register struct dilprg *p, register class dilval *v)
 }
 
 /* Add affect */
-void dilfi_ada(register struct dilprg *p, register class dilval *v)
+void dilfi_ada(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
 
@@ -2010,7 +2010,7 @@ void dilfi_ada(register struct dilprg *p, register class dilval *v)
 }
 
 /* Priority */
-void dilfi_pri(register struct dilprg *p, register class dilval *v)
+void dilfi_pri(struct dilprg *p, class dilval *v)
 {
    if(v)
    {
@@ -2024,7 +2024,7 @@ void dilfi_pri(register struct dilprg *p, register class dilval *v)
 }
 
 /* No Priority */
-void dilfi_npr(register struct dilprg *p, register class dilval *v)
+void dilfi_npr(struct dilprg *p, class dilval *v)
 {
    if(v)
    {
@@ -2038,7 +2038,7 @@ void dilfi_npr(register struct dilprg *p, register class dilval *v)
 }
 
 /* Send message to DIL programs in local environment */
-void dilfi_snd(register struct dilprg *p, register class dilval *v)
+void dilfi_snd(struct dilprg *p, class dilval *v)
 {
    class dilval v1; /* message */
 
@@ -2064,7 +2064,7 @@ void dilfi_snd(register struct dilprg *p, register class dilval *v)
 }
 
 /* Send message to DIL programs in the specified unit */
-void dilfi_snt(register struct dilprg *p, register class dilval *v)
+void dilfi_snt(struct dilprg *p, class dilval *v)
 {
    /* sendto (string, uptr) */
    class dilval v1, v2;
@@ -2103,7 +2103,7 @@ void dilfi_snt(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfi_snta(register struct dilprg *p, register class dilval *v)
+void dilfi_snta(struct dilprg *p, class dilval *v)
 {
    /* Send message to DIL programs in all units of type specified */
    /* sendtoall (string, string) */
@@ -2154,7 +2154,7 @@ void dilfi_snta(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfi_sntadil(register struct dilprg *p, register class dilval *v)
+void dilfi_sntadil(struct dilprg *p, class dilval *v)
 {
    /* Send message to DIL programs in all units of type specified */
    /* sendtoall (string<message>, string<template> ) */
@@ -2226,7 +2226,7 @@ void dilfi_sntadil(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfi_log(register struct dilprg *p, register class dilval *v)
+void dilfi_log(struct dilprg *p, class dilval *v)
 {
    /* Log a string to the logs. */
 
@@ -2251,7 +2251,7 @@ void dilfi_log(register struct dilprg *p, register class dilval *v)
 }
 
 /* Secure */
-void dilfi_sec(register struct dilprg *p, register class dilval *v)
+void dilfi_sec(struct dilprg *p, class dilval *v)
 {
    class dilval v1;  /* unit */
    ubit32       adr; /* address */
@@ -2279,7 +2279,7 @@ void dilfi_sec(register struct dilprg *p, register class dilval *v)
 }
 
 /* Unsecure */
-void dilfi_use(register struct dilprg *p, register class dilval *v)
+void dilfi_use(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
 
@@ -2302,7 +2302,7 @@ void dilfi_use(register struct dilprg *p, register class dilval *v)
 }
 
 /* Equip unit in inventory of PC/NPC */
-void dilfi_eqp(register struct dilprg *p, register class dilval *v)
+void dilfi_eqp(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2;
 
@@ -2330,7 +2330,7 @@ void dilfi_eqp(register struct dilprg *p, register class dilval *v)
 }
 
 /* Unequip unit in inventory of PC/NPC */
-void dilfi_ueq(register struct dilprg *p, register class dilval *v)
+void dilfi_ueq(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
 
@@ -2354,7 +2354,7 @@ void dilfi_ueq(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfi_quit(register struct dilprg *p, register class dilval *v)
+void dilfi_quit(struct dilprg *p, class dilval *v)
 {
    if(v)
    {
@@ -2367,7 +2367,7 @@ void dilfi_quit(register struct dilprg *p, register class dilval *v)
 }
 
 /* Block */
-void dilfi_blk(register struct dilprg *p, register class dilval *v)
+void dilfi_blk(struct dilprg *p, class dilval *v)
 {
    if(v)
    {
@@ -2380,7 +2380,7 @@ void dilfi_blk(register struct dilprg *p, register class dilval *v)
    SET_BIT(p->flags, DILFL_CMDBLOCK);
 }
 
-void dilfi_pup(register struct dilprg *p, register class dilval *v)
+void dilfi_pup(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
 
@@ -2412,10 +2412,10 @@ void dilfi_pup(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfi_cast(register struct dilprg *p, register class dilval *v)
+void dilfi_cast(struct dilprg *p, class dilval *v)
 {
-   class dilval                  v1, v2, v3, v4;
-   std::shared_ptr<unit_data>    caster;
+   class dilval               v1, v2, v3, v4;
+   std::shared_ptr<unit_data> caster;
    std::shared_ptr<unit_data> medium;
    std::shared_ptr<unit_data> target;
 

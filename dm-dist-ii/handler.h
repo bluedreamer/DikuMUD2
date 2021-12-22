@@ -36,10 +36,10 @@ const char *single_unit_messg(std::shared_ptr<unit_data> unit, const char *type,
 void szonelog(std::shared_ptr<zone_type> zone, const char *fmt, ...);
 
 /* From pcsave.c - I'm just tired of specifying them everywhere */
-void              save_player(std::shared_ptr<unit_data> pc);
+void                       save_player(std::shared_ptr<unit_data> pc);
 std::shared_ptr<unit_data> load_player(const char *pName);
-void              load_contents(const char *pFileName, std::shared_ptr<unit_data> unit);
-void              save_player_contents(std::shared_ptr<unit_data> pc, int fast);
+void                       load_contents(const char *pFileName, std::shared_ptr<unit_data> unit);
+void                       save_player_contents(std::shared_ptr<unit_data> pc, int fast);
 
 /* handler.c */
 struct extra_descr_data *quest_add(std::shared_ptr<unit_data> ch, char *name, char *descr);
@@ -60,11 +60,11 @@ void trans_unset(std::shared_ptr<unit_data> u);
 
 std::shared_ptr<unit_data> equipment(std::shared_ptr<unit_data> ch, ubit8 pos);
 std::shared_ptr<unit_data> equipment_type(std::shared_ptr<unit_data> ch, int pos, ubit8 type);
-void              equip_char(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, ubit8 pos);
+void                       equip_char(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, ubit8 pos);
 std::shared_ptr<unit_data> unequip_char(std::shared_ptr<unit_data> ch, ubit8 pos);
 std::shared_ptr<unit_data> unequip_object(std::shared_ptr<unit_data> obj);
-void              recalc_dex_red(std::shared_ptr<unit_data> ch);
-int               unit_recursive(std::shared_ptr<unit_data> from, std::shared_ptr<unit_data> to);
+void                       recalc_dex_red(std::shared_ptr<unit_data> ch);
+int                        unit_recursive(std::shared_ptr<unit_data> from, std::shared_ptr<unit_data> to);
 std::shared_ptr<zone_type> unit_zone(const std::shared_ptr<unit_data> unit);
 std::shared_ptr<unit_data> unit_room(std::shared_ptr<unit_data> unit);
 

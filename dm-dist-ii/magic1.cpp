@@ -213,8 +213,8 @@ void spell_repel_undead_1(struct spell_args *sa)
 void spell_repel_undead_2(struct spell_args *sa)
 {
    std::shared_ptr<unit_data> u;
-   struct unit_affected_type af;
-   int                       p;
+   struct unit_affected_type  af;
+   int                        p;
 
    scan4_unit(sa->caster, UNIT_ST_PC | UNIT_ST_NPC);
 
@@ -309,7 +309,7 @@ void spell_lock(struct spell_args *sa)
 {
    struct door_data *a_door = NULL;
 
-   struct door_data *locate_lock(std::shared_ptr<unit_data>  ch, char *arg);
+   struct door_data *locate_lock(std::shared_ptr<unit_data> ch, char *arg);
 
    char mbuf[MAX_INPUT_LENGTH];
    strcpy(mbuf, sa->arg);
@@ -357,7 +357,7 @@ void spell_unlock(struct spell_args *sa)
 {
    struct door_data *a_door = NULL;
 
-   struct door_data *locate_lock(std::shared_ptr<unit_data>  ch, char *arg);
+   struct door_data *locate_lock(std::shared_ptr<unit_data> ch, char *arg);
 
    char mbuf[MAX_INPUT_LENGTH];
    strcpy(mbuf, sa->arg);

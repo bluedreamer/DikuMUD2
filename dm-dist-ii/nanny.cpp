@@ -250,11 +250,11 @@ void update_lasthost(std::shared_ptr<unit_data> pc, ubit32 s_addr)
 void enter_game(std::shared_ptr<unit_data> ch)
 {
    std::shared_ptr<unit_data> load_room;
-   struct descriptor_data *i;
-   char                    buf[256];
-   time_t                  last_connect = PC_TIME(ch).connect;
-   char *ContentsFileName(const char *);
-   void  start_all_special(std::shared_ptr<unit_data>  u);
+   struct descriptor_data    *i;
+   char                       buf[256];
+   time_t                     last_connect = PC_TIME(ch).connect;
+   char                      *ContentsFileName(const char *);
+   void                       start_all_special(std::shared_ptr<unit_data> u);
 
    assert(ch);
    assert(!UNIT_IN(ch));
@@ -306,7 +306,7 @@ void enter_game(std::shared_ptr<unit_data> ch)
    /* New player stats. Level can be zero after reroll while ID is not. */
    if((CHAR_LEVEL(ch) == 0) && PC_IS_UNSAVED(ch))
    {
-      void start_player(std::shared_ptr<unit_data>  ch);
+      void start_player(std::shared_ptr<unit_data> ch);
 
       slog(LOG_BRIEF, 0, "%s[%s] (GUEST) has entered the game.", PC_FILENAME(ch), CHAR_DESCRIPTOR(ch)->host);
 
@@ -324,7 +324,7 @@ void enter_game(std::shared_ptr<unit_data> ch)
 
    if(file_exists(ContentsFileName(PC_FILENAME(ch))))
    {
-      ubit32 rent_calc(std::shared_ptr<unit_data>  ch, time_t savetime);
+      ubit32 rent_calc(std::shared_ptr<unit_data> ch, time_t savetime);
 
       load_contents(PC_FILENAME(ch), ch);
       rent_calc(ch, last_connect);
@@ -439,7 +439,7 @@ void nanny_newbie(struct descriptor_data *d, char *arg)
 
 void nanny_throw(struct descriptor_data *d, char *arg)
 {
-   struct descriptor_data *td;
+   struct descriptor_data    *td;
    std::shared_ptr<unit_data> u;
 
    if(STATE(d)++ == 0)
@@ -537,7 +537,7 @@ void nanny_dil(struct descriptor_data *d, char *arg)
       {
          char buf[256];
 
-         void join_guild(std::shared_ptr<unit_data>  ch, char *guild_name);
+         void join_guild(std::shared_ptr<unit_data> ch, char *guild_name);
 
          strcpy(buf, PC_GUILD(d->character));
          join_guild(d->character, buf);
@@ -1662,8 +1662,8 @@ void nanny_menu(struct descriptor_data *d, char *arg)
 
 void nanny_existing_pwd(struct descriptor_data *d, char *arg)
 {
-   char                    buf[200];
-   struct descriptor_data *td;
+   char                       buf[200];
+   struct descriptor_data    *td;
    std::shared_ptr<unit_data> u;
 
    /* PC_ID(d->character) can be -1 when a newbie is in the game and

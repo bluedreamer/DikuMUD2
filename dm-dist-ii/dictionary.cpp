@@ -626,7 +626,7 @@ static void cmd_claim(std::shared_ptr<unit_data> ch, char *arg, std::shared_ptr<
       act("You can only claim $2n.", A_ALWAYS, ch, obj, {}, TO_CHAR);
    else
    {
-      act("You claim $2n as your property.", A_ALWAYS, ch, obj,{}, TO_CHAR);
+      act("You claim $2n as your property.", A_ALWAYS, ch, obj, {}, TO_CHAR);
       set_owner(obj, alias_h, ch);
    }
 }

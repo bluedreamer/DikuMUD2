@@ -27,14 +27,14 @@
 
 #include "spelldef.h"
 
-int spell_perform(int               spell_no,
-                  int               spell_type,
+int spell_perform(int                        spell_no,
+                  int                        spell_type,
                   std::shared_ptr<unit_data> caster,
                   std::shared_ptr<unit_data> medium,
                   std::shared_ptr<unit_data> target,
-                  char             *argument,
-                  char             *pEffect = NULL,
-                  int               bonus   = 0);
+                  char                      *argument,
+                  char                      *pEffect = NULL,
+                  int                        bonus   = 0);
 
 #include "dil.h"
 
@@ -46,9 +46,9 @@ struct spell_args
    std::shared_ptr<unit_data> caster;
    std::shared_ptr<unit_data> medium;
    std::shared_ptr<unit_data> target;
-   const char      *arg;
-   int              hm;
-   const char      *pEffect;
+   const char                *arg;
+   int                        hm;
+   const char                *pEffect;
 };
 
 struct spell_info_type
@@ -81,6 +81,11 @@ struct spell_info_type
 
 #define SPL_POW_REQ(spell) MIN(SPL_MAG_REQ(spell), SPL_DIV_REQ(spell))
 
-void set_spellargs(struct spell_args *sa, std::shared_ptr<unit_data> caster, std::shared_ptr<unit_data> medium, std::shared_ptr<unit_data> target, char *arg, int hm);
+void set_spellargs(struct spell_args         *sa,
+                   std::shared_ptr<unit_data> caster,
+                   std::shared_ptr<unit_data> medium,
+                   std::shared_ptr<unit_data> target,
+                   char                      *arg,
+                   int                        hm);
 
 #endif /* _MUD_SPELLS_H */

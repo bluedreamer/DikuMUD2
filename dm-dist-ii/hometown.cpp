@@ -44,7 +44,7 @@ std::shared_ptr<unit_data> hometown_unit(char *str)
 {
    if(str)
    {
-      char              name[80], zone[80];
+      char                       name[80], zone[80];
       std::shared_ptr<unit_data> u;
 
       split_fi_ref(str, zone, name);

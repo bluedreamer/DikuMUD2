@@ -692,11 +692,11 @@ void player_where(std::shared_ptr<unit_data> ch, char *arg)
 
 void do_where(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
-   char                               *buf = NULL, buf1[1024], buf2[512];
-   register std::shared_ptr<unit_data> i;
-   struct descriptor_data             *d;
-   int                                 len, cur_size = 2048;
-   char                               *arg = (char *)aaa;
+   char                      *buf = NULL, buf1[1024], buf2[512];
+   std::shared_ptr<unit_data> i;
+   struct descriptor_data    *d;
+   int                        len, cur_size = 2048;
+   char                      *arg = (char *)aaa;
 
    if(IS_MORTAL(ch))
    {

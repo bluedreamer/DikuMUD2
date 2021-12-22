@@ -217,13 +217,13 @@ void save_player_disk(const char *pName, char *pPassword, int id, int nPlyLen, c
 /* Save the player 'pc' (no inventory) */
 void save_player_file(std::shared_ptr<unit_data> pc)
 {
-   static bool             locked = FALSE;
-   blk_length              nPlyLen;
-   int                     tmp_i;
+   static bool                locked = FALSE;
+   blk_length                 nPlyLen;
+   int                        tmp_i;
    std::shared_ptr<unit_data> tmp_u;
    std::shared_ptr<unit_data> list;
-   struct descriptor_data *tmp_descr;
-   CByteBuffer            *pBuf = &g_FileBuffer;
+   struct descriptor_data    *tmp_descr;
+   CByteBuffer               *pBuf = &g_FileBuffer;
 
    pBuf->Clear();
 
@@ -406,8 +406,8 @@ void save_player(std::shared_ptr<unit_data> pc)
 std::shared_ptr<unit_data> load_player_file(FILE *pFile)
 {
    std::shared_ptr<unit_data> pc;
-   int               nPlyLen, n, id;
-   CByteBuffer      *pBuf;
+   int                        nPlyLen, n, id;
+   CByteBuffer               *pBuf;
 
    assert(pFile);
 
@@ -443,10 +443,10 @@ std::shared_ptr<unit_data> load_player_file(FILE *pFile)
 /* Is neither inserted in unit_list not into anything */
 std::shared_ptr<unit_data> load_player(const char *pName)
 {
-   FILE             *pFile;
+   FILE                      *pFile;
    std::shared_ptr<unit_data> pc;
 
-   void stop_all_special(std::shared_ptr<unit_data>  u);
+   void stop_all_special(std::shared_ptr<unit_data> u);
 
    if(str_is_empty(pName))
       return NULL;

@@ -329,8 +329,8 @@ void descriptor_close(struct descriptor_data *d, int bSendClose)
    struct descriptor_data *tmp;
    class cMultiHook       *multi = NULL;
 
-   void unsnoop(std::shared_ptr<unit_data>  ch, int mode);
-   void unswitchbody(std::shared_ptr<unit_data>  npc);
+   void unsnoop(std::shared_ptr<unit_data> ch, int mode);
+   void unswitchbody(std::shared_ptr<unit_data> npc);
    int  is_destructed(int type, void *ptr);
 
    assert(d->character);
@@ -377,7 +377,7 @@ void descriptor_close(struct descriptor_data *d, int bSendClose)
       // TODO ADRIAN Check this - remote get()
       if(!is_destructed(DR_UNIT, d->character.get()))
       {
-         void disconnect_game(std::shared_ptr<unit_data>  pc);
+         void disconnect_game(std::shared_ptr<unit_data> pc);
 
          disconnect_game(d->character);
 

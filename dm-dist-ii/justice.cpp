@@ -887,12 +887,12 @@ int whistle(struct spec_arg *sarg)
    if(sarg->fptr->data)
    {
       // TODO ADRAIN
-       // fptr->data is void - update it
+      // fptr->data is void - update it
       assert(0);
-//      if(scan4_ref(sarg->owner, sarg->fptr->data) == NULL)
-//         sarg->fptr->data = NULL;
-//      else
-//         return SFR_SHARE;
+      //      if(scan4_ref(sarg->owner, sarg->fptr->data) == NULL)
+      //         sarg->fptr->data = NULL;
+      //      else
+      //         return SFR_SHARE;
    }
 
    if(CHAR_AWAKE(sarg->owner) && CHAR_COMBAT(sarg->activator) && CHAR_CAN_SEE(sarg->owner, sarg->activator))
@@ -901,7 +901,7 @@ int whistle(struct spec_arg *sarg)
       {
          // TODO ADRIAN conversion to void*
          assert(0);
-//         sarg->fptr->data = sarg->activator;
+         //         sarg->fptr->data = sarg->activator;
 
          act("$1n blows in a small whistle!  'UUIIIIIIIHHHHH'", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
          call_guards(sarg->owner);

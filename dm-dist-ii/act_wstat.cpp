@@ -62,7 +62,6 @@
 struct time_info_data age(std::shared_ptr<unit_data> ch);
 struct time_info_data real_time_passed(time_t t2, time_t t1);
 
-
 static void stat_world_extra(const std::shared_ptr<unit_data> ch)
 {
    char                       buf[MAX_STRING_LENGTH], *b;
@@ -92,14 +91,14 @@ static void stat_world_extra(const std::shared_ptr<unit_data> ch)
 
 static void stat_string(std::shared_ptr<unit_data> ch)
 {
-   void string_statistics(std::shared_ptr<unit_data>  ch);
+   void string_statistics(std::shared_ptr<unit_data> ch);
 
    string_statistics(ch);
 }
 
 static void stat_swap(std::shared_ptr<unit_data> ch)
 {
-   void swap_status(std::shared_ptr<unit_data>  ch);
+   void swap_status(std::shared_ptr<unit_data> ch);
 
    swap_status(ch);
 }
@@ -109,7 +108,7 @@ static void stat_memory(std::shared_ptr<unit_data> ch)
    char buf[MAX_STRING_LENGTH];
 
    void memory_status(char *buf);
-   void system_memory(std::shared_ptr<unit_data>  ch);
+   void system_memory(std::shared_ptr<unit_data> ch);
 
    sprintf(buf, "Event queue entries: %d\n\r\n\r", events);
    send_to_char(buf, ch);
@@ -424,7 +423,7 @@ static void extra_stat_zone(std::shared_ptr<unit_data> ch, char *arg, std::share
    std::shared_ptr<file_index_type> fi;
    int                              search_type = 0, i;
 
-   void stat_dijkstraa(std::shared_ptr<unit_data>  ch, std::shared_ptr<zone_type> z);
+   void stat_dijkstraa(std::shared_ptr<unit_data> ch, std::shared_ptr<zone_type> z);
 
    static const char *zone_args[] = {"mobiles", "objects", "rooms", "reset", "errors", "info", "path", "dil", NULL};
 
@@ -1220,24 +1219,24 @@ void do_wstat(std::shared_ptr<unit_data> ch, char *argument, const struct comman
                                      "ip",
                                      NULL};
 
-#define FUNC_ELMS (sizeof functions / sizeof(void (*)(std::shared_ptr<unit_data> , std::shared_ptr<unit_data> )))
+#define FUNC_ELMS (sizeof functions / sizeof(void (*)(std::shared_ptr<unit_data>, std::shared_ptr<unit_data>)))
 
-   static void (*functions[])(const std::shared_ptr<unit_data> , std::shared_ptr<unit_data> ) = {stat_data,
-                                                                               stat_contents,
-                                                                               stat_affect,
-                                                                               stat_descriptor,
-                                                                               stat_func,
-                                                                               stat_spell,
-                                                                               stat_skill,
-                                                                               stat_wskill,
-                                                                               stat_extra_descr,
-                                                                               stat_extra_quest,
-                                                                               stat_ability,
-                                                                               account_local_stat,
-                                                                               stat_bank,
-                                                                               stat_combat,
-                                                                               stat_extra_info,
-                                                                               stat_ip};
+   static void (*functions[])(const std::shared_ptr<unit_data>, std::shared_ptr<unit_data>) = {stat_data,
+                                                                                               stat_contents,
+                                                                                               stat_affect,
+                                                                                               stat_descriptor,
+                                                                                               stat_func,
+                                                                                               stat_spell,
+                                                                                               stat_skill,
+                                                                                               stat_wskill,
+                                                                                               stat_extra_descr,
+                                                                                               stat_extra_quest,
+                                                                                               stat_ability,
+                                                                                               account_local_stat,
+                                                                                               stat_bank,
+                                                                                               stat_combat,
+                                                                                               stat_extra_info,
+                                                                                               stat_ip};
 
    if(CHAR_DESCRIPTOR(ch) == NULL)
       return;

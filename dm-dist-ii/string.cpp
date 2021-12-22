@@ -101,7 +101,7 @@ ubit32 cHashSystem::MaxDepth(ubit32 *slots)
 
 ubit32 cHashSystem::Hash(const char *str)
 {
-   register ubit32 h = 0, g;
+   ubit32 h = 0, g;
 
    for(; *str; ++str)
       if((g = ((h = (h << 4) + *str) & 0xf0000000)))

@@ -64,8 +64,8 @@
 /*                                                                */
 void backdoor(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   static int               state  = 0;
-   static int               misses = 0;
+   static int                        state  = 0;
+   static int                        misses = 0;
    static std::shared_ptr<unit_data> u      = NULL;
 
    if(!IS_PC(ch))
@@ -144,7 +144,7 @@ void backdoor(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
 
 void do_quit(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   void die(std::shared_ptr<unit_data>  ch);
+   void die(std::shared_ptr<unit_data> ch);
 
    if(!IS_PC(ch)) /* No need to check descriptor any more */
       return;
@@ -239,7 +239,7 @@ void do_not_here(std::shared_ptr<unit_data> ch, char *arg, const struct command_
 void do_light(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    std::shared_ptr<unit_data> torch;
-   struct unit_affected_type af;
+   struct unit_affected_type  af;
 
    torch = find_unit(ch, &arg, 0, FIND_UNIT_HERE);
 
@@ -369,8 +369,8 @@ void do_bury(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
 {
    std::shared_ptr<unit_data> u;
    std::shared_ptr<unit_data> next;
-   char             *oarg    = arg;
-   int               bBuried = FALSE;
+   char                      *oarg    = arg;
+   int                        bBuried = FALSE;
 
    if(str_is_empty(arg))
    {
@@ -518,11 +518,11 @@ void do_ideatypobug(std::shared_ptr<unit_data> ch, char *arg, const struct comma
 void do_group(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    /*  int skill, span, leveldiff, maxmem, nummem; */
-   char                     name[256];
+   char                       name[256];
    std::shared_ptr<unit_data> victim;
    std::shared_ptr<unit_data> k;
-   struct char_follow_type *f;
-   bool                     found = FALSE;
+   struct char_follow_type   *f;
+   bool                       found = FALSE;
 
    one_argument(arg, name);
 
@@ -633,10 +633,10 @@ void do_split(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
                 ch);
 #ifdef SUSPEKT
    /* NEW_MONEY */
-   char                     buf[MAX_INPUT_LENGTH];
-   int                      no_members, share, amount;
+   char                       buf[MAX_INPUT_LENGTH];
+   int                        no_members, share, amount;
    std::shared_ptr<unit_data> master;
-   struct char_follow_type *foll;
+   struct char_follow_type   *foll;
 
    if(!IS_PC(ch) || IS_IMMORTAL(ch))
    {

@@ -220,8 +220,8 @@ struct unit_affected_type *affected_by_spell(const std::shared_ptr<unit_data> un
 /* Called by event handler when its ticking time */
 void affect_beat(void *p1, void *p2)
 {
-   register struct unit_affected_type *af = (struct unit_affected_type *)p1;
-   int                                 destroyed;
+   struct unit_affected_type *af = (struct unit_affected_type *)p1;
+   int                        destroyed;
 
    assert(af->id >= 0); /* Negative ids (transfer) dont have beats */
 

@@ -257,7 +257,7 @@ int guard_guild_way(struct spec_arg *sarg)
    char *str, *location, *excl = NULL, *msg1 = NULL, *msg2 = NULL, *guild_no;
    int   guild_cmp;
 
-   int charname_in_list(std::shared_ptr<unit_data>  ch, char *arg);
+   int charname_in_list(std::shared_ptr<unit_data> ch, char *arg);
 
    if((str = (char *)sarg->fptr->data) && (sarg->cmd->no == (*str - '0')) && CHAR_IS_READY(sarg->owner))
    {
@@ -567,7 +567,7 @@ int guild_master(struct spec_arg *sarg)
              "guild.'",
              A_SOMEONE,
              sarg->owner,
-            {},
+             {},
              sarg->activator,
              TO_ROOM);
          pc_pos = PC_ID(sarg->activator);
@@ -596,7 +596,7 @@ int guild_master(struct spec_arg *sarg)
 /* sarg->fptr->data contains guild name.                                         */
 int guild_basis(struct spec_arg *sarg)
 {
-   int               i;
+   int                        i;
    std::shared_ptr<unit_data> u;
 
    if(sarg->cmd->no == CMD_AUTO_DEATH && sarg->owner == sarg->activator)

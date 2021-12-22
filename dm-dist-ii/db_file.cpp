@@ -996,7 +996,7 @@ int write_unit_string(CByteBuffer *pBuf, std::shared_ptr<unit_data> u)
       /* See if room is to be placed inside another room! */
       // TODO ADRIAN cant cast unit_data to char*
       assert(0);
-//      pBuf->AppendDoubleString((char *)UNIT_IN(u));
+      //      pBuf->AppendDoubleString((char *)UNIT_IN(u));
    }
    else
    {
@@ -1178,7 +1178,7 @@ int write_unit_string(CByteBuffer *pBuf, std::shared_ptr<unit_data> u)
             {
                // TODO Adrian bad cast
                assert(0);
-//               c1 = (char *)ROOM_EXIT(u, i)->to_room;
+               //               c1 = (char *)ROOM_EXIT(u, i)->to_room;
                c2 = c1;
                TAIL(c2);
                c2++;
@@ -1187,7 +1187,7 @@ int write_unit_string(CByteBuffer *pBuf, std::shared_ptr<unit_data> u)
             {
                // TODO ADRIAN bad cast
                assert(0);
-//               pBuf->AppendDoubleString((char *)ROOM_EXIT(u, i)->to_room);
+               //               pBuf->AppendDoubleString((char *)ROOM_EXIT(u, i)->to_room);
                ROOM_EXIT(u, i)->open_name.AppendBuffer(pBuf);
                pBuf->Append16(ROOM_EXIT(u, i)->exit_info);
                pBuf->AppendDoubleString((char *)ROOM_EXIT(u, i)->key.get());

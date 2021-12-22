@@ -40,10 +40,10 @@ void  str_substitute(const char *old, const char *newstr, char *str);
 void  str_rem(char *s, char c);
 void  str_rem_punct(char *s);
 void  str_blank_punct(char *s);
-void  str_remspc(register char *s);
+void  str_remspc(char *s);
 void  str_chraround(char *str, char c);
 
-char *is_name_raw(register const char *arg, register const char *names[]);
+char *is_name_raw(const char *arg, const char *names[]);
 char *is_name(const char *arg, const char *names[]);
 
 int str_lower(char *s);

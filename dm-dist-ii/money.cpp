@@ -144,7 +144,7 @@ const char *money_string(amount_t amt, currency_t currency, ubit1 verbose)
 /* Money calculations. Assures we never get negative money */
 static amount_t calc_money(amount_t v1, char op, amount_t v2)
 {
-   register amount_t res = 0;
+   amount_t res = 0;
 
    if(v1 < 0 || v2 < 0)
       return 0;
@@ -246,8 +246,8 @@ std::shared_ptr<unit_data> set_money(std::shared_ptr<unit_data> money, amount_t 
 static std::shared_ptr<unit_data> make_money(std::shared_ptr<file_index_type> fi, amount_t amt)
 {
    std::shared_ptr<unit_data> money = read_unit(fi);
-   char              buf[512];
-   const char       *namelist[] = {NULL};
+   char                       buf[512];
+   const char                *namelist[] = {NULL};
 
    assert(IS_OBJ(money));
 
@@ -282,14 +282,14 @@ void money_transfer(std::shared_ptr<unit_data> from, std::shared_ptr<unit_data> 
 
       struct
       {
-         amount_t          take, have, value;
-         currency_t        cur;
+         amount_t                   take, have, value;
+         currency_t                 cur;
          std::shared_ptr<unit_data> unit;
       } mon_array[MAX_MONEY + 1];
 
       std::shared_ptr<unit_data> tmp;
-      int               i, last;
-      amount_t          temp, calc = amt;
+      int                        i, last;
+      amount_t                   temp, calc = amt;
 
       /* Initialize computation */
       for(i = 0; i <= MAX_MONEY; i++)
@@ -389,10 +389,10 @@ void money_transfer(std::shared_ptr<unit_data> from, std::shared_ptr<unit_data> 
    }
    else if(to)
    { /* Create the money according to arguments and give to `to' */
-      struct money_type *money_tmp[MAX_MONEY + 1];
+      struct money_type         *money_tmp[MAX_MONEY + 1];
       std::shared_ptr<unit_data> tmp;
-      int                i, nr;
-      amount_t           times;
+      int                        i, nr;
+      amount_t                   times;
 
       for(i = 0, nr = 0; i <= MAX_MONEY; i++)
          if(money_types[i].currency == currency)
@@ -440,7 +440,7 @@ void coins_to_unit(std::shared_ptr<unit_data> unit, amount_t amt, int type)
 amount_t unit_holds_total(std::shared_ptr<unit_data> u, currency_t currency)
 {
    std::shared_ptr<unit_data> tmp;
-   amount_t          amt = 0, rec;
+   amount_t                   amt = 0, rec;
 
    if(IS_ROOM(u) || IS_CHAR(u) || (IS_OBJ(u) && OBJ_TYPE(u) == ITEM_CONTAINER))
    {
@@ -466,7 +466,7 @@ amount_t unit_holds_total(std::shared_ptr<unit_data> u, currency_t currency)
 amount_t char_holds_amount(std::shared_ptr<unit_data> ch, currency_t currency)
 {
    std::shared_ptr<unit_data> tmp;
-   amount_t          amt = 0;
+   amount_t                   amt = 0;
 
    assert(IS_CHAR(ch));
 
@@ -531,7 +531,7 @@ std::shared_ptr<unit_data> split_money(std::shared_ptr<unit_data> money, amount_
    if((amount_t)MONEY_AMOUNT(money) > amt)
    {
       /* Not very pretty to use this, but I really can't find an alternative */
-      void intern_unit_to_unit(std::shared_ptr<unit_data> , std::shared_ptr<unit_data> , ubit1);
+      void intern_unit_to_unit(std::shared_ptr<unit_data>, std::shared_ptr<unit_data>, ubit1);
 
       std::shared_ptr<unit_data> pnew = make_money(money_types[MONEY_TYPE(money)].fi, amt);
       set_money(money, calc_money(MONEY_AMOUNT(money), '-', amt));

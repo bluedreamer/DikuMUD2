@@ -329,7 +329,7 @@ void cCombat::status(const std::shared_ptr<unit_data> ch)
 
    send_to_char(buf, ch);
 
-   for(const auto &opponent: pOpponents)
+   for(const auto &opponent : pOpponents)
    {
       sprintf(buf, "   %s\n\r", STR(UNIT_NAME(opponent)));
       send_to_char(buf, ch);

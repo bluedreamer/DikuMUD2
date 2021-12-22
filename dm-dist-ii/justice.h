@@ -25,8 +25,9 @@
 #ifndef _MUD_JUSTICE_H
 #define _MUD_JUSTICE_H
 
-#include <memory>
 #include "essential.h"
+
+#include <memory>
 
 class unit_data;
 

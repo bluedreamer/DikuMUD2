@@ -92,7 +92,7 @@ void tif_invisibility_off(struct unit_affected_type *af, std::shared_ptr<unit_da
 void tif_fear_check(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    std::shared_ptr<unit_data> ch;
-   char              mbuf[MAX_INPUT_LENGTH] = {0};
+   char                       mbuf[MAX_INPUT_LENGTH] = {0};
 
    if(CHAR_FIGHTING(unit))
    {

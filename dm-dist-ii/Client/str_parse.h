@@ -38,13 +38,13 @@ char **parse_match_namelist(char **pData, char *pMatch);
 // From textutil
 ubit1  str_is_empty(const char *arg);
 int    isfilename(char *fname);
-char  *str_dup(register const char *source);
+char  *str_dup(const char *source);
 char **add_name(const char *name, char **namelist);
 char **del_name(const char *name, char **namelist);
 void   free_namelist(char **list);
 char **create_namelist(void);
 char  *str_cc(const char *s1, const char *s2);
 char  *skip_blanks(const char *string);
-char  *str_cstr(register const char *cs, register const char *ct);
+char  *str_cstr(const char *cs, const char *ct);
 
 #endif

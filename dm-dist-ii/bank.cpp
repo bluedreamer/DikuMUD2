@@ -101,7 +101,7 @@ static void cmd_balance(const std::shared_ptr<unit_data> pc, std::shared_ptr<uni
 static void cmd_deposit(const std::shared_ptr<unit_data> pc, std::shared_ptr<unit_data> clerk, char *s)
 {
    std::shared_ptr<unit_data> thing;
-   amount_t          amount = 0;
+   amount_t                   amount = 0;
 
    if(!init_bank(pc, clerk, TRUE))
       return;
@@ -168,8 +168,8 @@ static void cmd_deposit(const std::shared_ptr<unit_data> pc, std::shared_ptr<uni
 static void cmd_exchange(const std::shared_ptr<unit_data> pc, std::shared_ptr<unit_data> clerk, char *s)
 {
    std::shared_ptr<unit_data> thing;
-   currency_t        cur;
-   amount_t          amount = 0;
+   currency_t                 cur;
+   amount_t                   amount = 0;
 
    if(!init_bank(pc, clerk, FALSE))
       return;
@@ -322,7 +322,7 @@ static void cmd_withdraw(const std::shared_ptr<unit_data> pc, std::shared_ptr<un
       balance[cur] -= amount * money_types[i].relative_value;
       changed_balance = TRUE;
 
-      coins_to_unit((std::shared_ptr<unit_data> )pc, amount, i);
+      coins_to_unit((std::shared_ptr<unit_data>)pc, amount, i);
 
       act("$3n hands $1n some $2t.", A_SOMEONE, pc, money_pluralis_type(i), clerk, TO_ROOM);
       act("$3n hands you your $2t.", A_SOMEONE, pc, money_pluralis_type(i), clerk, TO_CHAR);
@@ -371,7 +371,7 @@ static bool move_money_up(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_da
 {
    std::shared_ptr<unit_data> tmp;
    std::shared_ptr<unit_data> next;
-   bool              found = FALSE;
+   bool                       found = FALSE;
 
    for(tmp = UNIT_CONTAINS(u); tmp; tmp = next)
    {

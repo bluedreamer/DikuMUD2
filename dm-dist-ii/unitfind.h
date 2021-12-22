@@ -36,8 +36,8 @@
 struct unit_vector_data
 {
    std::vector<std::shared_ptr<unit_data>> units;
-   int                         size;
-   int                         top;
+   int                                     size;
+   int                                     top;
 };
 
 ubit1                      same_surroundings(std::shared_ptr<unit_data> u1, std::shared_ptr<unit_data> u2);

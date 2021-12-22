@@ -25,9 +25,10 @@
 #ifndef _MUD_ACCOUNT_H
 #define _MUD_ACCOUNT_H
 
-#include <memory>
 #include "essential.h"
 #include "structs.h"
+
+#include <memory>
 
 #define MAX_FLATRATE 2
 

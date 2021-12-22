@@ -358,11 +358,11 @@ struct dilvar
    union
    {
       std::shared_ptr<unit_data> unitptr;
-      sbit32                   integer;
-      struct extra_descr_data *extraptr;
-      char                    *string;
-      class cStringInstance   *pHash;
-      class cNamelist         *namelist;
+      sbit32                     integer;
+      struct extra_descr_data   *extraptr;
+      char                      *string;
+      class cStringInstance     *pHash;
+      class cNamelist           *namelist;
    } val;
 };
 
@@ -392,7 +392,7 @@ public:
 struct dilsecure
 {
    std::shared_ptr<unit_data> sup; /* A direct reference to the variabel! */
-   ubit8            *lab; /* address to jump to, NULL=foreach */
+   ubit8                     *lab; /* address to jump to, NULL=foreach */
 };
 
 /*
@@ -487,7 +487,7 @@ struct dilprg
    struct dilframe *sp;      /* stack and pointer */
    struct dilframe *stack;   /* stack frames, #0 saved */
 
-   struct spec_arg  *sarg;
+   struct spec_arg           *sarg;
    std::shared_ptr<unit_data> owner;
 
    sbit16 waitcmd; /* Command countdown */

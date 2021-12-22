@@ -67,7 +67,7 @@ void ResetFptrTimer(std::shared_ptr<unit_data> u, struct unit_fptr *fptr)
 void special_event(void *p1, void *p2)
 {
    std::shared_ptr<unit_data> u    = (std::shared_ptr<unit_data>)p1;
-   register struct unit_fptr *fptr = (struct unit_fptr *)p2;
+   struct unit_fptr          *fptr = (struct unit_fptr *)p2;
 
    ubit32            ret = SFR_SHARE, ticks;
    struct unit_fptr *ftmp;

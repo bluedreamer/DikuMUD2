@@ -112,7 +112,7 @@ void do_manifest(std::shared_ptr<unit_data> ch, char *arg, const struct command_
    if(IS_SET(UNIT_FLAGS(UNIT_IN(player)), UNIT_FL_PRIVATE))
    {
       std::shared_ptr<unit_data> pers = UNIT_CONTAINS(UNIT_IN(player));
-      int               i;
+      int                        i;
 
       for(i = 0; pers; pers = pers->next)
          if(IS_PC(pers))
@@ -140,7 +140,7 @@ void do_manifest(std::shared_ptr<unit_data> ch, char *arg, const struct command_
       unit_from_unit(ch);
       unit_to_unit(ch, UNIT_IN(player));
 
-      act("You appear as yourself.", A_ALWAYS, ch, {},{}, TO_CHAR);
+      act("You appear as yourself.", A_ALWAYS, ch, {}, {}, TO_CHAR);
 
       act("$1n appears in front of you.", A_ALWAYS, ch, {}, {}, TO_ROOM);
       return;
@@ -321,9 +321,9 @@ void base_sacrifice(std::shared_ptr<unit_data> ch, char *arg, int noble)
    return;
 #else
    std::shared_ptr<unit_data> u, *god;
-   char              buf[MAX_INPUT_LENGTH];
-   int               loaded = FALSE;
-   int               power;
+   char                       buf[MAX_INPUT_LENGTH];
+   int                        loaded = FALSE;
+   int                        power;
 
    std::shared_ptr<unit_data> find_player(char *name);
 
@@ -526,12 +526,12 @@ void make_demigod(std::shared_ptr<unit_data> ch)
 int demi_stuff(struct spec_arg *sarg)
 {
 #ifdef DEMIGOD
-   int                      i, nExp, nMember;
-   struct char_follow_type *f;
+   int                        i, nExp, nMember;
+   struct char_follow_type   *f;
    std::shared_ptr<unit_data> pVict, *paper;
-   char                     Buf[MAX_STRING_LENGTH];
-   int                      loaded = FALSE;
-   struct extra_descr_data *exd;
+   char                       Buf[MAX_STRING_LENGTH];
+   int                        loaded = FALSE;
+   struct extra_descr_data   *exd;
 
    if(cmd->no == CMD_LEVEL)
    {

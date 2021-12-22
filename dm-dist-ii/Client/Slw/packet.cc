@@ -81,7 +81,7 @@ void cPacketLayer::Deactivate(void)
 // Used to update the CRC on receive and transmit. Convert to assembler
 // for various processors for possible performance gain.
 //
-ubit16 cPacketLayer::UpdateCRC(register ubit8 c, register ubit16 crc)
+ubit16 cPacketLayer::UpdateCRC(ubit8 c, ubit16 crc)
 {
 /*
 
@@ -111,8 +111,8 @@ SKIP:
 
 */
    {
-      register int i;
-      register ubit16 rcl_cf;
+      int i;
+      ubit16 rcl_cf;
 
       for (i=0; i < 8; i++)
       {
@@ -129,7 +129,7 @@ SKIP:
       
 
 
-void cPacketLayer::TransmitStuffCharacter(register ubit8 c)
+void cPacketLayer::TransmitStuffCharacter(ubit8 c)
 {
    if (c == SLW_ESC)
    {

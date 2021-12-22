@@ -55,9 +55,9 @@ struct descriptor_data *find_descriptor(const char *name, struct descriptor_data
  *  Returns pointer to element of array or null.
  *  Perhaps an index vs. -1 would be better?
  */
-struct bin_search_type *binary_search(struct bin_search_type *ba, const char *str, register int top)
+struct bin_search_type *binary_search(struct bin_search_type *ba, const char *str, int top)
 {
-   register int mid = 0, bot, cmp;
+   int mid = 0, bot, cmp;
 
    cmp = 1; /* Assume no compare                        */
    bot = 0; /* Point to lowest element in array         */

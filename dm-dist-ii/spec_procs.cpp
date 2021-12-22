@@ -1420,7 +1420,7 @@ int return_to_origin(struct spec_arg *sarg)
       unit_from_unit(sarg->owner);
       // TODO ADRIAN yet another void *
       assert(0);
-//      unit_to_unit(sarg->owner, (std::shared_ptr<unit_data>)sarg->fptr->data);
+      //      unit_to_unit(sarg->owner, (std::shared_ptr<unit_data>)sarg->fptr->data);
       act("$1n disappears appears though a rift!", A_ALWAYS, sarg->owner, {}, {}, TO_ROOM);
       destroy_fptr(sarg->owner, sarg->fptr);
       return SFR_BLOCK;

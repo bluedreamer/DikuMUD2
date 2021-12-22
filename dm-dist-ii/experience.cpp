@@ -72,7 +72,7 @@ int kludge_bonus(int level, int points)
 int shield_bonus(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, std::shared_ptr<unit_data> *pDef_shield)
 {
    std::shared_ptr<unit_data> def_shield;
-   int               def_shield_bonus = 0;
+   int                        def_shield_bonus = 0;
 
    int att_dex, def_dex;
    int hm;
@@ -119,20 +119,20 @@ int shield_bonus(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def,
    return def_shield_bonus;
 }
 
-int spell_bonus(std::shared_ptr<unit_data> att,
-                std::shared_ptr<unit_data> medium,
-                std::shared_ptr<unit_data> def,
-                int                hit_loc,
-                int                spell_number,
-                int               *pDef_armour_type,
+int spell_bonus(std::shared_ptr<unit_data>  att,
+                std::shared_ptr<unit_data>  medium,
+                std::shared_ptr<unit_data>  def,
+                int                         hit_loc,
+                int                         spell_number,
+                int                        *pDef_armour_type,
                 std::shared_ptr<unit_data> *pDef_armour)
 {
-   int               att_spl_knowledge, def_spl_knowledge;
-   int               att_bonus;
-   int               def_bonus;
-   int               def_armour_type;
+   int                        att_spl_knowledge, def_spl_knowledge;
+   int                        att_bonus;
+   int                        def_bonus;
+   int                        def_armour_type;
    std::shared_ptr<unit_data> def_armour;
-   int               hm;
+   int                        hm;
 
    att_bonus = CHAR_OFFENSIVE(att);
    def_bonus = CHAR_DEFENSIVE(def);
@@ -185,22 +185,22 @@ int spell_bonus(std::shared_ptr<unit_data> att,
 /* to anything, then it will be set to the defenders armour_type  */
 /* which should be used upon lookup                               */
 
-int melee_bonus(std::shared_ptr<unit_data> att,
-                std::shared_ptr<unit_data> def,
-                int                hit_loc,
-                int               *pAtt_weapon_type,
+int melee_bonus(std::shared_ptr<unit_data>  att,
+                std::shared_ptr<unit_data>  def,
+                int                         hit_loc,
+                int                        *pAtt_weapon_type,
                 std::shared_ptr<unit_data> *pAtt_weapon,
-                int               *pDef_armour_type,
+                int                        *pDef_armour_type,
                 std::shared_ptr<unit_data> *pDef_armour,
-                int                primary)
+                int                         primary)
 {
    int att_dex, att_bonus, att_wpn_knowledge;
    int def_dex, def_bonus, def_wpn_knowledge;
 
    std::shared_ptr<unit_data> att_wpn;
-   int               att_wpn_type;
+   int                        att_wpn_type;
 
-   int               def_armour_type;
+   int                        def_armour_type;
    std::shared_ptr<unit_data> def_armour;
 
    int hm;
@@ -311,7 +311,7 @@ int melee_bonus(std::shared_ptr<unit_data> att,
 
 int base_melee(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, int hit_loc)
 {
-   int               ocp, bonus;
+   int                        ocp, bonus;
    std::shared_ptr<unit_data> ocf;
 
    assert(CHAR_COMBAT(def));
@@ -335,10 +335,10 @@ int base_melee(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, i
 
 int base_consider(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def)
 {
-   int               ocp, bonus;
+   int                        ocp, bonus;
    std::shared_ptr<unit_data> ocf;
-   int               att_wpn_type, def_arm_type;
-   int               dam;
+   int                        att_wpn_type, def_arm_type;
+   int                        dam;
 
    ocp           = CHAR_POS(def);
    ocf           = CHAR_FIGHTING(def);
@@ -361,8 +361,8 @@ int base_consider(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def
 void do_consider(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    std::shared_ptr<unit_data> vict;
-   int               rtd;
-   char             *oarg = arg;
+   int                        rtd;
+   char                      *oarg = arg;
 
    if(IS_PC(ch) && PC_SKI_SKILL(ch, SKI_CONSIDER) == 0)
    {

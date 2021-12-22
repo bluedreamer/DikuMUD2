@@ -36,10 +36,10 @@ Here is the code, minus copyright and includes:
 /*
  * Find the first occurrence of find in s.
  */
-char *strstr2(register const char *s, register const char *find)
+char *strstr2(const char *s, const char *find)
 {
-   register char   c, sc;
-   register size_t len;
+   char   c, sc;
+   size_t len;
 
    if((c = *find++) != 0)
    {

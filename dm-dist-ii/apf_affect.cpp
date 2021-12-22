@@ -44,7 +44,7 @@
 
 ubit1 raw_destruct_affect(struct unit_affected_type *af)
 {
-   void unlink_affect(std::shared_ptr<unit_data>  u, struct unit_affected_type * af);
+   void unlink_affect(std::shared_ptr<unit_data> u, struct unit_affected_type * af);
 
    unlink_affect(af->owner, af); /* registers and frees later */
    return FALSE;                 /* CANCEL */

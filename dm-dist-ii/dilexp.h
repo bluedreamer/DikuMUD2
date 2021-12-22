@@ -44,7 +44,7 @@ void dilfe_eqpm(struct dilprg *, struct dilval *);
 void dilfe_mel(struct dilprg *, struct dilval *);
 void dilfe_cast2(struct dilprg *, struct dilval *);
 void dilfe_atsp(struct dilprg *, struct dilval *);
-void dilfe_weat(register struct dilprg *p, register struct dilval *v);
+void dilfe_weat(struct dilprg *p, struct dilval *v);
 void dilfe_illegal(struct dilprg *, struct dilval *);
 void dilfe_plus(struct dilprg *, struct dilval *);
 void dilfe_min(struct dilprg *, struct dilval *);

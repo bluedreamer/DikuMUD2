@@ -47,14 +47,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-int                   required_xp(int level);               /* common.c   */
+int                   required_xp(int level);                        /* common.c   */
 void                  update_pos(std::shared_ptr<unit_data> victim); /* in fight.c */
 struct time_info_data age(std::shared_ptr<unit_data> ch);
 
 /* Count the number of items a unit contains */
 int char_carry_n(std::shared_ptr<unit_data> unit)
 {
-   register int i;
+   int i;
 
    for(unit = UNIT_CONTAINS(unit), i = 0; unit; unit = unit->next)
       if(!IS_OBJ(unit) || ((OBJ_EQP_POS(unit) == 0) && (OBJ_TYPE(unit) != ITEM_MONEY)))
@@ -346,7 +346,7 @@ int mana_gain(std::shared_ptr<unit_data> ch)
 /* Gain maximum in various points */
 void advance_level(std::shared_ptr<unit_data> ch)
 {
-   void clear_training_level(std::shared_ptr<unit_data>  ch);
+   void clear_training_level(std::shared_ptr<unit_data> ch);
 
    assert(IS_PC(ch));
 
@@ -438,7 +438,7 @@ void point_update(void)
 {
    std::shared_ptr<unit_data> u;
    std::shared_ptr<unit_data> next_dude;
-   int               hgain;
+   int                        hgain;
 
    /* characters */
    for(u = unit_list; u; u = next_dude)

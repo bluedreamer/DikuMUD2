@@ -46,13 +46,13 @@
 
 struct oracle_data
 {
-   int              *nextrep;
+   int                       *nextrep;
    std::shared_ptr<unit_data> patient;
    std::shared_ptr<unit_data> doctor;
-   int               oldkeywd[MAX_HISTORY];     /* queue of indices of most recent keywds */
-   char              own_name[FI_MAX_UNITNAME]; /* Lowercase name of Doc.                */
-   char              laststr[MAX_INPUT_LENGTH]; /* Don't reply to same string twice      */
-   char              lastrep[MAX_INPUT_LENGTH]; /* Don't make same reply twice!          */
+   int                        oldkeywd[MAX_HISTORY];     /* queue of indices of most recent keywds */
+   char                       own_name[FI_MAX_UNITNAME]; /* Lowercase name of Doc.                */
+   char                       laststr[MAX_INPUT_LENGTH]; /* Don't reply to same string twice      */
+   char                       lastrep[MAX_INPUT_LENGTH]; /* Don't make same reply twice!          */
 };
 
 struct subject_type
@@ -469,9 +469,9 @@ char *eliza_process(struct oracle_data *od, char *s)
 void delayed_action(std::shared_ptr<unit_data> p1, void *p2)
 {
    std::shared_ptr<unit_data> npc = p1;
-   char             *str = (char *)p2;
+   char                      *str = (char *)p2;
 
-   void command_interpreter(std::shared_ptr<unit_data>  ch, char *argument);
+   void command_interpreter(std::shared_ptr<unit_data> ch, char *argument);
 
    command_interpreter(npc, str);
    free(str);
@@ -663,7 +663,7 @@ int oracle(struct spec_arg *sarg)
    if((sarg->cmd->no == CMD_TELL) || (sarg->cmd->no == CMD_ASK) || (sarg->cmd->no == CMD_WHISPER))
    {
       std::shared_ptr<unit_data> u;
-      char             *c = (char *)sarg->arg;
+      char                      *c = (char *)sarg->arg;
 
       u = find_unit(sarg->activator, &c, 0, FIND_UNIT_SURRO);
       if(u != sarg->owner)

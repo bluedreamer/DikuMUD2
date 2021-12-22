@@ -130,7 +130,7 @@ void cNamelist::Remove(ubit32 idx)
 
 void cNamelist::RemoveName(const char *name)
 {
-   register ubit32 i, j;
+   ubit32 i, j;
 
    for(i = 0; i < length; i++)
    {
@@ -196,7 +196,7 @@ cNamelist *cNamelist::Duplicate(void)
 
 const char *cNamelist::IsNameRaw(const char *name)
 {
-   register ubit32 i, j;
+   ubit32 i, j;
 
    for(i = 0; i < length; i++)
    {
@@ -230,7 +230,7 @@ const char *cNamelist::IsName(const char *name)
 /* Returns -1 if no name matches, or 0.. for the index in the namelist */
 const int cNamelist::IsNameRawIdx(const char *name)
 {
-   register ubit32 i, j;
+   ubit32 i, j;
 
    for(i = 0; i < length; i++)
    {

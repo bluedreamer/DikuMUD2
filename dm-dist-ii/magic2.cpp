@@ -122,7 +122,7 @@ void summon_attack_npc(std::shared_ptr<unit_data> caster, int n)
          // TODO ADRIAN
          // void * conversion
          assert(0);
-//         create_fptr(u, SFUN_RETURN_TO_ORIGIN, PULSE_SEC * 10, SFB_TICK, unit_room(u));
+         //         create_fptr(u, SFUN_RETURN_TO_ORIGIN, PULSE_SEC * 10, SFB_TICK, unit_room(u));
          unit_from_unit(u);
          unit_to_unit(u, UNIT_IN(caster));
          act("$1n appears though a rift!", A_ALWAYS, u, {}, {}, TO_ROOM);
@@ -214,7 +214,7 @@ void spell_storm_call(struct spell_args *sa)
 
    if((sa->hm / 20 <= 0) || (IS_SET(UNIT_FLAGS(room), UNIT_FL_NO_WEATHER | UNIT_FL_INDOORS)))
    {
-      act("Nothing happens.", A_ALWAYS, sa->caster, {},{}, TO_CHAR);
+      act("Nothing happens.", A_ALWAYS, sa->caster, {}, {}, TO_CHAR);
       return;
    }
 

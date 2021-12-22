@@ -99,9 +99,9 @@ char *fread_line_commented(FILE *fl, char *buf, int max)
 /* read and allocate space for a '~'-terminated string from a given file */
 char *fread_string_copy(FILE *fl, char *buf, int max)
 {
-   char          *obuf;
-   register char *point;
-   int            flag, total;
+   char *obuf;
+   char *point;
+   int   flag, total;
 
    memset(buf, '\0', max);
    total = 0;

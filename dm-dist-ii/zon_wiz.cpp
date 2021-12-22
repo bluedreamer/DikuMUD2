@@ -46,12 +46,12 @@ int ball(struct spec_arg *sarg)
 {
 #define TOP_MAX 10
 
-   char             *arg = (char *)sarg->arg;
-   char              buf[128];
+   char                      *arg = (char *)sarg->arg;
+   char                       buf[128];
    std::shared_ptr<unit_data> u;
    std::shared_ptr<unit_data> top[TOP_MAX];
-   int               v1, v2;
-   int               i;
+   int                        v1, v2;
+   int                        i;
 
    if(sarg->cmd->no == CMD_USE)
    {

@@ -45,9 +45,9 @@ int low_find_door(std::shared_ptr<unit_data> ch, char *doorstr, int err_msg, int
 
 struct door_data
 {
-   std::shared_ptr<unit_data> thing;
-   std::shared_ptr<unit_data> room;
-   std::shared_ptr<unit_data> reverse; /* Reverse Room or Inside thing */
+   std::shared_ptr<unit_data>       thing;
+   std::shared_ptr<unit_data>       room;
+   std::shared_ptr<unit_data>       reverse; /* Reverse Room or Inside thing */
    std::shared_ptr<file_index_type> key;
    ubit8                            direction; /* For rooms, which direction was picked? */
    ubit8                           *flags;
@@ -57,7 +57,7 @@ struct door_data
 
 struct visit_data
 {
-   int               state;
+   int                        state;
    std::shared_ptr<unit_data> go_to;
 
    std::shared_ptr<unit_data> start_room;
@@ -66,7 +66,7 @@ struct visit_data
    /* Return DESTROY_ME to destroy moving function        */
    /*        SFR_SHARE to allow lower functions to handle */
    /*        SFR_SUPREME to not allow lower functions     */
-   int (*what_now)(const std::shared_ptr<unit_data> , struct visit_data *);
+   int (*what_now)(const std::shared_ptr<unit_data>, struct visit_data *);
 
    void *data;
    int   non_tick_return; /* What to return upon non-ticks (SFR_...) */
@@ -74,9 +74,9 @@ struct visit_data
 
 void npc_set_visit(std::shared_ptr<unit_data> npc,
                    std::shared_ptr<unit_data> dest_room,
-                   int               what_now(const std::shared_ptr<unit_data> , struct visit_data *),
-                   void             *data,
-                   int               non_tick_return);
+                   int                        what_now(const std::shared_ptr<unit_data>, struct visit_data *),
+                   void                      *data,
+                   int                        non_tick_return);
 
 int do_advanced_move(std::shared_ptr<unit_data> ch, int direction, int following = FALSE);
 

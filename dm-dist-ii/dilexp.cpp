@@ -61,7 +61,7 @@ struct time_info_data mud_date(time_t t);
 /* DIL-expressions							    */
 /* ************************************************************************ */
 
-void dilfe_illegal(register struct dilprg *p, register class dilval *v)
+void dilfe_illegal(struct dilprg *p, class dilval *v)
 {
    szonelog(UNIT_FI_ZONE(p->sarg->owner),
             "DIL %s@%s, Illegal Expression/Instruction Node.\n",
@@ -72,7 +72,7 @@ void dilfe_illegal(register struct dilprg *p, register class dilval *v)
       v->type = DILV_ERR; /* error value */
 }
 
-void dilfe_atsp(register struct dilprg *p, register class dilval *v)
+void dilfe_atsp(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2, v3, v4, v5;
 
@@ -99,7 +99,7 @@ void dilfe_atsp(register struct dilprg *p, register class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v2.val.ptr || !IS_CHAR((std::shared_ptr<unit_data> )v2.val.ptr))
+         if(!v2.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v2.val.ptr))
             v->type = DILV_FAIL;
          break;
       default:
@@ -155,7 +155,12 @@ void dilfe_atsp(register struct dilprg *p, register class dilval *v)
    {
       struct spell_args sa;
 
-      set_spellargs(&sa, (std::shared_ptr<unit_data> )v2.val.ptr, (std::shared_ptr<unit_data> )v3.val.ptr, (std::shared_ptr<unit_data> )v4.val.ptr, NULL, 0);
+      set_spellargs(&sa,
+                    (std::shared_ptr<unit_data>)v2.val.ptr,
+                    (std::shared_ptr<unit_data>)v3.val.ptr,
+                    (std::shared_ptr<unit_data>)v4.val.ptr,
+                    NULL,
+                    0);
       sa.pEffect = NULL;
 
       /* cast the spell */
@@ -164,7 +169,7 @@ void dilfe_atsp(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_cast2(register struct dilprg *p, register class dilval *v)
+void dilfe_cast2(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2, v3, v4, v5;
 
@@ -191,7 +196,7 @@ void dilfe_cast2(register struct dilprg *p, register class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v2.val.ptr || !IS_CHAR((std::shared_ptr<unit_data> )v2.val.ptr))
+         if(!v2.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v2.val.ptr))
             v->type = DILV_FAIL;
          break;
       default:
@@ -249,16 +254,16 @@ void dilfe_cast2(register struct dilprg *p, register class dilval *v)
       char mbuf[MAX_INPUT_LENGTH] = {0};
       v->val.num                  = spell_perform(v1.val.num,
                                  MEDIA_SPELL,
-                                 (std::shared_ptr<unit_data> )v2.val.ptr,
-                                 (std::shared_ptr<unit_data> )v3.val.ptr,
-                                 (std::shared_ptr<unit_data> )v4.val.ptr,
+                                 (std::shared_ptr<unit_data>)v2.val.ptr,
+                                 (std::shared_ptr<unit_data>)v3.val.ptr,
+                                 (std::shared_ptr<unit_data>)v4.val.ptr,
                                  mbuf,
                                  (char *)v5.val.ptr);
       dil_test_secure(p);
    }
 }
 
-void dilfe_rest(register struct dilprg *p, register class dilval *v)
+void dilfe_rest(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2;
 
@@ -296,12 +301,12 @@ void dilfe_rest(register struct dilprg *p, register class dilval *v)
       }
       else
       {
-         unit_to_unit((std::shared_ptr<unit_data> )v->val.ptr, p->owner);
+         unit_to_unit((std::shared_ptr<unit_data>)v->val.ptr, p->owner);
       }
    }
 }
 
-void dilfe_opro(register struct dilprg *p, register class dilval *v)
+void dilfe_opro(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2;
 
@@ -337,7 +342,7 @@ void dilfe_opro(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_eqpm(register struct dilprg *p, register class dilval *v)
+void dilfe_eqpm(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2;
 
@@ -353,7 +358,7 @@ void dilfe_eqpm(register struct dilprg *p, register class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
+         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
             v->type = DILV_FAIL;
          break;
    }
@@ -373,14 +378,14 @@ void dilfe_eqpm(register struct dilprg *p, register class dilval *v)
 
    if(v->type == DILV_UP)
    {
-      v->val.ptr = equipment((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num);
+      v->val.ptr = equipment((std::shared_ptr<unit_data>)v1.val.ptr, v2.val.num);
       if(v->val.ptr == NULL)
          v->type = DILV_NULL;
    }
 }
 
 /* int meleeAttack(unit, unit, int, int) */
-void dilfe_mel(register struct dilprg *p, register class dilval *v)
+void dilfe_mel(struct dilprg *p, class dilval *v)
 {
    class dilval v1, v2, v3, v4;
 
@@ -398,7 +403,7 @@ void dilfe_mel(register struct dilprg *p, register class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
+         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
             v->type = DILV_FAIL;
          break;
    }
@@ -410,7 +415,7 @@ void dilfe_mel(register struct dilprg *p, register class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v2.val.ptr || !IS_CHAR((std::shared_ptr<unit_data> )v2.val.ptr))
+         if(!v2.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v2.val.ptr))
             v->type = DILV_FAIL;
          break;
       default:
@@ -446,7 +451,7 @@ void dilfe_mel(register struct dilprg *p, register class dilval *v)
 
    if(v->type == DILV_INT)
    {
-      v->val.num = one_hit((std::shared_ptr<unit_data> )v1.val.ptr, (std::shared_ptr<unit_data> )v2.val.ptr, v3.val.num, v4.val.num);
+      v->val.num = one_hit((std::shared_ptr<unit_data>)v1.val.ptr, (std::shared_ptr<unit_data>)v2.val.ptr, v3.val.num, v4.val.num);
       dil_test_secure(p);
    }
 }
@@ -467,7 +472,7 @@ void dilfe_visi(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
+         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
             v->type = DILV_FAIL;
          break;
       default:
@@ -490,7 +495,7 @@ void dilfe_visi(struct dilprg *p, class dilval *v)
    }
 
    if(v->type == DILV_INT)
-      v->val.num = CHAR_CAN_SEE((std::shared_ptr<unit_data> )v1.val.ptr, (std::shared_ptr<unit_data> )v2.val.ptr);
+      v->val.num = CHAR_CAN_SEE((std::shared_ptr<unit_data>)v1.val.ptr, (std::shared_ptr<unit_data>)v2.val.ptr);
 }
 
 /* is unit opponent of other */
@@ -509,7 +514,7 @@ void dilfe_oppo(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
+         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
             v->type = DILV_FAIL;
          break;
       default:
@@ -523,7 +528,7 @@ void dilfe_oppo(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v2.val.ptr || !IS_CHAR((std::shared_ptr<unit_data> )v2.val.ptr))
+         if(!v2.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v2.val.ptr))
             v->type = DILV_FAIL;
          break;
       default:
@@ -532,9 +537,7 @@ void dilfe_oppo(struct dilprg *p, class dilval *v)
    }
 
    if(v->type == DILV_INT)
-      v->val.num = (CHAR_COMBAT(v1.val.ptr)
-                       ? CHAR_COMBAT(v1.val.ptr)->FindOpponent(v2.val.ptr) != NULL
-                       : FALSE);
+      v->val.num = (CHAR_COMBAT(v1.val.ptr) ? CHAR_COMBAT(v1.val.ptr)->FindOpponent(v2.val.ptr) != NULL : FALSE);
 }
 
 /* spellindex */
@@ -784,7 +787,7 @@ void dilfe_purs(struct dilprg *p, class dilval *v)
       if(i <= MAX_MONEY)
       {
          /* Note down money-objects in from, and their values */
-         for(std::shared_ptr<unit_data> tmp = UNIT_CONTAINS((std::shared_ptr<unit_data> )v1.val.ptr); tmp; tmp = tmp->next)
+         for(std::shared_ptr<unit_data> tmp = UNIT_CONTAINS((std::shared_ptr<unit_data>)v1.val.ptr); tmp; tmp = tmp->next)
             if(IS_MONEY(tmp) && MONEY_TYPE(tmp) == i)
             {
                v->val.num = MONEY_AMOUNT(tmp);
@@ -881,8 +884,8 @@ void dilfe_path(struct dilprg *p, class dilval *v)
    if(v->type == DILV_INT)
    {
       std::shared_ptr<unit_data> u1, *u2;
-      u1 = unit_room((std::shared_ptr<unit_data> )v1.val.ptr);
-      u2 = unit_room((std::shared_ptr<unit_data> )v2.val.ptr);
+      u1 = unit_room((std::shared_ptr<unit_data>)v1.val.ptr);
+      u2 = unit_room((std::shared_ptr<unit_data>)v2.val.ptr);
 
       v->val.num = move_to(u1, u2);
    }
@@ -907,7 +910,7 @@ void dilfe_cary(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
+         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
             v->type = DILV_FAIL;
          break;
       default:
@@ -949,9 +952,9 @@ void dilfe_cary(struct dilprg *p, class dilval *v)
 
    if(v->type == DILV_INT)
    {
-      if(!char_can_carry_n((std::shared_ptr<unit_data> )v1.val.ptr, v3.val.num))
+      if(!char_can_carry_n((std::shared_ptr<unit_data>)v1.val.ptr, v3.val.num))
          v->val.num = 1;
-      else if(!char_can_carry_w((std::shared_ptr<unit_data> )v1.val.ptr, v3.val.num * UNIT_WEIGHT((std::shared_ptr<unit_data> )v2.val.ptr)))
+      else if(!char_can_carry_w((std::shared_ptr<unit_data>)v1.val.ptr, v3.val.num * UNIT_WEIGHT((std::shared_ptr<unit_data>)v2.val.ptr)))
          v->val.num = 2;
       else
          v->val.num = 0;
@@ -974,7 +977,7 @@ void dilfe_trmo(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(v1.val.ptr && !IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
+         if(v1.val.ptr && !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
             v->type = DILV_FAIL;
          break;
 
@@ -992,7 +995,7 @@ void dilfe_trmo(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(v2.val.ptr && !IS_CHAR((std::shared_ptr<unit_data> )v2.val.ptr))
+         if(v2.val.ptr && !IS_CHAR((std::shared_ptr<unit_data>)v2.val.ptr))
             v->type = DILV_FAIL;
          break;
       case DILV_NULL:
@@ -1024,27 +1027,30 @@ void dilfe_trmo(struct dilprg *p, class dilval *v)
          slog(LOG_ALL,
               0,
               "%s was given %d old gold pieces by DIL %s@%s.",
-              UNIT_NAME((std::shared_ptr<unit_data> )v2.val.ptr),
+              UNIT_NAME((std::shared_ptr<unit_data>)v2.val.ptr),
               v3.val.num,
               UNIT_FI_NAME(p->sarg->owner),
               UNIT_FI_ZONENAME(p->sarg->owner));
-         money_transfer(NULL, (std::shared_ptr<unit_data> )v2.val.ptr, v3.val.num, local_currency((std::shared_ptr<unit_data> )v2.val.ptr));
+         money_transfer(NULL, (std::shared_ptr<unit_data>)v2.val.ptr, v3.val.num, local_currency((std::shared_ptr<unit_data>)v2.val.ptr));
          v->val.num = 1;
       }
       else if(v2.val.ptr == NULL)
       {
-         if(char_can_afford((std::shared_ptr<unit_data> )v1.val.ptr, v3.val.num, local_currency((std::shared_ptr<unit_data> )v1.val.ptr)))
+         if(char_can_afford((std::shared_ptr<unit_data>)v1.val.ptr, v3.val.num, local_currency((std::shared_ptr<unit_data>)v1.val.ptr)))
          {
-            money_transfer((std::shared_ptr<unit_data> )v1.val.ptr, NULL, v3.val.num, local_currency((std::shared_ptr<unit_data> )v1.val.ptr));
+            money_transfer(
+               (std::shared_ptr<unit_data>)v1.val.ptr, NULL, v3.val.num, local_currency((std::shared_ptr<unit_data>)v1.val.ptr));
             v->val.num = 1;
          }
       }
       else
       {
-         if(char_can_afford((std::shared_ptr<unit_data> )v1.val.ptr, v3.val.num, local_currency((std::shared_ptr<unit_data> )v2.val.ptr)))
+         if(char_can_afford((std::shared_ptr<unit_data>)v1.val.ptr, v3.val.num, local_currency((std::shared_ptr<unit_data>)v2.val.ptr)))
          {
-            money_transfer(
-               (std::shared_ptr<unit_data> )v1.val.ptr, (std::shared_ptr<unit_data> )v2.val.ptr, v3.val.num, local_currency((std::shared_ptr<unit_data> )v2.val.ptr));
+            money_transfer((std::shared_ptr<unit_data>)v1.val.ptr,
+                           (std::shared_ptr<unit_data>)v2.val.ptr,
+                           v3.val.num,
+                           local_currency((std::shared_ptr<unit_data>)v2.val.ptr));
             v->val.num = 1;
          }
       }
@@ -1067,7 +1073,7 @@ void dilfe_fits(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
+         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
             v->type = DILV_FAIL;
          break;
 
@@ -1085,7 +1091,7 @@ void dilfe_fits(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v2.val.ptr || !IS_OBJ((std::shared_ptr<unit_data> )v2.val.ptr))
+         if(!v2.val.ptr || !IS_OBJ((std::shared_ptr<unit_data>)v2.val.ptr))
             v->type = DILV_FAIL;
          break;
       case DILV_NULL:
@@ -1110,9 +1116,9 @@ void dilfe_fits(struct dilprg *p, class dilval *v)
 
    if(v->type == DILV_SP)
    {
-      char *obj_wear_size(std::shared_ptr<unit_data>  ch, std::shared_ptr<unit_data>  obj, int keyword);
+      char *obj_wear_size(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, int keyword);
 
-      char *c = obj_wear_size((std::shared_ptr<unit_data> )v1.val.ptr, (std::shared_ptr<unit_data> )v2.val.ptr, v3.val.num);
+      char *c = obj_wear_size((std::shared_ptr<unit_data>)v1.val.ptr, (std::shared_ptr<unit_data>)v2.val.ptr, v3.val.num);
 
       v->atyp    = DILA_EXP;
       v->val.ptr = str_dup(c == NULL ? "" : c);
@@ -1144,7 +1150,7 @@ void dilfe_intr(struct dilprg *p, class dilval *v)
    bread_ubit32(&(p->sp->pc)); /* skip label */
 }
 
-void dilfe_not(register struct dilprg *p, register class dilval *v)
+void dilfe_not(struct dilprg *p, class dilval *v)
 {
    /* Negation of integers (and booleans, etc.) */
    class dilval v1;
@@ -1155,7 +1161,7 @@ void dilfe_not(register struct dilprg *p, register class dilval *v)
    v->val.num = !dil_getbool(&v1);
 }
 
-void dilfe_umin(register struct dilprg *p, register class dilval *v)
+void dilfe_umin(struct dilprg *p, class dilval *v)
 {
    /* Unary minus */
    class dilval v1;
@@ -1178,7 +1184,7 @@ void dilfe_umin(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_itoa(register struct dilprg *p, register class dilval *v)
+void dilfe_itoa(struct dilprg *p, class dilval *v)
 {
    /* Conversion of integers to strings */
    class dilval v1;
@@ -1200,7 +1206,7 @@ void dilfe_itoa(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_atoi(register struct dilprg *p, register class dilval *v)
+void dilfe_atoi(struct dilprg *p, class dilval *v)
 {
    /* Conversion of strings to integers */
    class dilval v1;
@@ -1228,7 +1234,7 @@ void dilfe_atoi(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_len(register struct dilprg *p, register class dilval *v)
+void dilfe_len(struct dilprg *p, class dilval *v)
 {
    /* length of strings or stringlists */
    class dilval v1;
@@ -1264,7 +1270,7 @@ void dilfe_len(register struct dilprg *p, register class dilval *v)
 
 /* textformat */
 
-void dilfe_txf(register struct dilprg *p, register class dilval *v)
+void dilfe_txf(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
 
@@ -1299,7 +1305,7 @@ void dilfe_txf(register struct dilprg *p, register class dilval *v)
 }
 
 /* asctime */
-void dilfe_ast(register struct dilprg *p, register class dilval *v)
+void dilfe_ast(struct dilprg *p, class dilval *v)
 {
    class dilval v1;
    char        *c;
@@ -1329,7 +1335,7 @@ void dilfe_ast(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_getw(register struct dilprg *p, register class dilval *v)
+void dilfe_getw(struct dilprg *p, class dilval *v)
 {
    /* Get first word of a string */
    class dilval v1;
@@ -1369,7 +1375,7 @@ void dilfe_getw(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_getws(register struct dilprg *p, register class dilval *v)
+void dilfe_getws(struct dilprg *p, class dilval *v)
 {
    /* Get first word of a string */
    class dilval v1;
@@ -1409,7 +1415,7 @@ void dilfe_getws(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_load(register struct dilprg *p, register class dilval *v)
+void dilfe_load(struct dilprg *p, class dilval *v)
 {
    /* Load a unit from database */
    class dilval v1;
@@ -1428,10 +1434,10 @@ void dilfe_load(register struct dilprg *p, register class dilval *v)
             v->val.ptr = read_unit(str_to_file_index((char *)v1.val.ptr));
             if(v->val.ptr)
             {
-               if(IS_MONEY((std::shared_ptr<unit_data> )v->val.ptr))
-                  set_money((std::shared_ptr<unit_data> )v->val.ptr, MONEY_AMOUNT((std::shared_ptr<unit_data> )v->val.ptr));
+               if(IS_MONEY((std::shared_ptr<unit_data>)v->val.ptr))
+                  set_money((std::shared_ptr<unit_data>)v->val.ptr, MONEY_AMOUNT((std::shared_ptr<unit_data>)v->val.ptr));
 
-               unit_to_unit((std::shared_ptr<unit_data> )v->val.ptr, p->sarg->owner);
+               unit_to_unit((std::shared_ptr<unit_data>)v->val.ptr, p->sarg->owner);
                v->atyp = DILA_NORM;
                v->type = DILV_UP;
             }
@@ -1447,7 +1453,7 @@ void dilfe_load(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_plus(register struct dilprg *p, register class dilval *v)
+void dilfe_plus(struct dilprg *p, class dilval *v)
 {
    /* Addition of strings or integers */
 
@@ -1516,7 +1522,7 @@ void dilfe_plus(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_dld(register struct dilprg *p, register class dilval *v)
+void dilfe_dld(struct dilprg *p, class dilval *v)
 {
    /* Destruction of DIL programs */
 
@@ -1562,12 +1568,12 @@ void dilfe_dld(register struct dilprg *p, register class dilval *v)
       if(v1.val.ptr && v2.val.ptr)
       {
          v->atyp    = DILA_NONE;
-         v->val.num = dil_destroy((char *)v1.val.ptr, (std::shared_ptr<unit_data> )v2.val.ptr);
+         v->val.num = dil_destroy((char *)v1.val.ptr, (std::shared_ptr<unit_data>)v2.val.ptr);
       }
    }
 }
 
-void dilfe_dlf(register struct dilprg *p, register class dilval *v)
+void dilfe_dlf(struct dilprg *p, class dilval *v)
 {
    /* Detection of DIL programs (TRUE/FALSE) */
 
@@ -1611,14 +1617,14 @@ void dilfe_dlf(register struct dilprg *p, register class dilval *v)
    if(v1.val.ptr && v2.val.ptr)
    {
       v->atyp = DILA_NONE;
-      if(dil_find((char *)v1.val.ptr, (std::shared_ptr<unit_data> )v2.val.ptr))
+      if(dil_find((char *)v1.val.ptr, (std::shared_ptr<unit_data>)v2.val.ptr))
          v->val.num = TRUE;
       else
          v->val.num = FALSE;
    }
 }
 
-void dilfe_min(register struct dilprg *p, register class dilval *v)
+void dilfe_min(struct dilprg *p, class dilval *v)
 {
    /* Subtraction of integers */
    class dilval v1, v2;
@@ -1660,7 +1666,7 @@ void dilfe_min(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_mul(register struct dilprg *p, register class dilval *v)
+void dilfe_mul(struct dilprg *p, class dilval *v)
 {
    /* Multiplication of integers */
    class dilval v1, v2;
@@ -1699,7 +1705,7 @@ void dilfe_mul(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_div(register struct dilprg *p, register class dilval *v)
+void dilfe_div(struct dilprg *p, class dilval *v)
 {
    /* Division of integers */
    class dilval v1, v2;
@@ -1741,7 +1747,7 @@ void dilfe_div(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_mod(register struct dilprg *p, register class dilval *v)
+void dilfe_mod(struct dilprg *p, class dilval *v)
 {
    /* Modulo of integers */
    class dilval v1, v2;
@@ -1783,7 +1789,7 @@ void dilfe_mod(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_and(register struct dilprg *p, register class dilval *v)
+void dilfe_and(struct dilprg *p, class dilval *v)
 {
    /* And two integers (or booleans) */
    class dilval v1, v2;
@@ -1800,7 +1806,7 @@ void dilfe_and(register struct dilprg *p, register class dilval *v)
       v->type = DILV_FAIL;
 }
 
-void dilfe_land(register struct dilprg *p, register class dilval *v)
+void dilfe_land(struct dilprg *p, class dilval *v)
 {
    /* And two integers (or booleans) */
    class dilval v1, v2;
@@ -1813,7 +1819,7 @@ void dilfe_land(register struct dilprg *p, register class dilval *v)
    v->val.num = dil_getbool(&v1) && dil_getbool(&v2);
 }
 
-void dilfe_or(register struct dilprg *p, register class dilval *v)
+void dilfe_or(struct dilprg *p, class dilval *v)
 {
    /* Or two integers (or booleans) */
    class dilval v1, v2;
@@ -1830,7 +1836,7 @@ void dilfe_or(register struct dilprg *p, register class dilval *v)
       v->type = DILV_FAIL;
 }
 
-void dilfe_lor(register struct dilprg *p, register class dilval *v)
+void dilfe_lor(struct dilprg *p, class dilval *v)
 {
    /* Or two integers (or booleans) */
    class dilval v1, v2;
@@ -1843,7 +1849,7 @@ void dilfe_lor(register struct dilprg *p, register class dilval *v)
    v->val.num = dil_getbool(&v1) || dil_getbool(&v2);
 }
 
-void dilfe_isa(register struct dilprg *p, register class dilval *v)
+void dilfe_isa(struct dilprg *p, class dilval *v)
 {
    /* Test if unit is affected by affect */
    class dilval v1, v2;
@@ -1884,11 +1890,11 @@ void dilfe_isa(register struct dilprg *p, register class dilval *v)
    if(v->type == DILV_INT)
    {
       v->atyp    = DILA_NONE;
-      v->val.num = (affected_by_spell((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num) != NULL);
+      v->val.num = (affected_by_spell((std::shared_ptr<unit_data>)v1.val.ptr, v2.val.num) != NULL);
    }
 }
 
-void dilfe_rnd(register struct dilprg *p, register class dilval *v)
+void dilfe_rnd(struct dilprg *p, class dilval *v)
 {
    /* Random in an integer range */
    class dilval v1, v2;
@@ -1929,7 +1935,7 @@ void dilfe_rnd(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_fndr(register struct dilprg *p, register class dilval *v)
+void dilfe_fndr(struct dilprg *p, class dilval *v)
 {
    /* Find a room */
    class dilval v1;
@@ -1966,7 +1972,7 @@ void dilfe_fndr(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_fnds2(register struct dilprg *p, register class dilval *v)
+void dilfe_fnds2(struct dilprg *p, class dilval *v)
 {
    /* Find a symbolic unit */
    class dilval v1, v2, v3;
@@ -2046,13 +2052,13 @@ void dilfe_fnds2(register struct dilprg *p, register class dilval *v)
       *buf1   = '\0';
       *buf2   = '\0';
       split_fi_ref((char *)v2.val.ptr, buf1, buf2);
-      v->val.ptr = find_symbolic_instance_ref((std::shared_ptr<unit_data> )v1.val.ptr, find_file_index(buf1, buf2), v3.val.num);
+      v->val.ptr = find_symbolic_instance_ref((std::shared_ptr<unit_data>)v1.val.ptr, find_file_index(buf1, buf2), v3.val.num);
       if(v->val.ptr == NULL)
          v->type = DILV_NULL; /* not found */
    }
 }
 
-void dilfe_fnds(register struct dilprg *p, register class dilval *v)
+void dilfe_fnds(struct dilprg *p, class dilval *v)
 {
    /* Find a symbolic unit */
    class dilval v1;
@@ -2084,7 +2090,7 @@ void dilfe_fnds(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_gt(register struct dilprg *p, register class dilval *v)
+void dilfe_gt(struct dilprg *p, class dilval *v)
 {
    /* Greater Than operator */
    class dilval v1, v2;
@@ -2124,7 +2130,7 @@ void dilfe_gt(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_lt(register struct dilprg *p, register class dilval *v)
+void dilfe_lt(struct dilprg *p, class dilval *v)
 {
    /* Less Than operator */
    class dilval v1, v2;
@@ -2164,7 +2170,7 @@ void dilfe_lt(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_ge(register struct dilprg *p, register class dilval *v)
+void dilfe_ge(struct dilprg *p, class dilval *v)
 {
    /* Greater or Equal operator */
    class dilval v1, v2;
@@ -2204,7 +2210,7 @@ void dilfe_ge(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_le(register struct dilprg *p, register class dilval *v)
+void dilfe_le(struct dilprg *p, class dilval *v)
 {
    /* Less or Equal operator */
    class dilval v1, v2;
@@ -2244,7 +2250,7 @@ void dilfe_le(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_eq(register struct dilprg *p, register class dilval *v)
+void dilfe_eq(struct dilprg *p, class dilval *v)
 {
    /* Equal operator */
    class dilval v1, v2;
@@ -2284,7 +2290,7 @@ void dilfe_eq(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_se(register struct dilprg *p, register class dilval *v)
+void dilfe_se(struct dilprg *p, class dilval *v)
 {
    /* String equal operator */
    class dilval v1, v2;
@@ -2342,7 +2348,7 @@ void dilfe_se(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_sne(register struct dilprg *p, register class dilval *v)
+void dilfe_sne(struct dilprg *p, class dilval *v)
 {
    /* String not equal operator */
    class dilval v1, v2;
@@ -2394,7 +2400,7 @@ void dilfe_sne(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_pe(register struct dilprg *p, register class dilval *v)
+void dilfe_pe(struct dilprg *p, class dilval *v)
 {
    /* Pointer Equality operator */
    class dilval v1, v2;
@@ -2447,7 +2453,7 @@ void dilfe_pe(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_pne(register struct dilprg *p, register class dilval *v)
+void dilfe_pne(struct dilprg *p, class dilval *v)
 {
    /* Pointer Equality operator */
    class dilval v1, v2;
@@ -2500,7 +2506,7 @@ void dilfe_pne(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_ne(register struct dilprg *p, register class dilval *v)
+void dilfe_ne(struct dilprg *p, class dilval *v)
 {
    /* Not Equal operator */
    class dilval v1, v2;
@@ -2541,7 +2547,7 @@ void dilfe_ne(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_iss(register struct dilprg *p, register class dilval *v)
+void dilfe_iss(struct dilprg *p, class dilval *v)
 {
    /* Test if bits is set in bitfield */
    class dilval v1, v2;
@@ -2582,7 +2588,7 @@ void dilfe_iss(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_in(register struct dilprg *p, register class dilval *v)
+void dilfe_in(struct dilprg *p, class dilval *v)
 {
    /* Test if string in string, stringlist or extra description */
    class dilval v1, v2;
@@ -2670,7 +2676,7 @@ void dilfe_in(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_fndu(register struct dilprg *p, register class dilval *v)
+void dilfe_fndu(struct dilprg *p, class dilval *v)
 {
    /* Find a unit */
    class dilval v1, v2, v3, v4;
@@ -2764,12 +2770,12 @@ void dilfe_fndu(register struct dilprg *p, register class dilval *v)
          break;
    }
 
-   if((v->type == DILV_UP) && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
+   if((v->type == DILV_UP) && IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
    {
       char *c = (char *)v2.val.ptr;
 
       v->atyp    = DILA_NORM;
-      v->val.ptr = find_unit((std::shared_ptr<unit_data> )v1.val.ptr, &c, (std::shared_ptr<unit_data> )v4.val.ptr, v3.val.num);
+      v->val.ptr = find_unit((std::shared_ptr<unit_data>)v1.val.ptr, &c, (std::shared_ptr<unit_data>)v4.val.ptr, v3.val.num);
 
       if(v2.atyp == DILA_NORM && v2.type == DILV_SPR)
          memmove(v2.val.ptr, c, strlen(c) + 1);
@@ -2783,7 +2789,7 @@ void dilfe_fndu(register struct dilprg *p, register class dilval *v)
       v->type = DILV_FAIL;
 }
 
-void dilfe_fndru(register struct dilprg *p, register class dilval *v)
+void dilfe_fndru(struct dilprg *p, class dilval *v)
 {
    /* Find a unit */
    class dilval v1, v2, v3;
@@ -2845,7 +2851,7 @@ void dilfe_fndru(register struct dilprg *p, register class dilval *v)
    if(v->type == DILV_UP)
    {
       v->atyp    = DILA_NORM;
-      v->val.ptr = random_unit((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num, v3.val.num);
+      v->val.ptr = random_unit((std::shared_ptr<unit_data>)v1.val.ptr, v2.val.num, v3.val.num);
 
       if(!v->val.ptr)
          v->type = DILV_NULL;
@@ -2854,7 +2860,7 @@ void dilfe_fndru(register struct dilprg *p, register class dilval *v)
       v->type = DILV_FAIL;
 }
 
-void dilfe_fs(register struct dilprg *p, register class dilval *v)
+void dilfe_fs(struct dilprg *p, class dilval *v)
 {
    /* A Fixed String */
    v->type = DILV_SP;
@@ -2871,7 +2877,7 @@ void dilfe_fs(register struct dilprg *p, register class dilval *v)
    (p->sp->pc)++; /* ready for next */
 }
 
-void dilfe_fsl(register struct dilprg *p, register class dilval *v)
+void dilfe_fsl(struct dilprg *p, class dilval *v)
 {
    cNamelist *namelist = new cNamelist;
    /* A Fixed String list */
@@ -2883,7 +2889,7 @@ void dilfe_fsl(register struct dilprg *p, register class dilval *v)
    v->val.ptr = namelist;
 }
 
-void dilfe_var(register struct dilprg *p, register class dilval *v)
+void dilfe_var(struct dilprg *p, class dilval *v)
 {
    /* A variable */
    int varno;
@@ -2923,7 +2929,7 @@ void dilfe_var(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_weat(register struct dilprg *p, register class dilval *v)
+void dilfe_weat(struct dilprg *p, class dilval *v)
 {
    /* Self */
 
@@ -2932,7 +2938,7 @@ void dilfe_weat(register struct dilprg *p, register class dilval *v)
    v->val.num = unit_zone(p->sarg->owner)->weather.sky;
 }
 
-void dilfe_self(register struct dilprg *p, register class dilval *v)
+void dilfe_self(struct dilprg *p, class dilval *v)
 {
    /* Self */
 
@@ -2941,7 +2947,7 @@ void dilfe_self(register struct dilprg *p, register class dilval *v)
    v->val.ptr = p->sarg->owner;
 }
 
-void dilfe_hrt(register struct dilprg *p, register class dilval *v)
+void dilfe_hrt(struct dilprg *p, class dilval *v)
 {
    /* Heartbeat */
 
@@ -2950,7 +2956,7 @@ void dilfe_hrt(register struct dilprg *p, register class dilval *v)
    v->ref  = (sbit16 *)&(p->sarg->fptr->heart_beat);
 }
 
-void dilfe_tho(register struct dilprg *p, register class dilval *v)
+void dilfe_tho(struct dilprg *p, class dilval *v)
 {
    /* MudHour */
 
@@ -2959,7 +2965,7 @@ void dilfe_tho(register struct dilprg *p, register class dilval *v)
    v->val.num = mud_date(time(0)).hours;
 }
 
-void dilfe_tda(register struct dilprg *p, register class dilval *v)
+void dilfe_tda(struct dilprg *p, class dilval *v)
 {
    /* MudDay */
 
@@ -2968,7 +2974,7 @@ void dilfe_tda(register struct dilprg *p, register class dilval *v)
    v->val.num = mud_date(time(0)).day;
 }
 
-void dilfe_tmd(register struct dilprg *p, register class dilval *v)
+void dilfe_tmd(struct dilprg *p, class dilval *v)
 {
    /* MudMonth */
 
@@ -2977,7 +2983,7 @@ void dilfe_tmd(register struct dilprg *p, register class dilval *v)
    v->val.num = mud_date(time(0)).month;
 }
 
-void dilfe_tye(register struct dilprg *p, register class dilval *v)
+void dilfe_tye(struct dilprg *p, class dilval *v)
 {
    /* MudYear */
 
@@ -2986,7 +2992,7 @@ void dilfe_tye(register struct dilprg *p, register class dilval *v)
    v->val.num = mud_date(time(0)).year;
 }
 
-void dilfe_rti(register struct dilprg *p, register class dilval *v)
+void dilfe_rti(struct dilprg *p, class dilval *v)
 {
    /* RealTime */
 
@@ -2995,7 +3001,7 @@ void dilfe_rti(register struct dilprg *p, register class dilval *v)
    v->val.num = time(0);
 }
 
-void dilfe_acti(register struct dilprg *p, register class dilval *v)
+void dilfe_acti(struct dilprg *p, class dilval *v)
 {
    /* Activator */
 
@@ -3004,7 +3010,7 @@ void dilfe_acti(register struct dilprg *p, register class dilval *v)
    v->val.ptr = p->sarg->activator;
 }
 
-void dilfe_medi(register struct dilprg *p, register class dilval *v)
+void dilfe_medi(struct dilprg *p, class dilval *v)
 {
    /* Medium */
 
@@ -3013,7 +3019,7 @@ void dilfe_medi(register struct dilprg *p, register class dilval *v)
    v->val.ptr = p->sarg->medium;
 }
 
-void dilfe_targ(register struct dilprg *p, register class dilval *v)
+void dilfe_targ(struct dilprg *p, class dilval *v)
 {
    /* Target */
 
@@ -3022,7 +3028,7 @@ void dilfe_targ(register struct dilprg *p, register class dilval *v)
    v->val.ptr = p->sarg->target;
 }
 
-void dilfe_powe(register struct dilprg *p, register class dilval *v)
+void dilfe_powe(struct dilprg *p, class dilval *v)
 {
    /* Power */
 
@@ -3037,7 +3043,7 @@ void dilfe_powe(register struct dilprg *p, register class dilval *v)
       v->ref = (int *)&dummy;
 }
 
-void dilfe_cmst(register struct dilprg *p, register class dilval *v)
+void dilfe_cmst(struct dilprg *p, class dilval *v)
 {
    /* cmdstr */
 
@@ -3053,7 +3059,7 @@ void dilfe_cmst(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_argm(register struct dilprg *p, register class dilval *v)
+void dilfe_argm(struct dilprg *p, class dilval *v)
 {
    /* Argument */
 
@@ -3068,7 +3074,7 @@ void dilfe_argm(register struct dilprg *p, register class dilval *v)
    }
 }
 
-void dilfe_null(register struct dilprg *p, register class dilval *v)
+void dilfe_null(struct dilprg *p, class dilval *v)
 {
    /* Pointer value null */
 
@@ -3077,7 +3083,7 @@ void dilfe_null(register struct dilprg *p, register class dilval *v)
    v->val.ptr = NULL;
 }
 
-void dilfe_int(register struct dilprg *p, register class dilval *v)
+void dilfe_int(struct dilprg *p, class dilval *v)
 {
    /* Fixed integer */
 
@@ -3086,7 +3092,7 @@ void dilfe_int(register struct dilprg *p, register class dilval *v)
    v->val.num = (sbit32)bread_ubit32(&(p->sp->pc));
 }
 
-void dilfe_cmds(register struct dilprg *p, register class dilval *v)
+void dilfe_cmds(struct dilprg *p, class dilval *v)
 {
    /* Check if the input command might the supplied argument */
    class dilval v1;
@@ -3137,7 +3143,7 @@ void dilfe_pck(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
+         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
             v->type = DILV_FAIL;
          break;
       default:
@@ -3160,10 +3166,10 @@ void dilfe_pck(struct dilprg *p, class dilval *v)
    }
 
    if(v->type == DILV_INT)
-      v->val.num = pay_point_charlie((std::shared_ptr<unit_data> )v1.val.ptr, (std::shared_ptr<unit_data> )v2.val.ptr);
+      v->val.num = pay_point_charlie((std::shared_ptr<unit_data>)v1.val.ptr, (std::shared_ptr<unit_data>)v2.val.ptr);
 }
 
-void dilfe_act(register struct dilprg *p, register class dilval *v)
+void dilfe_act(struct dilprg *p, class dilval *v)
 {
    char         buf[1024];
    /* Conversion of integers to strings */
@@ -3222,7 +3228,7 @@ void dilfe_act(register struct dilprg *p, register class dilval *v)
          /* these require 1st argument */
          if(v3.val.ptr)
             act_generate(
-               buf, (char *)v1.val.ptr, v2.val.num, v3.val.ptr, v4.val.ptr, v5.val.ptr, v6.val.num, (std::shared_ptr<unit_data> )v3.val.ptr);
+               buf, (char *)v1.val.ptr, v2.val.num, v3.val.ptr, v4.val.ptr, v5.val.ptr, v6.val.num, (std::shared_ptr<unit_data>)v3.val.ptr);
          v->type    = DILV_SP;
          v->atyp    = DILA_EXP;
          v->val.ptr = str_dup(buf);
@@ -3232,7 +3238,7 @@ void dilfe_act(register struct dilprg *p, register class dilval *v)
       case TO_NOTVICT:
          if(v5.val.ptr)
             act_generate(
-               buf, (char *)v1.val.ptr, v2.val.num, v3.val.ptr, v4.val.ptr, v5.val.ptr, v6.val.num, (std::shared_ptr<unit_data> )v5.val.ptr);
+               buf, (char *)v1.val.ptr, v2.val.num, v3.val.ptr, v4.val.ptr, v5.val.ptr, v6.val.num, (std::shared_ptr<unit_data>)v5.val.ptr);
          v->type    = DILV_SP;
          v->atyp    = DILA_EXP;
          v->val.ptr = str_dup(buf);

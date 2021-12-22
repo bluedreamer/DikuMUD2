@@ -297,7 +297,7 @@ unit_data::~unit_data(void)
 
    ubit8 type;
 
-   void unlink_affect(std::shared_ptr<unit_data>  u, struct unit_affected_type * af);
+   void unlink_affect(std::shared_ptr<unit_data> u, struct unit_affected_type * af);
 
    /* Sanity due to wierd bug I saw (MS, 30/05-95) */
 
@@ -324,7 +324,7 @@ unit_data::~unit_data(void)
    if(!IS_OBJ(this))
       assert(FALSE);
 
-#ifdef MEMORY_DEBUG
+   #ifdef MEMORY_DEBUG
    switch(type)
    {
       case UNIT_ST_PC:
@@ -340,6 +340,6 @@ unit_data::~unit_data(void)
          memory_room_alloc -= memory_total_alloc - memory_start;
          break;
    }
-#endif
+   #endif
 #endif
 }

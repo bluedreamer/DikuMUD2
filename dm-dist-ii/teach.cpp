@@ -176,15 +176,15 @@ int teaches_index(struct skill_teach_type *teaches_skills, int node)
 
 void info_show_one(std::shared_ptr<unit_data> teacher,
                    std::shared_ptr<unit_data> pupil,
-                   ubit8             current_points,
-                   ubit8             max_level,
-                   int               next_point,
-                   int               gold,
-                   const char       *text,
-                   int               indent,
-                   ubit8             isleaf,
-                   ubit8             level_type,
-                   int               min_level)
+                   ubit8                      current_points,
+                   ubit8                      max_level,
+                   int                        next_point,
+                   int                        gold,
+                   const char                *text,
+                   int                        indent,
+                   ubit8                      isleaf,
+                   ubit8                      level_type,
+                   int                        min_level)
 {
    char buf[256];
 
@@ -239,13 +239,13 @@ void info_show_one(std::shared_ptr<unit_data> teacher,
 
 void info_show_roots(std::shared_ptr<unit_data> teacher,
                      std::shared_ptr<unit_data> pupil,
-                     struct skill_teach_type *teaches_skills,
-                     struct tree_type        *tree,
-                     const char              *text[],
-                     ubit8                    level_type,
-                     ubit8                    pc_values[],
-                     ubit8                    pc_lvl[],
-                     sbit8                    pc_cost[])
+                     struct skill_teach_type   *teaches_skills,
+                     struct tree_type          *tree,
+                     const char                *text[],
+                     ubit8                      level_type,
+                     ubit8                      pc_values[],
+                     ubit8                      pc_lvl[],
+                     sbit8                      pc_cost[])
 {
    int i, cost, lvl;
 
@@ -273,15 +273,15 @@ void info_show_roots(std::shared_ptr<unit_data> teacher,
 
 void info_one_skill(std::shared_ptr<unit_data> teacher,
                     std::shared_ptr<unit_data> pupil,
-                    struct skill_teach_type *teaches_skills,
-                    struct tree_type        *tree,
-                    const char              *text[],
-                    ubit8                    pc_values[],
-                    ubit8                    pc_lvl[],
-                    sbit8                    pc_cost[],
-                    int                      teach_index,
-                    ubit8                    level_type,
-                    struct teacher_msg      *msgs)
+                    struct skill_teach_type   *teaches_skills,
+                    struct tree_type          *tree,
+                    const char                *text[],
+                    ubit8                      pc_values[],
+                    ubit8                      pc_lvl[],
+                    sbit8                      pc_cost[],
+                    int                        teach_index,
+                    ubit8                      level_type,
+                    struct teacher_msg        *msgs)
 
 {
    int indent, i, j, lvl, cost;

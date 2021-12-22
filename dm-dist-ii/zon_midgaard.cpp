@@ -123,12 +123,12 @@ int janitor(struct spec_arg *sarg)
 
 int evaluate(struct spec_arg *sarg)
 {
-   char             *arg = (char *)sarg->arg;
+   char                      *arg = (char *)sarg->arg;
    std::shared_ptr<unit_data> u1;
-   char              buf[MAX_STRING_LENGTH];
-   amount_t          cost;
-   currency_t        currency;
-   int               craft, category;
+   char                       buf[MAX_STRING_LENGTH];
+   amount_t                   cost;
+   currency_t                 currency;
+   int                        craft, category;
 
    if(sarg->cmd->no != CMD_AUTO_UNKNOWN || !is_abbrev(sarg->cmd->cmd_str, "evaluate"))
       return SFR_SHARE;

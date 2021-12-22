@@ -601,11 +601,11 @@ void account_flatrate_change(std::shared_ptr<unit_data> god, std::shared_ptr<uni
 
 void do_account(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   char              Buf[256];
-   char              word[MAX_INPUT_LENGTH];
+   char                       Buf[256];
+   char                       word[MAX_INPUT_LENGTH];
    std::shared_ptr<unit_data> u;
    std::shared_ptr<unit_data> note;
-   char             *c = (char *)arg;
+   char                      *c = (char *)arg;
 
    const char *operations[] = {"insert", "withdraw", "limit", "discount", "flatrate", NULL};
    int         i, amount;

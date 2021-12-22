@@ -101,13 +101,13 @@ struct zone_info_type
 };
 
 std::shared_ptr<unit_data> read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom);
-void              read_unit_file(std::shared_ptr<file_index_type> org_fi, CByteBuffer *pBuf);
+void                       read_unit_file(std::shared_ptr<file_index_type> org_fi, CByteBuffer *pBuf);
 std::shared_ptr<unit_data> read_unit(std::shared_ptr<file_index_type> fi);
-void              free_unit(std::shared_ptr<unit_data> ch);
-void              free_extra_descr(struct extra_descr_data *ex);
-void              free_extra_descr_list(struct extra_descr_data *ex);
+void                       free_unit(std::shared_ptr<unit_data> ch);
+void                       free_extra_descr(struct extra_descr_data *ex);
+void                       free_extra_descr_list(struct extra_descr_data *ex);
 
-struct extra_descr_data *create_extra_descr(void);
+struct extra_descr_data   *create_extra_descr(void);
 std::shared_ptr<unit_data> create_unit(ubit8 type);
 
 #endif /* _MUD_DB_H */

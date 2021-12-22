@@ -26,6 +26,9 @@
 #define _MUD_WEATHER
 
 #include <ctime>
+#include <memory>
+
+class unit_data;
 
 char                 *timetodate(time_t t);
 struct time_info_data real_time_passed(time_t t2, time_t t1);

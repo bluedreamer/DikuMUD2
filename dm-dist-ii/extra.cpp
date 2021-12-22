@@ -226,7 +226,8 @@ class extra_descr_data *unit_find_extra(const char *word, class unit_data *unit)
    return NULL;
 }
 
-class extra_descr_data *char_unit_find_extra(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> &target, char *word, std::shared_ptr<unit_data> list)
+class extra_descr_data *
+char_unit_find_extra(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> &target, char *word, std::shared_ptr<unit_data> list)
 {
    class extra_descr_data *exd = NULL;
 
@@ -250,7 +251,7 @@ class extra_descr_data *char_unit_find_extra(std::shared_ptr<unit_data> ch, std:
 const char *unit_find_extra_string(std::shared_ptr<unit_data> ch, char *word, std::shared_ptr<unit_data> list)
 {
    std::shared_ptr<unit_data> unused;
-   class extra_descr_data *exd = char_unit_find_extra(ch,unused, word, list);
+   class extra_descr_data    *exd = char_unit_find_extra(ch, unused, word, list);
 
    if(exd)
       return exd->descr.String();

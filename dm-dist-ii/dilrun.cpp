@@ -475,9 +475,9 @@ void dil_sub_secure(struct dilframe *frm, std::shared_ptr<unit_data> sup, int bF
 
 /* Clears all variables that are not secured! Called at every activation */
 /* of a DIL program (after secures are tested for!).			 */
-void dil_clear_non_secured(register struct dilprg *prg)
+void dil_clear_non_secured(struct dilprg *prg)
 {
-   register int     i, j;
+   int              i, j;
    struct dilframe *frm;
 
    for(frm = prg->stack; frm <= prg->sp; frm++)
@@ -500,7 +500,7 @@ void dil_clear_non_secured(register struct dilprg *prg)
 
 /* If a secure is violated, this routine will clear all local DIL variables */
 /* that refer to this secure.						    */
-void dil_clear_lost_reference(register struct dilframe *frm, void *ptr)
+void dil_clear_lost_reference(struct dilframe *frm, void *ptr)
 {
    int i;
 
@@ -509,7 +509,7 @@ void dil_clear_lost_reference(register struct dilframe *frm, void *ptr)
          frm->vars[i].val.unitptr = NULL;
 }
 
-void dil_test_secure(register struct dilprg *prg)
+void dil_test_secure(struct dilprg *prg)
 {
    int              i;
    struct dilframe *frm;
@@ -783,10 +783,10 @@ void DeactivateDil(std::shared_ptr<unit_data> pc)
 
 int run_dil(struct spec_arg *sarg)
 {
-   register struct dilprg *prg    = (struct dilprg *)sarg->fptr->data;
-   char                   *orgarg = (char *)sarg->arg; /* Because fndu may mess with it!!! */
-   int                     i;
-   static int              activates = 0;
+   struct dilprg *prg    = (struct dilprg *)sarg->fptr->data;
+   char          *orgarg = (char *)sarg->arg; /* Because fndu may mess with it!!! */
+   int            i;
+   static int     activates = 0;
 
    if(prg == NULL)
       return SFR_SHARE;
@@ -929,7 +929,7 @@ int run_dil(struct spec_arg *sarg)
       Therefore, I am unfortunately forced to do the follow dequeue and
       enqueue.
       */
-   void ResetFptrTimer(std::shared_ptr<unit_data>  u, struct unit_fptr * fptr);
+   void ResetFptrTimer(std::shared_ptr<unit_data> u, struct unit_fptr * fptr);
 
    sarg->fptr->heart_beat = MAX(PULSE_SEC * 1, sarg->fptr->heart_beat);
 
@@ -1175,7 +1175,7 @@ void dil_activate(struct dilprg *prg)
    assert(fptr);
 
 #ifdef DEBUG_HISTORY
-   void add_func_history(std::shared_ptr<unit_data>  u, ubit16, ubit16);
+   void add_func_history(std::shared_ptr<unit_data> u, ubit16, ubit16);
    add_func_history(prg->owner, SFUN_DIL_INTERNAL, SFB_TICK);
 #endif
 

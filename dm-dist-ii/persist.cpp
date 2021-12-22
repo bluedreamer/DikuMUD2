@@ -143,7 +143,7 @@ int persist_intern(struct spec_arg *sarg)
 
 void persist_boot(void)
 {
-   char              name[50];
+   char                       name[50];
    std::shared_ptr<unit_data> u;
 
    std::shared_ptr<unit_data> base_load_contents(const char *pFileName, const std::shared_ptr<unit_data> unit);

@@ -136,7 +136,7 @@ int do_simple_sail(std::shared_ptr<unit_data> boat, std::shared_ptr<unit_data> c
        -1 : If destroyed!
        */
 {
-   int               res;
+   int                        res;
    std::shared_ptr<unit_data> u;
    std::shared_ptr<unit_data> was_in;
    std::shared_ptr<unit_data> to;
@@ -203,7 +203,7 @@ int do_simple_ride(std::shared_ptr<unit_data> beast, std::shared_ptr<unit_data> 
        -1 : If destroyed!
        */
 {
-   int               res, need_movement;
+   int                        res, need_movement;
    std::shared_ptr<unit_data> u;
    std::shared_ptr<unit_data> was_in;
    std::shared_ptr<unit_data> to;
@@ -288,12 +288,12 @@ int do_simple_move(std::shared_ptr<unit_data> ch, int direction, int following)
    -1 : If dead.
    */
 {
-   int               need_movement, res;
+   int                        need_movement, res;
    std::shared_ptr<unit_data> was_in;
    std::shared_ptr<unit_data> to;
    std::shared_ptr<unit_data> u;
-   const char       *c;
-   char              dirbuf[2] = "c";
+   const char                *c;
+   char                       dirbuf[2] = "c";
 
    assert(UNIT_IN(ch));
    assert(IS_ROOM(UNIT_IN(ch)));
@@ -407,7 +407,7 @@ int do_advanced_move(std::shared_ptr<unit_data> ch, int direction, int following
   */
 {
    std::shared_ptr<unit_data> was_in;
-   struct char_follow_type *k;
+   struct char_follow_type   *k;
 
    if(!IS_ROOM(UNIT_IN(ch)) || !ROOM_EXIT(UNIT_IN(ch), direction))
    {
@@ -457,10 +457,10 @@ int do_advanced_move(std::shared_ptr<unit_data> ch, int direction, int following
 
 void do_drag(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
-   char             *argument = (char *)aaa;
+   char                      *argument = (char *)aaa;
    std::shared_ptr<unit_data> thing;
-   char              arg[255];
-   int               direction;
+   char                       arg[255];
+   int                        direction;
 
    /* find unit to drag */
    if(str_is_empty(argument))
@@ -530,11 +530,11 @@ void do_ride(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
      Endurance of mount
    */
 
-   int               direction;
+   int                        direction;
    std::shared_ptr<unit_data> beast;
    std::shared_ptr<unit_data> room;
    std::shared_ptr<unit_data> to_room;
-   char              buf[MAX_INPUT_LENGTH];
+   char                       buf[MAX_INPUT_LENGTH];
 
    beast = UNIT_IN(ch);
 
@@ -603,9 +603,9 @@ void do_ride(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
 /* Expects 'north'..'down' as argument */
 void do_sail(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
-   char             *arg = (char *)aaa;
-   int               direction;
-   char              buf[MAX_INPUT_LENGTH];
+   char                      *arg = (char *)aaa;
+   int                        direction;
+   char                       buf[MAX_INPUT_LENGTH];
    std::shared_ptr<unit_data> boat;
    std::shared_ptr<unit_data> room;
    std::shared_ptr<unit_data> u;
@@ -643,7 +643,7 @@ void do_sail(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info
    for(u = UNIT_CONTAINS(UNIT_IN(ch)); u; u = u->next)
       if(IS_CHAR(u) && CHAR_FIGHTING(u))
       {
-         act("You can't just sail away in the middle of a combat.", A_ALWAYS, ch,{}, {}, TO_CHAR);
+         act("You can't just sail away in the middle of a combat.", A_ALWAYS, ch, {}, {}, TO_CHAR);
          return;
       }
 
@@ -783,8 +783,8 @@ struct door_data *locate_lock(std::shared_ptr<unit_data> ch, char *arg)
    std::shared_ptr<unit_data> thing;
    std::shared_ptr<unit_data> other_room;
    std::shared_ptr<unit_data> back;
-   static struct door_data a_door;
-   int                     door;
+   static struct door_data    a_door;
+   int                        door;
 
 #ifdef SUSPEKT
    /* Check if person is inside something he is trying to open */
@@ -1108,7 +1108,7 @@ void do_unlock(std::shared_ptr<unit_data> ch, char *argument, const struct comma
    {
       if(!has_key(ch, a_door->key))
       {
-         act("$1n inserts $1s finger into the $2t's keyhole.", A_HIDEINV, ch, a_door->name,{}, TO_ROOM);
+         act("$1n inserts $1s finger into the $2t's keyhole.", A_HIDEINV, ch, a_door->name, {}, TO_ROOM);
          act("You insert your finger into the $2t's keyhole.", A_ALWAYS, ch, a_door->name, {}, TO_CHAR);
       }
 
@@ -1139,9 +1139,9 @@ void do_unlock(std::shared_ptr<unit_data> ch, char *argument, const struct comma
 
 void do_enter(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   int               door;
+   int                        door;
    std::shared_ptr<unit_data> thing;
-   char             *oarg = arg;
+   char                      *oarg = arg;
 
    const char *mnt_ent = (cmd->no == CMD_MOUNT ? "mount" : "enter");
 
@@ -1241,7 +1241,7 @@ void do_exit(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
 {
    std::shared_ptr<unit_data> to_unit;
    std::shared_ptr<unit_data> from_unit;
-   char             *oarg = arg;
+   char                      *oarg = arg;
 
    /* Is it meaningfull to exit */
    if(!UNIT_IN(ch))
@@ -1390,7 +1390,7 @@ void do_stand(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
          break;
       case POSITION_SITTING:
          act("You stand up.", A_SOMEONE, ch, {}, {}, TO_CHAR);
-         act("$1n clambers on $1s feet.", A_HIDEINV, ch, {},{}, TO_ROOM);
+         act("$1n clambers on $1s feet.", A_HIDEINV, ch, {}, {}, TO_ROOM);
          CHAR_POS(ch) = POSITION_STANDING;
          break;
       case POSITION_RESTING:
@@ -1557,8 +1557,8 @@ void do_follow(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
 {
    std::shared_ptr<unit_data> leader = NULL;
 
-   void stop_follower(std::shared_ptr<unit_data>  ch);
-   void add_follower(std::shared_ptr<unit_data>  ch, std::shared_ptr<unit_data>  leader);
+   void stop_follower(std::shared_ptr<unit_data> ch);
+   void add_follower(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> leader);
 
    if(str_is_empty(arg) || ((leader = find_unit(ch, &arg, 0, FIND_UNIT_SURRO)) == ch))
    {

@@ -52,7 +52,7 @@
 #include <string.h>
 
 bool cmd_is_a_social(char *cmd, int complete);
-bool perform_social(std::shared_ptr<unit_data> , char *, const command_info *);
+bool perform_social(std::shared_ptr<unit_data>, char *, const command_info *);
 
 struct trie_type *intr_trie = NULL;
 

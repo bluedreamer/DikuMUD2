@@ -344,7 +344,7 @@ void do_socials(std::shared_ptr<unit_data> ch, char *arg, const struct command_i
 
 void do_insult(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   const char       *insult;
+   const char                *insult;
    std::shared_ptr<unit_data> victim;
 
    if(str_is_empty(arg))
