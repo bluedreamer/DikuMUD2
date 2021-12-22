@@ -99,8 +99,10 @@ void dilfe_atsp(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v2.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v2.val.ptr))
-            v->type = DILV_FAIL;
+         // TODO ADRIAN
+         assert(0);
+//         if(!v2.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v2.val.ptr))
+//            v->type = DILV_FAIL;
          break;
       default:
          v->type = DILV_ERR;
@@ -154,13 +156,14 @@ void dilfe_atsp(struct dilprg *p, class dilval *v)
       v->type == DILV_INT)
    {
       struct spell_args sa;
-
-      set_spellargs(&sa,
-                    (std::shared_ptr<unit_data>)v2.val.ptr,
-                    (std::shared_ptr<unit_data>)v3.val.ptr,
-                    (std::shared_ptr<unit_data>)v4.val.ptr,
-                    NULL,
-                    0);
+      // TODO ADRIAN
+      assert(0);
+//      set_spellargs(&sa,
+//                    (std::shared_ptr<unit_data>)v2.val.ptr,
+//                    (std::shared_ptr<unit_data>)v3.val.ptr,
+//                    (std::shared_ptr<unit_data>)v4.val.ptr,
+//                    NULL,
+//                    0);
       sa.pEffect = NULL;
 
       /* cast the spell */
@@ -196,8 +199,10 @@ void dilfe_cast2(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v2.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v2.val.ptr))
-            v->type = DILV_FAIL;
+         // TODO ADRIAN
+         assert(0);
+//         if(!v2.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v2.val.ptr))
+//            v->type = DILV_FAIL;
          break;
       default:
          v->type = DILV_ERR;
@@ -252,13 +257,15 @@ void dilfe_cast2(struct dilprg *p, class dilval *v)
    {
       /* cast the spell */
       char mbuf[MAX_INPUT_LENGTH] = {0};
-      v->val.num                  = spell_perform(v1.val.num,
-                                 MEDIA_SPELL,
-                                 (std::shared_ptr<unit_data>)v2.val.ptr,
-                                 (std::shared_ptr<unit_data>)v3.val.ptr,
-                                 (std::shared_ptr<unit_data>)v4.val.ptr,
-                                 mbuf,
-                                 (char *)v5.val.ptr);
+      // TODO ADRIAN
+      assert(0);
+//      v->val.num                  = spell_perform(v1.val.num,
+//                                 MEDIA_SPELL,
+//                                 (std::shared_ptr<unit_data>)v2.val.ptr,
+//                                 (std::shared_ptr<unit_data>)v3.val.ptr,
+//                                 (std::shared_ptr<unit_data>)v4.val.ptr,
+//                                 mbuf,
+//                                 (char *)v5.val.ptr);
       dil_test_secure(p);
    }
 }
@@ -294,15 +301,17 @@ void dilfe_rest(struct dilprg *p, class dilval *v)
 
    if(v->type == DILV_UP)
    {
-      v->val.ptr = restore_unit((char *)v1.val.ptr, (char *)v2.val.ptr);
-      if(v->val.ptr == NULL)
-      {
-         v->type = DILV_NULL;
-      }
-      else
-      {
-         unit_to_unit((std::shared_ptr<unit_data>)v->val.ptr, p->owner);
-      }
+      // TODO ADRIAN
+      assert(0);
+//      v->val.ptr = restore_unit((char *)v1.val.ptr, (char *)v2.val.ptr);
+//      if(v->val.ptr == NULL)
+//      {
+//         v->type = DILV_NULL;
+//      }
+//      else
+//      {
+//         unit_to_unit((std::shared_ptr<unit_data>)v->val.ptr, p->owner);
+//      }
    }
 }
 
@@ -358,8 +367,10 @@ void dilfe_eqpm(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
-            v->type = DILV_FAIL;
+         // TODO ADRIAN
+         assert(0);
+//         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
+//            v->type = DILV_FAIL;
          break;
    }
 
@@ -378,9 +389,11 @@ void dilfe_eqpm(struct dilprg *p, class dilval *v)
 
    if(v->type == DILV_UP)
    {
-      v->val.ptr = equipment((std::shared_ptr<unit_data>)v1.val.ptr, v2.val.num);
-      if(v->val.ptr == NULL)
-         v->type = DILV_NULL;
+      // TODO ADRIAN
+      assert(0);
+//      v->val.ptr = equipment((std::shared_ptr<unit_data>)v1.val.ptr, v2.val.num);
+//      if(v->val.ptr == NULL)
+//         v->type = DILV_NULL;
    }
 }
 
@@ -403,8 +416,10 @@ void dilfe_mel(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
-            v->type = DILV_FAIL;
+         // TODO ADRIAN
+         assert(0);
+//         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
+//            v->type = DILV_FAIL;
          break;
    }
 
@@ -415,8 +430,10 @@ void dilfe_mel(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v2.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v2.val.ptr))
-            v->type = DILV_FAIL;
+         // TODO ADRIAN
+         assert(0);
+//         if(!v2.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v2.val.ptr))
+//            v->type = DILV_FAIL;
          break;
       default:
          v->type = DILV_ERR;
@@ -451,7 +468,9 @@ void dilfe_mel(struct dilprg *p, class dilval *v)
 
    if(v->type == DILV_INT)
    {
-      v->val.num = one_hit((std::shared_ptr<unit_data>)v1.val.ptr, (std::shared_ptr<unit_data>)v2.val.ptr, v3.val.num, v4.val.num);
+      // TODO ADRIAN
+      assert(0);
+//      v->val.num = one_hit((std::shared_ptr<unit_data>)v1.val.ptr, (std::shared_ptr<unit_data>)v2.val.ptr, v3.val.num, v4.val.num);
       dil_test_secure(p);
    }
 }
@@ -472,8 +491,10 @@ void dilfe_visi(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
-            v->type = DILV_FAIL;
+         // TODO ADRIAN
+         assert(0);
+//         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
+//            v->type = DILV_FAIL;
          break;
       default:
          v->type = DILV_ERR;
@@ -495,7 +516,11 @@ void dilfe_visi(struct dilprg *p, class dilval *v)
    }
 
    if(v->type == DILV_INT)
-      v->val.num = CHAR_CAN_SEE((std::shared_ptr<unit_data>)v1.val.ptr, (std::shared_ptr<unit_data>)v2.val.ptr);
+   {
+      // TODO ADRIAN
+      assert(0);
+//      v->val.num = CHAR_CAN_SEE((std::shared_ptr<unit_data>)v1.val.ptr, (std::shared_ptr<unit_data>)v2.val.ptr);
+   }
 }
 
 /* is unit opponent of other */
@@ -514,8 +539,10 @@ void dilfe_oppo(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
-            v->type = DILV_FAIL;
+         // TODO ADRIAN
+         assert(0);
+//         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
+//            v->type = DILV_FAIL;
          break;
       default:
          v->type = DILV_ERR;
@@ -528,16 +555,19 @@ void dilfe_oppo(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v2.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v2.val.ptr))
-            v->type = DILV_FAIL;
+         // TODO ADRIAN
+         assert(0);
+//         if(!v2.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v2.val.ptr))
+//            v->type = DILV_FAIL;
          break;
       default:
          v->type = DILV_ERR;
          return;
    }
-
-   if(v->type == DILV_INT)
-      v->val.num = (CHAR_COMBAT(v1.val.ptr) ? CHAR_COMBAT(v1.val.ptr)->FindOpponent(v2.val.ptr) != NULL : FALSE);
+   // TODO ADRIAN
+   assert(0);
+//   if(v->type == DILV_INT)
+//      v->val.num = (CHAR_COMBAT(v1.val.ptr) ? CHAR_COMBAT(v1.val.ptr)->FindOpponent(v2.val.ptr) != NULL : FALSE);
 }
 
 /* spellindex */
@@ -786,13 +816,15 @@ void dilfe_purs(struct dilprg *p, class dilval *v)
 
       if(i <= MAX_MONEY)
       {
+         // TODO ADRIAN
+         assert(0);
          /* Note down money-objects in from, and their values */
-         for(std::shared_ptr<unit_data> tmp = UNIT_CONTAINS((std::shared_ptr<unit_data>)v1.val.ptr); tmp; tmp = tmp->next)
-            if(IS_MONEY(tmp) && MONEY_TYPE(tmp) == i)
-            {
-               v->val.num = MONEY_AMOUNT(tmp);
-               break;
-            }
+//         for(std::shared_ptr<unit_data> tmp = UNIT_CONTAINS((std::shared_ptr<unit_data>)v1.val.ptr); tmp; tmp = tmp->next)
+//            if(IS_MONEY(tmp) && MONEY_TYPE(tmp) == i)
+//            {
+//               v->val.num = MONEY_AMOUNT(tmp);
+//               break;
+//            }
       }
    }
 }
@@ -883,11 +915,13 @@ void dilfe_path(struct dilprg *p, class dilval *v)
 
    if(v->type == DILV_INT)
    {
-      std::shared_ptr<unit_data> u1, *u2;
-      u1 = unit_room((std::shared_ptr<unit_data>)v1.val.ptr);
-      u2 = unit_room((std::shared_ptr<unit_data>)v2.val.ptr);
+      // TODO ADRIAN
+      assert(0);
+//      std::shared_ptr<unit_data> u1, *u2;
+//      u1 = unit_room((std::shared_ptr<unit_data>)v1.val.ptr);
+//      u2 = unit_room((std::shared_ptr<unit_data>)v2.val.ptr);
 
-      v->val.num = move_to(u1, u2);
+//      v->val.num = move_to(u1, u2);
    }
 }
 
@@ -910,8 +944,10 @@ void dilfe_cary(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
-            v->type = DILV_FAIL;
+         // TODO ADRIAN
+         assert(0);
+//         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
+//            v->type = DILV_FAIL;
          break;
       default:
          v->type = DILV_ERR;
@@ -951,13 +987,14 @@ void dilfe_cary(struct dilprg *p, class dilval *v)
    }
 
    if(v->type == DILV_INT)
-   {
-      if(!char_can_carry_n((std::shared_ptr<unit_data>)v1.val.ptr, v3.val.num))
-         v->val.num = 1;
-      else if(!char_can_carry_w((std::shared_ptr<unit_data>)v1.val.ptr, v3.val.num * UNIT_WEIGHT((std::shared_ptr<unit_data>)v2.val.ptr)))
-         v->val.num = 2;
-      else
-         v->val.num = 0;
+   {      // TODO ADRIAN
+      assert(0);
+//      if(!char_can_carry_n((std::shared_ptr<unit_data>)v1.val.ptr, v3.val.num))
+//         v->val.num = 1;
+//      else if(!char_can_carry_w((std::shared_ptr<unit_data>)v1.val.ptr, v3.val.num * UNIT_WEIGHT((std::shared_ptr<unit_data>)v2.val.ptr)))
+//         v->val.num = 2;
+//      else
+//         v->val.num = 0;
    }
 }
 
@@ -977,8 +1014,10 @@ void dilfe_trmo(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(v1.val.ptr && !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
-            v->type = DILV_FAIL;
+         // TODO ADRIAN
+         assert(0);
+//         if(v1.val.ptr && !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
+//            v->type = DILV_FAIL;
          break;
 
       case DILV_NULL:
@@ -995,8 +1034,10 @@ void dilfe_trmo(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(v2.val.ptr && !IS_CHAR((std::shared_ptr<unit_data>)v2.val.ptr))
-            v->type = DILV_FAIL;
+         // TODO ADRIAN
+         assert(0);
+//         if(v2.val.ptr && !IS_CHAR((std::shared_ptr<unit_data>)v2.val.ptr))
+//            v->type = DILV_FAIL;
          break;
       case DILV_NULL:
          break;
@@ -1024,35 +1065,40 @@ void dilfe_trmo(struct dilprg *p, class dilval *v)
    {
       if(v1.val.ptr == NULL)
       {
-         slog(LOG_ALL,
-              0,
-              "%s was given %d old gold pieces by DIL %s@%s.",
-              UNIT_NAME((std::shared_ptr<unit_data>)v2.val.ptr),
-              v3.val.num,
-              UNIT_FI_NAME(p->sarg->owner),
-              UNIT_FI_ZONENAME(p->sarg->owner));
-         money_transfer(NULL, (std::shared_ptr<unit_data>)v2.val.ptr, v3.val.num, local_currency((std::shared_ptr<unit_data>)v2.val.ptr));
-         v->val.num = 1;
+         // TODO ADRIAN
+         assert(0);
+//         slog(LOG_ALL,
+//              0,
+//              "%s was given %d old gold pieces by DIL %s@%s.",
+//              UNIT_NAME((std::shared_ptr<unit_data>)v2.val.ptr),
+//              v3.val.num,
+//              UNIT_FI_NAME(p->sarg->owner),
+//              UNIT_FI_ZONENAME(p->sarg->owner));
+//         money_transfer(NULL, (std::shared_ptr<unit_data>)v2.val.ptr, v3.val.num, local_currency((std::shared_ptr<unit_data>)v2.val.ptr));
+//         v->val.num = 1;
       }
       else if(v2.val.ptr == NULL)
-      {
-         if(char_can_afford((std::shared_ptr<unit_data>)v1.val.ptr, v3.val.num, local_currency((std::shared_ptr<unit_data>)v1.val.ptr)))
-         {
-            money_transfer(
-               (std::shared_ptr<unit_data>)v1.val.ptr, NULL, v3.val.num, local_currency((std::shared_ptr<unit_data>)v1.val.ptr));
-            v->val.num = 1;
-         }
+      {      // TODO ADRIAN
+         assert(0);
+//         if(char_can_afford((std::shared_ptr<unit_data>)v1.val.ptr, v3.val.num, local_currency((std::shared_ptr<unit_data>)v1.val.ptr)))
+//         {
+//            money_transfer(
+//               (std::shared_ptr<unit_data>)v1.val.ptr, NULL, v3.val.num, local_currency((std::shared_ptr<unit_data>)v1.val.ptr));
+//            v->val.num = 1;
+//         }
       }
       else
       {
-         if(char_can_afford((std::shared_ptr<unit_data>)v1.val.ptr, v3.val.num, local_currency((std::shared_ptr<unit_data>)v2.val.ptr)))
-         {
-            money_transfer((std::shared_ptr<unit_data>)v1.val.ptr,
-                           (std::shared_ptr<unit_data>)v2.val.ptr,
-                           v3.val.num,
-                           local_currency((std::shared_ptr<unit_data>)v2.val.ptr));
-            v->val.num = 1;
-         }
+         // TODO ADRIAN
+         assert(0);
+//         if(char_can_afford((std::shared_ptr<unit_data>)v1.val.ptr, v3.val.num, local_currency((std::shared_ptr<unit_data>)v2.val.ptr)))
+//         {
+//            money_transfer((std::shared_ptr<unit_data>)v1.val.ptr,
+//                           (std::shared_ptr<unit_data>)v2.val.ptr,
+//                           v3.val.num,
+//                           local_currency((std::shared_ptr<unit_data>)v2.val.ptr));
+//            v->val.num = 1;
+//         }
       }
    }
 }
@@ -1073,8 +1119,10 @@ void dilfe_fits(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
-            v->type = DILV_FAIL;
+         // TODO ADRIAN
+         assert(0);
+//         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
+//            v->type = DILV_FAIL;
          break;
 
       case DILV_NULL:
@@ -1091,8 +1139,10 @@ void dilfe_fits(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v2.val.ptr || !IS_OBJ((std::shared_ptr<unit_data>)v2.val.ptr))
-            v->type = DILV_FAIL;
+         // TODO ADRIAN
+         assert(0);
+//         if(!v2.val.ptr || !IS_OBJ((std::shared_ptr<unit_data>)v2.val.ptr))
+//            v->type = DILV_FAIL;
          break;
       case DILV_NULL:
          break;
@@ -1117,11 +1167,12 @@ void dilfe_fits(struct dilprg *p, class dilval *v)
    if(v->type == DILV_SP)
    {
       char *obj_wear_size(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, int keyword);
+      // TODO ADRIAN
+      assert(0);
+//      char *c = obj_wear_size((std::shared_ptr<unit_data>)v1.val.ptr, (std::shared_ptr<unit_data>)v2.val.ptr, v3.val.num);
 
-      char *c = obj_wear_size((std::shared_ptr<unit_data>)v1.val.ptr, (std::shared_ptr<unit_data>)v2.val.ptr, v3.val.num);
-
-      v->atyp    = DILA_EXP;
-      v->val.ptr = str_dup(c == NULL ? "" : c);
+//      v->atyp    = DILA_EXP;
+//      v->val.ptr = str_dup(c == NULL ? "" : c);
    }
 }
 
@@ -1429,23 +1480,25 @@ void dilfe_load(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_SP:
-         if(v1.val.ptr)
-         {
-            v->val.ptr = read_unit(str_to_file_index((char *)v1.val.ptr));
-            if(v->val.ptr)
-            {
-               if(IS_MONEY((std::shared_ptr<unit_data>)v->val.ptr))
-                  set_money((std::shared_ptr<unit_data>)v->val.ptr, MONEY_AMOUNT((std::shared_ptr<unit_data>)v->val.ptr));
-
-               unit_to_unit((std::shared_ptr<unit_data>)v->val.ptr, p->sarg->owner);
-               v->atyp = DILA_NORM;
-               v->type = DILV_UP;
-            }
-            else
-               v->type = DILV_NULL; /* Unit not found */
-         }
-         else
-            v->type = DILV_FAIL; /* NULL string */
+         // TODO ADRIAN
+         assert(0);
+//         if(v1.val.ptr)
+//         {
+//            v->val.ptr = read_unit(str_to_file_index((char *)v1.val.ptr));
+//            if(v->val.ptr)
+//            {
+//               if(IS_MONEY((std::shared_ptr<unit_data>)v->val.ptr))
+//                  set_money((std::shared_ptr<unit_data>)v->val.ptr, MONEY_AMOUNT((std::shared_ptr<unit_data>)v->val.ptr));
+//
+//               unit_to_unit((std::shared_ptr<unit_data>)v->val.ptr, p->sarg->owner);
+//               v->atyp = DILA_NORM;
+//               v->type = DILV_UP;
+//            }
+//            else
+//               v->type = DILV_NULL; /* Unit not found */
+//         }
+//         else
+//            v->type = DILV_FAIL; /* NULL string */
          break;
       default:
          v->type = DILV_ERR; /* wrong type */
@@ -1567,8 +1620,10 @@ void dilfe_dld(struct dilprg *p, class dilval *v)
    {
       if(v1.val.ptr && v2.val.ptr)
       {
-         v->atyp    = DILA_NONE;
-         v->val.num = dil_destroy((char *)v1.val.ptr, (std::shared_ptr<unit_data>)v2.val.ptr);
+         // TODO ADRIAN
+         assert(0);
+//         v->atyp    = DILA_NONE;
+//         v->val.num = dil_destroy((char *)v1.val.ptr, (std::shared_ptr<unit_data>)v2.val.ptr);
       }
    }
 }
@@ -1617,10 +1672,12 @@ void dilfe_dlf(struct dilprg *p, class dilval *v)
    if(v1.val.ptr && v2.val.ptr)
    {
       v->atyp = DILA_NONE;
-      if(dil_find((char *)v1.val.ptr, (std::shared_ptr<unit_data>)v2.val.ptr))
-         v->val.num = TRUE;
-      else
-         v->val.num = FALSE;
+      // TODO ADRIAN
+      assert(0);
+//      if(dil_find((char *)v1.val.ptr, (std::shared_ptr<unit_data>)v2.val.ptr))
+//         v->val.num = TRUE;
+//      else
+//         v->val.num = FALSE;
    }
 }
 
@@ -1890,7 +1947,9 @@ void dilfe_isa(struct dilprg *p, class dilval *v)
    if(v->type == DILV_INT)
    {
       v->atyp    = DILA_NONE;
-      v->val.num = (affected_by_spell((std::shared_ptr<unit_data>)v1.val.ptr, v2.val.num) != NULL);
+      // TODO ADRIAN
+      assert(0);
+//      v->val.num = (affected_by_spell((std::shared_ptr<unit_data>)v1.val.ptr, v2.val.num) != NULL);
    }
 }
 
@@ -1955,7 +2014,7 @@ void dilfe_fndr(struct dilprg *p, class dilval *v)
          if(v1.val.ptr)
          {
             split_fi_ref((char *)v1.val.ptr, buf1, buf2);
-            v->val.ptr = world_room(buf1, buf2);
+            v->val.ptr = world_room(buf1, buf2).get();
             if(v->val.ptr == NULL)
                v->type = DILV_NULL; /* not found */
          }
@@ -2052,7 +2111,9 @@ void dilfe_fnds2(struct dilprg *p, class dilval *v)
       *buf1   = '\0';
       *buf2   = '\0';
       split_fi_ref((char *)v2.val.ptr, buf1, buf2);
-      v->val.ptr = find_symbolic_instance_ref((std::shared_ptr<unit_data>)v1.val.ptr, find_file_index(buf1, buf2), v3.val.num);
+      // TODO ADRIAN
+      assert(0);
+//      v->val.ptr = find_symbolic_instance_ref((std::shared_ptr<unit_data>)v1.val.ptr, find_file_index(buf1, buf2), v3.val.num);
       if(v->val.ptr == NULL)
          v->type = DILV_NULL; /* not found */
    }
@@ -2077,7 +2138,7 @@ void dilfe_fnds(struct dilprg *p, class dilval *v)
          *buf1   = '\0';
          *buf2   = '\0';
          split_fi_ref((char *)v1.val.ptr, buf1, buf2);
-         v->val.ptr = find_symbolic(buf1, buf2);
+         v->val.ptr = find_symbolic(buf1, buf2).get();
          if(v->val.ptr == NULL)
             v->type = DILV_NULL; /* not found */
          break;
@@ -2769,24 +2830,25 @@ void dilfe_fndu(struct dilprg *p, class dilval *v)
          v->type = DILV_ERR; /* wrong type */
          break;
    }
-
-   if((v->type == DILV_UP) && IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
-   {
-      char *c = (char *)v2.val.ptr;
-
-      v->atyp    = DILA_NORM;
-      v->val.ptr = find_unit((std::shared_ptr<unit_data>)v1.val.ptr, &c, (std::shared_ptr<unit_data>)v4.val.ptr, v3.val.num);
-
-      if(v2.atyp == DILA_NORM && v2.type == DILV_SPR)
-         memmove(v2.val.ptr, c, strlen(c) + 1);
-      else if(p->sarg->arg == v2.val.ptr)
-         p->sarg->arg = c; /* Update argument if argument is argument! :) */
-
-      if(!v->val.ptr)
-         v->type = DILV_NULL;
-   }
-   else
-      v->type = DILV_FAIL;
+   // TODO ADRIAN
+   assert(0);
+//   if((v->type == DILV_UP) && IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
+//   {
+//      char *c = (char *)v2.val.ptr;
+//
+//      v->atyp    = DILA_NORM;
+//      v->val.ptr = find_unit((std::shared_ptr<unit_data>)v1.val.ptr, &c, (std::shared_ptr<unit_data>)v4.val.ptr, v3.val.num);
+//
+//      if(v2.atyp == DILA_NORM && v2.type == DILV_SPR)
+//         memmove(v2.val.ptr, c, strlen(c) + 1);
+//      else if(p->sarg->arg == v2.val.ptr)
+//         p->sarg->arg = c; /* Update argument if argument is argument! :) */
+//
+//      if(!v->val.ptr)
+//         v->type = DILV_NULL;
+//   }
+//   else
+//      v->type = DILV_FAIL;
 }
 
 void dilfe_fndru(struct dilprg *p, class dilval *v)
@@ -2850,8 +2912,10 @@ void dilfe_fndru(struct dilprg *p, class dilval *v)
 
    if(v->type == DILV_UP)
    {
-      v->atyp    = DILA_NORM;
-      v->val.ptr = random_unit((std::shared_ptr<unit_data>)v1.val.ptr, v2.val.num, v3.val.num);
+      // TODO ADRIAN
+      assert(0);
+//      v->atyp    = DILA_NORM;
+//      v->val.ptr = random_unit((std::shared_ptr<unit_data>)v1.val.ptr, v2.val.num, v3.val.num);
 
       if(!v->val.ptr)
          v->type = DILV_NULL;
@@ -2944,7 +3008,7 @@ void dilfe_self(struct dilprg *p, class dilval *v)
 
    v->type    = DILV_UP;
    v->atyp    = DILA_NORM;
-   v->val.ptr = p->sarg->owner;
+   v->val.ptr = p->sarg->owner.get();
 }
 
 void dilfe_hrt(struct dilprg *p, class dilval *v)
@@ -3007,7 +3071,7 @@ void dilfe_acti(struct dilprg *p, class dilval *v)
 
    v->type    = DILV_UP;
    v->atyp    = DILA_NORM;
-   v->val.ptr = p->sarg->activator;
+   v->val.ptr = p->sarg->activator.get();
 }
 
 void dilfe_medi(struct dilprg *p, class dilval *v)
@@ -3016,7 +3080,7 @@ void dilfe_medi(struct dilprg *p, class dilval *v)
 
    v->type    = DILV_UP;
    v->atyp    = DILA_NORM;
-   v->val.ptr = p->sarg->medium;
+   v->val.ptr = p->sarg->medium.get();
 }
 
 void dilfe_targ(struct dilprg *p, class dilval *v)
@@ -3025,7 +3089,7 @@ void dilfe_targ(struct dilprg *p, class dilval *v)
 
    v->type    = DILV_UP;
    v->atyp    = DILA_NORM;
-   v->val.ptr = p->sarg->target;
+   v->val.ptr = p->sarg->target.get();
 }
 
 void dilfe_powe(struct dilprg *p, class dilval *v)
@@ -3143,8 +3207,10 @@ void dilfe_pck(struct dilprg *p, class dilval *v)
          v->type = DILV_FAIL;
          break;
       case DILV_UP:
-         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
-            v->type = DILV_FAIL;
+         // TODO ADRIAN
+         assert(0);
+//         if(!v1.val.ptr || !IS_CHAR((std::shared_ptr<unit_data>)v1.val.ptr))
+//            v->type = DILV_FAIL;
          break;
       default:
          v->type = DILV_ERR;
@@ -3166,7 +3232,11 @@ void dilfe_pck(struct dilprg *p, class dilval *v)
    }
 
    if(v->type == DILV_INT)
-      v->val.num = pay_point_charlie((std::shared_ptr<unit_data>)v1.val.ptr, (std::shared_ptr<unit_data>)v2.val.ptr);
+   {
+      // TODO ADRIAN
+      assert(0);
+//      v->val.num = pay_point_charlie((std::shared_ptr<unit_data>)v1.val.ptr, (std::shared_ptr<unit_data>)v2.val.ptr);
+   }
 }
 
 void dilfe_act(struct dilprg *p, class dilval *v)
@@ -3226,22 +3296,26 @@ void dilfe_act(struct dilprg *p, class dilval *v)
       case TO_ALL:
       case TO_REST:
          /* these require 1st argument */
-         if(v3.val.ptr)
-            act_generate(
-               buf, (char *)v1.val.ptr, v2.val.num, v3.val.ptr, v4.val.ptr, v5.val.ptr, v6.val.num, (std::shared_ptr<unit_data>)v3.val.ptr);
-         v->type    = DILV_SP;
-         v->atyp    = DILA_EXP;
-         v->val.ptr = str_dup(buf);
+         // TODO ADRIAN
+         assert(0);
+//         if(v3.val.ptr)
+//            act_generate(
+//               buf, (char *)v1.val.ptr, v2.val.num, v3.val.ptr, v4.val.ptr, v5.val.ptr, v6.val.num, (std::shared_ptr<unit_data>)v3.val.ptr);
+//         v->type    = DILV_SP;
+//         v->atyp    = DILA_EXP;
+//         v->val.ptr = str_dup(buf);
          break;
 
       case TO_VICT:
       case TO_NOTVICT:
-         if(v5.val.ptr)
-            act_generate(
-               buf, (char *)v1.val.ptr, v2.val.num, v3.val.ptr, v4.val.ptr, v5.val.ptr, v6.val.num, (std::shared_ptr<unit_data>)v5.val.ptr);
-         v->type    = DILV_SP;
-         v->atyp    = DILA_EXP;
-         v->val.ptr = str_dup(buf);
+         // TODO ADRIAN
+         assert(0);
+//         if(v5.val.ptr)
+//            act_generate(
+//               buf, (char *)v1.val.ptr, v2.val.num, v3.val.ptr, v4.val.ptr, v5.val.ptr, v6.val.num, (std::shared_ptr<unit_data>)v5.val.ptr);
+//         v->type    = DILV_SP;
+//         v->atyp    = DILA_EXP;
+//         v->val.ptr = str_dup(buf);
          break;
    }
 }

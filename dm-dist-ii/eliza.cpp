@@ -466,8 +466,11 @@ char *eliza_process(struct oracle_data *od, char *s)
 /* ====================================================================== */
 /* ====================================================================== */
 
-void delayed_action(std::shared_ptr<unit_data> p1, void *p2)
+void delayed_action(void * p1, void *p2)
 {
+   // TODO ADRIAN restore this func
+   assert(0);
+#if 0
    std::shared_ptr<unit_data> npc = p1;
    char                      *str = (char *)p2;
 
@@ -475,6 +478,7 @@ void delayed_action(std::shared_ptr<unit_data> p1, void *p2)
 
    command_interpreter(npc, str);
    free(str);
+#endif
 }
 
 void set_delayed_action(std::shared_ptr<unit_data> npc, char *str)
@@ -487,14 +491,14 @@ void set_delayed_action(std::shared_ptr<unit_data> npc, char *str)
    while((cp = strchr(str, '@')))
    {
       *cp = 0;
-      event_enq(when, delayed_action, npc, str_dup(str));
+      event_enq(when, delayed_action, npc.get(), str_dup(str));
       str = cp + 1;
       when += WAIT_SEC * 1;
    }
 
    when += WAIT_SEC * 3;
 
-   event_enq(when, delayed_action, npc, str_dup(str));
+   event_enq(when, delayed_action, npc.get(), str_dup(str));
 }
 
 #define MAX_ELIBUF 50
@@ -573,7 +577,7 @@ int oracle(struct spec_arg *sarg)
          free(od);
       }
       sarg->fptr->data = NULL;
-      event_deenq_relaxed(delayed_action, sarg->owner, NULL);
+      event_deenq_relaxed(delayed_action, sarg->owner.get(), NULL);
       return SFR_BLOCK;
    }
    else if(sarg->cmd->no == CMD_WHO)

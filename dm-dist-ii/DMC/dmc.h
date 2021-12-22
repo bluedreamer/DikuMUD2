@@ -87,12 +87,12 @@ struct zone_header
 
 struct zone_info
 {
-   struct unit_data     *z_rooms;
-   struct unit_data     *z_mobiles;
-   struct unit_data     *z_objects;
-   struct reset_command *z_table;
-   struct zone_header    z_zone;
-   struct diltemplate   *z_tmpl;
+   std::shared_ptr<unit_data> z_rooms;
+   std::shared_ptr<unit_data> z_mobiles;
+   std::shared_ptr<unit_data> z_objects;
+   struct reset_command      *z_table;
+   struct zone_header         z_zone;
+   struct diltemplate        *z_tmpl;
 };
 
 struct reset_command
@@ -108,19 +108,32 @@ struct reset_command
    struct reset_command *next;
 };
 
-struct unit_data                    *mcreate_unit(int type);
+std::shared_ptr<unit_data>           mcreate_unit(int type);
 std::shared_ptr<room_direction_data> mcreate_exit();
 struct unit_affected_type           *mcreate_affect();
 void                                *mmalloc(int size);
 void                                 mem_reset(void);
 void                                 mem_init(void);
 
-void process_unit(struct unit_data *u);
+void process_unit(std::shared_ptr<unit_data> u);
 
 #define MCREATE(result, type, number) ((result) = (type *)mmalloc(sizeof(type) * number))
 
-#define UNIT_IDENT(unit) ((char *)(unit)->gnext) /* can you say 'filth'? */
-                                                 /* You betcha... */
-#define UNIT_IDENT_ASSIGN(unit, val) ((unit)->gnext = (struct unit_data *)(val))
+//#define UNIT_IDENT(unit) ((char *)(unit)->gnext) /* can you say 'filth'? */
+//                                                 /* You betcha... */
+inline auto UNIT_IDENT(std::shared_ptr<unit_data> unit) -> char *
+{
+   // TODO ADRIAN fix this 'filth'
+   assert(0);
+   return nullptr;
+}
+//#define UNIT_IDENT_ASSIGN(unit, val) ((unit)->gnext = val)
+inline auto UNIT_IDENT_ASSIGN(std::shared_ptr<unit_data> unit, char *val) -> void
+{
+   // TODO ADRIAN
+   assert(0);
+   // Supposed to assign a char* to unit data - need to fix
+   // ((unit)->gnext = val)
+}
 
 #endif /* _MUD_DMC_H */

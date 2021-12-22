@@ -52,7 +52,9 @@ amount_t obj_trade_price(std::shared_ptr<unit_data> u);
 
 int fido(struct spec_arg *sarg)
 {
-   std::shared_ptr<unit_data> i, *temp, *next_obj;
+   std::shared_ptr<unit_data> i;
+   std::shared_ptr<unit_data> temp;
+   std::shared_ptr<unit_data> next_obj;
 
    if(sarg->cmd->no != CMD_AUTO_TICK || !CHAR_IS_READY(sarg->owner))
       return SFR_SHARE;
@@ -77,7 +79,7 @@ int fido(struct spec_arg *sarg)
                   break;
 
                case 3:
-                  act("$1n wets on $3n.", A_SOMEONE, sarg->owner, 0, i, TO_ROOM);
+                  act("$1n wets on $3n.", A_SOMEONE, sarg->owner, {}, i, TO_ROOM);
                   break;
             }
          }
@@ -85,7 +87,7 @@ int fido(struct spec_arg *sarg)
          {
             if(IS_OBJ(i) && OBJ_TYPE(i) == ITEM_CONTAINER && affected_by_spell(i, ID_CORPSE) && !IS_SET(UNIT_FLAGS(i), UNIT_FL_BURIED))
             {
-               act("$1n savagely devour a corpse.", A_SOMEONE, sarg->owner, 0, 0, TO_ROOM);
+               act("$1n savagely devour a corpse.", A_SOMEONE, sarg->owner, {}, {}, TO_ROOM);
                for(temp = UNIT_CONTAINS(i); temp; temp = next_obj)
                {
                   next_obj = temp->next;
@@ -111,7 +113,7 @@ int janitor(struct spec_arg *sarg)
    {
       if(UNIT_WEAR(i, MANIPULATE_TAKE) && UNIT_WEIGHT(i) <= 100 && IS_OBJ(i) && (OBJ_TYPE(i) == ITEM_DRINKCON || obj_trade_price(i) <= 10))
       {
-         act("$1n picks up some trash.", A_SOMEONE, sarg->owner, 0, 0, TO_ROOM);
+         act("$1n picks up some trash.", A_SOMEONE, sarg->owner, {}, {}, TO_ROOM);
          unit_down(i, sarg->owner);
          extract_unit(i); /* Not sure this is fair... */
          return SFR_BLOCK;
@@ -135,14 +137,14 @@ int evaluate(struct spec_arg *sarg)
 
    if(str_is_empty(arg))
    {
-      act("$1n says, 'What item do you wish to evaluate $3n?", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+      act("$1n says, 'What item do you wish to evaluate $3n?", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
       return SFR_BLOCK;
    }
 
    u1 = find_unit(sarg->activator, &arg, 0, FIND_UNIT_IN_ME);
    if(u1 == NULL)
    {
-      act("$1n says, 'You do not have such an item $3n?", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+      act("$1n says, 'You do not have such an item $3n?", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
       return SFR_BLOCK;
    }
 
@@ -152,7 +154,7 @@ int evaluate(struct spec_arg *sarg)
 
    if(!char_can_afford(sarg->activator, cost, currency))
    {
-      act("$1n says, 'The cost is merely $2t, get them first.'", A_SOMEONE, sarg->owner, money_string(cost, currency, TRUE), 0, TO_ROOM);
+      act("$1n says, 'The cost is merely $2t, get them first.'", A_SOMEONE, sarg->owner, money_string(cost, currency, TRUE), {}, TO_ROOM);
       return SFR_BLOCK;
    }
 
@@ -180,7 +182,7 @@ int evaluate(struct spec_arg *sarg)
          break;
    }
 
-   act(buf, A_SOMEONE, sarg->owner, u1, 0, TO_ROOM);
+   act(buf, A_SOMEONE, sarg->owner, u1, {}, TO_ROOM);
    money_transfer(sarg->activator, sarg->owner, cost, currency);
 
    return SFR_BLOCK;

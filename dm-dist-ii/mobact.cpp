@@ -36,8 +36,6 @@
 #include <stdlib.h>
 
 void special_event(void *p1, void *p2);
-void event_enq(int when, void (*func)(), void *arg1, void *arg2);
-void event_deenq(void (*func)(), void *arg1, void *arg2);
 
 void SetFptrTimer(std::shared_ptr<unit_data> u, struct unit_fptr *fptr)
 {
@@ -54,19 +52,22 @@ void SetFptrTimer(std::shared_ptr<unit_data> u, struct unit_fptr *fptr)
       if(IS_SET(fptr->flags, SFB_RANTIME))
          ticks = number(ticks - ticks / 2, ticks + ticks / 2);
 
-      event_enq(ticks, special_event, u, fptr);
+      event_enq(ticks, special_event, u.get(), fptr);
    }
 }
 
 void ResetFptrTimer(std::shared_ptr<unit_data> u, struct unit_fptr *fptr)
 {
-   event_deenq(special_event, u, fptr);
+   event_deenq(special_event, u.get(), fptr);
    SetFptrTimer(u, fptr);
 }
 
 void special_event(void *p1, void *p2)
 {
-   std::shared_ptr<unit_data> u    = (std::shared_ptr<unit_data>)p1;
+   // TODO ADRIAN fix this up
+   assert(0);
+#if 0
+   //std::shared_ptr<unit_data> u    = (std::shared_ptr<unit_data>)p1;
    struct unit_fptr          *fptr = (struct unit_fptr *)p2;
 
    ubit32            ret = SFR_SHARE, ticks;
@@ -124,12 +125,13 @@ void special_event(void *p1, void *p2)
       return;
 
    SetFptrTimer(u, fptr);
+#endif
 }
 
 /* Return TRUE while stopping events */
 void stop_special(std::shared_ptr<unit_data> u, struct unit_fptr *fptr)
 {
-   event_deenq(special_event, u, fptr);
+   event_deenq(special_event, u.get(), fptr);
 }
 
 void start_special(std::shared_ptr<unit_data> u, struct unit_fptr *fptr)
@@ -153,7 +155,7 @@ void start_special(std::shared_ptr<unit_data> u, struct unit_fptr *fptr)
                   unit_function_array[fptr->index].tick); */
       }
 
-      event_enq(fptr->heart_beat, special_event, u, fptr);
+      event_enq(fptr->heart_beat, special_event, u.get(), fptr);
    }
 }
 

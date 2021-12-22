@@ -163,19 +163,19 @@ void random_event_player(std::shared_ptr<unit_data> u, std::shared_ptr<unit_data
          return;
 
       case 4:
-         act("You feel an itch where you can not scratch.", A_ALWAYS, u, 0, 0, TO_CHAR);
+         act("You feel an itch where you can not scratch.", A_ALWAYS, u, {}, {}, TO_CHAR);
          break;
 
       case 5:
-         act("You feel happy.", A_ALWAYS, u, 0, 0, TO_CHAR);
+         act("You feel happy.", A_ALWAYS, u, {}, {}, TO_CHAR);
          break;
 
       case 6:
-         act("You feel sad.", A_ALWAYS, u, 0, 0, TO_CHAR);
+         act("You feel sad.", A_ALWAYS, u, {}, {}, TO_CHAR);
          break;
 
       case 7:
-         act("You feel lucky.", A_ALWAYS, u, 0, 0, TO_CHAR);
+         act("You feel lucky.", A_ALWAYS, u, {}, {}, TO_CHAR);
          break;
 
       case 8:
@@ -183,11 +183,11 @@ void random_event_player(std::shared_ptr<unit_data> u, std::shared_ptr<unit_data
          if(tmpu)
          {
             unit_to_unit(tmpu, u);
-            act("The Gods grant you nectar to quench your thirst.", A_ALWAYS, u, 0, 0, TO_CHAR);
-            act("Suddenly the sky opens and $2n drops into the hands of $1n.", A_ALWAYS, u, tmpu, 0, TO_ROOM);
+            act("The Gods grant you nectar to quench your thirst.", A_ALWAYS, u, {}, {}, TO_CHAR);
+            act("Suddenly the sky opens and $2n drops into the hands of $1n.", A_ALWAYS, u, tmpu, {}, TO_ROOM);
          }
          else
-            act("You have an inexplainable craving for a refreshing Green Tuborg.", A_ALWAYS, u, 0, 0, TO_CHAR);
+            act("You have an inexplainable craving for a refreshing Green Tuborg.", A_ALWAYS, u, {}, {}, TO_CHAR);
          break;
 
       case 9:
@@ -204,7 +204,7 @@ void random_event_player(std::shared_ptr<unit_data> u, std::shared_ptr<unit_data
 
       case 10:
          i = number(1, 1000 * CHAR_LEVEL(u));
-         act("You learn that you have won $2t in the lottery.", A_ALWAYS, u, money_string(i, DEF_CURRENCY, TRUE), 0, TO_CHAR);
+         act("You learn that you have won $2t in the lottery.", A_ALWAYS, u, money_string(i, DEF_CURRENCY, TRUE), {}, TO_CHAR);
          money_to_unit(u, i, DEF_CURRENCY);
          break;
 
@@ -254,7 +254,7 @@ int error_rod(struct spec_arg *sarg)
    }
    fclose(fl);
 
-   act("$1n uses $2n.", A_HIDEINV, sarg->activator, sarg->owner, 0, TO_ROOM);
+   act("$1n uses $2n.", A_HIDEINV, sarg->activator, sarg->owner, {}, TO_ROOM);
    send_to_char("Error file was erased.\n\r", sarg->activator);
    slog(LOG_ALL, UNIT_MINV(sarg->activator), "%s cleared %s", UNIT_NAME(sarg->activator), filename);
    return SFR_BLOCK;
@@ -291,7 +291,7 @@ int info_rod(struct spec_arg *sarg)
    }
    fclose(fl);
 
-   act("$1n uses $2n.", A_HIDEINV, sarg->activator, sarg->owner, 0, TO_ROOM);
+   act("$1n uses $2n.", A_HIDEINV, sarg->activator, sarg->owner, {}, TO_ROOM);
    send_to_char("Zone user information file was erased.\n\r", sarg->activator);
    slog(LOG_ALL, UNIT_MINV(sarg->activator), "%s cleared %s", UNIT_NAME(sarg->activator), filename);
    return SFR_BLOCK;
@@ -314,8 +314,8 @@ int recep_daemon(struct spec_arg *sarg)
 
       if(t1 >= 0)
       {
-         act("$1n says, 'Overdue by $2d seconds.'", A_ALWAYS, daemon, (int *)&t1, 0, TO_ROOM);
-         act("$1n says, 'Snip Snap Snude, now the inventory is ude.'", A_ALWAYS, daemon, 0, 0, TO_ROOM);
+         act("$1n says, 'Overdue by $2d seconds.'", A_ALWAYS, daemon, (int *)&t1, {}, TO_ROOM);
+         act("$1n says, 'Snip Snap Snude, now the inventory is ude.'", A_ALWAYS, daemon, {}, {}, TO_ROOM);
          /* Unless player is in game, load him and erase his inventory */
       }
 
@@ -338,7 +338,7 @@ int chaos_daemon(struct spec_arg *sarg)
       u = random_unit(sarg->owner, FIND_UNIT_WORLD, UNIT_ST_PC);
       if(u && IS_MORTAL(u))
       {
-         act("$1n grins evilly at $3n.", A_ALWAYS, sarg->owner, 0, u, TO_ROOM);
+         act("$1n grins evilly at $3n.", A_ALWAYS, sarg->owner, {}, u, TO_ROOM);
          random_event_player(u, sarg->owner);
       }
       else
@@ -425,7 +425,7 @@ int log_object(struct spec_arg *sarg)
             while(!str_is_empty(log_buf[*ip].str))
             {
                if(log_buf[*ip].level <= lev && log_buf[*ip].wizinv_level <= CHAR_LEVEL(ch))
-                  act("<LOG: $2t>", A_ALWAYS, ch, log_buf[*ip].str, 0, TO_CHAR);
+                  act("<LOG: $2t>", A_ALWAYS, ch, log_buf[*ip].str, {}, TO_CHAR);
                *ip = ((*ip + 1) % MAXLOG);
             }
             return SFR_BLOCK;
@@ -444,13 +444,13 @@ int log_object(struct spec_arg *sarg)
                c = 'b';
             else if(is_abbrev(sarg->arg, "off"))
             {
-               act("Ok, log is now off.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+               act("Ok, log is now off.", A_ALWAYS, ch, {}, {}, TO_CHAR);
                OBJ_VALUE(sarg->owner, 0) = 'o';
                return SFR_BLOCK;
             }
             else if(is_abbrev(sarg->arg, "help"))
             {
-               act("Possible settings are:\n\r off, brief, extensive, all.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+               act("Possible settings are:\n\r off, brief, extensive, all.", A_ALWAYS, ch, {}, {}, TO_CHAR);
                return SFR_BLOCK;
             }
             else
@@ -462,12 +462,12 @@ int log_object(struct spec_arg *sarg)
                    : c == 'b' ? "brief"
                    : c == 'a' ? "all"
                               : "extensive",
-                   0,
+                   {},
                    TO_CHAR);
                return SFR_BLOCK;
             }
 
-            act("You will now see the $2t log.", A_ALWAYS, ch, c == 'b' ? "brief" : c == 'a' ? "entire" : "extensive", 0, TO_CHAR);
+            act("You will now see the $2t log.", A_ALWAYS, ch, c == 'b' ? "brief" : c == 'a' ? "entire" : "extensive", {}, TO_CHAR);
             OBJ_VALUE(sarg->owner, 0) = c;
             return SFR_BLOCK;
          }

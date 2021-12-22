@@ -56,6 +56,7 @@ struct timezone
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+#include <functional>
 
 #define OPT_USEC            250000L /* time delay corresponding to 4 passes/sec */
 #define HEAPSPACE_INCREMENT 500
@@ -63,7 +64,8 @@ struct timezone
 /* structures */
 struct eventq_elem
 {
-   void (*func)(void *, void *);
+//   void (*func)(void *, void *);
+   std::function<void(void*,void*)> func;
    int   when;
    void *arg1;
    void *arg2;
@@ -607,23 +609,23 @@ void event_enq(int when, void (*func)(void *, void *), void *arg1, void *arg2)
 }
 
 /* deallocate event and remove from queue */
-void event_deenq(void (*func)(void *, void *), void *arg1, void *arg2)
+void event_deenq(std::function<void(void*,void*)> func, void *arg1, void *arg2)
 {
    int i;
 
    for(i = 0; i < events; i++)
-      if(event_heap[i].func == func && event_heap[i].arg1 == arg1 && event_heap[i].arg2 == arg2)
+      if(event_heap[i].func.target<void(void*,void*)>() == func.target<void(void*,void*)>() && event_heap[i].arg1 == arg1 && event_heap[i].arg2 == arg2)
          event_heap[i].func = 0;
 }
 
 /* deallocate event and remove from queue */
 /* By MS. NULL is considered a match... use with care. */
-void event_deenq_relaxed(void (*func)(void *, void *), void *arg1, void *arg2)
+void event_deenq_relaxed(std::function<void(void*,void*)> func, void *arg1, void *arg2)
 {
    int i;
 
    for(i = 0; i < events; i++)
-      if((event_heap[i].func == func) && (!arg1 || (event_heap[i].arg1 == arg1)) && (!arg2 || (event_heap[i].arg2 == arg2)))
+      if((event_heap[i].func.target<void(void*,void*)>() == func.target<void(void*,void*)>()) && (!arg1 || (event_heap[i].arg1 == arg1)) && (!arg2 || (event_heap[i].arg2 == arg2)))
          event_heap[i].func = 0;
 }
 

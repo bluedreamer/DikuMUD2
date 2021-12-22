@@ -500,7 +500,7 @@ void dil_clear_non_secured(struct dilprg *prg)
 
 /* If a secure is violated, this routine will clear all local DIL variables */
 /* that refer to this secure.						    */
-void dil_clear_lost_reference(struct dilframe *frm, void *ptr)
+void dil_clear_lost_reference(struct dilframe *frm, std::shared_ptr<unit_data> ptr)
 {
    int i;
 

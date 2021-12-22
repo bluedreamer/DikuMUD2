@@ -25,8 +25,10 @@
 #ifndef _MUD_MAIN_H
 #define _MUD_MAIN_H
 
-void event_enq(int when, void (*func)(void *, void *), void *arg1, void *arg2);
-void event_deenq(void (*func)(void *, void *), void *arg1, void *arg2);
-void event_deenq_relaxed(void (*func)(void *, void *), void *arg1, void *arg2);
+#include <functional>
+
+void event_enq(int when, std::function<void(void*,void*)> func, void *arg1, void *arg2);
+void event_deenq(std::function<void(void*,void*)> func, void *arg1, void *arg2);
+void event_deenq_relaxed(std::function<void(void*,void*)> func, void *arg1, void *arg2);
 
 #endif

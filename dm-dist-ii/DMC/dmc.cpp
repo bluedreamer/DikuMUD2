@@ -55,7 +55,7 @@ char             cur_filename[256], top_filename[256];
 void boot_money(void);
 void fix(const char *file);
 void zone_reset(char *default_name);
-void init_unit(struct unit_data *u);
+void init_unit(std::shared_ptr<unit_data> u);
 void dump_zone(char *prefix);
 long stat_mtime(const char *name);
 
@@ -398,11 +398,11 @@ void *mmalloc(int size)
    return mm.bufs[mm.buf] + ret;
 }
 
-struct unit_data *mcreate_unit(int type)
+std::shared_ptr<unit_data> mcreate_unit(int type)
 {
-   struct unit_data *rslt;
+   std::shared_ptr<unit_data> rslt;
 
-   rslt = new(class unit_data)(type);
+   rslt = unit_data::Create(type);
 
    init_unit(rslt);
    return rslt;
@@ -470,8 +470,11 @@ void write_resetcom(FILE *fl, struct reset_command *c)
    fwrite(&c->direction, sizeof(c->direction), 1, fl);
 }
 
-void check_unique_ident(struct unit_data *u)
+void check_unique_ident(std::shared_ptr<unit_data> u)
 {
+   // TODO ADRIAN this needs unmangling
+   assert(0);
+#if 0
    if(is_name(UNIT_IDENT(u), (const char **)ident_names))
    {
       fprintf(stderr, "Error: Duplicate symbolic reference '%s'\n", UNIT_IDENT(u));
@@ -479,6 +482,7 @@ void check_unique_ident(struct unit_data *u)
    }
 
    ident_names = add_name(UNIT_IDENT(u), ident_names);
+#endif
 }
 
 /*
@@ -487,15 +491,15 @@ void check_unique_ident(struct unit_data *u)
    */
 void dump_zone(char *prefix)
 {
-   FILE                 *fl;
-   char                  filename[256];
-   char                **creators;
-   struct unit_data     *u;
-   struct reset_command *c;
-   int                   no_rooms = 0;
-   struct diltemplate   *tmpl;
-   ubit32                dummy;
-   void                  dmc_error(int fatal, const char *fmt, ...);
+   FILE                      *fl;
+   char                       filename[256];
+   char                     **creators;
+   std::shared_ptr<unit_data> u;
+   struct reset_command      *c;
+   int                        no_rooms = 0;
+   struct diltemplate        *tmpl;
+   ubit32                     dummy;
+   void                       dmc_error(int fatal, const char *fmt, ...);
 
    /* Quinn, I do this to get all the sematic errors and info */
    /* appear when nooutput = TRUE - it didn't before!         */
@@ -592,19 +596,19 @@ void dump_zone(char *prefix)
       write_unit(fl, u, UNIT_IDENT(u));
 
    for(u = zone.z_rooms; u; u = u->next)
-      delete u;
+      u.reset();
 
    for(u = zone.z_objects; u; u = u->next)
       write_unit(fl, u, UNIT_IDENT(u));
 
    for(u = zone.z_objects; u; u = u->next)
-      delete u;
+      u.reset();
 
    for(u = zone.z_mobiles; u; u = u->next)
       write_unit(fl, u, UNIT_IDENT(u));
 
    for(u = zone.z_mobiles; u; u = u->next)
-      delete u;
+      u.reset();
 
    fwrite("DMC", sizeof(char), 3, fl);
    fclose(fl);

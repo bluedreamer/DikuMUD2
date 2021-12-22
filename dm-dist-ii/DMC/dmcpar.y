@@ -64,7 +64,7 @@ extern char cur_filename[];
 extern int linenum;
 extern struct zone_info zone;
 extern int nooutput;
-struct unit_data *cur;
+std::shared_ptr<unit_data> cur;
 struct extra_descr_data *cur_extra;
 struct reset_command *cur_cmd;
 struct unit_affected_type *cur_aff;
@@ -299,7 +299,8 @@ oroom_field	: MOVEMENT PNUM
 			}
 		| IN reference
 			{
-			  UNIT_IN(cur) = (struct unit_data *) $2;
+			  /*UNIT_IN(cur) = (struct unit_data *) $2;*/
+			  UNIT_IN(cur) = unit_data::Create(*$2);
 			}
 		| SPELL number
 			{
@@ -323,8 +324,7 @@ exit_fields	: /* naught */
 		;
 exit_field	: TO reference
 			{
-			  ROOM_EXIT(cur,cur_ex)->to_room =
-			    (struct unit_data *) $2;
+			  ROOM_EXIT(cur,cur_ex)->to_room =unit_data::Create(*$2);
 			}
 		| KEY reference
 			{

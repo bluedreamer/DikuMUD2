@@ -61,14 +61,14 @@ void tif_confusion_tick(struct unit_affected_type *af, std::shared_ptr<unit_data
 void tif_confusion_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    send_to_char("You feel confused.\n\r", unit);
-   act("$1n seems confused.", A_HIDEINV, unit, 0, 0, TO_ROOM);
+   act("$1n seems confused.", A_HIDEINV, unit, {}, {}, TO_ROOM);
    tif_confusion_tick(af, unit);
 }
 
 void tif_confusion_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    send_to_char("You less confused.\n\r", unit);
-   act("$1n seem less confused.", A_HIDEINV, unit, 0, 0, TO_ROOM);
+   act("$1n seem less confused.", A_HIDEINV, unit, {}, {}, TO_ROOM);
 }
 
 void tif_invisibility_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
@@ -76,7 +76,7 @@ void tif_invisibility_on(struct unit_affected_type *af, std::shared_ptr<unit_dat
    if(!IS_SET(UNIT_FLAGS(unit), UNIT_FL_INVISIBLE))
    {
       send_to_char("Your body appears ghostly.\n\r", unit);
-      act("$1n vanish into thin air.", A_HIDEINV, unit, 0, 0, TO_ROOM);
+      act("$1n vanish into thin air.", A_HIDEINV, unit, {}, {}, TO_ROOM);
    }
 }
 
@@ -85,7 +85,7 @@ void tif_invisibility_off(struct unit_affected_type *af, std::shared_ptr<unit_da
    if(!IS_SET(UNIT_FLAGS(unit), UNIT_FL_INVISIBLE))
    {
       send_to_char("Your body is once again visible.\n\r", unit);
-      act("$1n appears from thin air.", A_HIDEINV, unit, 0, 0, TO_ROOM);
+      act("$1n appears from thin air.", A_HIDEINV, unit, {}, {}, TO_ROOM);
    }
 }
 
@@ -99,15 +99,15 @@ void tif_fear_check(struct unit_affected_type *af, std::shared_ptr<unit_data> un
       switch(number(0, 2))
       {
          case 0:
-            act("You are about to die!!!", A_SOMEONE, unit, 0, 0, TO_CHAR);
+            act("You are about to die!!!", A_SOMEONE, unit, {}, {}, TO_CHAR);
             do_flee(unit, mbuf, &cmd_auto_unknown);
             /* He could be dead now! */
             return;
          case 1:
-            act("That really did HURT!", A_ALWAYS, unit, 0, 0, TO_CHAR);
+            act("That really did HURT!", A_ALWAYS, unit, {}, {}, TO_CHAR);
             break;
          case 2:
-            act("You wish your wounds would stop BLEEDING that much!", A_ALWAYS, unit, 0, 0, TO_CHAR);
+            act("You wish your wounds would stop BLEEDING that much!", A_ALWAYS, unit, {}, {}, TO_CHAR);
             break;
       }
       return;
@@ -123,26 +123,26 @@ void tif_fear_check(struct unit_affected_type *af, std::shared_ptr<unit_data> un
          switch(number(0, 1))
          {
             case 0:
-               act("$3n prepares to kill you.", A_SOMEONE, unit, 0, ch, TO_CHAR);
-               act("$1n looks at you in a strange way.", A_SOMEONE, unit, 0, ch, TO_VICT);
-               act("$1n seems paranoid, looking at $3n.", A_SOMEONE, unit, 0, ch, TO_NOTVICT);
+               act("$3n prepares to kill you.", A_SOMEONE, unit, {}, ch, TO_CHAR);
+               act("$1n looks at you in a strange way.", A_SOMEONE, unit, {}, ch, TO_VICT);
+               act("$1n seems paranoid, looking at $3n.", A_SOMEONE, unit, {}, ch, TO_NOTVICT);
                break;
             case 1:
-               act("$3n wounds you fatally with $3s sword.", A_SOMEONE, unit, 0, ch, TO_CHAR);
-               act("$1n screams in agony.", A_SOMEONE, unit, 0, ch, TO_ROOM);
+               act("$3n wounds you fatally with $3s sword.", A_SOMEONE, unit, {}, ch, TO_CHAR);
+               act("$1n screams in agony.", A_SOMEONE, unit, {}, ch, TO_ROOM);
                break;
          }
       else
          switch(number(0, 2))
          {
             case 0:
-               act("Someone tries to steal your weapon!", A_ALWAYS, unit, 0, 0, TO_CHAR);
+               act("Someone tries to steal your weapon!", A_ALWAYS, unit, {}, {}, TO_CHAR);
                break;
             case 1:
-               act("Someone grins evilly.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+               act("Someone grins evilly.", A_ALWAYS, unit, {}, {}, TO_CHAR);
                break;
             case 2:
-               act("The huge green dragon appears in a puff of smoke!", A_ALWAYS, unit, 0, 0, TO_CHAR);
+               act("The huge green dragon appears in a puff of smoke!", A_ALWAYS, unit, {}, {}, TO_CHAR);
          }
    }
 }
@@ -183,7 +183,7 @@ void tif_hide_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit
 {
    send_to_char("You stop hiding.\n\r", unit);
    if(af->tickf_i == TIF_HIDE_TICK)
-      act("You suddenly notice that $1n is standing here.", A_HIDEINV, unit, 0, 0, TO_ROOM);
+      act("You suddenly notice that $1n is standing here.", A_HIDEINV, unit, {}, {}, TO_ROOM);
 }
 
 void tif_hide_tick(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
@@ -256,9 +256,9 @@ void tif_curse_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit
 {
    if(IS_CHAR(unit))
       send_to_char("You feel that the gods are against you.\n\r", unit);
-   act("A shadow falls upon $1n.", A_HIDEINV, unit, 0, 0, TO_ROOM);
+   act("A shadow falls upon $1n.", A_HIDEINV, unit, {}, {}, TO_ROOM);
    if(UNIT_IN(unit) && IS_CHAR(UNIT_IN(unit)))
-      act("A shadow falls upon $3n.", A_HIDEINV, UNIT_IN(unit), 0, unit, TO_CHAR);
+      act("A shadow falls upon $3n.", A_HIDEINV, UNIT_IN(unit), {}, unit, TO_CHAR);
 }
 
 void tif_curse_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
@@ -266,21 +266,21 @@ void tif_curse_off(struct unit_affected_type *af, std::shared_ptr<unit_data> uni
    if(IS_CHAR(unit))
       send_to_char("You no longer feel that the gods are against you.\n\r", unit);
 
-   act("A shadow lifts from $1n.", A_HIDEINV, unit, 0, 0, TO_ROOM);
+   act("A shadow lifts from $1n.", A_HIDEINV, unit, {}, {}, TO_ROOM);
    if(UNIT_IN(unit) && IS_CHAR(UNIT_IN(unit)))
-      act("A shadow lifts from $3n.", A_HIDEINV, UNIT_IN(unit), 0, unit, TO_CHAR);
+      act("A shadow lifts from $3n.", A_HIDEINV, UNIT_IN(unit), {}, unit, TO_CHAR);
 }
 
 /* sanctuary */
 void tif_sanctuary_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
-   act("$1n momentarily glows in a bright white light.", A_HIDEINV, unit, 0, 0, TO_ROOM);
+   act("$1n momentarily glows in a bright white light.", A_HIDEINV, unit, {}, {}, TO_ROOM);
    send_to_char("You momentarily glow in a bright white light.\n\r", unit);
 }
 
 void tif_sanctuary_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
-   act("$1n glows in a bright white light. Then it fades away.", A_HIDEINV, unit, 0, 0, TO_ROOM);
+   act("$1n glows in a bright white light. Then it fades away.", A_HIDEINV, unit, {}, {}, TO_ROOM);
    send_to_char("You glow in a bright white light. "
                 "Then it fades away.\n\r",
                 unit);
@@ -290,7 +290,7 @@ void tif_sanctuary_tick(struct unit_affected_type *af, std::shared_ptr<unit_data
 {
    if(af->duration == 1)
    {
-      act("$1n glows in a bright white light... The light flickers.", A_HIDEINV, unit, 0, 0, TO_ROOM);
+      act("$1n glows in a bright white light... The light flickers.", A_HIDEINV, unit, {}, {}, TO_ROOM);
       send_to_char("You glow in a bright white light... "
                    "The light flickers.\n\r",
                    unit);
@@ -309,7 +309,7 @@ void tif_torch_tick(struct unit_affected_type *af, std::shared_ptr<unit_data> un
    if(af->duration <= 4)
    {
       if(IS_CHAR(UNIT_IN(unit)))
-         act("Your $2N is getting dim.", A_HIDEINV, UNIT_IN(unit), unit, 0, TO_CHAR);
+         act("Your $2N is getting dim.", A_HIDEINV, UNIT_IN(unit), unit, {}, TO_CHAR);
    }
 }
 
@@ -321,11 +321,11 @@ void tif_light_add(struct unit_affected_type *af, std::shared_ptr<unit_data> uni
    /* If the thing is carried by a character */
    if(IS_CHAR(UNIT_IN(unit)))
    {
-      act("Your $3N starts to glow.", A_HIDEINV, UNIT_IN(unit), 0, unit, TO_CHAR);
-      act("$1n's $3n starts to glow.", A_HIDEINV, UNIT_IN(unit), 0, unit, TO_ROOM);
+      act("Your $3N starts to glow.", A_HIDEINV, UNIT_IN(unit), {}, unit, TO_CHAR);
+      act("$1n's $3n starts to glow.", A_HIDEINV, UNIT_IN(unit), {}, unit, TO_ROOM);
    }
    else if(UNIT_CONTAINS(UNIT_IN(unit)))
-      act("The $3N starts to glow.", A_HIDEINV, UNIT_CONTAINS(UNIT_IN(unit)), 0, unit, TO_ALL);
+      act("The $3N starts to glow.", A_HIDEINV, UNIT_CONTAINS(UNIT_IN(unit)), {}, unit, TO_ALL);
 }
 
 void tif_light_sub(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
@@ -336,23 +336,23 @@ void tif_light_sub(struct unit_affected_type *af, std::shared_ptr<unit_data> uni
    /* If the thing is carried by a character */
    if(IS_CHAR(UNIT_IN(unit)))
    {
-      act("Your $3N gets dimmer.", A_HIDEINV, UNIT_IN(unit), 0, unit, TO_CHAR);
-      act("$1n's $3N gets dimmer.", A_HIDEINV, UNIT_IN(unit), 0, unit, TO_ROOM);
+      act("Your $3N gets dimmer.", A_HIDEINV, UNIT_IN(unit), {}, unit, TO_CHAR);
+      act("$1n's $3N gets dimmer.", A_HIDEINV, UNIT_IN(unit), {}, unit, TO_ROOM);
    }
    else if(UNIT_CONTAINS(UNIT_IN(unit)))
-      act("The $3N gets dimmer.", A_HIDEINV, UNIT_CONTAINS(UNIT_IN(unit)), 0, unit, TO_ALL);
+      act("The $3N gets dimmer.", A_HIDEINV, UNIT_CONTAINS(UNIT_IN(unit)), {}, unit, TO_ALL);
 }
 
 void tif_sleep_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
-   act("You feel very tired.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+   act("You feel very tired.", A_ALWAYS, unit, {}, {}, TO_CHAR);
    if(CHAR_POS(unit) > POSITION_SLEEPING)
    {
       if(CHAR_FIGHTING(unit))
          stop_fighting(unit);
 
-      act("You fall asleep.", A_ALWAYS, unit, 0, 0, TO_CHAR);
-      act("$1n falls asleep.", A_ALWAYS, unit, 0, 0, TO_ROOM);
+      act("You fall asleep.", A_ALWAYS, unit, {}, {}, TO_CHAR);
+      act("$1n falls asleep.", A_ALWAYS, unit, {}, {}, TO_ROOM);
       CHAR_POS(unit) = POSITION_SLEEPING;
    }
 }
@@ -368,8 +368,8 @@ void tif_sleep_check(struct unit_affected_type *af, std::shared_ptr<unit_data> u
       {
          if(CHAR_FIGHTING(unit))
             stop_fighting(unit);
-         act("You fall asleep.", A_ALWAYS, unit, 0, 0, TO_CHAR);
-         act("$1n falls asleep.", A_HIDEINV, unit, 0, 0, TO_ROOM);
+         act("You fall asleep.", A_ALWAYS, unit, {}, {}, TO_CHAR);
+         act("$1n falls asleep.", A_HIDEINV, unit, {}, {}, TO_ROOM);
          CHAR_POS(unit) = POSITION_SLEEPING;
       }
    }
@@ -377,32 +377,32 @@ void tif_sleep_check(struct unit_affected_type *af, std::shared_ptr<unit_data> u
 
 void tif_sleep_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
-   act("You feel less sleepy.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+   act("You feel less sleepy.", A_ALWAYS, unit, {}, {}, TO_CHAR);
    /* no no not a 'wake' here, remember he's still affacted */
 }
 
 void tif_protect_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(af->data[1] > 0)
-      act("You feel protected.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel protected.", A_ALWAYS, unit, {}, {}, TO_CHAR);
    else
-      act("You feel less protected.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel less protected.", A_ALWAYS, unit, {}, {}, TO_CHAR);
 }
 
 void tif_protect_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(af->data[1] > 0)
-      act("You feel less protected.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel less protected.", A_ALWAYS, unit, {}, {}, TO_CHAR);
    else
-      act("You feel protected.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel protected.", A_ALWAYS, unit, {}, {}, TO_CHAR);
 }
 
 void tif_hit_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(af->data[1] > 0)
-      act("You feel more healthy.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel more healthy.", A_ALWAYS, unit, {}, {}, TO_CHAR);
    else
-      act("You feel less healthy.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel less healthy.", A_ALWAYS, unit, {}, {}, TO_CHAR);
 }
 
 void tif_hit_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
@@ -415,9 +415,9 @@ void tif_hit_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 void tif_mag_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(af->data[1] > 0)
-      act("You feel more powerful.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel more powerful.", A_ALWAYS, unit, {}, {}, TO_CHAR);
    else
-      act("You feel less powerful.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel less powerful.", A_ALWAYS, unit, {}, {}, TO_CHAR);
 }
 
 void tif_mag_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
@@ -430,9 +430,9 @@ void tif_mag_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 void tif_div_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(af->data[1] > 0)
-      act("You feel closer to your god.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel closer to your god.", A_ALWAYS, unit, {}, {}, TO_CHAR);
    else
-      act("You feel parted from your god.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel parted from your god.", A_ALWAYS, unit, {}, {}, TO_CHAR);
 }
 
 void tif_div_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
@@ -445,9 +445,9 @@ void tif_div_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 void tif_str_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(af->data[1] > 0)
-      act("You feel stronger.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel stronger.", A_ALWAYS, unit, {}, {}, TO_CHAR);
    else
-      act("You feel weaker.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel weaker.", A_ALWAYS, unit, {}, {}, TO_CHAR);
 
    /* recalc_dex_red(unit); */
 }
@@ -462,9 +462,9 @@ void tif_str_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 void tif_dex_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(af->data[1] > 0)
-      act("You feel dexterous.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel dexterous.", A_ALWAYS, unit, {}, {}, TO_CHAR);
    else
-      act("You feel a little clumsy.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel a little clumsy.", A_ALWAYS, unit, {}, {}, TO_CHAR);
 }
 
 void tif_dex_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
@@ -477,9 +477,9 @@ void tif_dex_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 void tif_con_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(af->data[1] > 0)
-      act("You feel more robust.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel more robust.", A_ALWAYS, unit, {}, {}, TO_CHAR);
    else
-      act("You feel less robust.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel less robust.", A_ALWAYS, unit, {}, {}, TO_CHAR);
 }
 
 void tif_con_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
@@ -492,9 +492,9 @@ void tif_con_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 void tif_cha_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(af->data[1] > 0)
-      act("You feel more authoritative.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel more authoritative.", A_ALWAYS, unit, {}, {}, TO_CHAR);
    else
-      act("You feel less authoritative.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel less authoritative.", A_ALWAYS, unit, {}, {}, TO_CHAR);
 }
 
 void tif_cha_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
@@ -507,9 +507,9 @@ void tif_cha_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 void tif_bra_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(af->data[1] > 0)
-      act("You feel smarter.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel smarter.", A_ALWAYS, unit, {}, {}, TO_CHAR);
    else
-      act("You feel a little dumb.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+      act("You feel a little dumb.", A_ALWAYS, unit, {}, {}, TO_CHAR);
 }
 
 void tif_bra_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
@@ -521,8 +521,8 @@ void tif_bra_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 
 void tif_poison_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
-   act("You feel very ill.", A_ALWAYS, unit, 0, 0, TO_CHAR);
-   act("$1n seems very ill.", A_ALWAYS, unit, 0, 0, TO_ROOM);
+   act("You feel very ill.", A_ALWAYS, unit, {}, {}, TO_CHAR);
+   act("$1n seems very ill.", A_ALWAYS, unit, {}, {}, TO_ROOM);
 }
 
 /* Data[0] The amount of hitpoints to loose (>=0)        */
@@ -538,7 +538,7 @@ void tif_poison_suffer(struct unit_affected_type *af, std::shared_ptr<unit_data>
 
 void tif_poison_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
-   act("You feel better.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+   act("You feel better.", A_ALWAYS, unit, {}, {}, TO_CHAR);
 }
 
 /* plague */
@@ -560,7 +560,7 @@ void tif_plague_off(struct unit_affected_type *af, std::shared_ptr<unit_data> un
 void tif_insanity_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    send_to_char("You feel a battle with your own mind begins.\n\r", unit);
-   act("A mad look appears on $1n's face", A_HIDEINV, unit, 0, 0, TO_ROOM);
+   act("A mad look appears on $1n's face", A_HIDEINV, unit, {}, {}, TO_ROOM);
 }
 
 void tif_insanity_tick(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
@@ -570,7 +570,7 @@ void tif_insanity_tick(struct unit_affected_type *af, std::shared_ptr<unit_data>
 void tif_insanity_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    send_to_char("You feel the battle with your own mind is over.\n\r", unit);
-   act("The mad look disappears from $1n's face.", A_HIDEINV, unit, 0, 0, TO_ROOM);
+   act("The mad look disappears from $1n's face.", A_HIDEINV, unit, {}, {}, TO_ROOM);
 }
 
 void tif_prot_evil_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
@@ -616,13 +616,13 @@ void tif_decay_corpse(struct unit_affected_type *af, std::shared_ptr<unit_data> 
 {
    /* Make routine to change the description of a corpse instead */
    if(ODD(af->duration) && !IS_SET(UNIT_FLAGS(unit), UNIT_FL_BURIED))
-      act("The rotten stench of $1n is here.", A_SOMEONE, unit, 0, 0, TO_ROOM);
+      act("The rotten stench of $1n is here.", A_SOMEONE, unit, {}, {}, TO_ROOM);
 }
 
 void tif_destroy_corpse(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(!IS_SET(UNIT_FLAGS(unit), UNIT_FL_BURIED))
-      act("A quivering horde of maggots consume $1n.", A_SOMEONE, unit, 0, 0, TO_ROOM);
+      act("A quivering horde of maggots consume $1n.", A_SOMEONE, unit, {}, {}, TO_ROOM);
    extract_unit(unit);
 }
 
@@ -666,14 +666,14 @@ void tif_valhalla_ret(struct unit_affected_type *af, std::shared_ptr<unit_data> 
    CHAR_POS(unit) = POSITION_STANDING;
    REMOVE_BIT(PC_FLAGS(unit), PC_SPIRIT);
 
-   act("\n\rYou have a strange feeling...\n\r", A_ALWAYS, unit, 0, 0, TO_CHAR);
-   act("$1n materializes and vanish.", A_HIDEINV, unit, 0, 0, TO_ROOM);
+   act("\n\rYou have a strange feeling...\n\r", A_ALWAYS, unit, {}, {}, TO_CHAR);
+   act("$1n materializes and vanish.", A_HIDEINV, unit, {}, {}, TO_ROOM);
 
    unit_from_unit(unit);
    unit_to_unit(unit, hometown_unit(PC_HOME(unit)));
 
-   act("The spirit of $1n materializes.", A_HIDEINV, unit, 0, 0, TO_ROOM);
-   act("You feel dizzy.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+   act("The spirit of $1n materializes.", A_HIDEINV, unit, {}, {}, TO_ROOM);
+   act("You feel dizzy.", A_ALWAYS, unit, {}, {}, TO_CHAR);
 
    PC_COND(unit, FULL)   = 24;
    PC_COND(unit, THIRST) = 24;
@@ -702,49 +702,49 @@ void tif_jail_release(struct unit_affected_type *af, std::shared_ptr<unit_data> 
 void tif_spl_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(af->data[1] > 0)
-      act("You feel more skilled at $2t.", A_ALWAYS, unit, spl_text[af->data[0]], 0, TO_CHAR);
+      act("You feel more skilled at $2t.", A_ALWAYS, unit, spl_text[af->data[0]], {}, TO_CHAR);
    else
-      act("You feel less skilled at $2t.", A_ALWAYS, unit, spl_text[af->data[0]], 0, TO_CHAR);
+      act("You feel less skilled at $2t.", A_ALWAYS, unit, spl_text[af->data[0]], {}, TO_CHAR);
 }
 
 void tif_spl_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(af->data[1] > 0)
-      act("You feel less skilled at $2t.", A_ALWAYS, unit, spl_text[af->data[0]], 0, TO_CHAR);
+      act("You feel less skilled at $2t.", A_ALWAYS, unit, spl_text[af->data[0]], {}, TO_CHAR);
    else
-      act("You feel more skilled at $2t.", A_ALWAYS, unit, spl_text[af->data[0]], 0, TO_CHAR);
+      act("You feel more skilled at $2t.", A_ALWAYS, unit, spl_text[af->data[0]], {}, TO_CHAR);
 }
 
 void tif_ski_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(af->data[1] > 0)
-      act("You feel more skilled in $2t.", A_ALWAYS, unit, ski_text[af->data[0]], 0, TO_CHAR);
+      act("You feel more skilled in $2t.", A_ALWAYS, unit, ski_text[af->data[0]], {}, TO_CHAR);
    else
-      act("You feel less skilled in $2t.", A_ALWAYS, unit, ski_text[af->data[0]], 0, TO_CHAR);
+      act("You feel less skilled in $2t.", A_ALWAYS, unit, ski_text[af->data[0]], {}, TO_CHAR);
 }
 
 void tif_ski_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(af->data[1] > 0)
-      act("You feel less skilled in $2t.", A_ALWAYS, unit, ski_text[af->data[0]], 0, TO_CHAR);
+      act("You feel less skilled in $2t.", A_ALWAYS, unit, ski_text[af->data[0]], {}, TO_CHAR);
    else
-      act("You feel more skilled in $2t.", A_ALWAYS, unit, ski_text[af->data[0]], 0, TO_CHAR);
+      act("You feel more skilled in $2t.", A_ALWAYS, unit, ski_text[af->data[0]], {}, TO_CHAR);
 }
 
 void tif_wpn_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(af->data[1] > 0)
-      act("You feel more skilled at the $2t fighting style.", A_ALWAYS, unit, wpn_text[af->data[0]], 0, TO_CHAR);
+      act("You feel more skilled at the $2t fighting style.", A_ALWAYS, unit, wpn_text[af->data[0]], {}, TO_CHAR);
    else
-      act("You feel less skilled at the $2t fighting style.", A_ALWAYS, unit, wpn_text[af->data[0]], 0, TO_CHAR);
+      act("You feel less skilled at the $2t fighting style.", A_ALWAYS, unit, wpn_text[af->data[0]], {}, TO_CHAR);
 }
 
 void tif_wpn_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(af->data[1] > 0)
-      act("You feel less skilled at the $2t fighting style.", A_ALWAYS, unit, wpn_text[af->data[0]], 0, TO_CHAR);
+      act("You feel less skilled at the $2t fighting style.", A_ALWAYS, unit, wpn_text[af->data[0]], {}, TO_CHAR);
    else
-      act("You feel more skilled at the $2t fighting style.", A_ALWAYS, unit, wpn_text[af->data[0]], 0, TO_CHAR);
+      act("You feel more skilled at the $2t fighting style.", A_ALWAYS, unit, wpn_text[af->data[0]], {}, TO_CHAR);
 }
 
 void tif_armour_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
@@ -774,19 +774,19 @@ void tif_armour_on(struct unit_affected_type *af, std::shared_ptr<unit_data> uni
          break;
    }
 
-   act("Your skin transforms into $2t substance.", A_ALWAYS, unit, c, 0, TO_CHAR);
+   act("Your skin transforms into $2t substance.", A_ALWAYS, unit, c, {}, TO_CHAR);
 
-   act("$1n's skin transforms into $2t substance.", A_ALWAYS, unit, c, 0, TO_ROOM);
+   act("$1n's skin transforms into $2t substance.", A_ALWAYS, unit, c, {}, TO_ROOM);
 }
 
 void tif_speed_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
-   act("You feel faster...", A_ALWAYS, unit, 0, 0, TO_CHAR);
+   act("You feel faster...", A_ALWAYS, unit, {}, {}, TO_CHAR);
 }
 
 void tif_speed_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
-   act("You feel slower...", A_ALWAYS, unit, 0, 0, TO_CHAR);
+   act("You feel slower...", A_ALWAYS, unit, {}, {}, TO_CHAR);
 }
 
 /* --------------------------------------------------------------------- */

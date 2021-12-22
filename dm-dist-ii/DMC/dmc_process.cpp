@@ -84,7 +84,7 @@ void dmc_error(int fatal, const char *fmt, ...)
 
 /*  MONEY
  */
-unsigned long legal_amount(struct unit_data *u)
+unsigned long legal_amount(std::shared_ptr<unit_data> u)
 {
    unsigned long res = IRON_MULT * CHAR_LEVEL(u);
 
@@ -144,7 +144,7 @@ amount_t convert_money(char *str)
 /*         Value[3] is slaying race      */
 /*                                       */
 /* Output: [3] as input                  */
-void dmc_set_weapon(struct unit_data *weapon)
+void dmc_set_weapon(std::shared_ptr<unit_data> weapon)
 {
    int category, craftsmanship, magic_bonus, slay;
 
@@ -181,7 +181,7 @@ void dmc_set_weapon(struct unit_data *weapon)
 /* INPUT:  Value[0] = Category            */
 /*         Value[1] = Bonus               */
 /*         Value[2] = ...                 */
-void dmc_set_armour(struct unit_data *armour)
+void dmc_set_armour(std::shared_ptr<unit_data> armour)
 {
    int category, craftsmanship, magic_bonus;
 
@@ -219,7 +219,7 @@ void dmc_set_armour(struct unit_data *armour)
 /*         Value[2] = ...                   */
 /*                                          */
 
-void dmc_set_shield(struct unit_data *shield)
+void dmc_set_shield(std::shared_ptr<unit_data> shield)
 {
    int category, craftsmanship, magic_bonus;
 
@@ -251,7 +251,7 @@ void dmc_set_shield(struct unit_data *shield)
    set_shield(shield);
 }
 
-void set_points(struct unit_data *u)
+void set_points(std::shared_ptr<unit_data> u)
 {
    int i, sum, max;
    int spoints, apoints;
@@ -335,12 +335,12 @@ void set_points(struct unit_data *u)
    UNIT_HIT(u) = UNIT_MAX_HIT(u) = hitpoint_total(CHAR_HPP(u));
 }
 
-void set_room_data(struct unit_data *u)
+void set_room_data(std::shared_ptr<unit_data> u)
 {
    SET_BIT(UNIT_MANIPULATE(u), MANIPULATE_ENTER);
 }
 
-void show_info(struct unit_data *npc)
+void show_info(std::shared_ptr<unit_data> npc)
 {
    static int first = FALSE;
 
@@ -363,7 +363,7 @@ void show_info(struct unit_data *npc)
            CHAR_DIV(npc));
 }
 
-void process_affects(struct unit_data *pUnit)
+void process_affects(std::shared_ptr<unit_data> pUnit)
 {
    struct unit_affected_type *pAf;
    int                        firstf, tickf, lastf, applyf;
@@ -555,7 +555,7 @@ void process_affects(struct unit_data *pUnit)
    }
 }
 
-void process_funcs(struct unit_data *u)
+void process_funcs(std::shared_ptr<unit_data> u)
 {
    struct unit_fptr *fptr;
 
@@ -592,7 +592,7 @@ void process_funcs(struct unit_data *u)
    }
 }
 
-void check_namelist(struct unit_data *unit, class cNamelist *nl)
+void check_namelist(std::shared_ptr<unit_data> unit, class cNamelist *nl)
 {
    char buf[128];
 
@@ -650,7 +650,7 @@ void check_namelist(struct unit_data *unit, class cNamelist *nl)
    }
 }
 
-void process_unit(struct unit_data *u)
+void process_unit(std::shared_ptr<unit_data> u)
 {
    int                      i;
    struct extra_descr_data *exd;
@@ -858,11 +858,11 @@ void process_unit(struct unit_data *u)
    }
 }
 
-void init_unit(struct unit_data *u)
+void init_unit(std::shared_ptr<unit_data> u)
 {
    int i;
 
-   u->next             = 0;
+//   u->next             = 0;
    UNIT_EXTRA_DESCR(u) = NULL;
 
    UNIT_KEY(u)         = 0;

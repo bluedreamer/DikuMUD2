@@ -166,7 +166,7 @@ std::shared_ptr<unit_data> zone_load(std::shared_ptr<unit_data> u, std::shared_p
 
       if(IS_CHAR(loaded))
       {
-         act("$1n has arrived.", A_HIDEINV, loaded, 0, 0, TO_ROOM);
+         act("$1n has arrived.", A_HIDEINV, loaded, {}, {}, TO_ROOM);
          UNIT_SIZE(loaded) += (UNIT_SIZE(loaded) * (55 - dice(10, 10))) / 300;
       }
    }
@@ -299,7 +299,7 @@ std::shared_ptr<unit_data> zone_follow(std::shared_ptr<unit_data> u, std::shared
       start_following(loaded, u);
       zone_loaded_a_unit(loaded);
 
-      act("$1n has arrived.", A_HIDEINV, loaded, 0, 0, TO_ROOM);
+      act("$1n has arrived.", A_HIDEINV, loaded, {}, {}, TO_ROOM);
    }
 
    return loaded;

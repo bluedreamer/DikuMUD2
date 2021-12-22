@@ -198,7 +198,7 @@ class extra_descr_data *extra_descr_data::remove(const char *name)
 /*  We don't want people to be able to see $-prefixed extras
  *  so check for that...
  */
-class extra_descr_data *unit_find_extra(const char *word, class unit_data *unit)
+class extra_descr_data *unit_find_extra(const char *word, std::shared_ptr<unit_data> unit)
 {
    word = skip_spaces(word);
 

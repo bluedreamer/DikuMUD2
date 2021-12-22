@@ -24,6 +24,7 @@
 #define _MUD_DILRUN_H
 
 #include "essential.h"
+#include <memory>
 
 struct dil_func_type
 {
@@ -46,7 +47,7 @@ struct dil_func_type
       (dilfe_func[*(prg->sp->pc - 1)].func((prg), (v)));                                                                                   \
       assert((prg)->sp->pc <= &((prg)->sp->tmpl->core[(prg)->sp->tmpl->coresz]));                                                          \
    }
-
+class unit_data;
 void DeactivateDil(std::shared_ptr<unit_data> pc);
 void ActivateDil(std::shared_ptr<unit_data> pc);
 

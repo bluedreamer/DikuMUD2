@@ -144,7 +144,8 @@ static inline int findcheck(std::shared_ptr<unit_data> u, int pset, int tflags)
 
 std::shared_ptr<unit_data> random_unit(std::shared_ptr<unit_data> ref, int sflags, int tflags)
 {
-   std::shared_ptr<unit_data> u, *selected = NULL;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> selected;
    int                        count = 0;
    int                        pset  = 0;
 
@@ -238,7 +239,7 @@ std::shared_ptr<unit_data> random_unit(std::shared_ptr<unit_data> ref, int sflag
 std::shared_ptr<unit_data> find_unit_general(const std::shared_ptr<unit_data> viewer,
                                              const std::shared_ptr<unit_data> ch,
                                              char                           **arg,
-                                             const std::shared_ptr<unit_data> list,
+                                             std::shared_ptr<unit_data> list,
                                              const ubit32                     bitvector)
 {
    std::shared_ptr<unit_data> best     = NULL;
@@ -249,7 +250,8 @@ std::shared_ptr<unit_data> find_unit_general(const std::shared_ptr<unit_data> vi
    const char                *ct = NULL;
    char                       name[256], *c;
    ubit1                      is_fillword = TRUE;
-   std::shared_ptr<unit_data> u, *uu;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> uu;
 
    /* Eliminate the 'pay' bits */
    bitvectorm = bitvector & FIND_UNIT_LOCATION_MASK;
@@ -295,7 +297,7 @@ std::shared_ptr<unit_data> find_unit_general(const std::shared_ptr<unit_data> vi
       /* Equipment can only be objects. */
       if(IS_SET(bitvectorm, FIND_UNIT_EQUIP))
          for(u = UNIT_CONTAINS(ch); u; u = u->next)
-            if(IS_OBJ(u) && OBJ_EQP_POS(u) && ((viewer == ch) || CHAR_CAN_SEE(const_cast<unit_data *>(viewer), u)) &&
+            if(IS_OBJ(u) && OBJ_EQP_POS(u) && ((viewer == ch) || CHAR_CAN_SEE(viewer, u)) &&
                (CHAR_LEVEL(viewer) >= UNIT_MINV(u)) && (ct = UNIT_NAMES(u).IsNameRaw(c)) && (ct - c >= best_len))
             {
                if(ct - c > best_len)
@@ -310,7 +312,7 @@ std::shared_ptr<unit_data> find_unit_general(const std::shared_ptr<unit_data> vi
 
       if(IS_SET(bitvectorm, FIND_UNIT_INVEN))
          for(u = UNIT_CONTAINS(ch); u; u = u->next)
-            if((ct = UNIT_NAMES(u).IsNameRaw(c)) && ((viewer == ch) || CHAR_CAN_SEE(const_cast<unit_data *>(viewer), u)) &&
+            if((ct = UNIT_NAMES(u).IsNameRaw(c)) && ((viewer == ch) || CHAR_CAN_SEE(viewer, u)) &&
                (CHAR_LEVEL(viewer) >= UNIT_MINV(u)) && !(IS_OBJ(u) && OBJ_EQP_POS(u)) && (ct - c >= best_len))
             {
                if(ct - c > best_len)
@@ -336,8 +338,8 @@ std::shared_ptr<unit_data> find_unit_general(const std::shared_ptr<unit_data> vi
 
          /* MS: Removed !IS_ROOM(UNIT_IN(ch)) because you must be able to
                 open rooms from the inside... */
-         if((ct = UNIT_NAMES(UNIT_IN(const_cast<unit_data *>(ch))).IsNameRaw(c)) &&
-            CHAR_CAN_SEE(const_cast<unit_data *>(viewer), UNIT_IN(const_cast<unit_data *>(ch))) && (ct - c >= best_len))
+         if((ct = UNIT_NAMES(UNIT_IN(ch)).IsNameRaw(c)) &&
+            CHAR_CAN_SEE(viewer, UNIT_IN(ch)) && (ct - c >= best_len))
          {
             if(ct - c > best_len)
             {
@@ -346,13 +348,13 @@ std::shared_ptr<unit_data> find_unit_general(const std::shared_ptr<unit_data> vi
             }
 
             if(--number == 0)
-               best = UNIT_IN(const_cast<unit_data *>(ch));
+               best = UNIT_IN(ch);
          }
 
          /* Run through units in local environment */
-         for(u = UNIT_CONTAINS(UNIT_IN(const_cast<unit_data *>(ch))); u; u = u->next)
+         for(u = UNIT_CONTAINS(UNIT_IN(ch)); u; u = u->next)
          {
-            if(IS_ROOM(u) || CHAR_CAN_SEE(const_cast<unit_data *>(viewer), u)) /* Cansee room in dark */
+            if(IS_ROOM(u) || CHAR_CAN_SEE(viewer, u)) /* Cansee room in dark */
             {
                if((ct = UNIT_NAMES(u).IsNameRaw(c)) && (ct - c >= best_len))
                {
@@ -369,7 +371,7 @@ std::shared_ptr<unit_data> find_unit_general(const std::shared_ptr<unit_data> vi
                /* check tranparancy */
                if(UNIT_CHARS(u) && UNIT_IS_TRANSPARENT(u))
                   for(uu = UNIT_CONTAINS(u); uu; uu = uu->next)
-                     if(IS_CHAR(uu) && (ct = UNIT_NAMES(uu).IsNameRaw(c)) && CHAR_CAN_SEE(const_cast<unit_data *>(viewer), uu) &&
+                     if(IS_CHAR(uu) && (ct = UNIT_NAMES(uu).IsNameRaw(c)) && CHAR_CAN_SEE(viewer, uu) &&
                         (ct - c >= best_len))
                      {
                         if(ct - c > best_len)
@@ -386,10 +388,10 @@ std::shared_ptr<unit_data> find_unit_general(const std::shared_ptr<unit_data> vi
          } /* End for */
 
          /* Run through units in local environment if upwards transparent */
-         if((u = UNIT_IN(UNIT_IN(const_cast<unit_data *>(ch)))) && UNIT_IS_TRANSPARENT(UNIT_IN(const_cast<unit_data *>(ch))))
+         if((u = UNIT_IN(UNIT_IN(ch))) && UNIT_IS_TRANSPARENT(UNIT_IN(ch)))
          {
             for(u = UNIT_CONTAINS(u); u; u = u->next)
-               if(u != UNIT_IN(const_cast<unit_data *>(ch)) && CHAR_CAN_SEE(const_cast<unit_data *>(viewer), u))
+               if(u != UNIT_IN(ch) && CHAR_CAN_SEE(viewer, u))
                {
                   if((ct = UNIT_NAMES(u).IsNameRaw(c)) && (ct - c >= best_len))
                   {
@@ -406,7 +408,7 @@ std::shared_ptr<unit_data> find_unit_general(const std::shared_ptr<unit_data> vi
                   /* check down into transparent unit */
                   if(UNIT_CHARS(u) && UNIT_IS_TRANSPARENT(u))
                      for(uu = UNIT_CONTAINS(u); uu; uu = uu->next)
-                        if(IS_CHAR(uu) && (ct = UNIT_NAMES(uu).IsNameRaw(c)) && CHAR_CAN_SEE(const_cast<unit_data *>(viewer), uu) &&
+                        if(IS_CHAR(uu) && (ct = UNIT_NAMES(uu).IsNameRaw(c)) && CHAR_CAN_SEE(viewer, uu) &&
                            (ct - c >= best_len))
                         {
                            if(ct - c > best_len)
@@ -424,7 +426,7 @@ std::shared_ptr<unit_data> find_unit_general(const std::shared_ptr<unit_data> vi
 
       if(IS_SET(bitvectorm, FIND_UNIT_ZONE))
          for(u = unit_list; u; u = u->gnext)
-            if((ct = UNIT_NAMES(u).IsNameRaw(c)) && CHAR_CAN_SEE(const_cast<unit_data *>(viewer), u) && unit_zone(u) == unit_zone(ch) &&
+            if((ct = UNIT_NAMES(u).IsNameRaw(c)) && CHAR_CAN_SEE(viewer, u) && unit_zone(u) == unit_zone(ch) &&
                (ct - c >= best_len))
             {
                if(ct - c > best_len)
@@ -439,7 +441,7 @@ std::shared_ptr<unit_data> find_unit_general(const std::shared_ptr<unit_data> vi
 
       if(IS_SET(bitvectorm, FIND_UNIT_WORLD))
          for(u = unit_list; u; u = u->gnext)
-            if((ct = UNIT_NAMES(u).IsNameRaw(c)) && CHAR_CAN_SEE(const_cast<unit_data *>(viewer), u) && (ct - c >= best_len))
+            if((ct = UNIT_NAMES(u).IsNameRaw(c)) && CHAR_CAN_SEE(viewer, u) && (ct - c >= best_len))
             {
                if(ct - c > best_len)
                {
@@ -512,7 +514,8 @@ find_unit(const std::shared_ptr<unit_data> ch, char **arg, const std::shared_ptr
 
 std::shared_ptr<unit_data> find_symbolic_instance_ref(std::shared_ptr<unit_data> ref, std::shared_ptr<file_index_type> fi, ubit16 bitvector)
 {
-   std::shared_ptr<unit_data> u, *uu;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> uu;
 
    if((fi == NULL) || (ref == NULL))
       return NULL;
@@ -609,16 +612,14 @@ struct unit_vector_data unit_vector;
 static void init_unit_vector(void)
 {
    unit_vector.size = 10;
-
-   CREATE(unit_vector.units, std::shared_ptr<unit_data>, unit_vector.size);
+   unit_vector.units.resize(unit_vector.size);
 }
 
 /* If things get too cramped, double size of unit_vector */
 static void double_unit_vector(void)
 {
    unit_vector.size *= 2;
-
-   RECREATE(unit_vector.units, std::shared_ptr<unit_data>, unit_vector.size);
+   unit_vector.units.resize(unit_vector.size);
 }
 
 /* Scan the chars surroundings and all transparent surroundings for all  */
@@ -627,7 +628,8 @@ static void double_unit_vector(void)
 /* but not outside room.                                                 */
 void scan4_unit_room(std::shared_ptr<unit_data> room, ubit8 type)
 {
-   std::shared_ptr<unit_data> u, *uu;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> uu;
 
    unit_vector.top = 0;
 
@@ -663,7 +665,8 @@ void scan4_unit_room(std::shared_ptr<unit_data> room, ubit8 type)
 /* use in local routines.                                                */
 void scan4_unit(std::shared_ptr<unit_data> ch, ubit8 type)
 {
-   std::shared_ptr<unit_data> u, *uu;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> uu;
 
    if(!UNIT_IN(ch))
    {
@@ -721,7 +724,8 @@ void scan4_unit(std::shared_ptr<unit_data> ch, ubit8 type)
 
 static std::shared_ptr<unit_data> scan4_ref_room(std::shared_ptr<unit_data> room, std::shared_ptr<unit_data> fu)
 {
-   std::shared_ptr<unit_data> u, *uu;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> uu;
 
    for(u = UNIT_CONTAINS(room); u; u = u->next)
    {
