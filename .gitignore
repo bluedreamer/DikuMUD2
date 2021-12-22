@@ -2,3 +2,4 @@
 cmake-build-debug/
 .*.swp
 ade.txt
+debug_build/

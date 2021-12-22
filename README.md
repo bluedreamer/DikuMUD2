@@ -31,24 +31,32 @@ February 2020, Michael Seifert
 I've compiled this old venerable project for Ubuntu 19. Making the old wheels turn on a 64 bit architecture :) 
 
 A few notes on getting it running.
+Make sure you have cmake installed and preferably ninja (it builds faster than make)
 
 1) Clone the repo
 
-   cd dm-dist-ii/
+     mkdir debug_build
+     cd debug_build
 
 1.5) Be sure you have flex and bison installed. Look e.g. here for help:
        https://stackoverflow.com/questions/3871425/how-to-install-lex-and-yacc-in-ubuntu
 
 2) Compile
-      touch .depends ; make depend
-      make all
-      cd PP/
-      ./ppmake
-      cd ..
+     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ ..
+     make
+   
+   or
+   
+     cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ ..
+     ninja
 
 3) Make symbolic links (in dm-dist-ii/)
-     ln -s PP/pp
-     ln -s DIL/dil
+     cd ../dm-dist-ii
+     ln -sf ../debug_build/dm-dist-ii/dmserver
+     ln -sf ../../debug_build/dm-dist-ii/Mplex/mplex Mplex/mplex
+     ln -sf ../debug_build/dm-dist-ii/PP/pp
+     ln -sf ../../debug_build/dm-dist-ii/DMC/dmc DMC/dmc
+     ln -sf ../../debug_build/dm-dist-ii/DIL/dil DIL/dil
 
 4) when in the main dir (dm-dist-ii/) compile all zones:
       DMC/dmc zon/*.zon
