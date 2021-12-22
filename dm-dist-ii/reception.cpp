@@ -242,7 +242,7 @@ void enlist(CByteBuffer *pBuf, struct unit_data *unit, int level, int fast)
    }
 
    strcpy(h.zone, UNIT_FI_ZONENAME(unit));
-   UNIT_FI_NAME(unit)=h.unit;
+   UNIT_FI_NAME(unit) = h.unit;
 
    h.type  = UNIT_TYPE(unit);
    h.level = level;
@@ -417,8 +417,6 @@ struct unit_data *base_load_contents(const char *pFileName, const struct unit_da
 
    CByteBuffer InvBuf;
    InvBuf.Clear();
-
-   extern struct unit_data *void_room;
 
    int is_slimed(std::shared_ptr<file_index_type> sp);
    int patch(char *ref, ubit32 reflen, char *dif, int diflen, char *res, int reslen, ubit32 crc);

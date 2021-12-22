@@ -47,8 +47,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern struct unit_data *unit_list;
-
 /* External procedures */
 
 int                   required_xp(int level);               /* common.c   */

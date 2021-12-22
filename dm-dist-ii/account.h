@@ -59,8 +59,6 @@ public:
    struct flatrate_type m_flatrate[MAX_FLATRATE];
 };
 
-extern class CAccountConfig g_cAccountConfig;
-
 void account_flatrate_change(struct unit_data *god, struct unit_data *whom, sbit32 days);
 
 void account_cclog(struct unit_data *ch, int amount);

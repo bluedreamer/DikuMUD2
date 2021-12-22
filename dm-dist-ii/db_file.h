@@ -29,9 +29,6 @@
 #include "dil.h"
 #include "structs.h"
 
-extern CByteBuffer g_FileBuffer; /* Defined in db_file.c */
-extern int         g_nCorrupt;   /*          "           */
-
 void *bread_dil(CByteBuffer *pBuf, struct unit_data *, ubit8 version, struct unit_fptr *fptr);
 
 struct diltemplate *bread_diltemplate(CByteBuffer *pBuf);

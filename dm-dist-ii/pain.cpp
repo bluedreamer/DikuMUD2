@@ -829,8 +829,6 @@ struct pain_type *pain_doinit(struct unit_data *npc, char *text)
    struct command_info   *cmd_ptr;
    char                 **namelist = NULL;
 
-   extern struct trie_type *intr_trie;
-
    static const char *specmsg[] = {"_dead", "_combat", "_unknown", NULL};
 
    top   = 0;

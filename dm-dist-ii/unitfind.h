@@ -40,8 +40,6 @@ struct unit_vector_data
    int                top;
 };
 
-extern struct unit_vector_data unit_vector;
-
 ubit1             same_surroundings(struct unit_data *u1, struct unit_data *u2);
 void              scan4_unit_room(struct unit_data *room, ubit8 type);
 void              scan4_unit(struct unit_data *ch, ubit8 type);

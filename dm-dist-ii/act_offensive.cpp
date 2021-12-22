@@ -50,8 +50,6 @@ void do_decapitate(struct unit_data *ch, char *argument, const struct command_in
    char                      *c, *d;
    char                       buf[256], buf2[256];
 
-   extern std::shared_ptr<file_index_type> head_fi;
-
    if(str_is_empty(argument))
    {
       send_to_char("What corpse do you wish to decapitate?\n\r", ch);

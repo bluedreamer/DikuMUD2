@@ -32,6 +32,7 @@
 #include "affect.h"
 #include "comm.h"
 #include "db.h"
+#include "external_funcs.h"
 #include "fight.h"
 #include "files.h"
 #include "handler.h"
@@ -58,9 +59,6 @@
 #include <time.h>
 
 /*   external vars  */
-extern struct unit_data       *unit_list;
-extern struct descriptor_data *descriptor_list;
-extern char                   *dirs[];
 
 /* extern procedures */
 
@@ -199,8 +197,6 @@ int obey_animal(struct spec_arg *sarg)
 {
    char             *arg = (char *)sarg->arg;
    struct unit_data *u;
-
-   extern struct trie_type *intr_trie;
 
    if(sarg->cmd->no == CMD_AUTO_TICK)
    {
@@ -1179,8 +1175,7 @@ int mercenary_hunt(struct spec_arg *sarg)
 
 static void tuborg_log(const char *name, int cmd)
 {
-   FILE       *f;
-   extern char libdir[];
+   FILE *f;
 
    f = fopen_cache(str_cc(libdir, STATISTICS_FILE), "a+b");
    assert(f);
@@ -1390,8 +1385,7 @@ int blow_away(struct spec_arg *sarg)
 /* value[3] decides how many 'charges' are in it.                     */
 int charm_of_death(struct spec_arg *sarg)
 {
-   void       gain_exp(struct unit_data * ch, int gain);
-   extern int lose_exp(struct unit_data *);
+   void gain_exp(struct unit_data * ch, int gain);
 
    if(sarg->cmd->no == CMD_AUTO_DEATH)
       if(UNIT_IN(sarg->owner) == sarg->activator && OBJ_EQP_POS(sarg->owner) && IS_PC(sarg->activator) &&

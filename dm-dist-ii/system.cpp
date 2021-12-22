@@ -67,10 +67,6 @@
 #include <fcntl.h>
 #include <netinet/in.h>
 
-/* extern vars */
-extern struct descriptor_data *descriptor_list;
-extern struct descriptor_data *next_to_process;
-
 class cMotherHook : public cHook
 {
 public:
@@ -99,8 +95,6 @@ void init_char(struct unit_data *ch)
    int new_player_id(void);
 
    int i, init_skills = 0;
-
-   extern sbit32 player_id;
 
    int required_xp(int level);
 
@@ -489,8 +483,6 @@ int cMultiHook::Read(void)
    ubit16                  len;
    char                   *data;
    ubit8                   text_type;
-
-   extern char *logo;
 
    p = protocol_parse_incoming(this, &id, &len, &data, &text_type);
 

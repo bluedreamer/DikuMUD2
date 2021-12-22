@@ -83,8 +83,6 @@ private:
    char               cmd[MAX_INPUT_LENGTH + 1]; // A combat command
 };
 
-extern class cCombatList CombatList;
-
 void set_fighting(struct unit_data *ch, struct unit_data *vict, int bMelee = FALSE);
 void stop_fighting(struct unit_data *ch, struct unit_data *victim = NULL);
 

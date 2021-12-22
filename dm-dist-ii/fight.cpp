@@ -102,9 +102,6 @@ struct combat_msg_list fight_messages[COM_MAX_MSGS];
 
 /* External structures */
 
-extern struct unit_data *unit_list;
-extern char              libdir[]; /* fom dikumud.c */
-
 /* External procedures */
 
 void  gain_exp(struct unit_data *ch, int gain);
@@ -902,9 +899,6 @@ class unit_data *raw_kill(struct unit_data *ch)
 {
    struct unit_data *death_obj, *corpse = NULL;
 
-   extern struct unit_data                *seq_room;
-   extern std::shared_ptr<file_index_type> deathobj_fi;
-
    struct unit_data *make_corpse(struct unit_data * ch);
 
 #ifdef DEMIGOD
@@ -1028,8 +1022,6 @@ void die(struct unit_data *ch)
    {
       if(IS_SET(PC_FLAGS(ch), PC_SPIRIT))
       {
-         extern struct unit_data *seq_room;
-
          send_to_char("Please report spirit mess to implementors.\n\r", ch);
          slog(LOG_EXTENSIVE,
               0,

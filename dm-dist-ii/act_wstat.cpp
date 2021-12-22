@@ -33,6 +33,8 @@
 #include "constants.h"
 #include "db.h"
 #include "db_file.h"
+#include "external_funcs.h"
+#include "externals.h"
 #include "files.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -57,15 +59,10 @@
 #include <time.h>
 
 /*   external vars  */
-extern struct zone_info_type zone_info;
-
-extern char zondir[]; /* from dikumud.c */
 
 /* external functs */
 struct time_info_data age(struct unit_data *ch);
 struct time_info_data real_time_passed(time_t t2, time_t t1);
-
-extern void stat_bank(const struct unit_data *ch, struct unit_data *u); /* bank.c */
 
 static void stat_world_extra(const struct unit_data *ch)
 {
@@ -112,8 +109,6 @@ static void stat_memory(struct unit_data *ch)
 {
    char buf[MAX_STRING_LENGTH];
 
-   extern int events;
-
    void memory_status(char *buf);
    void system_memory(struct unit_data * ch);
 
@@ -126,12 +121,8 @@ static void stat_memory(struct unit_data *ch)
 
 static void stat_world(struct unit_data *ch)
 {
-   extern int  world_norooms, world_noobjects, world_nochars, world_nozones;
-   extern int  world_nonpc, world_nopc;
-   extern char world_boottime[];
-   extern int  tics;
-   char        buf[MAX_STRING_LENGTH];
-   time_t      now = time(0);
+   char   buf[MAX_STRING_LENGTH];
+   time_t now = time(0);
 
    char *p          = ctime(&now);
    p[strlen(p) - 1] = '\0';
@@ -205,11 +196,13 @@ static void stat_zone_reset(char *indnt, std::shared_ptr<zone_reset_cmd> zrip, s
          break;
 
       case 2:
-         sprintf(stat_p, "Equip %s %s max %d %s", zrip->fi[0]->name.c_str(), where[zrip->num[1]], zrip->num[0], zrip->cmpl ? "Complete" : "");
+         sprintf(
+            stat_p, "Equip %s %s max %d %s", zrip->fi[0]->name.c_str(), where[zrip->num[1]], zrip->num[0], zrip->cmpl ? "Complete" : "");
          break;
 
       case 3:
-         sprintf(stat_p, "Door at %s : %s : %s", zrip->fi[0]->name.c_str(), dirs[zrip->num[0]], sprintbit(buf, zrip->num[1], unit_open_flags));
+         sprintf(
+            stat_p, "Door at %s : %s : %s", zrip->fi[0]->name.c_str(), dirs[zrip->num[0]], sprintbit(buf, zrip->num[1], unit_open_flags));
          break;
 
       case 4:
@@ -567,8 +560,6 @@ static void stat_spell(const struct unit_data *ch, struct unit_data *u)
    char buf[100 * (SPL_TREE_MAX + 1)], *b = buf;
    int  i, max;
 
-   extern struct spell_info_type spell_info[];
-
    if(!IS_CHAR(u))
    {
       send_to_char("Unit is not a char\n\r", ch);
@@ -668,9 +659,6 @@ static void stat_wskill(const struct unit_data *ch, struct unit_data *u)
 
 static void stat_affect(const struct unit_data *ch, struct unit_data *u)
 {
-   extern struct tick_function_type  tif[];
-   extern struct apply_function_type apf[];
-
    struct unit_affected_type *af;
    char                       buf[1024];
 
@@ -710,8 +698,6 @@ static void stat_affect(const struct unit_data *ch, struct unit_data *u)
 
 static void stat_func(const struct unit_data *ch, struct unit_data *u)
 {
-   extern struct unit_function_array_type unit_function_array[];
-
    char              buf[4096], buf2[512];
    struct unit_fptr *f;
 

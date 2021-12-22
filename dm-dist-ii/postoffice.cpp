@@ -51,8 +51,6 @@
 #define MAIL_MAX_AGE    SECS_PER_REAL_DAY * 90 /* 90 days lifetime */
 #define MAIL_BLOCK_SIZE 128
 
-extern char libdir[]; /* from dikumud.c */
-
 struct mail_file_info_type *mailfile_info = 0;
 
 sbit16    top_of_mailfile = 0;
@@ -281,8 +279,6 @@ int postman(struct spec_arg *sarg)
    long                     rcp;
    currency_t               currency = local_currency(sarg->owner);
    amount_t                 postage;
-
-   extern std::shared_ptr<file_index_type> letter_fi;
 
    struct descriptor_data *find_descriptor(const char *, struct descriptor_data *);
 

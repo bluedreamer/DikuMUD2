@@ -25,6 +25,7 @@
 #ifndef _MUD_MONEY_H
 #define _MUD_MONEY_H
 
+#include "externals.h"
 #include "structs.h"
 
 typedef sbit16 currency_t;
@@ -46,8 +47,6 @@ struct money_type
 /* You shouldn't have to refer to this array yourself.
  * Use the macros instead.
  */
-extern struct money_type money_types[];
-
 /* Give a number of coins (of a specific type) to unit
  * (type == -1 means money_to_unit with local_currency(unit)
  *  Used for database backwards compatibility...)

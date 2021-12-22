@@ -80,8 +80,6 @@ int eliza_booted = FALSE;
 
 static char words[400];
 
-extern char libdir[];
-
 /* ============================================================= */
 
 void preprocess_string(char *str, struct oracle_data *od)

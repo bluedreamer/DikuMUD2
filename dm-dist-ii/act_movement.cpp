@@ -61,9 +61,6 @@
 
 /*   external vars  */
 
-extern struct unit_data   *unit_list;
-extern struct command_info cmd_info[];
-
 /* external functs */
 
 struct unit_data *get_obj_in_list_vis(struct unit_data *ch, char *name, struct unit_data *list);

@@ -56,7 +56,7 @@ unit_data *zone_nop(struct unit_data *u, std::shared_ptr<zone_reset_cmd> cmd)
 {
    /* Return TRUE - NOP always succeedes */
 
-   return reinterpret_cast<unit_data*>(boot_zone.get()); /* dummy */
+   return reinterpret_cast<unit_data *>(boot_zone.get()); /* dummy */
 }
 
 /* Random */
@@ -64,7 +64,7 @@ unit_data *zone_random(struct unit_data *u, std::shared_ptr<zone_reset_cmd> cmd)
 {
    /* Return TRUE if random 0-99 less than given percent  */
    if(number(0, 99) < cmd->num[0])
-      return reinterpret_cast<unit_data*>(boot_zone.get()); /* dummy */
+      return reinterpret_cast<unit_data *>(boot_zone.get()); /* dummy */
    else
       return {};
 }
@@ -72,9 +72,6 @@ unit_data *zone_random(struct unit_data *u, std::shared_ptr<zone_reset_cmd> cmd)
 /* Count ->no_in_zone for current 'boot_zone' (above) */
 void zone_update_no_in_zone(void)
 {
-   extern struct unit_data     *unit_list;
-   extern struct zone_info_type zone_info;
-
    register struct unit_data       *u;
    std::shared_ptr<file_index_type> fi;
    std::shared_ptr<zone_type>       tmp_zone;
@@ -357,8 +354,6 @@ void reset_all_zones(void)
 
    void zone_event(void *, void *);
 
-   extern int world_nozones;
-
    for(n = j = 0; j <= 255; j++)
    {
       for(zone = zone_info.zone_list; zone; zone = zone->next)
@@ -377,8 +372,6 @@ void reset_all_zones(void)
 
 bool zone_is_empty(std::shared_ptr<zone_type> zone)
 {
-   extern struct descriptor_data *descriptor_list;
-
    struct descriptor_data *d;
 
    for(d = descriptor_list; d; d = d->next)
@@ -392,7 +385,7 @@ bool zone_is_empty(std::shared_ptr<zone_type> zone)
 /* Check if any zones needs updating */
 void zone_event(void *p1, void *p2)
 {
-   std::shared_ptr<zone_type> zone = std::shared_ptr<zone_type>(reinterpret_cast<zone_type*>(p1));
+   std::shared_ptr<zone_type> zone = std::shared_ptr<zone_type>(reinterpret_cast<zone_type *>(p1));
 
    if(zone->reset_mode != RESET_IFEMPTY || zone_is_empty(zone))
    {

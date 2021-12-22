@@ -193,8 +193,6 @@ void act_to_guild(const char *msg, char *guild, struct unit_data *member, struct
 {
    struct descriptor_data *d;
 
-   extern struct descriptor_data *descriptor_list;
-
    if(guild == NULL || *guild == '\0')
    {
       slog(LOG_ALL, 0, "No guild name in send_to_guild");
@@ -635,8 +633,6 @@ int guild_title(struct spec_arg *sarg)
    char  buf[MAX_STRING_LENGTH], male[MAX_STRING_LENGTH], female[MAX_STRING_LENGTH];
    char *c;
    int   i, title_no;
-
-   extern const char *pc_race_adverbs[];
 
    if((sarg->cmd->no != CMD_TITLE) || !IS_PC(sarg->activator))
       return SFR_SHARE;

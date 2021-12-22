@@ -87,9 +87,7 @@ int shield_bonus(struct unit_data *att, struct unit_data *def, struct unit_data 
 
    if((def_shield = equipment_type(def, WEAR_SHIELD, ITEM_SHIELD)))
    {
-      int                         shield_bonus = 0;
-      extern struct shi_info_type shi_info[];
-
+      int shield_bonus = 0;
       if(!is_in(OBJ_VALUE(def_shield, 0), SHIELD_SMALL, SHIELD_LARGE))
       {
          slog(LOG_ALL, 0, "Illegal shield type.");

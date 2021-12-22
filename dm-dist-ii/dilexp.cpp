@@ -33,6 +33,7 @@
 #include "db_file.h"
 #include "dil.h"
 #include "dilrun.h"
+#include "external_funcs.h"
 #include "fight.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -3123,7 +3124,6 @@ void dilfe_cmds(register struct dilprg *p, register class dilval *v)
 /* visible, some vs other */
 void dilfe_pck(struct dilprg *p, class dilval *v)
 {
-   extern int   pay_point_charlie(struct unit_data * ch, struct unit_data * to); /* from act_movement.c */
    class dilval v1;
    class dilval v2;
 

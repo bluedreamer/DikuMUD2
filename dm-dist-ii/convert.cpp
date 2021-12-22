@@ -370,9 +370,7 @@ int shall_exclude(const char *name)
 
 struct unit_data *convert_load_player(char *name)
 {
-   struct unit_data        *ch;
-   extern struct unit_data *destroy_room;
-
+   struct unit_data *ch;
    if(!player_exists(name))
    {
       /* printf("No such player.\n"); */
@@ -614,9 +612,6 @@ void cleanup(void)
 void cleanup_playerfile(int argc, char *argv[])
 {
    char c;
-
-   extern struct unit_data *entry_room;
-   extern struct unit_data *destroy_room;
 
    int read_player_id(void);
 

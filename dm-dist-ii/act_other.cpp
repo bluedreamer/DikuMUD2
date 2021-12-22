@@ -57,9 +57,6 @@
 #include <time.h>
 
 /* extern variables */
-extern char                    libdir[]; /* fom dikumud.c */
-extern char                    zondir[]; /* fom dikumud.c */
-extern struct requirement_type pc_race_base[];
 
 /*                                                                */
 /* Used if we want to completely fuck things up for folks running */
@@ -841,8 +838,6 @@ void start_player(struct unit_data *ch)
 
    if(!UNIT_IS_EVIL(ch))
       SET_BIT(CHAR_FLAGS(ch), CHAR_PEACEFUL);
-
-   extern struct diltemplate *playerinit_tmpl;
 
    if(playerinit_tmpl)
    {

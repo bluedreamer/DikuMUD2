@@ -112,8 +112,4 @@ struct unit_data        *create_unit(ubit8 type);
 
 /* --- The globals of db.c --- */
 
-extern int                   room_number;
-extern struct unit_data     *unit_list;
-extern struct zone_info_type zone_info;
-
 #endif /* _MUD_DB_H */

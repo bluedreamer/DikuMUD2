@@ -52,9 +52,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* external vars */
-extern struct descriptor_data *descriptor_list;
-
 /*
  *  Public routines for system-to-player communication
  *  Sends directly to multiplexer.

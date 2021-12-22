@@ -47,11 +47,6 @@
 
 #define RIFT_RISK 100
 
-/* Extern structures */
-extern struct unit_data     *unit_list;
-extern struct command_info   cmd_auto_unknown;
-extern struct zone_info_type zone_info;
-
 /* When you attempt lesser summoning, greater summoning, random teleport,
    or controlled teleport - there is a risk of pretty bad failure.
    These are all the nasty failure things that can be done.
@@ -63,7 +58,7 @@ extern struct zone_info_type zone_info;
 struct unit_data *random_room(void)
 {
    struct unit_data                *room = NULL;
-   std::shared_ptr<zone_type> zone;
+   std::shared_ptr<zone_type>       zone;
    std::shared_ptr<file_index_type> fi;
    int                              no;
 
@@ -91,8 +86,6 @@ struct unit_data *random_npc(void)
 {
    struct unit_data *u;
    int               i;
-
-   extern int world_nochars;
 
    i = number(1, world_nochars);
 
@@ -140,8 +133,6 @@ void rift_failure(struct unit_data *caster, struct unit_data *target)
    struct spell_args sa;
 
    int i = number(1, 100);
-
-   extern struct unit_data *void_room;
 
    act("You cause a great disturbance in the powers of magic.", A_ALWAYS, caster, 0, 0, TO_CHAR);
    act("$1n causes a great disturbance in the powers of magic.", A_ALWAYS, caster, 0, 0, TO_ROOM);
@@ -595,9 +586,8 @@ void spell_summon_char_2(struct spell_args *sa)
 
 void spell_animate_dead(struct spell_args *sa)
 {
-   extern std::shared_ptr<file_index_type> zombie_fi;
-   struct unit_data                       *u, *zombie;
-   char                                    buf[1024];
+   struct unit_data *u, *zombie;
+   char              buf[1024];
 
    if(OBJ_TYPE(sa->target) != ITEM_CONTAINER || !affected_by_spell(sa->target, ID_CORPSE))
       return;

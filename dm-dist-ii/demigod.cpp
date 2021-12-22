@@ -28,6 +28,7 @@
 #include "affect.h"
 #include "comm.h"
 #include "db.h"
+#include "externals.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "limits.h"
@@ -73,8 +74,6 @@ void do_manifest(struct unit_data *ch, char *arg, const struct command_info *cmd
 #else
    struct unit_data *player;
    struct unit_data *monster;
-
-   extern std::shared_ptr<file_index_type> demigod_fi;
 
    void switchbody(struct unit_data * ch, struct unit_data * victim);
    void unswitchbody(struct unit_data * npc);

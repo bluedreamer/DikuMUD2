@@ -292,12 +292,7 @@ unit_data::unit_data(ubit8 type)
 unit_data::~unit_data(void)
 {
 #ifdef MEMORY_DEBUG
-   extern int memory_pc_alloc;
-   extern int memory_npc_alloc;
-   extern int memory_obj_alloc;
-   extern int memory_room_alloc;
-   extern int memory_total_alloc;
-   int        memory_start = memory_total_alloc;
+   int memory_start = memory_total_alloc;
 #endif
 
    ubit8 type;
@@ -307,8 +302,6 @@ unit_data::~unit_data(void)
    /* Sanity due to wierd bug I saw (MS, 30/05-95) */
 
 #ifdef DMSERVER
-   extern class unit_data *unit_list;
-
    assert(gnext == NULL);
    assert(gprevious == NULL);
    assert(next == NULL);

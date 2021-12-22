@@ -56,9 +56,6 @@
 sbit32             player_id       = 1;
 static const char *tmp_player_name = PLAY_DIR "player.tmp";
 
-extern char libdir[];
-extern char plydir[];
-
 struct descriptor_data *find_descriptor(const char *name, struct descriptor_data *except);
 
 char *PlayerFileName(const char *pName)

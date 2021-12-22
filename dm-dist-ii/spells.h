@@ -73,10 +73,6 @@ struct spell_info_type
    struct diltemplate *tmpl; /* Perhaps a DIL template...         */
 };
 
-/* Spell externs */
-extern struct spell_info_type  spell_info[];
-extern struct requirement_type spl_requirement[];
-
 #define SPL_MAG_REQ(spell) (spl_requirement[spell].abilities[ABIL_MAG])
 
 #define SPL_DIV_REQ(spell) (spl_requirement[spell].abilities[ABIL_DIV])

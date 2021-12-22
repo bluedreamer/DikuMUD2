@@ -81,7 +81,6 @@ struct time_info_data mud_date(time_t t)
 {
    struct time_info_data mdate;
    long                  p;
-   extern const time_t   beginning_of_time;
 
    p = (long)difftime(t, beginning_of_time);
 
@@ -289,7 +288,7 @@ static void weather_change(std::shared_ptr<zone_type> zone, struct time_info_dat
 
 void update_time_and_weather(void)
 {
-   struct time_info_data time_info;
+   struct time_info_data      time_info;
    std::shared_ptr<zone_type> z;
 
    time_info = mud_date(time(0));
@@ -307,9 +306,6 @@ void mudtime_strcpy(struct time_info_data *time, char *str)
    const char *suf;
    char        buf[500], tmp[500];
    int         weekday, day;
-
-   extern const char *weekdays[];
-   extern const char *month_name[];
 
    b = buf;
    sprintf(b,
@@ -360,9 +356,7 @@ static void weather_and_time_event(void *p1, void *p2)
 void boot_time_and_weather(void)
 {
    std::shared_ptr<zone_type> z;
-   struct time_info_data mud_time_passed(time_t t2, time_t t1);
-
-   extern char world_boottime[];
+   struct time_info_data      mud_time_passed(time_t t2, time_t t1);
 
    struct time_info_data time_info;
    time_t                now = time(0);

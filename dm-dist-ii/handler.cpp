@@ -61,10 +61,6 @@
 #include <string.h>
 #include <time.h>
 
-extern struct unit_data       *unit_list;
-extern struct unit_data       *combat_list;
-extern struct descriptor_data *descriptor_list;
-
 /* External procedures */
 
 void stop_special(struct unit_data *u, struct unit_fptr *fptr);
@@ -166,9 +162,6 @@ void destroy_fptr(struct unit_data *u, struct unit_fptr *f)
    struct unit_fptr *tf;
    struct spec_arg   sarg;
 
-   extern struct unit_function_array_type unit_function_array[];
-   extern struct command_info             cmd_auto_extract;
-
    void register_destruct(int i, void *ptr);
    void add_func_history(struct unit_data * u, ubit16, ubit16);
 
@@ -218,8 +211,6 @@ void stop_following(struct unit_data *ch)
 {
    struct char_follow_type *j, *k;
 
-   extern struct command_info *cmd_follow;
-
    assert(CHAR_MASTER(ch));
 
    if(CHAR_FOLLOWERS(CHAR_MASTER(ch))->follower == ch) /* Head of list? */
@@ -246,8 +237,6 @@ void stop_following(struct unit_data *ch)
 void start_following(struct unit_data *ch, struct unit_data *leader)
 {
    struct char_follow_type *k;
-
-   extern struct command_info *cmd_follow;
 
    assert(!is_destructed(DR_UNIT, leader));
    assert(!is_destructed(DR_UNIT, ch));
@@ -733,8 +722,6 @@ void extract_unit(struct unit_data *unit)
 {
    struct descriptor_data *d;
 
-   extern struct unit_data *destroy_room;
-
    void register_destruct(int i, void *ptr);
    void nanny_menu(struct descriptor_data * d, char *arg);
    void stop_all_special(struct unit_data * u);
@@ -853,8 +840,6 @@ void szonelog(std::shared_ptr<zone_type> zone, const char *fmt, ...)
    char    buf[MAX_STRING_LENGTH], buf2[MAX_STRING_LENGTH];
    va_list args;
    FILE   *f;
-
-   extern char zondir[];
 
    time_t now   = time(0);
    char  *tmstr = ctime(&now);

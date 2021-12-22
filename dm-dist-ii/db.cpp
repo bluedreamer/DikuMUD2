@@ -63,10 +63,6 @@ struct unit_data *unit_list = NULL; /* The global unit_list          */
 /* Global permanent element of zone info */
 struct zone_info_type zone_info = {0, 0, 0, 0};
 
-extern char libdir[];
-extern char zondir[];
-extern int  memory_total_alloc;
-
 struct room_direction_data *create_direction_data(void);
 
 /*  Generate array of bin_search_type for the zone_list, and for each
@@ -75,7 +71,7 @@ struct room_direction_data *create_direction_data(void);
 void generate_bin_arrays(void)
 {
    std::shared_ptr<file_index_type> fi;
-   std::shared_ptr<zone_type> z;
+   std::shared_ptr<zone_type>       z;
    int                              i;
 
    /* Generate array for zones */
@@ -118,8 +114,8 @@ void generate_bin_arrays(void)
 void resolve_templates(void)
 {
    std::shared_ptr<zone_type> z;
-   struct diltemplate *tmpl;
-   int                 i, j, valid;
+   struct diltemplate        *tmpl;
+   int                        i, j, valid;
 
    /* all zones */
    for(z = zone_info.zone_list; z; z = z->next)
@@ -310,13 +306,12 @@ void generate_zone_indexes(void)
    std::shared_ptr<zone_type> z;
    std::shared_ptr<zone_type> tz1;
    std::shared_ptr<zone_type> tz2;
-   extern int       mud_bootzone;
-   char             zone[82], tmpbuf[82], filename[82 + 41];
-   char             buf[MAX_STRING_LENGTH];
-   CByteBuffer      cBuf(MAX_STRING_LENGTH);
-   FILE            *f, *zone_file;
-   char            *c;
-   ubit8            access, loadlevel, payonly;
+   char                       zone[82], tmpbuf[82], filename[82 + 41];
+   char                       buf[MAX_STRING_LENGTH];
+   CByteBuffer                cBuf(MAX_STRING_LENGTH);
+   FILE                      *f, *zone_file;
+   char                      *c;
+   ubit8                      access, loadlevel, payonly;
 
    zone_info.no_of_zones = 0;
    zone_info.zone_list   = 0;
@@ -565,11 +560,6 @@ int bread_affect(CByteBuffer *pBuf, struct unit_data *u, ubit8 nVersion)
 }
 
 std::shared_ptr<zone_type> unit_error_zone;
-
-extern int memory_pc_alloc;
-extern int memory_npc_alloc;
-extern int memory_obj_alloc;
-extern int memory_room_alloc;
 
 /*  Room directions points to file_indexes instead of units
  *  after a room has been read, due to initialization considerations
@@ -1100,8 +1090,6 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
    }
    else
    {
-      extern std::shared_ptr<file_index_type> slime_fi;
-
       slog(LOG_ALL, 0, "FATAL: UNIT CORRUPT: %s", u->names.Name());
 
       if((type != UNIT_ST_PC) && (type != UNIT_ST_ROOM) && slime_fi)
@@ -1156,8 +1144,6 @@ struct unit_data *read_unit(std::shared_ptr<file_index_type> org_fi)
 {
    int is_slimed(std::shared_ptr<file_index_type> sp);
 
-   extern std::shared_ptr<file_index_type> slime_fi;
-
    struct unit_data *u;
 
    if(org_fi == NULL)
@@ -1199,8 +1185,6 @@ void read_all_rooms(void)
 {
    std::shared_ptr<zone_type>       z;
    std::shared_ptr<file_index_type> fi;
-
-   extern std::shared_ptr<zone_type> boot_zone;
 
    for(z = zone_info.zone_list; z; z = z->next)
    {
@@ -1277,8 +1261,6 @@ std::shared_ptr<zone_reset_cmd> read_zone(FILE *f, std::shared_ptr<zone_reset_cm
    ubit8                            cmdno, direction;
    char                             zonename[FI_MAX_ZONENAME + 1], name[FI_MAX_UNITNAME + 1];
    CByteBuffer                      cBuf(100);
-
-   extern std::shared_ptr<file_index_type> slime_fi;
 
    tmp_cmd = cmd_list;
 
@@ -1426,10 +1408,6 @@ char *read_info_file(char *name, char *oldstr)
    return str_dup(buf);
 }
 
-extern int memory_roomread_alloc;
-extern int memory_zoneidx_alloc;
-extern int memory_zonereset_alloc;
-
 void boot_db(void)
 {
    void competition_boot(void);
@@ -1459,9 +1437,7 @@ void boot_db(void)
    void interpreter_dil_check(void);
    void persist_boot(void);
 
-   void       cleanup_playerfile(int argc, char *argv[]);
-   extern int player_convert;
-
+   void cleanup_playerfile(int argc, char *argv[]);
    slog(LOG_OFF, 0, "Boot DB -- BEGIN.");
    slog(LOG_OFF, 0, "Copyright (C) 1994 - 1996 by Valhalla.");
 

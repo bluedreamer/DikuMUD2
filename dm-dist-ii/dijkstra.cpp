@@ -54,12 +54,6 @@
 #define CF(x, h) ((x) * (h)->d + 1)
 #define CL(x, h) MIN((x) * (h)->d + (h)->d, (h)->no)
 
-extern struct command_info   cmd_auto_unknown;
-extern struct zone_info_type zone_info;
-
-extern int memory_total_alloc;
-extern int memory_dijkstra_alloc;
-
 struct dir_array
 {
    struct graph_vertice *to_vertice;
@@ -426,10 +420,10 @@ ubit8 **create_graph(std::shared_ptr<zone_type> zone)
 
 void stat_dijkstraa(struct unit_data *ch, std::shared_ptr<zone_type> z)
 {
-   int               i, j;
-   char              buf[MAX_STRING_LENGTH];
+   int                        i, j;
+   char                       buf[MAX_STRING_LENGTH];
    std::shared_ptr<zone_type> z2;
-   char             *b;
+   char                      *b;
 
    sprintf(buf, "%s borders the following zones (for auto-walk):\n\r\n\r", z->name);
    send_to_char(buf, ch);
@@ -485,7 +479,7 @@ void stat_dijkstraa(struct unit_data *ch, std::shared_ptr<zone_type> z)
 void create_dijkstra(void)
 {
    std::shared_ptr<zone_type> z;
-   int               i, j, k;
+   int                        i, j, k;
 
 #ifdef MEMORY_DEBUG
    memory_dijkstra_alloc = memory_total_alloc;

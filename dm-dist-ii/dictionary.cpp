@@ -78,6 +78,7 @@ Mon Nov 14 17:19:47 MET 1994
 #include "comm.h"
 #include "config.h"
 #include "db_file.h"
+#include "externals.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "queue.h"
@@ -394,8 +395,6 @@ static bool alias_is_ok(struct alias_head *ah, char *key, char *val, struct unit
    char           *tmp;
    struct alias_t *al = NULL;
    int             count;
-
-   extern int bModeBBS;
 
    if(strlen(key) > MAX_ALIAS_LENGTH)
    {

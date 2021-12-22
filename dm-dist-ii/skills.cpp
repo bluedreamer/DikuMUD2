@@ -908,8 +908,6 @@ static void skill_read(void)
          }
          else
          {
-            extern struct command_info cmd_info[];
-
             for(int i = 0; *cmd_info[i].cmd_str; i++) // MS2020, missing *
             {
                if(cmd_info[i].no == cmdidx)

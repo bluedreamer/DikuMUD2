@@ -25,6 +25,7 @@
 #include "affect.h"
 #include "comm.h"
 #include "db.h"
+#include "externals.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "skills.h"
@@ -37,9 +38,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-extern struct unit_data                *unit_list;
-extern std::shared_ptr<file_index_type> corpse_fi;
 
 struct unit_data *make_corpse(struct unit_data *ch)
 {

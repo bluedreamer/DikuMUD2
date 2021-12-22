@@ -785,9 +785,9 @@ int guard_assist(const struct unit_data *npc, struct visit_data *vd)
 void call_guards(struct unit_data *guard)
 {
    std::shared_ptr<zone_type> zone;
-   struct unit_fptr *fptr;
-   struct unit_data *u;
-   int               ok;
+   struct unit_fptr          *fptr;
+   struct unit_data          *u;
+   int                        ok;
 
    if(!IS_ROOM(UNIT_IN(guard)))
       return;

@@ -28,6 +28,7 @@
 #include "common.h"
 #include "db.h"
 #include "essential.h"
+#include "externals.h"
 #include "network.h"
 #include "protocol.h"
 #include "select.h"

@@ -52,6 +52,7 @@
 #include "constants.h"
 #include "db.h"
 #include "dilrun.h"
+#include "external_funcs.h"
 #include "files.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -69,10 +70,6 @@
 
 #define STATE(d) ((d)->state)
 
-extern struct unit_data       *unit_list;
-extern struct descriptor_data *descriptor_list;
-extern int                     wizlock;
-
 void nanny_get_name(struct descriptor_data *d, char *arg);
 void set_descriptor_fptr(struct descriptor_data *d, void (*fptr)(struct descriptor_data *, char *), ubit1 call);
 void nanny_menu(struct descriptor_data *d, char *arg);
@@ -83,8 +80,6 @@ void nanny_change_terminal(struct descriptor_data *d, char *arg);
 void multi_close(struct multi_element *pe);
 int  player_exists(const char *pName);
 void save_player_file(struct unit_data *ch);
-
-extern struct diltemplate *nanny_dil_tmpl;
 
 /* *************************************************************************
  *  Stuff for controlling the non-playing sockets (get name, pwd etc)      *
@@ -259,8 +254,6 @@ void enter_game(struct unit_data *ch)
    char                    buf[256];
    time_t                  last_connect = PC_TIME(ch).connect;
 
-   extern struct command_info cmd_info[];
-
    ubit8 player_has_mail(struct unit_data * ch);
    char *ContentsFileName(const char *);
    void  start_all_special(struct unit_data * u);
@@ -343,8 +336,6 @@ void enter_game(struct unit_data *ch)
        */
       if(CHAR_MONEY(ch))
       {
-         extern void tax_player(struct unit_data * ch);
-
          CHAR_MONEY(ch) = NULL;
          tax_player(ch);
       }
@@ -1599,8 +1590,6 @@ void nanny_menu(struct descriptor_data *d, char *arg)
    {
       if(wizi_level == 0)
       {
-         extern struct trie_type *intr_trie;
-
          struct command_info *cmd_ptr = (struct command_info *)search_trie("wizinv", intr_trie);
 
          if(cmd_ptr)

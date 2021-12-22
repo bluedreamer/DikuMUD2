@@ -66,8 +66,6 @@
 #define MAX_MESSAGE_LENGTH 4000 /* Should be plenty                */
 #define BOARD_BLK_SIZE     128  /* Size of the blocks              */
 
-extern char libdir[]; /* from dikumud.c */
-
 /* local structs */
 
 struct board_message
@@ -86,9 +84,6 @@ struct board_info
    int                  min_level;      /* What level is required?         */
    struct board_info   *next;           /* Next board in linked list       */
 };
-
-/* globals */
-extern struct descriptor_data *descriptor_list;
 
 struct board_info *board_list = NULL; /* Linked list of boards           */
 
@@ -650,8 +645,6 @@ struct board_info *get_board(struct unit_fptr *fptr)
 
 void do_boards(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   extern struct unit_data *unit_list;
-
    struct unit_data  *u;
    struct unit_fptr  *f = NULL;
    struct board_info *b;
@@ -665,7 +658,8 @@ void do_boards(struct unit_data *ch, char *arg, const struct command_info *cmd)
          {
             one_argument((char *)f->data, tmp);
 
-            sprintf(buf, "%-30s %-12s [%s@%s]\n\r", UNIT_SEE_TITLE(ch, u), tmp, UNIT_FI_NAME(UNIT_IN(u)).c_str(), UNIT_FI_ZONENAME(UNIT_IN(u)));
+            sprintf(
+               buf, "%-30s %-12s [%s@%s]\n\r", UNIT_SEE_TITLE(ch, u), tmp, UNIT_FI_NAME(UNIT_IN(u)).c_str(), UNIT_FI_ZONENAME(UNIT_IN(u)));
             send_to_char(buf, ch);
          }
       }

@@ -51,8 +51,6 @@ struct help_file_type
 
 static struct help_file_type help_file[3];
 
-extern char libdir[]; /* from dikumud.c        */
-
 int search_help_cmp(const void *keyval, const void *datum)
 {
    if(is_abbrev((char *)keyval, ((struct help_index_type *)datum)->keyword))

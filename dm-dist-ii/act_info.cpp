@@ -37,6 +37,7 @@
 #include "common.h"
 #include "constants.h"
 #include "db.h"
+#include "externals.h"
 #include "files.h"
 #include "guild.h"
 #include "handler.h"
@@ -60,9 +61,6 @@
 #include <time.h>
 
 /* extern variables */
-
-extern struct descriptor_data *descriptor_list;
-extern struct unit_data       *unit_list;
 
 static void add_to_string(char **buf, int *size, int len, const char *str)
 {
@@ -267,9 +265,6 @@ void do_status(struct unit_data *ch, char *arg, const struct command_info *cmd)
    char                  buf[2 * MAX_STRING_LENGTH], tmpbuf[80], *b;
 
    static const char *infos[] = {"weapons", "spells", "skills", NULL};
-
-   extern const char *char_sex[];
-   extern const char *pc_races[];
 
    struct time_info_data age(struct unit_data * ch);
    struct time_info_data real_time_passed(time_t t2, time_t t1);
@@ -817,9 +812,8 @@ void do_who(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
 void do_commands(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   char                       buf[MAX_STRING_LENGTH], *b;
-   int                        no, i;
-   extern struct command_info cmd_info[];
+   char buf[MAX_STRING_LENGTH], *b;
+   int  no, i;
 
    if(!IS_PC(ch))
       return;

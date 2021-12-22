@@ -46,8 +46,6 @@ ubit8 g_nShout = 0;
 
 /* extern variables */
 
-extern struct descriptor_data *descriptor_list;
-
 int is_ignored(struct unit_data *ch, struct unit_data *victim)
 {
    struct extra_descr_data *pexd;
@@ -193,8 +191,6 @@ void do_shout(struct unit_data *ch, char *argument, const struct command_info *c
    const char             *me     = "You shout '$3t'";
    const char             *others = COLOUR_COMM "$1n shouts '$2t'" COLOUR_NORMAL;
    int                     endcost;
-
-   extern ubit8 g_nShout;
 
    if(IS_PC(ch) && (CHAR_LEVEL(ch) < g_nShout))
    {

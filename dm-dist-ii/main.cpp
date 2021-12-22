@@ -57,8 +57,6 @@ struct timezone
 #include "utility.h"
 #include "utils.h"
 
-extern ubit32 memory_total_alloc;
-
 #define OPT_USEC            250000L /* time delay corresponding to 4 passes/sec */
 #define HEAPSPACE_INCREMENT 500
 
@@ -95,9 +93,8 @@ int tics           = 0; /* number of tics since boot-time */
 char world_boottime[64] = ""; /* boottime of world */
 
 /* Had to move libdir to common.c /gnort */
-extern char libdir[];              /* directory for libraryfiles */
-char        zondir[64] = ZONE_DIR; /* directory for zonefiles    */
-char        plydir[64] = PLAY_DIR; /* Directory for players */
+char zondir[64] = ZONE_DIR; /* directory for zonefiles    */
+char plydir[64] = PLAY_DIR; /* Directory for players */
 
 const char *compile_date = __DATE__;
 const char *compile_time = __TIME__;
@@ -166,9 +163,6 @@ int main(int argc, char **argv)
    void cleanup_playerfile(int argc, char *argv[]);
 
    int pos = 1, sp;
-
-   extern char    **player_name_list;
-   extern cNamelist persist_namelist;
 
    slog(LOG_ALL, 0, "DMSERVER COMPILED AT %s %s", compile_date, compile_time);
 
@@ -302,10 +296,6 @@ int main(int argc, char **argv)
 /* Init sockets, run game, and cleanup sockets */
 void run_the_game(void)
 {
-#ifdef PROFILE
-   extern char etext;
-#endif
-
    void signal_setup(void);
    int  load(void);
    void coma(int s);

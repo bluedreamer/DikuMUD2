@@ -1662,8 +1662,6 @@ void dilfi_exec(register struct dilprg *p, register class dilval *v)
          char                 buf[MAX_INPUT_LENGTH];
          struct command_info *cmd_ptr;
 
-         extern struct trie_type *intr_trie;
-
          str_next_word(cmd, buf);
 
          if((cmd_ptr = (struct command_info *)search_trie(buf, intr_trie)))
@@ -2071,8 +2069,6 @@ void dilfi_snt(register struct dilprg *p, register class dilval *v)
    /* sendto (string, uptr) */
    class dilval v1, v2;
 
-   extern struct command_info cmd_auto_msg;
-
    if(v)
    {
       v->type = DILV_ERR; /* instructions do not return values */
@@ -2114,8 +2110,6 @@ void dilfi_snta(register struct dilprg *p, register class dilval *v)
 
    class dilval v1, v2;
 
-   extern struct command_info cmd_auto_msg;
-
    if(v)
    {
       v->type = DILV_ERR; /* instructions do not return values */
@@ -2133,8 +2127,6 @@ void dilfi_snta(register struct dilprg *p, register class dilval *v)
 
    if(v1.val.ptr && v2.val.ptr)
    {
-      extern struct unit_data *unit_list;
-
       struct unit_data                *u;
       std::shared_ptr<file_index_type> fi;
 
@@ -2422,9 +2414,8 @@ void dilfi_pup(register struct dilprg *p, register class dilval *v)
 
 void dilfi_cast(register struct dilprg *p, register class dilval *v)
 {
-   class dilval                  v1, v2, v3, v4;
-   struct unit_data             *caster = NULL, *medium = NULL, *target = NULL;
-   extern struct spell_info_type spell_info[SPL_TREE_MAX];
+   class dilval      v1, v2, v3, v4;
+   struct unit_data *caster = NULL, *medium = NULL, *target = NULL;
 
    if(v)
    {

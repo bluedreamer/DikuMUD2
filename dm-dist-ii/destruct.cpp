@@ -29,6 +29,7 @@
 #include "affect.h"
 #include "comm.h"
 #include "db.h"
+#include "externals.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "skills.h"
@@ -82,9 +83,6 @@ void destruct_unit(struct unit_data *unit)
 {
    struct descriptor_data *d;
    int                     in_menu = FALSE;
-
-   extern struct descriptor_data *descriptor_list;
-   extern struct unit_data       *unit_list;
 
    void stop_all_special(struct unit_data * u);
    void unswitchbody(struct unit_data * npc);

@@ -39,9 +39,6 @@ void special_event(void *p1, void *p2);
 void event_enq(int when, void (*func)(), void *arg1, void *arg2);
 void event_deenq(void (*func)(), void *arg1, void *arg2);
 
-extern std::shared_ptr<zone_type> boot_zone;
-extern struct unit_function_array_type unit_function_array[];
-
 void SetFptrTimer(struct unit_data *u, struct unit_fptr *fptr)
 {
    ubit32 ticks;
@@ -77,8 +74,6 @@ void special_event(void *p1, void *p2)
    struct spec_arg   sarg;
 
    void add_func_history(struct unit_data * u, ubit16, ubit16);
-
-   extern struct command_info cmd_auto_tick;
 
    if(g_cServerConfig.m_bNoSpecials)
       return;

@@ -50,9 +50,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* Extern structures */
-extern struct unit_data *unit_list;
-
 /* Extern procedure */
 void update_pos(struct unit_data *victim);
 void modify_hit(struct unit_data *ch, int hit);

@@ -494,9 +494,6 @@ struct dilprg
    struct dilprg *next; /* For global dilprg list (sendtoalldil) */
 };
 
-extern struct dilprg *dil_list;
-extern struct dilprg *dil_list_nextdude;
-
 /* Function prototypes */
 void free_prg(struct dilprg *prg);
 void clear_prg(struct dilprg *prg);

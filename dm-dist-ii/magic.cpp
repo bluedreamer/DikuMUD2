@@ -51,8 +51,6 @@
 #include <stdlib.h>
 
 /* Extern structures */
-extern struct unit_data *unit_list;
-extern struct tree_type  spl_tree[];
 
 /* Returns TRUE when effect is shown by DIL */
 
@@ -410,8 +408,6 @@ int spell_offensive(struct spell_args *sa, int spell_number, int bonus)
                     int               *pDef_armour_type,
                     struct unit_data **pDef_armour);
    void damage_object(struct unit_data * ch, struct unit_data * obj, int dam);
-
-   extern struct damage_chart_type spell_chart[SPL_TREE_MAX];
 
    /* Does the spell perhaps only hit head / body? All?? Right now I
       do it randomly */

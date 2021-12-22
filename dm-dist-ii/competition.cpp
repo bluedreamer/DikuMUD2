@@ -43,8 +43,6 @@
 #include <string.h>
 #include <time.h>
 
-extern char libdir[];
-
 #define MAX_TOP_TEN (11)
 
 struct competition_entry
@@ -297,8 +295,6 @@ void competition_boot(void)
    int   i, len;
    int  *numlist;
    int   start_level, stop_level;
-
-   extern char libdir[];
 
    slog(LOG_OFF, 0, "Booting competition system.");
 

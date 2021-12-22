@@ -51,9 +51,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* external fcntls */
-extern struct unit_function_array_type unit_function_array[];
-
 bool cmd_is_a_social(char *cmd, int complete);
 bool perform_social(struct unit_data *, char *, const command_info *);
 

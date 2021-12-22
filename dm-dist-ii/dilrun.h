@@ -30,8 +30,6 @@ struct dil_func_type
    void (*func)(struct dilprg *, struct dilval *);
 };
 
-extern struct dil_func_type dilfe_func[];
-
 /* Maximum number of consecutive instructions allowed in one tick */
 #define WAITCMD_FINISH    -100 /* Stop program execution until next event */
 #define WAITCMD_STOP      -150 /* Suspend execution                       */

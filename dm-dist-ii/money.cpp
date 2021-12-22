@@ -43,8 +43,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern char libdir[]; /* from dikumud.c */
-
 struct money_type money_types[MAX_MONEY + 1];
 char             *cur_strings[MAX_CURRENCY + 1];
 

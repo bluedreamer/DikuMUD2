@@ -54,10 +54,6 @@ CByteBuffer g_FileBuffer(16384);
 // int filbuffer_length = 0;             /* The length of filbuffer         */
 // ubit8 *filbuffer = 0;                 /* Buffer for read/write unit      */
 
-#ifdef DMSERVER
-extern struct unit_function_array_type unit_function_array[];
-#endif
-
 int bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra)
 {
    struct extra_descr_data *e, *te;
@@ -156,8 +152,7 @@ int bread_swap_skip(CByteBuffer *pBuf)
 struct diltemplate *bread_diltemplate(CByteBuffer *pBuf)
 {
 #ifdef DMSERVER
-   extern int mud_bootzone;
-   int        valid;
+   int valid;
 #endif
    int                 i, j;
    struct diltemplate *tmpl;

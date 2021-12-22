@@ -46,6 +46,8 @@
 #include "db.h"
 #include "db_file.h"
 #include "dijkstra.h"
+#include "external_funcs.h"
+#include "externals.h"
 #include "files.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -67,18 +69,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*   external vars  */
-
-extern struct zone_info_type   zone_info;
-extern struct unit_data       *unit_list;
-extern struct descriptor_data *descriptor_list;
-extern char                    libdir[]; /* from dikumud.c */
-extern BLK_FILE               *inven_bf;
-
-/* external functs */
-
-struct time_info_data age(struct unit_data *ch);
-struct time_info_data real_time_passed(time_t t2, time_t t1);
+struct time_info_data      age(struct unit_data *ch);
+struct time_info_data      real_time_passed(time_t t2, time_t t1);
 std::shared_ptr<zone_type> find_zone(const char *zonename);
 
 static int WIZ_CMD_LEVEL = 210; /* No need to change this, it is also set
@@ -598,8 +590,7 @@ void do_execute(struct unit_data *ch, char *argument, const struct command_info 
 
 void do_shutdown(struct unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   char       buf[100];
-   extern int mud_shutdown, mud_reboot;
+   char buf[100];
 
    if(!IS_PC(ch))
       return;
@@ -617,8 +608,7 @@ void do_shutdown(struct unit_data *ch, char *argument, const struct command_info
 
 void do_reboot(struct unit_data *ch, char *argument, const struct command_info *cmd)
 {
-   char       buf[100], arg[MAX_INPUT_LENGTH];
-   extern int mud_shutdown, mud_reboot;
+   char buf[100], arg[MAX_INPUT_LENGTH];
 
    if(!IS_PC(ch))
       return;
@@ -1173,8 +1163,6 @@ void do_verify(struct unit_data *ch, char *arg, const struct command_info *cmd)
    float             atot, stot;
    char              buf[256];
 
-   extern struct requirement_type pc_race_base[];
-
    if(!IS_PC(ch))
       return;
 
@@ -1405,8 +1393,7 @@ void do_restore(struct unit_data *ch, char *argument, const struct command_info 
  * The command `file' below *
  ****************************/
 
-extern char *wizlist, *news, *credits, *motd, *goodbye;
-char        *read_info_file(char *name, char *oldstr);
+char *read_info_file(char *name, char *oldstr);
 
 static bool file_install(char *file, bool bNew)
 {
@@ -1689,9 +1676,8 @@ void do_title(struct unit_data *ch, char *arg, const struct command_info *cmd)
  */
 void do_wizlock(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   extern int wizlock;
-   int        lvl;
-   char       buf[128];
+   int  lvl;
+   char buf[128];
 
    arg = one_argument(arg, buf);
 
@@ -1720,9 +1706,8 @@ void do_wizlock(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
 void do_wizhelp(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   char                       buf[MAX_STRING_LENGTH], *b;
-   int                        no, i;
-   extern struct command_info cmd_info[];
+   char buf[MAX_STRING_LENGTH], *b;
+   int  no, i;
 
    if(!IS_PC(ch))
       return;
@@ -1754,8 +1739,6 @@ void do_kickit(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
 void do_corpses(struct unit_data *ch, char *arg, const struct command_info *cmd)
 {
-   extern char *in_string(struct unit_data * ch, struct unit_data * u);
-
    struct unit_data *c;
    bool              found = FALSE;
    char             *c1, *c2, buf[512];

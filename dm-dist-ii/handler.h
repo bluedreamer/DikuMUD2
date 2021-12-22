@@ -65,9 +65,9 @@ struct unit_data *unequip_char(struct unit_data *ch, ubit8 pos);
 struct unit_data *unequip_object(struct unit_data *obj);
 void              recalc_dex_red(struct unit_data *ch);
 
-int               unit_recursive(struct unit_data *from, struct unit_data *to);
+int                        unit_recursive(struct unit_data *from, struct unit_data *to);
 std::shared_ptr<zone_type> unit_zone(const struct unit_data *unit);
-struct unit_data *unit_room(struct unit_data *unit);
+struct unit_data          *unit_room(struct unit_data *unit);
 
 /* If the transfered unit MIGHT be money, remember to pile_money() it!!!!! */
 void unit_up(struct unit_data *unit);

@@ -44,9 +44,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Extern data */
-extern struct unit_data *unit_list;
-
 struct spell_info_type spell_info[SPL_TREE_MAX];
 
 void set_spellargs(struct spell_args *sa, struct unit_data *caster, struct unit_data *medium, struct unit_data *target, char *arg, int hm)
@@ -123,8 +120,6 @@ int spell_perform(int               spell_no,
 
    if(!cmd)
    {
-      extern struct trie_type *intr_trie;
-
       cmd = (struct command_info *)search_trie("cast", intr_trie);
       assert(cmd);
    }

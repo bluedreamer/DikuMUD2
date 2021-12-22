@@ -38,10 +38,6 @@
 #include <time.h>
 #include <vector>
 
-extern std::shared_ptr<file_index_type> slime_fi;
-
-extern char libdir[];
-
 // struct file_index_type **slime_list = NULL;
 std::vector<std::shared_ptr<file_index_type>> slime_list;
 

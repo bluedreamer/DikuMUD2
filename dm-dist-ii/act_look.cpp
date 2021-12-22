@@ -62,14 +62,6 @@
 
 /* extern variables */
 
-extern struct descriptor_data *descriptor_list;
-extern struct unit_data       *unit_list;
-
-extern char *credits;
-extern char *news;
-extern char *info;
-extern char *wizlist;
-
 struct looklist_type
 {
    struct look_msg *msgs;

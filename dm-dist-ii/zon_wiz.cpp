@@ -42,8 +42,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern struct unit_data *unit_list;
-
 int ball(struct spec_arg *sarg)
 {
 #define TOP_MAX 10

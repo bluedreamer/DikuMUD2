@@ -30,6 +30,7 @@
 
 #include "comm.h"
 #include "db.h"
+#include "externals.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "movement.h"
@@ -42,9 +43,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-/* externs */
-extern char libdir[]; /* from dikumud.c */
 
 struct social_msg
 {
