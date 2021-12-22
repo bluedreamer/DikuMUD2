@@ -50,6 +50,7 @@
 #include "utility.h"
 #include "utils.h"
 #include "weather.h"
+#include "external_funcs.h"
 
 #include <ctype.h>
 #include <stdio.h>
@@ -63,10 +64,6 @@ std::shared_ptr<unit_data> unit_list = NULL; /* The global unit_list          */
 /* Global permanent element of zone info */
 struct zone_info_type zone_info = {0, 0, 0, 0};
 
-extern char libdir[];
-extern char zondir[];
-extern int  memory_total_alloc;
-
 struct room_direction_data *create_direction_data(void);
 
 /*  Generate array of bin_search_type for the zone_list, and for each
@@ -75,7 +72,7 @@ struct room_direction_data *create_direction_data(void);
 void generate_bin_arrays(void)
 {
    std::shared_ptr<file_index_type> fi;
-   std::shared_ptr<zone_type> z;
+   std::shared_ptr<zone_type>       z;
    int                              i;
 
    /* Generate array for zones */
@@ -118,8 +115,8 @@ void generate_bin_arrays(void)
 void resolve_templates(void)
 {
    std::shared_ptr<zone_type> z;
-   struct diltemplate *tmpl;
-   int                 i, j, valid;
+   struct diltemplate        *tmpl;
+   int                        i, j, valid;
 
    /* all zones */
    for(z = zone_info.zone_list; z; z = z->next)
@@ -310,13 +307,12 @@ void generate_zone_indexes(void)
    std::shared_ptr<zone_type> z;
    std::shared_ptr<zone_type> tz1;
    std::shared_ptr<zone_type> tz2;
-   extern int       mud_bootzone;
-   char             zone[82], tmpbuf[82], filename[82 + 41];
-   char             buf[MAX_STRING_LENGTH];
-   CByteBuffer      cBuf(MAX_STRING_LENGTH);
-   FILE            *f, *zone_file;
-   char            *c;
-   ubit8            access, loadlevel, payonly;
+   char                       zone[82], tmpbuf[82], filename[82 + 41];
+   char                       buf[MAX_STRING_LENGTH];
+   CByteBuffer                cBuf(MAX_STRING_LENGTH);
+   FILE                      *f, *zone_file;
+   char                      *c;
+   ubit8                      access, loadlevel, payonly;
 
    zone_info.no_of_zones = 0;
    zone_info.zone_list   = 0;
@@ -566,11 +562,6 @@ int bread_affect(CByteBuffer *pBuf, std::shared_ptr<unit_data> u, ubit8 nVersion
 
 std::shared_ptr<zone_type> unit_error_zone;
 
-extern int memory_pc_alloc;
-extern int memory_npc_alloc;
-extern int memory_obj_alloc;
-extern int memory_room_alloc;
-
 /*  Room directions points to file_indexes instead of units
  *  after a room has been read, due to initialization considerations
  *  Unit is NOT inserted in unit_list
@@ -608,7 +599,7 @@ std::shared_ptr<unit_data> read_unit_string(CByteBuffer *pBuf, int type, int len
       return NULL;
    }
 
-   u = new(class unit_data)(type);
+   u = unit_data::Create(type);
 
    nStart = pBuf->GetReadPosition();
    g_nCorrupt += pBuf->Read8(&unit_version);
@@ -694,7 +685,8 @@ std::shared_ptr<unit_data> read_unit_string(CByteBuffer *pBuf, int type, int len
          if(UNIT_TYPE(u) == UNIT_ST_ROOM)
          {
             // TODO no way this should be casting file_index_type to unit_data - but lets go with it for the moment
-            UNIT_IN(u) = (std::shared_ptr<unit_data> )tmpfi.get(); /* To be normalized! */
+            assert(0);
+//            UNIT_IN(u) = (std::shared_ptr<unit_data> )tmpfi.get(); /* To be normalized! */
          }
          else
          {
@@ -1008,11 +1000,12 @@ std::shared_ptr<unit_data> read_unit_string(CByteBuffer *pBuf, int type, int len
             g_nCorrupt += pBuf->ReadStringCopy(name, sizeof(name));
             if((fi = find_file_index(zone, name)))
             {
-               // TODO no way this should be casting file_index_type to unit_data - but lets go with it for the moment
-               UNIT_IN(u) = (std::shared_ptr<unit_data> )fi.get(); /* A file index */
+               // TODO ADRIAN no way this should be casting file_index_type to unit_data - but lets go with it for the moment
+               //UNIT_IN(u) = fi; /* A file index */
+               assert(0);
             }
             else
-               UNIT_IN(u) = NULL;
+               UNIT_IN(u).reset();
          }
 
          /* Read N, S, E, W, U and D directions */
@@ -1039,7 +1032,8 @@ std::shared_ptr<unit_data> read_unit_string(CByteBuffer *pBuf, int type, int len
 
                   /* NOT fi->room_ptr! Done later */
                   // TODO no way this should be casting file_index_type to unit_data - but lets go with it for the moment
-                  ROOM_EXIT(u, i)->to_room = (std::shared_ptr<unit_data> )fi.get();
+                  assert(0);
+//                  ROOM_EXIT(u, i)->to_room = (std::shared_ptr<unit_data> )fi.get();
                }
                else
                { /* Exit not existing, skip the junk info! */
@@ -1100,8 +1094,6 @@ std::shared_ptr<unit_data> read_unit_string(CByteBuffer *pBuf, int type, int len
    }
    else
    {
-      extern std::shared_ptr<file_index_type> slime_fi;
-
       slog(LOG_ALL, 0, "FATAL: UNIT CORRUPT: %s", u->names.Name());
 
       if((type != UNIT_ST_PC) && (type != UNIT_ST_ROOM) && slime_fi)
@@ -1154,10 +1146,6 @@ void read_unit_file(std::shared_ptr<file_index_type> org_fi, CByteBuffer *pBuf)
  */
 std::shared_ptr<unit_data> read_unit(std::shared_ptr<file_index_type> org_fi)
 {
-   int is_slimed(std::shared_ptr<file_index_type> sp);
-
-   extern std::shared_ptr<file_index_type> slime_fi;
-
    std::shared_ptr<unit_data> u;
 
    if(org_fi == NULL)
@@ -1200,8 +1188,6 @@ void read_all_rooms(void)
    std::shared_ptr<zone_type>       z;
    std::shared_ptr<file_index_type> fi;
 
-   extern std::shared_ptr<zone_type> boot_zone;
-
    for(z = zone_info.zone_list; z; z = z->next)
    {
       boot_zone = z;
@@ -1217,7 +1203,8 @@ void read_all_rooms(void)
 /* After boot time, normalize all room exits */
 void normalize_world(void)
 {
-   std::shared_ptr<unit_data> u, *tmpu;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> tmpu;
    int               i;
 
    for(u = unit_list; u; u = u->gnext)
@@ -1226,8 +1213,10 @@ void normalize_world(void)
          /* Place room inside another room? */
          if(UNIT_IN(u))
          {
-            file_index_type *fi = (struct file_index_type *)UNIT_IN(u);
-
+            // TODO ADRIAN fix this
+            assert(0);
+//            file_index_type *fi = (struct file_index_type *)UNIT_IN(u);
+            std::shared_ptr<file_index_type> fi;
             assert(fi->room_ptr);
 
             UNIT_IN(u) = fi->room_ptr;
@@ -1236,7 +1225,11 @@ void normalize_world(void)
          /* Change directions into unit_data points from file_index_type */
          for(i = 0; i < 6; i++)
             if(ROOM_EXIT(u, i))
-               ROOM_EXIT(u, i)->to_room = ((struct file_index_type *)ROOM_EXIT(u, i)->to_room)->room_ptr;
+            {
+               // TODO ADRIAN fix this odd casting
+               assert(0);
+//               ROOM_EXIT(u, i)->to_room = ((struct file_index_type *)ROOM_EXIT(u, i)->to_room)->room_ptr;
+            }
       }
 
    for(u = unit_list; u; u = u->gnext)
@@ -1277,8 +1270,6 @@ std::shared_ptr<zone_reset_cmd> read_zone(FILE *f, std::shared_ptr<zone_reset_cm
    ubit8                            cmdno, direction;
    char                             zonename[FI_MAX_ZONENAME + 1], name[FI_MAX_UNITNAME + 1];
    CByteBuffer                      cBuf(100);
-
-   extern std::shared_ptr<file_index_type> slime_fi;
 
    tmp_cmd = cmd_list;
 
@@ -1426,10 +1417,6 @@ char *read_info_file(char *name, char *oldstr)
    return str_dup(buf);
 }
 
-extern int memory_roomread_alloc;
-extern int memory_zoneidx_alloc;
-extern int memory_zonereset_alloc;
-
 void boot_db(void)
 {
    void competition_boot(void);
@@ -1459,9 +1446,7 @@ void boot_db(void)
    void interpreter_dil_check(void);
    void persist_boot(void);
 
-   void       cleanup_playerfile(int argc, char *argv[]);
-   extern int player_convert;
-
+   void cleanup_playerfile(int argc, char *argv[]);
    slog(LOG_OFF, 0, "Boot DB -- BEGIN.");
    slog(LOG_OFF, 0, "Copyright (C) 1994 - 1996 by Valhalla.");
 
@@ -1584,7 +1569,8 @@ void db_shutdown(void)
 {
    return;
 
-   class unit_data *u, *tmpu;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> tmpu;
 
    slog(LOG_OFF, 0, "Destroying unit list.");
 
@@ -1608,7 +1594,7 @@ void db_shutdown(void)
       unit_from_unit(tmpu);
       remove_from_unit_list(tmpu);
 
-      delete tmpu;
+      tmpu.reset();
 
       clear_destructed();
    }

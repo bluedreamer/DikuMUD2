@@ -62,14 +62,6 @@
 
 /* extern variables */
 
-extern struct descriptor_data *descriptor_list;
-extern std::shared_ptr<unit_data> unit_list;
-
-extern char *credits;
-extern char *news;
-extern char *info;
-extern char *wizlist;
-
 struct looklist_type
 {
    struct look_msg *msgs;
@@ -192,12 +184,12 @@ void unit_messg(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> unit, 
    c = single_unit_messg(unit, str_cc(type, "_s"), "", mesg_s);
 
    if(!str_is_empty(c))
-      act(c, A_SOMEONE, ch, unit, 0, TO_CHAR);
+      act(c, A_SOMEONE, ch, unit, {}, TO_CHAR);
 
    c = single_unit_messg(unit, str_cc(type, "_o"), "", mesg_o);
 
    if(!str_is_empty(c))
-      act(c, A_SOMEONE, ch, unit, 0, TO_ROOM);
+      act(c, A_SOMEONE, ch, unit, {}, TO_ROOM);
 }
 
 /* Assume unit is a char */
@@ -294,10 +286,10 @@ void show_examine_aura(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data>
    cat_unit_effects(ch, unit, buf);
 
    if(UNIT_BRIGHT(unit) > 0)
-      act("Light comes from the $3N.", A_ALWAYS, ch, 0, unit, TO_CHAR);
+      act("Light comes from the $3N.", A_ALWAYS, ch, {}, unit, TO_CHAR);
 
    if(UNIT_BRIGHT(unit) < 0)
-      act("Darkness comes from the $3N.", A_ALWAYS, ch, 0, unit, TO_CHAR);
+      act("Darkness comes from the $3N.", A_ALWAYS, ch, {}, unit, TO_CHAR);
 
    if(*buf)
       act("The $3N reveals an aura of$2t", A_ALWAYS, ch, buf, unit, TO_CHAR);
@@ -306,7 +298,7 @@ void show_examine_aura(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data>
 void show_obj_to_char_lookat(std::shared_ptr<unit_data> obj, std::shared_ptr<unit_data> ch, int extra)
 {
    if(affected_by_spell(obj, ID_REWARD))
-      act("There is a reward on $2n.", A_SOMEONE, ch, obj, 0, TO_CHAR);
+      act("There is a reward on $2n.", A_SOMEONE, ch, obj, {}, TO_CHAR);
 
    if(OBJ_TYPE(obj) == ITEM_WEAPON)
       act("The $2N clearly requires a $3t fighting style.", A_SOMEONE, ch, obj, wpn_text[OBJ_VALUE(obj, 0)], TO_CHAR);
@@ -333,7 +325,7 @@ void show_obj_to_char_trans_cont(char *b, std::shared_ptr<unit_data> obj, std::s
          {
             if(anything == FALSE)
             {
-               act_generate(b, "The $1N contains:", A_SOMEONE, obj, 0, ch, TO_VICT, ch);
+               act_generate(b, "The $1N contains:", A_SOMEONE, obj, {}, ch, TO_VICT, ch);
                TAIL(b);
                anything = TRUE;
             }
@@ -537,7 +529,7 @@ void show_char_to_char_trans_cont(char *b, std::shared_ptr<unit_data> i, std::sh
          {
             if(anything == FALSE)
             {
-               act_generate(b, "$1n carries:", A_SOMEONE, i, 0, ch, TO_VICT, ch);
+               act_generate(b, "$1n carries:", A_SOMEONE, i, {}, ch, TO_VICT, ch);
                TAIL(b);
                anything = TRUE;
             }
@@ -584,7 +576,7 @@ void show_char_to_char_inv(char *buffer, std::shared_ptr<unit_data> i, std::shar
       return;
 
    *buffer = 0;
-   act_generate(buffer, "$3n", A_HIDEINV, ch, 0, i, TO_CHAR, ch);
+   act_generate(buffer, "$3n", A_HIDEINV, ch, {}, i, TO_CHAR, ch);
    TAIL(buffer);
    show_char_to_char_trans_cont(buffer, i, ch);
 }
@@ -731,13 +723,13 @@ static void look_dir(std::shared_ptr<unit_data> ch, int keyword_no)
       {
          if(has_found_door(ch, keyword_no))
          {
-            act("The $2t is closed.", A_SOMEONE, ch, ROOM_EXIT(room, keyword_no)->open_name.Name(), 0, TO_CHAR);
+            act("The $2t is closed.", A_SOMEONE, ch, ROOM_EXIT(room, keyword_no)->open_name.Name(), {}, TO_CHAR);
             return;
          }
       }
       else if(IS_SET(ROOM_EXIT(room, keyword_no)->exit_info, EX_OPEN_CLOSE))
       {
-         act("The $2t is open.", A_SOMEONE, ch, ROOM_EXIT(room, keyword_no)->open_name.Name(), 0, TO_CHAR);
+         act("The $2t is open.", A_SOMEONE, ch, ROOM_EXIT(room, keyword_no)->open_name.Name(), {}, TO_CHAR);
          return;
       }
    }
@@ -755,7 +747,7 @@ static void look_in(std::shared_ptr<unit_data> ch, char *arg, const struct comma
    else if(!(unit = find_unit(ch, &arg, 0, FIND_UNIT_HERE)))
       send_to_char("No such thing here.\n\r", ch);
    else if(IS_CHAR(unit))
-      act("Well, if you kill $3m then you could look inside.", A_SOMEONE, ch, 0, unit, TO_CHAR);
+      act("Well, if you kill $3m then you could look inside.", A_SOMEONE, ch, {}, unit, TO_CHAR);
    else if(IS_ROOM(unit))
    {
       if(IS_SET(UNIT_OPEN_FLAGS(unit), EX_CLOSED))
@@ -777,7 +769,7 @@ static void look_in(std::shared_ptr<unit_data> ch, char *arg, const struct comma
       {
          case ITEM_DRINKCON:
             if(OBJ_VALUE(unit, 1) == 0)
-               act("It is empty.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+               act("It is empty.", A_SOMEONE, ch, {}, {}, TO_CHAR);
             else
             {
                int nFull = OBJ_VALUE(unit, 1) * 3;
@@ -935,7 +927,7 @@ static void look_at(std::shared_ptr<unit_data> ch, char *arg, const struct comma
                if(ed->names.Name())
                   act("You look at $2n's $3t.", A_HIDEINV, ch, unit, ed->names.Name(), TO_CHAR);
                else
-                  act("You look at $2n.", A_HIDEINV, ch, unit, 0, TO_CHAR);
+                  act("You look at $2n.", A_HIDEINV, ch, unit, {}, TO_CHAR);
 
                page_string(CHAR_DESCRIPTOR(ch), ed->descr.String());
                page_string(CHAR_DESCRIPTOR(ch), "\n\r");
@@ -949,8 +941,8 @@ static void look_at(std::shared_ptr<unit_data> ch, char *arg, const struct comma
                   }
                   else
                   {
-                     act("$1n looks at $3n.", A_HIDEINV, ch, 0, unit, TO_NOTVICT);
-                     act("$1n looks at you.", A_HIDEINV, ch, 0, unit, TO_VICT);
+                     act("$1n looks at $3n.", A_HIDEINV, ch, {}, unit, TO_NOTVICT);
+                     act("$1n looks at you.", A_HIDEINV, ch, {}, unit, TO_VICT);
                   }
                }
                send_done(ch, NULL, unit, 1, cmd, arg);
@@ -964,7 +956,7 @@ static void look_at(std::shared_ptr<unit_data> ch, char *arg, const struct comma
             else
             {
                if(str_is_empty(b))
-                  act("Look at $1n's what?", A_ALWAYS, unit, NULL, ch, TO_VICT);
+                  act("Look at $1n's what?", A_ALWAYS, unit, {}, ch, TO_VICT);
                else
                   act("$1n does not seem to have a $2t.", A_ALWAYS, unit, skip_blanks(b), ch, TO_VICT);
             }
@@ -984,36 +976,36 @@ static void look_at(std::shared_ptr<unit_data> ch, char *arg, const struct comma
    /* are always shown when INSIDE the rooms (not out)   */
    if(!unit || IS_ROOM(unit))
    {
-      if((ed = char_unit_find_extra(ch, &target, arg, UNIT_IN(ch))))
+      if((ed = char_unit_find_extra(ch, target, arg, UNIT_IN(ch))))
       {
-         act("You look at the $3t.", A_HIDEINV, ch, 0, ed->names.Name() ? ed->names.Name() : UNIT_NAME(target), TO_CHAR);
+         act("You look at the $3t.", A_HIDEINV, ch, {}, ed->names.Name() ? ed->names.Name() : UNIT_NAME(target), TO_CHAR);
          page_string(CHAR_DESCRIPTOR(ch), ed->descr.String());
          page_string(CHAR_DESCRIPTOR(ch), "\n\r");
          send_done(ch, NULL, NULL, 2, cmd, arg);
       }
       else if(UNIT_IN(ch) && UNIT_IS_TRANSPARENT(UNIT_IN(ch)) && UNIT_IN(UNIT_IN(ch)) &&
-              (ed = char_unit_find_extra(ch, &target, arg, UNIT_IN(UNIT_IN(ch)))))
+              (ed = char_unit_find_extra(ch, target, arg, UNIT_IN(UNIT_IN(ch)))))
       {
-         act("You look at the $3t.", A_HIDEINV, ch, 0, ed->names.Name() ? ed->names.Name() : UNIT_NAME(target), TO_CHAR);
+         act("You look at the $3t.", A_HIDEINV, ch, {}, ed->names.Name() ? ed->names.Name() : UNIT_NAME(target), TO_CHAR);
          page_string(CHAR_DESCRIPTOR(ch), ed->descr.String());
          page_string(CHAR_DESCRIPTOR(ch), "\n\r");
          send_done(ch, NULL, NULL, 2, cmd, arg);
       }
-      else if((ed = char_unit_find_extra(ch, &target, arg, UNIT_IN(ch))))
+      else if((ed = char_unit_find_extra(ch, target, arg, UNIT_IN(ch))))
       {
-         act("You look at the $3t.", A_HIDEINV, ch, 0, ed->names.Name() ? ed->names.Name() : UNIT_NAME(target), TO_CHAR);
+         act("You look at the $3t.", A_HIDEINV, ch, {}, ed->names.Name() ? ed->names.Name() : UNIT_NAME(target), TO_CHAR);
          page_string(CHAR_DESCRIPTOR(ch), ed->descr.String());
          page_string(CHAR_DESCRIPTOR(ch), "\n\r");
          send_done(ch, NULL, NULL, 2, cmd, arg);
       }
-      else if((ed = char_unit_find_extra(ch, &target, arg, UNIT_CONTAINS(ch))))
+      else if((ed = char_unit_find_extra(ch, target, arg, UNIT_CONTAINS(ch))))
       {
-         act("You look at your $3t.", A_HIDEINV, ch, 0, ed->names.Name() ? ed->names.Name() : UNIT_NAME(target), TO_CHAR);
+         act("You look at your $3t.", A_HIDEINV, ch, {}, ed->names.Name() ? ed->names.Name() : UNIT_NAME(target), TO_CHAR);
          page_string(CHAR_DESCRIPTOR(ch), ed->descr.String());
          page_string(CHAR_DESCRIPTOR(ch), "\n\r");
          send_done(ch, NULL, NULL, 2, cmd, arg);
       }
-      else if(!unit && (ed = char_unit_find_extra(ch, &target, arg, UNIT_CONTAINS(UNIT_IN(ch)))))
+      else if(!unit && (ed = char_unit_find_extra(ch, target, arg, UNIT_CONTAINS(UNIT_IN(ch)))))
       {
          act("You look at $2n's $3t.", A_HIDEINV, ch, target, ed->names.Name() ? ed->names.Name() : UNIT_NAME(target), TO_CHAR);
          page_string(CHAR_DESCRIPTOR(ch), ed->descr.String());
@@ -1040,9 +1032,9 @@ static void look_at(std::shared_ptr<unit_data> ch, char *arg, const struct comma
          {
             /* I'll force people to make their descriptions - he he */
             if(IS_PC(unit))
-               act("$3e has big green ears, and long greasy hair.", A_SOMEONE, ch, 0, unit, TO_CHAR);
+               act("$3e has big green ears, and long greasy hair.", A_SOMEONE, ch, {}, unit, TO_CHAR);
             else
-               act("You see nothing special about $3m.", A_SOMEONE, ch, 0, unit, TO_CHAR);
+               act("You see nothing special about $3m.", A_SOMEONE, ch, {}, unit, TO_CHAR);
          }
          else
          {
@@ -1052,33 +1044,33 @@ static void look_at(std::shared_ptr<unit_data> ch, char *arg, const struct comma
 
          if(ch != unit)
          {
-            act("$1n looks at you.", A_HIDEINV, ch, 0, unit, TO_VICT);
-            act("$1n looks at $3n.", A_HIDEINV, ch, 0, unit, TO_NOTVICT);
+            act("$1n looks at you.", A_HIDEINV, ch, {}, unit, TO_VICT);
+            act("$1n looks at $3n.", A_HIDEINV, ch, {}, unit, TO_NOTVICT);
          }
          else
-            act("$1n looks at $1mself.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+            act("$1n looks at $1mself.", A_HIDEINV, ch, {}, {}, TO_ROOM);
 
          if(affected_by_spell(unit, ID_REWARD))
-            act("There is a reward on $2s head.", A_SOMEONE, ch, unit, 0, TO_CHAR);
+            act("There is a reward on $2s head.", A_SOMEONE, ch, unit, {}, TO_CHAR);
 
          if(IS_SET(CHAR_FLAGS(unit), CHAR_PROTECTED))
          {
             if(IS_SET(CHAR_FLAGS(unit), CHAR_OUTLAW))
-               act("$1n an outlaw wanted alive.", A_SOMEONE, unit, 0, ch, TO_VICT);
+               act("$1n an outlaw wanted alive.", A_SOMEONE, unit, {}, ch, TO_VICT);
             else
-               act("$1n is a protected citizen.", A_SOMEONE, unit, 0, ch, TO_VICT);
+               act("$1n is a protected citizen.", A_SOMEONE, unit, {}, ch, TO_VICT);
          }
          else if(IS_SET(CHAR_FLAGS(unit), CHAR_OUTLAW))
          {
-            act("$1n is an outlaw, wanted dead or alive.", A_SOMEONE, unit, 0, ch, TO_VICT);
+            act("$1n is an outlaw, wanted dead or alive.", A_SOMEONE, unit, {}, ch, TO_VICT);
          }
 
          if(IS_SET(CHAR_FLAGS(unit), CHAR_LEGAL_TARGET))
-            act("You may kill $1m now.", A_SOMEONE, unit, 0, ch, TO_VICT);
+            act("You may kill $1m now.", A_SOMEONE, unit, {}, ch, TO_VICT);
 
          if(g_cServerConfig.m_bBOB && IS_PC(unit) && IS_SET(PC_FLAGS(unit), PC_PK_RELAXED))
          {
-            act("You notice a scar on $3s wrist from the Book of Blood.", A_SOMEONE, ch, 0, unit, TO_CHAR);
+            act("You notice a scar on $3s wrist from the Book of Blood.", A_SOMEONE, ch, {}, unit, TO_CHAR);
          }
 
          show_char_to_char_lookat(unit, ch); /* Show equipment etc. */
@@ -1205,7 +1197,7 @@ static void look_blank(std::shared_ptr<unit_data> ch, const struct command_info 
 
       if(UNIT_IN_DESCR(UNIT_IN(ch)).StringPtr())
       {
-         act(UNIT_IN_DESCR_STRING(UNIT_IN(ch)), A_ALWAYS, ch, UNIT_IN(ch), NULL, TO_CHAR);
+         act(UNIT_IN_DESCR_STRING(UNIT_IN(ch)), A_ALWAYS, ch, UNIT_IN(ch), {}, TO_CHAR);
       }
       else
       {
@@ -1387,18 +1379,18 @@ void do_read(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
 
    if(!IS_OBJ(obj))
    {
-      act("You can not read from $2n, try to look at it instead.", A_ALWAYS, ch, obj, 0, TO_CHAR);
+      act("You can not read from $2n, try to look at it instead.", A_ALWAYS, ch, obj, {}, TO_CHAR);
       return;
    }
 
    exd = find_raw_ex_descr("$read", UNIT_EXTRA_DESCR(obj));
    if(exd)
    {
-      act("There is something written upon the $2N:\n\r", A_SOMEONE, ch, obj, 0, TO_CHAR);
+      act("There is something written upon the $2N:\n\r", A_SOMEONE, ch, obj, {}, TO_CHAR);
       page_string(CHAR_DESCRIPTOR(ch), exd->descr, 1);
    }
    else
-      act("The $2N is blank.", A_SOMEONE, ch, obj, 0, TO_CHAR);
+      act("The $2N is blank.", A_SOMEONE, ch, obj, {}, TO_CHAR);
 #endif
 }
 

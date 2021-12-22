@@ -107,25 +107,25 @@ void roll_description(std::shared_ptr<unit_data> att, const char *text, int roll
       switch(roll / 100)
       {
          case 2:
-            act("Great $2t!", A_ALWAYS, att, text, 0, TO_CHAR);
-            act("$1n makes a great $2t!", A_ALWAYS, att, text, 0, TO_ROOM);
+            act("Great $2t!", A_ALWAYS, att, text, {}, TO_CHAR);
+            act("$1n makes a great $2t!", A_ALWAYS, att, text, {}, TO_ROOM);
             break;
 
          case 3:
-            act("Superb $2t!", A_ALWAYS, att, text, 0, TO_CHAR);
-            act("$1n makes a superb $2t!", A_ALWAYS, att, text, 0, TO_ROOM);
+            act("Superb $2t!", A_ALWAYS, att, text, {}, TO_CHAR);
+            act("$1n makes a superb $2t!", A_ALWAYS, att, text, {}, TO_ROOM);
             break;
 
          default:
-            act("Divine $2t!", A_ALWAYS, att, text, 0, TO_CHAR);
-            act("$1n makes a divinely inspired $2t!", A_ALWAYS, att, text, 0, TO_ROOM);
+            act("Divine $2t!", A_ALWAYS, att, text, {}, TO_CHAR);
+            act("$1n makes a divinely inspired $2t!", A_ALWAYS, att, text, {}, TO_ROOM);
             break;
       }
    }
    else if(roll <= -100)
    {
-      act("You fumble!", A_ALWAYS, att, text, 0, TO_CHAR);
-      act("$1n fumbles!", A_ALWAYS, att, text, 0, TO_ROOM);
+      act("You fumble!", A_ALWAYS, att, text, {}, TO_CHAR);
+      act("$1n fumbles!", A_ALWAYS, att, text, {}, TO_ROOM);
    }
 }
 
@@ -908,8 +908,6 @@ static void skill_read(void)
          }
          else
          {
-            extern struct command_info cmd_info[];
-
             for(int i = 0; *cmd_info[i].cmd_str; i++) // MS2020, missing *
             {
                if(cmd_info[i].no == cmdidx)

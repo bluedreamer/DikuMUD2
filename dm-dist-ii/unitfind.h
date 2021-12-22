@@ -35,12 +35,10 @@
 
 struct unit_vector_data
 {
-   std::shared_ptr<unit_data> *units;
-   int                size;
-   int                top;
+   std::vector<std::shared_ptr<unit_data>> units;
+   int                         size;
+   int                         top;
 };
-
-extern struct unit_vector_data unit_vector;
 
 ubit1                      same_surroundings(std::shared_ptr<unit_data> u1, std::shared_ptr<unit_data> u2);
 void                       scan4_unit_room(std::shared_ptr<unit_data> room, ubit8 type);
@@ -56,7 +54,8 @@ std::shared_ptr<unit_data> find_unit_general(const std::shared_ptr<unit_data> vi
                                              const ubit32                     bitvector);
 std::shared_ptr<unit_data> find_symbolic_instance(std::shared_ptr<file_index_type> fi);
 std::shared_ptr<unit_data> find_symbolic(char *zone, char *name);
-std::shared_ptr<unit_data> find_symbolic_instance_ref(std::shared_ptr<unit_data> ref, std::shared_ptr<file_index_type> fi, ubit16 bitvector);
+std::shared_ptr<unit_data>
+find_symbolic_instance_ref(std::shared_ptr<unit_data> ref, std::shared_ptr<file_index_type> fi, ubit16 bitvector);
 std::shared_ptr<unit_data> random_unit(std::shared_ptr<unit_data> ref, int sflags, int tflags);
 
 #endif

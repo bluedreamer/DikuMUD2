@@ -38,6 +38,7 @@
 
 #include "comm.h"
 #include "db.h"
+#include "externals.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "structs.h"
@@ -48,8 +49,6 @@
 #define REBOOT_AT 10 /* 0-23, time of optional reboot if -e lib/reboot */
 
 /* extrenal vars */
-extern int                     tics; /* number of tics since boot-time */
-extern struct descriptor_data *descriptor_list, *next_to_process;
 
 /* external procs */
 #if !defined(DOS) && !defined(AMIGA)
@@ -71,8 +70,6 @@ void night_watchman(void)
 {
    long       tc;
    struct tm *t_info;
-
-   extern int mud_shutdown;
 
    tc     = time(0);
    t_info = localtime(&tc);
@@ -99,8 +96,6 @@ void check_reboot(void)
    struct tm *t_info;
    char       dummy;
    FILE      *boot;
-
-   extern int mud_shutdown, mud_reboot;
 
    tc     = time(0);
    t_info = localtime(&tc);
@@ -224,7 +219,6 @@ int load(void)
    int        i, sum;
    static int previous[5];
    static int p_point = -1;
-   extern int slow_death;
 
    if(!(fl = fopen("/tmp/.sysline", "r")))
    {
@@ -398,8 +392,6 @@ void gr(int s)
                                "The game will close temporarily 2 minutes from now.\n\r",
                                "WARNING: The game will close in 1 minute.\n\r"};
    static int   wnr         = 0;
-
-   extern int slow_death, mud_shutdown;
 
    void coma(int s);
 

@@ -64,7 +64,6 @@ void              equip_char(std::shared_ptr<unit_data> ch, std::shared_ptr<unit
 std::shared_ptr<unit_data> unequip_char(std::shared_ptr<unit_data> ch, ubit8 pos);
 std::shared_ptr<unit_data> unequip_object(std::shared_ptr<unit_data> obj);
 void              recalc_dex_red(std::shared_ptr<unit_data> ch);
-
 int               unit_recursive(std::shared_ptr<unit_data> from, std::shared_ptr<unit_data> to);
 std::shared_ptr<zone_type> unit_zone(const std::shared_ptr<unit_data> unit);
 std::shared_ptr<unit_data> unit_room(std::shared_ptr<unit_data> unit);

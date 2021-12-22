@@ -351,6 +351,7 @@ struct dilargstype
 #define DILV_MAX     22 /* Max number */
 
 /* DIL variable structure */
+class unit_data;
 struct dilvar
 {
    ubit8 type; /* variable type */
@@ -493,9 +494,6 @@ struct dilprg
 
    struct dilprg *next; /* For global dilprg list (sendtoalldil) */
 };
-
-extern struct dilprg *dil_list;
-extern struct dilprg *dil_list_nextdude;
 
 /* Function prototypes */
 void free_prg(struct dilprg *prg);

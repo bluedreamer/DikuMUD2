@@ -26,15 +26,8 @@
 #define _MUD_COMMON_H
 
 #include "essential.h"
-
-extern const char *fillwords[];
-
-extern struct wpn_info_type wpn_info[];
-
-extern const char *drinks[];
-extern const char *dirs[];
-
-extern char libdir[64];
+#include <memory>
+class unit_data;
 
 int required_xp(int level);
 int level_xp(int level);

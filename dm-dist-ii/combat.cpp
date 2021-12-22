@@ -188,23 +188,11 @@ cCombat::cCombat(std::shared_ptr<unit_data> owner, int bMelee)
    nWhen  = SPEED_DEFAULT;
    cmd[0] = 0;
 
-   pOpponents   = NULL;
-   nNoOpponents = 0;
-
    CombatList.add(this);
 }
 
 cCombat::~cCombat(void)
 {
-   while(nNoOpponents > 0)
-      subOpponent(pOpponents[nNoOpponents - 1]); // Faster sub at tail
-
-   if(pOpponents)
-   {
-      free(pOpponents);
-      pOpponents = NULL;
-   }
-
    CHAR_COMBAT(pOwner) = NULL;
 
    CombatList.sub(this);
@@ -228,7 +216,7 @@ void cCombat::changeSpeed(int delta)
 
 int cCombat::findOpponentIdx(std::shared_ptr<unit_data> target)
 {
-   for(int i = 0; i < nNoOpponents; i++)
+   for(int i = 0; i < pOpponents.size(); i++)
       if(pOpponents[i] == target)
          return i;
 
@@ -248,15 +236,7 @@ std::shared_ptr<unit_data> cCombat::FindOpponent(std::shared_ptr<unit_data> vict
 void cCombat::add(std::shared_ptr<unit_data> victim)
 {
    assert(victim);
-
-   nNoOpponents++;
-
-   if(nNoOpponents == 1)
-      CREATE(pOpponents, std::shared_ptr<unit_data> , 1);
-   else
-      RECREATE(pOpponents, std::shared_ptr<unit_data> , nNoOpponents);
-
-   pOpponents[nNoOpponents - 1] = victim;
+   pOpponents.push_back(victim);
 }
 
 void cCombat::sub(int idx)
@@ -266,33 +246,23 @@ void cCombat::sub(int idx)
    if(idx == -1)
       return;
 
-   assert(nNoOpponents > 0);
-   assert(idx >= 0 && idx < nNoOpponents);
+   assert(!pOpponents.empty());
+   assert(idx >= 0 && idx < pOpponents.size());
 
    // Never mind about realloc, it will be free'd soon anyhow... how long
    // can a combat take anyway?
 
-   if(pOpponents[idx] == pMelee)
+   if(pOpponents.at(idx) == pMelee)
    {
       pMelee = NULL;
       bWas   = TRUE;
    }
 
-   if(nNoOpponents - idx > 1)
-      memmove(&pOpponents[idx], &pOpponents[idx + 1], sizeof(std::shared_ptr<unit_data> ) * (nNoOpponents - idx - 1));
+   pOpponents.erase(pOpponents.begin() + idx);
 
-   pOpponents[nNoOpponents - 1] = NULL;
-   nNoOpponents--;
-
-   if(nNoOpponents < 1)
+   if(bWas)
    {
-      free(pOpponents);
-      pOpponents = NULL;
-      delete this; // We are done...
-   }
-   else if(bWas)
-   {
-      setMelee(Opponent(number(0, nNoOpponents - 1)));
+      setMelee(Opponent(number(0, pOpponents.size() - 1)));
    }
 }
 
@@ -324,7 +294,7 @@ void cCombat::addOpponent(std::shared_ptr<unit_data> victim, int bMelee = FALSE)
 
 void cCombat::subOpponent(std::shared_ptr<unit_data> victim)
 {
-   if(nNoOpponents < 1)
+   if(pOpponents.empty())
       return;
 
    int i = findOpponentIdx(victim);
@@ -338,10 +308,7 @@ void cCombat::subOpponent(std::shared_ptr<unit_data> victim)
 
 std::shared_ptr<unit_data> cCombat::Opponent(int i)
 {
-   if(i >= nNoOpponents)
-      return NULL;
-   else
-      return pOpponents[i];
+   return pOpponents.at(i);
 }
 
 void cCombat::status(const std::shared_ptr<unit_data> ch)
@@ -353,18 +320,18 @@ void cCombat::status(const std::shared_ptr<unit_data> ch)
            "Combat Status of '%s':\n\r"
            "Combat Speed [%d]  Turn [%d]\n\r"
            "Melee Opponent '%s'\n\r"
-           "Total of %d Opponents:\n\r",
+           "Total of %zu Opponents:\n\r",
            STR(UNIT_NAME(pOwner)),
            CHAR_SPEED(pOwner),
            nWhen,
            CHAR_FIGHTING(pOwner) ? STR(UNIT_NAME(CHAR_FIGHTING(pOwner))) : "NONE",
-           nNoOpponents);
+           pOpponents.size());
 
    send_to_char(buf, ch);
 
-   for(i = 0; i < nNoOpponents; i++)
+   for(const auto &opponent: pOpponents)
    {
-      sprintf(buf, "   %s\n\r", STR(UNIT_NAME(pOpponents[i])));
+      sprintf(buf, "   %s\n\r", STR(UNIT_NAME(opponent)));
       send_to_char(buf, ch);
    }
 }
@@ -423,14 +390,14 @@ void stat_combat(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data>
 {
    if(!IS_CHAR(u))
    {
-      act("$2n is not a pc / npc.", A_ALWAYS, ch, u, NULL, TO_CHAR);
+      act("$2n is not a pc / npc.", A_ALWAYS, ch, u, {}, TO_CHAR);
       return;
    }
 
    CombatList.status(ch);
 
    if(!CHAR_COMBAT(u))
-      act("No combat structure on '$2n'", A_ALWAYS, ch, u, NULL, TO_CHAR);
+      act("No combat structure on '$2n'", A_ALWAYS, ch, u, {}, TO_CHAR);
    else
       CHAR_COMBAT(u)->status(ch);
 }

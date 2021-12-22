@@ -25,6 +25,7 @@
 #include "affect.h"
 #include "comm.h"
 #include "db.h"
+#include "externals.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "skills.h"
@@ -38,16 +39,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern std::shared_ptr<unit_data> unit_list;
-extern std::shared_ptr<file_index_type> corpse_fi;
-
 std::shared_ptr<unit_data> make_corpse(std::shared_ptr<unit_data> ch)
 {
-   char                      buf[MAX_INPUT_LENGTH];
-   std::shared_ptr<unit_data> corpse, *u, *next_dude;
-   struct unit_affected_type af, *taf1;
+   char                       buf[MAX_INPUT_LENGTH];
+   std::shared_ptr<unit_data> corpse;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> next_dude;
+   struct unit_affected_type  af, *taf1;
 
-   void persist_create(std::shared_ptr<unit_data>  u);
+   void persist_create(std::shared_ptr<unit_data> u);
 
    corpse = read_unit(corpse_fi);
 

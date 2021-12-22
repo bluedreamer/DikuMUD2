@@ -28,6 +28,8 @@
 #include "essential.h"
 #include "values.h"
 
+#include <memory>
+
 struct skill_interval
 {
    const int   skill;
@@ -122,6 +124,7 @@ struct wpn_info_type
 
 #define DEMIGOD_LEVEL_XP (40000000)
 
+class unit_data;
 int        object_two_handed(std::shared_ptr<unit_data> obj);
 void       roll_description(std::shared_ptr<unit_data> att, const char *text, int roll);
 int        open_ended_roll(int size, int end);
@@ -159,27 +162,5 @@ int  av_value(int abila, int abilb, int skilla, int skillb);
 int  av_howmuch(int av);
 int  av_makes(int av);
 void check_fitting(std::shared_ptr<unit_data> u);
-
-extern struct race_info_type race_info[PC_RACE_MAX];
-extern const char           *pc_races[PC_RACE_MAX + 1];
-extern const char           *pc_race_adverbs[PC_RACE_MAX + 1];
-
-extern struct damage_chart_type spell_chart[SPL_TREE_MAX];
-extern sbit8                    racial_ability[ABIL_TREE_MAX][PC_RACE_MAX];
-extern sbit8                    racial_weapons[WPN_TREE_MAX][PC_RACE_MAX];
-extern sbit8                    racial_skills[SKI_TREE_MAX][PC_RACE_MAX];
-extern sbit8                    racial_spells[SPL_TREE_MAX][PC_RACE_MAX];
-
-extern struct tree_type wpn_tree[WPN_TREE_MAX + 1];
-extern struct tree_type spl_tree[SPL_TREE_MAX + 1];
-extern struct tree_type ski_tree[SKI_TREE_MAX + 1];
-extern struct tree_type abil_tree[ABIL_TREE_MAX + 1];
-
-extern int hit_location_table[];
-
-extern const char *wpn_text[WPN_TREE_MAX + 1];
-extern const char *spl_text[SPL_TREE_MAX + 1];
-extern const char *ski_text[SKI_TREE_MAX + 1];
-extern const char *abil_text[ABIL_TREE_MAX + 1];
 
 #endif /* _MUD_SKILLS_H */

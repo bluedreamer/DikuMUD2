@@ -27,6 +27,10 @@
 
 #include "essential.h"
 
+#include <memory>
+
+class unit_data;
+
 void                       apply_affect(std::shared_ptr<unit_data> unit);
 void                       start_affect(std::shared_ptr<unit_data> unit);
 void                       stop_affect(std::shared_ptr<unit_data> unit);

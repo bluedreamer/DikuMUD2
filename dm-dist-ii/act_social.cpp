@@ -30,6 +30,7 @@
 
 #include "comm.h"
 #include "db.h"
+#include "externals.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "movement.h"
@@ -42,9 +43,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-/* externs */
-extern char libdir[]; /* from dikumud.c */
 
 struct social_msg
 {
@@ -254,8 +252,8 @@ bool perform_social(std::shared_ptr<unit_data> ch, char *arg, const command_info
       wrong_position(ch);
    else if(str_is_empty(arg) || !action->char_found)
    {
-      act(action->char_no_arg, A_SOMEONE, ch, 0, 0, TO_CHAR);
-      act(action->others_no_arg, action->hide_flag, ch, 0, 0, TO_ROOM);
+      act(action->char_no_arg, A_SOMEONE, ch, {}, {}, TO_CHAR);
+      act(action->others_no_arg, action->hide_flag, ch, {}, {}, TO_ROOM);
       send_done(ch, NULL, NULL, 0, cmd, oarg);
    }
    else
@@ -263,20 +261,20 @@ bool perform_social(std::shared_ptr<unit_data> ch, char *arg, const command_info
       std::shared_ptr<unit_data> vict = find_unit(ch, &arg, 0, FIND_UNIT_SURRO);
 
       if(vict == NULL || !IS_CHAR(vict))
-         act(action->not_found, A_SOMEONE, ch, 0, 0, TO_CHAR);
+         act(action->not_found, A_SOMEONE, ch, {}, {}, TO_CHAR);
       else if(vict == ch)
       {
-         act(action->char_auto, A_SOMEONE, ch, 0, 0, TO_CHAR);
-         act(action->others_auto, action->hide_flag, ch, 0, 0, TO_ROOM);
+         act(action->char_auto, A_SOMEONE, ch, {}, {}, TO_CHAR);
+         act(action->others_auto, action->hide_flag, ch, {}, {}, TO_ROOM);
          send_done(ch, NULL, NULL, 0, cmd, oarg);
       }
       else if(CHAR_POS(vict) < action->vic_min_pos)
-         act("$2n is not in a proper position for that.", A_SOMEONE, ch, vict, 0, TO_CHAR);
+         act("$2n is not in a proper position for that.", A_SOMEONE, ch, vict, {}, TO_CHAR);
       else
       {
-         act(action->char_found, A_SOMEONE, ch, 0, vict, TO_CHAR);
-         act(action->others_found, action->hide_flag, ch, 0, vict, TO_NOTVICT);
-         act(action->vict_found, action->hide_flag, ch, 0, vict, TO_VICT);
+         act(action->char_found, A_SOMEONE, ch, {}, vict, TO_CHAR);
+         act(action->others_found, action->hide_flag, ch, {}, vict, TO_NOTVICT);
+         act(action->vict_found, action->hide_flag, ch, {}, vict, TO_VICT);
          send_done(ch, NULL, vict, 0, cmd, oarg);
       }
    }
@@ -401,9 +399,9 @@ void do_insult(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
             break;
       }
 
-      act("You insult $3n.", A_SOMEONE, ch, 0, victim, TO_CHAR);
-      act("$1n insults $3n.", A_SOMEONE, ch, 0, victim, TO_NOTVICT);
-      act(insult, A_SOMEONE, ch, 0, victim, TO_VICT);
+      act("You insult $3n.", A_SOMEONE, ch, {}, victim, TO_CHAR);
+      act("$1n insults $3n.", A_SOMEONE, ch, {}, victim, TO_NOTVICT);
+      act(insult, A_SOMEONE, ch, {}, victim, TO_VICT);
    }
 }
 
@@ -467,7 +465,7 @@ void do_pose(std::shared_ptr<unit_data> ch, char *argument, const struct command
 
    to_pose = &pose_messages[number(0, counter - 1)];
 
-   act(to_pose->poser_msg[0], A_SOMEONE, ch, 0, 0, TO_CHAR);
-   act(to_pose->room_msg[0], A_SOMEONE, ch, 0, 0, TO_ROOM);
+   act(to_pose->poser_msg[0], A_SOMEONE, ch, {}, {}, TO_CHAR);
+   act(to_pose->room_msg[0], A_SOMEONE, ch, {}, {}, TO_ROOM);
 #endif
 }

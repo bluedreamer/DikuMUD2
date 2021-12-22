@@ -99,8 +99,6 @@ public:
 /* A linked list of commands to execute */
 class zone_reset_cmd : public std::enable_shared_from_this<zone_reset_cmd>
 {
-   zone_reset_cmd() = default;
-
 public:
    ubit8 cmd_no; /* Index to array of func() ptrs */
    ubit8 cmpl;   /* Complete flag                 */
@@ -113,6 +111,9 @@ public:
 
    std::shared_ptr<zone_reset_cmd>                      getptr() { return shared_from_this(); }
    [[nodiscard]] static std::shared_ptr<zone_reset_cmd> Create() { return std::shared_ptr<zone_reset_cmd>(new zone_reset_cmd); }
+
+private:
+   zone_reset_cmd() = default;
 };
 
 /* A linked/sorted list of all the zones in the game */
@@ -497,20 +498,7 @@ public:
 
    std::shared_ptr<file_index_type> key; /* Pointer to fileindex to Unit which is the key */
 
-   /* Pointer out of the unit, ei. from an object   */
-   /* out to the char carrying it                   */
-   auto getOutside() -> std::shared_ptr<unit_data>
-   {
-      return outside->getptr();
-   }
-   auto getOutside() const -> std::shared_ptr<unit_data>
-   {
-      return outside->getptr();
-   }
-private:
    std::shared_ptr<unit_data> outside;
-public:
-
    std::shared_ptr<unit_data> inside; /* Linked list of chars,rooms & objs             */
 
                                       /* For next unit in 'inside' linked list         */
@@ -561,5 +549,6 @@ public:
 #define DR_FUNC   2
 
 int is_destructed(int i, void *ptr);
+int is_destructed(int i, std::shared_ptr<unit_data> ptr);
 
 #endif /* _MUD_STRUCTS_H */

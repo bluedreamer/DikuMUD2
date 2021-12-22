@@ -50,10 +50,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* Extern structures */
-extern std::shared_ptr<unit_data> unit_list;
-extern struct tree_type  spl_tree[];
-
 /* Returns TRUE when effect is shown by DIL */
 
 int dil_effect(const char *pStr, struct spell_args *sa)
@@ -410,8 +406,6 @@ int spell_offensive(struct spell_args *sa, int spell_number, int bonus)
                     int               *pDef_armour_type,
                     std::shared_ptr<unit_data> *pDef_armour);
    void damage_object(std::shared_ptr<unit_data>  ch, std::shared_ptr<unit_data>  obj, int dam);
-
-   extern struct damage_chart_type spell_chart[SPL_TREE_MAX];
 
    /* Does the spell perhaps only hit head / body? All?? Right now I
       do it randomly */

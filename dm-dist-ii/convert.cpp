@@ -39,6 +39,7 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include "external_funcs.h"
 
 #include <cctype>
 #include <limits.h>
@@ -73,13 +74,12 @@ void convert_free_unit(std::shared_ptr<unit_data> u)
 
    unit_from_unit(u);
    remove_from_unit_list(u);
-
-   delete u;
 }
 
 void free_inventory(std::shared_ptr<unit_data> u)
 {
-   std::shared_ptr<unit_data> tmp, *nxt;
+   std::shared_ptr<unit_data> tmp;
+   std::shared_ptr<unit_data> nxt;
 
    for(tmp = u; tmp; tmp = nxt)
    {
@@ -221,8 +221,8 @@ void convert_player(std::shared_ptr<unit_data> pc)
 
    int lvl;
 
-   void race_cost(std::shared_ptr<unit_data>  ch);
-   void reroll(std::shared_ptr<unit_data>  victim);
+   void race_cost(std::shared_ptr<unit_data> ch);
+   void reroll(std::shared_ptr<unit_data> victim);
 
    assert(IS_PC(pc));
 
@@ -248,7 +248,7 @@ void convert_player(std::shared_ptr<unit_data> pc)
 /* Return TRUE if Ok. */
 int sanity_check(std::shared_ptr<unit_data> u)
 {
-   void race_adjust(std::shared_ptr<unit_data>  ch);
+   void race_adjust(std::shared_ptr<unit_data> ch);
 
    if(g_nCorrupt == TRUE)
    {
@@ -371,7 +371,6 @@ int shall_exclude(const char *name)
 std::shared_ptr<unit_data> convert_load_player(char *name)
 {
    std::shared_ptr<unit_data> ch;
-   extern std::shared_ptr<unit_data> destroy_room;
 
    if(!player_exists(name))
    {
@@ -419,8 +418,8 @@ std::shared_ptr<unit_data> convert_load_player(char *name)
 
 void list(void)
 {
-   long              total_time = 0;
-   int               i, years, days;
+   long                       total_time = 0;
+   int                        i, years, days;
    std::shared_ptr<unit_data> pc;
    std::shared_ptr<unit_data> void_char = unit_data::Create(UNIT_ST_NPC);
 
@@ -486,9 +485,9 @@ void list(void)
 
 void convert_file(void)
 {
-   int               i;
+   int                        i;
    std::shared_ptr<unit_data> pc;
-   class unit_data  *void_char = new(class unit_data)(UNIT_ST_NPC);
+   std::shared_ptr<unit_data> void_char = unit_data::Create(UNIT_ST_NPC);
 
    for(i = 0; player_name_list[i]; i++)
    {
@@ -555,11 +554,11 @@ void convert_file(void)
 
 void cleanup(void)
 {
-   int               i;
+   int                        i;
    std::shared_ptr<unit_data> pc;
-   class unit_data  *void_char = new(class unit_data)(UNIT_ST_NPC);
+   std::shared_ptr<unit_data> void_char = unit_data::Create(UNIT_ST_NPC);
 
-   void save_player_file(std::shared_ptr<unit_data>  pc);
+   void save_player_file(std::shared_ptr<unit_data> pc);
 
    for(i = 0; player_name_list[i]; i++)
    {
@@ -615,19 +614,14 @@ void cleanup_playerfile(int argc, char *argv[])
 {
    char c;
 
-   extern std::shared_ptr<unit_data> entry_room;
-   extern std::shared_ptr<unit_data> destroy_room;
-
-   int read_player_id(void);
-
    top_id = read_player_id();
    CREATE(ids, ubit8, top_id + 1);
 
    memset(ids, 0, top_id);
    printf("\n\n\n");
 
-   entry_room   = new(class unit_data)(UNIT_ST_ROOM);
-   destroy_room = new(class unit_data)(UNIT_ST_ROOM);
+   entry_room   = unit_data::Create(UNIT_ST_ROOM);
+   destroy_room = unit_data::Create(UNIT_ST_ROOM);
 
    printf("   Z) Convert players (do not use unless you are told to)\n"
           "   L)ist (integrity check & preview cleanup)\n"

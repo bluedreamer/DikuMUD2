@@ -102,13 +102,13 @@ static bool is_ok(std::shared_ptr<unit_data> keeper, std::shared_ptr<unit_data> 
 
    if(!CHAR_CAN_SEE(keeper, ch))
    {
-      act("$1n says, 'I don't trade with someone I can't see!'", A_SOMEONE, keeper, 0, 0, TO_ROOM);
+      act("$1n says, 'I don't trade with someone I can't see!'", A_SOMEONE, keeper, {}, {}, TO_ROOM);
       return FALSE;
    }
 
    if(!is_in(time_info.hours, sd->time1[0], sd->time1[1]) && !is_in(time_info.hours, sd->time2[0], sd->time2[1]))
    {
-      act("$1n says, 'Come back later $3n, we're closed.'", A_SOMEONE, keeper, 0, ch, TO_ROOM);
+      act("$1n says, 'Come back later $3n, we're closed.'", A_SOMEONE, keeper, {}, ch, TO_ROOM);
       sprintf(buf,
               "We are open from %d to %d, and %d to %d - "
               "it is now %d o'clock.",
@@ -173,25 +173,25 @@ static void shopping_buy(char *arg, std::shared_ptr<unit_data> ch, std::shared_p
 
    if(str_is_empty(arg))
    {
-      act("$1n asks you, 'What do you wish to buy?'", A_SOMEONE, keeper, 0, ch, TO_VICT);
+      act("$1n asks you, 'What do you wish to buy?'", A_SOMEONE, keeper, {}, ch, TO_VICT);
       return;
    }
 
    if((temp1 = find_unit(keeper, &arg, 0, FIND_UNIT_INVEN)) == NULL || IS_MONEY(temp1))
    {
-      act(sd->no_such_item1, A_SOMEONE, keeper, 0, ch, TO_ROOM);
+      act(sd->no_such_item1, A_SOMEONE, keeper,{}, ch, TO_ROOM);
       return;
    }
 
    if(!IS_OBJ(temp1))
    {
-      act("$1n says, 'I only trade objects!'", A_SOMEONE, keeper, 0, ch, TO_ROOM);
+      act("$1n says, 'I only trade objects!'", A_SOMEONE, keeper, {}, ch, TO_ROOM);
       return;
    }
 
    if(obj_trade_price(temp1) <= 0)
    {
-      act(sd->no_such_item1, A_SOMEONE, keeper, 0, ch, TO_ROOM);
+      act(sd->no_such_item1, A_SOMEONE, keeper, {}, ch, TO_ROOM);
       extract_unit(temp1);
       return;
    }
@@ -212,17 +212,17 @@ static void shopping_buy(char *arg, std::shared_ptr<unit_data> ch, std::shared_p
 
    if(!char_can_carry_n(ch, 1))
    {
-      act("$2n : You can't carry that many items.", A_SOMEONE, ch, temp1, 0, TO_CHAR);
+      act("$2n : You can't carry that many items.", A_SOMEONE, ch, temp1, {}, TO_CHAR);
       return;
    }
 
    if(!char_can_carry_w(ch, UNIT_WEIGHT(temp1)))
    {
-      act("$2n : You can't carry that much weight.", A_SOMEONE, ch, temp1, 0, TO_CHAR);
+      act("$2n : You can't carry that much weight.", A_SOMEONE, ch, temp1, {}, TO_CHAR);
       return;
    }
 
-   act("$1n buys $2n.", A_SOMEONE, ch, temp1, 0, TO_ROOM);
+   act("$1n buys $2n.", A_SOMEONE, ch, temp1, {}, TO_ROOM);
 
    sprintf(buf, sd->message_buy, money_string(price, currency, TRUE));
 
@@ -230,14 +230,14 @@ static void shopping_buy(char *arg, std::shared_ptr<unit_data> ch, std::shared_p
    {
       if(obj_wear_size(ch, temp1))
       {
-         act("$1n says, 'A perfect fit, $3n!'", A_SOMEONE, keeper, 0, ch, TO_ROOM);
+         act("$1n says, 'A perfect fit, $3n!'", A_SOMEONE, keeper, {}, ch, TO_ROOM);
          refit = TRUE;
       }
    }
 
    act(buf, A_SOMEONE, keeper, temp1, ch, TO_VICT);
 
-   act("You now have $2n.", A_SOMEONE, ch, temp1, 0, TO_CHAR);
+   act("You now have $2n.", A_SOMEONE, ch, temp1, {}, TO_CHAR);
 
    if(!IS_GOD(ch))
       money_transfer(ch, keeper, price, currency);
@@ -268,14 +268,14 @@ static void shopping_sell(char *arg, std::shared_ptr<unit_data> ch, std::shared_
 
    if(str_is_empty(arg))
    {
-      act("$1n says, 'What do you want to sell $3n?'", A_SOMEONE, keeper, 0, ch, TO_ROOM);
+      act("$1n says, 'What do you want to sell $3n?'", A_SOMEONE, keeper, {}, ch, TO_ROOM);
       return;
    }
 
    tmparg = arg;
    if((temp1 = find_unit(ch, &tmparg, 0, FIND_UNIT_INVEN)) == NULL)
    {
-      act(sd->no_such_item2, A_SOMEONE, keeper, 0, ch, TO_ROOM);
+      act(sd->no_such_item2, A_SOMEONE, keeper,{}, ch, TO_ROOM);
       return;
    }
 
@@ -335,7 +335,7 @@ static void shopping_value(char *arg, std::shared_ptr<unit_data> ch, std::shared
 
    if(str_is_empty(arg))
    {
-      act("$1n says, 'What do you want me to value, $3n?'", A_SOMEONE, keeper, 0, ch, TO_ROOM);
+      act("$1n says, 'What do you want me to value, $3n?'", A_SOMEONE, keeper, {}, ch, TO_ROOM);
       return;
    }
 
@@ -443,13 +443,13 @@ static void shopping_price(char *arg, std::shared_ptr<unit_data> ch, std::shared
 
    if(str_is_empty(arg))
    {
-      act("$1n says 'What do you want to know the price of, $2n?'", A_SOMEONE, keeper, ch, 0, TO_ROOM);
+      act("$1n says 'What do you want to know the price of, $2n?'", A_SOMEONE, keeper, ch, {}, TO_ROOM);
       return;
    }
 
    if((temp1 = find_unit(keeper, &arg, 0, FIND_UNIT_INVEN)) == NULL || IS_MONEY(temp1) || (destruct = (obj_trade_price(temp1) <= 0)))
    {
-      act(sd->no_such_item1, A_SOMEONE, keeper, ch, 0, TO_ROOM);
+      act(sd->no_such_item1, A_SOMEONE, keeper, ch, {}, TO_ROOM);
       if(destruct)
          extract_unit(temp1);
       return;

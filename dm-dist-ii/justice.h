@@ -25,7 +25,10 @@
 #ifndef _MUD_JUSTICE_H
 #define _MUD_JUSTICE_H
 
+#include <memory>
 #include "essential.h"
+
+class unit_data;
 
 #define CRIME_LIFE 12 /* Remember crime for (5 mins * CRIME_LIFE)    */
 
@@ -35,7 +38,7 @@
 
 /* STRUCTS ---------------------------------------------------------------*/
 
-void offend_legal_state(class unit_data *ch, class unit_data *victim);
+void offend_legal_state(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> victim);
 
 void log_crime(std::shared_ptr<unit_data> criminal, std::shared_ptr<unit_data> victim, ubit8 crime_type, int active = TRUE);
 

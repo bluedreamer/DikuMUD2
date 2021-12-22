@@ -80,8 +80,6 @@ std::shared_ptr<file_index_type> head_fi;
 std::shared_ptr<file_index_type> deathobj_fi;
 std::shared_ptr<file_index_type> beginner_note;
 
-extern char zondir[];
-
 void basis_boot(void)
 {
    void_room = world_room(BASIS_ZONE, VOID_ROOM);
@@ -131,8 +129,6 @@ void random_event_world(void)
 {
    std::shared_ptr<unit_data> u;
 
-   extern std::shared_ptr<unit_data> unit_list;
-
    for(u = unit_list; u; u = u->gnext)
    {
       if(IS_NPC(u) && !number(0, 100))
@@ -146,10 +142,8 @@ void random_event_world(void)
 /* These events happen rarely (daemon is every 30 minutes) */
 void random_event_player(std::shared_ptr<unit_data> u, std::shared_ptr<unit_data> daemon)
 {
-   int               i;
+   int                        i;
    std::shared_ptr<unit_data> tmpu;
-
-   extern std::shared_ptr<unit_data> unit_list;
 
    if(u == NULL)
    {
@@ -232,8 +226,8 @@ void random_event_player(std::shared_ptr<unit_data> u, std::shared_ptr<unit_data
 int error_rod(struct spec_arg *sarg)
 {
    std::shared_ptr<zone_type> zone;
-   FILE             *fl;
-   char              filename[256];
+   FILE                      *fl;
+   char                       filename[256];
 
    if((sarg->cmd->no != CMD_USE) || (!IS_PC(sarg->activator)) || (OBJ_EQP_POS(sarg->owner) != WEAR_HOLD))
       return SFR_SHARE;
@@ -269,8 +263,8 @@ int error_rod(struct spec_arg *sarg)
 int info_rod(struct spec_arg *sarg)
 {
    std::shared_ptr<zone_type> zone;
-   FILE             *fl;
-   char              filename[256];
+   FILE                      *fl;
+   char                       filename[256];
 
    if(!is_command(sarg->cmd, "wave") || !IS_PC(sarg->activator) || OBJ_EQP_POS(sarg->owner) != WEAR_HOLD)
       return SFR_SHARE;
@@ -335,7 +329,7 @@ int recep_daemon(struct spec_arg *sarg)
 
 int chaos_daemon(struct spec_arg *sarg)
 {
-   char             *arg = (char *)sarg->arg;
+   char                      *arg = (char *)sarg->arg;
    std::shared_ptr<unit_data> u;
 
    if(sarg->cmd->no == CMD_AUTO_TICK || (is_command(sarg->cmd, "tickle") && IS_ULTIMATE(sarg->activator) &&
@@ -382,13 +376,11 @@ int death_room(struct spec_arg *sarg)
 
 /* Log stuff below */
 
-extern struct log_buffer log_buf[];
-
 int log_object(struct spec_arg *sarg)
 {
-   ubit8            *ip;
-   enum log_level    lev = LOG_OFF;
-   char              c;
+   ubit8                     *ip;
+   enum log_level             lev = LOG_OFF;
+   char                       c;
    std::shared_ptr<unit_data> ch = UNIT_IN(sarg->owner);
 
    if(sarg->fptr->data == NULL)
@@ -519,10 +511,10 @@ void execute_append(std::shared_ptr<unit_data> pc, char *str)
 
 int admin_obj(struct spec_arg *sarg)
 {
-   char                     buf[512];
-   int                      zonelist;
+   char                       buf[512];
+   int                        zonelist;
    std::shared_ptr<zone_type> zone;
-   struct extra_descr_data *exdp;
+   struct extra_descr_data   *exdp;
 
    if(sarg->cmd->no != CMD_AUTO_UNKNOWN)
       return SFR_SHARE;

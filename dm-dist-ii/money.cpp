@@ -43,8 +43,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern char libdir[]; /* from dikumud.c */
-
 struct money_type money_types[MAX_MONEY + 1];
 char             *cur_strings[MAX_CURRENCY + 1];
 
@@ -553,7 +551,8 @@ std::shared_ptr<unit_data> split_money(std::shared_ptr<unit_data> money, amount_
  */
 void pile_money(std::shared_ptr<unit_data> money)
 {
-   std::shared_ptr<unit_data> tmp, *unit = UNIT_IN(money);
+   std::shared_ptr<unit_data> tmp;
+   std::shared_ptr<unit_data> unit = UNIT_IN(money);
 
    assert(IS_MONEY(money) && unit);
 
@@ -654,7 +653,7 @@ void do_makemoney(std::shared_ptr<unit_data> ch, char *arg, const struct command
 
    cur = local_currency(ch);
    money_to_unit(ch, amt, cur);
-   act("You just made $2t.", A_ALWAYS, ch, money_string(amt, cur, TRUE), 0, TO_CHAR);
+   act("You just made $2t.", A_ALWAYS, ch, money_string(amt, cur, TRUE), {}, TO_CHAR);
 }
 
 #endif /* DMC_SRC */

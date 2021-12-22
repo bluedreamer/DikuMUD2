@@ -53,6 +53,7 @@
 #include "unixshit.h"
 #include "utility.h"
 #include "utils.h"
+#include "external_funcs.h"
 
 #include <ctype.h>
 #include <stdarg.h>
@@ -60,12 +61,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
-extern std::shared_ptr<unit_data> unit_list;
-extern std::shared_ptr<unit_data> combat_list;
-extern struct descriptor_data *descriptor_list;
-
-/* External procedures */
 
 void stop_special(std::shared_ptr<unit_data> u, struct unit_fptr *fptr);
 
@@ -166,9 +161,6 @@ void destroy_fptr(std::shared_ptr<unit_data> u, struct unit_fptr *f)
    struct unit_fptr *tf;
    struct spec_arg   sarg;
 
-   extern struct unit_function_array_type unit_function_array[];
-   extern struct command_info             cmd_auto_extract;
-
    void register_destruct(int i, void *ptr);
    void add_func_history(std::shared_ptr<unit_data>  u, ubit16, ubit16);
 
@@ -218,8 +210,6 @@ void stop_following(std::shared_ptr<unit_data> ch)
 {
    struct char_follow_type *j, *k;
 
-   extern struct command_info *cmd_follow;
-
    assert(CHAR_MASTER(ch));
 
    if(CHAR_FOLLOWERS(CHAR_MASTER(ch))->follower == ch) /* Head of list? */
@@ -246,8 +236,6 @@ void stop_following(std::shared_ptr<unit_data> ch)
 void start_following(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> leader)
 {
    struct char_follow_type *k;
-
-   extern struct command_info *cmd_follow;
 
    assert(!is_destructed(DR_UNIT, leader));
    assert(!is_destructed(DR_UNIT, ch));
@@ -283,7 +271,8 @@ void die_follower(std::shared_ptr<unit_data> ch)
 /* in order to correctly update the environment of the unit */
 void modify_bright(std::shared_ptr<unit_data> unit, int bright)
 {
-   std::shared_ptr<unit_data> ext, *in;
+   std::shared_ptr<unit_data> ext;
+   std::shared_ptr<unit_data> in;
 
    UNIT_BRIGHT(unit) += bright;
 
@@ -467,15 +456,15 @@ int unit_recursive(std::shared_ptr<unit_data> from, std::shared_ptr<unit_data> t
    return FALSE;
 }
 
-std::shared_ptr<zone_type> unit_zone(const std::shared_ptr<unit_data> unit)
+std::shared_ptr<zone_type> unit_zone(std::shared_ptr<unit_data> unit)
 {
-   std::shared_ptr<unit_data> org = (std::shared_ptr<unit_data> )unit;
+   std::shared_ptr<unit_data> org = unit;
 
-   for(; unit; unit = UNIT_IN(const_cast<unit_data *>(unit)))
-      if(!UNIT_IN(const_cast<unit_data *>(unit)))
+   for(; unit; unit = UNIT_IN(unit))
+      if(!UNIT_IN(unit))
       {
          assert(IS_ROOM(unit));
-         return UNIT_FILE_INDEX(const_cast<unit_data *>(unit))->zone;
+         return UNIT_FILE_INDEX(unit)->zone;
       }
 
    slog(LOG_ALL, 0, "ZONE: FATAL: %s@%s IN NO ROOMS WHILE NOT A ROOM!!", UNIT_FI_NAME(org), UNIT_FI_ZONENAME(org));
@@ -496,7 +485,10 @@ std::shared_ptr<unit_data> unit_room(std::shared_ptr<unit_data> unit)
 
 void intern_unit_up(std::shared_ptr<unit_data> unit, ubit1 pile)
 {
-   std::shared_ptr<unit_data> u, *in, *toin, *extin;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> in;
+   std::shared_ptr<unit_data> toin;
+   std::shared_ptr<unit_data> extin;
    sbit8             bright, selfb;
 
    assert(UNIT_IN(unit));
@@ -671,14 +663,14 @@ void unsnoop(std::shared_ptr<unit_data> ch, int mode)
 
    if(CHAR_IS_SNOOPING(ch))
    {
-      act("You no longer snoop $3n.", A_SOMEONE, ch, 0, CHAR_DESCRIPTOR(ch)->snoop.snooping, TO_CHAR);
+      act("You no longer snoop $3n.", A_SOMEONE, ch, {}, CHAR_DESCRIPTOR(ch)->snoop.snooping, TO_CHAR);
       CHAR_DESCRIPTOR(CHAR_DESCRIPTOR(ch)->snoop.snooping)->snoop.snoop_by = 0;
       CHAR_DESCRIPTOR(ch)->snoop.snooping                                  = 0;
    }
 
    if(CHAR_IS_SNOOPED(ch) && mode)
    {
-      act("You no longer snoop $3n, $3e was extracted.", A_SOMEONE, CHAR_DESCRIPTOR(ch)->snoop.snoop_by, 0, ch, TO_CHAR);
+      act("You no longer snoop $3n, $3e was extracted.", A_SOMEONE, CHAR_DESCRIPTOR(ch)->snoop.snoop_by, {}, ch, TO_CHAR);
       CHAR_DESCRIPTOR(CHAR_DESCRIPTOR(ch)->snoop.snoop_by)->snoop.snooping = 0;
       CHAR_DESCRIPTOR(ch)->snoop.snoop_by                                  = 0;
    }
@@ -735,12 +727,6 @@ void extract_unit(std::shared_ptr<unit_data> unit)
 {
    struct descriptor_data *d;
 
-   extern std::shared_ptr<unit_data> destroy_room;
-
-   void register_destruct(int i, void *ptr);
-   void nanny_menu(struct descriptor_data * d, char *arg);
-   void stop_all_special(std::shared_ptr<unit_data>  u);
-
    /* Prevent recursive calling on extracted units. */
    /* This happens on for example corpses. When the */
    /* destruct_affect is called inside extract we   */
@@ -760,7 +746,9 @@ void extract_unit(std::shared_ptr<unit_data> unit)
 
    DeactivateDil(unit);
 
-   register_destruct(DR_UNIT, unit);
+   // TODO ADRIAN this should go away I think
+   assert(0);
+//   register_destruct(DR_UNIT, unit);
 
    if(UNIT_IS_EQUIPPED(unit))
       unequip_object(unit);
@@ -855,8 +843,6 @@ void szonelog(std::shared_ptr<zone_type> zone, const char *fmt, ...)
    char    buf[MAX_STRING_LENGTH], buf2[MAX_STRING_LENGTH];
    va_list args;
    FILE   *f;
-
-   extern char zondir[];
 
    time_t now   = time(0);
    char  *tmstr = ctime(&now);

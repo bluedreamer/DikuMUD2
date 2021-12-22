@@ -78,6 +78,7 @@ Mon Nov 14 17:19:47 MET 1994
 #include "comm.h"
 #include "config.h"
 #include "db_file.h"
+#include "externals.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "queue.h"
@@ -266,7 +267,7 @@ static void alias_to_char(struct alias_t *al, std::shared_ptr<unit_data> ch)
    char buf[2 * MAX_INPUT_LENGTH + 2];
 
    sprintf(buf, " %-*s%s", MAX_ALIAS_LENGTH + 5, al->key, al->value);
-   act("$2t", A_ALWAYS, ch, buf, 0, TO_CHAR);
+   act("$2t", A_ALWAYS, ch, buf, {}, TO_CHAR);
 }
 
 /*  Prints all defined aliases in `t' alphabetically to char by
@@ -395,13 +396,11 @@ static bool alias_is_ok(struct alias_head *ah, char *key, char *val, std::shared
    struct alias_t *al = NULL;
    int             count;
 
-   extern int bModeBBS;
-
    if(strlen(key) > MAX_ALIAS_LENGTH)
    {
       count = MAX_ALIAS_LENGTH;
 
-      act("Aliasname too long. Max $2d chars.", A_ALWAYS, ch, &count, 0, TO_CHAR);
+      act("Aliasname too long. Max $2d chars.", A_ALWAYS, ch, &count, {}, TO_CHAR);
       return FALSE;
    }
 
@@ -581,7 +580,7 @@ static void cmd_alias(std::shared_ptr<unit_data> ch, char *arg, struct alias_hea
    {
       /* No further arguments lists this alias, if defined */
       if(alias_h->trie == NULL || (al = (struct alias_t *)search_trie(comm, alias_h->trie)) == NULL)
-         act("No alias defined for `$2t'.", A_ALWAYS, ch, comm, 0, TO_CHAR);
+         act("No alias defined for `$2t'.", A_ALWAYS, ch, comm, {}, TO_CHAR);
       else
          alias_to_char(al, ch);
 
@@ -602,7 +601,7 @@ static void cmd_alias(std::shared_ptr<unit_data> ch, char *arg, struct alias_hea
 static void cmd_unalias(std::shared_ptr<unit_data> ch, char *arg, struct alias_head *alias_h)
 {
    if(str_is_empty(arg))
-      act("Unalias what??", A_ALWAYS, ch, 0, 0, TO_CHAR);
+      act("Unalias what??", A_ALWAYS, ch, {}, {}, TO_CHAR);
    else
    {
       char comm[MAX_INPUT_LENGTH + 1];
@@ -612,7 +611,7 @@ static void cmd_unalias(std::shared_ptr<unit_data> ch, char *arg, struct alias_h
       {
          arg = get_next_word(arg, comm);
 
-         act(del_alias(alias_h, comm) ? "Alias `$2t' deleted." : "No alias defined for `$2t'.", A_ALWAYS, ch, comm, 0, TO_CHAR);
+         act(del_alias(alias_h, comm) ? "Alias `$2t' deleted." : "No alias defined for `$2t'.", A_ALWAYS, ch, comm, {}, TO_CHAR);
       } while(!str_is_empty(arg));
    }
 }
@@ -624,10 +623,10 @@ static void cmd_claim(std::shared_ptr<unit_data> ch, char *arg, std::shared_ptr<
    one_argument(arg, buf);
 
    if(str_is_empty(buf) || !UNIT_NAMES(obj).IsName(buf))
-      act("You can only claim $2n.", A_ALWAYS, ch, obj, 0, TO_CHAR);
+      act("You can only claim $2n.", A_ALWAYS, ch, obj, {}, TO_CHAR);
    else
    {
-      act("You claim $2n as your property.", A_ALWAYS, ch, obj, 0, TO_CHAR);
+      act("You claim $2n as your property.", A_ALWAYS, ch, obj,{}, TO_CHAR);
       set_owner(obj, alias_h, ch);
    }
 }
@@ -690,7 +689,7 @@ static int local_dictionary(struct spec_arg *sarg)
        * person's dictionary...
        */
       if(str_ccmp(UNIT_NAME(sarg->activator), alias_h->owner))
-         act("You can't use the alias command before you type `claim $3N'.", A_ALWAYS, sarg->activator, 0, sarg->owner, TO_CHAR);
+         act("You can't use the alias command before you type `claim $3N'.", A_ALWAYS, sarg->activator, {}, sarg->owner, TO_CHAR);
       else
          cmd_alias(sarg->activator, (char *)sarg->arg, alias_h);
 

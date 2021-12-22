@@ -80,7 +80,7 @@ struct char_crime_data
 
 struct char_crime_data *crime_list = NULL;
 
-void offend_legal_state(class unit_data *ch, class unit_data *victim)
+void offend_legal_state(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> victim)
 {
    if(!IS_SET(CHAR_FLAGS(ch), CHAR_SELF_DEFENCE))
       if(!CHAR_COMBAT(victim) && !IS_SET(CHAR_FLAGS(victim), CHAR_LEGAL_TARGET))
@@ -156,13 +156,13 @@ int npc_visit_room(struct spec_arg *sarg)
 /*                                                                  */
 void npc_set_visit(std::shared_ptr<unit_data> npc,
                    std::shared_ptr<unit_data> dest_room,
-                   int               what_now(const std::shared_ptr<unit_data> , struct visit_data *),
-                   void             *data,
-                   int               non_tick_return)
+                   int                        what_now(const std::shared_ptr<unit_data>, struct visit_data *),
+                   void                      *data,
+                   int                        non_tick_return)
 {
    std::shared_ptr<unit_data> u;
-   struct visit_data *vd;
-   struct unit_fptr  *fp1, *fp2;
+   struct visit_data         *vd;
+   struct unit_fptr          *fp1, *fp2;
 
    assert(IS_ROOM(dest_room));
 
@@ -247,7 +247,7 @@ void set_reward_char(std::shared_ptr<unit_data> ch, int crimes)
    struct unit_affected_type  af;
    int                        xp = 0, gold = 0;
 
-   int lose_exp(std::shared_ptr<unit_data>  ch);
+   int lose_exp(std::shared_ptr<unit_data> ch);
 
    /* Just to make sure in case anyone gets randomly rewarded */
    REMOVE_BIT(CHAR_FLAGS(ch), CHAR_PROTECTED);
@@ -289,7 +289,7 @@ void set_witness(std::shared_ptr<unit_data> criminal, std::shared_ptr<unit_data>
 {
    struct unit_affected_type af;
 
-   void activate_accuse(std::shared_ptr<unit_data>  npc, ubit8 crime_type, const char *cname);
+   void activate_accuse(std::shared_ptr<unit_data> npc, ubit8 crime_type, const char *cname);
 
    if(!IS_PC(criminal))
       return;
@@ -303,7 +303,7 @@ void set_witness(std::shared_ptr<unit_data> criminal, std::shared_ptr<unit_data>
       return;
 
    if(show)
-      act(COLOUR_ATTN "You just witnessed a crime committed by $1n." COLOUR_NORMAL, A_ALWAYS, criminal, 0, witness, TO_VICT);
+      act(COLOUR_ATTN "You just witnessed a crime committed by $1n." COLOUR_NORMAL, A_ALWAYS, criminal, {}, witness, TO_VICT);
 
    /* Create witness data */
    af.id       = ID_WITNESS;
@@ -428,7 +428,7 @@ void save_accusation(struct char_crime_data *crime, const std::shared_ptr<unit_d
            crime->id,
            crime->crime_type,
            crime->reported,
-           UNIT_NAME((std::shared_ptr<unit_data> )accuser),
+           UNIT_NAME((std::shared_ptr<unit_data>)accuser),
            crime->victim,
            t,
            ctime(&t));
@@ -463,19 +463,20 @@ static void crime_counter(std::shared_ptr<unit_data> criminal, int incr, int fir
    }
 }
 
-static void update_criminal(const std::shared_ptr<unit_data> deputy, const char *pPlyName, int pidx, struct char_crime_data *crime, int first_accuse)
+static void
+update_criminal(const std::shared_ptr<unit_data> deputy, const char *pPlyName, int pidx, struct char_crime_data *crime, int first_accuse)
 {
    std::shared_ptr<unit_data> criminal = NULL;
-   int               loaded   = FALSE;
-   int               incr;
+   int                        loaded   = FALSE;
+   int                        incr;
 
-   void save_player_file(std::shared_ptr<unit_data>  pc);
+   void save_player_file(std::shared_ptr<unit_data> pc);
 
    /* Modified find_descriptor */
    for(criminal = unit_list; criminal; criminal = criminal->gnext)
       if(IS_PC(criminal) && PC_ID(criminal) == pidx)
       {
-         act("$1n tells you, 'You are in trouble, you good-for-nothing ...'", A_SOMEONE, deputy, 0, criminal, TO_VICT);
+         act("$1n tells you, 'You are in trouble, you good-for-nothing ...'", A_SOMEONE, deputy, {}, criminal, TO_VICT);
          break;
       }
 
@@ -531,7 +532,7 @@ int accuse(struct spec_arg *sarg)
 
    if(CHAR_POS(sarg->owner) < POSITION_SLEEPING || CHAR_POS(sarg->owner) == POSITION_FIGHTING)
    {
-      act("$1n seems busy right now.", A_SOMEONE, sarg->owner, sarg->activator, 0, TO_ROOM);
+      act("$1n seems busy right now.", A_SOMEONE, sarg->owner, sarg->activator, {}, TO_ROOM);
       return SFR_BLOCK;
    }
 
@@ -540,7 +541,7 @@ int accuse(struct spec_arg *sarg)
 
    if(str_is_empty(arg1))
    {
-      act("$1n says, 'Yes... who?'", A_SOMEONE, sarg->owner, sarg->activator, 0, TO_ROOM);
+      act("$1n says, 'Yes... who?'", A_SOMEONE, sarg->owner, sarg->activator, {}, TO_ROOM);
       return SFR_BLOCK;
    }
    else
@@ -556,16 +557,16 @@ int accuse(struct spec_arg *sarg)
    if(!(strcmp(arg2, "murder")))
    {
       crime_type = CRIME_MURDER;
-      act("$1n says, 'Murder... lets see', and looks through his files.", A_SOMEONE, sarg->owner, sarg->activator, 0, TO_ROOM);
+      act("$1n says, 'Murder... lets see', and looks through his files.", A_SOMEONE, sarg->owner, sarg->activator, {}, TO_ROOM);
    }
    else if(!(strcmp(arg2, "stealing")))
    {
       crime_type = CRIME_STEALING;
-      act("$1n says, 'Stealing... lets see', and looks through his files.", A_SOMEONE, sarg->owner, sarg->activator, 0, TO_ROOM);
+      act("$1n says, 'Stealing... lets see', and looks through his files.", A_SOMEONE, sarg->owner, sarg->activator, {}, TO_ROOM);
    }
    else
    {
-      act("$1n says, 'Are you accusing of murder or stealing?'", A_SOMEONE, sarg->owner, sarg->activator, 0, TO_ROOM);
+      act("$1n says, 'Are you accusing of murder or stealing?'", A_SOMEONE, sarg->owner, sarg->activator, {}, TO_ROOM);
       return SFR_BLOCK;
    }
 
@@ -613,7 +614,7 @@ int accuse(struct spec_arg *sarg)
       }
    }
 
-   act("$1n says, 'Sorry $3n, but I don't find your evidence convincing.'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+   act("$1n says, 'Sorry $3n, but I don't find your evidence convincing.'", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
 
    return SFR_BLOCK;
 }
@@ -678,7 +679,7 @@ int npc_accuse(const std::shared_ptr<unit_data> npc, struct visit_data *vd)
             strcat(str, " murder");
          else
             strcat(str, " stealing");
-         command_interpreter((std::shared_ptr<unit_data> )npc, str);
+         command_interpreter((std::shared_ptr<unit_data>)npc, str);
          return SFR_BLOCK;
 
       case 1:
@@ -694,10 +695,10 @@ int npc_accuse(const std::shared_ptr<unit_data> npc, struct visit_data *vd)
 
 void activate_accuse(std::shared_ptr<unit_data> npc, ubit8 crime_type, const char *cname)
 {
-   struct npc_accuse_data *nad;
+   struct npc_accuse_data    *nad;
    std::shared_ptr<unit_data> prison;
-   struct unit_fptr       *fptr;
-   struct visit_data      *vd;
+   struct unit_fptr          *fptr;
+   struct visit_data         *vd;
 
    /* GEN: get accuse room in here */
    /* How to find the nearest accuse room? */
@@ -728,7 +729,7 @@ void activate_accuse(std::shared_ptr<unit_data> npc, ubit8 crime_type, const cha
       npc_set_visit(npc, prison, npc_accuse, nad, SFR_SHARE);
    }
    else
-      act("$1n complains about the lack of law and order in this place.", A_HIDEINV, npc, 0, 0, TO_ROOM);
+      act("$1n complains about the lack of law and order in this place.", A_HIDEINV, npc, {}, {}, TO_ROOM);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -760,7 +761,7 @@ int guard_assist(const std::shared_ptr<unit_data> npc, struct visit_data *vd)
    {
       case 0:
          strcpy(mbuf, "peer");
-         command_interpreter((std::shared_ptr<unit_data> )npc, mbuf);
+         command_interpreter((std::shared_ptr<unit_data>)npc, mbuf);
          return SFR_BLOCK;
 
       case 1: /* Just wait a little while... */
@@ -785,9 +786,9 @@ int guard_assist(const std::shared_ptr<unit_data> npc, struct visit_data *vd)
 void call_guards(std::shared_ptr<unit_data> guard)
 {
    std::shared_ptr<zone_type> zone;
-   struct unit_fptr *fptr;
+   struct unit_fptr          *fptr;
    std::shared_ptr<unit_data> u;
-   int               ok;
+   int                        ok;
 
    if(!IS_ROOM(UNIT_IN(guard)))
       return;
@@ -834,7 +835,7 @@ int protect_lawful(struct spec_arg *sarg)
             (find_fptr(UVI(i), SFUN_AGGRESSIVE) || (find_fptr(UVI(i), SFUN_AGGRES_REVERSE_ALIGN) && UNIT_IS_EVIL(UVI(i)))))
          {
             SET_BIT(CHAR_FLAGS(UVI(i)), CHAR_LEGAL_TARGET);
-            act("$1n blows in a small whistle!  'UUIIIIIIIHHHHH'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+            act("$1n blows in a small whistle!  'UUIIIIIIIHHHHH'", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
             call_guards(sarg->owner);
             simple_one_hit(sarg->owner, UVI(i));
             REMOVE_BIT(CHAR_FLAGS(UVI(i)), CHAR_SELF_DEFENCE);
@@ -885,19 +886,24 @@ int whistle(struct spec_arg *sarg)
 
    if(sarg->fptr->data)
    {
-      if(scan4_ref(sarg->owner, (std::shared_ptr<unit_data> )sarg->fptr->data) == NULL)
-         sarg->fptr->data = NULL;
-      else
-         return SFR_SHARE;
+      // TODO ADRAIN
+       // fptr->data is void - update it
+      assert(0);
+//      if(scan4_ref(sarg->owner, sarg->fptr->data) == NULL)
+//         sarg->fptr->data = NULL;
+//      else
+//         return SFR_SHARE;
    }
 
    if(CHAR_AWAKE(sarg->owner) && CHAR_COMBAT(sarg->activator) && CHAR_CAN_SEE(sarg->owner, sarg->activator))
    {
       if(crime_in_progress(sarg->activator, CHAR_FIGHTING(sarg->activator)))
       {
-         sarg->fptr->data = sarg->activator;
+         // TODO ADRIAN conversion to void*
+         assert(0);
+//         sarg->fptr->data = sarg->activator;
 
-         act("$1n blows in a small whistle!  'UUIIIIIIIHHHHH'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+         act("$1n blows in a small whistle!  'UUIIIIIIIHHHHH'", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
          call_guards(sarg->owner);
          simple_one_hit(sarg->owner, sarg->activator);
          REMOVE_BIT(CHAR_FLAGS(sarg->activator), CHAR_SELF_DEFENCE);
@@ -912,7 +918,7 @@ int whistle(struct spec_arg *sarg)
 
 int reward_give(struct spec_arg *sarg)
 {
-   void gain_exp(std::shared_ptr<unit_data>  ch, int gain);
+   void gain_exp(std::shared_ptr<unit_data> ch, int gain);
 
    std::shared_ptr<unit_data> u;
    struct unit_affected_type *paf;
@@ -930,11 +936,11 @@ int reward_give(struct spec_arg *sarg)
 
    if((paf = affected_by_spell(UNIT_CONTAINS(sarg->owner), ID_REWARD)) == NULL)
    {
-      act("$1n says, 'Thank you $3n, that is very nice of you.'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+      act("$1n says, 'Thank you $3n, that is very nice of you.'", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
       return SFR_BLOCK;
    }
 
-   act("$1n says, '$3n, receieve this as a token of our gratitude.'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+   act("$1n says, '$3n, receieve this as a token of our gratitude.'", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
 
    cur = local_currency(sarg->owner);
 
@@ -962,7 +968,7 @@ int reward_board(struct spec_arg *sarg)
    if(find_unit(sarg->activator, &c, 0, FIND_UNIT_SURRO) != sarg->owner)
       return SFR_SHARE;
 
-   act("$1n looks at the board of rewards.", A_ALWAYS, sarg->activator, 0, 0, TO_ROOM);
+   act("$1n looks at the board of rewards.", A_ALWAYS, sarg->activator, {}, {}, TO_ROOM);
 
    for(u = unit_list; u; u = u->gnext)
       if(IS_CHAR(u))
@@ -1010,12 +1016,12 @@ void tif_reward_on(struct unit_affected_type *af, std::shared_ptr<unit_data> uni
       if(CHAR_AWAKE(unit))
       {
          send_to_char("You feel wanted...\n\r", unit);
-         act("$1n suddenly seems a little paranoid.", A_HIDEINV, unit, 0, 0, TO_ROOM);
+         act("$1n suddenly seems a little paranoid.", A_HIDEINV, unit, {}, {}, TO_ROOM);
       }
    }
    else
    {
-      act("You realize that the $1N is perhaps worth something.", A_HIDEINV, unit, 0, 0, TO_ROOM);
+      act("You realize that the $1N is perhaps worth something.", A_HIDEINV, unit, {}, {}, TO_ROOM);
    }
 }
 

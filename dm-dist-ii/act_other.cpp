@@ -57,9 +57,6 @@
 #include <time.h>
 
 /* extern variables */
-extern char                    libdir[]; /* fom dikumud.c */
-extern char                    zondir[]; /* fom dikumud.c */
-extern struct requirement_type pc_race_base[];
 
 /*                                                                */
 /* Used if we want to completely fuck things up for folks running */
@@ -195,8 +192,8 @@ void do_quit(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
       return;
    }
 
-   act("$1n has left the game.", A_HIDEINV, ch, 0, 0, TO_ROOM);
-   act("Goodbye, friend.. Come back soon!", A_SOMEONE, ch, 0, 0, TO_CHAR);
+   act("$1n has left the game.", A_HIDEINV, ch, {}, {}, TO_ROOM);
+   act("Goodbye, friend.. Come back soon!", A_SOMEONE, ch, {}, {}, TO_CHAR);
 
    slog(LOG_BRIEF, UNIT_MINV(ch), "%s has left the building.", UNIT_NAME(ch));
 
@@ -222,7 +219,7 @@ void do_save(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
    else
       send_to_char("You are no longer a guest on this game.\n\r", ch);
 
-   act("Saving $1n.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+   act("Saving $1n.", A_ALWAYS, ch, {}, {}, TO_CHAR);
 
    if(account_is_closed(ch))
    {
@@ -284,8 +281,8 @@ void do_light(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
 
    create_affect(torch, &af);
 
-   act("You light $2n.", A_SOMEONE, ch, torch, 0, TO_CHAR);
-   act("$1n lights $2n.", A_SOMEONE, ch, torch, 0, TO_ROOM);
+   act("You light $2n.", A_SOMEONE, ch, torch, {}, TO_CHAR);
+   act("$1n lights $2n.", A_SOMEONE, ch, torch, {}, TO_ROOM);
 }
 
 void do_extinguish(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
@@ -318,8 +315,8 @@ void do_extinguish(std::shared_ptr<unit_data> ch, char *arg, const struct comman
    if(OBJ_VALUE(torch, 0) > 0)
       OBJ_VALUE(torch, 0)--;
 
-   act("You extinguish $2n with your bare hands.", A_SOMEONE, ch, torch, 0, TO_CHAR);
-   act("$1n extinguishes $2n with $1s bare hands.", A_SOMEONE, ch, torch, 0, TO_ROOM);
+   act("You extinguish $2n with your bare hands.", A_SOMEONE, ch, torch, {}, TO_CHAR);
+   act("$1n extinguishes $2n with $1s bare hands.", A_SOMEONE, ch, torch, {}, TO_ROOM);
 }
 
 void do_dig(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
@@ -327,14 +324,14 @@ void do_dig(std::shared_ptr<unit_data> ch, char *arg, const struct command_info 
    std::shared_ptr<unit_data> u;
    struct unit_affected_type *af;
 
-   act("$1n starts digging.", A_SOMEONE, ch, 0, 0, TO_ROOM);
-   act("Ok.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+   act("$1n starts digging.", A_SOMEONE, ch, {}, {}, TO_ROOM);
+   act("Ok.", A_SOMEONE, ch, {}, {}, TO_CHAR);
 
    for(u = UNIT_CONTAINS(UNIT_IN(ch)); u; u = u->next)
       if(IS_SET(UNIT_FLAGS(u), UNIT_FL_BURIED))
       {
-         act("Bingo! You discover $2n.", A_SOMEONE, ch, u, 0, TO_CHAR);
-         act("$1n finds $2n.", A_SOMEONE, ch, u, 0, TO_ROOM);
+         act("Bingo! You discover $2n.", A_SOMEONE, ch, u, {}, TO_CHAR);
+         act("$1n finds $2n.", A_SOMEONE, ch, u, {}, TO_ROOM);
          REMOVE_BIT(UNIT_FLAGS(u), UNIT_FL_BURIED);
          if((af = affected_by_spell(u, ID_BURIED)))
             destroy_affect(af);
@@ -347,8 +344,8 @@ void bury_unit(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u, char
 {
    struct unit_affected_type af;
 
-   act("$1n buries $2n.", A_SOMEONE, ch, u, 0, TO_ROOM);
-   act("You bury $2n.", A_SOMEONE, ch, u, 0, TO_CHAR);
+   act("$1n buries $2n.", A_SOMEONE, ch, u, {}, TO_ROOM);
+   act("You bury $2n.", A_SOMEONE, ch, u, {}, TO_CHAR);
 
    unit_from_unit(u);
    unit_to_unit(u, UNIT_IN(ch));
@@ -370,19 +367,20 @@ void bury_unit(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u, char
 
 void do_bury(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   std::shared_ptr<unit_data> u, *next;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> next;
    char             *oarg    = arg;
    int               bBuried = FALSE;
 
    if(str_is_empty(arg))
    {
-      act("Bury what?", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("Bury what?", A_SOMEONE, ch, {}, {}, TO_CHAR);
       return;
    }
 
    if(IS_SET(UNIT_FLAGS(UNIT_IN(ch)), UNIT_FL_NO_BURY))
    {
-      act("You can't bury anything here.", A_ALWAYS, ch, UNIT_IN(ch), 0, TO_CHAR);
+      act("You can't bury anything here.", A_ALWAYS, ch, UNIT_IN(ch), {}, TO_CHAR);
       return;
    }
 
@@ -407,25 +405,25 @@ void do_bury(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
       }
 
       if(bBuried == FALSE)
-         act("Nothing here to bury.", A_ALWAYS, ch, NULL, NULL, TO_CHAR);
+         act("Nothing here to bury.", A_ALWAYS, ch, {}, {}, TO_CHAR);
    }
    else
    {
       u = find_unit(ch, &arg, 0, FIND_UNIT_INVEN | FIND_UNIT_SURRO);
 
       if(u == NULL)
-         act("You don't seem to have any such thing.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+         act("You don't seem to have any such thing.", A_SOMEONE, ch, {}, {}, TO_CHAR);
       else
       {
          if(!IS_OBJ(u) || !IS_SET(UNIT_MANIPULATE(u), MANIPULATE_TAKE))
          {
-            act("You can't bury $2n.", A_ALWAYS, ch, u, NULL, TO_CHAR);
+            act("You can't bury $2n.", A_ALWAYS, ch, u, {}, TO_CHAR);
             return;
          }
 
          if(UNIT_IN(ch) == u)
          {
-            act("You can't bury yourself.", A_ALWAYS, ch, u, NULL, TO_CHAR);
+            act("You can't bury yourself.", A_ALWAYS, ch, u, {}, TO_CHAR);
             return;
          }
 
@@ -485,7 +483,7 @@ void do_ideatypobug(std::shared_ptr<unit_data> ch, char *arg, const struct comma
    if((fl = fopen_cache(str_cc(libdir, strings[cmdno + 3]), "a")) == NULL)
    {
       slog(LOG_ALL, 0, "do_ideatypobug couldn't open %s file.", cmd->cmd_str);
-      act("Could not open the $2t-file.", A_ALWAYS, ch, cmd->cmd_str, 0, TO_CHAR);
+      act("Could not open the $2t-file.", A_ALWAYS, ch, cmd->cmd_str, {}, TO_CHAR);
       return;
    }
 
@@ -521,7 +519,8 @@ void do_group(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
 {
    /*  int skill, span, leveldiff, maxmem, nummem; */
    char                     name[256];
-   std::shared_ptr<unit_data> victim, *k;
+   std::shared_ptr<unit_data> victim;
+   std::shared_ptr<unit_data> k;
    struct char_follow_type *f;
    bool                     found = FALSE;
 
@@ -540,11 +539,11 @@ void do_group(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
             k = ch;
 
          if(CHAR_HAS_FLAG(k, CHAR_GROUP))
-            act("     $3n (Head of group)", A_SOMEONE, ch, 0, k, TO_CHAR);
+            act("     $3n (Head of group)", A_SOMEONE, ch, {}, k, TO_CHAR);
 
          for(f = CHAR_FOLLOWERS(k); f; f = f->next)
             if(CHAR_HAS_FLAG(f->follower, CHAR_GROUP))
-               act("     $3n", A_SOMEONE, ch, 0, f->follower, TO_CHAR);
+               act("     $3n", A_SOMEONE, ch, {}, f->follower, TO_CHAR);
       }
 
       return;
@@ -562,7 +561,7 @@ void do_group(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
 
       if(CHAR_MASTER(ch))
       {
-         act("You can not enroll group members without being head of a group.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+         act("You can not enroll group members without being head of a group.", A_SOMEONE, ch, {}, {}, TO_CHAR);
          return;
       }
 
@@ -573,8 +572,8 @@ void do_group(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
       {
          if(CHAR_HAS_FLAG(victim, CHAR_GROUP))
          {
-            act("$1n has been kicked out of the group.", A_SOMEONE, victim, 0, ch, TO_ROOM);
-            act("You are no longer a member of the group.", A_SOMEONE, victim, 0, 0, TO_CHAR);
+            act("$1n has been kicked out of the group.", A_SOMEONE, victim, {}, ch, TO_ROOM);
+            act("You are no longer a member of the group.", A_SOMEONE, victim, {}, {}, TO_CHAR);
          }
          else
          {
@@ -617,13 +616,13 @@ void do_group(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
                       return;
                     }
             */
-            act("$1n is now a member of $3n's group.", A_SOMEONE, victim, 0, ch, TO_ROOM);
-            act("You are now a member of $3n's group.", A_SOMEONE, victim, 0, ch, TO_CHAR);
+            act("$1n is now a member of $3n's group.", A_SOMEONE, victim, {}, ch, TO_ROOM);
+            act("You are now a member of $3n's group.", A_SOMEONE, victim, {}, ch, TO_CHAR);
          }
          TOGGLE_BIT(CHAR_FLAGS(victim), CHAR_GROUP);
       }
       else
-         act("$3n must follow you, to enter the group", A_SOMEONE, ch, 0, victim, TO_CHAR);
+         act("$3n must follow you, to enter the group", A_SOMEONE, ch, {}, victim, TO_CHAR);
    }
 }
 
@@ -698,7 +697,7 @@ void do_split(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
    {
       CHAR_GOLD(master) += share;
       sprintf(buf, "$1n gives you %d coin%s, your share of %d.", share, share == 1 ? "" : "s", amount);
-      act(buf, A_SOMEONE, ch, 0, master, TO_VICT);
+      act(buf, A_SOMEONE, ch, {}, master, TO_VICT);
    }
 
    for(foll = CHAR_FOLLOWERS(master); foll; foll = foll->next)
@@ -706,7 +705,7 @@ void do_split(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
       {
          CHAR_GOLD(foll->follower) += share;
          sprintf(buf, "$1n gives you %d coins, your share of %d.", share, amount);
-         act(buf, A_SOMEONE, ch, 0, foll->follower, TO_VICT);
+         act(buf, A_SOMEONE, ch, {}, foll->follower, TO_VICT);
       }
 
    sprintf(buf,
@@ -841,8 +840,6 @@ void start_player(std::shared_ptr<unit_data> ch)
 
    if(!UNIT_IS_EVIL(ch))
       SET_BIT(CHAR_FLAGS(ch), CHAR_PEACEFUL);
-
-   extern struct diltemplate *playerinit_tmpl;
 
    if(playerinit_tmpl)
    {

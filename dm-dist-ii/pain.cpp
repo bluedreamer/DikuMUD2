@@ -318,17 +318,17 @@ struct pain_type
    ubit16                idx; /* Current command pointer */
    struct pain_cmd_type *cmds;
 
-   void *vars[1]; /* Global Working Variable! */
+   std::variant<std::monostate, std::shared_ptr<unit_data>> vars[1]; /* Global Working Variable! */
 };
 
 struct pain_cmd_type
 {
    int (*func)(std::shared_ptr<unit_data> npc, struct pain_type *pain);
 
-   sbit32                                                                                       gotoline;
-   sbit32                                                                                       data[2];
+   sbit32                                                                                                      gotoline;
+   sbit32                                                                                                      data[2];
    //   void   *ptr[2];
-   std::variant<std::monostate, std::shared_ptr<file_index_type>, char *, char **, unit_data *> ptr[2];
+   std::variant<std::monostate, std::shared_ptr<file_index_type>, char *, char **, std::shared_ptr<unit_data>> ptr[2];
 };
 
 /* Intended to be used for error-reports */
@@ -374,7 +374,7 @@ void pain_gotoline(struct pain_type *pain)
 /* 'A' command */
 int pain_act(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
-   act(std::get<char *>(pain->cmds[pain->idx].ptr[0]), A_SOMEONE, npc, 0, 0, TO_ROOM);
+   act(std::get<char *>(pain->cmds[pain->idx].ptr[0]), A_SOMEONE, npc, {}, {}, TO_ROOM);
    pain_next_cmd(pain);
    return FALSE; /* Stop command loop until next tick */
 }
@@ -411,21 +411,26 @@ int pain_closed(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 int pain_charcmd(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
    std::shared_ptr<unit_data> u;
-   char              buf[MAX_INPUT_LENGTH];
+   char                       buf[MAX_INPUT_LENGTH];
 
-   if(!pain->vars[0]) /* Is there a PC target? */
+   if(!std::holds_alternative<std::monostate>(pain->vars[0])) /* Is there a PC target? */
    {
       pain_gotoline(pain);
       return FALSE; /* Wait a tick */
    }
 
    for(u = UNIT_CONTAINS(UNIT_IN(npc)); u; u = u->next)
-      if(u == pain->vars[0])
-         break;
+   {
+      // TODO ADRIAN
+      // void to unit_data
+      assert(0);
+      //      if(u == pain->vars[0])
+      //         break;
+   }
 
    if(!u)
    {
-      pain->vars[0] = 0;
+      pain->vars[0] = std::monostate{};
       pain_gotoline(pain);
       return FALSE; /* Wait a tick */
    }
@@ -482,7 +487,7 @@ int pain_has(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 int pain_in_room(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
    std::shared_ptr<unit_data> u;
-   char             *c, buf[256];
+   char                      *c, buf[256];
 
    c = std::get<char *>(pain->cmds[pain->idx].ptr[0]);
 
@@ -562,7 +567,7 @@ int pain_remote_load(std::shared_ptr<unit_data> npc, struct pain_type *pain)
    std::shared_ptr<unit_data> u;
 
    u = read_unit(std::get<std::shared_ptr<file_index_type>>(pain->cmds[pain->idx].ptr[0]));
-   unit_to_unit(u, std::get<unit_data *>(pain->cmds[pain->idx].ptr[1]));
+   unit_to_unit(u, std::get<std::shared_ptr<unit_data>>(pain->cmds[pain->idx].ptr[1]));
    pain_next_cmd(pain);
    return TRUE; /* Continue command loop immediately */
 }
@@ -601,14 +606,14 @@ int pain_trash(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
    std::shared_ptr<unit_data> u;
 
-   amount_t obj_trade_price(std::shared_ptr<unit_data>  u);
+   amount_t obj_trade_price(std::shared_ptr<unit_data> u);
 
    for(u = UNIT_CONTAINS(UNIT_IN(npc)); u; u = u->next)
    {
       if(UNIT_WEAR(u, MANIPULATE_TAKE) && (UNIT_WEIGHT(u) <= 200) &&
          ((OBJ_TYPE(u) == ITEM_DRINKCON) || (obj_trade_price(u) <= (sbit32)pain->cmds[pain->idx].data[0])))
       {
-         act("$1n picks up $3n.", A_SOMEONE, npc, 0, u, TO_ROOM);
+         act("$1n picks up $3n.", A_SOMEONE, npc, {}, u, TO_ROOM);
          /* unit_down(u, npc); */
          extract_unit(u); /* Not sure this is fair... */
          pain_gotoline(pain);
@@ -720,8 +725,9 @@ int pain_exec(struct spec_arg *sarg)
          return SFR_SHARE;
    }
 
-   if((p->cmds[p->idx].func == pain_waitmsg) && (sarg->cmd->no == p->cmds[p->idx].data[0]) && (p->vars[0]) &&
-      (p->vars[0] == sarg->activator) && (is_name(sarg->arg, const_cast<const char **>(std::get<char **>(p->cmds[p->idx].ptr[0])))))
+   if((p->cmds[p->idx].func == pain_waitmsg) && (sarg->cmd->no == p->cmds[p->idx].data[0]) &&
+      (!std::holds_alternative<std::monostate>(p->vars[0])) && (std::get<std::shared_ptr<unit_data>>(p->vars[0]) == sarg->activator) &&
+      (is_name(sarg->arg, const_cast<const char **>(std::get<char **>(p->cmds[p->idx].ptr[0])))))
    {
       cont = TRUE;
       pain_next_cmd(p);
@@ -828,8 +834,6 @@ struct pain_type *pain_doinit(std::shared_ptr<unit_data> npc, char *text)
    struct line_no_convert line_no = {-1, -1};
    struct command_info   *cmd_ptr;
    char                 **namelist = NULL;
-
-   extern struct trie_type *intr_trie;
 
    static const char *specmsg[] = {"_dead", "_combat", "_unknown", NULL};
 
@@ -1017,7 +1021,7 @@ struct pain_type *pain_doinit(std::shared_ptr<unit_data> npc, char *text)
 
             text = pi_getstr(text, buf);
             split_fi_ref(buf, zone, name);
-            if(cmd.ptr[1] = world_room(zone, name); std::get<unit_data *>(cmd.ptr[1]) != nullptr)
+            if(cmd.ptr[1] = world_room(zone, name); std::get<std::shared_ptr<unit_data>>(cmd.ptr[1]) != nullptr)
             {
                pain_error("PAIN 'r': - Illegal symbolic ROOM reference: %s", buf);
                error = TRUE;

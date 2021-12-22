@@ -27,6 +27,7 @@
 #include "comm.h"
 #include "db.h"
 #include "db_file.h"
+#include "externals.h"
 #include "files.h"
 #include "interpreter.h"
 #include "structs.h"
@@ -44,8 +45,6 @@
 /* Kindly left out of time.h by <Insert_Unix_Vendor> */
 size_t strftime(char *s, size_t smax, const char *fmt, const struct tm *tp);
 #endif
-
-extern char libdir[]; /* from dikumud.c */
 
 #define BAN_SAVE str_cc(libdir, BAN_FILE)
 
@@ -200,10 +199,10 @@ void del_ban(std::shared_ptr<unit_data> ch, char *site)
    if(entry)
    {
       kill_entry(entry);
-      act("$2t taken succesfully off ban list.", A_ALWAYS, ch, site, 0, TO_CHAR);
+      act("$2t taken succesfully off ban list.", A_ALWAYS, ch, site, {}, TO_CHAR);
    }
    else
-      act("No entry $2t in ban list.", A_ALWAYS, ch, site, 0, TO_CHAR);
+      act("No entry $2t in ban list.", A_ALWAYS, ch, site, {}, TO_CHAR);
 }
 
 void show_site(std::shared_ptr<unit_data> ch, struct ban_t *entry)

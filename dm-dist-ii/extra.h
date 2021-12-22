@@ -47,11 +47,11 @@ public:
    class cStringInstance   descr; /* What to see                      */
    class extra_descr_data *next;  /* Next in list                     */
 };
+class unit_data;
 
-const char *unit_find_extra_string(class unit_data *ch, char *word, class unit_data *list);
-
-class extra_descr_data *char_unit_find_extra(class unit_data *ch, class unit_data **target, char *word, class unit_data *list);
-
-class extra_descr_data *unit_find_extra(const char *word, class unit_data *unit);
+const char *unit_find_extra_string(std::shared_ptr<unit_data> ch, char *word, std::shared_ptr<unit_data> list);
+class extra_descr_data *
+char_unit_find_extra(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> &target, char *word, std::shared_ptr<unit_data> list);
+class extra_descr_data *unit_find_extra(const char *word, std::shared_ptr<unit_data> unit);
 
 #endif /* _MUD_STRUCTS_H */

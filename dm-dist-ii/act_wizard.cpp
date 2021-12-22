@@ -46,6 +46,8 @@
 #include "db.h"
 #include "db_file.h"
 #include "dijkstra.h"
+#include "external_funcs.h"
+#include "externals.h"
 #include "files.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -67,18 +69,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*   external vars  */
-
-extern struct zone_info_type   zone_info;
-extern std::shared_ptr<unit_data> unit_list;
-extern struct descriptor_data *descriptor_list;
-extern char                    libdir[]; /* from dikumud.c */
-extern BLK_FILE               *inven_bf;
-
-/* external functs */
-
-struct time_info_data age(std::shared_ptr<unit_data> ch);
-struct time_info_data real_time_passed(time_t t2, time_t t1);
 std::shared_ptr<zone_type> find_zone(const char *zonename);
 
 static int WIZ_CMD_LEVEL = 210; /* No need to change this, it is also set
@@ -90,10 +80,10 @@ int                     delete_player(const char *name);
 
 void do_path(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   int               i;
+   int                        i;
    std::shared_ptr<unit_data> thing;
-   char              buf[MAX_INPUT_LENGTH];
-   char              zone[MAX_INPUT_LENGTH];
+   char                       buf[MAX_INPUT_LENGTH];
+   char                       zone[MAX_INPUT_LENGTH];
 
    if(str_is_empty(argument))
    {
@@ -204,7 +194,7 @@ void do_echo(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
    if(str_is_empty(arg))
       send_to_char("Echo needs an argument.\n\r", ch);
    else
-      act("$2t", A_ALWAYS, ch, arg, 0, TO_ALL);
+      act("$2t", A_ALWAYS, ch, arg, {}, TO_ALL);
 }
 
 int frozen(struct spec_arg *sarg)
@@ -229,7 +219,7 @@ int frozen(struct spec_arg *sarg)
 void do_freeze(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    std::shared_ptr<unit_data> unit;
-   struct unit_fptr *fptr;
+   struct unit_fptr          *fptr;
 
    if(str_is_empty(arg))
       send_to_char("Freeze who?\n\r", ch);
@@ -243,13 +233,13 @@ void do_freeze(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
       send_to_char("It IS a little cold isn't is?.\n\r", ch);
    else if((fptr = find_fptr(unit, SFUN_FROZEN)))
    {
-      act("$1n is now unfrozen.", A_SOMEONE, unit, 0, ch, TO_VICT);
+      act("$1n is now unfrozen.", A_SOMEONE, unit, {}, ch, TO_VICT);
       send_to_char("You unfreeze.\n\r", unit);
       destroy_fptr(unit, fptr);
    }
    else
    {
-      act("$1n is now frozen.", A_SOMEONE, unit, 0, ch, TO_VICT);
+      act("$1n is now frozen.", A_SOMEONE, unit, {}, ch, TO_VICT);
       send_to_char("You totally freeze.\n\r", unit);
       create_fptr(unit, SFUN_FROZEN, 0, SFB_PRIORITY | SFB_CMD | SFB_AWARE, NULL);
    }
@@ -272,7 +262,7 @@ void do_noshout(std::shared_ptr<unit_data> ch, char *argument, const struct comm
 
    if(CHAR_LEVEL(victim) >= CHAR_LEVEL(ch))
    {
-      act("$3e might object to that... better not.", A_SOMEONE, ch, 0, victim, TO_CHAR);
+      act("$3e might object to that... better not.", A_SOMEONE, ch, {}, victim, TO_CHAR);
       return;
    }
 
@@ -307,7 +297,7 @@ void do_notell(std::shared_ptr<unit_data> ch, char *argument, const struct comma
 
    if(CHAR_LEVEL(victim) >= CHAR_LEVEL(ch))
    {
-      act("$3e might object to that... better not.", A_SOMEONE, ch, 0, victim, TO_CHAR);
+      act("$3e might object to that... better not.", A_SOMEONE, ch, {}, victim, TO_CHAR);
       return;
    }
 
@@ -327,7 +317,7 @@ void do_notell(std::shared_ptr<unit_data> ch, char *argument, const struct comma
 void do_wizinv(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    std::shared_ptr<unit_data> unit;
-   int               level = GOD_LEVEL - 1;
+   int                        level = GOD_LEVEL - 1;
 
    arg = skip_spaces(arg);
 
@@ -362,14 +352,14 @@ void do_wizinv(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
       act("$3n is now WIZI below level $2d.", A_ALWAYS, ch, &level, unit, TO_CHAR);
 
       if(unit != ch)
-         act("You are now WIZI below level $2d.", A_ALWAYS, unit, &level, 0, TO_CHAR);
+         act("You are now WIZI below level $2d.", A_ALWAYS, unit, &level, {}, TO_CHAR);
    }
    else
    {
-      act("$3n is no longer WIZI.", A_ALWAYS, ch, 0, unit, TO_CHAR);
+      act("$3n is no longer WIZI.", A_ALWAYS, ch, {}, unit, TO_CHAR);
 
       if(unit != ch)
-         act("You are no longer WIZI.", A_ALWAYS, unit, 0, 0, TO_CHAR);
+         act("You are no longer WIZI.", A_ALWAYS, unit, {}, {}, TO_CHAR);
    }
 
    UNIT_MINV(unit) = level;
@@ -390,15 +380,15 @@ void base_trans(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> victim
 
    if(!may_teleport(victim, UNIT_IN(ch)) && CHAR_LEVEL(ch) < 240)
    {
-      act("You are not allowed to transfer $3n.", A_SOMEONE, ch, 0, victim, TO_CHAR);
+      act("You are not allowed to transfer $3n.", A_SOMEONE, ch, {}, victim, TO_CHAR);
       return;
    }
 
-   act("$1n disappears in a mushroom cloud.", A_HIDEINV, victim, 0, 0, TO_REST);
+   act("$1n disappears in a mushroom cloud.", A_HIDEINV, victim, {}, {}, TO_REST);
    unit_from_unit(victim);
    unit_to_unit(victim, UNIT_IN(ch));
-   act("$1n arrives from a puff of smoke.", A_HIDEINV, victim, 0, 0, TO_REST);
-   act("$1n has transferred you!", A_SOMEONE, ch, 0, victim, TO_VICT);
+   act("$1n arrives from a puff of smoke.", A_HIDEINV, victim, {}, {}, TO_REST);
+   act("$1n has transferred you!", A_SOMEONE, ch, {}, victim, TO_VICT);
    char mbuf[MAX_INPUT_LENGTH] = {0};
    do_look(victim, mbuf, &cmd_auto_unknown);
    for(victim = UNIT_CONTAINS(victim); victim; victim = victim->next)
@@ -408,7 +398,7 @@ void base_trans(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> victim
 
 void do_trans(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct descriptor_data *i;
+   struct descriptor_data    *i;
    std::shared_ptr<unit_data> victim;
 
    if(!IS_PC(ch))
@@ -446,7 +436,8 @@ void do_trans(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
 void do_at(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
    char                             buf[MAX_INPUT_LENGTH];
-   std::shared_ptr<unit_data> target, *original_loc;
+   std::shared_ptr<unit_data>       target;
+   std::shared_ptr<unit_data>       original_loc;
    std::shared_ptr<file_index_type> fi;
 
    if(!IS_PC(ch))
@@ -497,7 +488,8 @@ void do_at(std::shared_ptr<unit_data> ch, char *argument, const struct command_i
 
 void do_goto(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   std::shared_ptr<unit_data> target, *pers;
+   std::shared_ptr<unit_data>       target;
+   std::shared_ptr<unit_data>       pers;
    std::shared_ptr<file_index_type> fi;
    std::shared_ptr<zone_type>       zone;
    int                              i;
@@ -560,10 +552,10 @@ void do_goto(std::shared_ptr<unit_data> ch, char *argument, const struct command
       return;
    }
 
-   act("$1n disappears into thin air.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+   act("$1n disappears into thin air.", A_HIDEINV, ch, {}, {}, TO_ROOM);
    unit_from_unit(ch);
    unit_to_unit(ch, target);
-   act("$1n appears from thin air.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+   act("$1n appears from thin air.", A_HIDEINV, ch, {}, {}, TO_ROOM);
    char mbuf[MAX_INPUT_LENGTH] = {0};
    do_look(ch, mbuf, cmd);
 }
@@ -584,8 +576,8 @@ void do_crash(std::shared_ptr<unit_data> ch, char *argument, const struct comman
 
 void do_execute(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   int  system_check(std::shared_ptr<unit_data>  pc, char *buf);
-   void execute_append(std::shared_ptr<unit_data>  pc, char *str);
+   int  system_check(std::shared_ptr<unit_data> pc, char *buf);
+   void execute_append(std::shared_ptr<unit_data> pc, char *str);
 
    argument = skip_spaces(argument);
 
@@ -593,13 +585,12 @@ void do_execute(std::shared_ptr<unit_data> ch, char *argument, const struct comm
       return;
 
    execute_append(ch, argument);
-   act("Executing $2t.\n\r", A_ALWAYS, ch, argument, 0, TO_CHAR);
+   act("Executing $2t.\n\r", A_ALWAYS, ch, argument, {}, TO_CHAR);
 }
 
 void do_shutdown(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   char       buf[100];
-   extern int mud_shutdown, mud_reboot;
+   char buf[100];
 
    if(!IS_PC(ch))
       return;
@@ -617,8 +608,7 @@ void do_shutdown(std::shared_ptr<unit_data> ch, char *argument, const struct com
 
 void do_reboot(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   char       buf[100], arg[MAX_INPUT_LENGTH];
-   extern int mud_shutdown, mud_reboot;
+   char buf[100], arg[MAX_INPUT_LENGTH];
 
    if(!IS_PC(ch))
       return;
@@ -651,8 +641,8 @@ void do_snoop(std::shared_ptr<unit_data> ch, char *argument, const struct comman
 {
    std::shared_ptr<unit_data> victim;
 
-   void unsnoop(std::shared_ptr<unit_data>  ch, int mode);
-   void snoop(std::shared_ptr<unit_data>  ch, std::shared_ptr<unit_data>  victim);
+   void unsnoop(std::shared_ptr<unit_data> ch, int mode);
+   void snoop(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> victim);
 
    if(!CHAR_DESCRIPTOR(ch))
       return;
@@ -676,7 +666,7 @@ void do_snoop(std::shared_ptr<unit_data> ch, char *argument, const struct comman
 
    if(!CHAR_DESCRIPTOR(victim))
    {
-      act("$3n has no descriptor-link.", A_SOMEONE, ch, 0, victim, TO_CHAR);
+      act("$3n has no descriptor-link.", A_SOMEONE, ch, {}, victim, TO_CHAR);
       return;
    }
 
@@ -715,8 +705,8 @@ void do_switch(std::shared_ptr<unit_data> ch, char *argument, const struct comma
 {
    std::shared_ptr<unit_data> victim;
 
-   void switchbody(std::shared_ptr<unit_data>  ch, std::shared_ptr<unit_data>  victim);
-   void unswitchbody(std::shared_ptr<unit_data>  npc);
+   void switchbody(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> victim);
+   void unswitchbody(std::shared_ptr<unit_data> npc);
 
    if(!CHAR_DESCRIPTOR(ch))
       return;
@@ -745,7 +735,7 @@ void do_switch(std::shared_ptr<unit_data> ch, char *argument, const struct comma
    }
 
    if(CHAR_DESCRIPTOR(victim))
-      act("$3n's body is already in use!", A_ALWAYS, ch, 0, victim, TO_CHAR);
+      act("$3n's body is already in use!", A_ALWAYS, ch, {}, victim, TO_CHAR);
    else
    {
       send_to_char("Ok.\n\r", ch);
@@ -766,7 +756,7 @@ void base_force(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> victim
 
 void do_force(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   struct descriptor_data *i;
+   struct descriptor_data    *i;
    std::shared_ptr<unit_data> victim;
 
    if(!IS_PC(ch))
@@ -813,9 +803,9 @@ void do_finger(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
 {
    char buf[MAX_INPUT_LENGTH];
 
-   void reset_char(std::shared_ptr<unit_data>  ch);
+   void reset_char(std::shared_ptr<unit_data> ch);
    int  player_exists(char *pName);
-   void enter_game(std::shared_ptr<unit_data>  ch);
+   void enter_game(std::shared_ptr<unit_data> ch);
 
    if(str_is_empty(arg))
    {
@@ -840,10 +830,11 @@ void do_load(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
 {
    char                             buf[MAX_INPUT_LENGTH];
    std::shared_ptr<file_index_type> fi;
-   std::shared_ptr<unit_data> u, *tmp;
+   std::shared_ptr<unit_data>       u;
+   std::shared_ptr<unit_data>       tmp;
 
-   void reset_char(std::shared_ptr<unit_data>  ch);
-   void enter_game(std::shared_ptr<unit_data>  ch);
+   void reset_char(std::shared_ptr<unit_data> ch);
+   void enter_game(std::shared_ptr<unit_data> ch);
 
    if(str_is_empty(arg))
    {
@@ -906,7 +897,7 @@ void do_load(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
       {
          int i = fi->zone->loadlevel;
 
-         act("Level $2d is required to load items from this zone.", A_ALWAYS, ch, &i, 0, TO_CHAR);
+         act("Level $2d is required to load items from this zone.", A_ALWAYS, ch, &i, {}, TO_CHAR);
          return;
       }
    }
@@ -928,19 +919,19 @@ void do_load(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
    if(IS_OBJ(u) && IS_SET(UNIT_MANIPULATE(u), MANIPULATE_TAKE))
    {
       unit_to_unit(u, ch);
-      act("You secretly load $2n.", A_SOMEONE, ch, u, 0, TO_CHAR);
+      act("You secretly load $2n.", A_SOMEONE, ch, u, {}, TO_CHAR);
    }
    else
    {
       unit_to_unit(u, UNIT_IN(ch));
-      act("$1n opens an interdimensional gate and fetches $3n.", A_SOMEONE, ch, 0, u, TO_ROOM);
-      act("$1n says, 'Hello World!'", A_SOMEONE, u, 0, 0, TO_ROOM);
+      act("$1n opens an interdimensional gate and fetches $3n.", A_SOMEONE, ch, {}, u, TO_ROOM);
+      act("$1n says, 'Hello World!'", A_SOMEONE, u, {}, {}, TO_ROOM);
    }
 }
 
 void do_delete(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   char              buf[MAX_INPUT_LENGTH];
+   char                       buf[MAX_INPUT_LENGTH];
    std::shared_ptr<unit_data> tmp;
 
    if(cmd_is_abbrev(ch, cmd))
@@ -979,9 +970,10 @@ void do_delete(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
 /* clean a room of all mobiles and objects */
 void do_purge(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   char                    buf[MAX_INPUT_LENGTH];
-   std::shared_ptr<unit_data> thing, *next_thing;
-   struct descriptor_data *d;
+   char                       buf[MAX_INPUT_LENGTH];
+   std::shared_ptr<unit_data> thing;
+   std::shared_ptr<unit_data> next_thing;
+   struct descriptor_data    *d;
 
    void close_socket(struct descriptor_data * d);
 
@@ -992,8 +984,8 @@ void do_purge(std::shared_ptr<unit_data> ch, char *argument, const struct comman
 
    if(str_is_empty(argument))
    {
-      act("$1n gestures... You are surrounded by scorching flames!", A_SOMEONE, ch, 0, 0, TO_ROOM);
-      act("You are surrounded by scorching flames!", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("$1n gestures... You are surrounded by scorching flames!", A_SOMEONE, ch, {}, {}, TO_ROOM);
+      act("You are surrounded by scorching flames!", A_SOMEONE, ch, {}, {}, TO_CHAR);
 
       for(thing = UNIT_CONTAINS(UNIT_IN(ch)); thing; thing = next_thing)
       {
@@ -1046,12 +1038,12 @@ void do_purge(std::shared_ptr<unit_data> ch, char *argument, const struct comman
          send_to_char("Fuuuuuuuuu!\n\r", ch);
       else if(!IS_ROOM(thing))
       {
-         act("$1n disintegrates $3n.", A_SOMEONE, ch, 0, thing, TO_NOTVICT);
-         act("You disintegrate $3n.", A_SOMEONE, ch, 0, thing, TO_CHAR);
+         act("$1n disintegrates $3n.", A_SOMEONE, ch, {}, thing, TO_NOTVICT);
+         act("You disintegrate $3n.", A_SOMEONE, ch, {}, thing, TO_CHAR);
          extract_unit(thing);
       }
       else
-         act("You may not purge rooms.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+         act("You may not purge rooms.", A_SOMEONE, ch, {}, {}, TO_CHAR);
    }
    else
       send_to_char("No such thing found...\n\r", ch);
@@ -1060,10 +1052,10 @@ void do_purge(std::shared_ptr<unit_data> ch, char *argument, const struct comman
 void do_advance(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
    std::shared_ptr<unit_data> victim;
-   char              name[100], level[100];
-   int               newlevel;
+   char                       name[100], level[100];
+   int                        newlevel;
 
-   void gain_exp_regardless(std::shared_ptr<unit_data>  ch, int gain);
+   void gain_exp_regardless(std::shared_ptr<unit_data> ch, int gain);
 
    if(!IS_PC(ch))
       return;
@@ -1123,7 +1115,7 @@ void do_advance(std::shared_ptr<unit_data> ch, char *argument, const struct comm
           "elements of time and space itself. You feel less powerful.",
           A_ALWAYS,
           victim,
-          0,
+          {},
           ch,
           TO_CHAR);
       return;
@@ -1151,7 +1143,7 @@ void do_advance(std::shared_ptr<unit_data> ch, char *argument, const struct comm
        "you back to reality. You feel slightly different.",
        A_ALWAYS,
        victim,
-       0,
+       {},
        ch,
        TO_CHAR);
 
@@ -1168,12 +1160,10 @@ void do_verify(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
 {
 #ifdef SUSPEKT
    std::shared_ptr<unit_data> pc, *obj;
-   int               i, j;
-   float             asum, ssum;
-   float             atot, stot;
-   char              buf[256];
-
-   extern struct requirement_type pc_race_base[];
+   int                        i, j;
+   float                      asum, ssum;
+   float                      atot, stot;
+   char                       buf[256];
 
    if(!IS_PC(ch))
       return;
@@ -1264,14 +1254,14 @@ void do_verify(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
 
 void reroll(std::shared_ptr<unit_data> victim)
 {
-   struct extra_descr_data *exd, *nextexd;
+   struct extra_descr_data   *exd, *nextexd;
    std::shared_ptr<unit_data> obj;
-   int                      i;
+   int                        i;
 
-   void race_cost(std::shared_ptr<unit_data>  ch);
-   void points_reset(std::shared_ptr<unit_data>  ch);
-   void race_cost(std::shared_ptr<unit_data>  ch);
-   void clear_training_level(std::shared_ptr<unit_data>  ch);
+   void race_cost(std::shared_ptr<unit_data> ch);
+   void points_reset(std::shared_ptr<unit_data> ch);
+   void race_cost(std::shared_ptr<unit_data> ch);
+   void clear_training_level(std::shared_ptr<unit_data> ch);
 
    if(IS_IMMORTAL(victim))
       return;
@@ -1355,10 +1345,10 @@ void do_reroll(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
 
 void do_restore(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   int               i;
+   int                        i;
    std::shared_ptr<unit_data> victim;
 
-   void update_pos(std::shared_ptr<unit_data>  victim);
+   void update_pos(std::shared_ptr<unit_data> victim);
 
    if(!IS_PC(ch))
       return;
@@ -1398,15 +1388,14 @@ void do_restore(std::shared_ptr<unit_data> ch, char *argument, const struct comm
 
    update_pos(victim);
    send_to_char("Done.\n\r", ch);
-   act("You have been fully healed by $3n!", A_SOMEONE, victim, 0, ch, TO_CHAR);
+   act("You have been fully healed by $3n!", A_SOMEONE, victim, {}, ch, TO_CHAR);
 }
 
 /****************************
  * The command `file' below *
  ****************************/
 
-extern char *wizlist, *news, *credits, *motd, *goodbye;
-char        *read_info_file(char *name, char *oldstr);
+char *read_info_file(char *name, char *oldstr);
 
 static bool file_install(char *file, bool bNew)
 {
@@ -1475,7 +1464,7 @@ void do_file(std::shared_ptr<unit_data> ch, char *argument, const struct command
       str = "Usage:\n\r"
             "file [new|old] <wizlist | news | credits | motd | goodbye>";
 
-   act(str, A_ALWAYS, ch, buf, 0, TO_CHAR);
+   act(str, A_ALWAYS, ch, buf, {}, TO_CHAR);
 }
 
 /* end file */
@@ -1494,7 +1483,7 @@ void do_message(std::shared_ptr<unit_data> ch, char *arg, const struct command_i
       send_to_char("What??\n\r", ch);
    else
    {
-      act("$2t", A_ALWAYS, vict, skip_spaces(arg), 0, TO_CHAR);
+      act("$2t", A_ALWAYS, vict, skip_spaces(arg), {}, TO_CHAR);
       send_to_char("Ok.\n\r", ch);
    }
 }
@@ -1508,7 +1497,7 @@ void do_broadcast(std::shared_ptr<unit_data> ch, char *arg, const struct command
    else
       for(d = descriptor_list; d; d = d->next)
          if(descriptor_is_playing(d))
-            act("$2t", A_ALWAYS, d->character, arg, 0, TO_CHAR);
+            act("$2t", A_ALWAYS, d->character, arg, {}, TO_CHAR);
 }
 
 void list_wizards(std::shared_ptr<unit_data> ch, bool value)
@@ -1542,7 +1531,7 @@ void list_wizards(std::shared_ptr<unit_data> ch, bool value)
    if(any)
    {
       *(s - 2) = '\0';
-      act("$2t.", A_ALWAYS, ch, buf, 0, TO_CHAR);
+      act("$2t.", A_ALWAYS, ch, buf, {}, TO_CHAR);
    }
 }
 
@@ -1647,7 +1636,7 @@ void do_wiz(std::shared_ptr<unit_data> ch, char *arg, const struct command_info 
 void do_title(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    std::shared_ptr<unit_data> u;
-   char             *oldarg = arg;
+   char                      *oldarg = arg;
 
    if(!IS_PC(ch) || str_is_empty(arg))
    {
@@ -1689,9 +1678,8 @@ void do_title(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
  */
 void do_wizlock(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   extern int wizlock;
-   int        lvl;
-   char       buf[128];
+   int  lvl;
+   char buf[128];
 
    arg = one_argument(arg, buf);
 
@@ -1720,9 +1708,8 @@ void do_wizlock(std::shared_ptr<unit_data> ch, char *arg, const struct command_i
 
 void do_wizhelp(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   char                       buf[MAX_STRING_LENGTH], *b;
-   int                        no, i;
-   extern struct command_info cmd_info[];
+   char buf[MAX_STRING_LENGTH], *b;
+   int  no, i;
 
    if(!IS_PC(ch))
       return;
@@ -1754,11 +1741,10 @@ void do_kickit(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
 
 void do_corpses(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   extern char *in_string(std::shared_ptr<unit_data>  ch, std::shared_ptr<unit_data>  u);
-
    std::shared_ptr<unit_data> c;
-   bool              found = FALSE;
-   char             *c1, *c2, buf[512];
+
+   bool  found = FALSE;
+   char *c1, *c2, buf[512];
 
    send_to_char("The following player corpses were found:\n\r", ch);
 

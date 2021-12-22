@@ -110,10 +110,4 @@ void              free_extra_descr_list(struct extra_descr_data *ex);
 struct extra_descr_data *create_extra_descr(void);
 std::shared_ptr<unit_data> create_unit(ubit8 type);
 
-/* --- The globals of db.c --- */
-
-extern int                   room_number;
-extern std::shared_ptr<unit_data> unit_list;
-extern struct zone_info_type zone_info;
-
 #endif /* _MUD_DB_H */

@@ -38,10 +38,6 @@
 #include <time.h>
 #include <vector>
 
-extern std::shared_ptr<file_index_type> slime_fi;
-
-extern char libdir[];
-
 // struct file_index_type **slime_list = NULL;
 std::vector<std::shared_ptr<file_index_type>> slime_list;
 
@@ -132,13 +128,13 @@ int slime_obj(struct spec_arg *sarg)
 
    if(fi == NULL)
    {
-      act("No such file index '$2t'.", A_ALWAYS, sarg->activator, fi_name, 0, TO_CHAR);
+      act("No such file index '$2t'.", A_ALWAYS, sarg->activator, fi_name, {}, TO_CHAR);
       return SFR_BLOCK;
    }
 
    if(fi->zone == find_zone(BASIS_ZONE))
    {
-      act("Basis zone is not allowed slimed.", A_ALWAYS, sarg->activator, 0, 0, TO_CHAR);
+      act("Basis zone is not allowed slimed.", A_ALWAYS, sarg->activator, {}, {}, TO_CHAR);
       return SFR_BLOCK;
    }
 
@@ -170,7 +166,7 @@ int slime_obj(struct spec_arg *sarg)
    }
    else
    {
-      act("Please specify 'add' or 'remove'.", A_ALWAYS, sarg->activator, 0, 0, TO_CHAR);
+      act("Please specify 'add' or 'remove'.", A_ALWAYS, sarg->activator, {}, {}, TO_CHAR);
    }
 
    return SFR_BLOCK;

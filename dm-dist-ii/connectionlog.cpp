@@ -28,6 +28,7 @@
 #include "common.h"
 #include "db.h"
 #include "essential.h"
+#include "externals.h"
 #include "files.h"
 #include "textutil.h"
 #include "utils.h"

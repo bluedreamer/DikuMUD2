@@ -699,7 +699,7 @@ bool wear(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, int key
    }
 
    if(err)
-      act(errstr, A_SOMEONE, ch, obj, 0, TO_CHAR);
+      act(errstr, A_SOMEONE, ch, obj, {}, TO_CHAR);
    return FALSE;
 }
 
@@ -761,7 +761,7 @@ void do_wear(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
             if(UNIT_IN(obj) != ch)
             {
                // Each iteration can cause illegal lists.
-               act("You stop wearing all, it seems unsafe.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+               act("You stop wearing all, it seems unsafe.", A_SOMEONE, ch, {}, {}, TO_CHAR);
                break;
             }
 
@@ -770,7 +770,7 @@ void do_wear(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
                worn = (wear(ch, obj, getkeyword(obj), FALSE, cmd, oarg) || worn);
          }
          if(!worn)
-            act("You have nothing to wear.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+            act("You have nothing to wear.", A_SOMEONE, ch, {}, {}, TO_CHAR);
       }
       else
          send_to_char("You are carrying no such thing.\n\r", ch);
@@ -787,7 +787,7 @@ void do_wear(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
       keyword = search_block(buf, keywords, FALSE); /* Partial Match */
 
       if(keyword == -1)
-         act("$2t is an unknown body location.", A_SOMEONE, ch, buf, 0, TO_CHAR);
+         act("$2t is an unknown body location.", A_SOMEONE, ch, buf, {}, TO_CHAR);
       else
          wear(ch, obj, keytrans[keyword], TRUE, cmd, oarg);
    }
@@ -850,8 +850,8 @@ bool remove_equip(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj,
 {
    if(IS_SET(OBJ_FLAGS(obj), OBJ_NO_UNEQUIP))
    {
-      act("The $3N is cursed, you can't remove it!", A_SOMEONE, ch, 0, obj, TO_CHAR);
-      act("$1n tries to get rid of $3n, but in vain!", A_HIDEINV, ch, 0, obj, TO_ROOM);
+      act("The $3N is cursed, you can't remove it!", A_SOMEONE, ch, {}, obj, TO_CHAR);
+      act("$1n tries to get rid of $3n, but in vain!", A_HIDEINV, ch, {}, obj, TO_ROOM);
       return FALSE;
    }
 
@@ -887,7 +887,7 @@ void do_remove(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
             if(UNIT_IN(obj) != ch)
             {
                // Each iteration can cause illegal lists.
-               act("You stop removing all, it seems unsafe.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+               act("You stop removing all, it seems unsafe.", A_SOMEONE, ch, {}, {}, TO_CHAR);
                break;
             }
 
@@ -896,7 +896,7 @@ void do_remove(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
                removed = (remove_equip(ch, obj, cmd, oarg) || removed);
          }
          if(!removed)
-            act("There was nothing to remove.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+            act("There was nothing to remove.", A_SOMEONE, ch, {}, {}, TO_CHAR);
       }
       else
          send_to_char("You are using no such thing.\n\r", ch);

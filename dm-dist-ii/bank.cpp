@@ -41,9 +41,9 @@ static bool     changed_balance;
 static bool init_bank(const std::shared_ptr<unit_data> pc, std::shared_ptr<unit_data> clerk, bool init)
 {
    if(clerk && !CHAR_IS_READY(clerk))
-      act("It seems that $3e isn't paying attention!", A_SOMEONE, pc, 0, clerk, TO_CHAR);
+      act("It seems that $3e isn't paying attention!", A_SOMEONE, pc, {}, clerk, TO_CHAR);
    else if(clerk && !CHAR_CAN_SEE(clerk, pc))
-      act("$1n says 'Sorry, but I only do business with people I can see...'", A_SOMEONE, clerk, 0, 0, TO_ROOM);
+      act("$1n says 'Sorry, but I only do business with people I can see...'", A_SOMEONE, clerk, {}, {}, TO_ROOM);
    else if(!IS_PC(pc))
       send_to_char("Only trustworthy people are served...\n\r", pc);
    else
@@ -95,7 +95,7 @@ static void cmd_balance(const std::shared_ptr<unit_data> pc, std::shared_ptr<uni
       }
 
    act("$1n says '$2t'", A_SOMEONE, clerk, buf, pc, TO_VICT);
-   act("$1n talks to $3n.", A_SOMEONE, pc, 0, clerk, TO_ROOM);
+   act("$1n talks to $3n.", A_SOMEONE, pc, {}, clerk, TO_ROOM);
 }
 
 static void cmd_deposit(const std::shared_ptr<unit_data> pc, std::shared_ptr<unit_data> clerk, char *s)
@@ -108,7 +108,7 @@ static void cmd_deposit(const std::shared_ptr<unit_data> pc, std::shared_ptr<uni
 
    if(str_is_empty(s))
    {
-      act("$1n says 'Deposit what, $3n?'", A_SOMEONE, clerk, 0, pc, TO_VICT);
+      act("$1n says 'Deposit what, $3n?'", A_SOMEONE, clerk, {}, pc, TO_VICT);
       return;
    }
 
@@ -119,15 +119,15 @@ static void cmd_deposit(const std::shared_ptr<unit_data> pc, std::shared_ptr<uni
       s = str_next_word(s, buf);
       if((amount = atoi(buf)) < 1)
       {
-         act("$1n coughs and says 'That's a silly thing to do, $3n...'", A_SOMEONE, clerk, 0, pc, TO_VICT);
+         act("$1n coughs and says 'That's a silly thing to do, $3n...'", A_SOMEONE, clerk, {}, pc, TO_VICT);
          return;
       }
    }
 
    if((thing = find_unit(pc, &s, 0, FIND_UNIT_INVEN)) == NULL)
-      act("$1n sighs and says 'I can't deposit what you haven't got, $3n...'", A_SOMEONE, clerk, 0, pc, TO_VICT);
+      act("$1n sighs and says 'I can't deposit what you haven't got, $3n...'", A_SOMEONE, clerk, {}, pc, TO_VICT);
    else if(!IS_MONEY(thing))
-      act("$1n says 'I won't store anything but money for you, $3n...'", A_SOMEONE, clerk, 0, pc, TO_VICT);
+      act("$1n says 'I won't store anything but money for you, $3n...'", A_SOMEONE, clerk, {}, pc, TO_VICT);
    else
    {
       currency_t cur = MONEY_CURRENCY(thing);
@@ -137,7 +137,7 @@ static void cmd_deposit(const std::shared_ptr<unit_data> pc, std::shared_ptr<uni
          amount = MONEY_AMOUNT(thing);
       else if((amount_t)MONEY_AMOUNT(thing) < amount)
       {
-         act("$1n says 'Credit on deposits, $3n?  What a preposterous thought!'", A_SOMEONE, clerk, 0, pc, TO_VICT);
+         act("$1n says 'Credit on deposits, $3n?  What a preposterous thought!'", A_SOMEONE, clerk, {}, pc, TO_VICT);
          return;
       }
 
@@ -149,7 +149,7 @@ static void cmd_deposit(const std::shared_ptr<unit_data> pc, std::shared_ptr<uni
       if(balance[cur] <= 0) /* overflow! */
       {
          balance[cur] = old_balance;
-         act("$3n shrugs and says 'Uhm, your account is full?'", A_SOMEONE, pc, 0, clerk, TO_CHAR);
+         act("$3n shrugs and says 'Uhm, your account is full?'", A_SOMEONE, pc, {}, clerk, TO_CHAR);
          pile_money(thing);
       }
       else
@@ -176,7 +176,7 @@ static void cmd_exchange(const std::shared_ptr<unit_data> pc, std::shared_ptr<un
 
    if(str_is_empty(s))
    {
-      act("$1n says 'Exchange what, $3n?'", A_SOMEONE, clerk, 0, pc, TO_VICT);
+      act("$1n says 'Exchange what, $3n?'", A_SOMEONE, clerk, {}, pc, TO_VICT);
       return;
    }
 
@@ -187,19 +187,19 @@ static void cmd_exchange(const std::shared_ptr<unit_data> pc, std::shared_ptr<un
       s = str_next_word(s, buf);
       if((amount = atoi(buf)) < 1)
       {
-         act("$1n coughs and says 'That's a silly thing to do, $3n...'", A_SOMEONE, clerk, 0, pc, TO_VICT);
+         act("$1n coughs and says 'That's a silly thing to do, $3n...'", A_SOMEONE, clerk, {}, pc, TO_VICT);
          return;
       }
    }
 
    if((thing = find_unit(pc, &s, 0, FIND_UNIT_INVEN)) == NULL)
    {
-      act("$1n sighs and says 'I can't exchange what you haven't got, $3n...'", A_SOMEONE, clerk, 0, pc, TO_VICT);
+      act("$1n sighs and says 'I can't exchange what you haven't got, $3n...'", A_SOMEONE, clerk, {}, pc, TO_VICT);
       return;
    }
    else if(!IS_MONEY(thing))
    {
-      act("$1n says 'I only deal in money, $3n!'", A_SOMEONE, clerk, 0, pc, TO_VICT);
+      act("$1n says 'I only deal in money, $3n!'", A_SOMEONE, clerk, {}, pc, TO_VICT);
       return;
    }
 
@@ -207,7 +207,7 @@ static void cmd_exchange(const std::shared_ptr<unit_data> pc, std::shared_ptr<un
       amount = MONEY_AMOUNT(thing);
    else if((amount_t)MONEY_AMOUNT(thing) < amount)
    {
-      act("$1n says 'No credit, $3n!  What cheek!'", A_SOMEONE, clerk, 0, pc, TO_VICT);
+      act("$1n says 'No credit, $3n!  What cheek!'", A_SOMEONE, clerk, {}, pc, TO_VICT);
       return;
    }
 
@@ -223,7 +223,7 @@ static void cmd_exchange(const std::shared_ptr<unit_data> pc, std::shared_ptr<un
       act("$1n exchanges some $2t with $3n.", A_HIDEINV, pc, money_pluralis(thing), clerk, TO_NOTVICT);
       act("You exchange your $2t with $3n.", A_SOMEONE, pc, money_pluralis(thing), clerk, TO_CHAR);
       act("$3n whispers to you 'I'll take $2d% interest.'", A_SOMEONE, pc, &INTEREST, clerk, TO_CHAR);
-      act("You get $2t back.", A_SOMEONE, pc, money_string(amount, cur, TRUE), 0, TO_CHAR);
+      act("You get $2t back.", A_SOMEONE, pc, money_string(amount, cur, TRUE), {}, TO_CHAR);
 
       extract_unit(thing);
       money_to_unit(pc, amount, cur);
@@ -241,7 +241,7 @@ static void cmd_exchange(const std::shared_ptr<unit_data> pc, std::shared_ptr<un
 
       if(i > MAX_MONEY)
       {
-         act("$1n shrugs and says 'Never heard of that one before, $3n.'", A_SOMEONE, clerk, 0, pc, TO_VICT);
+         act("$1n shrugs and says 'Never heard of that one before, $3n.'", A_SOMEONE, clerk, {}, pc, TO_VICT);
          unit_to_unit(thing, pc);
          return;
       }
@@ -263,12 +263,12 @@ static void cmd_exchange(const std::shared_ptr<unit_data> pc, std::shared_ptr<un
       if(remainder > 0)
       {
          money_to_unit(pc, remainder, cur);
-         act(tmp > 0 ? "...and $2t in change." : "You get $2t back.", A_SOMEONE, pc, money_string(remainder, cur, TRUE), 0, TO_CHAR);
+         act(tmp > 0 ? "...and $2t in change." : "You get $2t back.", A_SOMEONE, pc, money_string(remainder, cur, TRUE), {}, TO_CHAR);
       }
    }
    else
    {
-      act("$1n says 'Exchange to what, $3n?'", A_SOMEONE, clerk, 0, pc, TO_VICT);
+      act("$1n says 'Exchange to what, $3n?'", A_SOMEONE, clerk, {}, pc, TO_VICT);
       unit_to_unit(thing, pc);
       return;
    }
@@ -285,7 +285,7 @@ static void cmd_withdraw(const std::shared_ptr<unit_data> pc, std::shared_ptr<un
 
    if(str_is_empty(s))
    {
-      act("$1n says 'Withdraw what, $3n?'", A_SOMEONE, clerk, 0, pc, TO_VICT);
+      act("$1n says 'Withdraw what, $3n?'", A_SOMEONE, clerk, {}, pc, TO_VICT);
       return;
    }
 
@@ -296,7 +296,7 @@ static void cmd_withdraw(const std::shared_ptr<unit_data> pc, std::shared_ptr<un
       s = str_next_word(s, buf);
       if((amount = atoi(buf)) < 1)
       {
-         act("$1n coughs and says 'That's a silly thing to do, $3n...'", A_SOMEONE, clerk, 0, pc, TO_VICT);
+         act("$1n coughs and says 'That's a silly thing to do, $3n...'", A_SOMEONE, clerk, {}, pc, TO_VICT);
          return;
       }
    }
@@ -314,9 +314,9 @@ static void cmd_withdraw(const std::shared_ptr<unit_data> pc, std::shared_ptr<un
       }
 
    if(i > MAX_MONEY)
-      act("$1n shrugs and says 'I'm storing nothing of the sort for you, $3n.'", A_SOMEONE, clerk, 0, pc, TO_VICT);
+      act("$1n shrugs and says 'I'm storing nothing of the sort for you, $3n.'", A_SOMEONE, clerk, {}, pc, TO_VICT);
    else if(balance[cur] < amount * money_types[i].relative_value)
-      act("$1n shakes $1s head and says 'No loans, $3n.'", A_SOMEONE, clerk, 0, pc, TO_VICT);
+      act("$1n shakes $1s head and says 'No loans, $3n.'", A_SOMEONE, clerk, {}, pc, TO_VICT);
    else
    {
       balance[cur] -= amount * money_types[i].relative_value;
@@ -369,7 +369,8 @@ int bank(struct spec_arg *sarg)
 
 static bool move_money_up(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
-   std::shared_ptr<unit_data> tmp, *next;
+   std::shared_ptr<unit_data> tmp;
+   std::shared_ptr<unit_data> next;
    bool              found = FALSE;
 
    for(tmp = UNIT_CONTAINS(u); tmp; tmp = next)
@@ -468,7 +469,7 @@ void tax_player(std::shared_ptr<unit_data> ch)
              A_ALWAYS,
              ch,
              buf,
-             0,
+             {},
              TO_CHAR);
       else
          act("Your money has has moved around a bit, but you weren't taxed."
@@ -476,7 +477,7 @@ void tax_player(std::shared_ptr<unit_data> ch)
              A_ALWAYS,
              ch,
              buf,
-             0,
+             {},
              TO_CHAR);
    }
 }
@@ -494,14 +495,14 @@ void stat_bank(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u
 
    init_bank(u, NULL, TRUE);
 
-   act("$2n has a bank-deposit of:", A_ALWAYS, ch, u, 0, TO_CHAR);
+   act("$2n has a bank-deposit of:", A_ALWAYS, ch, u, {}, TO_CHAR);
 
    for(i = 0; i <= MAX_CURRENCY; ++i)
       if(balance[i])
       {
          none = FALSE;
 
-         act("  $2t", A_ALWAYS, ch, money_string(balance[i], i, FALSE), 0, TO_CHAR);
+         act("  $2t", A_ALWAYS, ch, money_string(balance[i], i, FALSE), {}, TO_CHAR);
       }
 
    if(none)

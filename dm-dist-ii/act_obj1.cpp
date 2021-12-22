@@ -57,13 +57,13 @@ int get(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, std::shar
 
    if(UNIT_IN(ch) == obj)
    {
-      act("Pulling $3n from down under you seems quite impossible.", A_ALWAYS, ch, 0, obj, TO_CHAR);
+      act("Pulling $3n from down under you seems quite impossible.", A_ALWAYS, ch, {},obj, TO_CHAR);
       return 1;
    }
 
    if(IS_OBJ(obj) && OBJ_EQP_POS(obj))
    {
-      act("The $3N is equipped, you can't take $3m.", A_SOMEONE, ch, 0, obj, TO_CHAR);
+      act("The $3N is equipped, you can't take $3m.", A_SOMEONE, ch, {},obj, TO_CHAR);
       return 1;
    }
 
@@ -72,17 +72,17 @@ int get(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, std::shar
       /* The ENTER also flag replaces item type container */
       if(!UNIT_WEAR(from_obj, MANIPULATE_ENTER) && (!IS_OBJ(from_obj) || (OBJ_TYPE(from_obj) != ITEM_CONTAINER)))
       {
-         act("$3e is not a container.", A_SOMEONE, ch, 0, from_obj, TO_CHAR);
+         act("$3e is not a container.", A_SOMEONE, ch, {}, from_obj, TO_CHAR);
          return 2;
       }
       if(IS_CHAR(from_obj))
       {
-         act("$3e would probably object to that!", A_SOMEONE, ch, 0, from_obj, TO_CHAR);
+         act("$3e would probably object to that!", A_SOMEONE, ch, {}, from_obj, TO_CHAR);
          return 2;
       }
       if(IS_SET(UNIT_OPEN_FLAGS(from_obj), EX_CLOSED))
       {
-         act("The $2N is closed.", A_SOMEONE, ch, from_obj, 0, TO_CHAR);
+         act("The $2N is closed.", A_SOMEONE, ch, from_obj, {}, TO_CHAR);
          return 2;
       }
    }
@@ -92,13 +92,13 @@ int get(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, std::shar
 
    if(IS_ROOM(obj) || !UNIT_WEAR(obj, MANIPULATE_TAKE))
    {
-      act("$2N: You can't take that.", A_SOMEONE, ch, obj, 0, TO_CHAR);
+      act("$2N: You can't take that.", A_SOMEONE, ch,obj, {}, TO_CHAR);
       return 1;
    }
 
    if(!IS_MONEY(obj) && !char_can_carry_n(ch, 1))
    {
-      act("$2n: You can not carry that many items.", A_SOMEONE, ch, obj, 0, TO_CHAR);
+      act("$2n: You can not carry that many items.", A_SOMEONE, ch,obj, {}, TO_CHAR);
       return 2;
    }
 
@@ -119,7 +119,7 @@ int get(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, std::shar
       if(!char_can_carry_w(ch, weight))
          if(!IS_MONEY(obj) || ((amount = char_can_carry_amount(ch, obj)) <= 0))
          {
-            act("$2n: You can't carry that much weight.", A_SOMEONE, ch, obj, 0, TO_CHAR);
+            act("$2n: You can't carry that much weight.", A_SOMEONE, ch,obj, {}, TO_CHAR);
             return 1;
          }
 
@@ -177,8 +177,8 @@ int get(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, std::shar
    {
       if(from_obj)
       {
-         act("You get $2n from $3n.", A_SOMEONE, ch, obj, from_obj, TO_CHAR);
-         act(UNIT_IN(from_obj) == ch ? "$1n gets $2n from $1s $3N." : "$1n gets $2n from $3n.", A_HIDEINV, ch, obj, from_obj, TO_ROOM);
+         act("You get $2n from $3n.", A_SOMEONE, ch,obj, from_obj, TO_CHAR);
+         act(UNIT_IN(from_obj) == ch ? "$1n gets $2n from $1s $3N." : "$1n gets $2n from $3n.", A_HIDEINV, ch,obj, from_obj, TO_ROOM);
       }
       else
       {
@@ -219,7 +219,7 @@ int extra_get(std::shared_ptr<unit_data> ch, char *argument)
    {
       if(p->names.Length() >= 2 && !strcmp("$get", p->names.Name(0)) && p->names.IsName(argument)) // XXX
       {
-         act(p->descr.String(), A_ALWAYS, ch, 0, 0, TO_CHAR);
+         act(p->descr.String(), A_ALWAYS, ch, {}, {}, TO_CHAR);
          return 1;
       }
    }
@@ -229,7 +229,8 @@ int extra_get(std::shared_ptr<unit_data> ch, char *argument)
 
 void do_get(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   std::shared_ptr<unit_data> from_unit = NULL, *thing;
+   std::shared_ptr<unit_data> from_unit;
+   std::shared_ptr<unit_data> thing;
    char              arg1[MAX_INPUT_LENGTH], *arg2, *oarg = argument;
 
    if(str_is_empty(argument))
@@ -250,12 +251,12 @@ void do_get(std::shared_ptr<unit_data> ch, char *argument, const struct command_
 
       if(from_unit == NULL)
       {
-         act("No such thing here to get things from.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+         act("No such thing here to get things from.", A_ALWAYS, ch, {}, {}, TO_CHAR);
          return;
       }
       else if(IS_CHAR(from_unit))
       {
-         act("$3e would probably object to that!", A_ALWAYS, ch, 0, from_unit, TO_CHAR);
+         act("$3e would probably object to that!", A_ALWAYS, ch, {}, from_unit, TO_CHAR);
          return;
       }
    }
@@ -335,7 +336,7 @@ void do_get(std::shared_ptr<unit_data> ch, char *argument, const struct command_
                amount = MONEY_AMOUNT(thing);
             else if((amount_t)MONEY_AMOUNT(thing) < amount)
             {
-               act("There aren't that many $3t!", A_ALWAYS, ch, 0, money_pluralis(thing), TO_CHAR);
+               act("There aren't that many $3t!", A_ALWAYS, ch, {}, money_pluralis(thing), TO_CHAR);
                return;
             }
             thing = split_money(thing, amount);
@@ -353,7 +354,7 @@ void do_get(std::shared_ptr<unit_data> ch, char *argument, const struct command_
                pile_money(thing);
       }
       else if(!extra_get(ch, tmp))
-         act("No such thing here.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+         act("No such thing here.", A_ALWAYS, ch, {}, {}, TO_CHAR);
    }
 }
 
@@ -363,8 +364,8 @@ int drop(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> unit, const s
    {
       if(IS_MONEY(unit))
       {
-         act("You drop $2t.", A_SOMEONE, ch, obj_money_string(unit, 0), 0, TO_CHAR);
-         act("$1n drops some $2t.", A_SOMEONE, ch, money_pluralis(unit), 0, TO_ROOM);
+         act("You drop $2t.", A_SOMEONE, ch, obj_money_string(unit, 0), {}, TO_CHAR);
+         act("$1n drops some $2t.", A_SOMEONE, ch, money_pluralis(unit), {}, TO_ROOM);
       }
       else
          unit_messg(ch, unit, "$drop", "You drop $2n.", "$1n drops $2n.");
@@ -379,7 +380,8 @@ int drop(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> unit, const s
 
 void do_drop(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   std::shared_ptr<unit_data> thing, *next_obj;
+   std::shared_ptr<unit_data> thing;
+   std::shared_ptr<unit_data> next_obj;
    char              arg[MAX_INPUT_LENGTH];
    amount_t          amount = 0;
    char             *oarg   = argument;
@@ -448,7 +450,7 @@ void do_drop(std::shared_ptr<unit_data> ch, char *argument, const struct command
                amount = MONEY_AMOUNT(thing);
             else if((amount_t)MONEY_AMOUNT(thing) < amount)
             {
-               act("You haven't got that many $3t!", A_ALWAYS, ch, 0, money_pluralis(thing), TO_CHAR);
+               act("You haven't got that many $3t!", A_ALWAYS, ch, {}, money_pluralis(thing), TO_CHAR);
                return;
             }
             thing = split_money(thing, amount);
@@ -476,19 +478,19 @@ int put(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> unit, std::sha
 
    if(!IS_SET(UNIT_MANIPULATE(tounit), MANIPULATE_ENTER))
    {
-      act("You can't put anything in the $2N.", A_ALWAYS, ch, tounit, NULL, TO_CHAR);
+      act("You can't put anything in the $2N.", A_ALWAYS, ch, tounit, {}, TO_CHAR);
       return FALSE;
    }
 
    if(unit == tounit)
    {
-      act("You attempt to fold the $2N into $2mself, but fail.", A_ALWAYS, ch, tounit, NULL, TO_CHAR);
+      act("You attempt to fold the $2N into $2mself, but fail.", A_ALWAYS, ch, tounit, {}, TO_CHAR);
       return FALSE;
    }
 
    if(IS_SET(UNIT_OPEN_FLAGS(tounit), EX_CLOSED))
    {
-      act("The $2N is closed.", A_ALWAYS, ch, tounit, NULL, TO_CHAR);
+      act("The $2N is closed.", A_ALWAYS, ch, tounit, {}, TO_CHAR);
       return FALSE;
    }
 
@@ -503,7 +505,7 @@ int put(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> unit, std::sha
          unit = split_money(unit, amt);
       else
       {
-         act("The $2N can not contain any more.", A_ALWAYS, ch, tounit, NULL, TO_CHAR);
+         act("The $2N can not contain any more.", A_ALWAYS, ch, tounit, {}, TO_CHAR);
          return FALSE;
       }
    }
@@ -533,7 +535,8 @@ int put(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> unit, std::sha
 
 void do_put(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   std::shared_ptr<unit_data> tounit, *thing;
+   std::shared_ptr<unit_data> tounit;
+   std::shared_ptr<unit_data> thing;
    char             *arg2, arg1[MAX_INPUT_LENGTH];
    char              buf[MAX_INPUT_LENGTH];
    amount_t          amount = 0;
@@ -567,7 +570,7 @@ void do_put(std::shared_ptr<unit_data> ch, char *argument, const struct command_
    }
    else if(IS_CHAR(tounit))
    {
-      act("$2e would probably object to that!", A_SOMEONE, ch, tounit, 0, TO_CHAR);
+      act("$2e would probably object to that!", A_SOMEONE, ch, tounit, {}, TO_CHAR);
       return;
    }
 
@@ -603,7 +606,7 @@ void do_put(std::shared_ptr<unit_data> ch, char *argument, const struct command_
             amount = MONEY_AMOUNT(thing);
          else if((amount_t)MONEY_AMOUNT(thing) < amount)
          {
-            act("You haven't got that many $3t!", A_ALWAYS, ch, 0, money_pluralis(thing), TO_CHAR);
+            act("You haven't got that many $3t!", A_ALWAYS, ch, {}, money_pluralis(thing), TO_CHAR);
             return;
          }
          thing = split_money(thing, amount);
@@ -640,7 +643,7 @@ void give(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> thing, std::
 
    if(!IS_MONEY(thing) && !char_can_carry_n(vict, 1))
    {
-      act("$3e seems to have $3s hands full.", A_SOMEONE, ch, 0, vict, TO_CHAR);
+      act("$3e seems to have $3s hands full.", A_SOMEONE, ch, {}, vict, TO_CHAR);
       return;
    }
 
@@ -651,7 +654,7 @@ void give(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> thing, std::
 
    if(!char_can_carry_w(vict, weight))
    {
-      act("$3e can't carry that much weight.", A_SOMEONE, ch, 0, vict, TO_CHAR);
+      act("$3e can't carry that much weight.", A_SOMEONE, ch, {}, vict, TO_CHAR);
       return;
    }
 
@@ -677,7 +680,8 @@ void give(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> thing, std::
 
 void do_give(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   std::shared_ptr<unit_data> victim, *thing;
+   std::shared_ptr<unit_data> victim;
+   std::shared_ptr<unit_data> thing;
    char              buf[MAX_INPUT_LENGTH];
    amount_t          amount = 0;
    char             *oarg   = argument;
@@ -706,7 +710,7 @@ void do_give(std::shared_ptr<unit_data> ch, char *argument, const struct command
 
    if((victim = find_unit(ch, &argument, 0, FIND_UNIT_SURRO)) == NULL)
    {
-      act("No such person '$2t' here.", A_ALWAYS, ch, argument, 0, TO_CHAR);
+      act("No such person '$2t' here.", A_ALWAYS, ch, argument, {}, TO_CHAR);
       return;
    }
 
@@ -716,7 +720,7 @@ void do_give(std::shared_ptr<unit_data> ch, char *argument, const struct command
          amount = MONEY_AMOUNT(thing);
       else if((amount_t)MONEY_AMOUNT(thing) < amount)
       {
-         act("You haven't got that many $3t!", A_ALWAYS, ch, 0, money_pluralis(thing), TO_CHAR);
+         act("You haven't got that many $3t!", A_ALWAYS, ch, {}, money_pluralis(thing), TO_CHAR);
          return;
       }
 

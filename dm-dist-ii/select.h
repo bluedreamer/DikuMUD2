@@ -27,8 +27,6 @@
 #include "essential.h"
 #include "queue.h"
 
-extern int bPipeSignal;
-
 int PipeRead(int fd, char *buf, size_t count);
 int PipeWrite(int fd, char *buf, size_t count);
 
@@ -89,7 +87,5 @@ private:
    int nMax;
    int nTop;
 };
-
-extern cCaptainHook CaptainHook;
 
 #endif

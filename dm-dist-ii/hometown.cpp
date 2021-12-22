@@ -42,8 +42,6 @@
 
 std::shared_ptr<unit_data> hometown_unit(char *str)
 {
-   extern std::shared_ptr<unit_data> entry_room;
-
    if(str)
    {
       char              name[80], zone[80];

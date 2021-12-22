@@ -656,7 +656,7 @@ void do_set(std::shared_ptr<unit_data> ch, char *argument, const struct command_
 
       case 4: /* "add-extra" */
          argument = str_next_word(argument, strarg);
-         act("Searching for $2t.", A_ALWAYS, ch, strarg, 0, TO_CHAR);
+         act("Searching for $2t.", A_ALWAYS, ch, strarg, {}, TO_CHAR);
 
          if((ed = unit_find_extra(strarg, unt)) == NULL)
          {
@@ -1114,7 +1114,7 @@ void do_set(std::shared_ptr<unit_data> ch, char *argument, const struct command_
 
       case 63: /* "add-info" */
          argument = str_next_word(argument, strarg);
-         act("Searching for $2t.", A_ALWAYS, ch, strarg, 0, TO_CHAR);
+         act("Searching for $2t.", A_ALWAYS, ch, strarg, {}, TO_CHAR);
 
          if((ed = PC_INFO(unt)->find_raw(strarg)) == NULL)
          {

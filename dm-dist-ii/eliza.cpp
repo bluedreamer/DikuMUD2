@@ -80,8 +80,6 @@ int eliza_booted = FALSE;
 
 static char words[400];
 
-extern char libdir[];
-
 /* ============================================================= */
 
 void preprocess_string(char *str, struct oracle_data *od)
@@ -468,9 +466,9 @@ char *eliza_process(struct oracle_data *od, char *s)
 /* ====================================================================== */
 /* ====================================================================== */
 
-void delayed_action(void *p1, void *p2)
+void delayed_action(std::shared_ptr<unit_data> p1, void *p2)
 {
-   std::shared_ptr<unit_data> npc = (std::shared_ptr<unit_data> )p1;
+   std::shared_ptr<unit_data> npc = p1;
    char             *str = (char *)p2;
 
    void command_interpreter(std::shared_ptr<unit_data>  ch, char *argument);

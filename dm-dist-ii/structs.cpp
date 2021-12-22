@@ -292,12 +292,7 @@ unit_data::unit_data(ubit8 type)
 unit_data::~unit_data(void)
 {
 #ifdef MEMORY_DEBUG
-   extern int memory_pc_alloc;
-   extern int memory_npc_alloc;
-   extern int memory_obj_alloc;
-   extern int memory_room_alloc;
-   extern int memory_total_alloc;
-   int        memory_start = memory_total_alloc;
+   int memory_start = memory_total_alloc;
 #endif
 
    ubit8 type;
@@ -307,14 +302,14 @@ unit_data::~unit_data(void)
    /* Sanity due to wierd bug I saw (MS, 30/05-95) */
 
 #ifdef DMSERVER
-   extern class unit_data *unit_list;
-
    assert(gnext == NULL);
    assert(gprevious == NULL);
    assert(next == NULL);
-   assert(unit_list != this);
+   assert(unit_list.get() != this);
 #endif
 
+   // TODO ADRIAN thi sis a mess - too many this pointers
+#if 0
    while(UNIT_FUNC(this))
       destroy_fptr(this, UNIT_FUNC(this)); /* Unlinks, no free */
 
@@ -322,7 +317,6 @@ unit_data::~unit_data(void)
       unlink_affect(this, UNIT_AFFECTED(this));
 
    type = UNIT_TYPE(this);
-
    /* Call functions of the unit which have any data                     */
    /* that they might want to work on.                                   */
    extra_descr->free_list();
@@ -346,5 +340,6 @@ unit_data::~unit_data(void)
          memory_room_alloc -= memory_total_alloc - memory_start;
          break;
    }
+#endif
 #endif
 }

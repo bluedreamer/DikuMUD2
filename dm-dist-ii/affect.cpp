@@ -27,6 +27,7 @@
 
 #include "affect.h"
 
+#include "externals.h"
 #include "main.h"
 #include "structs.h"
 #include "utility.h"
@@ -34,9 +35,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
-extern struct apply_function_type apf[];
-extern struct tick_function_type  tif[];
 
 struct unit_affected_type *affected_list = 0;  /* Global list pointer       */
 struct unit_affected_type *next_affected_dude; /* dirty - very dirty indeed */

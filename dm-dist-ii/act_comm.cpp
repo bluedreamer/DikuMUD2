@@ -46,8 +46,6 @@ ubit8 g_nShout = 0;
 
 /* extern variables */
 
-extern struct descriptor_data *descriptor_list;
-
 int is_ignored(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> victim)
 {
    struct extra_descr_data *pexd;
@@ -136,11 +134,11 @@ void do_emote(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
    {
       if(IS_PC(ch) && !IS_SET(PC_FLAGS(ch), PC_ECHO))
       {
-         act("$1n $2t", A_SOMEONE, ch, arg, 0, TO_ROOM);
+         act("$1n $2t", A_SOMEONE, ch, arg, {}, TO_ROOM);
          send_to_char("Ok.\n\r", ch);
       }
       else
-         act("$1n $2t", A_SOMEONE, ch, arg, 0, TO_ALL);
+         act("$1n $2t", A_SOMEONE, ch, arg, {}, TO_ALL);
 
       send_done(ch, NULL, NULL, 0, cmd, arg);
    }
@@ -194,13 +192,11 @@ void do_shout(std::shared_ptr<unit_data> ch, char *argument, const struct comman
    const char             *others = COLOUR_COMM "$1n shouts '$2t'" COLOUR_NORMAL;
    int                     endcost;
 
-   extern ubit8 g_nShout;
-
    if(IS_PC(ch) && (CHAR_LEVEL(ch) < g_nShout))
    {
       char buf[256];
 
-      act("You can not shout until you are level $2d.", A_ALWAYS, ch, &g_nShout, 0, TO_CHAR);
+      act("You can not shout until you are level $2d.", A_ALWAYS, ch, reinterpret_cast<int*>(&g_nShout), {}, TO_CHAR);
       return;
    }
 
@@ -257,7 +253,7 @@ void do_shout(std::shared_ptr<unit_data> ch, char *argument, const struct comman
          act(others, A_SOMEONE, ch, drunk_speech(ch, argument), i->character, TO_VICT);
 
    if(IS_PC(ch) && IS_SET(PC_FLAGS(ch), PC_ECHO))
-      act(me, A_ALWAYS, ch, 0, argument, TO_CHAR);
+      act(me, A_ALWAYS, ch, {}, argument, TO_CHAR);
    else
       send_to_char("Ok.\n\r", ch);
 
@@ -358,16 +354,16 @@ void do_tell(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info
 
       if(CHAR_POS(vict) <= POSITION_SLEEPING || (IS_PC(vict) && IS_SET(PC_FLAGS(vict), PC_NOTELL)) ||
          (IS_PC(vict) && (CHAR_DESCRIPTOR(vict) == NULL)))
-         act("$3e can't hear you.", A_ALWAYS, ch, 0, vict, TO_CHAR);
+         act("$3e can't hear you.", A_ALWAYS, ch, {}, vict, TO_CHAR);
 
       else if(CHAR_DESCRIPTOR(vict) && CHAR_DESCRIPTOR(vict)->editing)
       {
-         act("$3n is busy writing a message, $3e can't hear you!", A_ALWAYS, ch, 0, vict, TO_CHAR);
+         act("$3n is busy writing a message, $3e can't hear you!", A_ALWAYS, ch, {}, vict, TO_CHAR);
          return;
       }
       else if(is_ignored(vict, ch))
       {
-         act("$3n ignores you.", A_ALWAYS, ch, 0, vict, TO_CHAR);
+         act("$3n ignores you.", A_ALWAYS, ch, {}, vict, TO_CHAR);
          return;
       }
       else
@@ -395,7 +391,7 @@ void do_tell(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info
             act(me, A_ALWAYS, ch, argument, CHAR_ORIGINAL(vict), TO_CHAR);
 
          if(switched)
-            act("SWITCHED TELL TRANSFER to you via $2n!", A_ALWAYS, vict, CHAR_ORIGINAL(vict), 0, TO_CHAR);
+            act("SWITCHED TELL TRANSFER to you via $2n!", A_ALWAYS, vict, CHAR_ORIGINAL(vict), {}, TO_CHAR);
 
          act(others, A_SOMEONE, ch, drunk_speech(ch, argument), vict, TO_VICT);
 
@@ -435,7 +431,7 @@ void do_tell(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info
    if(IS_PC(ch) && !IS_SET(PC_FLAGS(ch), PC_ECHO))
       send_to_char("Ok.\n\r", ch);
    else
-      act(me, A_ALWAYS, ch, argument, NULL, TO_CHAR);
+      act(me, A_ALWAYS, ch, argument, {}, TO_CHAR);
 
    /* who's head of group? */
    vict = CHAR_MASTER(ch) ? CHAR_MASTER(ch) : ch;
@@ -468,7 +464,7 @@ void ignore_toggle(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> vic
 
    if(!IS_PC(victim))
    {
-      act("You can't ignore $3n.", A_SOMEONE, ch, NULL, victim, TO_CHAR);
+      act("You can't ignore $3n.", A_SOMEONE, ch, {}, victim, TO_CHAR);
       return;
    }
 
@@ -482,12 +478,12 @@ void ignore_toggle(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> vic
 
    if(pexd->names.IsName(itoa(PC_ID(victim))))
    {
-      act("You no longer ignore $2n.", A_ALWAYS, ch, victim, NULL, TO_CHAR);
+      act("You no longer ignore $2n.", A_ALWAYS, ch, victim, {}, TO_CHAR);
       pexd->names.RemoveName(itoa(PC_ID(victim)));
    }
    else
    {
-      act("You now ignore $2n.", A_ALWAYS, ch, victim, NULL, TO_CHAR);
+      act("You now ignore $2n.", A_ALWAYS, ch, victim, {}, TO_CHAR);
       pexd->names.AppendName(itoa(PC_ID(victim)));
    }
 }
@@ -495,7 +491,7 @@ void ignore_toggle(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> vic
 void do_ignore(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
    char             tmp[MAX_INPUT_LENGTH];
-   class unit_data *victim;
+   std::shared_ptr<unit_data> victim;
 
    if(!IS_PC(ch))
    {
@@ -560,7 +556,7 @@ void do_whisper(std::shared_ptr<unit_data> ch, char *aaa, const struct command_i
 
    if(vict == ch)
    {
-      act("$1n whispers quietly to $1mself.", A_SOMEONE, ch, 0, 0, TO_ROOM);
+      act("$1n whispers quietly to $1mself.", A_SOMEONE, ch, {}, {}, TO_ROOM);
       send_to_char("You can't seem to get your mouth"
                    " close enough to your ear...\n\r",
                    ch);
@@ -579,7 +575,7 @@ void do_whisper(std::shared_ptr<unit_data> ch, char *aaa, const struct command_i
          else
             act("You whisper to $3n '$2t'", A_ALWAYS, ch, arg, vict, TO_CHAR);
 
-         act("$1n whispers something to $3n.", A_SOMEONE, ch, 0, vict, TO_NOTVICT);
+         act("$1n whispers something to $3n.", A_SOMEONE, ch, {}, vict, TO_NOTVICT);
          send_done(ch, NULL, vict, 0, cmd, arg);
       }
    }
@@ -614,11 +610,11 @@ void do_ask(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info 
 
    if(!(vict = find_unit(ch, &argument, 0, FIND_UNIT_SURRO)))
    {
-      act(COLOUR_COMM "$1n asks '$3t'" COLOUR_NORMAL, A_SOMEONE, ch, 0, drunk_speech(ch, argument), TO_ROOM);
+      act(COLOUR_COMM "$1n asks '$3t'" COLOUR_NORMAL, A_SOMEONE, ch, {}, drunk_speech(ch, argument), TO_ROOM);
       if(IS_PC(ch) && !IS_SET(PC_FLAGS(ch), PC_ECHO))
          send_to_char("Ok.\n\r", ch);
       else
-         act("You ask '$3t'", A_ALWAYS, ch, 0, argument, TO_CHAR);
+         act("You ask '$3t'", A_ALWAYS, ch, {}, argument, TO_CHAR);
 
       send_done(ch, NULL, vict, 0, cmd, argument);
 
@@ -636,7 +632,7 @@ void do_ask(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info 
 
    if(vict == ch)
    {
-      act("$1n quietly asks $1mself a question.", A_SOMEONE, ch, 0, 0, TO_ROOM);
+      act("$1n quietly asks $1mself a question.", A_SOMEONE, ch, {}, {}, TO_ROOM);
       send_to_char("You think about it for a while...\n\r", ch);
    }
    else
@@ -722,7 +718,7 @@ void do_write(std::shared_ptr<unit_data> ch, char *aaa, const struct command_inf
    {
       if(exd->descr.Length() > MAX_NOTE_LENGTH - 10)
       {
-         act("There's simply no room for anything more on the note!", A_ALWAYS, ch, 0, 0, TO_CHAR);
+         act("There's simply no room for anything more on the note!", A_ALWAYS, ch, {}, {}, TO_CHAR);
          return;
       }
       send_to_char("There's something written on it already:\n\r\n\r", ch);
@@ -730,8 +726,8 @@ void do_write(std::shared_ptr<unit_data> ch, char *aaa, const struct command_inf
       return;
    }
 
-   act("You begin to jot down a note on $2n.", A_ALWAYS, ch, paper, 0, TO_CHAR);
-   act("$1n begins to jot down a note.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+   act("You begin to jot down a note on $2n.", A_ALWAYS, ch, paper, {}, TO_CHAR);
+   act("$1n begins to jot down a note.", A_HIDEINV, ch, {}, {}, TO_ROOM);
 
    UNIT_EXTRA_DESCR(paper) = UNIT_EXTRA_DESCR(paper)->add((char *)NULL, NULL);
 

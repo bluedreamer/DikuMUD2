@@ -610,8 +610,6 @@ void do_account(std::shared_ptr<unit_data> ch, char *arg, const struct command_i
    const char *operations[] = {"insert", "withdraw", "limit", "discount", "flatrate", NULL};
    int         i, amount;
 
-   extern std::shared_ptr<file_index_type> letter_fi;
-
    if(!g_cServerConfig.m_bAccounting || !IS_PC(ch))
    {
       send_to_char("That command is not available.\n\r", ch);
@@ -944,8 +942,6 @@ void CAccountConfig::Boot(void)
 
    if(!g_cServerConfig.m_bAccounting)
       return;
-
-   extern char libdir[];
 
    slog(LOG_OFF, 0, "Booting account system.");
 

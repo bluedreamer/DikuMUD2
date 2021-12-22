@@ -51,9 +51,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* external fcntls */
-extern struct unit_function_array_type unit_function_array[];
-
 bool cmd_is_a_social(char *cmd, int complete);
 bool perform_social(std::shared_ptr<unit_data> , char *, const command_info *);
 
@@ -591,7 +588,7 @@ void command_interpreter(std::shared_ptr<unit_data> ch, char *arg)
 
       if(send_preprocess(ch, &the_cmd, argstr) == SFR_SHARE)
          if(!perform_social(ch, argstr, &the_cmd))
-            act("$2t is not a known command.", A_ALWAYS, ch, cmd, NULL, TO_CHAR);
+            act("$2t is not a known command.", A_ALWAYS, ch, cmd, {}, TO_CHAR);
 
       if(the_cmd.cmd_str)
          free(the_cmd.cmd_str);
@@ -773,7 +770,10 @@ int unit_function_scan(std::shared_ptr<unit_data> u, struct spec_arg *sarg)
 
 int basic_special(std::shared_ptr<unit_data> ch, struct spec_arg *sarg, ubit16 mflt, std::shared_ptr<unit_data> extra_target)
 {
-   register std::shared_ptr<unit_data> u, *uu, *next, *nextt;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> uu;
+   std::shared_ptr<unit_data> next;
+   std::shared_ptr<unit_data> nextt;
 
    sarg->mflags = mflt;
 

@@ -52,9 +52,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* external vars */
-extern struct descriptor_data *descriptor_list;
-
 /*
  *  Public routines for system-to-player communication
  *  Sends directly to multiplexer.
@@ -148,38 +145,47 @@ void send_to_room(const char *messg, std::shared_ptr<unit_data> room)
             send_to_descriptor(messg, CHAR_DESCRIPTOR(i));
 }
 
-void act_generate(
-   char *buf, const char *str, int show_type, const void *arg1, const void *arg2, const void *arg3, int type, class unit_data *to)
+void act_generate(char                      *buf,
+                  const char                *str,
+                  int                        show_type,
+                  comm_variant               arg1,
+                  comm_variant               arg2,
+                  comm_variant               arg3,
+                  int                        type,
+                  std::shared_ptr<unit_data> to)
 {
-   register const char *strp;
-   register char       *point;
-   register const char *i = NULL;
+   const char *strp;
+   char       *point;
+   const char *i = NULL;
 
+   comm_variant sub;
+   /*
    union
-   {
-      const void      *vo;
-      class unit_data *un;
-      const char      *str;
-      const int       *num;
-   } sub;
-
-   register int uppercase = FALSE;
+  {
+     const void      *vo;
+     class unit_data *un;
+     const char      *str;
+     const int       *num;
+  } sub;
+*/
+   int          uppercase = FALSE;
 
    *buf = 0;
 
-   if(!IS_CHAR(to) || !CHAR_DESCRIPTOR(to) || arg1 == NULL)
+   if(!IS_CHAR(to) || !CHAR_DESCRIPTOR(to) || std::holds_alternative<std::monostate>(arg1))
       return;
 
-   if(to == (class unit_data *)arg1 && (type == TO_ROOM || type == TO_NOTVICT || type == TO_REST))
+   if(to == std::get<std::shared_ptr<unit_data>>(arg1) && (type == TO_ROOM || type == TO_NOTVICT || type == TO_REST))
       return;
 
-   if(to == (class unit_data *)arg3 && type == TO_NOTVICT)
+   if(to == std::get<std::shared_ptr<unit_data>>(arg3) && type == TO_NOTVICT)
       return;
 
-   if(UNIT_IN(to) == (class unit_data *)arg1 && type == TO_REST)
+   if(UNIT_IN(to) == std::get<std::shared_ptr<unit_data>>(arg1) && type == TO_REST)
       return;
 
-   if((show_type == A_HIDEINV && !CHAR_CAN_SEE(to, (class unit_data *)arg1)) || (show_type != A_ALWAYS && !CHAR_AWAKE(to)))
+   if((show_type == A_HIDEINV && !CHAR_CAN_SEE(to, std::get<std::shared_ptr<unit_data>>(arg1))) ||
+      (show_type != A_ALWAYS && !CHAR_AWAKE(to)))
       return;
 
    for(strp = str, point = buf;;)
@@ -189,13 +195,13 @@ void act_generate(
          switch(*++strp)
          {
             case '1':
-               sub.vo = arg1;
+               sub = arg1;
                break;
             case '2':
-               sub.vo = arg2;
+               sub = arg2;
                break;
             case '3':
-               sub.vo = arg3;
+               sub = arg3;
                break;
             case '$':
                i = "$";
@@ -209,51 +215,72 @@ void act_generate(
 
          if(i == NULL)
          {
-            if(sub.vo != NULL)
+            if(!std::holds_alternative<std::monostate>(sub))
             {
                switch(*++strp)
                {
                   case 'n':
-                     if(CHAR_CAN_SEE(to, sub.un))
+                  {
+                     auto un = std::get<std::shared_ptr<unit_data>>(sub);
+                     if(CHAR_CAN_SEE(to, un))
                      {
-                        if(IS_PC(sub.un))
+                        if(IS_PC(un))
                         {
                            /* Upper-case it */
                            uppercase = TRUE;
-                           i         = UNIT_NAME(sub.un);
+                           i         = UNIT_NAME(un);
                         }
                         else
-                           i = UNIT_TITLE(sub.un).String();
+                           i = UNIT_TITLE(un).String();
                      }
                      else
-                        i = SOMETON(sub.un);
+                        i = SOMETON(un);
                      break;
+                  }
                   case 'N':
-                     i = UNIT_SEE_NAME(to, sub.un);
+                  {
+                     auto un = std::get<std::shared_ptr<unit_data>>(sub);
+                     i       = UNIT_SEE_NAME(to, un);
                      break;
+                  }
                   case 'm':
-                     i = HMHR(to, sub.un);
+                  {
+                     auto un = std::get<std::shared_ptr<unit_data>>(sub);
+                     i       = HMHR(to, un);
                      break;
+                  }
                   case 's':
-                     i = HSHR(to, sub.un);
+                  {
+                     auto un = std::get<std::shared_ptr<unit_data>>(sub);
+                     i       = HSHR(to, un);
                      break;
+                  }
                   case 'e':
-                     i = HESH(to, sub.un);
+                  {
+                     auto un = std::get<std::shared_ptr<unit_data>>(sub);
+                     i       = HESH(to, un);
                      break;
+                  }
                   case 'p':
-                     if(IS_CHAR(sub.un))
-                        i = char_pos[CHAR_POS(sub.un)];
+                  {
+                     auto un = std::get<std::shared_ptr<unit_data>>(sub);
+                     if(IS_CHAR(un))
+                        i = char_pos[CHAR_POS(un)];
                      else
                         i = "lying";
                      break;
+                  }
                   case 'a':
-                     i = UNIT_ANA(sub.un);
+                  {
+                     auto un = std::get<std::shared_ptr<unit_data>>(sub);
+                     i       = UNIT_ANA(un);
                      break;
+                  }
                   case 'd':
-                     i = itoa(*(sub.num));
+                     i = itoa(*std::get<int *>(sub));
                      break;
                   case 't':
-                     i = sub.str;
+                     i = std::get<const char *>(sub);
                      break;
                   default:
                      slog(LOG_ALL, 0, "ERROR: Illegal second code to act(): %s", str);
@@ -297,11 +324,11 @@ void act_generate(
    *point = toupper(*point);
 }
 
-void act(const char *str, int show_type, const void *arg1, const void *arg2, const void *arg3, int type)
+void act(const char *str, int show_type, comm_variant arg1, comm_variant arg2, comm_variant arg3, int type)
 {
    std::shared_ptr<unit_data> to;
    std::shared_ptr<unit_data> u;
-   char              buf[MAX_STRING_LENGTH];
+   char                       buf[MAX_STRING_LENGTH];
 
    /* This to catch old-style FALSE/TRUE calls...  */
    assert(show_type == A_SOMEONE || show_type == A_HIDEINV || show_type == A_ALWAYS);
@@ -310,13 +337,13 @@ void act(const char *str, int show_type, const void *arg1, const void *arg2, con
       return;
 
    if(type == TO_VICT)
-      to = (std::shared_ptr<unit_data> )arg3;
+      to = std::get<std::shared_ptr<unit_data>>(arg3);
    else if(type == TO_CHAR)
-      to = (std::shared_ptr<unit_data> )arg1;
-   else if(arg1 == NULL || UNIT_IN((std::shared_ptr<unit_data> )arg1) == NULL)
+      to = std::get<std::shared_ptr<unit_data>>(arg1);
+   else if(std::holds_alternative<std::monostate>(arg1) || UNIT_IN(std::get<std::shared_ptr<unit_data>>(arg1)) == NULL)
       return;
    else
-      to = UNIT_CONTAINS(UNIT_IN((std::shared_ptr<unit_data> )arg1));
+      to = UNIT_CONTAINS(UNIT_IN(std::get<std::shared_ptr<unit_data>>(arg1)));
 
    /* same unit or to person */
    for(; to; to = to->next)
@@ -339,7 +366,8 @@ void act(const char *str, int show_type, const void *arg1, const void *arg2, con
    }
 
    /* other units outside transparent unit */
-   if((to = UNIT_IN(UNIT_IN((std::shared_ptr<unit_data> )arg1))) && UNIT_IS_TRANSPARENT(UNIT_IN((std::shared_ptr<unit_data> )arg1)))
+   if((to = UNIT_IN(UNIT_IN(std::get<std::shared_ptr<unit_data>>(arg1)))) &&
+      UNIT_IS_TRANSPARENT(UNIT_IN(std::get<std::shared_ptr<unit_data>>(arg1))))
       for(to = UNIT_CONTAINS(to); to; to = to->next)
       {
          if(IS_CHAR(to))
@@ -348,7 +376,7 @@ void act(const char *str, int show_type, const void *arg1, const void *arg2, con
             send_to_descriptor(buf, CHAR_DESCRIPTOR(to));
          }
 
-         if(UNIT_CHARS(to) && UNIT_IS_TRANSPARENT(to) && to != UNIT_IN((std::shared_ptr<unit_data> )arg1))
+         if(UNIT_CHARS(to) && UNIT_IS_TRANSPARENT(to) && to != UNIT_IN(std::get<std::shared_ptr<unit_data>>(arg1)))
             for(u = UNIT_CONTAINS(to); u; u = u->next)
                if(IS_CHAR(u))
                {

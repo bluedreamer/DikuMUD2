@@ -44,13 +44,12 @@
 
 void do_decapitate(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   std::shared_ptr<unit_data> corpse, *head;
+   std::shared_ptr<unit_data> corpse;
+   std::shared_ptr<unit_data> head;
    struct unit_affected_type *af;
    struct unit_affected_type  naf;
    char                      *c, *d;
    char                       buf[256], buf2[256];
-
-   extern std::shared_ptr<file_index_type> head_fi;
 
    if(str_is_empty(argument))
    {
@@ -68,7 +67,7 @@ void do_decapitate(std::shared_ptr<unit_data> ch, char *argument, const struct c
 
    if(IS_CHAR(corpse))
    {
-      act("Perhaps you should kill $3m first?", A_SOMEONE, ch, 0, corpse, TO_CHAR);
+      act("Perhaps you should kill $3m first?", A_SOMEONE, ch, {}, corpse, TO_CHAR);
       return;
    }
 
@@ -77,15 +76,15 @@ void do_decapitate(std::shared_ptr<unit_data> ch, char *argument, const struct c
 
    if(!IS_OBJ(corpse) || c == NULL || d == NULL)
    {
-      act("Huh? That can't be done.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("Huh? That can't be done.", A_SOMEONE, ch, {}, {}, TO_CHAR);
       return;
    }
 
    strncpy(buf, c + 11, d - (c + 11));
    buf[d - (c + 11)] = 0;
 
-   act("You brutally decapitate the $2N.", A_SOMEONE, ch, corpse, 0, TO_CHAR);
-   act("$1n brutally decapitates the $2N.", A_SOMEONE, ch, corpse, 0, TO_ROOM);
+   act("You brutally decapitate the $2N.", A_SOMEONE, ch, corpse, {}, TO_CHAR);
+   act("$1n brutally decapitates the $2N.", A_SOMEONE, ch, corpse, {}, TO_ROOM);
 
    head = read_unit(head_fi);
 
@@ -127,7 +126,7 @@ void do_hit(std::shared_ptr<unit_data> ch, char *argument, const struct command_
 
    if(str_is_empty(argument))
    {
-      act("Who do you want to hit?", A_ALWAYS, ch, NULL, NULL, TO_CHAR);
+      act("Who do you want to hit?", A_ALWAYS, ch, {}, {}, TO_CHAR);
       return;
    }
 
@@ -135,21 +134,21 @@ void do_hit(std::shared_ptr<unit_data> ch, char *argument, const struct command_
 
    if(!victim || !IS_CHAR(victim))
    {
-      act("There is nobody here called $2t which you can hit.", A_ALWAYS, ch, argument, NULL, TO_CHAR);
+      act("There is nobody here called $2t which you can hit.", A_ALWAYS, ch, argument, {}, TO_CHAR);
       return;
    }
 
    if(victim == ch)
    {
       send_to_char("You hit yourself... OUCH!.\n\r", ch);
-      act("$1n hits $1mself, and says OUCH!", A_SOMEONE, ch, 0, victim, TO_ROOM);
+      act("$1n hits $1mself, and says OUCH!", A_SOMEONE, ch, {}, victim, TO_ROOM);
    }
    else
    {
 #ifdef SUSPEKT
       if(CHAR_IS_AFFECTED(ch, CHAR_CHARM) && (CHAR_MASTER(ch) == victim))
       {
-         act("$3n is just such a good friend, you simply can't hit $3m.", A_SOMEONE, ch, 0, victim, TO_CHAR);
+         act("$3n is just such a good friend, you simply can't hit $3m.", A_SOMEONE, ch, {}, victim, TO_CHAR);
          return;
       }
 #endif
@@ -169,7 +168,7 @@ void do_kill(std::shared_ptr<unit_data> ch, char *argument, const struct command
 
    if(str_is_empty(argument))
    {
-      act("Who do you want to kill?", A_ALWAYS, ch, NULL, NULL, TO_CHAR);
+      act("Who do you want to kill?", A_ALWAYS, ch, {}, {}, TO_CHAR);
       return;
    }
 
@@ -183,7 +182,7 @@ void do_kill(std::shared_ptr<unit_data> ch, char *argument, const struct command
 
    if(!victim || !IS_CHAR(victim))
    {
-      act("There is nobody here called $2t which you can kill.", A_ALWAYS, ch, argument, NULL, TO_CHAR);
+      act("There is nobody here called $2t which you can kill.", A_ALWAYS, ch, argument, {}, TO_CHAR);
       return;
    }
 
@@ -191,9 +190,9 @@ void do_kill(std::shared_ptr<unit_data> ch, char *argument, const struct command
       send_to_char("Your mother would be so sad.. :(\n\r", ch);
    else
    {
-      act("You chop $3m to pieces! Ah! The blood!", A_SOMEONE, ch, 0, victim, TO_CHAR);
-      act("$3n chops you to pieces!", A_SOMEONE, victim, 0, ch, TO_CHAR);
-      act("$1n brutally slays $3n.", A_SOMEONE, ch, 0, victim, TO_NOTVICT);
+      act("You chop $3m to pieces! Ah! The blood!", A_SOMEONE, ch, {}, victim, TO_CHAR);
+      act("$3n chops you to pieces!", A_SOMEONE, victim, {}, ch, TO_CHAR);
+      act("$1n brutally slays $3n.", A_SOMEONE, ch, {}, victim, TO_NOTVICT);
       set_fighting(ch, victim, TRUE); /* Point to the killer! */
       raw_kill(victim);
    }
@@ -202,12 +201,12 @@ void do_kill(std::shared_ptr<unit_data> ch, char *argument, const struct command
 void do_order(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
 #ifdef SUSPEKT
-   char                name[100], message[256];
-   char                buf[256];
-   bool                found = FALSE;
-   int                 org_room;
+   char                       name[100], message[256];
+   char                       buf[256];
+   bool                       found = FALSE;
+   int                        org_room;
    std::shared_ptr<unit_data> victim;
-   struct follow_type *k;
+   struct follow_type        *k;
 
    half_chop(argument, name, message);
 
@@ -229,10 +228,10 @@ void do_order(std::shared_ptr<unit_data> ch, char *argument, const struct comman
       if(victim)
       {
          act("$3n orders you to '$2t'", A_SOMEONE, victim, message, ch, TO_CHAR);
-         act("$1n gives $3n an order.", A_SOMEONE, ch, 0, victim, TO_ROOM);
+         act("$1n gives $3n an order.", A_SOMEONE, ch, {}, victim, TO_ROOM);
 
          if((victim->master != ch) || !IS_AFFECTED(victim, AFF_CHARM))
-            act("$1n has an indifferent look.", A_SOMEONE, victim, 0, 0, TO_ROOM);
+            act("$1n has an indifferent look.", A_SOMEONE, victim, {}, {}, TO_ROOM);
          else
          {
             send_to_char("Ok.\n\r", ch);

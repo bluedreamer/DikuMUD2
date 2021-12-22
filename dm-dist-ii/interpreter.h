@@ -86,17 +86,6 @@ struct unit_function_array_type
    sbit16 tick;     /* Default tick count */
 };
 
-extern struct command_info cmd_auto_enter;
-extern struct command_info cmd_auto_tick;
-extern struct command_info cmd_auto_extract;
-extern struct command_info cmd_auto_death;
-extern struct command_info cmd_auto_combat;
-extern struct command_info cmd_auto_unknown;
-extern struct command_info cmd_auto_save;
-extern struct command_info cmd_auto_msg;
-extern struct command_info cmd_auto_damage;
-extern struct command_info cmd_a_social;
-
 /* To check for commands by string */
 ubit1 is_command(const struct command_info *cmd, const char *str);
 

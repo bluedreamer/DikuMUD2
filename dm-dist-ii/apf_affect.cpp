@@ -153,8 +153,7 @@ ubit1 apf_mod_unit_flags(struct unit_affected_type *af, std::shared_ptr<unit_dat
 
 ubit1 apf_weapon_adj(struct unit_affected_type *af, std::shared_ptr<unit_data> unit, ubit1 set)
 {
-   int                     modify;
-   extern struct tree_type wpn_tree[];
+   int modify;
 
    if(!IS_CHAR(unit))
    {
@@ -249,8 +248,7 @@ ubit1 apf_skill_adj(struct unit_affected_type *af, std::shared_ptr<unit_data> un
 /* Unit can be CHAR                                       */
 ubit1 apf_spell_adj(struct unit_affected_type *af, std::shared_ptr<unit_data> unit, ubit1 set)
 {
-   int                     modify;
-   extern struct tree_type spl_tree[];
+   int modify;
 
    if(!IS_CHAR(unit))
    {

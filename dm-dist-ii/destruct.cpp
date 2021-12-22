@@ -29,6 +29,7 @@
 #include "affect.h"
 #include "comm.h"
 #include "db.h"
+#include "externals.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "skills.h"
@@ -36,6 +37,7 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include "external_funcs.h"
 
 #include <ctype.h>
 #include <stdio.h>
@@ -83,19 +85,6 @@ void destruct_unit(std::shared_ptr<unit_data> unit)
    struct descriptor_data *d;
    int                     in_menu = FALSE;
 
-   extern struct descriptor_data *descriptor_list;
-   extern std::shared_ptr<unit_data> unit_list;
-
-   void stop_all_special(std::shared_ptr<unit_data>  u);
-   void unswitchbody(std::shared_ptr<unit_data>  npc);
-   void unsnoop(std::shared_ptr<unit_data>  ch, int mode);
-   void die_follower(std::shared_ptr<unit_data>  ch);
-   void stop_fighting(std::shared_ptr<unit_data>  ch);
-   void unlink_affect(std::shared_ptr<unit_data>  u, struct unit_affected_type * af);
-   void nanny_menu(struct descriptor_data * d, char *arg);
-   void nanny_close(struct descriptor_data * d, char *arg);
-
-   void do_return(std::shared_ptr<unit_data>  ch, char *arg, struct command_info *cmd);
 
    /* Remove all snooping, snoopers and return from any body */
    if(IS_CHAR(unit))
@@ -162,7 +151,7 @@ void destruct_unit(std::shared_ptr<unit_data> unit)
       remove_from_unit_list(unit);
 
    if(!in_menu)
-      delete unit;
+      unit.reset();
 }
 
 /* Registered by affect.c low level destruct affect */
@@ -228,7 +217,11 @@ void clear_destructed(void)
    destructed_idx[DR_FUNC] = 0;
 
    for(i = 0; i < destructed_idx[DR_UNIT]; i++)
-      destruct_unit((std::shared_ptr<unit_data> )destructed[DR_UNIT][i]);
+   {
+      // TODO ADRIAN - figure out this destruct stuff
+      assert(0);
+//      destruct_unit(destructed[DR_UNIT][i]);
+   }
    destructed_idx[DR_UNIT] = 0;
 }
 
@@ -240,6 +233,19 @@ int is_destructed(int i, void *ptr)
 
    for(n = 0; n < destructed_idx[i]; n++)
       if(destructed[i][n] == ptr)
+         return TRUE;
+
+   return FALSE;
+}
+
+int is_destructed(int i, std::shared_ptr<unit_data> ptr)
+{
+   int n;
+
+   assert(ptr);
+
+   for(n = 0; n < destructed_idx[i]; n++)
+      if(destructed[i][n] == ptr.get())
          return TRUE;
 
    return FALSE;

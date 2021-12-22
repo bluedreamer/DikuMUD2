@@ -43,7 +43,9 @@ ubit1 spell_legal_target(int spl, std::shared_ptr<unit_data> c, std::shared_ptr<
 
 struct spell_args
 {
-   class unit_data *caster, *medium, *target;
+   std::shared_ptr<unit_data> caster;
+   std::shared_ptr<unit_data> medium;
+   std::shared_ptr<unit_data> target;
    const char      *arg;
    int              hm;
    const char      *pEffect;
@@ -72,10 +74,6 @@ struct spell_info_type
 
    struct diltemplate *tmpl; /* Perhaps a DIL template...         */
 };
-
-/* Spell externs */
-extern struct spell_info_type  spell_info[];
-extern struct requirement_type spl_requirement[];
 
 #define SPL_MAG_REQ(spell) (spl_requirement[spell].abilities[ABIL_MAG])
 

@@ -47,10 +47,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern std::shared_ptr<unit_data> unit_list;
-
-/* External procedures */
-
 int                   required_xp(int level);               /* common.c   */
 void                  update_pos(std::shared_ptr<unit_data> victim); /* in fight.c */
 struct time_info_data age(std::shared_ptr<unit_data> ch);
@@ -440,7 +436,8 @@ void gain_condition(std::shared_ptr<unit_data> ch, int condition, int value)
 /* Update both PC's & NPC's */
 void point_update(void)
 {
-   std::shared_ptr<unit_data> u, *next_dude;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> next_dude;
    int               hgain;
 
    /* characters */
@@ -477,7 +474,8 @@ void point_update(void)
 
 void food_update(void)
 {
-   std::shared_ptr<unit_data> u, *next_dude;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> next_dude;
 
    /* characters */
    for(u = unit_list; u; u = next_dude)

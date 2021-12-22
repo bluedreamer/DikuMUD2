@@ -59,6 +59,7 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include "external_funcs.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -100,13 +101,6 @@ struct combat_msg_list
 
 struct combat_msg_list fight_messages[COM_MAX_MSGS];
 
-/* External structures */
-
-extern std::shared_ptr<unit_data> unit_list;
-extern char              libdir[]; /* fom dikumud.c */
-
-/* External procedures */
-
 void  gain_exp(std::shared_ptr<unit_data> ch, int gain);
 char *fread_string(FILE *f1);
 void  stop_follower(std::shared_ptr<unit_data> ch);
@@ -122,13 +116,13 @@ int pk_test(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, int 
       if(CHAR_LEVEL(att) <= 3)
       {
          if(message)
-            act("You are not old enough to do that!", A_ALWAYS, att, 0, def, TO_CHAR);
+            act("You are not old enough to do that!", A_ALWAYS, att, {}, def, TO_CHAR);
          return TRUE;
       }
       if(CHAR_LEVEL(def) <= 3)
       {
          if(message)
-            act("$3e is too young to die now!", A_ALWAYS, att, 0, def, TO_CHAR);
+            act("$3e is too young to die now!", A_ALWAYS, att, {}, def, TO_CHAR);
          return TRUE;
       }
    }
@@ -149,7 +143,7 @@ int pk_test(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, int 
                 "book of blood.",
                 A_ALWAYS,
                 att,
-                0,
+                {},
                 def,
                 TO_CHAR);
          else
@@ -157,7 +151,7 @@ int pk_test(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, int 
                 "book of blood.",
                 A_ALWAYS,
                 att,
-                0,
+                {},
                 def,
                 TO_CHAR);
       }
@@ -636,12 +630,12 @@ void combat_message(
             break;
 
          default:
-            act("Undefined hitlocation!", A_SOMEONE, att, 0, 0, TO_ALL);
+            act("Undefined hitlocation!", A_SOMEONE, att, {}, {}, TO_ALL);
             break;
       }
    }
    else
-      act("Undefined message numbers!", A_SOMEONE, att, 0, 0, TO_ALL);
+      act("Undefined message numbers!", A_SOMEONE, att, {}, {}, TO_ALL);
 }
 
 /* -------------------------------------------------------------------- */
@@ -743,15 +737,15 @@ static void person_gain(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data
 
       if(share > 0)
       {
-         act("You receive $2d experience points.", A_ALWAYS, ch, &share, 0, TO_CHAR);
+         act("You receive $2d experience points.", A_ALWAYS, ch, &share, {}, TO_CHAR);
       }
       else if(share == 0)
       {
-         act("You receive no experience points.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+         act("You receive no experience points.", A_ALWAYS, ch, {}, {}, TO_CHAR);
       }
       else /* less than zero */
       {
-         act("You are penalized by $2d experience.", A_ALWAYS, ch, &share, 0, TO_CHAR);
+         act("You are penalized by $2d experience.", A_ALWAYS, ch, &share, {}, TO_CHAR);
       }
    }
 
@@ -773,7 +767,7 @@ static void exp_align_gain(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_d
 
    if(IS_PC(victim) && IS_SET(PC_FLAGS(victim), PC_SPIRIT))
    {
-      act("Oh dear, what a mess!", A_SOMEONE, victim, 0, 0, TO_ROOM);
+      act("Oh dear, what a mess!", A_SOMEONE, victim, {}, {}, TO_ROOM);
       slog(LOG_EXTENSIVE, 0, "Oh dear, a spirit was killed!");
       return;
    }
@@ -863,7 +857,7 @@ static void death_cry(std::shared_ptr<unit_data> ch)
 {
    int door;
 
-   act("Your blood freezes as you hear $1ns death cry.", A_SOMEONE, ch, 0, 0, TO_ROOM);
+   act("Your blood freezes as you hear $1ns death cry.", A_SOMEONE, ch, {}, {}, TO_ROOM);
 
    if(IS_ROOM(UNIT_IN(ch)))
       for(door = 0; door <= 5; door++)
@@ -871,12 +865,12 @@ static void death_cry(std::shared_ptr<unit_data> ch)
             act("Your blood freezes as you hear someones death cry.",
                 A_SOMEONE,
                 UNIT_CONTAINS(ROOM_EXIT(UNIT_IN(ch), door)->to_room),
-                0,
-                0,
+                {},
+                {},
                 TO_ALL);
 }
 
-void RemoveReward(class unit_data *ch)
+void RemoveReward(std::shared_ptr<unit_data> ch)
 {
    struct unit_affected_type *taf1, *taf2;
    int                        reward = FALSE;
@@ -898,21 +892,17 @@ void RemoveReward(class unit_data *ch)
       REMOVE_BIT(CHAR_FLAGS(ch), CHAR_OUTLAW);
 }
 
-class unit_data *raw_kill(std::shared_ptr<unit_data> ch)
+std::shared_ptr<unit_data> raw_kill(std::shared_ptr<unit_data> ch)
 {
-   std::shared_ptr<unit_data> death_obj, *corpse = NULL;
-
-   extern std::shared_ptr<unit_data> seq_room;
-   extern std::shared_ptr<file_index_type> deathobj_fi;
-
-   std::shared_ptr<unit_data> make_corpse(std::shared_ptr<unit_data>  ch);
+   std::shared_ptr<unit_data> death_obj;
+   std::shared_ptr<unit_data> corpse;
 
 #ifdef DEMIGOD
    if(CHAR_ORIGINAL(ch) && IS_DEMIGOD(CHAR_ORIGINAL(ch)))
    {
       int power = MAX(1000, 1000 * CHAR_LEVEL(ch) - 4000);
       CHAR_EXP(CHAR_ORIGINAL(ch)) -= power;
-      act("You lose $2d points.", A_ALWAYS, ch, &power, 0, TO_CHAR);
+      act("You lose $2d points.", A_ALWAYS, ch, &power, {}, TO_CHAR);
    }
 #endif
 
@@ -1028,8 +1018,6 @@ void die(std::shared_ptr<unit_data> ch)
    {
       if(IS_SET(PC_FLAGS(ch), PC_SPIRIT))
       {
-         extern std::shared_ptr<unit_data> seq_room;
-
          send_to_char("Please report spirit mess to implementors.\n\r", ch);
          slog(LOG_EXTENSIVE,
               0,
@@ -1070,7 +1058,7 @@ void die(std::shared_ptr<unit_data> ch)
 /* -------------------------------------------------------------------- */
 
 /* Returns TRUE if combat is started or is already in progress */
-int provoked_attack(class unit_data *victim, class unit_data *ch)
+int provoked_attack(std::shared_ptr<unit_data> victim, std::shared_ptr<unit_data> ch)
 {
    if(!IS_CHAR(victim) || !IS_CHAR(ch))
       return FALSE;
@@ -1171,8 +1159,8 @@ void damage(std::shared_ptr<unit_data> ch,
       {
          if(IS_PC(victim) && IS_IMMORTAL(victim) && IS_PC(ch))
          {
-            act("$1n ignores your feeble threats.", A_ALWAYS, victim, 0, ch, TO_VICT);
-            act("$1n ignores $3n's feeble threats.", A_ALWAYS, victim, 0, ch, TO_NOTVICT);
+            act("$1n ignores your feeble threats.", A_ALWAYS, victim, {}, ch, TO_VICT);
+            act("$1n ignores $3n's feeble threats.", A_ALWAYS, victim, {}, ch, TO_NOTVICT);
          }
          else
             set_fighting(victim, ch, TRUE);
@@ -1195,13 +1183,13 @@ void damage(std::shared_ptr<unit_data> ch,
       if(CHAR_EXP(CHAR_ORIGINAL(ch)) <= 0)
       {
          dam = 0;
-         act("You are powerless.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+         act("You are powerless.", A_ALWAYS, ch, {}, {}, TO_CHAR);
       }
       else
       {
          int power = 10 * CHAR_LEVEL(ch) * dam;
          CHAR_EXP(CHAR_ORIGINAL(ch)) -= power;
-         act("You lose $2d points.", A_ALWAYS, ch, &power, 0, TO_CHAR);
+         act("You lose $2d points.", A_ALWAYS, ch, &power, {}, TO_CHAR);
       }
    }
 #endif
@@ -1248,21 +1236,21 @@ void damage(std::shared_ptr<unit_data> ch,
    {
       case POSITION_MORTALLYW:
          send_to_char("You are mortally wounded!\n\r", victim);
-         act("$1n is mortally wounded!", A_SOMEONE, victim, 0, 0, TO_ROOM);
+         act("$1n is mortally wounded!", A_SOMEONE, victim, {}, {}, TO_ROOM);
          break;
 
       case POSITION_INCAP:
          send_to_char("You are incapacitated!\n\r", victim);
-         act("$1n is incapacitated!", A_SOMEONE, victim, 0, 0, TO_ROOM);
+         act("$1n is incapacitated!", A_SOMEONE, victim, {}, {}, TO_ROOM);
          break;
 
       case POSITION_STUNNED:
-         act("$1n is stunned, but will probably regain conscience again.", A_HIDEINV, victim, 0, 0, TO_ROOM);
-         act("You're stunned, but will probably regain conscience again.", A_SOMEONE, victim, 0, 0, TO_CHAR);
+         act("$1n is stunned, but will probably regain conscience again.", A_HIDEINV, victim, {}, {}, TO_ROOM);
+         act("You're stunned, but will probably regain conscience again.", A_SOMEONE, victim, {}, {}, TO_CHAR);
          break;
 
       case POSITION_DEAD:
-         act("$1n is dead!", A_HIDEINV, victim, 0, 0, TO_ROOM);
+         act("$1n is dead!", A_HIDEINV, victim, {}, {}, TO_ROOM);
          break;
 
       default: /* >= POSITION SLEEPING */
@@ -1272,12 +1260,12 @@ void damage(std::shared_ptr<unit_data> ch,
 
          if(dam > (max_hit / 5))
          {
-            act("That Really did HURT!", A_SOMEONE, victim, 0, 0, TO_CHAR);
-            act("$1n screams with agony!", A_SOMEONE, victim, 0, 0, TO_ROOM);
+            act("That Really did HURT!", A_SOMEONE, victim, {}, {}, TO_CHAR);
+            act("$1n screams with agony!", A_SOMEONE, victim, {}, {}, TO_ROOM);
          }
 
          if(UNIT_HIT(victim) < (max_hit / 5))
-            act("You wish that your wounds would stop BLEEDING that much!", A_SOMEONE, victim, 0, 0, TO_CHAR);
+            act("You wish that your wounds would stop BLEEDING that much!", A_SOMEONE, victim, {}, {}, TO_CHAR);
 
          if((dam > UNIT_HIT(victim) / 4) || (UNIT_HIT(victim) < (max_hit / 4)))
             if(IS_SET(CHAR_FLAGS(victim), CHAR_WIMPY))
@@ -1419,8 +1407,8 @@ void damage_object(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj
       {
          if(ch)
          {
-            act("Your $3N is broken by the impact!!!", A_ALWAYS, ch, 0, obj, TO_CHAR);
-            act("$1n's $3N is broken by the impact!!!", A_ALWAYS, ch, 0, obj, TO_ROOM);
+            act("Your $3N is broken by the impact!!!", A_ALWAYS, ch, {}, obj, TO_CHAR);
+            act("$1n's $3N is broken by the impact!!!", A_ALWAYS, ch, {}, obj, TO_ROOM);
          }
 
          break_object(obj);
@@ -1472,8 +1460,8 @@ int one_hit(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, int 
 
    if(att_weapon && weapon_fumble(att_weapon, roll))
    {
-      act("You fumble with your $2N!", A_ALWAYS, att, att_weapon, 0, TO_CHAR);
-      act("$1n fumbles with $1s $2N!", A_ALWAYS, att, att_weapon, 0, TO_ROOM);
+      act("You fumble with your $2N!", A_ALWAYS, att, att_weapon, {}, TO_CHAR);
+      act("$1n fumbles with $1s $2N!", A_ALWAYS, att, att_weapon, {}, TO_ROOM);
       hm = MIN(-10, roll - open100());
       damage_object(att, att_weapon, hm);
       return 0;
@@ -1503,8 +1491,8 @@ int one_hit(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, int 
          if(OBJ_VALUE(att_weapon, 3) == CHAR_RACE(def))
          {
             hm += hm / 5; /* Add 20% bonus extra again to damage */
-            act("Your $2N glows!", A_SOMEONE, att, att_weapon, 0, TO_CHAR);
-            act("$1n's $2N glows!", A_HIDEINV, att, att_weapon, 0, TO_ROOM);
+            act("Your $2N glows!", A_SOMEONE, att, att_weapon, {}, TO_CHAR);
+            act("$1n's $2N glows!", A_HIDEINV, att, att_weapon, {}, TO_ROOM);
          }
          dam = weapon_damage(hm, att_weapon_type, def_armour_type);
       }
@@ -1594,8 +1582,8 @@ void melee_violence(std::shared_ptr<unit_data> ch, int primary)
       one_hit(ch, CHAR_FIGHTING(ch), 0, WPN_ROOT, primary);
    else
    {
-      act("You get back in a fighting position, ready to fight!", A_SOMEONE, ch, 0, 0, TO_CHAR);
-      act("$1n gets back in a fighting position ready to fight!", A_SOMEONE, ch, 0, 0, TO_ROOM);
+      act("You get back in a fighting position, ready to fight!", A_SOMEONE, ch, {}, {}, TO_CHAR);
+      act("$1n gets back in a fighting position ready to fight!", A_SOMEONE, ch, {}, {}, TO_ROOM);
       CHAR_POS(ch) = POSITION_FIGHTING;
    }
 }
@@ -1654,8 +1642,8 @@ int hunting(struct spec_arg *sarg)
          if(!CHAR_CAN_SEE(sarg->owner, h->victim))
             return SFR_SHARE;
 
-         act("$1n growls viciously at $3n.", A_SOMEONE, sarg->owner, 0, h->victim, TO_NOTVICT);
-         act("$1n growls at you.", A_SOMEONE, sarg->owner, 0, h->victim, TO_VICT);
+         act("$1n growls viciously at $3n.", A_SOMEONE, sarg->owner, {}, h->victim, TO_NOTVICT);
+         act("$1n growls at you.", A_SOMEONE, sarg->owner, {}, h->victim, TO_VICT);
 
          /* If the victim was a legal target, then it must be such */
          /* again                                                  */

@@ -25,6 +25,10 @@
 #ifndef _MUD_COMBAT_H
 #define _MUD_COMBAT_H
 
+#include <memory>
+#include <vector>
+
+class unit_data;
 
 class cCombatList
 {
@@ -58,8 +62,8 @@ public:
 
    inline std::shared_ptr<unit_data> Owner(void) { return pOwner; }
    inline std::shared_ptr<unit_data> Melee(void) { return pMelee; }
-   inline int               When() { return nWhen; }
-   inline int               NoOpponents(void) { return nNoOpponents; }
+   inline int                        When() { return nWhen; }
+   inline size_t                     NoOpponents() { return pOpponents.size(); }
 
    void changeSpeed(int delta);
    void setMelee(std::shared_ptr<unit_data> victim);
@@ -74,20 +78,15 @@ private:
    void sub(int idx);
    int  findOpponentIdx(std::shared_ptr<unit_data> tmp);
 
-   int                nWhen;                     // What tick to attack / command at
-   std::shared_ptr<unit_data> pOwner;                    // The owning unit
-   std::shared_ptr<unit_data> pMelee;                    // The melee or kill pointer
-   std::shared_ptr<unit_data> *pOpponents;                // Array of opponents (given damage)
-   int                nNoOpponents;              // Number of opponents
-   char               cmd[MAX_INPUT_LENGTH + 1]; // A combat command
+   int                                     nWhen;                     // What tick to attack / command at
+   std::shared_ptr<unit_data>              pOwner;                    // The owning unit
+   std::shared_ptr<unit_data>              pMelee;                    // The melee or kill pointer
+   std::vector<std::shared_ptr<unit_data>> pOpponents;                // Array of opponents (given damage)
+   char                                    cmd[MAX_INPUT_LENGTH + 1]; // A combat command
 };
-
-extern class cCombatList CombatList;
 
 void set_fighting(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> vict, int bMelee = FALSE);
 void stop_fighting(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> victim = NULL);
-
 void stat_combat(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u);
-
 
 #endif

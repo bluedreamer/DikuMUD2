@@ -68,6 +68,8 @@ set(DMSERVER_SRC
         eliza.cpp
         essential.h
         experience.cpp
+        externals.h
+        external_funcs.h
         extra.cpp
         extra.h
         fight.cpp

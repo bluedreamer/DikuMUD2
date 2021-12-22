@@ -26,14 +26,14 @@
 #define _MUD_UTILS_H
 
 #include "essential.h"
+#include "externals.h"
 #include "structs.h"
 
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
-extern const sbit8 time_light[];
-inline auto        UNIT_IN(class unit_data *unit) -> unit_data *&;
+inline auto UNIT_IN(std::shared_ptr<unit_data> unit) -> std::shared_ptr<unit_data>;
 /* ..................................................................... */
 
 #define PK_RELAXED 0
@@ -82,9 +82,9 @@ inline auto        UNIT_IN(class unit_data *unit) -> unit_data *&;
 
 #define UNIT_FUNC(unit) ((unit)->func)
 
-inline auto UNIT_FILE_INDEX(unit_data *unit) -> std::shared_ptr<file_index_type>
+inline auto UNIT_FILE_INDEX(std::shared_ptr<unit_data> unit) -> std::shared_ptr<file_index_type>
 {
-   return unit->fi;
+   return unit->fi->getptr();
 }
 
 #define UNIT_MANIPULATE(unit) ((unit)->manipulate)
@@ -109,10 +109,10 @@ inline auto UNIT_FILE_INDEX(unit_data *unit) -> std::shared_ptr<file_index_type>
 
 #define UNIT_CONTAINS(unit) ((unit)->inside)
 
-//inline auto UNIT_IN(class unit_data *unit) -> unit_data *&
-//{
-//   return unit->outside;
-//}
+inline auto UNIT_IN(std::shared_ptr<unit_data> unit) -> std::shared_ptr<unit_data>
+{
+   return unit->outside;
+}
 
 #define UNIT_AFFECTED(unit) ((unit)->affected)
 
@@ -162,7 +162,7 @@ inline auto UNIT_FILE_INDEX(unit_data *unit) -> std::shared_ptr<file_index_type>
 
 inline auto FI_NAME(std::shared_ptr<file_index_type> fi) -> std::string &
 {
-   if(fi!=nullptr)
+   if(fi != nullptr)
    {
       return fi->name;
    }
@@ -179,7 +179,7 @@ inline auto FI_NAME(std::shared_ptr<file_index_type> fi) -> std::string &
 
 #define UNIT_FI_ZONENAME(unit) (FI_ZONENAME(UNIT_FILE_INDEX(unit)))
 
-inline auto UNIT_FI_NAME(unit_data *unit) -> std::string &
+inline auto UNIT_FI_NAME(std::shared_ptr<unit_data> unit) -> std::string &
 {
    return FI_NAME(UNIT_FILE_INDEX(unit));
 }
@@ -187,8 +187,6 @@ inline auto UNIT_FI_NAME(unit_data *unit) -> std::string &
 #define UNIT_WEAR(unit, part) (IS_SET(UNIT_MANIPULATE(unit), part))
 
 #define UNIT_IS_OUTSIDE(unit) (!IS_SET(UNIT_FLAGS(UNIT_IN(unit)), UNIT_FL_INDOORS))
-
-extern int sunlight;
 
 #define UNIT_OUTSIDE_LIGHT(unit) (!IS_SET(UNIT_FLAGS(unit), UNIT_FL_INDOORS) ? time_light[sunlight] : 0)
 
@@ -293,7 +291,7 @@ extern int sunlight;
 
 #define CHAR_COMBAT(ch) (UCHAR(ch)->Combat)
 
-#define CHAR_FIGHTING(ch) (UCHAR(ch)->Combat ? CHAR_COMBAT(ch)->Melee() : (class unit_data *)NULL)
+#define CHAR_FIGHTING(ch) (UCHAR(ch)->Combat ? CHAR_COMBAT(ch)->Melee() : std::shared_ptr<unit_data>())
 
 #define CHAR_MASTER(ch) (UCHAR(ch)->master)
 

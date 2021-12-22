@@ -59,13 +59,6 @@
 #include <string.h>
 #include <time.h>
 
-/*   external vars  */
-
-extern std::shared_ptr<unit_data> unit_list;
-extern struct command_info cmd_info[];
-
-/* external functs */
-
 std::shared_ptr<unit_data> get_obj_in_list_vis(std::shared_ptr<unit_data> ch, char *name, std::shared_ptr<unit_data> list);
 
 /* Has 'pc' found the door at 'dir'? If direction exits and it is closed  */
@@ -144,7 +137,9 @@ int do_simple_sail(std::shared_ptr<unit_data> boat, std::shared_ptr<unit_data> c
        */
 {
    int               res;
-   std::shared_ptr<unit_data> u, *was_in, *to;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> was_in;
+   std::shared_ptr<unit_data> to;
 
    assert(UNIT_IN(boat) && IS_OBJ(boat));
    assert(IS_ROOM(UNIT_IN(boat)));
@@ -209,7 +204,9 @@ int do_simple_ride(std::shared_ptr<unit_data> beast, std::shared_ptr<unit_data> 
        */
 {
    int               res, need_movement;
-   std::shared_ptr<unit_data> u, *was_in, *to;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> was_in;
+   std::shared_ptr<unit_data> to;
 
    assert(UNIT_IN(beast) && IS_NPC(beast));
    assert(IS_ROOM(UNIT_IN(beast)));
@@ -234,7 +231,7 @@ int do_simple_ride(std::shared_ptr<unit_data> beast, std::shared_ptr<unit_data> 
 
    if((ROOM_LANDSCAPE(UNIT_IN(beast)) == SECT_WATER_SAIL) || (ROOM_LANDSCAPE(to) == SECT_WATER_SAIL))
    {
-      act("$1n refuses to go there.", A_SOMEONE, beast, 0, 0, TO_ROOM);
+      act("$1n refuses to go there.", A_SOMEONE, beast, {}, {}, TO_ROOM);
       return 0;
    }
 
@@ -292,7 +289,9 @@ int do_simple_move(std::shared_ptr<unit_data> ch, int direction, int following)
    */
 {
    int               need_movement, res;
-   std::shared_ptr<unit_data> was_in, *to, *u;
+   std::shared_ptr<unit_data> was_in;
+   std::shared_ptr<unit_data> to;
+   std::shared_ptr<unit_data> u;
    const char       *c;
    char              dirbuf[2] = "c";
 
@@ -323,7 +322,7 @@ int do_simple_move(std::shared_ptr<unit_data> ch, int direction, int following)
       if(!has_found_door(ch, direction))
          send_to_char(ALAS_NOWAY, ch);
       else
-         act("The $3t seems to be closed.", A_SOMEONE, ch, 0, ROOM_DOOR_NAME(UNIT_IN(ch), direction), TO_CHAR);
+         act("The $3t seems to be closed.", A_SOMEONE, ch, {}, ROOM_DOOR_NAME(UNIT_IN(ch), direction), TO_CHAR);
       return 0;
    }
 
@@ -446,7 +445,7 @@ int do_advanced_move(std::shared_ptr<unit_data> ch, int direction, int following
 
             if(was_in == UNIT_IN(k->follower) && CHAR_POS(k->follower) >= POSITION_STANDING)
             {
-               act("You follow $3n.\n\r", A_SOMEONE, k->follower, 0, ch, TO_CHAR);
+               act("You follow $3n.\n\r", A_SOMEONE, k->follower, {}, ch, TO_CHAR);
                do_advanced_move(k->follower, direction, TRUE);
             }
          }
@@ -485,7 +484,7 @@ void do_drag(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info
    /* calculate if drag is posible */
    if(IS_CHAR(thing) && (CHAR_POS(thing) > POSITION_SLEEPING))
    {
-      act("Maybe $2e would object to that.", A_SOMEONE, ch, thing, 0, TO_CHAR);
+      act("Maybe $2e would object to that.", A_SOMEONE, ch, thing, {}, TO_CHAR);
       return;
    }
 
@@ -510,14 +509,14 @@ void do_drag(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info
       if(CHAR_LEVEL(ch) < 200)
          CHAR_ENDURANCE(ch) -= UNIT_WEIGHT(thing) / 5;
 
-      act("$1n is dragged away by $3n.", A_HIDEINV, thing, 0, ch, TO_NOTVICT);
+      act("$1n is dragged away by $3n.", A_HIDEINV, thing, {}, ch, TO_NOTVICT);
       if(IS_CHAR(thing))
          send_to_char("You are dragged along.\n\r", thing);
       unit_from_unit(thing);
       unit_to_unit(thing, UNIT_IN(ch));
 
-      act("$1n is dragged along by $3n.", A_HIDEINV, thing, 0, ch, TO_NOTVICT);
-      act("You drag $3m along.", A_ALWAYS, ch, 0, thing, TO_CHAR);
+      act("$1n is dragged along by $3n.", A_HIDEINV, thing, {}, ch, TO_NOTVICT);
+      act("You drag $3m along.", A_ALWAYS, ch, {}, thing, TO_CHAR);
 
       send_done(ch, NULL, thing, 0, cmd, aaa);
    }
@@ -532,27 +531,29 @@ void do_ride(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
    */
 
    int               direction;
-   std::shared_ptr<unit_data> beast, *room, *to_room;
+   std::shared_ptr<unit_data> beast;
+   std::shared_ptr<unit_data> room;
+   std::shared_ptr<unit_data> to_room;
    char              buf[MAX_INPUT_LENGTH];
 
    beast = UNIT_IN(ch);
 
    if(!IS_NPC(beast))
    {
-      act("You must be on a mount if you want to ride.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+      act("You must be on a mount if you want to ride.", A_ALWAYS, ch, {}, {}, TO_CHAR);
       return;
    }
 
    if(CHAR_FIGHTING(beast))
    {
-      act("You must be in control to do that.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+      act("You must be in control to do that.", A_ALWAYS, ch, {}, {}, TO_CHAR);
       return;
    }
 
    for(std::shared_ptr<unit_data> u = UNIT_CONTAINS(UNIT_IN(ch)); u; u = u->next)
       if(IS_CHAR(u) && CHAR_FIGHTING(u))
       {
-         act("You can't just ride away in the middle of a combat.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+         act("You can't just ride away in the middle of a combat.", A_ALWAYS, ch, {}, {}, TO_CHAR);
          return;
       }
 
@@ -584,7 +585,7 @@ void do_ride(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
       if(!has_found_door(ch, direction))
          send_to_char(ALAS_NOWAY, ch);
       else
-         act("The $3t seems to be closed.", A_SOMEONE, ch, 0, ROOM_DOOR_NAME(room, direction), TO_CHAR);
+         act("The $3t seems to be closed.", A_SOMEONE, ch, {}, ROOM_DOOR_NAME(room, direction), TO_CHAR);
       return;
    }
 
@@ -605,7 +606,9 @@ void do_sail(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info
    char             *arg = (char *)aaa;
    int               direction;
    char              buf[MAX_INPUT_LENGTH];
-   std::shared_ptr<unit_data> boat, *room, *u;
+   std::shared_ptr<unit_data> boat;
+   std::shared_ptr<unit_data> room;
+   std::shared_ptr<unit_data> u;
 
    one_argument(arg, buf);
 
@@ -625,7 +628,7 @@ void do_sail(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info
 
    if(!IS_OBJ(boat) || OBJ_TYPE(boat) != ITEM_BOAT)
    {
-      act("You must be inside a boat if you want to sail.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+      act("You must be inside a boat if you want to sail.", A_ALWAYS, ch, {}, {}, TO_CHAR);
       return;
    }
 
@@ -640,7 +643,7 @@ void do_sail(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info
    for(u = UNIT_CONTAINS(UNIT_IN(ch)); u; u = u->next)
       if(IS_CHAR(u) && CHAR_FIGHTING(u))
       {
-         act("You can't just sail away in the middle of a combat.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+         act("You can't just sail away in the middle of a combat.", A_ALWAYS, ch,{}, {}, TO_CHAR);
          return;
       }
 
@@ -649,7 +652,7 @@ void do_sail(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info
    {
       backdoor(ch, arg, cmd);
 
-      act("The $3t seems to be closed.", A_SOMEONE, ch, 0, ROOM_DOOR_NAME(room, direction), TO_CHAR);
+      act("The $3t seems to be closed.", A_SOMEONE, ch, {}, ROOM_DOOR_NAME(room, direction), TO_CHAR);
       return;
    }
 
@@ -720,14 +723,14 @@ int low_find_door(std::shared_ptr<unit_data> ch, char *doorstr, int err_msg, int
    if(str_is_empty(dir))
    {
       if(err_msg)
-         act("What?", A_ALWAYS, ch, 0, 0, TO_CHAR);
+         act("What?", A_ALWAYS, ch, {}, {}, TO_CHAR);
       return -1;
    }
 
    if(!IS_ROOM(UNIT_IN(ch)))
    {
       if(err_msg)
-         act("You see no such exit.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+         act("You see no such exit.", A_ALWAYS, ch, {}, {}, TO_CHAR);
       return -1;
    }
 
@@ -738,7 +741,7 @@ int low_find_door(std::shared_ptr<unit_data> ch, char *doorstr, int err_msg, int
       if(str_is_empty(dirdoorstr))
       {
          if(err_msg)
-            act("What is the name of the exit to the $2t?", A_ALWAYS, ch, dirs[door], 0, TO_CHAR);
+            act("What is the name of the exit to the $2t?", A_ALWAYS, ch, dirs[door], {}, TO_CHAR);
          return -1;
       }
 
@@ -748,12 +751,12 @@ int low_find_door(std::shared_ptr<unit_data> ch, char *doorstr, int err_msg, int
             return door;
 
          if(err_msg)
-            act("You see no $2t in that direction.", A_ALWAYS, ch, dirdoorstr, 0, TO_CHAR);
+            act("You see no $2t in that direction.", A_ALWAYS, ch, dirdoorstr, {}, TO_CHAR);
          return -1;
       }
 
       if(err_msg)
-         act("You see no exit in that direction.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+         act("You see no exit in that direction.", A_ALWAYS, ch, {}, {}, TO_CHAR);
       return -1;
    }
 
@@ -770,14 +773,16 @@ int low_find_door(std::shared_ptr<unit_data> ch, char *doorstr, int err_msg, int
    }
 
    if(err_msg)
-      act("You see no $2t here.", A_ALWAYS, ch, doorstr, 0, TO_CHAR);
+      act("You see no $2t here.", A_ALWAYS, ch, doorstr, {}, TO_CHAR);
 
    return -1;
 }
 
 struct door_data *locate_lock(std::shared_ptr<unit_data> ch, char *arg)
 {
-   std::shared_ptr<unit_data> thing, *other_room, *back = NULL;
+   std::shared_ptr<unit_data> thing;
+   std::shared_ptr<unit_data> other_room;
+   std::shared_ptr<unit_data> back;
    static struct door_data a_door;
    int                     door;
 
@@ -879,22 +884,22 @@ void do_knock(std::shared_ptr<unit_data> ch, char *argument, const struct comman
 
    if(a_door->thing)
    {
-      act("You knock on $2m.", A_SOMEONE, ch, a_door->thing, 0, TO_CHAR);
-      act("$1n knocks on $3n.", A_SOMEONE, ch, 0, a_door->thing, TO_NOTVICT);
-      act("$1n knocks on you.", A_SOMEONE, ch, 0, a_door->thing, TO_VICT);
+      act("You knock on $2m.", A_SOMEONE, ch, a_door->thing, {}, TO_CHAR);
+      act("$1n knocks on $3n.", A_SOMEONE, ch, {}, a_door->thing, TO_NOTVICT);
+      act("$1n knocks on you.", A_SOMEONE, ch, {}, a_door->thing, TO_VICT);
 
       if(a_door->reverse)
       {
          if(!UNIT_IS_TRANSPARENT(a_door->thing) && UNIT_CONTAINS(a_door->reverse))
          {
-            act("You hear a loud knocking from $2n.", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), a_door->thing, 0, TO_ALL);
+            act("You hear a loud knocking from $2n.", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), a_door->thing, {}, TO_ALL);
          }
       }
    }
    else /* A room */
    {
-      act("You knock on the $2t.", A_SOMEONE, ch, a_door->name, 0, TO_CHAR);
-      act("$1n knocks on the $2t.", A_SOMEONE, ch, a_door->name, 0, TO_ROOM);
+      act("You knock on the $2t.", A_SOMEONE, ch, a_door->name, {}, TO_CHAR);
+      act("$1n knocks on the $2t.", A_SOMEONE, ch, a_door->name, {}, TO_ROOM);
 
       if(a_door->thing)
          send_done(ch, NULL, a_door->thing, -1, cmd, "");
@@ -903,7 +908,7 @@ void do_knock(std::shared_ptr<unit_data> ch, char *argument, const struct comman
 
       if(a_door->reverse && UNIT_CONTAINS(a_door->reverse))
       {
-         act("You hear a faint knocking on the $2t.", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), a_door->name, 0, TO_ALL);
+         act("You hear a faint knocking on the $2t.", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), a_door->name, {}, TO_ALL);
 
          if(a_door->thing)
             send_done(ch, a_door->reverse, a_door->thing, -1, cmd, "", a_door->reverse);
@@ -934,12 +939,12 @@ void do_open(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info
    else if(IS_SET(*a_door->flags, EX_LOCKED))
       send_to_char("It seems to be locked.\n\r", ch);
    else if(a_door->thing && IS_SET(UNIT_FLAGS(a_door->thing), UNIT_FL_BURIED))
-      act("$2n has been buried, you can not open it.", A_SOMEONE, ch, a_door->thing, 0, TO_CHAR);
+      act("$2n has been buried, you can not open it.", A_SOMEONE, ch, a_door->thing, {}, TO_CHAR);
    else
    {
       REMOVE_BIT(*a_door->flags, EX_CLOSED);
-      act("You open the $2t.", A_SOMEONE, ch, a_door->name, 0, TO_CHAR);
-      act("$1n opens the $2t.", A_SOMEONE, ch, a_door->name, 0, TO_ROOM);
+      act("You open the $2t.", A_SOMEONE, ch, a_door->name, {}, TO_CHAR);
+      act("$1n opens the $2t.", A_SOMEONE, ch, a_door->name, {}, TO_ROOM);
 
       if(a_door->thing)
          send_done(ch, NULL, a_door->thing, -1, cmd, "");
@@ -949,7 +954,7 @@ void do_open(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info
       if(a_door->reverse)
       {
          if((a_door->room || !UNIT_IS_TRANSPARENT(a_door->thing)) && UNIT_CONTAINS(a_door->reverse))
-            act("The $2t is opened.", A_ALWAYS, UNIT_CONTAINS(a_door->reverse), a_door->name, 0, TO_ALL);
+            act("The $2t is opened.", A_ALWAYS, UNIT_CONTAINS(a_door->reverse), a_door->name, {}, TO_ALL);
 
          if(a_door->rev_flags)
             REMOVE_BIT(*a_door->rev_flags, EX_CLOSED);
@@ -980,12 +985,12 @@ void do_close(std::shared_ptr<unit_data> ch, char *argument, const struct comman
    else if(IS_SET(*a_door->flags, EX_CLOSED))
       send_to_char("But it's already closed!\n\r", ch);
    else if(a_door->thing && IS_SET(UNIT_FLAGS(a_door->thing), UNIT_FL_BURIED))
-      act("$2n has been buried, you can not close it.", A_SOMEONE, ch, a_door->thing, 0, TO_CHAR);
+      act("$2n has been buried, you can not close it.", A_SOMEONE, ch, a_door->thing, {}, TO_CHAR);
    else
    {
       SET_BIT(*a_door->flags, EX_CLOSED);
-      act("You close the $2t.", A_SOMEONE, ch, a_door->name, 0, TO_CHAR);
-      act("$1n closes the $2t.", A_SOMEONE, ch, a_door->name, 0, TO_ROOM);
+      act("You close the $2t.", A_SOMEONE, ch, a_door->name, {}, TO_CHAR);
+      act("$1n closes the $2t.", A_SOMEONE, ch, a_door->name, {}, TO_ROOM);
 
       if(a_door->thing)
          send_done(ch, NULL, a_door->thing, -1, cmd, "");
@@ -995,7 +1000,7 @@ void do_close(std::shared_ptr<unit_data> ch, char *argument, const struct comman
       if(a_door->reverse)
       {
          if((a_door->room || !UNIT_IS_TRANSPARENT(a_door->thing)) && UNIT_CONTAINS(a_door->reverse))
-            act("The $2t is closed.", A_ALWAYS, UNIT_CONTAINS(a_door->reverse), a_door->name, 0, TO_ALL);
+            act("The $2t is closed.", A_ALWAYS, UNIT_CONTAINS(a_door->reverse), a_door->name, {}, TO_ALL);
 
          if(a_door->rev_flags)
             SET_BIT(*a_door->rev_flags, EX_CLOSED);
@@ -1047,13 +1052,13 @@ void do_lock(std::shared_ptr<unit_data> ch, char *argument, const struct command
    {
       if(!has_key(ch, a_door->key))
       {
-         act("$1n inserts $1s finger into the $2t's keyhole.", A_HIDEINV, ch, a_door->name, 0, TO_ROOM);
-         act("You insert your finger into the $2t's keyhole.", A_ALWAYS, ch, a_door->name, 0, TO_CHAR);
+         act("$1n inserts $1s finger into the $2t's keyhole.", A_HIDEINV, ch, a_door->name, {}, TO_ROOM);
+         act("You insert your finger into the $2t's keyhole.", A_ALWAYS, ch, a_door->name, {}, TO_CHAR);
       }
 
       SET_BIT(*a_door->flags, EX_LOCKED);
-      act("You lock the $2t - *cluck*.", A_SOMEONE, ch, a_door->name, 0, TO_CHAR);
-      act("$1n locks the $2t - 'cluck', it says.", A_SOMEONE, ch, a_door->name, 0, TO_ROOM);
+      act("You lock the $2t - *cluck*.", A_SOMEONE, ch, a_door->name, {}, TO_CHAR);
+      act("$1n locks the $2t - 'cluck', it says.", A_SOMEONE, ch, a_door->name, {}, TO_ROOM);
 
       if(a_door->thing)
          send_done(ch, NULL, a_door->thing, -1, cmd, "");
@@ -1063,7 +1068,7 @@ void do_lock(std::shared_ptr<unit_data> ch, char *argument, const struct command
       if(a_door->reverse)
       {
          if(UNIT_CONTAINS(a_door->reverse))
-            act("You hear a faint *cluck* from $2t.", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), a_door->name, 0, TO_ALL);
+            act("You hear a faint *cluck* from $2t.", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), a_door->name, {}, TO_ALL);
 
          if(a_door->rev_flags)
             SET_BIT(*a_door->rev_flags, EX_LOCKED);
@@ -1103,13 +1108,13 @@ void do_unlock(std::shared_ptr<unit_data> ch, char *argument, const struct comma
    {
       if(!has_key(ch, a_door->key))
       {
-         act("$1n inserts $1s finger into the $2t's keyhole.", A_HIDEINV, ch, a_door->name, 0, TO_ROOM);
-         act("You insert your finger into the $2t's keyhole.", A_ALWAYS, ch, a_door->name, 0, TO_CHAR);
+         act("$1n inserts $1s finger into the $2t's keyhole.", A_HIDEINV, ch, a_door->name,{}, TO_ROOM);
+         act("You insert your finger into the $2t's keyhole.", A_ALWAYS, ch, a_door->name, {}, TO_CHAR);
       }
 
       REMOVE_BIT(*a_door->flags, EX_LOCKED);
-      act("You unlock the $2t - *click*.", A_SOMEONE, ch, a_door->name, 0, TO_CHAR);
-      act("$1n unlocks the $2t - *click*, it says.", A_SOMEONE, ch, a_door->name, 0, TO_ROOM);
+      act("You unlock the $2t - *click*.", A_SOMEONE, ch, a_door->name, {}, TO_CHAR);
+      act("$1n unlocks the $2t - *click*, it says.", A_SOMEONE, ch, a_door->name, {}, TO_ROOM);
 
       if(a_door->thing)
          send_done(ch, NULL, a_door->thing, -1, cmd, "");
@@ -1119,7 +1124,7 @@ void do_unlock(std::shared_ptr<unit_data> ch, char *argument, const struct comma
       if(a_door->reverse)
       {
          if(UNIT_CONTAINS(a_door->reverse))
-            act("You hear a faint *click* from $2t.", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), a_door->name, 0, TO_ALL);
+            act("You hear a faint *click* from $2t.", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), a_door->name, {}, TO_ALL);
 
          if(a_door->rev_flags)
             REMOVE_BIT(*a_door->rev_flags, EX_LOCKED);
@@ -1142,7 +1147,7 @@ void do_enter(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
 
    if(str_is_empty(arg))
    {
-      act("$2t what?", A_ALWAYS, ch, mnt_ent, 0, TO_CHAR);
+      act("$2t what?", A_ALWAYS, ch, mnt_ent, {}, TO_CHAR);
       return;
    }
 
@@ -1218,9 +1223,9 @@ void do_enter(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
       if(!UNIT_IS_TRANSPARENT(thing))
       {
          if(IS_CHAR(thing))
-            act("$1n has mounted $3n.", A_SOMEONE, ch, 0, thing, TO_ROOM);
+            act("$1n has mounted $3n.", A_SOMEONE, ch, {}, thing, TO_ROOM);
          else
-            act("$1n has entered the $3N.", A_SOMEONE, ch, 0, thing, TO_ROOM);
+            act("$1n has entered the $3N.", A_SOMEONE, ch, {}, thing, TO_ROOM);
       }
       send_done(ch, NULL, thing, 0, cmd, oarg);
    }
@@ -1234,7 +1239,8 @@ void do_enter(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
 
 void do_exit(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   std::shared_ptr<unit_data> to_unit, *from_unit;
+   std::shared_ptr<unit_data> to_unit;
+   std::shared_ptr<unit_data> from_unit;
    char             *oarg = arg;
 
    /* Is it meaningfull to exit */
@@ -1292,7 +1298,7 @@ void do_exit(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
    /* Is this unit closed? */
    if(!IS_CHAR(UNIT_IN(ch)) && IS_SET(UNIT_OPEN_FLAGS(UNIT_IN(ch)), EX_CLOSED))
    {
-      act("But the $3N seems to be closed.", A_HIDEINV, ch, 0, UNIT_IN(ch), TO_CHAR);
+      act("But the $3N seems to be closed.", A_HIDEINV, ch, {}, UNIT_IN(ch), TO_CHAR);
       return;
    }
 
@@ -1300,13 +1306,13 @@ void do_exit(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
    /* if the outside has no "ENTER" flags                            */
    if(IS_SET(UNIT_FLAGS(UNIT_IN(ch)), UNIT_FL_BURIED))
    {
-      act("It seems like you have been buried - alive!", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("It seems like you have been buried - alive!", A_SOMEONE, ch, {}, {}, TO_CHAR);
       return;
    }
 
    if(!IS_SET(UNIT_MANIPULATE(UNIT_IN(UNIT_IN(ch))), MANIPULATE_ENTER))
    {
-      act("Someone seems to be blocking the exit.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("Someone seems to be blocking the exit.", A_SOMEONE, ch, {}, {}, TO_CHAR);
       return;
    }
 
@@ -1328,7 +1334,7 @@ void do_exit(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
    {
       unit_from_unit(ch);
       unit_to_unit(ch, to_unit);
-      act("$1n emerges from $3n.", A_HIDEINV, ch, 0, from_unit, TO_ROOM);
+      act("$1n emerges from $3n.", A_HIDEINV, ch, {}, from_unit, TO_ROOM);
    }
    else
    {
@@ -1373,34 +1379,34 @@ void do_stand(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
    /* not on a 'horse' type char */
    if(IS_CHAR(UNIT_IN(ch)))
    {
-      act("Not here you don't.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("Not here you don't.", A_SOMEONE, ch, {}, {}, TO_CHAR);
       return;
    }
 
    switch(CHAR_POS(ch))
    {
       case POSITION_STANDING:
-         act("You are already standing.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+         act("You are already standing.", A_SOMEONE, ch, {}, {}, TO_CHAR);
          break;
       case POSITION_SITTING:
-         act("You stand up.", A_SOMEONE, ch, 0, 0, TO_CHAR);
-         act("$1n clambers on $1s feet.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+         act("You stand up.", A_SOMEONE, ch, {}, {}, TO_CHAR);
+         act("$1n clambers on $1s feet.", A_HIDEINV, ch, {},{}, TO_ROOM);
          CHAR_POS(ch) = POSITION_STANDING;
          break;
       case POSITION_RESTING:
-         act("You stop resting, and stand up.", A_SOMEONE, ch, 0, 0, TO_CHAR);
-         act("$1n stops resting, and clambers on $1s feet.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+         act("You stop resting, and stand up.", A_SOMEONE, ch, {}, {}, TO_CHAR);
+         act("$1n stops resting, and clambers on $1s feet.", A_HIDEINV, ch, {}, {}, TO_ROOM);
          CHAR_POS(ch) = POSITION_STANDING;
          break;
       case POSITION_SLEEPING:
-         act("You have to wake up first!", A_SOMEONE, ch, 0, 0, TO_CHAR);
+         act("You have to wake up first!", A_SOMEONE, ch, {}, {}, TO_CHAR);
          break;
       case POSITION_FIGHTING:
-         act("Do you not consider fighting as standing?", A_SOMEONE, ch, 0, 0, TO_CHAR);
+         act("Do you not consider fighting as standing?", A_SOMEONE, ch, {}, {}, TO_CHAR);
          break;
       default:
-         act("You stop floating around, and put your feet on the ground.", A_SOMEONE, ch, 0, 0, TO_CHAR);
-         act("$1n stops floating around, and puts $1s feet on the ground.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+         act("You stop floating around, and put your feet on the ground.", A_SOMEONE, ch, {}, {}, TO_CHAR);
+         act("$1n stops floating around, and puts $1s feet on the ground.", A_HIDEINV, ch, {}, {}, TO_ROOM);
          break;
    }
 }
@@ -1410,27 +1416,27 @@ void do_sit(std::shared_ptr<unit_data> ch, char *arg, const struct command_info 
    switch(CHAR_POS(ch))
    {
       case POSITION_STANDING:
-         act("You sit down.", A_SOMEONE, ch, 0, 0, TO_CHAR);
-         act("$1n sits down.", A_SOMEONE, ch, 0, 0, TO_ROOM);
+         act("You sit down.", A_SOMEONE, ch, {}, {}, TO_CHAR);
+         act("$1n sits down.", A_SOMEONE, ch, {}, {}, TO_ROOM);
          CHAR_POS(ch) = POSITION_SITTING;
          break;
       case POSITION_SITTING:
          send_to_char("You are sitting already.\n\r", ch);
          break;
       case POSITION_RESTING:
-         act("You stop resting, and sit up.", A_SOMEONE, ch, 0, 0, TO_CHAR);
-         act("$1n stops resting.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+         act("You stop resting, and sit up.", A_SOMEONE, ch, {}, {}, TO_CHAR);
+         act("$1n stops resting.", A_HIDEINV, ch, {}, {}, TO_ROOM);
          CHAR_POS(ch) = POSITION_SITTING;
          break;
       case POSITION_SLEEPING:
-         act("You have to wake up first.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+         act("You have to wake up first.", A_SOMEONE, ch, {}, {}, TO_CHAR);
          break;
       case POSITION_FIGHTING:
-         act("Sit down while fighting? are you MAD?", A_SOMEONE, ch, 0, 0, TO_CHAR);
+         act("Sit down while fighting? are you MAD?", A_SOMEONE, ch, {}, {}, TO_CHAR);
          break;
       default:
-         act("You stop floating around, and sit down.", A_SOMEONE, ch, 0, 0, TO_CHAR);
-         act("$1n stops floating around, and sits down.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+         act("You stop floating around, and sit down.", A_SOMEONE, ch, {}, {}, TO_CHAR);
+         act("$1n stops floating around, and sits down.", A_HIDEINV, ch, {}, {}, TO_ROOM);
          CHAR_POS(ch) = POSITION_SITTING;
          break;
    }
@@ -1441,27 +1447,27 @@ void do_rest(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
    switch(CHAR_POS(ch))
    {
       case POSITION_STANDING:
-         act("You sit down and rest your tired bones.", A_SOMEONE, ch, 0, 0, TO_CHAR);
-         act("$1n sits down and rests.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+         act("You sit down and rest your tired bones.", A_SOMEONE, ch, {}, {}, TO_CHAR);
+         act("$1n sits down and rests.", A_HIDEINV, ch, {}, {}, TO_ROOM);
          CHAR_POS(ch) = POSITION_RESTING;
          break;
       case POSITION_SITTING:
-         act("You rest your tired bones.", A_SOMEONE, ch, 0, 0, TO_CHAR);
-         act("$1n rests.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+         act("You rest your tired bones.", A_SOMEONE, ch, {}, {}, TO_CHAR);
+         act("$1n rests.", A_HIDEINV, ch, {}, {}, TO_ROOM);
          CHAR_POS(ch) = POSITION_RESTING;
          break;
       case POSITION_RESTING:
-         act("You are already resting.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+         act("You are already resting.", A_SOMEONE, ch, {}, {}, TO_CHAR);
          break;
       case POSITION_SLEEPING:
-         act("You have to wake up first.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+         act("You have to wake up first.", A_SOMEONE, ch, {}, {}, TO_CHAR);
          break;
       case POSITION_FIGHTING:
-         act("Rest while fighting? are you MAD?", A_SOMEONE, ch, 0, 0, TO_CHAR);
+         act("Rest while fighting? are you MAD?", A_SOMEONE, ch, {}, {}, TO_CHAR);
          break;
       default:
-         act("You stop floating around, and stop to rest your tired bones.", A_SOMEONE, ch, 0, 0, TO_CHAR);
-         act("$1n stops floating around, and rests.", A_SOMEONE, ch, 0, 0, TO_ROOM);
+         act("You stop floating around, and stop to rest your tired bones.", A_SOMEONE, ch, {}, {}, TO_CHAR);
+         act("$1n stops floating around, and rests.", A_SOMEONE, ch, {}, {}, TO_ROOM);
          CHAR_POS(ch) = POSITION_SITTING;
          break;
    }
@@ -1475,7 +1481,7 @@ void do_sleep(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
       case POSITION_SITTING:
       case POSITION_RESTING:
          send_to_char("You go to sleep.\n\r", ch);
-         act("$1n lies down and falls asleep.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+         act("$1n lies down and falls asleep.", A_HIDEINV, ch, {}, {}, TO_ROOM);
          CHAR_POS(ch) = POSITION_SLEEPING;
          break;
       case POSITION_SLEEPING:
@@ -1485,8 +1491,8 @@ void do_sleep(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
          send_to_char("Sleep while fighting? are you MAD?\n\r", ch);
          break;
       default:
-         act("You stop floating around, and lie down to sleep.", A_SOMEONE, ch, 0, 0, TO_CHAR);
-         act("$1n stops floating around, and lie down to sleep.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+         act("You stop floating around, and lie down to sleep.", A_SOMEONE, ch, {}, {}, TO_CHAR);
+         act("$1n stops floating around, and lie down to sleep.", A_HIDEINV, ch, {}, {}, TO_ROOM);
          CHAR_POS(ch) = POSITION_SLEEPING;
          break;
    }
@@ -1503,14 +1509,14 @@ void do_wake(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
       else
       {
          send_to_char("You awaken, and start resting.\n\r", ch);
-         act("$1n awakens.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+         act("$1n awakens.", A_HIDEINV, ch, {}, {}, TO_ROOM);
          CHAR_POS(ch) = POSITION_RESTING;
       }
    }
    else
    {
       if(!CHAR_AWAKE(ch))
-         act("You can't wake people up if you are asleep yourself!", A_SOMEONE, ch, 0, 0, TO_CHAR);
+         act("You can't wake people up if you are asleep yourself!", A_SOMEONE, ch, {}, {}, TO_CHAR);
       else
       {
          tmp_char = find_unit(ch, &arg, 0, FIND_UNIT_SURRO);
@@ -1522,26 +1528,26 @@ void do_wake(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
 
          if(tmp_char == ch)
          {
-            act("If you want to wake yourself up, just type 'wake'", A_SOMEONE, ch, 0, 0, TO_CHAR);
+            act("If you want to wake yourself up, just type 'wake'", A_SOMEONE, ch, {}, {}, TO_CHAR);
             return;
          }
          if(CHAR_AWAKE(tmp_char))
          {
-            act("$3n is already awake.", A_SOMEONE, ch, 0, tmp_char, TO_CHAR);
+            act("$3n is already awake.", A_SOMEONE, ch, {}, tmp_char, TO_CHAR);
             return;
          }
          if(CHAR_POS(tmp_char) < POSITION_SLEEPING)
          {
-            act("You can't wake $3m up!", A_SOMEONE, ch, 0, tmp_char, TO_CHAR);
+            act("You can't wake $3m up!", A_SOMEONE, ch, {}, tmp_char, TO_CHAR);
             return;
          }
 
          if(CHAR_POS(tmp_char) == POSITION_SLEEPING)
          {
-            act("You wake $3m up.", A_SOMEONE, ch, 0, tmp_char, TO_CHAR);
-            act("$3n is awakened by $1n.", A_SOMEONE, ch, 0, tmp_char, TO_NOTVICT);
+            act("You wake $3m up.", A_SOMEONE, ch, {}, tmp_char, TO_CHAR);
+            act("$3n is awakened by $1n.", A_SOMEONE, ch, {}, tmp_char, TO_NOTVICT);
             CHAR_POS(tmp_char) = POSITION_RESTING;
-            act("You are awakened by $1n.", A_SOMEONE, ch, 0, tmp_char, TO_VICT);
+            act("You are awakened by $1n.", A_SOMEONE, ch, {}, tmp_char, TO_VICT);
          }
       }
    }
@@ -1558,9 +1564,9 @@ void do_follow(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
    {
       if(CHAR_MASTER(ch))
       {
-         act("You stop following $3n.", A_SOMEONE, ch, 0, CHAR_MASTER(ch), TO_CHAR);
+         act("You stop following $3n.", A_SOMEONE, ch, {}, CHAR_MASTER(ch), TO_CHAR);
          if(same_surroundings(ch, CHAR_MASTER(ch)))
-            act("$1n stops following you.", A_HIDEINV, ch, 0, CHAR_MASTER(ch), TO_VICT);
+            act("$1n stops following you.", A_HIDEINV, ch, {}, CHAR_MASTER(ch), TO_VICT);
          stop_following(ch);
       }
       else
@@ -1577,14 +1583,14 @@ void do_follow(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
 
    if(CHAR_MASTER(ch))
    {
-      act("You stop following $3n.", A_SOMEONE, ch, 0, CHAR_MASTER(ch), TO_CHAR);
+      act("You stop following $3n.", A_SOMEONE, ch, {}, CHAR_MASTER(ch), TO_CHAR);
       if(same_surroundings(ch, CHAR_MASTER(ch)))
-         act("$1n stops following you.", A_HIDEINV, ch, 0, CHAR_MASTER(ch), TO_VICT);
+         act("$1n stops following you.", A_HIDEINV, ch, {}, CHAR_MASTER(ch), TO_VICT);
       stop_following(ch);
    }
 
    start_following(ch, leader);
 
-   act("You now follow $3n.", A_SOMEONE, ch, 0, leader, TO_CHAR);
-   act("$1n starts following you.", A_HIDEINV, ch, 0, leader, TO_VICT);
+   act("You now follow $3n.", A_SOMEONE, ch, {}, leader, TO_CHAR);
+   act("$1n starts following you.", A_HIDEINV, ch, {}, leader, TO_VICT);
 }

@@ -45,10 +45,7 @@ void other_signal(int signal_no)
 
 void checkpointing(int signal_no)
 {
-   extern int tics;
    static int last_tick = 0;
-
-   extern int player_convert;
 
    if(player_convert)
       return;
@@ -70,8 +67,6 @@ void checkpointing(int signal_no)
 
 void shutdown_request(int signal_no)
 {
-   extern int mud_shutdown;
-
    slog(LOG_ALL, 0, "Received USR2 - shutdown request");
    mud_shutdown = 1;
 }

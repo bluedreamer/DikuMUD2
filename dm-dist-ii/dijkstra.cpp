@@ -54,12 +54,6 @@
 #define CF(x, h) ((x) * (h)->d + 1)
 #define CL(x, h) MIN((x) * (h)->d + (h)->d, (h)->no)
 
-extern struct command_info   cmd_auto_unknown;
-extern struct zone_info_type zone_info;
-
-extern int memory_total_alloc;
-extern int memory_dijkstra_alloc;
-
 struct dir_array
 {
    struct graph_vertice *to_vertice;
@@ -426,10 +420,10 @@ ubit8 **create_graph(std::shared_ptr<zone_type> zone)
 
 void stat_dijkstraa(std::shared_ptr<unit_data> ch, std::shared_ptr<zone_type> z)
 {
-   int               i, j;
-   char              buf[MAX_STRING_LENGTH];
+   int                        i, j;
+   char                       buf[MAX_STRING_LENGTH];
    std::shared_ptr<zone_type> z2;
-   char             *b;
+   char                      *b;
 
    sprintf(buf, "%s borders the following zones (for auto-walk):\n\r\n\r", z->name);
    send_to_char(buf, ch);
@@ -485,7 +479,7 @@ void stat_dijkstraa(std::shared_ptr<unit_data> ch, std::shared_ptr<zone_type> z)
 void create_dijkstra(void)
 {
    std::shared_ptr<zone_type> z;
-   int               i, j, k;
+   int                        i, j, k;
 
 #ifdef MEMORY_DEBUG
    memory_dijkstra_alloc = memory_total_alloc;
@@ -537,30 +531,30 @@ int move_to(const std::shared_ptr<unit_data> from, const std::shared_ptr<unit_da
    if(!IS_ROOM(from) || !IS_ROOM(to))
       return DIR_IMPOSSIBLE;
 
-   if(UNIT_FILE_INDEX(const_cast<unit_data *>(from))->zone == (UNIT_FILE_INDEX(const_cast<unit_data *>(to))->zone))
+   if(UNIT_FILE_INDEX(from)->zone == (UNIT_FILE_INDEX(to)->zone))
    {
-      if(UNIT_FILE_INDEX(const_cast<unit_data *>(to))->zone->spmatrix)
+      if(UNIT_FILE_INDEX(to)->zone->spmatrix)
       {
-         i = UNIT_FILE_INDEX(const_cast<unit_data *>(from))->room_no;
+         i = UNIT_FILE_INDEX(from)->room_no;
 
-         j = UNIT_FILE_INDEX(const_cast<unit_data *>(to))->room_no;
+         j = UNIT_FILE_INDEX(to)->room_no;
 
-         return spi_val(UNIT_FILE_INDEX(const_cast<unit_data *>(to))->zone->spmatrix, i, j);
+         return spi_val(UNIT_FILE_INDEX(to)->zone->spmatrix, i, j);
       }
       return DIR_IMPOSSIBLE;
    }
    else /* Inter-zone path info needed */
    {
-      if(iz[UNIT_FILE_INDEX(const_cast<unit_data *>(from))->zone->zone_no][UNIT_FILE_INDEX(const_cast<unit_data *>(to))->zone->zone_no]
+      if(iz[UNIT_FILE_INDEX(from)->zone->zone_no][UNIT_FILE_INDEX(to)->zone->zone_no]
             .room)
       {
          i = move_to(
             from,
-            iz[UNIT_FILE_INDEX(const_cast<unit_data *>(from))->zone->zone_no][UNIT_FILE_INDEX(const_cast<unit_data *>(to))->zone->zone_no]
+            iz[UNIT_FILE_INDEX(from)->zone->zone_no][UNIT_FILE_INDEX(to)->zone->zone_no]
                .room);
          if(i == DIR_HERE)
-            return iz[UNIT_FILE_INDEX(const_cast<unit_data *>(from))->zone->zone_no]
-                     [UNIT_FILE_INDEX(const_cast<unit_data *>(to))->zone->zone_no]
+            return iz[UNIT_FILE_INDEX(from)->zone->zone_no]
+                     [UNIT_FILE_INDEX(to)->zone->zone_no]
                         .dir;
          else
             return i;
@@ -592,19 +586,19 @@ int open_door(const std::shared_ptr<unit_data> npc, int dir)
 {
    char buf[80];
 
-   assert(IS_ROOM(UNIT_IN(const_cast<unit_data *>(npc))));
-   assert(ROOM_EXIT(UNIT_IN(const_cast<unit_data *>(npc)), dir));
+   assert(IS_ROOM(UNIT_IN(npc)));
+   assert(ROOM_EXIT(UNIT_IN(npc), dir));
 
-   if(IS_SET(ROOM_EXIT(UNIT_IN(const_cast<unit_data *>(npc)), dir)->exit_info, EX_OPEN_CLOSE) &&
-      IS_SET(ROOM_EXIT(UNIT_IN(const_cast<unit_data *>(npc)), dir)->exit_info, EX_CLOSED))
+   if(IS_SET(ROOM_EXIT(UNIT_IN(npc), dir)->exit_info, EX_OPEN_CLOSE) &&
+      IS_SET(ROOM_EXIT(UNIT_IN(npc), dir)->exit_info, EX_CLOSED))
    {
-      sprintf(buf, "%s %s", dirs[dir], ROOM_EXIT(UNIT_IN(const_cast<unit_data *>(npc)), dir)->open_name.Name());
+      sprintf(buf, "%s %s", dirs[dir], ROOM_EXIT(UNIT_IN(npc), dir)->open_name.Name());
 
       /* The door is closed and can be opened */
-      if(IS_SET(ROOM_EXIT(UNIT_IN(const_cast<unit_data *>(npc)), dir)->exit_info, EX_LOCKED))
+      if(IS_SET(ROOM_EXIT(UNIT_IN(npc), dir)->exit_info, EX_LOCKED))
       {
-         do_unlock(const_cast<unit_data *>(npc), buf, &cmd_auto_unknown);
-         if(IS_SET(ROOM_EXIT(UNIT_IN(const_cast<unit_data *>(npc)), dir)->exit_info, EX_LOCKED))
+         do_unlock(npc, buf, &cmd_auto_unknown);
+         if(IS_SET(ROOM_EXIT(UNIT_IN(npc), dir)->exit_info, EX_LOCKED))
             return MOVE_FAILED;
          else
             return MOVE_BUSY;
@@ -612,7 +606,7 @@ int open_door(const std::shared_ptr<unit_data> npc, int dir)
       else
       {
          do_open((std::shared_ptr<unit_data> )npc, buf, &cmd_auto_unknown);
-         if(IS_SET(ROOM_EXIT(UNIT_IN(const_cast<unit_data *>(npc)), dir)->exit_info, EX_CLOSED))
+         if(IS_SET(ROOM_EXIT(UNIT_IN(npc), dir)->exit_info, EX_CLOSED))
             return MOVE_FAILED;
          else
             return MOVE_BUSY;
@@ -626,7 +620,7 @@ int enter_open(const std::shared_ptr<unit_data> npc, const std::shared_ptr<unit_
 {
    char buf[80];
 
-   assert(UNIT_IN(const_cast<unit_data *>(npc)) == UNIT_IN(const_cast<unit_data *>(enter)));
+   assert(UNIT_IN(npc) == UNIT_IN(enter));
 
    if(IS_SET(UNIT_OPEN_FLAGS(enter), EX_OPEN_CLOSE) && IS_SET(UNIT_OPEN_FLAGS(enter), EX_CLOSED))
    {
@@ -659,7 +653,7 @@ int exit_open(const std::shared_ptr<unit_data> npc)
    char              buf[80];
    std::shared_ptr<unit_data> enter;
 
-   enter = UNIT_IN(const_cast<unit_data *>(npc));
+   enter = UNIT_IN(npc);
 
    if(IS_SET(UNIT_OPEN_FLAGS(enter), EX_OPEN_CLOSE) && IS_SET(UNIT_OPEN_FLAGS(enter), EX_CLOSED) &&
       IS_SET(UNIT_OPEN_FLAGS(enter), EX_INSIDE_OPEN))
@@ -691,24 +685,25 @@ int exit_open(const std::shared_ptr<unit_data> npc)
 int npc_move(const std::shared_ptr<unit_data> npc, const std::shared_ptr<unit_data> to)
 {
    int               i, dir;
-   std::shared_ptr<unit_data> in, *u;
+   std::shared_ptr<unit_data> in;
+   std::shared_ptr<unit_data> u;
 
    /*    Returns: 1=succes, 0=fail, -1=dead.    */
 
    if(!IS_ROOM(to))
       return MOVE_FAILED; /* How can we move to anything but rooms? */
 
-   if(!UNIT_FILE_INDEX(const_cast<unit_data *>(to))->zone->spmatrix)
+   if(!UNIT_FILE_INDEX(to)->zone->spmatrix)
       return MOVE_FAILED;
 
    if(CHAR_POS(npc) < POSITION_STANDING)
       return npc_stand(npc);
 
-   if(!IS_ROOM(in = UNIT_IN(const_cast<unit_data *>(npc))))
+   if(!IS_ROOM(in = UNIT_IN(npc)))
    {
       char mbuf[MAX_INPUT_LENGTH] = {0};
-      do_exit((std::shared_ptr<unit_data> )npc, mbuf, &cmd_auto_unknown);
-      if(in == UNIT_IN(const_cast<unit_data *>(npc))) /* NPC couldn't leave */
+      do_exit(npc, mbuf, &cmd_auto_unknown);
+      if(in == UNIT_IN(npc)) /* NPC couldn't leave */
          return exit_open(npc);
 
       return MOVE_CLOSER; /* We approached a room */
@@ -718,9 +713,9 @@ int npc_move(const std::shared_ptr<unit_data> npc, const std::shared_ptr<unit_da
 
    if(dir <= DOWN)
    {
-      assert(ROOM_EXIT(UNIT_IN(const_cast<unit_data *>(npc)), dir));
+      assert(ROOM_EXIT(UNIT_IN(npc), dir));
 
-      if(IS_SET(ROOM_EXIT(UNIT_IN(const_cast<unit_data *>(npc)), dir)->exit_info, EX_CLOSED))
+      if(IS_SET(ROOM_EXIT(UNIT_IN(npc), dir)->exit_info, EX_CLOSED))
       {
          return open_door(npc, dir);
       }
@@ -738,7 +733,7 @@ int npc_move(const std::shared_ptr<unit_data> npc, const std::shared_ptr<unit_da
    }
    else if(dir == DIR_ENTER)
    {
-      for(u = UNIT_CONTAINS(UNIT_IN(const_cast<unit_data *>(npc))); u; u = u->next)
+      for(u = UNIT_CONTAINS(UNIT_IN(npc)); u; u = u->next)
       {
          if(IS_ROOM(u) && IS_SET(UNIT_MANIPULATE(u), MANIPULATE_ENTER))
          {
@@ -748,8 +743,8 @@ int npc_move(const std::shared_ptr<unit_data> npc, const std::shared_ptr<unit_da
                   return enter_open(npc, u);
                else
                {
-                  do_enter((std::shared_ptr<unit_data> )npc, (char *)UNIT_NAME(u), &cmd_auto_unknown);
-                  if(in == UNIT_IN(const_cast<unit_data *>(npc)))
+                  do_enter(npc, (char *)UNIT_NAME(u), &cmd_auto_unknown);
+                  if(in == UNIT_IN(npc))
                      return MOVE_FAILED;
                   else
                      return MOVE_CLOSER;
@@ -761,7 +756,7 @@ int npc_move(const std::shared_ptr<unit_data> npc, const std::shared_ptr<unit_da
    }
    else if(dir == DIR_EXIT)
    {
-      u = UNIT_IN(UNIT_IN(const_cast<unit_data *>(npc)));
+      u = UNIT_IN(UNIT_IN(npc));
       if(u && IS_ROOM(u) && IS_SET(UNIT_MANIPULATE(u), MANIPULATE_ENTER))
       {
          if(IS_SET(UNIT_OPEN_FLAGS(u), EX_CLOSED))
@@ -770,7 +765,7 @@ int npc_move(const std::shared_ptr<unit_data> npc, const std::shared_ptr<unit_da
          {
             char mbuf[MAX_INPUT_LENGTH] = {0};
             do_exit((std::shared_ptr<unit_data> )npc, mbuf, &cmd_auto_unknown);
-            if(in == UNIT_IN(const_cast<unit_data *>(npc)))
+            if(in == UNIT_IN(npc))
                return MOVE_FAILED;
             else
                return MOVE_CLOSER;

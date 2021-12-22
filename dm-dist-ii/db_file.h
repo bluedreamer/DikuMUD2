@@ -29,11 +29,7 @@
 #include "dil.h"
 #include "structs.h"
 
-extern CByteBuffer g_FileBuffer; /* Defined in db_file.c */
-extern int         g_nCorrupt;   /*          "           */
-
-void *bread_dil(CByteBuffer *pBuf, std::shared_ptr<unit_data> , ubit8 version, struct unit_fptr *fptr);
-
+void               *bread_dil(CByteBuffer *pBuf, std::shared_ptr<unit_data>, ubit8 version, struct unit_fptr *fptr);
 struct diltemplate *bread_diltemplate(CByteBuffer *pBuf);
 int                 bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra);
 

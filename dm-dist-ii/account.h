@@ -61,24 +61,16 @@ public:
    struct flatrate_type m_flatrate[MAX_FLATRATE];
 };
 
-extern class CAccountConfig g_cAccountConfig;
-
 void account_flatrate_change(std::shared_ptr<unit_data> god, std::shared_ptr<unit_data> whom, sbit32 days);
-
 void account_cclog(std::shared_ptr<unit_data> ch, int amount);
-
 void account_insert(std::shared_ptr<unit_data> god, std::shared_ptr<unit_data> whom, ubit32 amount);
 void account_withdraw(std::shared_ptr<unit_data> god, std::shared_ptr<unit_data> whom, ubit32 amount);
 void account_global_stat(const std::shared_ptr<unit_data> ch);
 void account_local_stat(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u);
-
 void account_defaults(std::shared_ptr<unit_data> pc);
-
 void account_subtract(std::shared_ptr<unit_data> pc, time_t from, time_t to);
-
 int  account_is_overdue(const std::shared_ptr<unit_data> ch);
 void account_overdue(const std::shared_ptr<unit_data> ch);
-
 void account_paypoint(std::shared_ptr<unit_data> ch);
 void account_closed(std::shared_ptr<unit_data> ch);
 int  account_is_closed(std::shared_ptr<unit_data> ch);

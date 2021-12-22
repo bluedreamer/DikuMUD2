@@ -44,9 +44,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Extern data */
-extern std::shared_ptr<unit_data> unit_list;
-
 struct spell_info_type spell_info[SPL_TREE_MAX];
 
 void set_spellargs(struct spell_args *sa, std::shared_ptr<unit_data> caster, std::shared_ptr<unit_data> medium, std::shared_ptr<unit_data> target, char *arg, int hm)
@@ -98,14 +95,14 @@ void say_spell(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> target,
 {
    if(ch != target)
    {
-      act(spell_info[si].tochar, A_ALWAYS, ch, 0, target, TO_CHAR);
-      act(spell_info[si].tovict, spell_info[si].acttype, ch, 0, target, TO_VICT);
-      act(spell_info[si].torest, spell_info[si].acttype, ch, 0, target, TO_NOTVICT);
+      act(spell_info[si].tochar, A_ALWAYS, ch, {}, target, TO_CHAR);
+      act(spell_info[si].tovict, spell_info[si].acttype, ch, {}, target, TO_VICT);
+      act(spell_info[si].torest, spell_info[si].acttype, ch, {}, target, TO_NOTVICT);
    }
    else
    {
-      act(spell_info[si].toself, A_ALWAYS, ch, 0, target, TO_CHAR);
-      act(spell_info[si].toselfroom, spell_info[si].acttype, ch, 0, target, TO_ROOM);
+      act(spell_info[si].toself, A_ALWAYS, ch, {}, target, TO_CHAR);
+      act(spell_info[si].toselfroom, spell_info[si].acttype, ch, {}, target, TO_ROOM);
    }
 }
 
@@ -123,8 +120,6 @@ int spell_perform(int               spell_no,
 
    if(!cmd)
    {
-      extern struct trie_type *intr_trie;
-
       cmd = (struct command_info *)search_trie("cast", intr_trie);
       assert(cmd);
    }
@@ -175,7 +170,7 @@ int spell_perform(int               spell_no,
 
    if(!spell_legal_target(spell_no, caster, target))
    {
-      act("The magic disappears when cast on $3n.", A_SOMEONE, caster, NULL, target, TO_CHAR);
+      act("The magic disappears when cast on $3n.", A_SOMEONE, caster, {}, target, TO_CHAR);
       return -1;
    }
 
@@ -271,13 +266,13 @@ void do_cast(std::shared_ptr<unit_data> ch, char *argument, const struct command
 
    if(spl == -1)
    {
-      act("The $2t spell is not known to this realm.", A_ALWAYS, ch, argument, 0, TO_CHAR);
+      act("The $2t spell is not known to this realm.", A_ALWAYS, ch, argument, {}, TO_CHAR);
       return;
    }
 
    if(spl < SPL_GROUP_MAX)
    {
-      act("$2t is not a spell.", A_ALWAYS, ch, spl_text[spl], 0, TO_CHAR);
+      act("$2t is not a spell.", A_ALWAYS, ch, spl_text[spl],{}, TO_CHAR);
       return;
    }
 
@@ -385,16 +380,16 @@ void do_cast(std::shared_ptr<unit_data> ch, char *argument, const struct command
          if(*orgarg) /* If a name was typed */
          {
             if(IS_SET(spell_info[spl].targets, TAR_CHAR))
-               act("Nobody by the name '$2t' here.", A_ALWAYS, ch, orgarg, 0, TO_CHAR);
+               act("Nobody by the name '$2t' here.", A_ALWAYS, ch, orgarg, {}, TO_CHAR);
             else if(IS_SET(spell_info[spl].targets, TAR_OBJ))
-               act("Nothing by the name '' here.", A_ALWAYS, ch, orgarg, 0, TO_CHAR);
+               act("Nothing by the name '' here.", A_ALWAYS, ch, orgarg, {}, TO_CHAR);
             else if(IS_SET(spell_info[spl].targets, TAR_ROOM))
-               act("No location by the name '$2t'.", A_ALWAYS, ch, orgarg, 0, TO_CHAR);
+               act("No location by the name '$2t'.", A_ALWAYS, ch, orgarg, {}, TO_CHAR);
             else
                send_to_char("Uhm....??\n\r", ch);
          }
          else /* Nothing was given as argument */
-            act("What should the $2t spell be cast upon?", A_ALWAYS, ch, spl_text[spl], 0, TO_CHAR);
+            act("What should the $2t spell be cast upon?", A_ALWAYS, ch, spl_text[spl], {}, TO_CHAR);
 
          return;
       }
@@ -427,7 +422,7 @@ void do_cast(std::shared_ptr<unit_data> ch, char *argument, const struct command
          return;
       }
 
-      act("You use $2d power points.", A_ALWAYS, ch, &pow, 0, TO_CHAR);
+      act("You use $2d power points.", A_ALWAYS, ch, &pow, {}, TO_CHAR);
 
       CHAR_EXP(CHAR_ORIGINAL(ch)) -= pow;
    }

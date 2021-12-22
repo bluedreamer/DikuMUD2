@@ -66,8 +66,6 @@
 #define MAX_MESSAGE_LENGTH 4000 /* Should be plenty                */
 #define BOARD_BLK_SIZE     128  /* Size of the blocks              */
 
-extern char libdir[]; /* from dikumud.c */
-
 /* local structs */
 
 struct board_message
@@ -87,9 +85,6 @@ struct board_info
    struct board_info   *next;           /* Next board in linked list       */
 };
 
-/* globals */
-extern struct descriptor_data *descriptor_list;
-
 struct board_info *board_list = NULL; /* Linked list of boards           */
 
 #ifndef DOS
@@ -99,11 +94,11 @@ size_t strftime(char *s, size_t smax, const char *fmt, const struct tm *tp);
 
 /* local fncts */
 
-int                show_board(const std::shared_ptr<unit_data> , std::shared_ptr<unit_data> , struct board_info *, char *);
-void               write_board(std::shared_ptr<unit_data> , struct board_info *, char *, std::shared_ptr<unit_data> );
-int                read_board(std::shared_ptr<unit_data> , struct board_info *, char *);
-int                reply_board(std::shared_ptr<unit_data> , struct board_info *, char *, std::shared_ptr<unit_data> board);
-int                remove_msg(std::shared_ptr<unit_data> , struct board_info *, char *);
+int                show_board(const std::shared_ptr<unit_data>, std::shared_ptr<unit_data>, struct board_info *, char *);
+void               write_board(std::shared_ptr<unit_data>, struct board_info *, char *, std::shared_ptr<unit_data>);
+int                read_board(std::shared_ptr<unit_data>, struct board_info *, char *);
+int                reply_board(std::shared_ptr<unit_data>, struct board_info *, char *, std::shared_ptr<unit_data> board);
+int                remove_msg(std::shared_ptr<unit_data>, struct board_info *, char *);
 void               save_board_msg(struct board_info *, int, char *);
 void               load_board_msg(struct board_info *, int, bool);
 struct board_info *init_board(char *);
@@ -112,8 +107,8 @@ struct board_info *get_board(struct unit_fptr *);
 int board(struct spec_arg *sarg)
 {
    std::shared_ptr<unit_data> u;
-   struct board_info *tb;
-   char              *arg = (char *)sarg->arg;
+   struct board_info         *tb;
+   char                      *arg = (char *)sarg->arg;
 
    if(sarg->activator == NULL || !IS_CHAR(sarg->activator) || !CHAR_DESCRIPTOR(sarg->activator))
       return SFR_SHARE;
@@ -168,7 +163,7 @@ int show_board(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> b
    if(find_unit(ch, &c, NULL, FIND_UNIT_SURRO) != board)
       return SFR_SHARE;
 
-   act("$1n studies $2n.", A_HIDEINV, ch, board, 0, TO_ROOM);
+   act("$1n studies $2n.", A_HIDEINV, ch, board, {}, TO_ROOM);
 
    strcpy(buf,
           "This is a bulletin board.\n\r"
@@ -334,7 +329,7 @@ void write_board(std::shared_ptr<unit_data> ch, struct board_info *tb, char *arg
    tb->msgs[i].text   = str_dup("");
 
    send_to_char("You begin to write a message on the board.\n\r", ch);
-   act("$1n starts to write a message.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+   act("$1n starts to write a message.", A_HIDEINV, ch, {}, {}, TO_ROOM);
 
    struct board_save_info *bsi;
 
@@ -476,7 +471,7 @@ int remove_msg(std::shared_ptr<unit_data> ch, struct board_info *tb, char *arg)
    tb->msgs[index].header = tb->msgs[index].owner = NULL;
 
    send_to_char("Message removed.\n\r", ch);
-   act("$1n just removed message $2d.", A_HIDEINV, ch, &msg, 0, TO_ROOM);
+   act("$1n just removed message $2d.", A_HIDEINV, ch, &msg, {}, TO_ROOM);
 
    blk_write_reserved(tb->bf, tb->handles, MAX_MSGS * sizeof(blk_handle));
 
@@ -648,12 +643,12 @@ struct board_info *get_board(struct unit_fptr *fptr)
    return tb;
 }
 
-void do_boards(std::shared_ptr<unit_data> h, char *arg, const struct command_info *cmd)
+void do_boards(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    std::shared_ptr<unit_data> u;
-   struct unit_fptr  *f = NULL;
-   struct board_info *b;
-   char               buf[256], tmp[256];
+   struct unit_fptr          *f = NULL;
+   struct board_info         *b;
+   char                       buf[256], tmp[256];
 
    for(u = unit_list; u; u = u->gnext)
       if(IS_OBJ(u) && UNIT_IN(u) && UNIT_MINV(u) <= CHAR_LEVEL(ch) && (f = find_fptr(u, SFUN_BULLETIN_BOARD)))
@@ -663,7 +658,8 @@ void do_boards(std::shared_ptr<unit_data> h, char *arg, const struct command_inf
          {
             one_argument((char *)f->data, tmp);
 
-            sprintf(buf, "%-30s %-12s [%s@%s]\n\r", UNIT_SEE_TITLE(ch, u), tmp, UNIT_FI_NAME(UNIT_IN(u)).c_str(), UNIT_FI_ZONENAME(UNIT_IN(u)));
+            sprintf(
+               buf, "%-30s %-12s [%s@%s]\n\r", UNIT_SEE_TITLE(ch, u), tmp, UNIT_FI_NAME(UNIT_IN(u)).c_str(), UNIT_FI_ZONENAME(UNIT_IN(u)));
             send_to_char(buf, ch);
          }
       }

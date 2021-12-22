@@ -742,7 +742,8 @@ static std::shared_ptr<unit_data> scan4_ref_room(std::shared_ptr<unit_data> room
 /* No checks for invisibility and the like                                */
 std::shared_ptr<unit_data> scan4_ref(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> fu)
 {
-   std::shared_ptr<unit_data> u, *uu;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> uu;
 
    if(!UNIT_IN(ch))
       return scan4_ref_room(ch, fu);

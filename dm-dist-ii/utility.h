@@ -26,7 +26,8 @@
 #define _MUD_UTILITY_H
 
 #include "essential.h"
-
+#include <memory>
+class unit_data;
 #ifdef MIN
    #undef MIN
 #endif

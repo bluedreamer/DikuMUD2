@@ -54,10 +54,6 @@ CByteBuffer g_FileBuffer(16384);
 // int filbuffer_length = 0;             /* The length of filbuffer         */
 // ubit8 *filbuffer = 0;                 /* Buffer for read/write unit      */
 
-#ifdef DMSERVER
-extern struct unit_function_array_type unit_function_array[];
-#endif
-
 int bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra)
 {
    struct extra_descr_data *e, *te;
@@ -156,8 +152,7 @@ int bread_swap_skip(CByteBuffer *pBuf)
 struct diltemplate *bread_diltemplate(CByteBuffer *pBuf)
 {
 #ifdef DMSERVER
-   extern int mud_bootzone;
-   int        valid;
+   int valid;
 #endif
    int                 i, j;
    struct diltemplate *tmpl;
@@ -999,7 +994,9 @@ int write_unit_string(CByteBuffer *pBuf, std::shared_ptr<unit_data> u)
    if(UNIT_TYPE(u) == UNIT_ST_ROOM)
    {
       /* See if room is to be placed inside another room! */
-      pBuf->AppendDoubleString((char *)UNIT_IN(u));
+      // TODO ADRIAN cant cast unit_data to char*
+      assert(0);
+//      pBuf->AppendDoubleString((char *)UNIT_IN(u));
    }
    else
    {
@@ -1179,14 +1176,18 @@ int write_unit_string(CByteBuffer *pBuf, std::shared_ptr<unit_data> u)
 
             if(ROOM_EXIT(u, i) && ROOM_EXIT(u, i)->to_room)
             {
-               c1 = (char *)ROOM_EXIT(u, i)->to_room;
+               // TODO Adrian bad cast
+               assert(0);
+//               c1 = (char *)ROOM_EXIT(u, i)->to_room;
                c2 = c1;
                TAIL(c2);
                c2++;
             }
             if(ROOM_EXIT(u, i) && *c1 && *c2)
             {
-               pBuf->AppendDoubleString((char *)ROOM_EXIT(u, i)->to_room);
+               // TODO ADRIAN bad cast
+               assert(0);
+//               pBuf->AppendDoubleString((char *)ROOM_EXIT(u, i)->to_room);
                ROOM_EXIT(u, i)->open_name.AppendBuffer(pBuf);
                pBuf->Append16(ROOM_EXIT(u, i)->exit_info);
                pBuf->AppendDoubleString((char *)ROOM_EXIT(u, i)->key.get());

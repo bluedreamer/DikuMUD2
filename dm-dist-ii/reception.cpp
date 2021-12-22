@@ -40,6 +40,7 @@
 #include "textutil.h"
 #include "utility.h"
 #include "utils.h"
+#include "external_funcs.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -73,7 +74,7 @@ static void subtract_rent(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_da
    {
       if(!char_can_afford(ch, price, DEF_CURRENCY))
       {
-         act(COLOUR_ATTN "You couldn't afford to keep $2n." COLOUR_NORMAL, A_ALWAYS, ch, item, 0, TO_CHAR);
+         act(COLOUR_ATTN "You couldn't afford to keep $2n." COLOUR_NORMAL, A_ALWAYS, ch, item, {}, TO_CHAR);
          extract_unit(item);
       }
       else
@@ -159,7 +160,7 @@ void do_rent(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
    if(!rent_info)
       send_to_char("You are charged no rent.\n\r", ch);
    else
-      act("Your inventory costs $2t per day to rent.", A_ALWAYS, ch, money_string(sum, local_currency(ch), FALSE), NULL, TO_CHAR);
+      act("Your inventory costs $2t per day to rent.", A_ALWAYS, ch, money_string(sum, local_currency(ch), FALSE), {}, TO_CHAR);
 }
 
 /* *************************************************************************
@@ -242,7 +243,7 @@ void enlist(CByteBuffer *pBuf, std::shared_ptr<unit_data> unit, int level, int f
    }
 
    strcpy(h.zone, UNIT_FI_ZONENAME(unit));
-   UNIT_FI_NAME(unit)=h.unit;
+   UNIT_FI_NAME(unit) = h.unit;
 
    h.type  = UNIT_TYPE(unit);
    h.level = level;
@@ -407,7 +408,8 @@ std::shared_ptr<unit_data> base_load_contents(const char *pFileName, const std::
 {
    struct objheader                 h;
    std::shared_ptr<file_index_type> fi;
-   std::shared_ptr<unit_data> pnew, *pstack[25];
+   std::shared_ptr<unit_data> pnew;
+   std::shared_ptr<unit_data> pstack[25];
    int                              len, init;
    int                              frame, plen, n;
    struct descriptor_data          *tmp_descr = NULL;
@@ -417,11 +419,6 @@ std::shared_ptr<unit_data> base_load_contents(const char *pFileName, const std::
 
    CByteBuffer InvBuf;
    InvBuf.Clear();
-
-   extern std::shared_ptr<unit_data> void_room;
-
-   int is_slimed(std::shared_ptr<file_index_type> sp);
-   int patch(char *ref, ubit32 reflen, char *dif, int diflen, char *res, int reslen, ubit32 crc);
 
    assert(slime_fi != NULL);
 

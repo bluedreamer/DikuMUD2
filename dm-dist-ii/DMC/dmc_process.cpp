@@ -38,7 +38,8 @@
 #include <string.h>
 #include <time.h>
 
-extern struct arm_info_type shi_info[];
+// TODO why is this different
+// extern struct arm_info_type shi_info[];
 
 /* PS Algorithm 3                                                      */
 /* This algorithm returns the total amount of hitpoints possessed when */

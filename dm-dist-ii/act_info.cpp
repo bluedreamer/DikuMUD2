@@ -37,6 +37,8 @@
 #include "common.h"
 #include "constants.h"
 #include "db.h"
+#include "external_funcs.h"
+#include "externals.h"
 #include "files.h"
 #include "guild.h"
 #include "handler.h"
@@ -58,11 +60,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
-/* extern variables */
-
-extern struct descriptor_data *descriptor_list;
-extern std::shared_ptr<unit_data> unit_list;
 
 static void add_to_string(char **buf, int *size, int len, const char *str)
 {
@@ -104,13 +101,13 @@ char *in_string(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 
 void do_exits(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   int               door;
-   char              buf[MAX_STRING_LENGTH], *b;
+   int                        door;
+   char                       buf[MAX_STRING_LENGTH], *b;
    std::shared_ptr<unit_data> room;
 
    const char *exits[] = {"North", "East ", "South", "West ", "Up   ", "Down "};
 
-   int has_found_door(std::shared_ptr<unit_data>  pc, int dir);
+   int has_found_door(std::shared_ptr<unit_data> pc, int dir);
 
    send_to_char("Obvious exits:\n\r", ch);
 
@@ -152,9 +149,10 @@ void do_exits(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
 
 void do_purse(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   std::shared_ptr<unit_data> thing, *purse[MAX_MONEY + 1];
-   ubit1             found = FALSE;
-   int               i;
+   std::shared_ptr<unit_data> thing;
+   std::shared_ptr<unit_data> purse[MAX_MONEY + 1];
+   ubit1                      found = FALSE;
+   int                        i;
 
    for(i = 0; i <= MAX_MONEY; ++i)
       purse[i] = NULL;
@@ -169,7 +167,7 @@ void do_purse(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
       if(purse[i])
       {
          found = TRUE;
-         act("  $2t", A_ALWAYS, ch, obj_money_string(purse[i], 0), 0, TO_CHAR);
+         act("  $2t", A_ALWAYS, ch, obj_money_string(purse[i], 0), {}, TO_CHAR);
       }
 
    if(!found)
@@ -268,10 +266,6 @@ void do_status(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
 
    static const char *infos[] = {"weapons", "spells", "skills", NULL};
 
-   extern const char *char_sex[];
-   extern const char *pc_races[];
-
-   struct time_info_data age(std::shared_ptr<unit_data>  ch);
    struct time_info_data real_time_passed(time_t t2, time_t t1);
 
    if(!IS_PC(ch))
@@ -458,10 +452,10 @@ char *own_position(std::shared_ptr<unit_data> ch)
 
 void do_score(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   static char              buf[MAX_STRING_LENGTH], *b;
+   static char                buf[MAX_STRING_LENGTH], *b;
    std::shared_ptr<unit_data> vict;
-   struct char_follow_type *f;
-   int                      members = FALSE;
+   struct char_follow_type   *f;
+   int                        members = FALSE;
 
    struct time_info_data age(const std::shared_ptr<unit_data> ch);
    struct time_info_data real_time_passed(time_t t2, time_t t1);
@@ -698,11 +692,11 @@ void player_where(std::shared_ptr<unit_data> ch, char *arg)
 
 void do_where(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
-   char                      *buf = NULL, buf1[1024], buf2[512];
+   char                               *buf = NULL, buf1[1024], buf2[512];
    register std::shared_ptr<unit_data> i;
-   struct descriptor_data    *d;
-   int                        len, cur_size = 2048;
-   char                      *arg = (char *)aaa;
+   struct descriptor_data             *d;
+   int                                 len, cur_size = 2048;
+   char                               *arg = (char *)aaa;
 
    if(IS_MORTAL(ch))
    {
@@ -817,9 +811,8 @@ void do_who(std::shared_ptr<unit_data> ch, char *arg, const struct command_info 
 
 void do_commands(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   char                       buf[MAX_STRING_LENGTH], *b;
-   int                        no, i;
-   extern struct command_info cmd_info[];
+   char buf[MAX_STRING_LENGTH], *b;
+   int  no, i;
 
    if(!IS_PC(ch))
       return;

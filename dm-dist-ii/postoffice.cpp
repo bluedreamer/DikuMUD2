@@ -51,8 +51,6 @@
 #define MAIL_MAX_AGE    SECS_PER_REAL_DAY * 90 /* 90 days lifetime */
 #define MAIL_BLOCK_SIZE 128
 
-extern char libdir[]; /* from dikumud.c */
-
 struct mail_file_info_type *mailfile_info = 0;
 
 sbit16    top_of_mailfile = 0;
@@ -255,8 +253,8 @@ int eat_and_delete(struct spec_arg *sarg)
          return SFR_SHARE;
 
       index = *((sbit16 *)sarg->fptr->data);
-      act("$1n eats $2n.", A_SOMEONE, sarg->activator, sarg->owner, 0, TO_ROOM);
-      act("You eat the $2N and erase it permanently.", A_SOMEONE, sarg->activator, sarg->owner, 0, TO_CHAR);
+      act("$1n eats $2n.", A_SOMEONE, sarg->activator, sarg->owner, {}, TO_ROOM);
+      act("You eat the $2N and erase it permanently.", A_SOMEONE, sarg->activator, sarg->owner, {}, TO_CHAR);
       delete_mail(index);
       extract_unit(sarg->owner);
       return SFR_BLOCK;
@@ -282,8 +280,6 @@ int postman(struct spec_arg *sarg)
    currency_t               currency = local_currency(sarg->owner);
    amount_t                 postage;
 
-   extern std::shared_ptr<file_index_type> letter_fi;
-
    struct descriptor_data *find_descriptor(const char *, struct descriptor_data *);
 
    if((CHAR_POS(sarg->owner) < POSITION_STANDING) || !sarg->activator)
@@ -307,14 +303,14 @@ int postman(struct spec_arg *sarg)
       }
       if(!IS_OBJ(letter) || OBJ_TYPE(letter) != ITEM_NOTE)
       {
-         act("$1n says, '$3n, I'll only accept notes to be delivered.'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+         act("$1n says, '$3n, I'll only accept notes to be delivered.'", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
          return SFR_BLOCK;
       }
 
       exd = unit_find_extra(UNIT_NAME(letter), letter);
       if((exd == NULL) || str_is_empty(exd->descr.String()))
       {
-         act("$1n says, 'How stupid of you $3n, the note is empty!", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+         act("$1n says, 'How stupid of you $3n, the note is empty!", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
          return SFR_BLOCK;
       }
 
@@ -322,20 +318,20 @@ int postman(struct spec_arg *sarg)
 
       if(str_is_empty(tmpname))
       {
-         act("$1n says, 'You must say who the letter should be sent to!'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+         act("$1n says, 'You must say who the letter should be sent to!'", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
          return SFR_BLOCK;
       }
 
       if((rcp = find_player_id(tmpname)) == -1)
       {
-         act("$1n says, 'Sorry $3n, but I don't know that address.'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+         act("$1n says, 'Sorry $3n, but I don't know that address.'", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
          return SFR_BLOCK;
       }
 
       postage = exd->descr.Length() / 20;
       postage = MAX(1, MIN(50, postage));
 
-      act("$3n gives $1n a letter.", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_NOTVICT);
+      act("$3n gives $1n a letter.", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_NOTVICT);
 
       if(!char_can_afford(sarg->activator, postage, currency))
       {
@@ -343,7 +339,7 @@ int postman(struct spec_arg *sarg)
              "postage I'll send it anyway.'",
              A_SOMEONE,
              sarg->owner,
-             0,
+             {},
              sarg->activator,
              TO_ROOM);
       }
@@ -380,7 +376,7 @@ int postman(struct spec_arg *sarg)
          act("$1n says, 'No mail for you today $3n.'",
              A_SOMEONE,
              sarg->owner,
-             0,
+             {},
              sarg->activator,
              UNIT_MINV(sarg->activator) ? TO_VICT : TO_ROOM);
          return SFR_BLOCK;
@@ -406,8 +402,8 @@ int postman(struct spec_arg *sarg)
          create_fptr(letter, SFUN_EAT_AND_DELETE, 0, SFB_CMD, tmp);
       } while((index = player_next_mail(sarg->activator, index + 1)) >= 0);
 
-      act("$1n gives you your mail.", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_VICT);
-      act("$1n gives $3n $3s mail.", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_NOTVICT);
+      act("$1n gives you your mail.", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_VICT);
+      act("$1n gives $3n $3s mail.", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_NOTVICT);
 
       return SFR_BLOCK;
    }

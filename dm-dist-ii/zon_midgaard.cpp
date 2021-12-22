@@ -44,12 +44,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*   external vars  */
-
-extern std::shared_ptr<unit_data> unit_list;
-extern struct descriptor_data *descriptor_list;
-
-/* extern procedures */
 amount_t obj_trade_price(std::shared_ptr<unit_data> u);
 
 /* ------------------------------------------------------------------------- */
@@ -135,10 +129,6 @@ int evaluate(struct spec_arg *sarg)
    amount_t          cost;
    currency_t        currency;
    int               craft, category;
-
-   extern const char *arm_text[];
-   extern const char *shi_text[];
-   extern const char *wpn_text[];
 
    if(sarg->cmd->no != CMD_AUTO_UNKNOWN || !is_abbrev(sarg->cmd->cmd_str, "evaluate"))
       return SFR_SHARE;

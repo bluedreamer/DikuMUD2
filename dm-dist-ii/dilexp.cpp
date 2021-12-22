@@ -33,6 +33,7 @@
 #include "db_file.h"
 #include "dil.h"
 #include "dilrun.h"
+#include "external_funcs.h"
 #include "fight.h"
 #include "handler.h"
 #include "interpreter.h"
@@ -531,8 +532,8 @@ void dilfe_oppo(struct dilprg *p, class dilval *v)
    }
 
    if(v->type == DILV_INT)
-      v->val.num = (CHAR_COMBAT((std::shared_ptr<unit_data> )v1.val.ptr)
-                       ? CHAR_COMBAT((std::shared_ptr<unit_data> )v1.val.ptr)->FindOpponent((std::shared_ptr<unit_data> )v2.val.ptr) != NULL
+      v->val.num = (CHAR_COMBAT(v1.val.ptr)
+                       ? CHAR_COMBAT(v1.val.ptr)->FindOpponent(v2.val.ptr) != NULL
                        : FALSE);
 }
 
@@ -3123,7 +3124,6 @@ void dilfe_cmds(register struct dilprg *p, register class dilval *v)
 /* visible, some vs other */
 void dilfe_pck(struct dilprg *p, class dilval *v)
 {
-   extern int   pay_point_charlie(std::shared_ptr<unit_data>  ch, std::shared_ptr<unit_data>  to); /* from act_movement.c */
    class dilval v1;
    class dilval v2;
 

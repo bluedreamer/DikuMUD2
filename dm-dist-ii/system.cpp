@@ -67,10 +67,6 @@
 #include <fcntl.h>
 #include <netinet/in.h>
 
-/* extern vars */
-extern struct descriptor_data *descriptor_list;
-extern struct descriptor_data *next_to_process;
-
 class cMotherHook : public cHook
 {
 public:
@@ -99,8 +95,6 @@ void init_char(std::shared_ptr<unit_data> ch)
    int new_player_id(void);
 
    int i, init_skills = 0;
-
-   extern sbit32 player_id;
 
    int required_xp(int level);
 
@@ -377,10 +371,11 @@ void descriptor_close(struct descriptor_data *d, int bSendClose)
       assert(!d->snoop.snooping && !d->snoop.snoop_by);
       assert(!d->original);
 
-      act("$1n has lost $1s link.", A_HIDEINV, d->character, 0, 0, TO_ROOM);
+      act("$1n has lost $1s link.", A_HIDEINV, d->character, {}, {}, TO_ROOM);
       slog(LOG_BRIEF, UNIT_MINV(d->character), "Closing link and making link dead: %s.", UNIT_NAME(d->character));
 
-      if(!is_destructed(DR_UNIT, d->character))
+      // TODO ADRIAN Check this - remote get()
+      if(!is_destructed(DR_UNIT, d->character.get()))
       {
          void disconnect_game(std::shared_ptr<unit_data>  pc);
 
@@ -489,8 +484,6 @@ int cMultiHook::Read(void)
    ubit16                  len;
    char                   *data;
    ubit8                   text_type;
-
-   extern char *logo;
 
    p = protocol_parse_incoming(this, &id, &len, &data, &text_type);
 

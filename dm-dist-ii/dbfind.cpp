@@ -39,8 +39,6 @@
 #include <string.h>
 #include <time.h>
 
-extern struct descriptor_data *descriptor_list;
-
 struct descriptor_data *find_descriptor(const char *name, struct descriptor_data *except)
 {
    struct descriptor_data *d;
@@ -100,7 +98,7 @@ std::shared_ptr<zone_type> find_zone(const char *zonename)
 std::shared_ptr<file_index_type> find_file_index(const char *zonename, const char *name)
 {
    std::shared_ptr<zone_type> zone;
-   struct bin_search_type *ba;
+   struct bin_search_type    *ba;
 
    if(!*name)
       return NULL;
@@ -118,7 +116,7 @@ std::shared_ptr<file_index_type> find_file_index(const char *zonename, const cha
 struct diltemplate *find_dil_index(char *zonename, char *name)
 {
    std::shared_ptr<zone_type> zone;
-   struct bin_search_type *ba;
+   struct bin_search_type    *ba;
 
    if(str_is_empty(name))
       return NULL;

@@ -87,9 +87,7 @@ int shield_bonus(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def,
 
    if((def_shield = equipment_type(def, WEAR_SHIELD, ITEM_SHIELD)))
    {
-      int                         shield_bonus = 0;
-      extern struct shi_info_type shi_info[];
-
+      int shield_bonus = 0;
       if(!is_in(OBJ_VALUE(def_shield, 0), SHIELD_SMALL, SHIELD_LARGE))
       {
          slog(LOG_ALL, 0, "Illegal shield type.");
@@ -405,7 +403,7 @@ void do_consider(std::shared_ptr<unit_data> ch, char *arg, const struct command_
 
    if(CHAR_LEVEL(vict) - 10 >= CHAR_LEVEL(ch))
    {
-      act("$3e is probably out of your league.", A_SOMEONE, ch, 0, vict, TO_CHAR);
+      act("$3e is probably out of your league.", A_SOMEONE, ch, {}, vict, TO_CHAR);
    }
 
    rtd = base_consider(vict, ch);

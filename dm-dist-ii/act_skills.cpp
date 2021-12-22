@@ -93,18 +93,18 @@ void do_turn(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
 
    if(hm >= 0 && CHAR_IS_UNDEAD(vict))
    {
-      act("$3n is terrified!", A_SOMEONE, ch, 0, vict, TO_CHAR);
-      act("$1n turns $3n!", A_SOMEONE, ch, 0, vict, TO_NOTVICT);
-      act("You are turned by $1n!", A_SOMEONE, ch, 0, vict, TO_VICT);
+      act("$3n is terrified!", A_SOMEONE, ch, {}, vict, TO_CHAR);
+      act("$1n turns $3n!", A_SOMEONE, ch, {}, vict, TO_NOTVICT);
+      act("You are turned by $1n!", A_SOMEONE, ch, {}, vict, TO_VICT);
       /* NB Make the monster flee here */
       char mstmp[MAX_INPUT_LENGTH] = {0};
       do_flee(vict, mstmp, &cmd_auto_unknown);
    }
    else
    {
-      act("$3n seems to ignore your attempt.", A_SOMEONE, ch, 0, vict, TO_CHAR);
-      act("$1n attempts to turn $3n.", A_SOMEONE, ch, 0, vict, TO_NOTVICT);
-      act("$1n attempts to turn you.", A_SOMEONE, ch, 0, vict, TO_VICT);
+      act("$3n seems to ignore your attempt.", A_SOMEONE, ch, {}, vict, TO_CHAR);
+      act("$1n attempts to turn $3n.", A_SOMEONE, ch, {}, vict, TO_NOTVICT);
+      act("$1n attempts to turn you.", A_SOMEONE, ch, {}, vict, TO_VICT);
    }
 }
 
@@ -116,7 +116,7 @@ void do_quaff(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
 
    if(str_is_empty(arg))
    {
-      act("What do you want to quaff?", A_ALWAYS, ch, NULL, NULL, TO_CHAR);
+      act("What do you want to quaff?", A_ALWAYS, ch, {}, {}, TO_CHAR);
       return;
    }
 
@@ -124,24 +124,24 @@ void do_quaff(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
 
    if(!potion)
    {
-      act("You do not have that item.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("You do not have that item.", A_SOMEONE, ch, {}, {}, TO_CHAR);
       return;
    }
 
    if(!IS_OBJ(potion))
    {
-      act("You can't quaff that!", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("You can't quaff that!", A_SOMEONE, ch, {}, {}, TO_CHAR);
       return;
    }
 
    if(OBJ_TYPE(potion) != ITEM_POTION)
    {
-      act("You can only quaff potions.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("You can only quaff potions.", A_SOMEONE, ch, {}, {}, TO_CHAR);
       return;
    }
 
-   act("$1n quaffs $2n.", A_HIDEINV, ch, potion, 0, TO_ROOM);
-   act("You quaff $2n which dissolves.", A_SOMEONE, ch, potion, 0, TO_CHAR);
+   act("$1n quaffs $2n.", A_HIDEINV, ch, potion, {}, TO_ROOM);
+   act("You quaff $2n which dissolves.", A_SOMEONE, ch, potion, {}, TO_CHAR);
 
    for(i = 1; i < 4; i++)
       if(OBJ_VALUE(potion, i) != SPL_NONE)
@@ -168,7 +168,7 @@ void do_recite(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
 
    if(str_is_empty(arg))
    {
-      act("What do you want to recite?", A_ALWAYS, ch, NULL, NULL, TO_CHAR);
+      act("What do you want to recite?", A_ALWAYS, ch, {}, {}, TO_CHAR);
       return;
    }
 
@@ -181,13 +181,13 @@ void do_recite(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
    scroll = find_unit(ch, &arg, 0, FIND_UNIT_IN_ME);
    if(scroll == NULL)
    {
-      act("You do not have such an item.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("You do not have such an item.", A_SOMEONE, ch, {}, {}, TO_CHAR);
       return;
    }
 
    if(!IS_OBJ(scroll) || OBJ_TYPE(scroll) != ITEM_SCROLL)
    {
-      act("Recite is normally used for scroll's.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("Recite is normally used for scroll's.", A_SOMEONE, ch, {}, {}, TO_CHAR);
       return;
    }
 
@@ -203,7 +203,7 @@ void do_recite(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
       return;
    }
 
-   act("$1n recites $2n.", A_HIDEINV, ch, scroll, 0, TO_ROOM);
+   act("$1n recites $2n.", A_HIDEINV, ch, scroll, {}, TO_ROOM);
 
    skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_SCROLL_USE) : CHAR_BRA(ch);
    abila  = CHAR_BRA(ch);
@@ -211,21 +211,21 @@ void do_recite(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
    hm = resistance_skill_check(2 * abila, object_power(scroll), 2 * skilla, object_power(scroll));
    if(hm < -50)
    {
-      act("You failed to recite the scroll properly.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("You failed to recite the scroll properly.", A_SOMEONE, ch, {}, {}, TO_CHAR);
       /* Maybe do "random" spell here? */
-      act("You fail to recite $2n which then crumbles to dust.", A_SOMEONE, ch, scroll, 0, TO_CHAR);
+      act("You fail to recite $2n which then crumbles to dust.", A_SOMEONE, ch, scroll, {}, TO_CHAR);
       extract_unit(scroll);
       return;
    }
 
    if(hm < 0)
    {
-      act("You failed to recite the scroll properly.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("You failed to recite the scroll properly.", A_SOMEONE, ch, {}, {}, TO_CHAR);
       /* Maybe do "random" spell here? */
       return;
    }
 
-   act("You recite $2n which dissolves.", A_SOMEONE, ch, scroll, 0, TO_CHAR);
+   act("You recite $2n which dissolves.", A_SOMEONE, ch, scroll,{}, TO_CHAR);
 
    /* Value 1, 2, 3 are spells to cast (or SPL_NONE) */
    for(i = 1; i < 4; i++)
@@ -249,7 +249,8 @@ void do_use(std::shared_ptr<unit_data> ch, char *arg, const struct command_info 
  * tested: No
  */
 {
-   std::shared_ptr<unit_data> stick = NULL, *target = NULL;
+   std::shared_ptr<unit_data> stick;
+   std::shared_ptr<unit_data> target;
    int               skilla, abila, i, hm;
 
    if(str_is_empty(arg))
@@ -275,7 +276,7 @@ void do_use(std::shared_ptr<unit_data> ch, char *arg, const struct command_info 
 
    if(OBJ_EQP_POS(stick) != WEAR_HOLD)
    {
-      act("You do not hold it in your hand.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("You do not hold it in your hand.", A_SOMEONE, ch, {}, {}, TO_CHAR);
       return;
    }
 
@@ -294,25 +295,25 @@ void do_use(std::shared_ptr<unit_data> ch, char *arg, const struct command_info 
       /* Are there any charges left? */
       if(OBJ_VALUE(stick, 1) <= 0)
       {
-         act("The $2N seems to be drained of all power.", A_ALWAYS, ch, stick, 0, TO_CHAR);
+         act("The $2N seems to be drained of all power.", A_ALWAYS, ch, stick, {}, TO_CHAR);
          return;
       }
 
       if(hm < 0)
       {
-         act("$1n taps $2n some times on the ground.", A_HIDEINV, ch, stick, 0, TO_ROOM);
+         act("$1n taps $2n some times on the ground.", A_HIDEINV, ch, stick, {}, TO_ROOM);
          if(hm < -50)
          {
-            act("You tap $2n some times on the ground and drain it of power.", A_SOMEONE, ch, stick, 0, TO_CHAR);
+            act("You tap $2n some times on the ground and drain it of power.", A_SOMEONE, ch, stick, {}, TO_CHAR);
             use_mana(stick, 1);
          }
          else
-            act("You tap $2n some times on the ground...Nothing happens.", A_SOMEONE, ch, stick, 0, TO_CHAR);
+            act("You tap $2n some times on the ground...Nothing happens.", A_SOMEONE, ch, stick, {}, TO_CHAR);
          return;
       }
 
-      act("$1n taps $2n three times on the ground.", A_HIDEINV, ch, stick, 0, TO_ROOM);
-      act("You tap $2n three times on the ground.", A_SOMEONE, ch, stick, 0, TO_CHAR);
+      act("$1n taps $2n three times on the ground.", A_HIDEINV, ch, stick, {}, TO_ROOM);
+      act("You tap $2n three times on the ground.", A_SOMEONE, ch, stick, {}, TO_CHAR);
 
       use_mana(stick, 1);
 
@@ -363,7 +364,7 @@ void do_use(std::shared_ptr<unit_data> ch, char *arg, const struct command_info 
       /* Are there any charges left? */
       if(OBJ_VALUE(stick, 1) <= 0)
       {
-         act("Nothing seems to happen with $2n.", A_SOMEONE, ch, stick, 0, TO_CHAR);
+         act("Nothing seems to happen with $2n.", A_SOMEONE, ch, stick, {}, TO_CHAR);
          return;
       }
 
@@ -404,7 +405,7 @@ void do_appraise(std::shared_ptr<unit_data> ch, char *arg, const struct command_
 
    if(!IS_OBJ(item))
    {
-      act("It is not possible to estimate $3s value.", A_HIDEINV, ch, 0, item, TO_CHAR);
+      act("It is not possible to estimate $3s value.", A_HIDEINV, ch, {}, item, TO_CHAR);
       return;
    }
 
@@ -429,7 +430,7 @@ void do_appraise(std::shared_ptr<unit_data> ch, char *arg, const struct command_
 
    val = money_round_up(val, local_currency(ch), 2);
 
-   act("It's probably worth $2t to the right person.", A_HIDEINV, ch, money_string(val, local_currency(ch), TRUE), 0, TO_CHAR);
+   act("It's probably worth $2t to the right person.", A_HIDEINV, ch, money_string(val, local_currency(ch), TRUE), {}, TO_CHAR);
 }
 
 /* The VENTRILOQUATE skill */
@@ -475,7 +476,7 @@ void do_ventriloquate(std::shared_ptr<unit_data> ch, char *arg, const struct com
    if(hm >= 0)
    {
       act("$1n says '$2t'", A_HIDEINV, vict, arg, ch, TO_NOTVICT);
-      act("Someone says '$2t'", A_HIDEINV, vict, arg, 0, TO_CHAR);
+      act("Someone says '$2t'", A_HIDEINV, vict, arg, {}, TO_CHAR);
       act("$1n seems to say '$2t'", A_SOMEONE, vict, arg, ch, TO_VICT);
    }
    else
@@ -526,7 +527,8 @@ void do_weather(std::shared_ptr<unit_data> ch, char *arg, const struct command_i
 void do_flee(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    int               legal, attempt, die, hm, opos;
-   std::shared_ptr<unit_data> predator, *u;
+   std::shared_ptr<unit_data> predator;
+   std::shared_ptr<unit_data> u;
 
    void set_hunting(std::shared_ptr<unit_data>  p, std::shared_ptr<unit_data>  v, int legal);
    int  do_simple_move(std::shared_ptr<unit_data>  ch, int direction, int following);
@@ -576,7 +578,7 @@ void do_flee(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
    {
       if(!IS_ROOM(UNIT_IN(ch)))
       {
-         act("$1n panics, and flees head over heels.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+         act("$1n panics, and flees head over heels.", A_HIDEINV, ch, {}, {}, TO_ROOM);
          send_to_char("You flee head over heels!\n\r", ch);
          char mbuf[MAX_INPUT_LENGTH] = {0};
          do_exit(ch, mbuf, cmd);
@@ -586,7 +588,7 @@ void do_flee(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
       {
          u = UNIT_IN(ch);
 
-         act("$1n panics, and flees head over heels.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+         act("$1n panics, and flees head over heels.", A_HIDEINV, ch, {}, {}, TO_ROOM);
          send_to_char("You flee head over heels!\n\r", ch);
 
          if((die = do_simple_move(ch, attempt, TRUE)) == 1)
@@ -606,7 +608,7 @@ void do_flee(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
    if(!is_destructed(DR_UNIT, ch))
    {
       CHAR_POS(ch) = opos;
-      act("$1n panics, and tries to flee, but can not!", A_HIDEINV, ch, 0, 0, TO_ROOM);
+      act("$1n panics, and tries to flee, but can not!", A_HIDEINV, ch, {}, {}, TO_ROOM);
       send_to_char("PANIC! You couldn't escape!\n\r", ch);
    }
 }
@@ -644,8 +646,8 @@ void do_sneak(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
    /* is this a complete faliure? */
    if(hm < 0)
    {
-      act("You make a feeble attempt to move silently.", A_HIDEINV, ch, 0, 0, TO_CHAR);
-      act("$1n makes a feeble attempt to move silently.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+      act("You make a feeble attempt to move silently.", A_HIDEINV, ch, {}, {}, TO_CHAR);
+      act("$1n makes a feeble attempt to move silently.", A_HIDEINV, ch, {}, {}, TO_ROOM);
       return;
    }
 
@@ -670,7 +672,8 @@ void do_backstab(std::shared_ptr<unit_data> ch, char *arg, const struct command_
  */
 {
    struct unit_affected_type af, *paf = NULL;
-   std::shared_ptr<unit_data> vict, *stabber;
+   std::shared_ptr<unit_data> vict;
+   std::shared_ptr<unit_data> stabber;
    int                       skilla, skillb, hm;
    char                     *oarg = arg;
 
@@ -802,9 +805,9 @@ void do_hide(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
    {
       destroy_affect(oaf);
       if(oaf->tickf_i == TIF_HIDE_TICK)
-         act("$1n suddenly appears from somewhere.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+         act("$1n suddenly appears from somewhere.", A_HIDEINV, ch, {}, {}, TO_ROOM);
       else
-         act("$1n stop pretending $1e's hiding.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+         act("$1n stop pretending $1e's hiding.", A_HIDEINV, ch, {}, {}, TO_ROOM);
       return;
    }
 
@@ -877,7 +880,7 @@ void do_aid(std::shared_ptr<unit_data> ch, char *arg, const struct command_info 
 
    if(UNIT_HIT(vict) > -1)
    {
-      act("You can't do much more for $2m.", A_SOMEONE, ch, vict, 0, TO_CHAR);
+      act("You can't do much more for $2m.", A_SOMEONE, ch, vict, {}, TO_CHAR);
       return;
    }
 
@@ -885,7 +888,7 @@ void do_aid(std::shared_ptr<unit_data> ch, char *arg, const struct command_info 
 
    if(hm >= 0)
    {
-      act("You perform first aid on $2n.", A_SOMEONE, ch, vict, 0, TO_CHAR);
+      act("You perform first aid on $2n.", A_SOMEONE, ch, vict, {}, TO_CHAR);
       send_to_char("Someone performs first aid on you.\n\r", vict);
       modify_hit(vict, 1);
    }
@@ -948,19 +951,19 @@ void do_pick(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
    {
       if(hm < 0)
       {
-         act("You fail to pick the $2t.", A_ALWAYS, ch, a_door->name, 0, TO_CHAR);
-         act("$1n fails to pick the $2t.", A_HIDEINV, ch, a_door->name, 0, TO_ROOM);
+         act("You fail to pick the $2t.", A_ALWAYS, ch, a_door->name, {}, TO_CHAR);
+         act("$1n fails to pick the $2t.", A_HIDEINV, ch, a_door->name, {}, TO_ROOM);
          return;
       }
 
       REMOVE_BIT(*a_door->flags, EX_LOCKED);
-      act("You successfully pick the $2t - *click*.", A_SOMEONE, ch, a_door->name, 0, TO_CHAR);
-      act("$1n picks the $2t - *click*, it says.", A_SOMEONE, ch, a_door->name, 0, TO_ROOM);
+      act("You successfully pick the $2t - *click*.", A_SOMEONE, ch, a_door->name, {}, TO_CHAR);
+      act("$1n picks the $2t - *click*, it says.", A_SOMEONE, ch, a_door->name, {}, TO_ROOM);
 
       if(a_door->reverse)
       {
          if(UNIT_CONTAINS(a_door->reverse))
-            act("*click*", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), 0, 0, TO_ALL);
+            act("*click*", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), {}, {}, TO_ALL);
 
          if(a_door->rev_flags)
             REMOVE_BIT(*a_door->rev_flags, EX_LOCKED);
@@ -976,7 +979,8 @@ void do_steal(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
  * tested: Yup
  */
 {
-   std::shared_ptr<unit_data> vict, *obj;
+   std::shared_ptr<unit_data> vict;
+   std::shared_ptr<unit_data> obj;
    char             *split, *oarg = arg;
    int               hm, skilla, skillb;
 
@@ -1026,7 +1030,7 @@ void do_steal(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
 
    if(CHAR_COMBAT(vict))
    {
-      act("$3e is in combat and is moving around too fast!", A_SOMEONE, ch, 0, vict, TO_CHAR);
+      act("$3e is in combat and is moving around too fast!", A_SOMEONE, ch, {}, vict, TO_CHAR);
       return;
    }
 
@@ -1051,7 +1055,7 @@ void do_steal(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
 
       if(obj == NULL)
       {
-         act("$3e does not seem to carry such an object.", A_SOMEONE, ch, 0, vict, TO_CHAR);
+         act("$3e does not seem to carry such an object.", A_SOMEONE, ch, {}, vict, TO_CHAR);
          return;
       }
    }
@@ -1092,19 +1096,19 @@ void do_steal(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
    {
       if(CHAR_POS(vict) == POSITION_SLEEPING)
       {
-         act("You wake up, finding $1n going through your belongings!", A_SOMEONE, ch, 0, vict, TO_VICT);
-         act("$1n awakens abruptly!", A_HIDEINV, ch, 0, vict, TO_ROOM);
+         act("You wake up, finding $1n going through your belongings!", A_SOMEONE, ch, {}, vict, TO_VICT);
+         act("$1n awakens abruptly!", A_HIDEINV, ch, {}, vict, TO_ROOM);
          CHAR_POS(vict) = POSITION_RESTING;
       }
 
       if(CHAR_AWAKE(vict))
-         act("$3e caught you!", A_SOMEONE, ch, 0, vict, TO_CHAR);
+         act("$3e caught you!", A_SOMEONE, ch, {}, vict, TO_CHAR);
       else
          act("You clumsilly make everyone aware that you are trying to steal "
              "from $3n,",
              A_SOMEONE,
              ch,
-             0,
+             {},
              vict,
              TO_CHAR);
 
@@ -1112,14 +1116,14 @@ void do_steal(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
       {
          struct unit_affected_type *paf;
 
-         act("The sudden motion makes your invisibility wear off.", A_SOMEONE, ch, 0, vict, TO_CHAR);
+         act("The sudden motion makes your invisibility wear off.", A_SOMEONE, ch, {}, vict, TO_CHAR);
          while((paf = affected_by_spell(vict, ID_INVISIBILITY)))
             destroy_affect(paf);
          REMOVE_BIT(UNIT_FLAGS(vict), UNIT_FL_INVISIBLE);
       }
 
-      act("$1n tried to steal from you!", A_ALWAYS, ch, 0, vict, TO_VICT);
-      act("$1n tries to steal something from $3n.", A_HIDEINV, ch, 0, vict, TO_NOTVICT);
+      act("$1n tried to steal from you!", A_ALWAYS, ch, {}, vict, TO_VICT);
+      act("$1n tries to steal something from $3n.", A_HIDEINV, ch, {}, vict, TO_NOTVICT);
 
       log_crime(ch, vict, CRIME_STEALING);
 
@@ -1148,7 +1152,7 @@ void do_steal(std::shared_ptr<unit_data> ch, char *arg, const struct command_inf
       if(got > 0)
       {
          obj = split_money(obj, got);
-         act("Bingo!  You got $2t.", A_SOMEONE, ch, obj_money_string(obj, 0), 0, TO_CHAR);
+         act("Bingo!  You got $2t.", A_SOMEONE, ch, obj_money_string(obj, 0), {}, TO_CHAR);
       }
       else
       {
@@ -1195,7 +1199,7 @@ void base_rescue(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> vict)
 
    if(tmp_ch == NULL)
    {
-      act("Nobody is fighting $3m?", A_SOMEONE, ch, 0, vict, TO_CHAR);
+      act("Nobody is fighting $3m?", A_SOMEONE, ch, {}, vict, TO_CHAR);
       return;
    }
 
@@ -1220,17 +1224,17 @@ void base_rescue(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> vict)
           "and continues out to the right.",
           A_SOMEONE,
           ch,
-          0,
+          {},
           vict,
           TO_VICT);
-      act("$1n makes a feeble attempt to rescue $3n.", A_SOMEONE, ch, 0, vict, TO_NOTVICT);
+      act("$1n makes a feeble attempt to rescue $3n.", A_SOMEONE, ch, {}, vict, TO_NOTVICT);
       return;
    }
 
    send_to_char("Banzai! To the rescue...\n\r", ch);
 
-   act("You are rescued by $3n, you are confused!", A_SOMEONE, vict, 0, ch, TO_CHAR);
-   act("$1n heroically rescues $3n.", A_SOMEONE, ch, 0, vict, TO_NOTVICT);
+   act("You are rescued by $3n, you are confused!", A_SOMEONE, vict, {}, ch, TO_CHAR);
+   act("$1n heroically rescues $3n.", A_SOMEONE, ch, {}, vict, TO_NOTVICT);
 
    if(CHAR_FIGHTING(vict) == tmp_ch)
       stop_fighting(vict, tmp_ch);
@@ -1279,7 +1283,8 @@ void do_bash(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
  * tested: No
  */
 {
-   std::shared_ptr<unit_data> vict, *shield;
+   std::shared_ptr<unit_data> vict;
+   std::shared_ptr<unit_data> shield;
    int               hm, att_skill, def_skill;
    char             *oarg = arg;
 
@@ -1317,13 +1322,13 @@ void do_bash(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
 
    if(UNIT_BASE_WEIGHT(vict) > 2 * UNIT_BASE_WEIGHT(ch))
    {
-      act("$3n is too large to be bashed!", A_SOMEONE, ch, 0, vict, TO_CHAR);
+      act("$3n is too large to be bashed!", A_SOMEONE, ch, {}, vict, TO_CHAR);
       return;
    }
 
    if(!CHAR_IS_HUMANOID(vict) && !CHAR_IS_MAMMAL(vict))
    {
-      act("$3n can't be bashed at all!", A_SOMEONE, ch, 0, vict, TO_CHAR);
+      act("$3n can't be bashed at all!", A_SOMEONE, ch, {}, vict, TO_CHAR);
       return;
    }
 
@@ -1372,7 +1377,7 @@ void do_search(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
 
    if((dir = low_find_door(ch, arg, FALSE, FALSE)) == -1)
    {
-      act("You search but find nothing.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("You search but find nothing.", A_SOMEONE, ch, {}, {}, TO_CHAR);
       return;
    }
 
@@ -1380,13 +1385,13 @@ void do_search(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
 
    if(!IS_SET(ROOM_EXIT(UNIT_IN(ch), dir)->exit_info, EX_HIDDEN))
    {
-      act("It is not hidden!", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("It is not hidden!", A_SOMEONE, ch, {}, {}, TO_CHAR);
       return;
    }
 
    if(!IS_SET(ROOM_EXIT(UNIT_IN(ch), dir)->exit_info, EX_CLOSED))
    {
-      act("Well, it is already open, so why search for it?", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("Well, it is already open, so why search for it?", A_SOMEONE, ch, {}, {}, TO_CHAR);
       return;
    }
 
@@ -1411,11 +1416,11 @@ void do_search(std::shared_ptr<unit_data> ch, char *arg, const struct command_in
 
    if(i < 0)
    {
-      act("You search but find nothing.", A_SOMEONE, ch, 0, 0, TO_CHAR);
+      act("You search but find nothing.", A_SOMEONE, ch, {}, {}, TO_CHAR);
       return;
    }
 
-   act("As you search you discover a hidden $2t.", A_ALWAYS, ch, ROOM_EXIT(UNIT_IN(ch), dir)->open_name.Name(), 0, TO_CHAR);
+   act("As you search you discover a hidden $2t.", A_ALWAYS, ch, ROOM_EXIT(UNIT_IN(ch), dir)->open_name.Name(), {}, TO_CHAR);
 
    af.id       = ID_SPOTTED_SECRET;
    af.duration = 1;

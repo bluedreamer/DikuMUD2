@@ -85,6 +85,4 @@ public:
    char *m_pNewbie;  /* Newbie message                 */
 };
 
-extern class CServerConfiguration g_cServerConfig;
-
 #endif // _MUD_CONFIG_H

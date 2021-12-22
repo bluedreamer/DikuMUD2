@@ -27,6 +27,9 @@
 
 #include "essential.h"
 
+#include <memory>
+
+class unit_data;
 /* #define MAGIC_POWER(ch)  \
    MAX(CHAR_MAG(ch), CHAR_DIV(ch)) */
 

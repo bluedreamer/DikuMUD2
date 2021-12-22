@@ -24,7 +24,10 @@
 
 #ifndef _MUD_DBFIND_H
 #define _MUD_DBFIND_H
+
 #include <memory>
+
+class unit_data;
 
 class zone_type;
 class file_index_type;
@@ -32,9 +35,8 @@ struct descriptor_data          *find_descriptor(const char *name, struct descri
 std::shared_ptr<zone_type>       find_zone(const char *zonename);
 std::shared_ptr<file_index_type> find_file_index(const char *zonename, const char *name);
 struct diltemplate              *find_dil_index(char *zonename, char *name);
-std::shared_ptr<unit_data> world_room(const char *zone, const char *name);
+std::shared_ptr<unit_data>       world_room(const char *zone, const char *name);
 struct diltemplate              *find_dil_template(const char *name);
-
 std::shared_ptr<file_index_type> str_to_file_index(const char *str);
 std::shared_ptr<file_index_type> pc_str_to_file_index(const std::shared_ptr<unit_data> ch, const char *str);
 

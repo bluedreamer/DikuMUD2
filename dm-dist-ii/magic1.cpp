@@ -50,10 +50,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* Extern structures */
-extern std::shared_ptr<unit_data> unit_list;
-
-/* Extern procedure */
 void update_pos(std::shared_ptr<unit_data> victim);
 void modify_hit(std::shared_ptr<unit_data> ch, int hit);
 
@@ -343,12 +339,12 @@ void spell_lock(struct spell_args *sa)
       if(sa->hm >= 0)
       {
          SET_BIT(*a_door->flags, EX_LOCKED);
-         act("*cluck*", A_SOMEONE, sa->caster, 0, 0, TO_ALL);
+         act("*cluck*", A_SOMEONE, sa->caster, {}, {}, TO_ALL);
 
          if(a_door->reverse)
          {
             if(UNIT_CONTAINS(a_door->reverse))
-               act("*cluck*", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), 0, 0, TO_ALL);
+               act("*cluck*", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), {}, {}, TO_ALL);
 
             if(a_door->rev_flags)
                SET_BIT(*a_door->rev_flags, EX_LOCKED);
@@ -393,12 +389,12 @@ void spell_unlock(struct spell_args *sa)
       if(sa->hm >= 0)
       {
          REMOVE_BIT(*a_door->flags, EX_LOCKED);
-         act("*click*", A_SOMEONE, sa->caster, a_door->name, 0, TO_ALL);
+         act("*click*", A_SOMEONE, sa->caster, a_door->name, {}, TO_ALL);
 
          if(a_door->reverse)
          {
             if(UNIT_CONTAINS(a_door->reverse))
-               act("*cluck*", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), 0, 0, TO_ALL);
+               act("*cluck*", A_SOMEONE, UNIT_CONTAINS(a_door->reverse), {}, {}, TO_ALL);
 
             if(a_door->rev_flags)
                REMOVE_BIT(*a_door->rev_flags, EX_LOCKED);

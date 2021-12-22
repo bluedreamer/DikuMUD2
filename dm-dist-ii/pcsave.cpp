@@ -56,9 +56,6 @@
 sbit32             player_id       = 1;
 static const char *tmp_player_name = PLAY_DIR "player.tmp";
 
-extern char libdir[];
-extern char plydir[];
-
 struct descriptor_data *find_descriptor(const char *name, struct descriptor_data *except);
 
 char *PlayerFileName(const char *pName)
@@ -223,7 +220,8 @@ void save_player_file(std::shared_ptr<unit_data> pc)
    static bool             locked = FALSE;
    blk_length              nPlyLen;
    int                     tmp_i;
-   std::shared_ptr<unit_data> tmp_u, *list = NULL;
+   std::shared_ptr<unit_data> tmp_u;
+   std::shared_ptr<unit_data> list;
    struct descriptor_data *tmp_descr;
    CByteBuffer            *pBuf = &g_FileBuffer;
 
@@ -357,7 +355,7 @@ void save_player_contents(std::shared_ptr<unit_data> pc, int fast)
       }
       else
       {
-         act("You can't afford to keep your inventory (cost is $3t).", A_ALWAYS, pc, 0, money_string(daily_cost, cur, FALSE), TO_CHAR);
+         act("You can't afford to keep your inventory (cost is $3t).", A_ALWAYS, pc, {}, money_string(daily_cost, cur, FALSE), TO_CHAR);
       }
    }
 

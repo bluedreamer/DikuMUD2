@@ -27,10 +27,6 @@
 
 #include <ctime>
 
-extern int sunlight;
-
-extern const time_t beginning_of_time;
-
 char                 *timetodate(time_t t);
 struct time_info_data real_time_passed(time_t t2, time_t t1);
 struct time_info_data mud_date(time_t t);

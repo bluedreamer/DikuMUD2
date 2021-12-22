@@ -28,6 +28,7 @@
 #include "affect.h"
 #include "comm.h"
 #include "db.h"
+#include "externals.h"
 #include "handler.h"
 #include "interpreter.h"
 #include "limits.h"
@@ -74,17 +75,12 @@ void do_manifest(std::shared_ptr<unit_data> ch, char *arg, const struct command_
    std::shared_ptr<unit_data> player;
    std::shared_ptr<unit_data> monster;
 
-   extern std::shared_ptr<file_index_type> demigod_fi;
-
-   void switchbody(std::shared_ptr<unit_data>  ch, std::shared_ptr<unit_data>  victim);
-   void unswitchbody(std::shared_ptr<unit_data>  npc);
-
    if(!CHAR_DESCRIPTOR(ch))
       return;
 
    if(CHAR_IS_SWITCHED(ch))
    {
-      act("$1n dissolves.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+      act("$1n dissolves.", A_HIDEINV, ch, {}, {}, TO_ROOM);
       unswitchbody(ch);
       extract_unit(ch);
       return;
@@ -99,7 +95,7 @@ void do_manifest(std::shared_ptr<unit_data> ch, char *arg, const struct command_
    if(str_is_empty(arg))
    {
       send_to_char("You return home.\n\r", ch);
-      act("$1n returns to $1s home in the sky.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+      act("$1n returns to $1s home in the sky.", A_HIDEINV, ch, {}, {}, TO_ROOM);
       unit_from_unit(ch);
       unit_to_unit(ch, hometown_unit(PC_HOME(ch)));
       return;
@@ -139,14 +135,14 @@ void do_manifest(std::shared_ptr<unit_data> ch, char *arg, const struct command_
       }
       CHAR_EXP(ch) -= power;
 
-      act("$1n disappears in a flash of bright light.", A_ALWAYS, ch, 0, 0, TO_ROOM);
+      act("$1n disappears in a flash of bright light.", A_ALWAYS, ch, {}, {}, TO_ROOM);
 
       unit_from_unit(ch);
       unit_to_unit(ch, UNIT_IN(player));
 
-      act("You appear as yourself.", A_ALWAYS, ch, 0, 0, TO_CHAR);
+      act("You appear as yourself.", A_ALWAYS, ch, {},{}, TO_CHAR);
 
-      act("$1n appears in front of you.", A_ALWAYS, ch, 0, 0, TO_ROOM);
+      act("$1n appears in front of you.", A_ALWAYS, ch, {}, {}, TO_ROOM);
       return;
    }
 
@@ -206,9 +202,9 @@ void do_manifest(std::shared_ptr<unit_data> ch, char *arg, const struct command_
 
    switchbody(ch, monster);
 
-   act("You appear as $1n.", A_ALWAYS, monster, 0, 0, TO_CHAR);
+   act("You appear as $1n.", A_ALWAYS, monster, {}, {}, TO_CHAR);
 
-   act("$1n appears in tiny puff of smoke.", A_ALWAYS, monster, 0, 0, TO_ROOM);
+   act("$1n appears in tiny puff of smoke.", A_ALWAYS, monster, {}, {}, TO_ROOM);
 #endif
 }
 
@@ -218,9 +214,9 @@ void do_pray(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
 
    if(str_is_empty(arg))
    {
-      act("You feel righteous", A_ALWAYS, ch, 0, 0, TO_CHAR);
+      act("You feel righteous", A_ALWAYS, ch, {}, {}, TO_CHAR);
       if(CHAR_AWAKE(ch))
-         act("$1n prays to all the gods.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+         act("$1n prays to all the gods.", A_HIDEINV, ch, {}, {}, TO_ROOM);
    }
 
    target = find_unit(ch, &arg, 0, FIND_UNIT_SURRO | FIND_UNIT_WORLD);
@@ -233,13 +229,13 @@ void do_pray(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
 
    if(ch == target)
    {
-      act("You feel pretty selfish.", A_ALWAYS, ch, 0, 0, TO_CHAR);
-      act("$1n prays to $1mself.", A_HIDEINV, ch, 0, 0, TO_ROOM);
+      act("You feel pretty selfish.", A_ALWAYS, ch, {}, {}, TO_CHAR);
+      act("$1n prays to $1mself.", A_HIDEINV, ch, {}, {}, TO_ROOM);
       return;
    }
 
-   act("You pray to $3n.", A_ALWAYS, ch, 0, target, TO_CHAR);
-   act("$1n prays to $3n.", A_HIDEINV, ch, 0, target, TO_ROOM);
+   act("You pray to $3n.", A_ALWAYS, ch, {}, target, TO_CHAR);
+   act("$1n prays to $3n.", A_HIDEINV, ch, {}, target, TO_ROOM);
 
 #ifdef DEMIGOD
 
@@ -247,7 +243,7 @@ void do_pray(std::shared_ptr<unit_data> ch, char *arg, const struct command_info
    {
       if(!CHAR_DESCRIPTOR(target))
       {
-         act("$3e can't hear your prayers.", A_ALWAYS, ch, 0, target, TO_CHAR);
+         act("$3e can't hear your prayers.", A_ALWAYS, ch, {}, target, TO_CHAR);
          return;
       }
 
@@ -419,7 +415,7 @@ void base_sacrifice(std::shared_ptr<unit_data> ch, char *arg, int noble)
    if(UNIT_CONTAINS(u))
       power += sacrifice_unit(UNIT_CONTAINS(u), 0, IS_DEMIGOD(CHAR_ORIGINAL(god)));
 
-   act("You sacrificed $2d power points.", A_ALWAYS, ch, &power, 0, TO_CHAR);
+   act("You sacrificed $2d power points.", A_ALWAYS, ch, &power, {}, TO_CHAR);
 
    add_sacrifice_info(CHAR_ORIGINAL(god), ch, power);
    CHAR_EXP(CHAR_ORIGINAL(god)) += power;
@@ -486,7 +482,7 @@ void banish_demigod(std::shared_ptr<unit_data> ch)
 
    unit_from_unit(ch);
    unit_to_unit(ch, hometown_unit(PC_HOME(ch)));
-   act("$1n arrives powerless and naked in a mist of black smoke.", A_SOMEONE, ch, 0, 0, TO_ROOM);
+   act("$1n arrives powerless and naked in a mist of black smoke.", A_SOMEONE, ch, {}, {}, TO_ROOM);
 
    while(UNIT_CONTAINS(ch))
       extract_unit(UNIT_CONTAINS(ch));
@@ -503,7 +499,7 @@ void make_demigod(std::shared_ptr<unit_data> ch)
 
    assert(IS_MORTAL(ch));
 
-   act("$1n glows with a divine aura and disappears.", A_ALWAYS, ch, 0, 0, TO_ROOM);
+   act("$1n glows with a divine aura and disappears.", A_ALWAYS, ch, {}, {}, TO_ROOM);
    act("You are filled with immense power and raise to the ranks of "
        "immortality. You are teleported to your new world.",
        A_ALWAYS,
@@ -562,7 +558,7 @@ int demi_stuff(struct spec_arg *sarg)
       if(str_ccmp_next_word(arg, "god") == NULL)
       {
          if(i > 0)
-            act("You need $2d additional power points to raise a level.", A_ALWAYS, ch, &i, 0, TO_CHAR);
+            act("You need $2d additional power points to raise a level.", A_ALWAYS, ch, &i, {}, TO_CHAR);
 
          if(CHAR_EXP(ch) >= DEMIGOD_LEVEL_XP)
             send_to_char("You must write 'level god' "
@@ -573,11 +569,11 @@ int demi_stuff(struct spec_arg *sarg)
 
       if(i > 0)
       {
-         act("You need $2d power points to raise a level.", A_ALWAYS, ch, &i, 0, TO_CHAR);
+         act("You need $2d power points to raise a level.", A_ALWAYS, ch, &i, {}, TO_CHAR);
          return SFR_BLOCK;
       }
 
-      act("You raise a level", A_ALWAYS, ch, 0, 0, TO_CHAR);
+      act("You raise a level", A_ALWAYS, ch, {}, {}, TO_CHAR);
       CHAR_LEVEL(ch)++;
       CHAR_EXP(ch) -= DEMIGOD_LEVEL_XP;
       return SFR_BLOCK;
@@ -634,7 +630,7 @@ int demi_stuff(struct spec_arg *sarg)
 
          if(!IS_MORTAL(pVict))
          {
-            act("$2e is not a mortal.", A_SOMEONE, ch, pVict, 0, TO_CHAR);
+            act("$2e is not a mortal.", A_SOMEONE, ch, pVict, {}, TO_CHAR);
             return SFR_BLOCK;
          }
 
@@ -645,7 +641,7 @@ int demi_stuff(struct spec_arg *sarg)
              pVict,
              0,
              TO_ROOM);
-         act("You chant the name of '$2n' and grant $2m eternal life.", A_SOMEONE, ch, pVict, 0, TO_CHAR);
+         act("You chant the name of '$2n' and grant $2m eternal life.", A_SOMEONE, ch, pVict, {}, TO_CHAR);
          make_demigod(pVict);
       }
       else /* Banish (even quitted players!) */
@@ -671,7 +667,7 @@ int demi_stuff(struct spec_arg *sarg)
 
          if(!IS_DEMIGOD(pVict))
          {
-            act("$2e is not a demigod.", A_SOMEONE, ch, pVict, 0, TO_CHAR);
+            act("$2e is not a demigod.", A_SOMEONE, ch, pVict, {}, TO_CHAR);
             if(loaded)
                extract_unit(pVict);
             return SFR_BLOCK;
@@ -686,22 +682,22 @@ int demi_stuff(struct spec_arg *sarg)
 
          if(UNIT_IN(pVict) != UNIT_IN(ch))
          {
-            act("$1n is taken away to be punished by the gods.", A_HIDEINV, pVict, 0, 0, TO_ROOM);
-            act("You are transferred home to be punished!", A_ALWAYS, pVict, 0, 0, TO_CHAR);
+            act("$1n is taken away to be punished by the gods.", A_HIDEINV, pVict, {}, {}, TO_ROOM);
+            act("You are transferred home to be punished!", A_ALWAYS, pVict, {}, {}, TO_CHAR);
             unit_from_unit(pVict);
             unit_to_unit(pVict, UNIT_IN(ch));
-            act("$1n arrives in a mist of cold darkness.", A_SOMEONE, pVict, 0, 0, TO_ROOM);
+            act("$1n arrives in a mist of cold darkness.", A_SOMEONE, pVict, {}, {}, TO_ROOM);
          }
 
-         act("The group of gods leaded by $1n attempts to banish $3n.", A_HIDEINV, ch, 0, pVict, TO_NOTVICT);
-         act("You attempt to banish $3n.", A_HIDEINV, ch, 0, pVict, TO_CHAR);
-         act("The group of gods leaded by $1n attempts to banish you!", A_HIDEINV, ch, 0, pVict, TO_VICT);
+         act("The group of gods leaded by $1n attempts to banish $3n.", A_HIDEINV, ch, {}, pVict, TO_NOTVICT);
+         act("You attempt to banish $3n.", A_HIDEINV, ch, {}, pVict, TO_CHAR);
+         act("The group of gods leaded by $1n attempts to banish you!", A_HIDEINV, ch, {}, pVict, TO_VICT);
 
          i = CHAR_EXP(pVict) * 3 + 1000000;
          if(i > nExp)
          {
-            act("$1n resists as $1e is too powerful!", A_SOMEONE, pVict, 0, 0, TO_ROOM);
-            act("You resist the banishment due to your high power.", A_SOMEONE, pVict, 0, 0, TO_CHAR);
+            act("$1n resists as $1e is too powerful!", A_SOMEONE, pVict, {}, {}, TO_ROOM);
+            act("You resist the banishment due to your high power.", A_SOMEONE, pVict, {}, {}, TO_CHAR);
             paper = read_unit(find_file_index("demigod", "banned_fail"));
             if(paper)
             {
@@ -719,7 +715,7 @@ int demi_stuff(struct spec_arg *sarg)
             return SFR_BLOCK;
          }
 
-         act("$1n is banished!", A_SOMEONE, pVict, 0, 0, TO_ROOM);
+         act("$1n is banished!", A_SOMEONE, pVict, {}, {}, TO_ROOM);
 
          i /= nMember;
 

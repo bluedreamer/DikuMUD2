@@ -193,8 +193,6 @@ void act_to_guild(const char *msg, char *guild, std::shared_ptr<unit_data> membe
 {
    struct descriptor_data *d;
 
-   extern struct descriptor_data *descriptor_list;
-
    if(guild == NULL || *guild == '\0')
    {
       slog(LOG_ALL, 0, "No guild name in send_to_guild");
@@ -237,7 +235,7 @@ int teach_members_only(struct spec_arg *sarg)
 
       if(guild != 0)
       {
-         act(str + 1, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+         act(str + 1, A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
          return SFR_BLOCK;
       }
    }
@@ -306,8 +304,8 @@ int guard_guild_way(struct spec_arg *sarg)
          return SFR_SHARE;
       }
       *msg2 = '\0';
-      act(msg1 + 1, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_VICT);
-      act(msg2 + 1, A_SOMEONE, sarg->owner, 0, sarg->activator, TO_NOTVICT);
+      act(msg1 + 1, A_SOMEONE, sarg->owner, {}, sarg->activator, TO_VICT);
+      act(msg2 + 1, A_SOMEONE, sarg->owner, {}, sarg->activator, TO_NOTVICT);
       *msg1 = '#';
       *msg2 = '#';
       return SFR_BLOCK;
@@ -381,7 +379,7 @@ int can_leave_guild(struct guild_type *pG, std::shared_ptr<unit_data> master, st
 
    if(!PC_GUILD(ch) || (strcmp(PC_GUILD(ch), pG->pGuildName) != 0))
    {
-      act("$1n says, 'You are not a member here, $3n'", A_SOMEONE, master, 0, ch, TO_ROOM);
+      act("$1n says, 'You are not a member here, $3n'", A_SOMEONE, master, {}, ch, TO_ROOM);
       return FALSE;
    }
 
@@ -442,13 +440,13 @@ int can_join_guild(struct guild_type *pG, std::shared_ptr<unit_data> master, std
    if(PC_GUILD(ch))
    {
       if(strcmp(pG->pGuildName, PC_GUILD(ch)) == 0)
-         act("$1n says, 'You are already a member, $3n'", A_SOMEONE, master, 0, ch, TO_ROOM);
+         act("$1n says, 'You are already a member, $3n'", A_SOMEONE, master, {}, ch, TO_ROOM);
       else
          act("$1n says, 'You must first break your ties with your current"
              " guild, $3n'",
              A_SOMEONE,
              master,
-             0,
+             {},
              ch,
              TO_ROOM);
       return FALSE;
@@ -471,7 +469,7 @@ int can_join_guild(struct guild_type *pG, std::shared_ptr<unit_data> master, std
              "time, $3n? ",
              A_SOMEONE,
              master,
-             0,
+             {},
              ch,
              TO_ROOM);
          return FALSE;
@@ -538,7 +536,7 @@ int guild_master(struct spec_arg *sarg)
       {
          if(can_join_guild(pG, sarg->owner, sarg->activator))
          {
-            act("$1n says, 'Welcome in our guild, $3n'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+            act("$1n says, 'Welcome in our guild, $3n'", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
 
             if(CHAR_LEVEL(sarg->activator) > START_LEVEL)
                money_transfer(sarg->activator, sarg->owner, pG->nEnterCost, local_currency(sarg->owner));
@@ -552,7 +550,7 @@ int guild_master(struct spec_arg *sarg)
              " guild, $3n'",
              A_SOMEONE,
              sarg->owner,
-             0,
+             {},
              sarg->activator,
              TO_ROOM);
       }
@@ -569,7 +567,7 @@ int guild_master(struct spec_arg *sarg)
              "guild.'",
              A_SOMEONE,
              sarg->owner,
-             0,
+            {},
              sarg->activator,
              TO_ROOM);
          pc_pos = PC_ID(sarg->activator);
@@ -578,7 +576,7 @@ int guild_master(struct spec_arg *sarg)
       {
          if(can_leave_guild(pG, sarg->owner, sarg->activator))
          {
-            act("$1n says, 'So be it. Buggar ye off, $3n'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+            act("$1n says, 'So be it. Buggar ye off, $3n'", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
 
             if(CHAR_LEVEL(sarg->activator) > START_LEVEL)
                money_transfer(sarg->activator, sarg->owner, pG->nLeaveCost, local_currency(sarg->owner));
@@ -636,8 +634,6 @@ int guild_title(struct spec_arg *sarg)
    char *c;
    int   i, title_no;
 
-   extern const char *pc_race_adverbs[];
-
    if((sarg->cmd->no != CMD_TITLE) || !IS_PC(sarg->activator))
       return SFR_SHARE;
 
@@ -648,7 +644,7 @@ int guild_title(struct spec_arg *sarg)
 
    if((PC_GUILD(sarg->activator) == NULL) || (strcmp(PC_GUILD(sarg->activator), buf) != 0))
    {
-      act("$1n says, 'Thou art not a member $3n'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+      act("$1n says, 'Thou art not a member $3n'", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
       return SFR_BLOCK;
    }
 
@@ -675,15 +671,15 @@ int guild_title(struct spec_arg *sarg)
    if(strcmp(buf, UNIT_TITLE_STRING(sarg->activator)) == 0)
    {
       if(c == NULL)
-         act("$1n says, 'You have reached the ultimate title, $3n'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+         act("$1n says, 'You have reached the ultimate title, $3n'", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
       else
-         act("$1n says, 'You must first be an older member $3N'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+         act("$1n says, 'You must first be an older member $3N'", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
       return SFR_BLOCK;
    }
 
    UNIT_TITLE(sarg->activator).Reassign(buf);
 
-   act("$1n says, 'Enjoy the new title, $3n!'", A_SOMEONE, sarg->owner, 0, sarg->activator, TO_ROOM);
+   act("$1n says, 'Enjoy the new title, $3n!'", A_SOMEONE, sarg->owner, {}, sarg->activator, TO_ROOM);
 
    return SFR_BLOCK;
 }

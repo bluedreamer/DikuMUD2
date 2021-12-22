@@ -43,8 +43,6 @@
 #include <string.h>
 #include <time.h>
 
-extern char libdir[];
-
 #define MAX_TOP_TEN (11)
 
 struct competition_entry
@@ -254,7 +252,7 @@ void competition_enroll(std::shared_ptr<unit_data> pc)
          {
             competition[i].top_ten.competitors++;
 
-            act(COLOUR_ATTN "You are enrolled in $2t." COLOUR_NORMAL, A_ALWAYS, pc, competition[i].descr, NULL, TO_CHAR);
+            act(COLOUR_ATTN "You are enrolled in $2t." COLOUR_NORMAL, A_ALWAYS, pc, competition[i].descr, {}, TO_CHAR);
 
             PC_QUEST(pc) = PC_QUEST(pc)->add(names, "");
 
@@ -297,8 +295,6 @@ void competition_boot(void)
    int   i, len;
    int  *numlist;
    int   start_level, stop_level;
-
-   extern char libdir[];
 
    slog(LOG_OFF, 0, "Booting competition system.");
 
@@ -452,7 +448,7 @@ int competition_board(struct spec_arg *sarg)
    if(find_unit(sarg->activator, &c, 0, FIND_UNIT_SURRO) != sarg->owner)
       return SFR_SHARE;
 
-   act("$1n looks at $2n.", A_ALWAYS, sarg->activator, sarg->owner, 0, TO_ROOM);
+   act("$1n looks at $2n.", A_ALWAYS, sarg->activator, sarg->owner, {}, TO_ROOM);
 
    send_to_char("This is a competition board. Usage: READ <competition #>\n\r", sarg->activator);
 

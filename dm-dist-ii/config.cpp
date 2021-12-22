@@ -27,6 +27,7 @@
 #include "common.h"
 #include "db.h"
 #include "essential.h"
+#include "externals.h"
 #include "files.h"
 #include "str_parse.h"
 #include "textutil.h"
@@ -137,8 +138,6 @@ void CServerConfiguration::Boot(void)
    char       *c, **list;
    const char *d;
    int         i;
-
-   extern char libdir[];
 
    slog(LOG_OFF, 0, "Booting server.");
 

@@ -37,8 +37,6 @@
 #define SWAP_FILE_NAME  "swap.blk"
 #define SWAP_BLK_LENGTH 512
 
-extern std::shared_ptr<unit_data> unit_list;
-
 static BLK_FILE *swap_file    = NULL;
 static int       nSwapNoRooms = 0;
 static int       nSwapNoNpcs  = 0;

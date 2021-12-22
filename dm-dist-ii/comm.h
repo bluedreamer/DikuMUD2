@@ -25,8 +25,10 @@
 #ifndef _MUD_COMM_H
 #define _MUD_COMM_H
 
-#include <memory>
 #include "structs.h"
+
+#include <memory>
+#include <variant>
 
 class zone_type;
 void page_string(struct descriptor_data *d, const char *);
@@ -40,10 +42,19 @@ void send_to_room(const char *messg, std::shared_ptr<unit_data> room);
 /*  Please note that act() does NOT accept TRUE or FALSE as second argument
  *  anymore...
  */
-//void act(const char *str, int hide_invisible, const void *arg1, const void *arg2, const void *arg3, int type);
-void act(const char *str, int hide_invisible, std::shared_ptr<unit_data> arg1, const void *arg2, const void *arg3, int type);
-void act_generate(
-   char *buf, const char *str, int show_type, const void *arg1, const void *arg2, const void *arg3, int type, std::shared_ptr<unit_data> to);
+// void act(const char *str, int hide_invisible, const void *arg1, const void *arg2, const void *arg3, int type);
+
+using comm_variant = std::variant<std::monostate, std::shared_ptr<unit_data>, const char *, int *>;
+
+void act(const char *str, int hide_invisible, comm_variant arg1, comm_variant arg2, comm_variant arg3, int type);
+void act_generate(char                      *buf,
+                  const char                *str,
+                  int                        show_type,
+                  comm_variant               arg1,
+                  comm_variant               arg2,
+                  comm_variant               arg3,
+                  int                        type,
+                  std::shared_ptr<unit_data> to);
 
 int process_output(struct descriptor_data *t);
 int process_input(struct descriptor_data *t);

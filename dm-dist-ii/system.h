@@ -52,8 +52,6 @@ public:
    cMultiHook Multi[MAX_MULTI];
 };
 
-extern class cMultiMaster Multi;
-
 #define MAX_HOSTNAME 256
 
 void init_mother(int nPort);
