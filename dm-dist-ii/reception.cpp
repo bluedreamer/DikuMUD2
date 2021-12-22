@@ -46,7 +46,7 @@
 #include <string.h>
 #include <time.h>
 
-int write_unit_string(ubit8 *b, struct unit_data *u);
+int write_unit_string(ubit8 *b, std::shared_ptr<unit_data> u);
 
 /* *************************************************************************
  * Routines for calculating rent                                           *
@@ -54,7 +54,7 @@ int write_unit_string(ubit8 *b, struct unit_data *u);
 
 static int rent_info;
 
-static void show_items(struct unit_data *ch, struct unit_data *item, ubit32 price)
+static void show_items(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> item, ubit32 price)
 {
    if(price > 0)
    {
@@ -67,7 +67,7 @@ static void show_items(struct unit_data *ch, struct unit_data *item, ubit32 pric
 
 /* ----------------------------------------------------------------- */
 
-static void subtract_rent(struct unit_data *ch, struct unit_data *item, ubit32 price)
+static void subtract_rent(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> item, ubit32 price)
 {
    if(price > 0)
    {
@@ -83,10 +83,10 @@ static void subtract_rent(struct unit_data *ch, struct unit_data *item, ubit32 p
 
 /* ----------------------------------------------------------------- */
 
-static ubit32 subtract_recurse(struct unit_data *ch,
-                               struct unit_data *item,
+static ubit32 subtract_recurse(std::shared_ptr<unit_data> ch,
+                               std::shared_ptr<unit_data> item,
                                ubit32            seconds,
-                               void (*fptr)(struct unit_data *ch, struct unit_data *obj, ubit32 price))
+                               void (*fptr)(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, ubit32 price))
 {
    ubit32 sum = 0;
 
@@ -123,7 +123,7 @@ static ubit32 subtract_recurse(struct unit_data *ch,
 
 /* ----------------------------------------------------------------- */
 
-ubit32 rent_calc(struct unit_data *ch, time_t savetime)
+ubit32 rent_calc(std::shared_ptr<unit_data> ch, time_t savetime)
 {
    ubit32 sum = 0;
 
@@ -148,7 +148,7 @@ ubit32 rent_calc(struct unit_data *ch, time_t savetime)
    return sum;
 }
 
-void do_rent(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_rent(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    ubit32 sum;
 
@@ -201,7 +201,7 @@ static int membuflen = 0, mempos;
 std::shared_ptr<file_index_type> slime_fi;
 
 /* save object */
-void enlist(CByteBuffer *pBuf, struct unit_data *unit, int level, int fast)
+void enlist(CByteBuffer *pBuf, std::shared_ptr<unit_data> unit, int level, int fast)
 {
    int              len, diflen;
    struct objheader h;
@@ -263,10 +263,10 @@ void enlist(CByteBuffer *pBuf, struct unit_data *unit, int level, int fast)
 /*    level  - 0 for contents only, 1 for contents & container   */
 /*    fast   - TRUE for compression, FALSE for no compression.   */
 
-void add_units(CByteBuffer *pBuf, struct unit_data *parent, struct unit_data *unit, int level, int fast)
+void add_units(CByteBuffer *pBuf, std::shared_ptr<unit_data> parent, std::shared_ptr<unit_data> unit, int level, int fast)
 {
    int               tmp_i = 0;
-   struct unit_data *tmp_u;
+   std::shared_ptr<unit_data> tmp_u;
 
    if(IS_ROOM(unit))
    {
@@ -302,9 +302,9 @@ void add_units(CByteBuffer *pBuf, struct unit_data *parent, struct unit_data *un
          enlist(pBuf, unit, level, fast);
 }
 
-void send_saves(struct unit_data *parent, struct unit_data *unit)
+void send_saves(std::shared_ptr<unit_data> parent, std::shared_ptr<unit_data> unit)
 {
-   struct unit_data *tmp_u;
+   std::shared_ptr<unit_data> tmp_u;
 
    if(!unit)
       return;
@@ -331,7 +331,7 @@ char *ContentsFileName(const char *pName)
 /* if fast == 1 or compressed if fast == 0. Only OBJ's and NPC's will */
 /* be saved!                                                          */
 /* Container = 1 if container should be saved also                    */
-void basic_save_contents(const char *pFileName, struct unit_data *unit, int fast, int bContainer)
+void basic_save_contents(const char *pFileName, std::shared_ptr<unit_data> unit, int fast, int bContainer)
 {
    struct descriptor_data *tmp_descr = NULL;
    FILE                   *pFile;
@@ -379,7 +379,7 @@ void basic_save_contents(const char *pFileName, struct unit_data *unit, int fast
 /* if fast == 1 or compressed if fast == 0. Only OBJ's and NPC's will */
 /* be saved!                                                          */
 /* Container = 1 if container should be saved also                    */
-int save_contents(const char *pFileName, struct unit_data *unit, int fast, int bContainer)
+int save_contents(const char *pFileName, std::shared_ptr<unit_data> unit, int fast, int bContainer)
 {
    char name[MAX_INPUT_LENGTH + 1];
 
@@ -403,22 +403,22 @@ int save_contents(const char *pFileName, struct unit_data *unit, int fast, int b
 /* and place them inside 'unit' by unit_to_unit and possibly equip */
 /* Return the top level unit loaded                                */
 
-struct unit_data *base_load_contents(const char *pFileName, const struct unit_data *unit)
+std::shared_ptr<unit_data> base_load_contents(const char *pFileName, const std::shared_ptr<unit_data> unit)
 {
    struct objheader                 h;
    std::shared_ptr<file_index_type> fi;
-   struct unit_data                *pnew, *pstack[25];
+   std::shared_ptr<unit_data> pnew, *pstack[25];
    int                              len, init;
    int                              frame, plen, n;
    struct descriptor_data          *tmp_descr = NULL;
    int                              equip_ok;
    FILE                            *pFile;
-   struct unit_data                *topu = NULL;
+   std::shared_ptr<unit_data> topu = NULL;
 
    CByteBuffer InvBuf;
    InvBuf.Clear();
 
-   extern struct unit_data *void_room;
+   extern std::shared_ptr<unit_data> void_room;
 
    int is_slimed(std::shared_ptr<file_index_type> sp);
    int patch(char *ref, ubit32 reflen, char *dif, int diflen, char *res, int reslen, ubit32 crc);
@@ -447,7 +447,7 @@ struct unit_data *base_load_contents(const char *pFileName, const struct unit_da
    }
 
    frame         = 0;
-   pstack[frame] = (struct unit_data *)unit;
+   pstack[frame] = (std::shared_ptr<unit_data> )unit;
 
    if(unit && IS_CHAR(unit))
    {
@@ -576,7 +576,7 @@ struct unit_data *base_load_contents(const char *pFileName, const struct unit_da
 /* From the block_file 'bf' at index 'blk_idx' load the objects    */
 /* and place them inside 'unit' by unit_to_unit and possibly equip */
 /* Return the daily cost                                           */
-void load_contents(const char *pFileName, struct unit_data *unit)
+void load_contents(const char *pFileName, std::shared_ptr<unit_data> unit)
 {
    base_load_contents(ContentsFileName(pFileName), unit);
 }
@@ -663,7 +663,7 @@ int patch(char *ref, ubit32 reflen, char *dif, int diflen, char *res, int reslen
 
 /* ========================= DIL STORE / RESTORE ======================= */
 
-void store_unit(struct unit_data *u)
+void store_unit(std::shared_ptr<unit_data> u)
 {
    if(!UNIT_FILE_INDEX(u))
       return;
@@ -695,7 +695,7 @@ void store_unit(struct unit_data *u)
    fclose(f);
 }
 
-struct unit_data *restore_unit(char *zonename, char *unitname)
+std::shared_ptr<unit_data> restore_unit(char *zonename, char *unitname)
 {
    std::shared_ptr<file_index_type> fi   = find_file_index(zonename, unitname);
    CByteBuffer                     *pBuf = &g_FileBuffer;
@@ -735,7 +735,7 @@ struct unit_data *restore_unit(char *zonename, char *unitname)
 
    char mbuf[MAX_INPUT_LENGTH];
    strcpy(mbuf, "RESTORE");
-   struct unit_data *u = read_unit_string(pBuf, nType, len - 1, TRUE, mbuf);
+   std::shared_ptr<unit_data> u = read_unit_string(pBuf, nType, len - 1, TRUE, mbuf);
 
    if(u == NULL)
    {

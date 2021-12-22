@@ -256,7 +256,7 @@ int search_block_set(char *arg, const char **list, bool exact)
    : (c) == AT_DIRDES ? "<direction> (enter description)"                                                                                  \
                       : "Not usable"
 
-void show_fields(struct unit_data *ch)
+void show_fields(std::shared_ptr<unit_data> ch)
 {
    char string[MAX_STRING_LENGTH], *c;
    int  i;
@@ -276,7 +276,7 @@ void show_fields(struct unit_data *ch)
 #undef GET_FIELDT_UT
 #undef GET_FIELD_AT
 
-void show_structure(const char *structure[], struct unit_data *ch)
+void show_structure(const char *structure[], std::shared_ptr<unit_data> ch)
 {
    char **c, *cc, buf[MAX_STRING_LENGTH];
 
@@ -322,7 +322,7 @@ int get_type(char *typdef, const char *structure[])
 }
 
 /* modification of anything in units */
-void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_set(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
    char arg[MAX_STRING_LENGTH], buf[MAX_STRING_LENGTH];
    int  type;
@@ -334,7 +334,7 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
 
    std::shared_ptr<file_index_type> untarg;
    struct extra_descr_data         *ed;
-   struct unit_data                *unt;
+   std::shared_ptr<unit_data> unt;
    struct unit_affected_type       *aff;
 
    int required_xp(int level);
@@ -1204,11 +1204,11 @@ void do_set(struct unit_data *ch, char *argument, const struct command_info *cmd
 
 static const char *skill_field_names[] = {"skill", "spell", "weapon", NULL};
 
-void do_setskill(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_setskill(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
    int               type, skillarg, valarg = 0;
    char              buf[MAX_STRING_LENGTH], arg[MAX_STRING_LENGTH];
-   struct unit_data *unt;
+   std::shared_ptr<unit_data> unt;
 
    if(!CHAR_DESCRIPTOR(ch))
       return;

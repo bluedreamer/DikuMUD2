@@ -38,16 +38,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern struct unit_data                *unit_list;
+extern std::shared_ptr<unit_data> unit_list;
 extern std::shared_ptr<file_index_type> corpse_fi;
 
-struct unit_data *make_corpse(struct unit_data *ch)
+std::shared_ptr<unit_data> make_corpse(std::shared_ptr<unit_data> ch)
 {
    char                      buf[MAX_INPUT_LENGTH];
-   struct unit_data         *corpse, *u, *next_dude;
+   std::shared_ptr<unit_data> corpse, *u, *next_dude;
    struct unit_affected_type af, *taf1;
 
-   void persist_create(struct unit_data * u);
+   void persist_create(std::shared_ptr<unit_data>  u);
 
    corpse = read_unit(corpse_fi);
 

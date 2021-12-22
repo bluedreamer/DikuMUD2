@@ -25,7 +25,7 @@
 #ifndef _MUD_DIJKSTRA_H
 #define _MUD_DIJKSTRA_H
 
-int npc_move(const struct unit_data *npc, const struct unit_data *to);
-int move_to(const struct unit_data *from, const struct unit_data *to);
+int npc_move(const std::shared_ptr<unit_data> npc, const std::shared_ptr<unit_data> to);
+int move_to(const std::shared_ptr<unit_data> from, const std::shared_ptr<unit_data> to);
 
 #endif

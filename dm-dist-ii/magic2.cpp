@@ -48,7 +48,7 @@
 #define RIFT_RISK 100
 
 /* Extern structures */
-extern struct unit_data     *unit_list;
+extern std::shared_ptr<unit_data> unit_list;
 extern struct command_info   cmd_auto_unknown;
 extern struct zone_info_type zone_info;
 
@@ -60,9 +60,9 @@ extern struct zone_info_type zone_info;
    target is optional intended target.
    spl is the originating spell. */
 
-struct unit_data *random_room(void)
+std::shared_ptr<unit_data> random_room(void)
 {
-   struct unit_data                *room = NULL;
+   std::shared_ptr<unit_data> room = NULL;
    std::shared_ptr<zone_type> zone;
    std::shared_ptr<file_index_type> fi;
    int                              no;
@@ -87,9 +87,9 @@ struct unit_data *random_room(void)
    return NULL;
 }
 
-struct unit_data *random_npc(void)
+std::shared_ptr<unit_data> random_npc(void)
 {
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
    int               i;
 
    extern int world_nochars;
@@ -105,19 +105,19 @@ struct unit_data *random_npc(void)
    return NULL;
 }
 
-struct unit_data *random_pc(void)
+std::shared_ptr<unit_data> random_pc(void)
 {
    return NULL;
 }
 
-struct unit_data *random_char(void)
+std::shared_ptr<unit_data> random_char(void)
 {
    return NULL;
 }
 
-void summon_attack_npc(struct unit_data *caster, int n)
+void summon_attack_npc(std::shared_ptr<unit_data> caster, int n)
 {
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
 
    for(; n > 0; n--)
    {
@@ -135,13 +135,13 @@ void summon_attack_npc(struct unit_data *caster, int n)
    }
 }
 
-void rift_failure(struct unit_data *caster, struct unit_data *target)
+void rift_failure(std::shared_ptr<unit_data> caster, std::shared_ptr<unit_data> target)
 {
    struct spell_args sa;
 
    int i = number(1, 100);
 
-   extern struct unit_data *void_room;
+   extern std::shared_ptr<unit_data> void_room;
 
    act("You cause a great disturbance in the powers of magic.", A_ALWAYS, caster, 0, 0, TO_CHAR);
    act("$1n causes a great disturbance in the powers of magic.", A_ALWAYS, caster, 0, 0, TO_ROOM);
@@ -200,7 +200,7 @@ void rift_failure(struct unit_data *caster, struct unit_data *target)
 
 void spell_clear_skies(struct spell_args *sa)
 {
-   struct unit_data *room = unit_room(sa->caster);
+   std::shared_ptr<unit_data> room = unit_room(sa->caster);
 
    if((sa->hm / 20 <= 0) || (IS_SET(UNIT_FLAGS(room), UNIT_FL_NO_WEATHER | UNIT_FL_INDOORS)))
    {
@@ -216,7 +216,7 @@ void spell_clear_skies(struct spell_args *sa)
 
 void spell_storm_call(struct spell_args *sa)
 {
-   struct unit_data *room = unit_room(sa->caster);
+   std::shared_ptr<unit_data> room = unit_room(sa->caster);
 
    if((sa->hm / 20 <= 0) || (IS_SET(UNIT_FLAGS(room), UNIT_FL_NO_WEATHER | UNIT_FL_INDOORS)))
    {
@@ -232,7 +232,7 @@ void spell_storm_call(struct spell_args *sa)
 
 void spell_random_teleport(struct spell_args *sa)
 {
-   struct unit_data *room;
+   std::shared_ptr<unit_data> room;
 
    if(!(room = random_room()))
       return;
@@ -285,7 +285,7 @@ void spell_random_teleport(struct spell_args *sa)
 void spell_transport(struct spell_args *sa)
 {
    /* This spell is alot harder to get off successfull */
-   struct unit_data *room;
+   std::shared_ptr<unit_data> room;
 
    room = unit_room(sa->caster);
    assert(room);
@@ -346,7 +346,7 @@ void spell_transport(struct spell_args *sa)
 void spell_control_teleport(struct spell_args *sa)
 {
    /* This spell is alot harder to get off successfull */
-   struct unit_data *room;
+   std::shared_ptr<unit_data> room;
 
    room = unit_room(sa->caster);
    assert(room);
@@ -397,8 +397,8 @@ void spell_control_teleport(struct spell_args *sa)
 void spell_undead_door(struct spell_args *sa)
 {
    /* This spell is alot harder to get off successfull */
-   struct unit_data *roomf;
-   struct unit_data *roomt;
+   std::shared_ptr<unit_data> roomf;
+   std::shared_ptr<unit_data> roomt;
 
    roomf = unit_room(sa->caster);
    roomt = unit_room(sa->target);
@@ -452,7 +452,7 @@ void spell_undead_door(struct spell_args *sa)
 
 void spell_summon_char_1(struct spell_args *sa)
 {
-   struct unit_data *room;
+   std::shared_ptr<unit_data> room;
 
    if(CHAR_LEVEL(sa->target) > CHAR_LEVEL(sa->caster))
       return;
@@ -525,7 +525,7 @@ void spell_summon_char_1(struct spell_args *sa)
 
 void spell_summon_char_2(struct spell_args *sa)
 {
-   struct unit_data *room;
+   std::shared_ptr<unit_data> room;
 
    if(sa->hm < 0)
    {
@@ -596,7 +596,7 @@ void spell_summon_char_2(struct spell_args *sa)
 void spell_animate_dead(struct spell_args *sa)
 {
    extern std::shared_ptr<file_index_type> zombie_fi;
-   struct unit_data                       *u, *zombie;
+   std::shared_ptr<unit_data> u, *zombie;
    char                                    buf[1024];
 
    if(OBJ_TYPE(sa->target) != ITEM_CONTAINER || !affected_by_spell(sa->target, ID_CORPSE))
@@ -690,7 +690,7 @@ void spell_invisibility(struct spell_args *sa)
 
 void spell_wizard_eye(struct spell_args *sa)
 {
-   struct unit_data *pOrgUnit, *pTo;
+   std::shared_ptr<unit_data> pOrgUnit, *pTo;
 
    if(!UNIT_IN(sa->target))
       pTo = sa->target;
@@ -759,7 +759,7 @@ void spell_confusion(struct spell_args *sa)
 
 void spell_xray_vision(struct spell_args *sa)
 {
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
 
    if(sa->hm < 0)
       return;

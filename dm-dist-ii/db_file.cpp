@@ -99,7 +99,7 @@ int bread_extra(CByteBuffer *pBuf, class extra_descr_data **ppExtra)
    return 0;
 }
 
-int bread_swap(CByteBuffer *pBuf, struct unit_data *u)
+int bread_swap(CByteBuffer *pBuf, std::shared_ptr<unit_data> u)
 {
    char *c;
 
@@ -362,7 +362,7 @@ void bwrite_dilintr(CByteBuffer *pBuf, struct dilprg *prg)
  *   lookup and typecheck of loaded template.
  *
  */
-void *bread_dil(CByteBuffer *pBuf, struct unit_data *owner, ubit8 version, struct unit_fptr *fptr)
+void *bread_dil(CByteBuffer *pBuf, std::shared_ptr<unit_data> owner, ubit8 version, struct unit_fptr *fptr)
 {
    struct dilprg      *prg;
    struct diltemplate *tmpl     = NULL;
@@ -567,7 +567,7 @@ void *bread_dil(CByteBuffer *pBuf, struct unit_data *owner, ubit8 version, struc
    return prg;
 }
 
-struct unit_fptr *bread_func(CByteBuffer *pBuf, ubit8 version, struct unit_data *owner)
+struct unit_fptr *bread_func(CByteBuffer *pBuf, ubit8 version, std::shared_ptr<unit_data> owner)
 {
    struct unit_fptr *fptr, *head;
    int               cnt, i;
@@ -683,7 +683,7 @@ void bread_block(FILE *datafile, long file_pos, int length, void *buffer)
       assert(FALSE);
 }
 
-void bwrite_swap(CByteBuffer *pBuf, struct unit_data *u)
+void bwrite_swap(CByteBuffer *pBuf, std::shared_ptr<unit_data> u)
 {
    pBuf->AppendString(UNIT_TITLE_STRING(u));
    pBuf->AppendString(UNIT_OUT_DESCR_STRING(u));
@@ -959,7 +959,7 @@ void bwrite_block(FILE *datafile, int length, void *buffer)
 }
 
 /* Write unit to string. */
-int write_unit_string(CByteBuffer *pBuf, struct unit_data *u)
+int write_unit_string(CByteBuffer *pBuf, std::shared_ptr<unit_data> u)
 {
    int   i;
    ubit8 nVersion;
@@ -1003,7 +1003,7 @@ int write_unit_string(CByteBuffer *pBuf, struct unit_data *u)
    }
    else
    {
-      struct unit_data *inu = NULL;
+      std::shared_ptr<unit_data> inu = NULL;
 
       if(IS_PC(u))
          inu = CHAR_LAST_ROOM(u);
@@ -1215,14 +1215,14 @@ int write_unit_string(CByteBuffer *pBuf, struct unit_data *u)
 }
 
 #ifndef DMSERVER
-void swap_in(struct unit_data *u)
+void swap_in(std::shared_ptr<unit_data> u)
 {
 }
 #endif
 
 /* Appends unit 'u' to file 'f'. Name is the unique name */
 /* Used only by dmc.                                     */
-void write_unit(FILE *f, struct unit_data *u, char *fname)
+void write_unit(FILE *f, std::shared_ptr<unit_data> u, char *fname)
 {
    CByteBuffer *pBuf;
    ubit32       nSizeStart, nStart, nPos;

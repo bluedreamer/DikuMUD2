@@ -78,24 +78,24 @@
 */
 
 /* May only be called by clear_destuct! */
-void destruct_unit(struct unit_data *unit)
+void destruct_unit(std::shared_ptr<unit_data> unit)
 {
    struct descriptor_data *d;
    int                     in_menu = FALSE;
 
    extern struct descriptor_data *descriptor_list;
-   extern struct unit_data       *unit_list;
+   extern std::shared_ptr<unit_data> unit_list;
 
-   void stop_all_special(struct unit_data * u);
-   void unswitchbody(struct unit_data * npc);
-   void unsnoop(struct unit_data * ch, int mode);
-   void die_follower(struct unit_data * ch);
-   void stop_fighting(struct unit_data * ch);
-   void unlink_affect(struct unit_data * u, struct unit_affected_type * af);
+   void stop_all_special(std::shared_ptr<unit_data>  u);
+   void unswitchbody(std::shared_ptr<unit_data>  npc);
+   void unsnoop(std::shared_ptr<unit_data>  ch, int mode);
+   void die_follower(std::shared_ptr<unit_data>  ch);
+   void stop_fighting(std::shared_ptr<unit_data>  ch);
+   void unlink_affect(std::shared_ptr<unit_data>  u, struct unit_affected_type * af);
    void nanny_menu(struct descriptor_data * d, char *arg);
    void nanny_close(struct descriptor_data * d, char *arg);
 
-   void do_return(struct unit_data * ch, char *arg, struct command_info *cmd);
+   void do_return(std::shared_ptr<unit_data>  ch, char *arg, struct command_info *cmd);
 
    /* Remove all snooping, snoopers and return from any body */
    if(IS_CHAR(unit))
@@ -228,7 +228,7 @@ void clear_destructed(void)
    destructed_idx[DR_FUNC] = 0;
 
    for(i = 0; i < destructed_idx[DR_UNIT]; i++)
-      destruct_unit((struct unit_data *)destructed[DR_UNIT][i]);
+      destruct_unit((std::shared_ptr<unit_data> )destructed[DR_UNIT][i]);
    destructed_idx[DR_UNIT] = 0;
 }
 

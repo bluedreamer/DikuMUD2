@@ -356,7 +356,7 @@ struct dilvar
    ubit8 type; /* variable type */
    union
    {
-      struct unit_data        *unitptr;
+      std::shared_ptr<unit_data> unitptr;
       sbit32                   integer;
       struct extra_descr_data *extraptr;
       char                    *string;
@@ -390,7 +390,7 @@ public:
 /* structure for securing unit pointers */
 struct dilsecure
 {
-   struct unit_data *sup; /* A direct reference to the variabel! */
+   std::shared_ptr<unit_data> sup; /* A direct reference to the variabel! */
    ubit8            *lab; /* address to jump to, NULL=foreach */
 };
 
@@ -487,7 +487,7 @@ struct dilprg
    struct dilframe *stack;   /* stack frames, #0 saved */
 
    struct spec_arg  *sarg;
-   struct unit_data *owner;
+   std::shared_ptr<unit_data> owner;
 
    sbit16 waitcmd; /* Command countdown */
 

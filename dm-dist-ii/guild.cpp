@@ -60,7 +60,7 @@ struct guild_type
    char **ppExcludeQuest;
 };
 
-struct extra_descr_data *find_quest(char *word, struct unit_data *unit)
+struct extra_descr_data *find_quest(char *word, std::shared_ptr<unit_data> unit)
 {
    if(!IS_PC(unit) || !word)
       return NULL;
@@ -68,7 +68,7 @@ struct extra_descr_data *find_quest(char *word, struct unit_data *unit)
    return PC_QUEST(unit)->find_raw(word);
 }
 
-int char_guild_level(struct unit_data *ch)
+int char_guild_level(std::shared_ptr<unit_data> ch)
 {
    ubit32                   i;
    struct extra_descr_data *exd;
@@ -93,7 +93,7 @@ int char_guild_level(struct unit_data *ch)
    return CHAR_LEVEL(ch);
 }
 
-void advance_guild_level(struct unit_data *ch)
+void advance_guild_level(std::shared_ptr<unit_data> ch)
 {
    struct extra_descr_data *exd;
 
@@ -137,7 +137,7 @@ static void free_guild_data(struct guild_type *pGt)
    free(pGt);
 }
 
-static struct guild_type *parse_guild_data(struct unit_data *npc, char *pStr)
+static struct guild_type *parse_guild_data(std::shared_ptr<unit_data> npc, char *pStr)
 {
    char              *pTmp1;
    struct guild_type *pG;
@@ -189,7 +189,7 @@ int guild_master_init(struct spec_arg *sarg)
 /* 'guild'. Uses the act() function to send string with $1 as 'member' */
 /* $2 as 'nonmember' and $3 as character                               */
 /* Message will never be sent to 'nonmember'                           */
-void act_to_guild(const char *msg, char *guild, struct unit_data *member, struct unit_data *nonmember)
+void act_to_guild(const char *msg, char *guild, std::shared_ptr<unit_data> member, std::shared_ptr<unit_data> nonmember)
 {
    struct descriptor_data *d;
 
@@ -259,7 +259,7 @@ int guard_guild_way(struct spec_arg *sarg)
    char *str, *location, *excl = NULL, *msg1 = NULL, *msg2 = NULL, *guild_no;
    int   guild_cmp;
 
-   int charname_in_list(struct unit_data * ch, char *arg);
+   int charname_in_list(std::shared_ptr<unit_data>  ch, char *arg);
 
    if((str = (char *)sarg->fptr->data) && (sarg->cmd->no == (*str - '0')) && CHAR_IS_READY(sarg->owner))
    {
@@ -316,7 +316,7 @@ int guard_guild_way(struct spec_arg *sarg)
    return SFR_SHARE;
 }
 
-void leave_guild(struct unit_data *player)
+void leave_guild(std::shared_ptr<unit_data> player)
 {
    struct extra_descr_data *exd;
 
@@ -347,7 +347,7 @@ void leave_guild(struct unit_data *player)
    PC_GUILD_TIME(player) = PC_TIME(player).played;
 }
 
-void guild_banish_player(struct unit_data *ch)
+void guild_banish_player(std::shared_ptr<unit_data> ch)
 {
    char                    *c;
    struct extra_descr_data *pExd;
@@ -371,7 +371,7 @@ void guild_banish_player(struct unit_data *ch)
    }
 }
 
-int can_leave_guild(struct guild_type *pG, struct unit_data *master, struct unit_data *ch)
+int can_leave_guild(struct guild_type *pG, std::shared_ptr<unit_data> master, std::shared_ptr<unit_data> ch)
 {
    char     **p;
    currency_t currency = local_currency(master);
@@ -414,7 +414,7 @@ int can_leave_guild(struct guild_type *pG, struct unit_data *master, struct unit
    return TRUE;
 }
 
-void join_guild(struct unit_data *ch, char *guild_name)
+void join_guild(std::shared_ptr<unit_data> ch, char *guild_name)
 {
    struct extra_descr_data *exd;
 
@@ -431,7 +431,7 @@ void join_guild(struct unit_data *ch, char *guild_name)
    exd->names.AppendName("$guild");
 }
 
-int can_join_guild(struct guild_type *pG, struct unit_data *master, struct unit_data *ch)
+int can_join_guild(struct guild_type *pG, std::shared_ptr<unit_data> master, std::shared_ptr<unit_data> ch)
 {
    currency_t currency = local_currency(master);
    char     **p;
@@ -599,7 +599,7 @@ int guild_master(struct spec_arg *sarg)
 int guild_basis(struct spec_arg *sarg)
 {
    int               i;
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
 
    if(sarg->cmd->no == CMD_AUTO_DEATH && sarg->owner == sarg->activator)
    {
@@ -688,7 +688,7 @@ int guild_title(struct spec_arg *sarg)
    return SFR_BLOCK;
 }
 
-void do_guild(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_guild(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    char                     buf[MAX_STRING_LENGTH];
    int                      found = FALSE;

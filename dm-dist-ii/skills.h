@@ -122,8 +122,8 @@ struct wpn_info_type
 
 #define DEMIGOD_LEVEL_XP (40000000)
 
-int        object_two_handed(struct unit_data *obj);
-void       roll_description(struct unit_data *att, const char *text, int roll);
+int        object_two_handed(std::shared_ptr<unit_data> obj);
+void       roll_description(std::shared_ptr<unit_data> att, const char *text, int roll);
 int        open_ended_roll(int size, int end);
 inline int open100(void)
 {
@@ -134,31 +134,31 @@ int resistance_skill_check(int att_skill1, int def_skill1, int att_skill2, int d
 int resistance_level_check(int att_level, int def_level, int att_skill, int def_skill);
 int skill_duration(int howmuch);
 
-int weapon_fumble(struct unit_data *weapon, int roll);
+int weapon_fumble(std::shared_ptr<unit_data> weapon, int roll);
 int chart_damage(int roll, struct damage_chart_element_type *element);
 int chart_size_damage(int roll, struct damage_chart_element_type *element, int lbs);
 int weapon_damage(int roll, int weapon_type, int armour_type);
 int natural_damage(int roll, int weapon_type, int armour_type, int lbs);
 
-int basic_char_tgh_absorb(struct unit_data *ch);
-int basic_armor_absorb(struct unit_data *armour, int att_type);
-int basic_char_absorb(struct unit_data *ch, struct unit_data *armor, int att_type);
+int basic_char_tgh_absorb(std::shared_ptr<unit_data> ch);
+int basic_armor_absorb(std::shared_ptr<unit_data> armour, int att_type);
+int basic_char_absorb(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> armor, int att_type);
 
-int basic_char_weapon_dam(struct unit_data *ch, struct unit_data *weapon);
-int basic_char_hand_dam(struct unit_data *ch);
-int char_weapon_dam(struct unit_data *ch, struct unit_data *weapon);
-int char_hand_dam(struct unit_data *ch);
+int basic_char_weapon_dam(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> weapon);
+int basic_char_hand_dam(std::shared_ptr<unit_data> ch);
+int char_weapon_dam(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> weapon);
+int char_hand_dam(std::shared_ptr<unit_data> ch);
 
 int relative_level(int l1, int l2);
-int weapon_defense_skill(struct unit_data *ch, int skill);
-int weapon_attack_skill(struct unit_data *ch, int skill);
-int hit_location(struct unit_data *att, struct unit_data *def);
-int effective_dex(struct unit_data *ch);
+int weapon_defense_skill(std::shared_ptr<unit_data> ch, int skill);
+int weapon_attack_skill(std::shared_ptr<unit_data> ch, int skill);
+int hit_location(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def);
+int effective_dex(std::shared_ptr<unit_data> ch);
 
 int  av_value(int abila, int abilb, int skilla, int skillb);
 int  av_howmuch(int av);
 int  av_makes(int av);
-void check_fitting(struct unit_data *u);
+void check_fitting(std::shared_ptr<unit_data> u);
 
 extern struct race_info_type race_info[PC_RACE_MAX];
 extern const char           *pc_races[PC_RACE_MAX + 1];

@@ -51,11 +51,11 @@
 #include <stdlib.h>
 
 /* Extern structures */
-extern struct unit_data *unit_list;
+extern std::shared_ptr<unit_data> unit_list;
 
 /* Extern procedure */
-void update_pos(struct unit_data *victim);
-void modify_hit(struct unit_data *ch, int hit);
+void update_pos(std::shared_ptr<unit_data> victim);
+void modify_hit(std::shared_ptr<unit_data> ch, int hit);
 
 void spell_remove_curse(struct spell_args *sa)
 {
@@ -63,7 +63,7 @@ void spell_remove_curse(struct spell_args *sa)
       Spell Remove Curse:
       This spell removes the gods bad attention from a character.
       */
-   struct unit_data          *u;
+   std::shared_ptr<unit_data> u;
    struct unit_affected_type *af;
 
    /* removes curse on unit and contents (if obj) */
@@ -216,7 +216,7 @@ void spell_repel_undead_1(struct spell_args *sa)
 
 void spell_repel_undead_2(struct spell_args *sa)
 {
-   struct unit_data         *u;
+   std::shared_ptr<unit_data> u;
    struct unit_affected_type af;
    int                       p;
 
@@ -313,7 +313,7 @@ void spell_lock(struct spell_args *sa)
 {
    struct door_data *a_door = NULL;
 
-   struct door_data *locate_lock(struct unit_data * ch, char *arg);
+   struct door_data *locate_lock(std::shared_ptr<unit_data>  ch, char *arg);
 
    char mbuf[MAX_INPUT_LENGTH];
    strcpy(mbuf, sa->arg);
@@ -361,7 +361,7 @@ void spell_unlock(struct spell_args *sa)
 {
    struct door_data *a_door = NULL;
 
-   struct door_data *locate_lock(struct unit_data * ch, char *arg);
+   struct door_data *locate_lock(std::shared_ptr<unit_data>  ch, char *arg);
 
    char mbuf[MAX_INPUT_LENGTH];
    strcpy(mbuf, sa->arg);

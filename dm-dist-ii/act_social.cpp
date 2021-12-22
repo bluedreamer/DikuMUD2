@@ -241,7 +241,7 @@ bool cmd_is_a_social(char *cmd, int complete)
       return search_trie(cmd, soc_trie) != NULL;
 }
 
-bool perform_social(struct unit_data *ch, char *arg, const command_info *cmd)
+bool perform_social(std::shared_ptr<unit_data> ch, char *arg, const command_info *cmd)
 {
    struct social_msg *action;
    char              *oarg = arg;
@@ -260,7 +260,7 @@ bool perform_social(struct unit_data *ch, char *arg, const command_info *cmd)
    }
    else
    {
-      struct unit_data *vict = find_unit(ch, &arg, 0, FIND_UNIT_SURRO);
+      std::shared_ptr<unit_data> vict = find_unit(ch, &arg, 0, FIND_UNIT_SURRO);
 
       if(vict == NULL || !IS_CHAR(vict))
          act(action->not_found, A_SOMEONE, ch, 0, 0, TO_CHAR);
@@ -325,7 +325,7 @@ static int sprint_social(char *b, struct trie_type *t, int *no, char *cur, int i
    return count;
 }
 
-void do_socials(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_socials(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    char buf[MAX_STRING_LENGTH], cur[50];
    int  no = 0;
@@ -344,10 +344,10 @@ void do_socials(struct unit_data *ch, char *arg, const struct command_info *cmd)
       send_to_char("  None!\n\r", ch);
 }
 
-void do_insult(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_insult(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    const char       *insult;
-   struct unit_data *victim;
+   std::shared_ptr<unit_data> victim;
 
    if(str_is_empty(arg))
    {
@@ -447,7 +447,7 @@ void boot_pose_messages(void)
    fclose(fl);
 }
 
-void do_pose(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_pose(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
    send_to_char("Sorry Buggy command.\n\r", ch);
    return;

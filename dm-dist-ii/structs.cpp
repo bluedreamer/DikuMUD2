@@ -273,17 +273,17 @@ unit_data::unit_data(ubit8 type)
    alignment   = 0;
 
    if(IS_ROOM(this))
-      U_ROOM(this) = new(class room_data);
+      U_ROOM(this) = room_data::Create();
    else if(IS_OBJ(this))
-      U_OBJ(this) = new(class obj_data);
+      U_OBJ(this) = obj_data::Create();
    else if(IS_CHAR(this))
    {
-      U_CHAR(this) = new(class char_data);
+      U_CHAR(this) = char_data::Create();
 
       if(IS_PC(this))
-         U_PC(this) = new(class pc_data);
+         U_PC(this) = pc_data::Create();
       else
-         U_NPC(this) = new(class npc_data);
+         U_NPC(this) = npc_data::Create();
    }
    else
       assert(FALSE);
@@ -302,7 +302,7 @@ unit_data::~unit_data(void)
 
    ubit8 type;
 
-   void unlink_affect(struct unit_data * u, struct unit_affected_type * af);
+   void unlink_affect(std::shared_ptr<unit_data>  u, struct unit_affected_type * af);
 
    /* Sanity due to wierd bug I saw (MS, 30/05-95) */
 
@@ -327,20 +327,7 @@ unit_data::~unit_data(void)
    /* that they might want to work on.                                   */
    extra_descr->free_list();
 
-   if(IS_OBJ(this))
-      delete U_OBJ(this);
-   else if(IS_ROOM(this))
-      delete U_ROOM(this);
-   else if(IS_CHAR(this))
-   {
-      if(IS_NPC(this))
-         delete U_NPC(this);
-      else
-         delete U_PC(this);
-
-      delete U_CHAR(this);
-   }
-   else
+   if(!IS_OBJ(this))
       assert(FALSE);
 
 #ifdef MEMORY_DEBUG

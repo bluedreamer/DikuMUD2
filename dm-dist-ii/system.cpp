@@ -94,7 +94,7 @@ void MplexSendSetup(struct descriptor_data *d)
 /* ----------------------------------------------------------------- */
 
 /* Call only once when creating a new char (guest)    */
-void init_char(struct unit_data *ch)
+void init_char(std::shared_ptr<unit_data> ch)
 {
    int new_player_id(void);
 
@@ -254,7 +254,7 @@ descriptor_data::descriptor_data(cMultiHook *pe)
    replyid        = (ubit32)-1;
 
    /* Make a new PC struct */
-   character = new(class unit_data)(UNIT_ST_PC);
+   character = unit_data::Create(UNIT_ST_PC);
    init_char(character);
    CHAR_DESCRIPTOR(character) = this;
 
@@ -335,8 +335,8 @@ void descriptor_close(struct descriptor_data *d, int bSendClose)
    struct descriptor_data *tmp;
    class cMultiHook       *multi = NULL;
 
-   void unsnoop(struct unit_data * ch, int mode);
-   void unswitchbody(struct unit_data * npc);
+   void unsnoop(std::shared_ptr<unit_data>  ch, int mode);
+   void unswitchbody(std::shared_ptr<unit_data>  npc);
    int  is_destructed(int type, void *ptr);
 
    assert(d->character);
@@ -382,7 +382,7 @@ void descriptor_close(struct descriptor_data *d, int bSendClose)
 
       if(!is_destructed(DR_UNIT, d->character))
       {
-         void disconnect_game(struct unit_data * pc);
+         void disconnect_game(std::shared_ptr<unit_data>  pc);
 
          disconnect_game(d->character);
 
@@ -753,7 +753,7 @@ void init_mother(int nPort)
 
 /* Returns how much memory is in use by system. This may help spotting
    possible fragmentation of memory. */
-void system_memory(struct unit_data *ch)
+void system_memory(std::shared_ptr<unit_data> ch)
 {
 #ifdef LINUX
    struct rusage rusage_data;

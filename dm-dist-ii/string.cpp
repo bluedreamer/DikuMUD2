@@ -257,7 +257,7 @@ cStringInstance::~cStringInstance(void)
 
 #ifdef DMSERVER
 
-void string_statistics(struct unit_data *ch)
+void string_statistics(std::shared_ptr<unit_data> ch)
 {
    ubit32 depth, slots;
 

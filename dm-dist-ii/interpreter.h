@@ -27,7 +27,7 @@
 
 #include "dil.h"
 
-int  char_is_playing(struct unit_data *u);
+int  char_is_playing(std::shared_ptr<unit_data> u);
 int  descriptor_is_playing(struct descriptor_data *d);
 void set_descriptor_fptr(struct descriptor_data *d, void (*fptr)(struct descriptor_data *, char *), ubit1 call);
 void descriptor_interpreter(struct descriptor_data *d, char *arg);
@@ -35,10 +35,10 @@ void interpreter_string_add(struct descriptor_data *d, char *str);
 
 struct spec_arg
 {
-   struct unit_data *owner;     /* Who is this?                       */
-   struct unit_data *activator; /* Who performed the operation        */
-   struct unit_data *medium;    /* Possibly what is used in operation */
-   struct unit_data *target;    /* Possible target of operation       */
+   std::shared_ptr<unit_data> owner;     /* Who is this?                       */
+   std::shared_ptr<unit_data> activator; /* Who performed the operation        */
+   std::shared_ptr<unit_data> medium;    /* Possibly what is used in operation */
+   std::shared_ptr<unit_data> target;    /* Possible target of operation       */
 
    struct command_info *cmd;
    struct unit_fptr    *fptr; /* The fptr is allowed to be modified, destroyed */
@@ -60,7 +60,7 @@ struct command_info
 
    ubit8 minimum_position;
 
-   void (*cmd_fptr)(struct unit_data *ch, char *arg, const struct command_info *c);
+   void (*cmd_fptr)(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *c);
 
    ubit8 minimum_level;
    ubit8 log_level; /* For logging certain immortal commands */
@@ -101,208 +101,208 @@ extern struct command_info cmd_a_social;
 ubit1 is_command(const struct command_info *cmd, const char *str);
 
 /* Check to see if typed command is abbreviated */
-ubit1 cmd_is_abbrev(struct unit_data *ch, const struct command_info *cmd);
+ubit1 cmd_is_abbrev(std::shared_ptr<unit_data> ch, const struct command_info *cmd);
 
 /* Interpreter routines */
-void wrong_position(struct unit_data *ch);
-void command_interpreter(struct unit_data *ch, char *argument);
+void wrong_position(std::shared_ptr<unit_data> ch);
+void command_interpreter(std::shared_ptr<unit_data> ch, char *argument);
 void argument_interpreter(const char *argument, char *first_arg, char *second_arg);
 void half_chop(char *string, char *arg1, char *arg2);
 
 /* The routine to check for special routines */
 
-int unit_function_scan(struct unit_data *u, struct spec_arg *sarg);
-int function_activate(struct unit_data *u, struct spec_arg *sarg);
+int unit_function_scan(std::shared_ptr<unit_data> u, struct spec_arg *sarg);
+int function_activate(std::shared_ptr<unit_data> u, struct spec_arg *sarg);
 #ifdef DMSERVER
-int basic_special(struct unit_data *ch, struct spec_arg *sarg, ubit16 mflt, struct unit_data *extra_target = NULL);
+int basic_special(std::shared_ptr<unit_data> ch, struct spec_arg *sarg, ubit16 mflt, std::shared_ptr<unit_data> extra_target = NULL);
 #endif
-int  send_preprocess(struct unit_data *ch, const struct command_info *cmd, char *arg);
-void send_done(struct unit_data          *activator,
-               struct unit_data          *medium,
-               struct unit_data          *target,
+int  send_preprocess(std::shared_ptr<unit_data> ch, const struct command_info *cmd, char *arg);
+void send_done(std::shared_ptr<unit_data> activator,
+               std::shared_ptr<unit_data> medium,
+               std::shared_ptr<unit_data> target,
                int                        i,
                const struct command_info *cmd,
                const char                *arg,
-               struct unit_data          *extra_target = NULL);
-int  send_ack(struct unit_data          *activator,
-              struct unit_data          *medium,
-              struct unit_data          *target,
+               std::shared_ptr<unit_data> extra_target = NULL);
+int  send_ack(std::shared_ptr<unit_data> activator,
+              std::shared_ptr<unit_data> medium,
+              std::shared_ptr<unit_data> target,
               int                       *i,
               const struct command_info *cmd,
               const char                *arg,
-              struct unit_data          *extra_target);
-int  send_message(struct unit_data *ch, char *arg);
-int  send_death(struct unit_data *ch);
-int  send_combat(struct unit_data *ch);
-int  send_save_to(struct unit_data *from, struct unit_data *to);
+              std::shared_ptr<unit_data> extra_target);
+int  send_message(std::shared_ptr<unit_data> ch, char *arg);
+int  send_death(std::shared_ptr<unit_data> ch);
+int  send_combat(std::shared_ptr<unit_data> ch);
+int  send_save_to(std::shared_ptr<unit_data> from, std::shared_ptr<unit_data> to);
 
 #include "spec_assign.h"
 
-void do_ignore(struct unit_data *, char *, const struct command_info *);
-void do_reply(struct unit_data *, char *, const struct command_info *);
-void do_expert(struct unit_data *, char *, const struct command_info *);
-void do_manifest(struct unit_data *, char *, const struct command_info *);
-void do_sacrifice(struct unit_data *, char *, const struct command_info *);
-void do_pray(struct unit_data *, char *, const struct command_info *);
-void do_exit(struct unit_data *, char *, const struct command_info *);
-void do_look(struct unit_data *, char *, const struct command_info *);
-void do_read(struct unit_data *, char *, const struct command_info *);
-void do_say(struct unit_data *, char *, const struct command_info *);
-void do_snoop(struct unit_data *, char *, const struct command_info *);
-void do_delete(struct unit_data *, char *, const struct command_info *);
-void do_insult(struct unit_data *, char *, const struct command_info *);
-void do_quit(struct unit_data *, char *, const struct command_info *);
-void do_help(struct unit_data *, char *, const struct command_info *);
-void do_who(struct unit_data *, char *, const struct command_info *);
-void do_emote(struct unit_data *, char *, const struct command_info *);
-void do_echo(struct unit_data *, char *, const struct command_info *);
-void do_trans(struct unit_data *, char *, const struct command_info *);
-void do_reset(struct unit_data *, char *, const struct command_info *);
-void do_kill(struct unit_data *, char *, const struct command_info *);
-void do_stand(struct unit_data *, char *, const struct command_info *);
-void do_sit(struct unit_data *, char *, const struct command_info *);
-void do_rest(struct unit_data *, char *, const struct command_info *);
-void do_sleep(struct unit_data *, char *, const struct command_info *);
-void do_wake(struct unit_data *, char *, const struct command_info *);
-void do_force(struct unit_data *, char *, const struct command_info *);
-void do_get(struct unit_data *, char *, const struct command_info *);
-void do_drop(struct unit_data *, char *, const struct command_info *);
-void do_news(struct unit_data *, char *, const struct command_info *);
-void do_score(struct unit_data *, char *, const struct command_info *);
-void do_guild(struct unit_data *, char *, const struct command_info *);
-void do_status(struct unit_data *, char *, const struct command_info *);
-void do_inventory(struct unit_data *, char *, const struct command_info *);
-void do_equipment(struct unit_data *, char *, const struct command_info *);
-void do_shout(struct unit_data *, char *, const struct command_info *);
-void do_not_here(struct unit_data *, char *, const struct command_info *);
-void do_tell(struct unit_data *, char *, const struct command_info *);
-void do_wear(struct unit_data *, char *, const struct command_info *);
-void do_wield(struct unit_data *, char *, const struct command_info *);
-void do_grab(struct unit_data *, char *, const struct command_info *);
-void do_remove(struct unit_data *, char *, const struct command_info *);
-void do_put(struct unit_data *, char *, const struct command_info *);
-void do_shutdown(struct unit_data *, char *, const struct command_info *);
-void do_reboot(struct unit_data *, char *, const struct command_info *);
-void do_execute(struct unit_data *, char *, const struct command_info *);
-void do_save(struct unit_data *, char *, const struct command_info *);
-void do_hit(struct unit_data *, char *, const struct command_info *);
-void do_set(struct unit_data *, char *, const struct command_info *);
-void do_setskill(struct unit_data *, char *, const struct command_info *);
-void do_give(struct unit_data *, char *, const struct command_info *);
-void do_wstat(struct unit_data *, char *, const struct command_info *);
-void do_setskill(struct unit_data *, char *, const struct command_info *);
-void do_time(struct unit_data *, char *, const struct command_info *);
-void do_weather(struct unit_data *, char *, const struct command_info *);
-void do_load(struct unit_data *, char *, const struct command_info *);
-void do_purge(struct unit_data *, char *, const struct command_info *);
-void do_ideatypobug(struct unit_data *, char *, const struct command_info *);
-void do_whisper(struct unit_data *, char *, const struct command_info *);
-void do_cast(struct unit_data *, char *, const struct command_info *);
-void do_at(struct unit_data *, char *, const struct command_info *);
-void do_goto(struct unit_data *, char *, const struct command_info *);
-void do_ask(struct unit_data *, char *, const struct command_info *);
-void do_drink(struct unit_data *, char *, const struct command_info *);
-void do_eat(struct unit_data *, char *, const struct command_info *);
-void do_pour(struct unit_data *, char *, const struct command_info *);
-void do_sip(struct unit_data *, char *, const struct command_info *);
-void do_taste(struct unit_data *, char *, const struct command_info *);
-void do_order(struct unit_data *, char *, const struct command_info *);
-void do_follow(struct unit_data *, char *, const struct command_info *);
-void do_rent(struct unit_data *, char *, const struct command_info *);
-void do_offer(struct unit_data *, char *, const struct command_info *);
-void do_advance(struct unit_data *, char *, const struct command_info *);
-void do_close(struct unit_data *, char *, const struct command_info *);
-void do_open(struct unit_data *, char *, const struct command_info *);
-void do_lock(struct unit_data *, char *, const struct command_info *);
-void do_unlock(struct unit_data *, char *, const struct command_info *);
-void do_exits(struct unit_data *, char *, const struct command_info *);
-void do_enter(struct unit_data *, char *, const struct command_info *);
-void do_leave(struct unit_data *, char *, const struct command_info *);
-void do_write(struct unit_data *, char *, const struct command_info *);
-void do_flee(struct unit_data *, char *, const struct command_info *);
-void do_sneak(struct unit_data *, char *, const struct command_info *);
-void do_hide(struct unit_data *, char *, const struct command_info *);
-void do_backstab(struct unit_data *, char *, const struct command_info *);
-void do_pick(struct unit_data *, char *, const struct command_info *);
-void do_steal(struct unit_data *, char *, const struct command_info *);
-void do_bash(struct unit_data *, char *, const struct command_info *);
-void do_rescue(struct unit_data *, char *, const struct command_info *);
-void do_kick(struct unit_data *, char *, const struct command_info *);
-void do_search(struct unit_data *, char *, const struct command_info *);
-void do_examine(struct unit_data *, char *, const struct command_info *);
-void do_info(struct unit_data *, char *, const struct command_info *);
-void do_users(struct unit_data *, char *, const struct command_info *);
-void do_where(struct unit_data *, char *, const struct command_info *);
-void do_level(struct unit_data *, char *, const struct command_info *);
-void do_reroll(struct unit_data *, char *, const struct command_info *);
-void do_brief(struct unit_data *, char *, const struct command_info *);
-void do_wizlist(struct unit_data *, char *, const struct command_info *);
-void do_consider(struct unit_data *, char *, const struct command_info *);
-void do_group(struct unit_data *, char *, const struct command_info *);
-void do_restore(struct unit_data *, char *, const struct command_info *);
-void do_ban(struct unit_data *, char *, const struct command_info *);
-void do_switch(struct unit_data *, char *, const struct command_info *);
-void do_quaff(struct unit_data *, char *, const struct command_info *);
-void do_recite(struct unit_data *, char *, const struct command_info *);
-void do_use(struct unit_data *, char *, const struct command_info *);
-void do_pose(struct unit_data *, char *, const struct command_info *);
-void do_noshout(struct unit_data *, char *, const struct command_info *);
-void do_change(struct unit_data *, char *, const struct command_info *);
-void do_prompt(struct unit_data *, char *, const struct command_info *);
-void do_echosay(struct unit_data *, char *, const struct command_info *);
-void do_notell(struct unit_data *, char *, const struct command_info *);
-void do_wizhelp(struct unit_data *, char *, const struct command_info *);
-void do_credits(struct unit_data *, char *, const struct command_info *);
-void do_compact(struct unit_data *, char *, const struct command_info *);
-void do_dig(struct unit_data *, char *, const struct command_info *);
-void do_bury(struct unit_data *, char *, const struct command_info *);
-void do_turn(struct unit_data *, char *, const struct command_info *);
-void do_diagnose(struct unit_data *, char *, const struct command_info *);
-void do_appraise(struct unit_data *, char *, const struct command_info *);
-void do_ventriloquate(struct unit_data *, char *, const struct command_info *);
-void do_aid(struct unit_data *, char *, const struct command_info *);
-void do_light(struct unit_data *, char *, const struct command_info *);
-void do_extinguish(struct unit_data *, char *, const struct command_info *);
-void do_wimpy(struct unit_data *, char *, const struct command_info *);
-void do_peaceful(struct unit_data *, char *, const struct command_info *);
-void do_wizinv(struct unit_data *, char *, const struct command_info *);
-void do_drag(struct unit_data *, char *, const struct command_info *);
-void do_path(struct unit_data *, char *, const struct command_info *);
-void do_freeze(struct unit_data *, char *, const struct command_info *);
-void do_file(struct unit_data *, char *, const struct command_info *);
-void do_knock(struct unit_data *, char *, const struct command_info *);
-void do_message(struct unit_data *, char *, const struct command_info *);
-void do_broadcast(struct unit_data *, char *, const struct command_info *);
-void do_wiz(struct unit_data *, char *, const struct command_info *);
-void do_title(struct unit_data *, char *, const struct command_info *);
-void do_split(struct unit_data *, char *, const struct command_info *);
+void do_ignore(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_reply(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_expert(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_manifest(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_sacrifice(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_pray(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_exit(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_look(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_read(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_say(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_snoop(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_delete(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_insult(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_quit(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_help(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_who(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_emote(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_echo(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_trans(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_reset(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_kill(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_stand(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_sit(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_rest(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_sleep(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_wake(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_force(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_get(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_drop(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_news(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_score(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_guild(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_status(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_inventory(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_equipment(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_shout(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_not_here(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_tell(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_wear(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_wield(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_grab(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_remove(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_put(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_shutdown(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_reboot(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_execute(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_save(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_hit(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_set(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_setskill(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_give(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_wstat(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_setskill(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_time(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_weather(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_load(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_purge(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_ideatypobug(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_whisper(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_cast(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_at(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_goto(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_ask(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_drink(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_eat(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_pour(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_sip(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_taste(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_order(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_follow(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_rent(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_offer(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_advance(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_close(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_open(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_lock(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_unlock(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_exits(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_enter(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_leave(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_write(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_flee(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_sneak(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_hide(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_backstab(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_pick(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_steal(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_bash(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_rescue(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_kick(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_search(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_examine(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_info(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_users(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_where(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_level(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_reroll(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_brief(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_wizlist(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_consider(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_group(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_restore(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_ban(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_switch(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_quaff(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_recite(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_use(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_pose(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_noshout(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_change(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_prompt(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_echosay(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_notell(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_wizhelp(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_credits(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_compact(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_dig(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_bury(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_turn(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_diagnose(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_appraise(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_ventriloquate(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_aid(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_light(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_extinguish(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_wimpy(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_peaceful(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_wizinv(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_drag(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_path(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_freeze(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_file(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_knock(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_message(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_broadcast(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_wiz(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_title(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_split(std::shared_ptr<unit_data> , char *, const struct command_info *);
 
-void do_crash(struct unit_data *, char *, const struct command_info *);
-void do_wizlock(struct unit_data *, char *, const struct command_info *);
+void do_crash(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_wizlock(std::shared_ptr<unit_data> , char *, const struct command_info *);
 
-void do_practice(struct unit_data *, char *, const struct command_info *);
-void do_move(struct unit_data *, char *, const struct command_info *);
+void do_practice(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_move(std::shared_ptr<unit_data> , char *, const struct command_info *);
 
-void do_ride(struct unit_data *, char *, const struct command_info *);
-void do_sail(struct unit_data *, char *, const struct command_info *);
+void do_ride(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_sail(std::shared_ptr<unit_data> , char *, const struct command_info *);
 
-void do_quests(struct unit_data *, char *, const struct command_info *);
-void do_decapitate(struct unit_data *, char *, const struct command_info *);
+void do_quests(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_decapitate(std::shared_ptr<unit_data> , char *, const struct command_info *);
 
-void do_purse(struct unit_data *, char *, const struct command_info *);
-void do_makemoney(struct unit_data *, char *, const struct command_info *);
-void do_verify(struct unit_data *, char *, const struct command_info *);
+void do_purse(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_makemoney(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_verify(std::shared_ptr<unit_data> , char *, const struct command_info *);
 
-void do_commands(struct unit_data *, char *, const struct command_info *);
-void do_socials(struct unit_data *, char *, const struct command_info *);
+void do_commands(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_socials(std::shared_ptr<unit_data> , char *, const struct command_info *);
 
-void do_boards(struct unit_data *, char *, const struct command_info *);
-void do_reimb(struct unit_data *, char *, const struct command_info *);
-void do_finger(struct unit_data *, char *, const struct command_info *);
-void do_account(struct unit_data *, char *, const struct command_info *);
-void do_kickit(struct unit_data *, char *, const struct command_info *);
-void do_corpses(struct unit_data *, char *, const struct command_info *);
-void do_inform(struct unit_data *, char *, const struct command_info *);
-void do_areas(struct unit_data *, char *, const struct command_info *);
+void do_boards(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_reimb(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_finger(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_account(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_kickit(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_corpses(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_inform(std::shared_ptr<unit_data> , char *, const struct command_info *);
+void do_areas(std::shared_ptr<unit_data> , char *, const struct command_info *);
 
 #endif /* _MUD_INTERPRETER_H */

@@ -25,7 +25,9 @@
 #ifndef _MUD_ACCOUNT_H
 #define _MUD_ACCOUNT_H
 
+#include <memory>
 #include "essential.h"
+#include "structs.h"
 
 #define MAX_FLATRATE 2
 
@@ -61,24 +63,24 @@ public:
 
 extern class CAccountConfig g_cAccountConfig;
 
-void account_flatrate_change(struct unit_data *god, struct unit_data *whom, sbit32 days);
+void account_flatrate_change(std::shared_ptr<unit_data> god, std::shared_ptr<unit_data> whom, sbit32 days);
 
-void account_cclog(struct unit_data *ch, int amount);
+void account_cclog(std::shared_ptr<unit_data> ch, int amount);
 
-void account_insert(struct unit_data *god, struct unit_data *whom, ubit32 amount);
-void account_withdraw(struct unit_data *god, struct unit_data *whom, ubit32 amount);
-void account_global_stat(const struct unit_data *ch);
-void account_local_stat(const struct unit_data *ch, struct unit_data *u);
+void account_insert(std::shared_ptr<unit_data> god, std::shared_ptr<unit_data> whom, ubit32 amount);
+void account_withdraw(std::shared_ptr<unit_data> god, std::shared_ptr<unit_data> whom, ubit32 amount);
+void account_global_stat(const std::shared_ptr<unit_data> ch);
+void account_local_stat(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u);
 
-void account_defaults(struct unit_data *pc);
+void account_defaults(std::shared_ptr<unit_data> pc);
 
-void account_subtract(struct unit_data *pc, time_t from, time_t to);
+void account_subtract(std::shared_ptr<unit_data> pc, time_t from, time_t to);
 
-int  account_is_overdue(const struct unit_data *ch);
-void account_overdue(const struct unit_data *ch);
+int  account_is_overdue(const std::shared_ptr<unit_data> ch);
+void account_overdue(const std::shared_ptr<unit_data> ch);
 
-void account_paypoint(struct unit_data *ch);
-void account_closed(struct unit_data *ch);
-int  account_is_closed(struct unit_data *ch);
+void account_paypoint(std::shared_ptr<unit_data> ch);
+void account_closed(std::shared_ptr<unit_data> ch);
+int  account_is_closed(std::shared_ptr<unit_data> ch);
 
 #endif

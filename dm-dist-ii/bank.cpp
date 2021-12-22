@@ -38,7 +38,7 @@ static int INTEREST = 5;
 static amount_t balance[MAX_CURRENCY + 1];
 static bool     changed_balance;
 
-static bool init_bank(const struct unit_data *pc, struct unit_data *clerk, bool init)
+static bool init_bank(const std::shared_ptr<unit_data> pc, std::shared_ptr<unit_data> clerk, bool init)
 {
    if(clerk && !CHAR_IS_READY(clerk))
       act("It seems that $3e isn't paying attention!", A_SOMEONE, pc, 0, clerk, TO_CHAR);
@@ -71,7 +71,7 @@ static bool init_bank(const struct unit_data *pc, struct unit_data *clerk, bool 
    return FALSE;
 }
 
-static void cmd_balance(const struct unit_data *pc, struct unit_data *clerk, char *s)
+static void cmd_balance(const std::shared_ptr<unit_data> pc, std::shared_ptr<unit_data> clerk, char *s)
 {
    char buf[1024];
    bool any = FALSE;
@@ -98,9 +98,9 @@ static void cmd_balance(const struct unit_data *pc, struct unit_data *clerk, cha
    act("$1n talks to $3n.", A_SOMEONE, pc, 0, clerk, TO_ROOM);
 }
 
-static void cmd_deposit(const struct unit_data *pc, struct unit_data *clerk, char *s)
+static void cmd_deposit(const std::shared_ptr<unit_data> pc, std::shared_ptr<unit_data> clerk, char *s)
 {
-   struct unit_data *thing;
+   std::shared_ptr<unit_data> thing;
    amount_t          amount = 0;
 
    if(!init_bank(pc, clerk, TRUE))
@@ -165,9 +165,9 @@ static void cmd_deposit(const struct unit_data *pc, struct unit_data *clerk, cha
    }
 }
 
-static void cmd_exchange(const struct unit_data *pc, struct unit_data *clerk, char *s)
+static void cmd_exchange(const std::shared_ptr<unit_data> pc, std::shared_ptr<unit_data> clerk, char *s)
 {
-   struct unit_data *thing;
+   std::shared_ptr<unit_data> thing;
    currency_t        cur;
    amount_t          amount = 0;
 
@@ -226,7 +226,7 @@ static void cmd_exchange(const struct unit_data *pc, struct unit_data *clerk, ch
       act("You get $2t back.", A_SOMEONE, pc, money_string(amount, cur, TRUE), 0, TO_CHAR);
 
       extract_unit(thing);
-      money_to_unit((struct unit_data *)pc, amount, cur);
+      money_to_unit(pc, amount, cur);
    }
    else if((s = str_ccmp_next_word(s, "to")))
    {
@@ -242,7 +242,7 @@ static void cmd_exchange(const struct unit_data *pc, struct unit_data *clerk, ch
       if(i > MAX_MONEY)
       {
          act("$1n shrugs and says 'Never heard of that one before, $3n.'", A_SOMEONE, clerk, 0, pc, TO_VICT);
-         unit_to_unit(thing, (struct unit_data *)pc);
+         unit_to_unit(thing, pc);
          return;
       }
 
@@ -257,24 +257,24 @@ static void cmd_exchange(const struct unit_data *pc, struct unit_data *clerk, ch
 
       if(tmp > 0)
       {
-         coins_to_unit((struct unit_data *)pc, tmp, i);
+         coins_to_unit(pc, tmp, i);
          act("You get $2d $3t back.", A_SOMEONE, pc, &tmp, tmp == 1 ? money_singularis_type(i) : money_pluralis_type(i), TO_CHAR);
       }
       if(remainder > 0)
       {
-         money_to_unit((struct unit_data *)pc, remainder, cur);
+         money_to_unit(pc, remainder, cur);
          act(tmp > 0 ? "...and $2t in change." : "You get $2t back.", A_SOMEONE, pc, money_string(remainder, cur, TRUE), 0, TO_CHAR);
       }
    }
    else
    {
       act("$1n says 'Exchange to what, $3n?'", A_SOMEONE, clerk, 0, pc, TO_VICT);
-      unit_to_unit(thing, (struct unit_data *)pc);
+      unit_to_unit(thing, pc);
       return;
    }
 }
 
-static void cmd_withdraw(const struct unit_data *pc, struct unit_data *clerk, char *s)
+static void cmd_withdraw(const std::shared_ptr<unit_data> pc, std::shared_ptr<unit_data> clerk, char *s)
 {
    currency_t cur = 0;
    amount_t   amount;
@@ -322,7 +322,7 @@ static void cmd_withdraw(const struct unit_data *pc, struct unit_data *clerk, ch
       balance[cur] -= amount * money_types[i].relative_value;
       changed_balance = TRUE;
 
-      coins_to_unit((struct unit_data *)pc, amount, i);
+      coins_to_unit((std::shared_ptr<unit_data> )pc, amount, i);
 
       act("$3n hands $1n some $2t.", A_SOMEONE, pc, money_pluralis_type(i), clerk, TO_ROOM);
       act("$3n hands you your $2t.", A_SOMEONE, pc, money_pluralis_type(i), clerk, TO_CHAR);
@@ -367,9 +367,9 @@ int bank(struct spec_arg *sarg)
    return SFR_BLOCK;
 }
 
-static bool move_money_up(struct unit_data *ch, struct unit_data *u)
+static bool move_money_up(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
-   struct unit_data *tmp, *next;
+   std::shared_ptr<unit_data> tmp, *next;
    bool              found = FALSE;
 
    for(tmp = UNIT_CONTAINS(u); tmp; tmp = next)
@@ -389,7 +389,7 @@ static bool move_money_up(struct unit_data *ch, struct unit_data *u)
    return found;
 }
 
-void tax_player(struct unit_data *ch)
+void tax_player(std::shared_ptr<unit_data> ch)
 {
    amount_t                limit = 50 * PLATINUM_MULT;
    struct descriptor_data *d     = CHAR_DESCRIPTOR(ch);
@@ -481,7 +481,7 @@ void tax_player(struct unit_data *ch)
    }
 }
 
-void stat_bank(const struct unit_data *ch, struct unit_data *u)
+void stat_bank(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
    bool none = TRUE;
    int  i;

@@ -40,14 +40,14 @@
 
 /* ----- FUNCTIONS ----- */
 
-struct unit_data *hometown_unit(char *str)
+std::shared_ptr<unit_data> hometown_unit(char *str)
 {
-   extern struct unit_data *entry_room;
+   extern std::shared_ptr<unit_data> entry_room;
 
    if(str)
    {
       char              name[80], zone[80];
-      struct unit_data *u;
+      std::shared_ptr<unit_data> u;
 
       split_fi_ref(str, zone, name);
       if((u = world_room(zone, name)))

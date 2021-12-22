@@ -27,7 +27,7 @@
 
 #include "essential.h"
 
-void string_statistics(struct unit_data *ch);
+void string_statistics(std::shared_ptr<unit_data> ch);
 
 class cStringConstant
 {

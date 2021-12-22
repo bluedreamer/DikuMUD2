@@ -25,6 +25,6 @@
 #ifndef _MUD_ACT_H
 #define _MUD_ACT_H
 
-const char *obj_wear_size(struct unit_data *ch, struct unit_data *obj, int keyword = -1);
+const char *obj_wear_size(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, int keyword = -1);
 
 #endif

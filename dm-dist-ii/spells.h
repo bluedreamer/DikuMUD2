@@ -29,9 +29,9 @@
 
 int spell_perform(int               spell_no,
                   int               spell_type,
-                  struct unit_data *caster,
-                  struct unit_data *medium,
-                  struct unit_data *target,
+                  std::shared_ptr<unit_data> caster,
+                  std::shared_ptr<unit_data> medium,
+                  std::shared_ptr<unit_data> target,
                   char             *argument,
                   char             *pEffect = NULL,
                   int               bonus   = 0);
@@ -39,7 +39,7 @@ int spell_perform(int               spell_no,
 #include "dil.h"
 
 ubit1 spell_legal_type(int spl, int type);
-ubit1 spell_legal_target(int spl, struct unit_data *c, struct unit_data *t);
+ubit1 spell_legal_target(int spl, std::shared_ptr<unit_data> c, std::shared_ptr<unit_data> t);
 
 struct spell_args
 {
@@ -83,6 +83,6 @@ extern struct requirement_type spl_requirement[];
 
 #define SPL_POW_REQ(spell) MIN(SPL_MAG_REQ(spell), SPL_DIV_REQ(spell))
 
-void set_spellargs(struct spell_args *sa, struct unit_data *caster, struct unit_data *medium, struct unit_data *target, char *arg, int hm);
+void set_spellargs(struct spell_args *sa, std::shared_ptr<unit_data> caster, std::shared_ptr<unit_data> medium, std::shared_ptr<unit_data> target, char *arg, int hm);
 
 #endif /* _MUD_SPELLS_H */

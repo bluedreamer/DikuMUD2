@@ -61,15 +61,15 @@
 #include <string.h>
 #include <time.h>
 
-extern struct unit_data       *unit_list;
-extern struct unit_data       *combat_list;
+extern std::shared_ptr<unit_data> unit_list;
+extern std::shared_ptr<unit_data> combat_list;
 extern struct descriptor_data *descriptor_list;
 
 /* External procedures */
 
-void stop_special(struct unit_data *u, struct unit_fptr *fptr);
+void stop_special(std::shared_ptr<unit_data> u, struct unit_fptr *fptr);
 
-struct descriptor_data *unit_is_edited(struct unit_data *u)
+struct descriptor_data *unit_is_edited(std::shared_ptr<unit_data> u)
 {
    struct descriptor_data *d;
 
@@ -81,9 +81,9 @@ struct descriptor_data *unit_is_edited(struct unit_data *u)
 }
 
 /* By using this, we can easily sort the list if ever needed */
-void insert_in_unit_list(struct unit_data *u)
+void insert_in_unit_list(std::shared_ptr<unit_data> u)
 {
-   struct unit_data *tmp_u;
+   std::shared_ptr<unit_data> tmp_u;
 
    tmp_u = unit_list;
 
@@ -111,7 +111,7 @@ void insert_in_unit_list(struct unit_data *u)
 }
 
 /* Remove a unit from the unit_list */
-void remove_from_unit_list(struct unit_data *unit)
+void remove_from_unit_list(std::shared_ptr<unit_data> unit)
 {
    assert(unit->gprevious || unit->gnext || (unit_list == unit));
 
@@ -126,7 +126,7 @@ void remove_from_unit_list(struct unit_data *unit)
    unit->gnext = unit->gprevious = NULL;
 }
 
-struct unit_fptr *find_fptr(struct unit_data *u, ubit16 idx)
+struct unit_fptr *find_fptr(std::shared_ptr<unit_data> u, ubit16 idx)
 {
    struct unit_fptr *tf;
 
@@ -137,11 +137,11 @@ struct unit_fptr *find_fptr(struct unit_data *u, ubit16 idx)
    return NULL;
 }
 
-struct unit_fptr *create_fptr(struct unit_data *u, ubit16 index, ubit16 beat, ubit16 flags, void *data)
+struct unit_fptr *create_fptr(std::shared_ptr<unit_data> u, ubit16 index, ubit16 beat, ubit16 flags, void *data)
 {
    struct unit_fptr *f;
 
-   void start_special(struct unit_data * u, struct unit_fptr * fptr);
+   void start_special(std::shared_ptr<unit_data>  u, struct unit_fptr * fptr);
 
    CREATE(f, struct unit_fptr, 1);
    assert(f);
@@ -161,7 +161,7 @@ struct unit_fptr *create_fptr(struct unit_data *u, ubit16 index, ubit16 beat, ub
 }
 
 /* Does not free 'f' - it is done by clear_destruct by comm.c */
-void destroy_fptr(struct unit_data *u, struct unit_fptr *f)
+void destroy_fptr(std::shared_ptr<unit_data> u, struct unit_fptr *f)
 {
    struct unit_fptr *tf;
    struct spec_arg   sarg;
@@ -170,7 +170,7 @@ void destroy_fptr(struct unit_data *u, struct unit_fptr *f)
    extern struct command_info             cmd_auto_extract;
 
    void register_destruct(int i, void *ptr);
-   void add_func_history(struct unit_data * u, ubit16, ubit16);
+   void add_func_history(std::shared_ptr<unit_data>  u, ubit16, ubit16);
 
    assert(f);
    assert(!is_destructed(DR_FUNC, f));
@@ -181,7 +181,7 @@ void destroy_fptr(struct unit_data *u, struct unit_fptr *f)
    add_func_history(u, f->index, 0);
 #endif
 
-   sarg.owner     = (struct unit_data *)u;
+   sarg.owner     = (std::shared_ptr<unit_data> )u;
    sarg.activator = NULL;
    sarg.medium    = NULL;
    sarg.target    = NULL;
@@ -195,7 +195,7 @@ void destroy_fptr(struct unit_data *u, struct unit_fptr *f)
 
    /* Data is free'ed in destruct() if it is not NULL now */
 
-   stop_special((struct unit_data *)u, f);
+   stop_special((std::shared_ptr<unit_data> )u, f);
 
    /* Only unlink function, do not free it! */
    if(UNIT_FUNC(u) == f)
@@ -214,7 +214,7 @@ void destroy_fptr(struct unit_data *u, struct unit_fptr *f)
 
 /* Stop the 'ch' from following his master    */
 /* Call die_follower if a person dies         */
-void stop_following(struct unit_data *ch)
+void stop_following(std::shared_ptr<unit_data> ch)
 {
    struct char_follow_type *j, *k;
 
@@ -243,7 +243,7 @@ void stop_following(struct unit_data *ch)
 }
 
 /* Set 'ch' to follow leader. Circles allowed. */
-void start_following(struct unit_data *ch, struct unit_data *leader)
+void start_following(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> leader)
 {
    struct char_follow_type *k;
 
@@ -265,7 +265,7 @@ void start_following(struct unit_data *ch, struct unit_data *leader)
 }
 
 /* Called by extract_unit when a character that follows/is followed dies */
-void die_follower(struct unit_data *ch)
+void die_follower(std::shared_ptr<unit_data> ch)
 {
    struct char_follow_type *j, *k;
 
@@ -281,9 +281,9 @@ void die_follower(struct unit_data *ch)
 
 /* Call this routine if you modify the brightness of a unit */
 /* in order to correctly update the environment of the unit */
-void modify_bright(struct unit_data *unit, int bright)
+void modify_bright(std::shared_ptr<unit_data> unit, int bright)
 {
-   struct unit_data *ext, *in;
+   std::shared_ptr<unit_data> ext, *in;
 
    UNIT_BRIGHT(unit) += bright;
 
@@ -308,9 +308,9 @@ void modify_bright(struct unit_data *unit, int bright)
    }
 }
 
-void trans_set(struct unit_data *u)
+void trans_set(std::shared_ptr<unit_data> u)
 {
-   struct unit_data *u2;
+   std::shared_ptr<unit_data> u2;
    int               sum = 0;
 
    for(u2 = UNIT_CONTAINS(u); u2; u2 = u2->next)
@@ -323,7 +323,7 @@ void trans_set(struct unit_data *u)
       UNIT_LIGHTS(UNIT_IN(u)) += sum;
 }
 
-void trans_unset(struct unit_data *u)
+void trans_unset(std::shared_ptr<unit_data> u)
 {
    UNIT_BRIGHT(u) -= UNIT_ILLUM(u);
 
@@ -334,9 +334,9 @@ void trans_unset(struct unit_data *u)
 }
 
 /*
-void recalc_dex_red(struct unit_data *ch)
+void recalc_dex_red(std::shared_ptr<unit_data> ch)
 {
-   struct unit_data *eq;
+   std::shared_ptr<unit_data> eq;
    int reduction;
 
    reduction = 0;
@@ -354,9 +354,9 @@ void recalc_dex_red(struct unit_data *ch)
 }
 */
 
-struct unit_data *equipment(struct unit_data *ch, ubit8 pos)
+std::shared_ptr<unit_data> equipment(std::shared_ptr<unit_data> ch, ubit8 pos)
 {
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
 
    assert(IS_CHAR(ch));
 
@@ -369,9 +369,9 @@ struct unit_data *equipment(struct unit_data *ch, ubit8 pos)
 
 /* The following functions find armor / weapons on a person with     */
 /* type checks (i.e. trash does not protect!).                       */
-struct unit_data *equipment_type(struct unit_data *ch, int pos, ubit8 type)
+std::shared_ptr<unit_data> equipment_type(std::shared_ptr<unit_data> ch, int pos, ubit8 type)
 {
-   struct unit_data *obj;
+   std::shared_ptr<unit_data> obj;
 
    obj = equipment(ch, pos);
 
@@ -381,7 +381,7 @@ struct unit_data *equipment_type(struct unit_data *ch, int pos, ubit8 type)
       return NULL;
 }
 
-void equip_char(struct unit_data *ch, struct unit_data *obj, ubit8 pos)
+void equip_char(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, ubit8 pos)
 {
    struct unit_affected_type *af, newaf;
 
@@ -405,9 +405,9 @@ void equip_char(struct unit_data *ch, struct unit_data *obj, ubit8 pos)
       }
 }
 
-struct unit_data *unequip_object(struct unit_data *obj)
+std::shared_ptr<unit_data> unequip_object(std::shared_ptr<unit_data> obj)
 {
-   struct unit_data          *ch;
+   std::shared_ptr<unit_data> ch;
    struct unit_affected_type *af, *caf;
 
    ch = UNIT_IN(obj);
@@ -440,9 +440,9 @@ struct unit_data *unequip_object(struct unit_data *obj)
    return obj;
 }
 
-struct unit_data *unequip_char(struct unit_data *ch, ubit8 pos)
+std::shared_ptr<unit_data> unequip_char(std::shared_ptr<unit_data> ch, ubit8 pos)
 {
-   struct unit_data *obj;
+   std::shared_ptr<unit_data> obj;
 
    obj = equipment(ch, pos);
    assert(obj);
@@ -456,9 +456,9 @@ struct unit_data *unequip_char(struct unit_data *ch, ubit8 pos)
 /* through itself. For example if Papi carries a coffin and God is   */
 /* inside the coffin, when God types trans Papi this function will   */
 /* return TRUE                                                       */
-int unit_recursive(struct unit_data *from, struct unit_data *to)
+int unit_recursive(std::shared_ptr<unit_data> from, std::shared_ptr<unit_data> to)
 {
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
 
    for(u = to; u; u = UNIT_IN(u))
       if(u == from)
@@ -467,9 +467,9 @@ int unit_recursive(struct unit_data *from, struct unit_data *to)
    return FALSE;
 }
 
-std::shared_ptr<zone_type> unit_zone(const struct unit_data *unit)
+std::shared_ptr<zone_type> unit_zone(const std::shared_ptr<unit_data> unit)
 {
-   struct unit_data *org = (struct unit_data *)unit;
+   std::shared_ptr<unit_data> org = (std::shared_ptr<unit_data> )unit;
 
    for(; unit; unit = UNIT_IN(const_cast<unit_data *>(unit)))
       if(!UNIT_IN(const_cast<unit_data *>(unit)))
@@ -482,9 +482,9 @@ std::shared_ptr<zone_type> unit_zone(const struct unit_data *unit)
    return NULL;
 }
 
-struct unit_data *unit_room(struct unit_data *unit)
+std::shared_ptr<unit_data> unit_room(std::shared_ptr<unit_data> unit)
 {
-   struct unit_data *org = unit;
+   std::shared_ptr<unit_data> org = unit;
 
    for(; unit; unit = UNIT_IN(unit))
       if(IS_ROOM(unit))
@@ -494,9 +494,9 @@ struct unit_data *unit_room(struct unit_data *unit)
    return 0;
 }
 
-void intern_unit_up(struct unit_data *unit, ubit1 pile)
+void intern_unit_up(std::shared_ptr<unit_data> unit, ubit1 pile)
 {
-   struct unit_data *u, *in, *toin, *extin;
+   std::shared_ptr<unit_data> u, *in, *toin, *extin;
    sbit8             bright, selfb;
 
    assert(UNIT_IN(unit));
@@ -553,20 +553,22 @@ void intern_unit_up(struct unit_data *unit, ubit1 pile)
       pile_money(unit);
 }
 
-void unit_up(struct unit_data *unit)
+void unit_up(std::shared_ptr<unit_data> unit)
 {
    intern_unit_up(unit, TRUE);
 }
 
-void unit_from_unit(struct unit_data *unit)
+void unit_from_unit(std::shared_ptr<unit_data> unit)
 {
    while(UNIT_IN(unit))
       intern_unit_up(unit, FALSE);
 }
 
-void intern_unit_down(struct unit_data *unit, struct unit_data *to, ubit1 pile)
+void intern_unit_down(std::shared_ptr<unit_data> unit, std::shared_ptr<unit_data> to, ubit1 pile)
 {
-   struct unit_data *u, *in, *extin;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> in;
+   std::shared_ptr<unit_data> extin;
    sbit8             bright, selfb;
 
    assert(UNIT_IN(unit) == UNIT_IN(to));
@@ -621,12 +623,12 @@ void intern_unit_down(struct unit_data *unit, struct unit_data *to, ubit1 pile)
       pile_money(unit);
 }
 
-void unit_down(struct unit_data *unit, struct unit_data *to)
+void unit_down(std::shared_ptr<unit_data> unit, std::shared_ptr<unit_data> to)
 {
    intern_unit_down(unit, to, TRUE);
 }
 
-void intern_unit_to_unit(struct unit_data *unit, struct unit_data *to, ubit1 pile)
+void intern_unit_to_unit(std::shared_ptr<unit_data> unit, std::shared_ptr<unit_data> to, ubit1 pile)
 {
    assert(to);
 
@@ -639,12 +641,12 @@ void intern_unit_to_unit(struct unit_data *unit, struct unit_data *to, ubit1 pil
       pile_money(unit);
 }
 
-void unit_to_unit(struct unit_data *unit, struct unit_data *to)
+void unit_to_unit(std::shared_ptr<unit_data> unit, std::shared_ptr<unit_data> to)
 {
    intern_unit_to_unit(unit, to, TRUE);
 }
 
-void snoop(struct unit_data *ch, struct unit_data *victim)
+void snoop(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> victim)
 {
    assert(!is_destructed(DR_UNIT, victim));
    assert(!is_destructed(DR_UNIT, ch));
@@ -662,7 +664,7 @@ void snoop(struct unit_data *ch, struct unit_data *victim)
 
 /* Mode 0: Stop ch from snooping a person       */
 /* Mode 1: Mode 0 + stop any person snooping ch */
-void unsnoop(struct unit_data *ch, int mode)
+void unsnoop(std::shared_ptr<unit_data> ch, int mode)
 {
    assert(CHAR_DESCRIPTOR(ch));
    assert(CHAR_IS_SNOOPING(ch) || CHAR_IS_SNOOPED(ch));
@@ -682,7 +684,7 @@ void unsnoop(struct unit_data *ch, int mode)
    }
 }
 
-void switchbody(struct unit_data *ch, struct unit_data *vict)
+void switchbody(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> vict)
 {
    assert(CHAR_DESCRIPTOR(ch) && IS_NPC(vict));
    assert(!CHAR_DESCRIPTOR(vict));
@@ -705,7 +707,7 @@ void switchbody(struct unit_data *ch, struct unit_data *vict)
    CHAR_LAST_ROOM(vict)  = NULL;
 }
 
-void unswitchbody(struct unit_data *npc)
+void unswitchbody(std::shared_ptr<unit_data> npc)
 {
    assert(IS_NPC(npc) && CHAR_DESCRIPTOR(npc));
    assert(CHAR_IS_SWITCHED(npc));
@@ -729,15 +731,15 @@ void unswitchbody(struct unit_data *npc)
 
 /* Used when a unit is to be extracted from the game */
 /* Extracts recursively                              */
-void extract_unit(struct unit_data *unit)
+void extract_unit(std::shared_ptr<unit_data> unit)
 {
    struct descriptor_data *d;
 
-   extern struct unit_data *destroy_room;
+   extern std::shared_ptr<unit_data> destroy_room;
 
    void register_destruct(int i, void *ptr);
    void nanny_menu(struct descriptor_data * d, char *arg);
-   void stop_all_special(struct unit_data * u);
+   void stop_all_special(std::shared_ptr<unit_data>  u);
 
    /* Prevent recursive calling on extracted units. */
    /* This happens on for example corpses. When the */
@@ -796,7 +798,7 @@ void extract_unit(struct unit_data *unit)
 
          if(CHAR_DESCRIPTOR(unit))
          {
-            void disconnect_game(struct unit_data * pc);
+            void disconnect_game(std::shared_ptr<unit_data>  pc);
 
             disconnect_game(unit);
          }
@@ -827,13 +829,13 @@ void extract_unit(struct unit_data *unit)
 
 /* Add weight to the unit and change everything it is in */
 /* (It will not change the -basic- weight of a player)   */
-void weight_change_unit(struct unit_data *unit, int weight)
+void weight_change_unit(std::shared_ptr<unit_data> unit, int weight)
 {
    for(; unit; unit = UNIT_IN(unit))
       UNIT_WEIGHT(unit) += weight;
 }
 
-struct extra_descr_data *quest_add(struct unit_data *ch, char *name, char *descr)
+struct extra_descr_data *quest_add(std::shared_ptr<unit_data> ch, char *name, char *descr)
 {
    const char *namelist[2];
 

@@ -45,11 +45,11 @@
 #include <string.h>
 
 /* Extern data */
-extern struct unit_data *unit_list;
+extern std::shared_ptr<unit_data> unit_list;
 
 struct spell_info_type spell_info[SPL_TREE_MAX];
 
-void set_spellargs(struct spell_args *sa, struct unit_data *caster, struct unit_data *medium, struct unit_data *target, char *arg, int hm)
+void set_spellargs(struct spell_args *sa, std::shared_ptr<unit_data> caster, std::shared_ptr<unit_data> medium, std::shared_ptr<unit_data> target, char *arg, int hm)
 {
    sa->caster  = caster;
    sa->medium  = medium;
@@ -68,9 +68,9 @@ ubit1 spell_legal_type(int spl, int type)
 
 /* Check if target is proper compared to specifications in the spell list */
 /* above. Useable with for example wand checks to see if target is legal  */
-ubit1 spell_legal_target(int spl, struct unit_data *caster, struct unit_data *target)
+ubit1 spell_legal_target(int spl, std::shared_ptr<unit_data> caster, std::shared_ptr<unit_data> target)
 {
-   int pk_test(struct unit_data * att, struct unit_data * def, int message);
+   int pk_test(std::shared_ptr<unit_data>  att, std::shared_ptr<unit_data>  def, int message);
 
    if(IS_SET(spell_info[spl].targets, TAR_IGNORE))
       return TRUE;
@@ -94,7 +94,7 @@ ubit1 spell_legal_target(int spl, struct unit_data *caster, struct unit_data *ta
    return FALSE;
 }
 
-void say_spell(struct unit_data *ch, struct unit_data *target, int si)
+void say_spell(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> target, int si)
 {
    if(ch != target)
    {
@@ -111,9 +111,9 @@ void say_spell(struct unit_data *ch, struct unit_data *target, int si)
 
 int spell_perform(int               spell_no,
                   int               spell_type,
-                  struct unit_data *caster,
-                  struct unit_data *medium,
-                  struct unit_data *target,
+                  std::shared_ptr<unit_data> caster,
+                  std::shared_ptr<unit_data> medium,
+                  std::shared_ptr<unit_data> target,
                   char             *argument,
                   char             *pEffect,
                   int               bonus)
@@ -252,9 +252,9 @@ int spell_perform(int               spell_no,
 }
 
 /* Assumes that argument does start with first letter of chopped string */
-void do_cast(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_cast(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *unit;
+   std::shared_ptr<unit_data> unit;
    int               spl;
    ubit1             target_ok;
    char             *orgarg, *c;

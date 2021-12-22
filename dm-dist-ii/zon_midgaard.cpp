@@ -46,11 +46,11 @@
 
 /*   external vars  */
 
-extern struct unit_data       *unit_list;
+extern std::shared_ptr<unit_data> unit_list;
 extern struct descriptor_data *descriptor_list;
 
 /* extern procedures */
-amount_t obj_trade_price(struct unit_data *u);
+amount_t obj_trade_price(std::shared_ptr<unit_data> u);
 
 /* ------------------------------------------------------------------------- */
 /*                     M O B I L E   R O U T I N E S                         */
@@ -58,7 +58,7 @@ amount_t obj_trade_price(struct unit_data *u);
 
 int fido(struct spec_arg *sarg)
 {
-   struct unit_data *i, *temp, *next_obj;
+   std::shared_ptr<unit_data> i, *temp, *next_obj;
 
    if(sarg->cmd->no != CMD_AUTO_TICK || !CHAR_IS_READY(sarg->owner))
       return SFR_SHARE;
@@ -108,7 +108,7 @@ int fido(struct spec_arg *sarg)
 
 int janitor(struct spec_arg *sarg)
 {
-   struct unit_data *i;
+   std::shared_ptr<unit_data> i;
 
    if(sarg->cmd->no != CMD_AUTO_TICK || !CHAR_IS_READY(sarg->owner))
       return SFR_SHARE;
@@ -130,7 +130,7 @@ int janitor(struct spec_arg *sarg)
 int evaluate(struct spec_arg *sarg)
 {
    char             *arg = (char *)sarg->arg;
-   struct unit_data *u1;
+   std::shared_ptr<unit_data> u1;
    char              buf[MAX_STRING_LENGTH];
    amount_t          cost;
    currency_t        currency;

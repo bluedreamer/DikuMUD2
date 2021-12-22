@@ -55,7 +55,7 @@
 extern struct unit_function_array_type unit_function_array[];
 
 bool cmd_is_a_social(char *cmd, int complete);
-bool perform_social(struct unit_data *, char *, const command_info *);
+bool perform_social(std::shared_ptr<unit_data> , char *, const command_info *);
 
 struct trie_type *intr_trie = NULL;
 
@@ -412,7 +412,7 @@ struct command_info cmd_auto_damage = {0, 0, NULL, CMD_AUTO_DAMAGE, POSITION_DEA
 
 struct command_info *cmd_follow = NULL;
 
-void wrong_position(struct unit_data *ch)
+void wrong_position(std::shared_ptr<unit_data> ch)
 {
    static const char *strings[] = {
       "Lie still; you are DEAD!!! :-( \n\r",                               /* Dead     */
@@ -449,7 +449,7 @@ public:
 
 static int command_history_pos = 0;
 
-static void add_command_history(struct unit_data *u, char *str)
+static void add_command_history(std::shared_ptr<unit_data> u, char *str)
 {
    if(IS_PC(u))
       strcpy(command_history_data[command_history_pos].pcname, UNIT_NAME(u));
@@ -494,7 +494,7 @@ public:
 
 static int func_history_pos = 0;
 
-void add_func_history(struct unit_data *u, ubit16 idx, ubit16 flags)
+void add_func_history(std::shared_ptr<unit_data> u, ubit16 idx, ubit16 flags)
 {
    func_history_data[func_history_pos].idx   = idx;
    func_history_data[func_history_pos].flags = flags;
@@ -530,7 +530,7 @@ void dump_debug_history(void)
 }
 #endif
 
-void command_interpreter(struct unit_data *ch, char *arg)
+void command_interpreter(std::shared_ptr<unit_data> ch, char *arg)
 {
    char                 cmd[MAX_INPUT_LENGTH + 10];
    char                 argstr[MAX_INPUT_LENGTH + 10];
@@ -655,7 +655,7 @@ void command_interpreter(struct unit_data *ch, char *arg)
    }
 }
 
-int char_is_playing(struct unit_data *u)
+int char_is_playing(std::shared_ptr<unit_data> u)
 {
    return UNIT_IN(u) != NULL;
 }
@@ -672,7 +672,7 @@ void descriptor_interpreter(struct descriptor_data *d, char *arg)
 }
 
 /* Check to see if the full command was typed */
-ubit1 cmd_is_abbrev(struct unit_data *ch, const struct command_info *cmd)
+ubit1 cmd_is_abbrev(std::shared_ptr<unit_data> ch, const struct command_info *cmd)
 {
    return CHAR_DESCRIPTOR(ch) && str_ccmp(CHAR_DESCRIPTOR(ch)->last_cmd, cmd->cmd_str);
 }
@@ -699,7 +699,7 @@ void argument_interpreter(const char *argument, char *first_arg, char *second_ar
    one_argument(argument, second_arg);
 }
 
-int function_activate(struct unit_data *u, struct spec_arg *sarg)
+int function_activate(std::shared_ptr<unit_data> u, struct spec_arg *sarg)
 {
    if((u != sarg->activator) || IS_SET(sarg->fptr->flags, SFB_AWARE) || IS_SET(sarg->mflags, SFB_AWARE))
    {
@@ -720,7 +720,7 @@ int function_activate(struct unit_data *u, struct spec_arg *sarg)
 /* u is the owner of the function on which the scan is performed */
 /* This function sets the 'sarg->fptr' and 'sarg->owner'         */
 
-int unit_function_scan(struct unit_data *u, struct spec_arg *sarg)
+int unit_function_scan(std::shared_ptr<unit_data> u, struct spec_arg *sarg)
 {
    int               res      = SFR_SHARE;
    int               priority = 0;
@@ -771,9 +771,9 @@ int unit_function_scan(struct unit_data *u, struct spec_arg *sarg)
    if extra_target is set, then also send message to that unit
 */
 
-int basic_special(struct unit_data *ch, struct spec_arg *sarg, ubit16 mflt, struct unit_data *extra_target)
+int basic_special(std::shared_ptr<unit_data> ch, struct spec_arg *sarg, ubit16 mflt, std::shared_ptr<unit_data> extra_target)
 {
-   register struct unit_data *u, *uu, *next, *nextt;
+   register std::shared_ptr<unit_data> u, *uu, *next, *nextt;
 
    sarg->mflags = mflt;
 
@@ -881,7 +881,7 @@ int basic_special(struct unit_data *ch, struct spec_arg *sarg, ubit16 mflt, stru
 }
 
 /* Preprocessed commands */
-int send_preprocess(struct unit_data *ch, const struct command_info *cmd, char *arg)
+int send_preprocess(std::shared_ptr<unit_data> ch, const struct command_info *cmd, char *arg)
 {
    struct spec_arg sarg;
 
@@ -895,7 +895,7 @@ int send_preprocess(struct unit_data *ch, const struct command_info *cmd, char *
    return basic_special(ch, &sarg, SFB_CMD);
 }
 
-int send_message(struct unit_data *ch, char *arg)
+int send_message(std::shared_ptr<unit_data> ch, char *arg)
 {
    struct spec_arg sarg;
 
@@ -909,7 +909,7 @@ int send_message(struct unit_data *ch, char *arg)
    return basic_special(ch, &sarg, SFB_MSG);
 }
 
-int send_death(struct unit_data *ch)
+int send_death(std::shared_ptr<unit_data> ch)
 {
    struct spec_arg sarg;
 
@@ -923,7 +923,7 @@ int send_death(struct unit_data *ch)
    return basic_special(ch, &sarg, SFB_DEAD | SFB_AWARE);
 }
 
-int send_combat(struct unit_data *ch)
+int send_combat(std::shared_ptr<unit_data> ch)
 {
    struct spec_arg sarg;
 
@@ -937,7 +937,7 @@ int send_combat(struct unit_data *ch)
    return basic_special(ch, &sarg, SFB_COM);
 }
 
-int send_save_to(struct unit_data *from, struct unit_data *to)
+int send_save_to(std::shared_ptr<unit_data> from, std::shared_ptr<unit_data> to)
 {
    struct spec_arg sarg;
 
@@ -956,13 +956,13 @@ int send_save_to(struct unit_data *from, struct unit_data *to)
    return unit_function_scan(to, &sarg);
 }
 
-int send_ack(struct unit_data          *activator,
-             struct unit_data          *medium,
-             struct unit_data          *target,
+int send_ack(std::shared_ptr<unit_data> activator,
+             std::shared_ptr<unit_data> medium,
+             std::shared_ptr<unit_data> target,
              int                       *i,
              const struct command_info *cmd,
              const char                *arg,
-             struct unit_data          *extra_target)
+             std::shared_ptr<unit_data> extra_target)
 {
    struct spec_arg sarg;
    int             j = 0;
@@ -982,13 +982,13 @@ int send_ack(struct unit_data          *activator,
    return basic_special(activator, &sarg, SFB_PRE, extra_target);
 }
 
-void send_done(struct unit_data          *activator,
-               struct unit_data          *medium,
-               struct unit_data          *target,
+void send_done(std::shared_ptr<unit_data> activator,
+               std::shared_ptr<unit_data> medium,
+               std::shared_ptr<unit_data> target,
                int                        i,
                const struct command_info *cmd,
                const char                *arg,
-               struct unit_data          *extra_target)
+               std::shared_ptr<unit_data> extra_target)
 {
    struct spec_arg sarg;
 

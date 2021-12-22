@@ -113,10 +113,10 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_INT;
-                  if(IS_PC((struct unit_data *)v1.val.ptr))
-                     v->val.num = (int64_t)PC_ID((struct unit_data *)v1.val.ptr);
+                  if(IS_PC((std::shared_ptr<unit_data> )v1.val.ptr))
+                     v->val.num = (int64_t)PC_ID((std::shared_ptr<unit_data> )v1.val.ptr);
                   else
-                     v->val.num = (int64_t)UNIT_FILE_INDEX((struct unit_data *)v1.val.ptr).get();
+                     v->val.num = (int64_t)UNIT_FILE_INDEX((std::shared_ptr<unit_data> )v1.val.ptr).get();
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -137,11 +137,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr)))
+               if((v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr)))
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_INT;
-                  v->val.num = CHAR_SPEED((struct unit_data *)v1.val.ptr);
+                  v->val.num = CHAR_SPEED((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -162,12 +162,12 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr)))
+               if((v1.val.ptr && IS_PC((std::shared_ptr<unit_data> )v1.val.ptr)))
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_INT;
                   if(g_cServerConfig.m_bAccounting)
-                     v->val.num = PC_ACCOUNT((struct unit_data *)v1.val.ptr).total_credit;
+                     v->val.num = PC_ACCOUNT((std::shared_ptr<unit_data> )v1.val.ptr).total_credit;
                   else
                      v->val.num = 0;
                }
@@ -190,12 +190,12 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if((v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr)))
+               if((v1.val.ptr && IS_PC((std::shared_ptr<unit_data> )v1.val.ptr)))
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_INT;
                   if(g_cServerConfig.m_bAccounting)
-                     v->val.num = (int)PC_ACCOUNT((struct unit_data *)v1.val.ptr).credit;
+                     v->val.num = (int)PC_ACCOUNT((std::shared_ptr<unit_data> )v1.val.ptr).credit;
                   else
                      v->val.num = 0;
                }
@@ -222,7 +222,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_SP;
-                  v->val.ptr = (void *)UNIT_FI_ZONENAME((struct unit_data *)v1.val.ptr);
+                  v->val.ptr = (void *)UNIT_FI_ZONENAME((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -247,7 +247,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_SP;
-                  v->val.ptr = (void *)UNIT_FI_NAME((struct unit_data *)v1.val.ptr).c_str();
+                  v->val.ptr = (void *)UNIT_FI_NAME((std::shared_ptr<unit_data> )v1.val.ptr).c_str();
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -272,7 +272,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = UNIT_TYPE((struct unit_data *)v1.val.ptr);
+                  v->val.num = UNIT_TYPE((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -305,7 +305,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_UP;
-                  v->val.ptr = ((struct unit_data *)v1.val.ptr)->next;
+                  v->val.ptr = ((std::shared_ptr<unit_data> )v1.val.ptr)->next;
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -340,7 +340,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_SLPR;
-                  v->ref  = &UNIT_NAMES((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_NAMES((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -377,7 +377,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_SP;
-                  v->val.ptr = (void *)IF_STR(UNIT_NAME((struct unit_data *)v1.val.ptr));
+                  v->val.ptr = (void *)IF_STR(UNIT_NAME((std::shared_ptr<unit_data> )v1.val.ptr));
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -431,7 +431,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp = DILA_NONE; // Dont dealloc!
                   v->type = DILV_HASHSTR;
-                  v->ref  = &UNIT_OUT_DESCR((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_OUT_DESCR((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -458,7 +458,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp = DILA_NONE; // Dont dealloc!
                   v->type = DILV_HASHSTR;
-                  v->ref  = &UNIT_IN_DESCR((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_IN_DESCR((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -484,7 +484,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp = DILA_NONE; // Dont dealloc!
                   v->type = DILV_HASHSTR;
-                  v->ref  = &UNIT_TITLE((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_TITLE((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -505,11 +505,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_PC((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_SPR;
-                  v->ref  = &PC_HOME((struct unit_data *)v1.val.ptr);
+                  v->ref  = &PC_HOME((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -534,7 +534,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_EDPR;
-                  v->ref  = &UNIT_EXTRA_DESCR((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_EXTRA_DESCR((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -559,7 +559,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_UP;
-                  v->val.ptr = UNIT_IN((struct unit_data *)v1.val.ptr);
+                  v->val.ptr = UNIT_IN((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -584,7 +584,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_UP;
-                  v->val.ptr = UNIT_CONTAINS((struct unit_data *)v1.val.ptr);
+                  v->val.ptr = UNIT_CONTAINS((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -609,7 +609,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_UP;
-                  v->val.ptr = ((struct unit_data *)v1.val.ptr)->gnext;
+                  v->val.ptr = ((std::shared_ptr<unit_data> )v1.val.ptr)->gnext;
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -636,7 +636,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                   v->atyp = DILA_NORM;
                   v->type = DILV_INT;
                   v->val.num =
-                     UNIT_FILE_INDEX((struct unit_data *)v1.val.ptr) ? UNIT_FILE_INDEX((struct unit_data *)v1.val.ptr)->no_in_mem : 1;
+                     UNIT_FILE_INDEX((std::shared_ptr<unit_data> )v1.val.ptr) ? UNIT_FILE_INDEX((std::shared_ptr<unit_data> )v1.val.ptr)->no_in_mem : 1;
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -662,7 +662,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_UP;
-                  v->val.ptr = ((struct unit_data *)v1.val.ptr)->gprevious;
+                  v->val.ptr = ((std::shared_ptr<unit_data> )v1.val.ptr)->gprevious;
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -688,7 +688,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = UNIT_LIGHTS((struct unit_data *)v1.val.ptr);
+                  v->val.num = UNIT_LIGHTS((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -714,7 +714,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = UNIT_BRIGHT((struct unit_data *)v1.val.ptr);
+                  v->val.num = UNIT_BRIGHT((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -739,7 +739,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = UNIT_ILLUM((struct unit_data *)v1.val.ptr);
+                  v->val.num = UNIT_ILLUM((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -765,7 +765,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                   /* ubit16 flags; */
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT2R;
-                  v->ref  = &UNIT_FLAGS((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_FLAGS((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -790,7 +790,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT4R;
-                  v->ref  = &UNIT_MANIPULATE((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_MANIPULATE((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -816,7 +816,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                   /* ubit8 openflags */
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &UNIT_OPEN_FLAGS((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_OPEN_FLAGS((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -837,19 +837,19 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_PC((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
 
                   if(p->stack[0].tmpl->zone->access != 0)
                   {
                      v->type    = DILV_INT;
-                     v->val.num = PC_LIFESPAN((struct unit_data *)v1.val.ptr);
+                     v->val.num = PC_LIFESPAN((std::shared_ptr<unit_data> )v1.val.ptr);
                   }
                   else
                   {
                      v->type = DILV_UINT2R;
-                     v->ref  = &PC_LIFESPAN((struct unit_data *)v1.val.ptr);
+                     v->ref  = &PC_LIFESPAN((std::shared_ptr<unit_data> )v1.val.ptr);
                   }
                }
                else
@@ -871,11 +871,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = mana_limit((struct unit_data *)v1.val.ptr);
+                  v->val.num = mana_limit((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -896,11 +896,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = move_limit((struct unit_data *)v1.val.ptr);
+                  v->val.num = move_limit((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -925,15 +925,15 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp = DILA_NONE;
 
-                  if(IS_PC((struct unit_data *)v1.val.ptr))
+                  if(IS_PC((std::shared_ptr<unit_data> )v1.val.ptr))
                   {
                      v->type    = DILV_INT;
-                     v->val.num = UNIT_MAX_HIT((struct unit_data *)v1.val.ptr);
+                     v->val.num = UNIT_MAX_HIT((std::shared_ptr<unit_data> )v1.val.ptr);
                   }
                   else
                   {
                      v->type = DILV_SINT4R;
-                     v->ref  = &UNIT_MAX_HIT((struct unit_data *)v1.val.ptr);
+                     v->ref  = &UNIT_MAX_HIT((std::shared_ptr<unit_data> )v1.val.ptr);
                   }
                }
                else
@@ -960,7 +960,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                   /* sbit32 hp; */
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT4R;
-                  v->ref  = &UNIT_HIT((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_HIT((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -985,7 +985,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = UNIT_BASE_WEIGHT((struct unit_data *)v1.val.ptr);
+                  v->val.num = UNIT_BASE_WEIGHT((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -1010,7 +1010,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = UNIT_WEIGHT((struct unit_data *)v1.val.ptr);
+                  v->val.num = UNIT_WEIGHT((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -1036,7 +1036,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                   /* sbit16 capacity */
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT2R;
-                  v->ref  = &UNIT_CAPACITY((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_CAPACITY((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -1062,7 +1062,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                   /* sbit16 capacity */
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT2R;
-                  v->ref  = &UNIT_ALIGNMENT((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_ALIGNMENT((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -1108,18 +1108,18 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
          {
             if(v1.val.ptr)
             {
-               switch(UNIT_TYPE((struct unit_data *)v1.val.ptr))
+               switch(UNIT_TYPE((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   case UNIT_ST_ROOM:
                      v->atyp = DILA_NONE;
                      v->type = DILV_UINT1R;
-                     v->ref  = &ROOM_RESISTANCE((struct unit_data *)v1.val.ptr);
+                     v->ref  = &ROOM_RESISTANCE((std::shared_ptr<unit_data> )v1.val.ptr);
                      break;
 
                   case UNIT_ST_OBJ:
                      v->atyp = DILA_NONE;
                      v->type = DILV_UINT1R;
-                     v->ref  = &OBJ_RESISTANCE((struct unit_data *)v1.val.ptr);
+                     v->ref  = &OBJ_RESISTANCE((std::shared_ptr<unit_data> )v1.val.ptr);
                      break;
 
                   case UNIT_ST_NPC:
@@ -1127,7 +1127,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                      {
                         v->atyp = DILA_NONE;
                         v->type = DILV_UINT1R;
-                        v->ref  = &NPC_SPL_SKILL((struct unit_data *)v1.val.ptr, v2.val.num);
+                        v->ref  = &NPC_SPL_SKILL((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num);
                      }
                      else
                         v->type = DILV_FAIL; /* illegal index */
@@ -1140,13 +1140,13 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                         {
                            v->atyp = DILA_NONE;
                            v->type = DILV_UINT1R;
-                           v->ref  = &PC_SPL_SKILL((struct unit_data *)v1.val.ptr, v2.val.num);
+                           v->ref  = &PC_SPL_SKILL((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num);
                         }
                         else
                         {
                            v->atyp    = DILA_NONE;
                            v->type    = DILV_INT;
-                           v->val.num = PC_SPL_SKILL((struct unit_data *)v1.val.ptr, v2.val.num);
+                           v->val.num = PC_SPL_SKILL((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num);
                         }
                      }
                      else
@@ -1176,7 +1176,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = (UNIT_FUNC((struct unit_data *)v1.val.ptr) != NULL);
+                  v->val.num = (UNIT_FUNC((std::shared_ptr<unit_data> )v1.val.ptr) != NULL);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -1201,7 +1201,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp    = DILA_NORM;
                   v->type    = DILV_SP;
-                  v->val.ptr = unit_zone((struct unit_data *)v1.val.ptr)->name;
+                  v->val.ptr = unit_zone((std::shared_ptr<unit_data> )v1.val.ptr)->name;
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -1222,11 +1222,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_OBJ((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_OBJ((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->type = DILV_UINT1R;
                   v->atyp = DILA_NONE;
-                  v->ref  = &OBJ_TYPE((struct unit_data *)v1.val.ptr);
+                  v->ref  = &OBJ_TYPE((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -1271,10 +1271,10 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
 
          if(v->type == DILV_UINT4R)
          {
-            if((v1.val.ptr) && IS_OBJ((struct unit_data *)v1.val.ptr) && (v2.val.num >= 0) && (v2.val.num < 5))
+            if((v1.val.ptr) && IS_OBJ((std::shared_ptr<unit_data> )v1.val.ptr) && (v2.val.num >= 0) && (v2.val.num < 5))
             {
                v->atyp = DILA_NONE;
-               v->ref  = &OBJ_VALUE((struct unit_data *)v1.val.ptr, v2.val.num);
+               v->ref  = &OBJ_VALUE((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num);
             }
             else
                v->type = DILV_FAIL;
@@ -1291,11 +1291,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_OBJ((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_OBJ((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &OBJ_FLAGS((struct unit_data *)v1.val.ptr);
+                  v->ref  = &OBJ_FLAGS((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -1316,11 +1316,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_OBJ((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_OBJ((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT4R;
-                  v->ref  = &OBJ_PRICE((struct unit_data *)v1.val.ptr);
+                  v->ref  = &OBJ_PRICE((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -1341,11 +1341,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_OBJ((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_OBJ((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT4R;
-                  v->ref  = &OBJ_PRICE_DAY((struct unit_data *)v1.val.ptr);
+                  v->ref  = &OBJ_PRICE_DAY((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -1366,11 +1366,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_OBJ((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_OBJ((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = OBJ_EQP_POS((struct unit_data *)v1.val.ptr);
+                  v->val.num = OBJ_EQP_POS((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL; /* not applicable */
@@ -1415,11 +1415,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
 
          if(v->type == DILV_SLPR)
          {
-            if(v1.val.ptr && IS_ROOM((struct unit_data *)v1.val.ptr) && is_in(v2.val.num, 0, 5) &&
-               ROOM_EXIT((struct unit_data *)v1.val.ptr, v2.val.num))
+            if(v1.val.ptr && IS_ROOM((std::shared_ptr<unit_data> )v1.val.ptr) && is_in(v2.val.num, 0, 5) &&
+               ROOM_EXIT((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num))
             {
                v->atyp = DILA_NORM;
-               v->ref  = &(ROOM_EXIT((struct unit_data *)v1.val.ptr, v2.val.num)->open_name);
+               v->ref  = &(ROOM_EXIT((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num)->open_name);
             }
             else
                v->type = DILV_FAIL;
@@ -1460,11 +1460,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
 
          if(v->type == DILV_UINT1R)
          {
-            if(v1.val.ptr && IS_ROOM((struct unit_data *)v1.val.ptr) && is_in(v2.val.num, 0, 5) &&
-               ROOM_EXIT((struct unit_data *)v1.val.ptr, v2.val.num))
+            if(v1.val.ptr && IS_ROOM((std::shared_ptr<unit_data> )v1.val.ptr) && is_in(v2.val.num, 0, 5) &&
+               ROOM_EXIT((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num))
             {
                v->atyp = DILA_NONE;
-               v->ref  = &(ROOM_EXIT((struct unit_data *)v1.val.ptr, v2.val.num)->exit_info);
+               v->ref  = &(ROOM_EXIT((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num)->exit_info);
             }
             else
                v->type = DILV_FAIL;
@@ -1503,11 +1503,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
 
          if(v->type == DILV_UP)
          {
-            if(v1.val.ptr && IS_ROOM((struct unit_data *)v1.val.ptr) && is_in(v2.val.num, 0, 5) &&
-               ROOM_EXIT((struct unit_data *)v1.val.ptr, v2.val.num))
+            if(v1.val.ptr && IS_ROOM((std::shared_ptr<unit_data> )v1.val.ptr) && is_in(v2.val.num, 0, 5) &&
+               ROOM_EXIT((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num))
             {
                v->atyp    = DILA_NORM;
-               v->val.ptr = ROOM_EXIT((struct unit_data *)v1.val.ptr, v2.val.num)->to_room;
+               v->val.ptr = ROOM_EXIT((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num)->to_room;
             }
             else
                v->type = DILV_FAIL;
@@ -1524,11 +1524,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_ROOM((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_ROOM((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &ROOM_FLAGS((struct unit_data *)v1.val.ptr);
+                  v->ref  = &ROOM_FLAGS((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -1550,11 +1550,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_ROOM((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_ROOM((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &ROOM_LANDSCAPE((struct unit_data *)v1.val.ptr);
+                  v->ref  = &ROOM_LANDSCAPE((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -1576,11 +1576,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT1R;
-                  v->ref  = &CHAR_SEX((struct unit_data *)v1.val.ptr);
+                  v->ref  = &CHAR_SEX((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -1602,11 +1602,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT2R;
-                  v->ref  = &CHAR_RACE((struct unit_data *)v1.val.ptr);
+                  v->ref  = &CHAR_RACE((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -1653,28 +1653,28 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
 
          if(v->type == DILV_INT)
          {
-            if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr) && is_in(v2.val.num, 0, ABIL_TREE_MAX - 1))
+            if(v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr) && is_in(v2.val.num, 0, ABIL_TREE_MAX - 1))
             {
-               if(IS_PC((struct unit_data *)v1.val.ptr))
+               if(IS_PC((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   if(p->stack[0].tmpl->zone->access == 0)
                   {
                      v->atyp = DILA_NONE;
                      v->type = DILV_UINT1R;
-                     v->ref  = &CHAR_ABILITY((struct unit_data *)v1.val.ptr, v2.val.num);
+                     v->ref  = &CHAR_ABILITY((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num);
                   }
                   else
                   {
                      v->atyp    = DILA_NONE;
                      v->type    = DILV_INT;
-                     v->val.num = CHAR_ABILITY((struct unit_data *)v1.val.ptr, v2.val.num);
+                     v->val.num = CHAR_ABILITY((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num);
                   }
                }
                else
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &CHAR_ABILITY((struct unit_data *)v1.val.ptr, v2.val.num);
+                  v->ref  = &CHAR_ABILITY((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num);
                }
             }
             else
@@ -1692,11 +1692,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = CHAR_EXP((struct unit_data *)v1.val.ptr);
+                  v->val.num = CHAR_EXP((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -1718,11 +1718,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = CHAR_LEVEL((struct unit_data *)v1.val.ptr);
+                  v->val.num = CHAR_LEVEL((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -1748,7 +1748,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT2R;
-                  v->ref  = &UNIT_SIZE((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_SIZE((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -1771,11 +1771,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                break;
 
             case DILV_UP:
-               if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT1R;
-                  v->ref  = &CHAR_POS((struct unit_data *)v1.val.ptr);
+                  v->ref  = &CHAR_POS((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -1797,11 +1797,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &CHAR_ATTACK_TYPE((struct unit_data *)v1.val.ptr);
+                  v->ref  = &CHAR_ATTACK_TYPE((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -1823,11 +1823,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT2R;
-                  v->ref  = &CHAR_MANA((struct unit_data *)v1.val.ptr);
+                  v->ref  = &CHAR_MANA((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -1849,11 +1849,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT2R;
-                  v->ref  = &CHAR_ENDURANCE((struct unit_data *)v1.val.ptr);
+                  v->ref  = &CHAR_ENDURANCE((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -1875,11 +1875,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT4R;
-                  v->ref  = &CHAR_FLAGS((struct unit_data *)v1.val.ptr);
+                  v->ref  = &CHAR_FLAGS((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -1901,11 +1901,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_UP;
-                  v->val.ptr = CHAR_FIGHTING((struct unit_data *)v1.val.ptr);
+                  v->val.ptr = CHAR_FIGHTING((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -1952,14 +1952,14 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
          {
             if(v1.val.ptr)
             {
-               switch(UNIT_TYPE((struct unit_data *)v1.val.ptr))
+               switch(UNIT_TYPE((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   case UNIT_ST_NPC:
                      if(is_in(v2.val.num, 0, WPN_GROUP_MAX - 1))
                      {
                         v->atyp = DILA_NONE;
                         v->type = DILV_UINT1R;
-                        v->ref  = &NPC_WPN_SKILL((struct unit_data *)v1.val.ptr, v2.val.num);
+                        v->ref  = &NPC_WPN_SKILL((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num);
                      }
                      else
                         v->type = DILV_FAIL;
@@ -1971,13 +1971,13 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                         {
                            v->atyp = DILA_NONE;
                            v->type = DILV_UINT1R;
-                           v->ref  = &PC_WPN_SKILL((struct unit_data *)v1.val.ptr, v2.val.num);
+                           v->ref  = &PC_WPN_SKILL((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num);
                         }
                         else
                         {
                            v->atyp    = DILA_NONE;
                            v->type    = DILV_INT;
-                           v->val.num = PC_WPN_SKILL((struct unit_data *)v1.val.ptr, v2.val.num);
+                           v->val.num = PC_WPN_SKILL((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num);
                         }
                      }
                      else
@@ -2004,11 +2004,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_NPC((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_NPC((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &NPC_DEFAULT((struct unit_data *)v1.val.ptr);
+                  v->ref  = &NPC_DEFAULT((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -2030,11 +2030,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_NPC((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_NPC((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &NPC_FLAGS((struct unit_data *)v1.val.ptr);
+                  v->ref  = &NPC_FLAGS((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -2056,11 +2056,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_PC((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT2R;
-                  v->ref  = &PC_FLAGS((struct unit_data *)v1.val.ptr);
+                  v->ref  = &PC_FLAGS((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -2082,11 +2082,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_PC((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT4R;
-                  v->ref  = &PC_TIME((struct unit_data *)v1.val.ptr).birth;
+                  v->ref  = &PC_TIME((std::shared_ptr<unit_data> )v1.val.ptr).birth;
                }
                else
                   v->type = DILV_FAIL;
@@ -2108,11 +2108,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_PC((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = PC_TIME((struct unit_data *)v1.val.ptr).played;
+                  v->val.num = PC_TIME((std::shared_ptr<unit_data> )v1.val.ptr).played;
                }
                else
                   v->type = DILV_FAIL;
@@ -2134,11 +2134,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_PC((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT1R;
-                  v->ref  = &PC_COND((struct unit_data *)v1.val.ptr, FULL);
+                  v->ref  = &PC_COND((std::shared_ptr<unit_data> )v1.val.ptr, FULL);
                }
                else
                   v->type = DILV_FAIL;
@@ -2160,11 +2160,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_PC((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT1R;
-                  v->ref  = &PC_COND((struct unit_data *)v1.val.ptr, THIRST);
+                  v->ref  = &PC_COND((std::shared_ptr<unit_data> )v1.val.ptr, THIRST);
                }
                else
                   v->type = DILV_FAIL;
@@ -2186,11 +2186,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_PC((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_SINT1R;
-                  v->ref  = &PC_COND((struct unit_data *)v1.val.ptr, DRUNK);
+                  v->ref  = &PC_COND((std::shared_ptr<unit_data> )v1.val.ptr, DRUNK);
                }
                else
                   v->type = DILV_FAIL;
@@ -2211,11 +2211,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_PC((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = PC_SKILL_POINTS((struct unit_data *)v1.val.ptr);
+                  v->val.num = PC_SKILL_POINTS((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -2236,11 +2236,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_PC((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = PC_ABILITY_POINTS((struct unit_data *)v1.val.ptr);
+                  v->val.num = PC_ABILITY_POINTS((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -2261,11 +2261,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_PC((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_SPR;
-                  v->ref  = &PC_GUILD((struct unit_data *)v1.val.ptr);
+                  v->ref  = &PC_GUILD((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -2286,11 +2286,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_PC((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT2R;
-                  v->ref  = &PC_CRIMES((struct unit_data *)v1.val.ptr);
+                  v->ref  = &PC_CRIMES((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -2312,11 +2312,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_PC((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_EDPR;
-                  v->ref  = &PC_QUEST((struct unit_data *)v1.val.ptr);
+                  v->ref  = &PC_QUEST((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -2337,11 +2337,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_PC((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_EDPR;
-                  v->ref  = &PC_INFO((struct unit_data *)v1.val.ptr);
+                  v->ref  = &PC_INFO((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -2385,19 +2385,19 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
 
          if(v->type == DILV_INT)
          {
-            if(v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr) && is_in(v2.val.num, 0, SKI_TREE_MAX - 1))
+            if(v1.val.ptr && IS_PC((std::shared_ptr<unit_data> )v1.val.ptr) && is_in(v2.val.num, 0, SKI_TREE_MAX - 1))
             {
                if(p->stack[0].tmpl->zone->access == 0)
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &PC_SKI_SKILL((struct unit_data *)v1.val.ptr, v2.val.num);
+                  v->ref  = &PC_SKI_SKILL((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num);
                }
                else
                {
                   v->atyp    = DILA_NONE;
                   v->type    = DILV_INT;
-                  v->val.num = PC_SKI_SKILL((struct unit_data *)v1.val.ptr, v2.val.num);
+                  v->val.num = PC_SKI_SKILL((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num);
                }
             }
             else
@@ -2415,11 +2415,11 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
                {
                   v->atyp = DILA_NORM;
                   v->type = DILV_UPR;
-                  v->ref  = &CHAR_MASTER((struct unit_data *)v1.val.ptr);
+                  v->ref  = &CHAR_MASTER((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;
@@ -2441,13 +2441,13 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                v->type = DILV_FAIL; /* not applicable */
                break;
             case DILV_UP:
-               if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr))
+               if(v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
                {
-                  if(CHAR_FOLLOWERS((struct unit_data *)v1.val.ptr))
+                  if(CHAR_FOLLOWERS((std::shared_ptr<unit_data> )v1.val.ptr))
                   {
                      v->atyp = DILA_NORM;
                      v->type = DILV_UPR;
-                     v->ref  = &CHAR_FOLLOWERS((struct unit_data *)v1.val.ptr)->follower;
+                     v->ref  = &CHAR_FOLLOWERS((std::shared_ptr<unit_data> )v1.val.ptr)->follower;
                   }
                   else
                   {
@@ -2480,7 +2480,7 @@ void dilfe_fld(register struct dilprg *p, register class dilval *v)
                {
                   v->atyp = DILA_NONE;
                   v->type = DILV_UINT1R;
-                  v->ref  = &UNIT_MINV((struct unit_data *)v1.val.ptr);
+                  v->ref  = &UNIT_MINV((std::shared_ptr<unit_data> )v1.val.ptr);
                }
                else
                   v->type = DILV_FAIL;

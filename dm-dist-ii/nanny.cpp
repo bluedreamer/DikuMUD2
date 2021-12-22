@@ -69,7 +69,7 @@
 
 #define STATE(d) ((d)->state)
 
-extern struct unit_data       *unit_list;
+extern std::shared_ptr<unit_data> unit_list;
 extern struct descriptor_data *descriptor_list;
 extern int                     wizlock;
 
@@ -82,7 +82,7 @@ void nanny_change_information(struct descriptor_data *d, char *arg);
 void nanny_change_terminal(struct descriptor_data *d, char *arg);
 void multi_close(struct multi_element *pe);
 int  player_exists(const char *pName);
-void save_player_file(struct unit_data *ch);
+void save_player_file(std::shared_ptr<unit_data> ch);
 
 extern struct diltemplate *nanny_dil_tmpl;
 
@@ -172,7 +172,7 @@ void check_idle(void)
 }
 
 /* clear some of the the working variables of a char */
-void reset_char(struct unit_data *ch)
+void reset_char(std::shared_ptr<unit_data> ch)
 {
    /* Ok, this is test to avoid level 255's entering the game... */
    assert(CHAR_SEX(ch) != 255);
@@ -181,7 +181,7 @@ void reset_char(struct unit_data *ch)
    UNIT_MAX_HIT(ch) = hit_limit(ch);
 }
 
-void connect_game(struct unit_data *pc)
+void connect_game(std::shared_ptr<unit_data> pc)
 {
    assert(CHAR_DESCRIPTOR(pc));
 
@@ -197,14 +197,14 @@ void connect_game(struct unit_data *pc)
       max_no_players = no_players;
 }
 
-void disconnect_game(struct unit_data *pc)
+void disconnect_game(std::shared_ptr<unit_data> pc)
 {
    CHAR_DESCRIPTOR(pc)->RemoveBBS();
 
    no_players--;
 }
 
-void reconnect_game(struct descriptor_data *d, struct unit_data *ch)
+void reconnect_game(struct descriptor_data *d, std::shared_ptr<unit_data> ch)
 {
    assert(UNIT_IN(ch));
    assert(!UNIT_IN(d->character));
@@ -234,7 +234,7 @@ void reconnect_game(struct descriptor_data *d, struct unit_data *ch)
    set_descriptor_fptr(d, descriptor_interpreter, FALSE);
 }
 
-void update_lasthost(struct unit_data *pc, ubit32 s_addr)
+void update_lasthost(std::shared_ptr<unit_data> pc, ubit32 s_addr)
 {
    if((sbit32)s_addr == -1)
       return;
@@ -252,18 +252,18 @@ void update_lasthost(struct unit_data *pc, ubit32 s_addr)
 /*   and thus a reconnect is performed.                           */
 /* If UNIT_IN is not set, then the char must be put inside the    */
 /*   game, and his inventory loaded.                              */
-void enter_game(struct unit_data *ch)
+void enter_game(std::shared_ptr<unit_data> ch)
 {
-   struct unit_data       *load_room;
+   std::shared_ptr<unit_data> load_room;
    struct descriptor_data *i;
    char                    buf[256];
    time_t                  last_connect = PC_TIME(ch).connect;
 
    extern struct command_info cmd_info[];
 
-   ubit8 player_has_mail(struct unit_data * ch);
+   ubit8 player_has_mail(std::shared_ptr<unit_data>  ch);
    char *ContentsFileName(const char *);
-   void  start_all_special(struct unit_data * u);
+   void  start_all_special(std::shared_ptr<unit_data>  u);
 
    assert(ch);
    assert(!UNIT_IN(ch));
@@ -315,7 +315,7 @@ void enter_game(struct unit_data *ch)
    /* New player stats. Level can be zero after reroll while ID is not. */
    if((CHAR_LEVEL(ch) == 0) && PC_IS_UNSAVED(ch))
    {
-      void start_player(struct unit_data * ch);
+      void start_player(std::shared_ptr<unit_data>  ch);
 
       slog(LOG_BRIEF, 0, "%s[%s] (GUEST) has entered the game.", PC_FILENAME(ch), CHAR_DESCRIPTOR(ch)->host);
 
@@ -333,7 +333,7 @@ void enter_game(struct unit_data *ch)
 
    if(file_exists(ContentsFileName(PC_FILENAME(ch))))
    {
-      ubit32 rent_calc(struct unit_data * ch, time_t savetime);
+      ubit32 rent_calc(std::shared_ptr<unit_data>  ch, time_t savetime);
 
       load_contents(PC_FILENAME(ch), ch);
       rent_calc(ch, last_connect);
@@ -343,7 +343,7 @@ void enter_game(struct unit_data *ch)
        */
       if(CHAR_MONEY(ch))
       {
-         extern void tax_player(struct unit_data * ch);
+         extern void tax_player(std::shared_ptr<unit_data>  ch);
 
          CHAR_MONEY(ch) = NULL;
          tax_player(ch);
@@ -451,7 +451,7 @@ void nanny_newbie(struct descriptor_data *d, char *arg)
 void nanny_throw(struct descriptor_data *d, char *arg)
 {
    struct descriptor_data *td;
-   struct unit_data       *u;
+   std::shared_ptr<unit_data> u;
 
    if(STATE(d)++ == 0)
    {
@@ -548,7 +548,7 @@ void nanny_dil(struct descriptor_data *d, char *arg)
       {
          char buf[256];
 
-         void join_guild(struct unit_data * ch, char *guild_name);
+         void join_guild(std::shared_ptr<unit_data>  ch, char *guild_name);
 
          strcpy(buf, PC_GUILD(d->character));
          join_guild(d->character, buf);
@@ -560,7 +560,7 @@ void nanny_dil(struct descriptor_data *d, char *arg)
 
 void nanny_pwd_confirm(struct descriptor_data *d, char *arg)
 {
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
 
    if(STATE(d)++ == 0)
    {
@@ -714,7 +714,7 @@ void nanny_change_pwd(struct descriptor_data *d, char *arg)
 
 void nanny_kill_confirm(struct descriptor_data *d, char *arg)
 {
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
 
    int delete_player(const char *);
 
@@ -845,7 +845,7 @@ void interpreter_string_add(struct descriptor_data *d, char *str)
 
 /* Removes empty descriptions and makes ONE newline after each. */
 
-void nanny_fix_descriptions(struct unit_data *u)
+void nanny_fix_descriptions(std::shared_ptr<unit_data> u)
 {
    struct extra_descr_data *exd;
    char                     buf[1024];
@@ -1677,7 +1677,7 @@ void nanny_existing_pwd(struct descriptor_data *d, char *arg)
 {
    char                    buf[200];
    struct descriptor_data *td;
-   struct unit_data       *u;
+   std::shared_ptr<unit_data> u;
 
    /* PC_ID(d->character) can be -1 when a newbie is in the game and
       someone logins with the same name! */
@@ -1839,7 +1839,7 @@ void nanny_get_name(struct descriptor_data *d, char *arg)
 
    if(player_exists(tmp_name))
    {
-      struct unit_data *ch;
+      std::shared_ptr<unit_data> ch;
 
       if(site_banned(d->host) == BAN_TOTAL)
       {

@@ -69,7 +69,7 @@ struct shop_data
    int                                           currencycount; /* Number of currencies.                */
 };
 
-amount_t obj_trade_price(struct unit_data *u)
+amount_t obj_trade_price(std::shared_ptr<unit_data> u)
 {
    double d, f;
 
@@ -88,7 +88,7 @@ amount_t obj_trade_price(struct unit_data *u)
    return (amount_t)d;
 }
 
-static bool is_ok(struct unit_data *keeper, struct unit_data *ch, struct shop_data *sd)
+static bool is_ok(std::shared_ptr<unit_data> keeper, std::shared_ptr<unit_data> ch, struct shop_data *sd)
 {
    char                  buf[512];
    struct time_info_data time_info;
@@ -125,7 +125,7 @@ static bool is_ok(struct unit_data *keeper, struct unit_data *ch, struct shop_da
    return TRUE;
 }
 
-static bool trade_with(struct unit_data *item, struct shop_data *sd)
+static bool trade_with(std::shared_ptr<unit_data> item, struct shop_data *sd)
 {
    int i;
 
@@ -142,7 +142,7 @@ static bool trade_with(struct unit_data *item, struct shop_data *sd)
    return FALSE;
 }
 
-static bool shop_producing(struct unit_data *item, struct shop_data *sd)
+static bool shop_producing(std::shared_ptr<unit_data> item, struct shop_data *sd)
 {
    int counter = 0;
 
@@ -158,10 +158,10 @@ static bool shop_producing(struct unit_data *item, struct shop_data *sd)
    return FALSE;
 }
 
-static void shopping_buy(char *arg, struct unit_data *ch, struct unit_data *keeper, struct shop_data *sd)
+static void shopping_buy(char *arg, std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> keeper, struct shop_data *sd)
 {
    char              buf[MAX_STRING_LENGTH];
-   struct unit_data *temp1;
+   std::shared_ptr<unit_data> temp1;
    currency_t        currency = 0;
    amount_t          price    = 0;
    bool              can_pay  = FALSE;
@@ -254,14 +254,14 @@ static void shopping_buy(char *arg, struct unit_data *ch, struct unit_data *keep
       UNIT_SIZE(temp1) = UNIT_SIZE(ch);
 }
 
-static void shopping_sell(char *arg, struct unit_data *ch, struct unit_data *keeper, struct shop_data *sd)
+static void shopping_sell(char *arg, std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> keeper, struct shop_data *sd)
 {
    currency_t        currency = 0;
    amount_t          price    = 0;
    bool              can_pay  = FALSE;
    int               i        = 0;
    char              buf[MAX_STRING_LENGTH], *tmparg;
-   struct unit_data *temp1;
+   std::shared_ptr<unit_data> temp1;
 
    if(!is_ok(keeper, ch, sd))
       return;
@@ -320,10 +320,10 @@ static void shopping_sell(char *arg, struct unit_data *ch, struct unit_data *kee
    }
 }
 
-static void shopping_value(char *arg, struct unit_data *ch, struct unit_data *keeper, struct shop_data *sd)
+static void shopping_value(char *arg, std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> keeper, struct shop_data *sd)
 {
    char              buf[MAX_STRING_LENGTH];
-   struct unit_data *temp1;
+   std::shared_ptr<unit_data> temp1;
    char             *fmt;
    currency_t        currency = 0;
    amount_t          price    = 0;
@@ -376,10 +376,10 @@ static void shopping_value(char *arg, struct unit_data *ch, struct unit_data *ke
    act(buf, A_SOMEONE, keeper, temp1, ch, TO_ROOM);
 }
 
-static void shopping_list(char *arg, struct unit_data *ch, struct unit_data *keeper, struct shop_data *sd)
+static void shopping_list(char *arg, std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> keeper, struct shop_data *sd)
 {
    char              buf[MAX_STRING_LENGTH], buf2[100], *b = buf;
-   struct unit_data *temp1;
+   std::shared_ptr<unit_data> temp1;
    bool              found_obj = FALSE;
    amount_t          price;
    currency_t        currency;
@@ -429,9 +429,9 @@ static void shopping_list(char *arg, struct unit_data *ch, struct unit_data *kee
    send_to_char(buf, ch);
 }
 
-static void shopping_price(char *arg, struct unit_data *ch, struct unit_data *keeper, struct shop_data *sd)
+static void shopping_price(char *arg, std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> keeper, struct shop_data *sd)
 {
-   struct unit_data *temp1;
+   std::shared_ptr<unit_data> temp1;
    bool              destruct = FALSE, can_pay = FALSE;
    char              buf[256];
    currency_t        currency = 0;
@@ -533,7 +533,7 @@ int shop_keeper(struct spec_arg *sarg)
    return SFR_BLOCK;
 }
 
-static struct shop_data *parse_shop(struct unit_data *keeper, char *data)
+static struct shop_data *parse_shop(std::shared_ptr<unit_data> keeper, char *data)
 {
    int               i;
    struct shop_data *sd;

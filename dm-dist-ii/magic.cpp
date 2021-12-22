@@ -51,7 +51,7 @@
 #include <stdlib.h>
 
 /* Extern structures */
-extern struct unit_data *unit_list;
+extern std::shared_ptr<unit_data> unit_list;
 extern struct tree_type  spl_tree[];
 
 /* Returns TRUE when effect is shown by DIL */
@@ -129,7 +129,7 @@ int dil_effect(const char *pStr, struct spell_args *sa)
 /* This procedure uses mana from a medium */
 /* returns TRUE if ok, and FALSE if there was not enough mana.  */
 /* wands and staffs uses one charge, no matter what 'mana' is. --HHS */
-ubit1 use_mana(struct unit_data *medium, int mana)
+ubit1 use_mana(std::shared_ptr<unit_data> medium, int mana)
 {
    if(IS_CHAR(medium))
    {
@@ -163,7 +163,7 @@ ubit1 use_mana(struct unit_data *medium, int mana)
 }
 
 /* Determines if healing combat mana should be cast?? */
-ubit1 cast_magic_now(struct unit_data *ch, int mana)
+ubit1 cast_magic_now(std::shared_ptr<unit_data> ch, int mana)
 {
    int hleft, sleft;
 
@@ -204,7 +204,7 @@ int variation(int num, int d, int u)
 
 /* See if unit is allowed to be transferred away from its surroundings */
 /* i.e. if a player is allowed to transfer out of jail, etc.           */
-ubit1 may_teleport_away(struct unit_data *unit)
+ubit1 may_teleport_away(std::shared_ptr<unit_data> unit)
 {
    if(IS_SET(UNIT_FLAGS(unit), UNIT_FL_NO_TELEPORT))
       return FALSE;
@@ -217,7 +217,7 @@ ubit1 may_teleport_away(struct unit_data *unit)
 }
 
 /* See if unit is allowed to be transferred to 'dest' */
-ubit1 may_teleport_to(struct unit_data *unit, struct unit_data *dest)
+ubit1 may_teleport_to(std::shared_ptr<unit_data> unit, std::shared_ptr<unit_data> dest)
 {
    if(unit == dest || IS_SET(UNIT_FLAGS(dest), UNIT_FL_NO_TELEPORT) || unit_recursive(unit, dest) ||
       UNIT_WEIGHT(unit) + UNIT_WEIGHT(dest) > UNIT_CAPACITY(dest))
@@ -233,14 +233,14 @@ ubit1 may_teleport_to(struct unit_data *unit, struct unit_data *dest)
 }
 
 /* See if unit is allowed to be transferred to 'dest' */
-ubit1 may_teleport(struct unit_data *unit, struct unit_data *dest)
+ubit1 may_teleport(std::shared_ptr<unit_data> unit, std::shared_ptr<unit_data> dest)
 {
    return may_teleport_away(unit) && may_teleport_to(unit, dest);
 }
 
 /* ===================================================================== */
 
-int object_power(struct unit_data *unit)
+int object_power(std::shared_ptr<unit_data> unit)
 {
    if(IS_OBJ(unit))
    {
@@ -253,7 +253,7 @@ int object_power(struct unit_data *unit)
       return 0;
 }
 
-int room_power(struct unit_data *unit)
+int room_power(std::shared_ptr<unit_data> unit)
 {
    if(IS_ROOM(unit))
       return ROOM_RESISTANCE(unit);
@@ -264,7 +264,7 @@ int room_power(struct unit_data *unit)
 /* Return how well a unit defends itself against a spell, by using */
 /* its skill (not its power) - That is the group (or attack).      */
 /*                                                                 */
-int spell_defense_skill(struct unit_data *unit, int spell)
+int spell_defense_skill(std::shared_ptr<unit_data> unit, int spell)
 {
    int max;
 
@@ -316,7 +316,7 @@ int spell_defense_skill(struct unit_data *unit, int spell)
 /* Return how well a unit attacks with a spell, by using its skill */
 /* (not its power).                                                */
 /*                                                                 */
-int spell_attack_skill(struct unit_data *unit, int spell)
+int spell_attack_skill(std::shared_ptr<unit_data> unit, int spell)
 {
    if(IS_PC(unit))
       return PC_SPL_SKILL(unit, spell);
@@ -337,7 +337,7 @@ int spell_attack_skill(struct unit_data *unit, int spell)
 
 /* Return the power in a unit for a given spell type     */
 /* For CHAR's determine if Divine or Magic power is used */
-int spell_attack_ability(struct unit_data *medium, int spell)
+int spell_attack_ability(std::shared_ptr<unit_data> medium, int spell)
 {
    if(IS_CHAR(medium))
    {
@@ -350,7 +350,7 @@ int spell_attack_ability(struct unit_data *medium, int spell)
    return spell_attack_skill(medium, spell);
 }
 
-int spell_ability(struct unit_data *u, int ability, int spell)
+int spell_ability(std::shared_ptr<unit_data> u, int ability, int spell)
 {
    if(IS_CHAR(u))
       return CHAR_ABILITY(u, ability);
@@ -364,7 +364,7 @@ int spell_ability(struct unit_data *u, int ability, int spell)
 /* else. These are typically aggressive spells like 'sleep' etc. where */
 /* the defender is entiteled a saving throw.                           */
 /*                                                                     */
-int spell_resistance(struct unit_data *att, struct unit_data *def, int spell)
+int spell_resistance(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, int spell)
 {
    if(IS_CHAR(att) && IS_CHAR(def))
       return resistance_skill_check(spell_attack_ability(att, spell),
@@ -382,7 +382,7 @@ int spell_resistance(struct unit_data *att, struct unit_data *def, int spell)
 /* skill/ability when casting a spell. For example healing spells */
 /* create food etc.                                               */
 /* Returns how well it went "100" is perfect > better.            */
-int spell_cast_check(struct unit_data *att, int spell)
+int spell_cast_check(std::shared_ptr<unit_data> att, int spell)
 {
    return resistance_skill_check(spell_attack_ability(att, spell), 0, spell_attack_skill(att, spell), 0);
 }
@@ -400,16 +400,16 @@ int spell_offensive(struct spell_args *sa, int spell_number, int bonus)
    int               hit_loc;
    int               roll;
    int               bEffect;
-   struct unit_data *def_shield;
+   std::shared_ptr<unit_data> def_shield;
 
-   int  spell_bonus(struct unit_data * att,
-                    struct unit_data * medium,
-                    struct unit_data * def,
+   int  spell_bonus(std::shared_ptr<unit_data>  att,
+                    std::shared_ptr<unit_data>  medium,
+                    std::shared_ptr<unit_data>  def,
                     int                hit_loc,
                     int                spell_number,
                     int               *pDef_armour_type,
-                    struct unit_data **pDef_armour);
-   void damage_object(struct unit_data * ch, struct unit_data * obj, int dam);
+                    std::shared_ptr<unit_data> *pDef_armour);
+   void damage_object(std::shared_ptr<unit_data>  ch, std::shared_ptr<unit_data>  obj, int dam);
 
    extern struct damage_chart_type spell_chart[SPL_TREE_MAX];
 

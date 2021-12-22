@@ -100,7 +100,7 @@ struct wpn_info_type     wpn_info[WPN_TREE_MAX];
 
 /* ===================================================================== */
 
-void roll_description(struct unit_data *att, const char *text, int roll)
+void roll_description(std::shared_ptr<unit_data> att, const char *text, int roll)
 {
    if(roll >= 200)
    {
@@ -185,14 +185,14 @@ int weight_size(int lbs)
       return SIZ_HUGE;
 }
 
-int weapon_fumble(struct unit_data *weapon, int roll)
+int weapon_fumble(std::shared_ptr<unit_data> weapon, int roll)
 {
    assert(IS_OBJ(weapon) && (OBJ_TYPE(weapon) == ITEM_WEAPON));
 
    return roll <= weapon_chart[OBJ_VALUE(weapon, 0)].fumble;
 }
 
-int object_two_handed(struct unit_data *obj)
+int object_two_handed(std::shared_ptr<unit_data> obj)
 {
    if(OBJ_TYPE(obj) == ITEM_WEAPON)
       if(wpn_info[OBJ_VALUE(obj, 0)].hands == 2)
@@ -289,7 +289,7 @@ int natural_damage(int roll, int weapon_type, int armour_type, int lbs)
 }
 
 /* Return [0..200] for skill when defending with a weapon */
-int weapon_defense_skill(struct unit_data *ch, int skill)
+int weapon_defense_skill(std::shared_ptr<unit_data> ch, int skill)
 {
    int max;
 
@@ -333,7 +333,7 @@ int weapon_defense_skill(struct unit_data *ch, int skill)
 }
 
 /* Return [0..200] for skill when attacking with a weapon */
-int weapon_attack_skill(struct unit_data *ch, int skill)
+int weapon_attack_skill(std::shared_ptr<unit_data> ch, int skill)
 {
    if(IS_PC(ch))
    {
@@ -349,7 +349,7 @@ int weapon_attack_skill(struct unit_data *ch, int skill)
 }
 
 /* Return the armour position of where one person hits another */
-int hit_location(struct unit_data *att, struct unit_data *def)
+int hit_location(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def)
 {
    /* Maybe do height reductions later */
 
@@ -359,7 +359,7 @@ int hit_location(struct unit_data *att, struct unit_data *def)
 /* Return the effective dex of a person in armour ...             */
 /* Later we will redo this function - as of now it doesn't matter */
 /* what armour you wear                                           */
-int effective_dex(struct unit_data *ch)
+int effective_dex(std::shared_ptr<unit_data> ch)
 {
    return CHAR_DEX(ch);
 }

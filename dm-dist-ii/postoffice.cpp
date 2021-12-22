@@ -134,7 +134,7 @@ char *read_mail(sbit16 index)
 }
 
 /* Save the letter pointed to by str in the mail file */
-void mail_mail(int receipient, char *rcv_name, struct unit_data *sender, const char *str)
+void mail_mail(int receipient, char *rcv_name, std::shared_ptr<unit_data> sender, const char *str)
 {
    FILE                 *f;
    sbit16                index;
@@ -179,7 +179,7 @@ void mail_mail(int receipient, char *rcv_name, struct unit_data *sender, const c
 }
 
 /* Return index to the next letter of a player */
-sbit16 player_next_mail(struct unit_data *ch, sbit16 index)
+sbit16 player_next_mail(std::shared_ptr<unit_data> ch, sbit16 index)
 {
    int i;
 
@@ -193,7 +193,7 @@ sbit16 player_next_mail(struct unit_data *ch, sbit16 index)
 }
 
 /* Return index to the first letter of the player */
-ubit8 player_has_mail(struct unit_data *ch)
+ubit8 player_has_mail(std::shared_ptr<unit_data> ch)
 {
    return (player_next_mail(ch, 0) != -1);
 }
@@ -245,7 +245,7 @@ void mail_boot(void)
 int eat_and_delete(struct spec_arg *sarg)
 {
    sbit16            index;
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
    char             *arg = (char *)sarg->arg;
 
    if(sarg->cmd->no == CMD_EAT)
@@ -275,7 +275,7 @@ int postman(struct spec_arg *sarg)
    char                    *b, *arg = (char *)sarg->arg;
    struct extra_descr_data *exd;
    struct descriptor_data  *d;
-   struct unit_data        *letter;
+   std::shared_ptr<unit_data> letter;
    char                     tmpname[MAX_INPUT_LENGTH];
    sbit16                   index, *tmp;
    long                     rcp;

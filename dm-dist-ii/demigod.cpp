@@ -44,9 +44,9 @@
 #include <string.h>
 #include <time.h>
 
-void save_player_file(struct unit_data *pc);
+void save_player_file(std::shared_ptr<unit_data> pc);
 
-void add_sacrifice_info(struct unit_data *demi, struct unit_data *ch, long power)
+void add_sacrifice_info(std::shared_ptr<unit_data> demi, std::shared_ptr<unit_data> ch, long power)
 {
    char                     Buf[200];
    struct extra_descr_data *exd;
@@ -65,19 +65,19 @@ void add_sacrifice_info(struct unit_data *demi, struct unit_data *ch, long power
    }
 }
 
-void do_manifest(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_manifest(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
 #ifndef DEMIGOD
    send_to_char("This command has been removed.\r\n", ch);
    return;
 #else
-   struct unit_data *player;
-   struct unit_data *monster;
+   std::shared_ptr<unit_data> player;
+   std::shared_ptr<unit_data> monster;
 
    extern std::shared_ptr<file_index_type> demigod_fi;
 
-   void switchbody(struct unit_data * ch, struct unit_data * victim);
-   void unswitchbody(struct unit_data * npc);
+   void switchbody(std::shared_ptr<unit_data>  ch, std::shared_ptr<unit_data>  victim);
+   void unswitchbody(std::shared_ptr<unit_data>  npc);
 
    if(!CHAR_DESCRIPTOR(ch))
       return;
@@ -115,7 +115,7 @@ void do_manifest(struct unit_data *ch, char *arg, const struct command_info *cmd
 
    if(IS_SET(UNIT_FLAGS(UNIT_IN(player)), UNIT_FL_PRIVATE))
    {
-      struct unit_data *pers = UNIT_CONTAINS(UNIT_IN(player));
+      std::shared_ptr<unit_data> pers = UNIT_CONTAINS(UNIT_IN(player));
       int               i;
 
       for(i = 0; pers; pers = pers->next)
@@ -212,9 +212,9 @@ void do_manifest(struct unit_data *ch, char *arg, const struct command_info *cmd
 #endif
 }
 
-void do_pray(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_pray(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *target;
+   std::shared_ptr<unit_data> target;
 
    if(str_is_empty(arg))
    {
@@ -261,7 +261,7 @@ void do_pray(struct unit_data *ch, char *arg, const struct command_info *cmd)
 #endif
 }
 
-int sacrifice_unit_power(struct unit_data *item, int demigod)
+int sacrifice_unit_power(std::shared_ptr<unit_data> item, int demigod)
 {
    if(!IS_OBJ(item))
       return 0;
@@ -298,7 +298,7 @@ int sacrifice_unit_power(struct unit_data *item, int demigod)
    }
 }
 
-int sacrifice_unit(struct unit_data *u, int pow, int demigod)
+int sacrifice_unit(std::shared_ptr<unit_data> u, int pow, int demigod)
 {
    if(UNIT_CONTAINS(u))
       pow += sacrifice_unit(UNIT_CONTAINS(u), pow, demigod);
@@ -309,7 +309,7 @@ int sacrifice_unit(struct unit_data *u, int pow, int demigod)
    return pow + sacrifice_unit_power(u, demigod);
 }
 
-static bool contains_character(struct unit_data *u)
+static bool contains_character(std::shared_ptr<unit_data> u)
 {
    for(u = UNIT_CONTAINS(u); u; u = u->next)
       if(IS_CHAR(u) || (UNIT_CONTAINS(u) && contains_character(u)))
@@ -318,18 +318,18 @@ static bool contains_character(struct unit_data *u)
    return FALSE;
 }
 
-void base_sacrifice(struct unit_data *ch, char *arg, int noble)
+void base_sacrifice(std::shared_ptr<unit_data> ch, char *arg, int noble)
 {
 #ifndef DEMIGOD
    send_to_char("This command has been removed.\r\n", ch);
    return;
 #else
-   struct unit_data *u, *god;
+   std::shared_ptr<unit_data> u, *god;
    char              buf[MAX_INPUT_LENGTH];
    int               loaded = FALSE;
    int               power;
 
-   struct unit_data *find_player(char *name);
+   std::shared_ptr<unit_data> find_player(char *name);
 
    if(IS_NPC(ch))
    {
@@ -436,7 +436,7 @@ void base_sacrifice(struct unit_data *ch, char *arg, int noble)
 #endif
 }
 
-void do_sacrifice(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_sacrifice(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
 #ifndef DEMIGOD
    send_to_char("This command has been removed.\r\n", ch);
@@ -461,7 +461,7 @@ int sacrifice(struct spec_arg *sarg)
    return SFR_SHARE;
 }
 
-void banish_demigod(struct unit_data *ch)
+void banish_demigod(std::shared_ptr<unit_data> ch)
 {
 #ifdef DEMIGOD
    act("A horrible feeling comes upon you, like a giant hand, darkness"
@@ -496,7 +496,7 @@ void banish_demigod(struct unit_data *ch)
 #endif
 }
 
-void make_demigod(struct unit_data *ch)
+void make_demigod(std::shared_ptr<unit_data> ch)
 {
 #ifdef DEMIGOD
    int i;
@@ -532,7 +532,7 @@ int demi_stuff(struct spec_arg *sarg)
 #ifdef DEMIGOD
    int                      i, nExp, nMember;
    struct char_follow_type *f;
-   struct unit_data        *pVict, *paper;
+   std::shared_ptr<unit_data> pVict, *paper;
    char                     Buf[MAX_STRING_LENGTH];
    int                      loaded = FALSE;
    struct extra_descr_data *exd;

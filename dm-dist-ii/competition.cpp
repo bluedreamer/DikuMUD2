@@ -157,7 +157,7 @@ int competition_compare(const void *v1, const void *v2)
       return 0;
 }
 
-static void competition_recalc(int idx, struct unit_data *pc, int xp, int secs)
+static void competition_recalc(int idx, std::shared_ptr<unit_data> pc, int xp, int secs)
 {
    int    i;
    double points;
@@ -199,7 +199,7 @@ static void competition_recalc(int idx, struct unit_data *pc, int xp, int secs)
    competition_save(idx);
 }
 
-static int competition_points(struct unit_data *pc, int idx)
+static int competition_points(std::shared_ptr<unit_data> pc, int idx)
 {
    struct extra_descr_data *exd;
    double                   xp, secs;
@@ -220,7 +220,7 @@ static int competition_points(struct unit_data *pc, int idx)
    return (int)points;
 }
 
-void competition_update(struct unit_data *pc)
+void competition_update(std::shared_ptr<unit_data> pc)
 {
    struct extra_descr_data *exd;
    int                      i, xp, secs;
@@ -240,7 +240,7 @@ void competition_update(struct unit_data *pc)
    }
 }
 
-void competition_enroll(struct unit_data *pc)
+void competition_enroll(std::shared_ptr<unit_data> pc)
 {
    int                      i;
    struct extra_descr_data *exd, *pexd;
@@ -361,7 +361,7 @@ void competition_boot(void)
    }
 }
 
-static void show_competition(struct unit_data *ch, const int i)
+static void show_competition(std::shared_ptr<unit_data> ch, const int i)
 {
    int  j;
    char buf[256];
@@ -397,7 +397,7 @@ static void show_competition(struct unit_data *ch, const int i)
    send_to_char(buf, ch);
 }
 
-static int competition_read_board(struct unit_data *ch, const char *arg)
+static int competition_read_board(std::shared_ptr<unit_data> ch, const char *arg)
 {
    char number[MAX_INPUT_LENGTH];
    int  msg;

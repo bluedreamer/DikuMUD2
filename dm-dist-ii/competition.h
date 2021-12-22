@@ -25,7 +25,7 @@
 #ifndef _MUD_COMPETITION_H
 #define _MUD_COMPETITION_H
 
-void competition_enroll(struct unit_data *pc);
-void competition_update(struct unit_data *pc);
+void competition_enroll(std::shared_ptr<unit_data> pc);
+void competition_update(std::shared_ptr<unit_data> pc);
 
 #endif

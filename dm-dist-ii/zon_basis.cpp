@@ -65,12 +65,12 @@
 #define PC_DEATHOBJ_NAME "death_seq"
 #define DESTROY_ROOM     "destroy_room"
 
-struct unit_data *void_room    = 0;
-struct unit_data *destroy_room = 0;
-struct unit_data *heaven_room  = 0;
-struct unit_data *seq_room     = 0;
-struct unit_data *time_room    = 0;
-struct unit_data *entry_room   = 0;
+std::shared_ptr<unit_data> void_room    = 0;
+std::shared_ptr<unit_data> destroy_room = 0;
+std::shared_ptr<unit_data> heaven_room  = 0;
+std::shared_ptr<unit_data> seq_room     = 0;
+std::shared_ptr<unit_data> time_room    = 0;
+std::shared_ptr<unit_data> entry_room   = 0;
 
 std::shared_ptr<file_index_type> demigod_fi; /* Default demigod shape */
 std::shared_ptr<file_index_type> zombie_fi;
@@ -129,9 +129,9 @@ void basis_boot(void)
 /* These events happen rarely (daemon is every 30 minutes) */
 void random_event_world(void)
 {
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
 
-   extern struct unit_data *unit_list;
+   extern std::shared_ptr<unit_data> unit_list;
 
    for(u = unit_list; u; u = u->gnext)
    {
@@ -144,12 +144,12 @@ void random_event_world(void)
 }
 
 /* These events happen rarely (daemon is every 30 minutes) */
-void random_event_player(struct unit_data *u, struct unit_data *daemon)
+void random_event_player(std::shared_ptr<unit_data> u, std::shared_ptr<unit_data> daemon)
 {
    int               i;
-   struct unit_data *tmpu;
+   std::shared_ptr<unit_data> tmpu;
 
-   extern struct unit_data *unit_list;
+   extern std::shared_ptr<unit_data> unit_list;
 
    if(u == NULL)
    {
@@ -336,7 +336,7 @@ int recep_daemon(struct spec_arg *sarg)
 int chaos_daemon(struct spec_arg *sarg)
 {
    char             *arg = (char *)sarg->arg;
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
 
    if(sarg->cmd->no == CMD_AUTO_TICK || (is_command(sarg->cmd, "tickle") && IS_ULTIMATE(sarg->activator) &&
                                          sarg->owner == find_unit(sarg->activator, &arg, 0, FIND_UNIT_SURRO)))
@@ -389,7 +389,7 @@ int log_object(struct spec_arg *sarg)
    ubit8            *ip;
    enum log_level    lev = LOG_OFF;
    char              c;
-   struct unit_data *ch = UNIT_IN(sarg->owner);
+   std::shared_ptr<unit_data> ch = UNIT_IN(sarg->owner);
 
    if(sarg->fptr->data == NULL)
    {
@@ -485,7 +485,7 @@ int log_object(struct spec_arg *sarg)
 }
 
 /* Return TRUE if ok, FALSE if not */
-int system_check(struct unit_data *pc, char *buf)
+int system_check(std::shared_ptr<unit_data> pc, char *buf)
 {
    /* Check for `` and ; in system-string */
    if(strchr(buf, '`') || strchr(buf, ';'))
@@ -498,7 +498,7 @@ int system_check(struct unit_data *pc, char *buf)
    return TRUE;
 }
 
-void execute_append(struct unit_data *pc, char *str)
+void execute_append(std::shared_ptr<unit_data> pc, char *str)
 {
    FILE *f;
 

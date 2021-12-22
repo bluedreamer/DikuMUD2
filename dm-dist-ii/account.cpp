@@ -57,7 +57,7 @@ static int next_crc = 0;
 
 class CAccountConfig g_cAccountConfig;
 
-void account_cclog(struct unit_data *ch, int amount)
+void account_cclog(std::shared_ptr<unit_data> ch, int amount)
 {
    FILE *f;
 
@@ -68,7 +68,7 @@ void account_cclog(struct unit_data *ch, int amount)
    fclose(f);
 }
 
-static void account_log(char action, struct unit_data *god, struct unit_data *pc, int amount)
+static void account_log(char action, std::shared_ptr<unit_data> god, std::shared_ptr<unit_data> pc, int amount)
 {
    time_t now = time(0);
    char  *c;
@@ -131,7 +131,7 @@ int time_to_index(ubit8 hours, ubit8 minutes)
    return ((hours * 60) + minutes) / MINUTE_GRANULARITY;
 }
 
-void account_local_stat(const struct unit_data *ch, struct unit_data *u)
+void account_local_stat(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
    if(!g_cServerConfig.m_bAccounting)
    {
@@ -177,7 +177,7 @@ void account_local_stat(const struct unit_data *ch, struct unit_data *u)
    send_to_char(buf, ch);
 }
 
-void account_global_stat(const struct unit_data *ch)
+void account_global_stat(const std::shared_ptr<unit_data> ch)
 {
    char  buf[100 * TIME_GRANULARITY];
    char *b;
@@ -225,7 +225,7 @@ void account_global_stat(const struct unit_data *ch)
    page_string(CHAR_DESCRIPTOR(ch), buf);
 }
 
-void account_overdue(const struct unit_data *ch)
+void account_overdue(const std::shared_ptr<unit_data> ch)
 {
    int i, j;
 
@@ -264,12 +264,12 @@ void account_overdue(const struct unit_data *ch)
    }
 }
 
-void account_paypoint(struct unit_data *ch)
+void account_paypoint(std::shared_ptr<unit_data> ch)
 {
    send_to_char(g_cAccountConfig.m_pPaypointMessage, ch);
 }
 
-void account_closed(struct unit_data *ch)
+void account_closed(std::shared_ptr<unit_data> ch)
 {
    if(g_cServerConfig.m_bAccounting)
    {
@@ -314,7 +314,7 @@ static int tm_less_than(struct tm *b, struct tm *e)
    return TRUE;
 }
 
-static void account_calc(struct unit_data *pc, struct tm *b, struct tm *e)
+static void account_calc(std::shared_ptr<unit_data> pc, struct tm *b, struct tm *e)
 {
    int       bidx, eidx;
    struct tm t;
@@ -395,7 +395,7 @@ static void account_calc(struct unit_data *pc, struct tm *b, struct tm *e)
       account_calc(pc, b, e);
 }
 
-void account_subtract(struct unit_data *pc, time_t from, time_t to)
+void account_subtract(std::shared_ptr<unit_data> pc, time_t from, time_t to)
 {
    struct tm bt, et;
 
@@ -419,7 +419,7 @@ void account_subtract(struct unit_data *pc, time_t from, time_t to)
    account_calc(pc, &bt, &et);
 }
 
-int account_is_overdue(const struct unit_data *ch)
+int account_is_overdue(const std::shared_ptr<unit_data> ch)
 {
    if(g_cServerConfig.m_bAccounting && (CHAR_LEVEL(ch) < g_cAccountConfig.m_nFreeFromLevel))
    {
@@ -432,7 +432,7 @@ int account_is_overdue(const struct unit_data *ch)
    return FALSE;
 }
 
-static void account_status(const struct unit_data *ch)
+static void account_status(const std::shared_ptr<unit_data> ch)
 {
    char   Buf[256];
    int    j, i;
@@ -518,7 +518,7 @@ static void account_status(const struct unit_data *ch)
    }
 }
 
-int account_is_closed(struct unit_data *ch)
+int account_is_closed(std::shared_ptr<unit_data> ch)
 {
    int i, j;
 
@@ -536,7 +536,7 @@ int account_is_closed(struct unit_data *ch)
    return FALSE;
 }
 
-void account_insert(struct unit_data *god, struct unit_data *whom, ubit32 amount)
+void account_insert(std::shared_ptr<unit_data> god, std::shared_ptr<unit_data> whom, ubit32 amount)
 {
    PC_ACCOUNT(whom).credit += (float)amount;
    PC_ACCOUNT(whom).total_credit += amount;
@@ -545,7 +545,7 @@ void account_insert(struct unit_data *god, struct unit_data *whom, ubit32 amount
    account_log('I', god, whom, amount);
 }
 
-void account_withdraw(struct unit_data *god, struct unit_data *whom, ubit32 amount)
+void account_withdraw(std::shared_ptr<unit_data> god, std::shared_ptr<unit_data> whom, ubit32 amount)
 {
    PC_ACCOUNT(whom).credit -= (float)amount;
    if((ubit32)amount > PC_ACCOUNT(whom).total_credit)
@@ -558,7 +558,7 @@ void account_withdraw(struct unit_data *god, struct unit_data *whom, ubit32 amou
    account_log('W', god, whom, amount);
 }
 
-void account_flatrate_change(struct unit_data *god, struct unit_data *whom, sbit32 days)
+void account_flatrate_change(std::shared_ptr<unit_data> god, std::shared_ptr<unit_data> whom, sbit32 days)
 {
    char   Buf[256];
    sbit32 add = days * SECS_PER_REAL_DAY;
@@ -599,11 +599,12 @@ void account_flatrate_change(struct unit_data *god, struct unit_data *whom, sbit
    send_to_char(Buf, god);
 }
 
-void do_account(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_account(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    char              Buf[256];
    char              word[MAX_INPUT_LENGTH];
-   struct unit_data *u, *note;
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> note;
    char             *c = (char *)arg;
 
    const char *operations[] = {"insert", "withdraw", "limit", "discount", "flatrate", NULL};
@@ -789,7 +790,7 @@ void do_account(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void account_defaults(struct unit_data *pc)
+void account_defaults(std::shared_ptr<unit_data> pc)
 {
    PC_ACCOUNT(pc).credit       = g_cAccountConfig.m_nAccountFree;
    PC_ACCOUNT(pc).credit_limit = (int)g_cAccountConfig.m_nAccountLimit;

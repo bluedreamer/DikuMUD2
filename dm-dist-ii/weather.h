@@ -35,7 +35,7 @@ char                 *timetodate(time_t t);
 struct time_info_data real_time_passed(time_t t2, time_t t1);
 struct time_info_data mud_date(time_t t);
 struct time_info_data mud_time_passed(time_t t2, time_t t1);
-struct time_info_data age(struct unit_data *ch);
+struct time_info_data age(std::shared_ptr<unit_data> ch);
 void                  weather_change(struct time_info_data time_data);
 void                  mudtime_strcpy(struct time_info_data *time, char *str);
 

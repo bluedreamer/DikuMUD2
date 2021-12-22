@@ -42,7 +42,7 @@ void event_deenq(void (*func)(), void *arg1, void *arg2);
 extern std::shared_ptr<zone_type> boot_zone;
 extern struct unit_function_array_type unit_function_array[];
 
-void SetFptrTimer(struct unit_data *u, struct unit_fptr *fptr)
+void SetFptrTimer(std::shared_ptr<unit_data> u, struct unit_fptr *fptr)
 {
    ubit32 ticks;
 
@@ -61,7 +61,7 @@ void SetFptrTimer(struct unit_data *u, struct unit_fptr *fptr)
    }
 }
 
-void ResetFptrTimer(struct unit_data *u, struct unit_fptr *fptr)
+void ResetFptrTimer(std::shared_ptr<unit_data> u, struct unit_fptr *fptr)
 {
    event_deenq(special_event, u, fptr);
    SetFptrTimer(u, fptr);
@@ -69,14 +69,14 @@ void ResetFptrTimer(struct unit_data *u, struct unit_fptr *fptr)
 
 void special_event(void *p1, void *p2)
 {
-   struct unit_data          *u    = (struct unit_data *)p1;
+   std::shared_ptr<unit_data> u    = (std::shared_ptr<unit_data> )p1;
    register struct unit_fptr *fptr = (struct unit_fptr *)p2;
 
    ubit32            ret = SFR_SHARE, ticks;
    struct unit_fptr *ftmp;
    struct spec_arg   sarg;
 
-   void add_func_history(struct unit_data * u, ubit16, ubit16);
+   void add_func_history(std::shared_ptr<unit_data>  u, ubit16, ubit16);
 
    extern struct command_info cmd_auto_tick;
 
@@ -132,12 +132,12 @@ void special_event(void *p1, void *p2)
 }
 
 /* Return TRUE while stopping events */
-void stop_special(struct unit_data *u, struct unit_fptr *fptr)
+void stop_special(std::shared_ptr<unit_data> u, struct unit_fptr *fptr)
 {
    event_deenq(special_event, u, fptr);
 }
 
-void start_special(struct unit_data *u, struct unit_fptr *fptr)
+void start_special(std::shared_ptr<unit_data> u, struct unit_fptr *fptr)
 {
    if(IS_SET(fptr->flags, SFB_TICK) || fptr->index == SFUN_DIL_INTERNAL)
    {
@@ -162,7 +162,7 @@ void start_special(struct unit_data *u, struct unit_fptr *fptr)
    }
 }
 
-void start_all_special(struct unit_data *u)
+void start_all_special(std::shared_ptr<unit_data> u)
 {
    struct unit_fptr *fptr;
 
@@ -170,7 +170,7 @@ void start_all_special(struct unit_data *u)
       start_special(u, fptr);
 }
 
-void stop_all_special(struct unit_data *u)
+void stop_all_special(std::shared_ptr<unit_data> u)
 {
    struct unit_fptr *fptr;
 

@@ -102,20 +102,20 @@ struct combat_msg_list fight_messages[COM_MAX_MSGS];
 
 /* External structures */
 
-extern struct unit_data *unit_list;
+extern std::shared_ptr<unit_data> unit_list;
 extern char              libdir[]; /* fom dikumud.c */
 
 /* External procedures */
 
-void  gain_exp(struct unit_data *ch, int gain);
+void  gain_exp(std::shared_ptr<unit_data> ch, int gain);
 char *fread_string(FILE *f1);
-void  stop_follower(struct unit_data *ch);
+void  stop_follower(std::shared_ptr<unit_data> ch);
 
 /* Returns TRUE if combat is not allowed, and FALSE if combat is allowed */
 /* Also used for steal, etc.                                             */
 /* If message is true, then a message is sent to the 'att'               */
 
-int pk_test(struct unit_data *att, struct unit_data *def, int message)
+int pk_test(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, int message)
 {
    if(IS_PC(att) && IS_PC(def) && att != def)
    {
@@ -167,13 +167,13 @@ int pk_test(struct unit_data *att, struct unit_data *def, int message)
    return FALSE;
 }
 
-int char_dual_wield(struct unit_data *ch)
+int char_dual_wield(std::shared_ptr<unit_data> ch)
 {
    return equipment_type(ch, WEAR_WIELD, ITEM_WEAPON) && equipment_type(ch, WEAR_HOLD, ITEM_WEAPON);
 }
 
 /* Given an amount of experience, what is the 'virtual' level of the char? */
-int virtual_level(struct unit_data *ch)
+int virtual_level(std::shared_ptr<unit_data> ch)
 {
    if(IS_NPC(ch))
       return CHAR_LEVEL(ch);
@@ -540,9 +540,9 @@ char *sub_damage(char *str, char *col, int damage, int max_hp)
 
 static void combat_send(struct SFightColorSet    *sColors,
                         struct combat_single_msg *msg,
-                        struct unit_data         *arg1,
-                        struct unit_data         *arg2,
-                        struct unit_data         *arg3,
+                        std::shared_ptr<unit_data> arg1,
+                        std::shared_ptr<unit_data> arg2,
+                        std::shared_ptr<unit_data> arg3,
                         int                       dam)
 {
    if(msg->to_char)
@@ -570,7 +570,7 @@ static void combat_send(struct SFightColorSet    *sColors,
 /* Use COM_MSG_NODAM when a hit but no damage is given    */
 
 void combat_message(
-   struct unit_data *att, struct unit_data *def, struct unit_data *medium, int damage, int msg_group, int msg_number, int hit_location)
+   std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, std::shared_ptr<unit_data> medium, int damage, int msg_group, int msg_number, int hit_location)
 {
    struct combat_msg_packet *msg;
    int                       i, r;
@@ -646,7 +646,7 @@ void combat_message(
 
 /* -------------------------------------------------------------------- */
 
-void update_pos(struct unit_data *victim)
+void update_pos(std::shared_ptr<unit_data> victim)
 {
    if((UNIT_HIT(victim) > 0) && (CHAR_POS(victim) > POSITION_STUNNED))
       return;
@@ -665,7 +665,7 @@ void update_pos(struct unit_data *victim)
 /* -------------------------------------------------------------------- */
 
 /* When ch kills victim */
-static void change_alignment(struct unit_data *slayer, struct unit_data *victim)
+static void change_alignment(std::shared_ptr<unit_data> slayer, std::shared_ptr<unit_data> victim)
 {
    int adjust = 0;
    int diff   = 0;
@@ -717,7 +717,7 @@ static void change_alignment(struct unit_data *slayer, struct unit_data *victim)
 
 /* Do all the gain stuff for CH where no is the number of players */
 /* which are to share the "share" of experience                   */
-static void person_gain(struct unit_data *ch, struct unit_data *dead, int share, int grouped, int maxlevel)
+static void person_gain(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> dead, int share, int grouped, int maxlevel)
 {
    if(share > 0)
    {
@@ -761,13 +761,13 @@ static void person_gain(struct unit_data *ch, struct unit_data *dead, int share,
 /* This takes 100% care of victim and attackers change in experience */
 /* and alignments. Do not fiddle with these values anywhere else     */
 /* when a kill has been made                                         */
-static void exp_align_gain(struct unit_data *ch, struct unit_data *victim)
+static void exp_align_gain(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> victim)
 {
    int                      rellevel, sumlevel, maxlevel, minlevel, no_members = 1, share;
-   struct unit_data        *head;
+   std::shared_ptr<unit_data> head;
    struct char_follow_type *f;
 
-   int experience_modification(struct unit_data * att, struct unit_data * def);
+   int experience_modification(std::shared_ptr<unit_data>  att, std::shared_ptr<unit_data>  def);
 
    maxlevel = CHAR_LEVEL(ch);
 
@@ -859,7 +859,7 @@ static void exp_align_gain(struct unit_data *ch, struct unit_data *victim)
 
 /* -------------------------------------------------------------------- */
 
-static void death_cry(struct unit_data *ch)
+static void death_cry(std::shared_ptr<unit_data> ch)
 {
    int door;
 
@@ -898,14 +898,14 @@ void RemoveReward(class unit_data *ch)
       REMOVE_BIT(CHAR_FLAGS(ch), CHAR_OUTLAW);
 }
 
-class unit_data *raw_kill(struct unit_data *ch)
+class unit_data *raw_kill(std::shared_ptr<unit_data> ch)
 {
-   struct unit_data *death_obj, *corpse = NULL;
+   std::shared_ptr<unit_data> death_obj, *corpse = NULL;
 
-   extern struct unit_data                *seq_room;
+   extern std::shared_ptr<unit_data> seq_room;
    extern std::shared_ptr<file_index_type> deathobj_fi;
 
-   struct unit_data *make_corpse(struct unit_data * ch);
+   std::shared_ptr<unit_data> make_corpse(std::shared_ptr<unit_data>  ch);
 
 #ifdef DEMIGOD
    if(CHAR_ORIGINAL(ch) && IS_DEMIGOD(CHAR_ORIGINAL(ch)))
@@ -988,7 +988,7 @@ class unit_data *raw_kill(struct unit_data *ch)
    return corpse;
 }
 
-int lose_exp(struct unit_data *ch)
+int lose_exp(std::shared_ptr<unit_data> ch)
 {
    int loss, i;
 
@@ -1022,13 +1022,13 @@ int lose_exp(struct unit_data *ch)
 /* Die is only called when a PC or NPC is killed for real, causing XP loss
    and transfer of rewards */
 
-void die(struct unit_data *ch)
+void die(std::shared_ptr<unit_data> ch)
 {
    if(IS_PC(ch))
    {
       if(IS_SET(PC_FLAGS(ch), PC_SPIRIT))
       {
-         extern struct unit_data *seq_room;
+         extern std::shared_ptr<unit_data> seq_room;
 
          send_to_char("Please report spirit mess to implementors.\n\r", ch);
          slog(LOG_EXTENSIVE,
@@ -1054,7 +1054,7 @@ void die(struct unit_data *ch)
       }
    }
 
-   struct unit_data *corpse = raw_kill(ch);
+   std::shared_ptr<unit_data> corpse = raw_kill(ch);
 
    if(corpse)
    {
@@ -1096,7 +1096,7 @@ int provoked_attack(class unit_data *victim, class unit_data *ch)
 /* -------------------------------------------------------------------- */
 
 /* Call when adding or subtracting hitpoints to/from a character */
-void modify_hit(struct unit_data *ch, int hit)
+void modify_hit(std::shared_ptr<unit_data> ch, int hit)
 {
    if(CHAR_POS(ch) > POSITION_DEAD)
    {
@@ -1110,9 +1110,9 @@ void modify_hit(struct unit_data *ch, int hit)
    }
 }
 
-void damage(struct unit_data *ch,
-            struct unit_data *victim,
-            struct unit_data *medium,
+void damage(std::shared_ptr<unit_data> ch,
+            std::shared_ptr<unit_data> victim,
+            std::shared_ptr<unit_data> medium,
             int               dam,
             int               attack_group,
             int               attack_number,
@@ -1358,7 +1358,7 @@ void damage(struct unit_data *ch,
    }
 }
 
-void break_object(struct unit_data *obj)
+void break_object(std::shared_ptr<unit_data> obj)
 {
    char tmp[256];
 
@@ -1383,7 +1383,7 @@ void break_object(struct unit_data *obj)
 }
 
 /* 'ch' is optional, and will receive a message if 'obj' breaks */
-void damage_object(struct unit_data *ch, struct unit_data *obj, int dam)
+void damage_object(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, int dam)
 {
    if(obj == NULL)
       return;
@@ -1430,7 +1430,7 @@ void damage_object(struct unit_data *ch, struct unit_data *obj, int dam)
 
 /* -1 if fails, >= 0 amount of damage */
 
-int one_hit(struct unit_data *att, struct unit_data *def, int bonus, int att_weapon_type, int primary)
+int one_hit(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, int bonus, int att_weapon_type, int primary)
 {
    int dam, hm, hit_loc;
    int roll;
@@ -1438,9 +1438,9 @@ int one_hit(struct unit_data *att, struct unit_data *def, int bonus, int att_wea
    int def_armour_type;
    int def_shield_bonus;
 
-   struct unit_data *att_weapon;
-   struct unit_data *def_armour;
-   struct unit_data *def_shield;
+   std::shared_ptr<unit_data> att_weapon;
+   std::shared_ptr<unit_data> def_armour;
+   std::shared_ptr<unit_data> def_shield;
 
    assert(IS_CHAR(att) && IS_CHAR(def));
 
@@ -1551,13 +1551,13 @@ int one_hit(struct unit_data *att, struct unit_data *def, int bonus, int att_wea
    return dam;
 }
 
-int simple_one_hit(struct unit_data *att, struct unit_data *def)
+int simple_one_hit(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def)
 {
    return one_hit(att, def, 0, WPN_ROOT, TRUE);
 }
 
 /* Returns TRUE if ok */
-static int check_combat(struct unit_data *ch)
+static int check_combat(std::shared_ptr<unit_data> ch)
 {
    if(is_destructed(DR_UNIT, ch))
    {
@@ -1580,7 +1580,7 @@ static int check_combat(struct unit_data *ch)
 }
 
 /* control the fights going on */
-void melee_violence(struct unit_data *ch, int primary)
+void melee_violence(std::shared_ptr<unit_data> ch, int primary)
 {
    if(!check_combat(ch))
       return;
@@ -1608,7 +1608,7 @@ struct hunt_data
 {
    int               no;
    int               was_legal;
-   struct unit_data *victim;
+   std::shared_ptr<unit_data> victim;
 };
 
 /* The hunting routine will prefer to hit anyone hunted to those */
@@ -1622,7 +1622,7 @@ struct hunt_data
 int hunting(struct spec_arg *sarg)
 {
    struct hunt_data *h;
-   struct unit_data *victim;
+   std::shared_ptr<unit_data> victim;
 
    if(sarg->cmd->no != CMD_AUTO_TICK)
       return SFR_SHARE;
@@ -1675,7 +1675,7 @@ int hunting(struct spec_arg *sarg)
    return SFR_SHARE;
 }
 
-void set_hunting(struct unit_data *predator, struct unit_data *victim, int legal)
+void set_hunting(std::shared_ptr<unit_data> predator, std::shared_ptr<unit_data> victim, int legal)
 {
    struct hunt_data *h;
 

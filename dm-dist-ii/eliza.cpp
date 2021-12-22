@@ -47,8 +47,8 @@
 struct oracle_data
 {
    int              *nextrep;
-   struct unit_data *patient;
-   struct unit_data *doctor;
+   std::shared_ptr<unit_data> patient;
+   std::shared_ptr<unit_data> doctor;
    int               oldkeywd[MAX_HISTORY];     /* queue of indices of most recent keywds */
    char              own_name[FI_MAX_UNITNAME]; /* Lowercase name of Doc.                */
    char              laststr[MAX_INPUT_LENGTH]; /* Don't reply to same string twice      */
@@ -470,16 +470,16 @@ char *eliza_process(struct oracle_data *od, char *s)
 
 void delayed_action(void *p1, void *p2)
 {
-   struct unit_data *npc = (struct unit_data *)p1;
+   std::shared_ptr<unit_data> npc = (std::shared_ptr<unit_data> )p1;
    char             *str = (char *)p2;
 
-   void command_interpreter(struct unit_data * ch, char *argument);
+   void command_interpreter(std::shared_ptr<unit_data>  ch, char *argument);
 
    command_interpreter(npc, str);
    free(str);
 }
 
-void set_delayed_action(struct unit_data *npc, char *str)
+void set_delayed_action(std::shared_ptr<unit_data> npc, char *str)
 {
    int   when;
    char *cp;
@@ -501,7 +501,7 @@ void set_delayed_action(struct unit_data *npc, char *str)
 
 #define MAX_ELIBUF 50
 
-void eliza_log(struct unit_data *who, const char *str, int comms)
+void eliza_log(std::shared_ptr<unit_data> who, const char *str, int comms)
 {
    static int   idx = -1;
    static char *buf[MAX_ELIBUF];
@@ -664,7 +664,7 @@ int oracle(struct spec_arg *sarg)
 
    if((sarg->cmd->no == CMD_TELL) || (sarg->cmd->no == CMD_ASK) || (sarg->cmd->no == CMD_WHISPER))
    {
-      struct unit_data *u;
+      std::shared_ptr<unit_data> u;
       char             *c = (char *)sarg->arg;
 
       u = find_unit(sarg->activator, &c, 0, FIND_UNIT_SURRO);

@@ -127,7 +127,7 @@ time_t ban_timer(char *arg)
    return now;
 }
 
-void add_ban(struct unit_data *ch, char *site, char type, time_t *until, char *textfile)
+void add_ban(std::shared_ptr<unit_data> ch, char *site, char type, time_t *until, char *textfile)
 {
    struct ban_t *entry;
    char          d[50], buf[MAX_STRING_LENGTH];
@@ -189,7 +189,7 @@ void kill_entry(struct ban_t *entry)
    save_ban();
 }
 
-void del_ban(struct unit_data *ch, char *site)
+void del_ban(std::shared_ptr<unit_data> ch, char *site)
 {
    struct ban_t *entry;
 
@@ -206,7 +206,7 @@ void del_ban(struct unit_data *ch, char *site)
       act("No entry $2t in ban list.", A_ALWAYS, ch, site, 0, TO_CHAR);
 }
 
-void show_site(struct unit_data *ch, struct ban_t *entry)
+void show_site(std::shared_ptr<unit_data> ch, struct ban_t *entry)
 {
    char buf[200], d[40];
 
@@ -218,7 +218,7 @@ void show_site(struct unit_data *ch, struct ban_t *entry)
    send_to_char(buf, ch);
 }
 
-void do_ban(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_ban(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    struct ban_t *tmp;
    char          site[MAX_INPUT_LENGTH], textfile[MAX_INPUT_LENGTH], mode;

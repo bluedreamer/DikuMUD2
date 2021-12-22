@@ -154,13 +154,13 @@ int npc_visit_room(struct spec_arg *sarg)
 /* return to its original room                                      */
 /* The *data may be any datapointer which what_now can use          */
 /*                                                                  */
-void npc_set_visit(struct unit_data *npc,
-                   struct unit_data *dest_room,
-                   int               what_now(const struct unit_data *, struct visit_data *),
+void npc_set_visit(std::shared_ptr<unit_data> npc,
+                   std::shared_ptr<unit_data> dest_room,
+                   int               what_now(const std::shared_ptr<unit_data> , struct visit_data *),
                    void             *data,
                    int               non_tick_return)
 {
-   struct unit_data  *u;
+   std::shared_ptr<unit_data> u;
    struct visit_data *vd;
    struct unit_fptr  *fp1, *fp2;
 
@@ -241,13 +241,13 @@ int new_crime_serial_no(void)
    return crime_serial_no;
 }
 
-void set_reward_char(struct unit_data *ch, int crimes)
+void set_reward_char(std::shared_ptr<unit_data> ch, int crimes)
 {
    struct unit_affected_type *paf;
    struct unit_affected_type  af;
    int                        xp = 0, gold = 0;
 
-   int lose_exp(struct unit_data * ch);
+   int lose_exp(std::shared_ptr<unit_data>  ch);
 
    /* Just to make sure in case anyone gets randomly rewarded */
    REMOVE_BIT(CHAR_FLAGS(ch), CHAR_PROTECTED);
@@ -285,11 +285,11 @@ void set_reward_char(struct unit_data *ch, int crimes)
    create_affect(ch, &af);
 }
 
-void set_witness(struct unit_data *criminal, struct unit_data *witness, int no, int type, int show = TRUE)
+void set_witness(std::shared_ptr<unit_data> criminal, std::shared_ptr<unit_data> witness, int no, int type, int show = TRUE)
 {
    struct unit_affected_type af;
 
-   void activate_accuse(struct unit_data * npc, ubit8 crime_type, const char *cname);
+   void activate_accuse(std::shared_ptr<unit_data>  npc, ubit8 crime_type, const char *cname);
 
    if(!IS_PC(criminal))
       return;
@@ -324,7 +324,7 @@ void set_witness(struct unit_data *criminal, struct unit_data *witness, int no, 
       activate_accuse(witness, type, UNIT_NAME(criminal));
 }
 
-void add_crime(struct unit_data *criminal, struct unit_data *victim, int type)
+void add_crime(std::shared_ptr<unit_data> criminal, std::shared_ptr<unit_data> victim, int type)
 {
    struct char_crime_data *crime;
 
@@ -367,7 +367,7 @@ const char *crime_victim_name(int crime_no, int id)
    return "";
 }
 
-void log_crime(struct unit_data *criminal, struct unit_data *victim, ubit8 crime_type, int active)
+void log_crime(std::shared_ptr<unit_data> criminal, std::shared_ptr<unit_data> victim, ubit8 crime_type, int active)
 {
    int i, j;
 
@@ -410,7 +410,7 @@ void log_crime(struct unit_data *criminal, struct unit_data *victim, ubit8 crime
 
 /* Got to have this loaded somewhere */
 
-void save_accusation(struct char_crime_data *crime, const struct unit_data *accuser)
+void save_accusation(struct char_crime_data *crime, const std::shared_ptr<unit_data> accuser)
 {
    FILE *file;
 
@@ -428,7 +428,7 @@ void save_accusation(struct char_crime_data *crime, const struct unit_data *accu
            crime->id,
            crime->crime_type,
            crime->reported,
-           UNIT_NAME((struct unit_data *)accuser),
+           UNIT_NAME((std::shared_ptr<unit_data> )accuser),
            crime->victim,
            t,
            ctime(&t));
@@ -436,7 +436,7 @@ void save_accusation(struct char_crime_data *crime, const struct unit_data *accu
    /* Was fclose(file) */
 }
 
-static void crime_counter(struct unit_data *criminal, int incr, int first_accuse)
+static void crime_counter(std::shared_ptr<unit_data> criminal, int incr, int first_accuse)
 {
    if((PC_CRIMES(criminal) + incr) / CRIME_NONPRO > PC_CRIMES(criminal) / CRIME_NONPRO)
    {
@@ -463,13 +463,13 @@ static void crime_counter(struct unit_data *criminal, int incr, int first_accuse
    }
 }
 
-static void update_criminal(const struct unit_data *deputy, const char *pPlyName, int pidx, struct char_crime_data *crime, int first_accuse)
+static void update_criminal(const std::shared_ptr<unit_data> deputy, const char *pPlyName, int pidx, struct char_crime_data *crime, int first_accuse)
 {
-   struct unit_data *criminal = NULL;
+   std::shared_ptr<unit_data> criminal = NULL;
    int               loaded   = FALSE;
    int               incr;
 
-   void save_player_file(struct unit_data * pc);
+   void save_player_file(std::shared_ptr<unit_data>  pc);
 
    /* Modified find_descriptor */
    for(criminal = unit_list; criminal; criminal = criminal->gnext)
@@ -644,7 +644,7 @@ struct npc_accuse_data
 /* For use with the walk.c system. When at captain accuse the criminal */
 /* and then return to previous duties                                  */
 /*                                                                     */
-int npc_accuse(const struct unit_data *npc, struct visit_data *vd)
+int npc_accuse(const std::shared_ptr<unit_data> npc, struct visit_data *vd)
 {
    char                       str[80];
    struct unit_affected_type *af;
@@ -678,7 +678,7 @@ int npc_accuse(const struct unit_data *npc, struct visit_data *vd)
             strcat(str, " murder");
          else
             strcat(str, " stealing");
-         command_interpreter((struct unit_data *)npc, str);
+         command_interpreter((std::shared_ptr<unit_data> )npc, str);
          return SFR_BLOCK;
 
       case 1:
@@ -692,10 +692,10 @@ int npc_accuse(const struct unit_data *npc, struct visit_data *vd)
    return DESTROY_ME;
 }
 
-void activate_accuse(struct unit_data *npc, ubit8 crime_type, const char *cname)
+void activate_accuse(std::shared_ptr<unit_data> npc, ubit8 crime_type, const char *cname)
 {
    struct npc_accuse_data *nad;
-   struct unit_data       *prison;
+   std::shared_ptr<unit_data> prison;
    struct unit_fptr       *fptr;
    struct visit_data      *vd;
 
@@ -735,7 +735,7 @@ void activate_accuse(struct unit_data *npc, ubit8 crime_type, const char *cname)
 /*                      A R R E S T   F U N C T I O N S                   */
 /* ---------------------------------------------------------------------- */
 
-static int crime_in_progress(struct unit_data *att, struct unit_data *def)
+static int crime_in_progress(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def)
 {
    if(att && def)
    {
@@ -753,14 +753,14 @@ static int crime_in_progress(struct unit_data *att, struct unit_data *def)
 
 /* Help another friendly guard! :-) */
 /*                                  */
-int guard_assist(const struct unit_data *npc, struct visit_data *vd)
+int guard_assist(const std::shared_ptr<unit_data> npc, struct visit_data *vd)
 {
    char mbuf[MAX_INPUT_LENGTH] = {0};
    switch(vd->state++)
    {
       case 0:
          strcpy(mbuf, "peer");
-         command_interpreter((struct unit_data *)npc, mbuf);
+         command_interpreter((std::shared_ptr<unit_data> )npc, mbuf);
          return SFR_BLOCK;
 
       case 1: /* Just wait a little while... */
@@ -782,11 +782,11 @@ int guard_assist(const struct unit_data *npc, struct visit_data *vd)
 
 /* 'Guard' needs help. Call his friends... :-)   */
 /*                                               */
-void call_guards(struct unit_data *guard)
+void call_guards(std::shared_ptr<unit_data> guard)
 {
    std::shared_ptr<zone_type> zone;
    struct unit_fptr *fptr;
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
    int               ok;
 
    if(!IS_ROOM(UNIT_IN(guard)))
@@ -885,7 +885,7 @@ int whistle(struct spec_arg *sarg)
 
    if(sarg->fptr->data)
    {
-      if(scan4_ref(sarg->owner, (struct unit_data *)sarg->fptr->data) == NULL)
+      if(scan4_ref(sarg->owner, (std::shared_ptr<unit_data> )sarg->fptr->data) == NULL)
          sarg->fptr->data = NULL;
       else
          return SFR_SHARE;
@@ -912,9 +912,9 @@ int whistle(struct spec_arg *sarg)
 
 int reward_give(struct spec_arg *sarg)
 {
-   void gain_exp(struct unit_data * ch, int gain);
+   void gain_exp(std::shared_ptr<unit_data>  ch, int gain);
 
-   struct unit_data          *u;
+   std::shared_ptr<unit_data> u;
    struct unit_affected_type *paf;
    currency_t                 cur;
 
@@ -950,7 +950,7 @@ int reward_give(struct spec_arg *sarg)
 
 int reward_board(struct spec_arg *sarg)
 {
-   struct unit_data          *u;
+   std::shared_ptr<unit_data> u;
    struct unit_affected_type *af    = NULL;
    int                        found = FALSE;
    char                       buf[256];
@@ -1000,7 +1000,7 @@ int reward_board(struct spec_arg *sarg)
    return SFR_BLOCK;
 }
 
-void tif_reward_on(struct unit_affected_type *af, struct unit_data *unit)
+void tif_reward_on(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(IS_CHAR(unit))
    {
@@ -1019,7 +1019,7 @@ void tif_reward_on(struct unit_affected_type *af, struct unit_data *unit)
    }
 }
 
-void tif_reward_off(struct unit_affected_type *af, struct unit_data *unit)
+void tif_reward_off(struct unit_affected_type *af, std::shared_ptr<unit_data> unit)
 {
    if(IS_CHAR(unit))
       REMOVE_BIT(CHAR_FLAGS(unit), CHAR_OUTLAW);

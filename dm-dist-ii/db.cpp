@@ -58,7 +58,7 @@
 #include <time.h>
 
 int               room_number;      /* For counting numbers in rooms */
-struct unit_data *unit_list = NULL; /* The global unit_list          */
+std::shared_ptr<unit_data> unit_list = NULL; /* The global unit_list          */
 
 /* Global permanent element of zone info */
 struct zone_info_type zone_info = {0, 0, 0, 0};
@@ -496,14 +496,14 @@ void generate_zone_indexes(void)
  *  other units. If the affect should also have an actual effect, then it
  *  must be followed by the function call 'apply_affects'.
  */
-int bread_affect(CByteBuffer *pBuf, struct unit_data *u, ubit8 nVersion)
+int bread_affect(CByteBuffer *pBuf, std::shared_ptr<unit_data> u, ubit8 nVersion)
 {
    struct unit_affected_type af;
    int                       i;
    ubit8                     t8;
    ubit16                    t16;
 
-   struct unit_affected_type *link_alloc_affect(struct unit_data * unit, struct unit_affected_type * orgaf);
+   struct unit_affected_type *link_alloc_affect(std::shared_ptr<unit_data>  unit, struct unit_affected_type * orgaf);
 
    if(nVersion <= 56)
    {
@@ -578,9 +578,9 @@ extern int memory_room_alloc;
  * whom is an error message to be printed when something goes wrong.
  * bSwapin is TRUE if the swap information should be read.
  */
-struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom)
+std::shared_ptr<unit_data> read_unit_string(CByteBuffer *pBuf, int type, int len, int bSwapin, char *whom)
 {
-   struct unit_data                *u;
+   std::shared_ptr<unit_data> u;
    std::shared_ptr<file_index_type> fi;
    char                             zone[FI_MAX_ZONENAME + 1], name[FI_MAX_UNITNAME + 1], *tmp;
    int                              i, j;
@@ -594,7 +594,7 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
    int memory_start;
 #endif
 
-   void start_all_special(struct unit_data * u);
+   void start_all_special(std::shared_ptr<unit_data>  u);
 
    g_nCorrupt = 0;
 
@@ -694,7 +694,7 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
          if(UNIT_TYPE(u) == UNIT_ST_ROOM)
          {
             // TODO no way this should be casting file_index_type to unit_data - but lets go with it for the moment
-            UNIT_IN(u) = (struct unit_data *)tmpfi.get(); /* To be normalized! */
+            UNIT_IN(u) = (std::shared_ptr<unit_data> )tmpfi.get(); /* To be normalized! */
          }
          else
          {
@@ -884,7 +884,7 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
 
             if(unit_version < 44)
             {
-               void race_adjust(struct unit_data *);
+               void race_adjust(std::shared_ptr<unit_data> );
                race_adjust(u);
             }
 
@@ -1009,7 +1009,7 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
             if((fi = find_file_index(zone, name)))
             {
                // TODO no way this should be casting file_index_type to unit_data - but lets go with it for the moment
-               UNIT_IN(u) = (struct unit_data *)fi.get(); /* A file index */
+               UNIT_IN(u) = (std::shared_ptr<unit_data> )fi.get(); /* A file index */
             }
             else
                UNIT_IN(u) = NULL;
@@ -1039,7 +1039,7 @@ struct unit_data *read_unit_string(CByteBuffer *pBuf, int type, int len, int bSw
 
                   /* NOT fi->room_ptr! Done later */
                   // TODO no way this should be casting file_index_type to unit_data - but lets go with it for the moment
-                  ROOM_EXIT(u, i)->to_room = (struct unit_data *)fi.get();
+                  ROOM_EXIT(u, i)->to_room = (std::shared_ptr<unit_data> )fi.get();
                }
                else
                { /* Exit not existing, skip the junk info! */
@@ -1152,13 +1152,13 @@ void read_unit_file(std::shared_ptr<file_index_type> org_fi, CByteBuffer *pBuf)
 /*  Room directions points to file_indexes instead of units
  *  after a room has been read, due to initialization considerations
  */
-struct unit_data *read_unit(std::shared_ptr<file_index_type> org_fi)
+std::shared_ptr<unit_data> read_unit(std::shared_ptr<file_index_type> org_fi)
 {
    int is_slimed(std::shared_ptr<file_index_type> sp);
 
    extern std::shared_ptr<file_index_type> slime_fi;
 
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
 
    if(org_fi == NULL)
       return NULL;
@@ -1188,7 +1188,7 @@ struct unit_data *read_unit(std::shared_ptr<file_index_type> org_fi)
 
    apply_affect(u); /* Set all affects that modify      */
 
-   /* void dil_loadtime_activate(struct unit_data *u);
+   /* void dil_loadtime_activate(std::shared_ptr<unit_data> u);
 
    dil_loadtime_activate(u); */
 
@@ -1217,7 +1217,7 @@ void read_all_rooms(void)
 /* After boot time, normalize all room exits */
 void normalize_world(void)
 {
-   struct unit_data *u, *tmpu;
+   std::shared_ptr<unit_data> u, *tmpu;
    int               i;
 
    for(u = unit_list; u; u = u->gnext)
@@ -1598,7 +1598,7 @@ void db_shutdown(void)
       clear_destructed();
    }
 
-   void stop_all_special(struct unit_data * u);
+   void stop_all_special(std::shared_ptr<unit_data>  u);
 
    while((tmpu = unit_list))
    {

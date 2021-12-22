@@ -79,7 +79,7 @@ int player_exists(const char *pName)
    return file_exists(PlayerFileName(pName));
 }
 
-struct unit_data *find_player(char *name)
+std::shared_ptr<unit_data> find_player(char *name)
 {
    struct descriptor_data *d;
 
@@ -218,12 +218,12 @@ void save_player_disk(const char *pName, char *pPassword, int id, int nPlyLen, c
 }
 
 /* Save the player 'pc' (no inventory) */
-void save_player_file(struct unit_data *pc)
+void save_player_file(std::shared_ptr<unit_data> pc)
 {
    static bool             locked = FALSE;
    blk_length              nPlyLen;
    int                     tmp_i;
-   struct unit_data       *tmp_u, *list = NULL;
+   std::shared_ptr<unit_data> tmp_u, *list = NULL;
    struct descriptor_data *tmp_descr;
    CByteBuffer            *pBuf = &g_FileBuffer;
 
@@ -300,14 +300,14 @@ void save_player_file(struct unit_data *pc)
 }
 
 /* If 'fast' is false compression is used for inventory.       */
-void save_player_contents(struct unit_data *pc, int fast)
+void save_player_contents(std::shared_ptr<unit_data> pc, int fast)
 {
    static bool locked = FALSE;
    time_t      t0, keep_period;
    amount_t    daily_cost;
    currency_t  cur = local_currency(pc);
 
-   int save_contents(const char *pFileName, struct unit_data *unit, int fast, int bContainer);
+   int save_contents(const char *pFileName, std::shared_ptr<unit_data> unit, int fast, int bContainer);
 
    assert(IS_PC(pc));
 
@@ -365,7 +365,7 @@ void save_player_contents(struct unit_data *pc, int fast)
 }
 
 /* Save the player 'pc'. Update logon and playing time.        */
-void save_player(struct unit_data *pc)
+void save_player(std::shared_ptr<unit_data> pc)
 {
    if(CHAR_DESCRIPTOR(pc))
    {
@@ -405,9 +405,9 @@ void save_player(struct unit_data *pc)
 
 /* Read player from file, starting at index "index" */
 /* String is allocated                              */
-struct unit_data *load_player_file(FILE *pFile)
+std::shared_ptr<unit_data> load_player_file(FILE *pFile)
 {
-   struct unit_data *pc;
+   std::shared_ptr<unit_data> pc;
    int               nPlyLen, n, id;
    CByteBuffer      *pBuf;
 
@@ -443,12 +443,12 @@ struct unit_data *load_player_file(FILE *pFile)
 /* Read player from file, starting at index "index"   */
 /* String is allocated                                */
 /* Is neither inserted in unit_list not into anything */
-struct unit_data *load_player(const char *pName)
+std::shared_ptr<unit_data> load_player(const char *pName)
 {
    FILE             *pFile;
-   struct unit_data *pc;
+   std::shared_ptr<unit_data> pc;
 
-   void stop_all_special(struct unit_data * u);
+   void stop_all_special(std::shared_ptr<unit_data>  u);
 
    if(str_is_empty(pName))
       return NULL;

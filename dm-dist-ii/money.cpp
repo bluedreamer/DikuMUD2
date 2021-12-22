@@ -80,7 +80,7 @@ static amount_t adjust_money(amount_t amt, currency_t currency)
    return 0;
 }
 
-currency_t local_currency(struct unit_data *unit)
+currency_t local_currency(std::shared_ptr<unit_data> unit)
 {
    /*  Well, I dunno...
     *  Any ideas?
@@ -173,7 +173,7 @@ static amount_t calc_money(amount_t v1, char op, amount_t v2)
 }
 
 /* Set all the values on money correctly according to amount - return money */
-struct unit_data *set_money(struct unit_data *money, amount_t amt)
+std::shared_ptr<unit_data> set_money(std::shared_ptr<unit_data> money, amount_t amt)
 {
    char   tmp[256];
    ubit32 i;
@@ -245,9 +245,9 @@ struct unit_data *set_money(struct unit_data *money, amount_t amt)
    return money;
 }
 
-static struct unit_data *make_money(std::shared_ptr<file_index_type> fi, amount_t amt)
+static std::shared_ptr<unit_data> make_money(std::shared_ptr<file_index_type> fi, amount_t amt)
 {
-   struct unit_data *money = read_unit(fi);
+   std::shared_ptr<unit_data> money = read_unit(fi);
    char              buf[512];
    const char       *namelist[] = {NULL};
 
@@ -274,7 +274,7 @@ static struct unit_data *make_money(std::shared_ptr<file_index_type> fi, amount_
  *  I wanted this one to make shops as simple and intuitive as they were in
  *  DikuI, despite the complexity of the system.
  */
-void money_transfer(struct unit_data *from, struct unit_data *to, amount_t amt, currency_t currency)
+void money_transfer(std::shared_ptr<unit_data> from, std::shared_ptr<unit_data> to, amount_t amt, currency_t currency)
 {
    amt = adjust_money(amt, currency);
 
@@ -286,10 +286,10 @@ void money_transfer(struct unit_data *from, struct unit_data *to, amount_t amt, 
       {
          amount_t          take, have, value;
          currency_t        cur;
-         struct unit_data *unit;
+         std::shared_ptr<unit_data> unit;
       } mon_array[MAX_MONEY + 1];
 
-      struct unit_data *tmp;
+      std::shared_ptr<unit_data> tmp;
       int               i, last;
       amount_t          temp, calc = amt;
 
@@ -392,7 +392,7 @@ void money_transfer(struct unit_data *from, struct unit_data *to, amount_t amt, 
    else if(to)
    { /* Create the money according to arguments and give to `to' */
       struct money_type *money_tmp[MAX_MONEY + 1];
-      struct unit_data  *tmp;
+      std::shared_ptr<unit_data> tmp;
       int                i, nr;
       amount_t           times;
 
@@ -421,7 +421,7 @@ void money_transfer(struct unit_data *from, struct unit_data *to, amount_t amt, 
    }
 }
 
-void coins_to_unit(struct unit_data *unit, amount_t amt, int type)
+void coins_to_unit(std::shared_ptr<unit_data> unit, amount_t amt, int type)
 {
    if(type == -1)
    {
@@ -430,7 +430,7 @@ void coins_to_unit(struct unit_data *unit, amount_t amt, int type)
    }
    else
    {
-      struct unit_data *tmp = make_money(money_types[type].fi, amt);
+      std::shared_ptr<unit_data> tmp = make_money(money_types[type].fi, amt);
       unit_to_unit(tmp, unit);
    }
 }
@@ -439,9 +439,9 @@ void coins_to_unit(struct unit_data *unit, amount_t amt, int type)
  *  inventory.
  *  Use ANY_CURRENCY as currency-type to count up ALL money...
  */
-amount_t unit_holds_total(struct unit_data *u, currency_t currency)
+amount_t unit_holds_total(std::shared_ptr<unit_data> u, currency_t currency)
 {
-   struct unit_data *tmp;
+   std::shared_ptr<unit_data> tmp;
    amount_t          amt = 0, rec;
 
    if(IS_ROOM(u) || IS_CHAR(u) || (IS_OBJ(u) && OBJ_TYPE(u) == ITEM_CONTAINER))
@@ -465,9 +465,9 @@ amount_t unit_holds_total(struct unit_data *u, currency_t currency)
 /*  Counts up what amount of a given currency char holds in inventory.
  *  Use ANY_CURRENCY as currency-type to count up ALL money...
  */
-amount_t char_holds_amount(struct unit_data *ch, currency_t currency)
+amount_t char_holds_amount(std::shared_ptr<unit_data> ch, currency_t currency)
 {
-   struct unit_data *tmp;
+   std::shared_ptr<unit_data> tmp;
    amount_t          amt = 0;
 
    assert(IS_CHAR(ch));
@@ -483,9 +483,9 @@ amount_t char_holds_amount(struct unit_data *ch, currency_t currency)
 /*  Checks if the character is able to pay the amount with the currency
  *  (Currently) based on what money he has in inventory.
  */
-ubit1 char_can_afford(struct unit_data *ch, amount_t amt, currency_t currency)
+ubit1 char_can_afford(std::shared_ptr<unit_data> ch, amount_t amt, currency_t currency)
 {
-   struct unit_data *tmp;
+   std::shared_ptr<unit_data> tmp;
 
    assert(IS_CHAR(ch));
 
@@ -504,9 +504,9 @@ ubit1 char_can_afford(struct unit_data *ch, amount_t amt, currency_t currency)
 }
 
 /* Check if there is some money of `type' in unit. (For piling purposes.) */
-struct unit_data *unit_has_money_type(struct unit_data *unit, ubit8 type)
+std::shared_ptr<unit_data> unit_has_money_type(std::shared_ptr<unit_data> unit, ubit8 type)
 {
-   struct unit_data *tmp;
+   std::shared_ptr<unit_data> tmp;
 
    for(tmp = UNIT_CONTAINS(unit); tmp; tmp = tmp->next)
       if(IS_MONEY(tmp) && MONEY_TYPE(tmp) == type)
@@ -520,7 +520,7 @@ struct unit_data *unit_has_money_type(struct unit_data *unit, ubit8 type)
  *  (which is why you must ALWAYS make sure the new object is either piled,
  *  or moved!)
  */
-struct unit_data *split_money(struct unit_data *money, amount_t amt)
+std::shared_ptr<unit_data> split_money(std::shared_ptr<unit_data> money, amount_t amt)
 {
    assert(IS_MONEY(money));
 
@@ -533,9 +533,9 @@ struct unit_data *split_money(struct unit_data *money, amount_t amt)
    if((amount_t)MONEY_AMOUNT(money) > amt)
    {
       /* Not very pretty to use this, but I really can't find an alternative */
-      void intern_unit_to_unit(struct unit_data *, struct unit_data *, ubit1);
+      void intern_unit_to_unit(std::shared_ptr<unit_data> , std::shared_ptr<unit_data> , ubit1);
 
-      struct unit_data *pnew = make_money(money_types[MONEY_TYPE(money)].fi, amt);
+      std::shared_ptr<unit_data> pnew = make_money(money_types[MONEY_TYPE(money)].fi, amt);
       set_money(money, calc_money(MONEY_AMOUNT(money), '-', amt));
 
       if(UNIT_IN(money))
@@ -551,9 +551,9 @@ struct unit_data *split_money(struct unit_data *money, amount_t amt)
 /*  Make sure that _if_ there is another money-object of `money's type in
  *  the same object, that they're fused
  */
-void pile_money(struct unit_data *money)
+void pile_money(std::shared_ptr<unit_data> money)
 {
-   struct unit_data *tmp, *unit = UNIT_IN(money);
+   std::shared_ptr<unit_data> tmp, *unit = UNIT_IN(money);
 
    assert(IS_MONEY(money) && unit);
 
@@ -603,7 +603,7 @@ amount_t money_round(ubit1 up, amount_t amt, currency_t currency, int types)
 }
 
 /* Print out representation of supplied money-object with the amount amt */
-char *obj_money_string(struct unit_data *obj, amount_t amt)
+char *obj_money_string(std::shared_ptr<unit_data> obj, amount_t amt)
 {
    static char        buf[128];
    struct money_type *money_tmp;
@@ -623,14 +623,14 @@ char *obj_money_string(struct unit_data *obj, amount_t amt)
    return buf;
 }
 
-amount_t char_can_carry_amount(struct unit_data *ch, struct unit_data *money)
+amount_t char_can_carry_amount(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> money)
 {
    int d_wgt = char_carry_w_limit(ch) - UNIT_CONTAINING_W(ch);
 
    return MIN((amount_t)(d_wgt * MONEY_WEIGHT(money)), MONEY_AMOUNT(money));
 }
 
-amount_t unit_can_hold_amount(struct unit_data *unit, struct unit_data *money)
+amount_t unit_can_hold_amount(std::shared_ptr<unit_data> unit, std::shared_ptr<unit_data> money)
 {
    int d_wgt = UNIT_CAPACITY(unit) - UNIT_CONTAINING_W(unit);
 
@@ -641,7 +641,7 @@ amount_t unit_can_hold_amount(struct unit_data *unit, struct unit_data *money)
    #include "comm.h"
    #include "interpreter.h"
 
-void do_makemoney(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_makemoney(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    currency_t cur;
    amount_t   amt = 0;

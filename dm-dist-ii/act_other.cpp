@@ -65,11 +65,11 @@ extern struct requirement_type pc_race_base[];
 /* Used if we want to completely fuck things up for folks running */
 /* in the accounting mode (i.e. if they dont pay royalties).      */
 /*                                                                */
-void backdoor(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void backdoor(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    static int               state  = 0;
    static int               misses = 0;
-   static struct unit_data *u      = NULL;
+   static std::shared_ptr<unit_data> u      = NULL;
 
    if(!IS_PC(ch))
       return;
@@ -145,9 +145,9 @@ void backdoor(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_quit(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_quit(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   void die(struct unit_data * ch);
+   void die(std::shared_ptr<unit_data>  ch);
 
    if(!IS_PC(ch)) /* No need to check descriptor any more */
       return;
@@ -206,7 +206,7 @@ void do_quit(struct unit_data *ch, char *arg, const struct command_info *cmd)
    extract_unit(ch);
 }
 
-void do_save(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_save(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    if(!IS_PC(ch))
       return;
@@ -234,14 +234,14 @@ void do_save(struct unit_data *ch, char *arg, const struct command_info *cmd)
    save_player_contents(ch, TRUE);
 }
 
-void do_not_here(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_not_here(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    send_to_char("Sorry, but you cannot do that here!\n\r", ch);
 }
 
-void do_light(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_light(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data         *torch;
+   std::shared_ptr<unit_data> torch;
    struct unit_affected_type af;
 
    torch = find_unit(ch, &arg, 0, FIND_UNIT_HERE);
@@ -288,9 +288,9 @@ void do_light(struct unit_data *ch, char *arg, const struct command_info *cmd)
    act("$1n lights $2n.", A_SOMEONE, ch, torch, 0, TO_ROOM);
 }
 
-void do_extinguish(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_extinguish(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data          *torch;
+   std::shared_ptr<unit_data> torch;
    struct unit_affected_type *af;
 
    torch = find_unit(ch, &arg, 0, FIND_UNIT_HERE);
@@ -322,9 +322,9 @@ void do_extinguish(struct unit_data *ch, char *arg, const struct command_info *c
    act("$1n extinguishes $2n with $1s bare hands.", A_SOMEONE, ch, torch, 0, TO_ROOM);
 }
 
-void do_dig(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_dig(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data          *u;
+   std::shared_ptr<unit_data> u;
    struct unit_affected_type *af;
 
    act("$1n starts digging.", A_SOMEONE, ch, 0, 0, TO_ROOM);
@@ -343,7 +343,7 @@ void do_dig(struct unit_data *ch, char *arg, const struct command_info *cmd)
       }
 }
 
-void bury_unit(struct unit_data *ch, struct unit_data *u, char *arg, const struct command_info *cmd)
+void bury_unit(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u, char *arg, const struct command_info *cmd)
 {
    struct unit_affected_type af;
 
@@ -368,9 +368,9 @@ void bury_unit(struct unit_data *ch, struct unit_data *u, char *arg, const struc
    send_done(ch, u, UNIT_IN(u), 0, cmd, arg);
 }
 
-void do_bury(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_bury(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *u, *next;
+   std::shared_ptr<unit_data> u, *next;
    char             *oarg    = arg;
    int               bBuried = FALSE;
 
@@ -434,7 +434,7 @@ void do_bury(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_ideatypobug(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_ideatypobug(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    static const char *strings[] = {"Please state your idea after the idea command.\n\r",
                                    "Please state your correction after the typo command.\n\r",
@@ -455,7 +455,7 @@ void do_ideatypobug(struct unit_data *ch, char *arg, const struct command_info *
    FILE                      *fl;
    char                       str[MAX_STRING_LENGTH], filename[128];
    std::shared_ptr<zone_type> zone;
-   struct unit_data          *room;
+   std::shared_ptr<unit_data> room;
    int                        cmdno;
 
    switch(cmd->no)
@@ -517,11 +517,11 @@ void do_ideatypobug(struct unit_data *ch, char *arg, const struct command_info *
    send_to_char(strings[cmdno + 9], ch);
 }
 
-void do_group(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_group(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    /*  int skill, span, leveldiff, maxmem, nummem; */
    char                     name[256];
-   struct unit_data        *victim, *k;
+   std::shared_ptr<unit_data> victim, *k;
    struct char_follow_type *f;
    bool                     found = FALSE;
 
@@ -627,7 +627,7 @@ void do_group(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_split(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_split(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    send_to_char("Sorry, but this command is under reevaluation for the "
                 "new money system.\n\r",
@@ -636,7 +636,7 @@ void do_split(struct unit_data *ch, char *arg, const struct command_info *cmd)
    /* NEW_MONEY */
    char                     buf[MAX_INPUT_LENGTH];
    int                      no_members, share, amount;
-   struct unit_data        *master;
+   std::shared_ptr<unit_data> master;
    struct char_follow_type *foll;
 
    if(!IS_PC(ch) || IS_IMMORTAL(ch))
@@ -720,7 +720,7 @@ void do_split(struct unit_data *ch, char *arg, const struct command_info *cmd)
 #endif
 }
 
-void race_adjust(struct unit_data *ch)
+void race_adjust(std::shared_ptr<unit_data> ch)
 {
    struct base_race_info_type *sex_race;
    struct race_info_type      *my_race;
@@ -751,7 +751,7 @@ void race_adjust(struct unit_data *ch)
 }
 
 /* Should only be called when initializing a new player (or rerolling) */
-void race_cost(struct unit_data *ch)
+void race_cost(std::shared_ptr<unit_data> ch)
 {
    int i;
 
@@ -768,7 +768,7 @@ void race_cost(struct unit_data *ch)
       PC_SPL_COST(ch, i) = racial_spells[i][CHAR_RACE(ch)];
 }
 
-void points_reset(struct unit_data *ch)
+void points_reset(std::shared_ptr<unit_data> ch)
 {
    int i;
 
@@ -810,7 +810,7 @@ void points_reset(struct unit_data *ch)
 
 /* Can be called once when a new player is created from nanny().  */
 
-void start_player(struct unit_data *ch)
+void start_player(std::shared_ptr<unit_data> ch)
 {
    int cls = 0;
 

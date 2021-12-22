@@ -63,7 +63,7 @@
 /* extern variables */
 
 extern struct descriptor_data *descriptor_list;
-extern struct unit_data       *unit_list;
+extern std::shared_ptr<unit_data> unit_list;
 
 extern char *credits;
 extern char *news;
@@ -83,7 +83,7 @@ struct look_msg
    int   cnt;
 };
 
-void show_char_to_char_trans_cont(char *b, struct unit_data *i, struct unit_data *ch);
+void show_char_to_char_trans_cont(char *b, std::shared_ptr<unit_data> i, std::shared_ptr<unit_data> ch);
 
 /* To free, call with NULL msg. */
 struct looklist_type *add_to_look_list(struct looklist_type *list, char *msg)
@@ -144,7 +144,7 @@ struct looklist_type *add_to_look_list(struct looklist_type *list, char *msg)
    return list;
 }
 
-void send_looklist(struct looklist_type *list, struct unit_data *ch)
+void send_looklist(struct looklist_type *list, std::shared_ptr<unit_data> ch)
 {
    int  i;
    char buf[20];
@@ -160,7 +160,7 @@ void send_looklist(struct looklist_type *list, struct unit_data *ch)
    }
 }
 
-const char *single_unit_messg(struct unit_data *unit, const char *type, const char *pSubStr, const char *mesg)
+const char *single_unit_messg(std::shared_ptr<unit_data> unit, const char *type, const char *pSubStr, const char *mesg)
 {
    struct extra_descr_data *exd = UNIT_EXTRA_DESCR(unit);
 
@@ -184,7 +184,7 @@ const char *single_unit_messg(struct unit_data *unit, const char *type, const ch
       return mesg;
 }
 
-void unit_messg(struct unit_data *ch, struct unit_data *unit, const char *type, const char *mesg_s, const char *mesg_o)
+void unit_messg(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> unit, const char *type, const char *mesg_s, const char *mesg_o)
 {
    struct extra_descr_data *exd = NULL;
    const char              *c;
@@ -201,7 +201,7 @@ void unit_messg(struct unit_data *ch, struct unit_data *unit, const char *type, 
 }
 
 /* Assume unit is a char */
-void cat_char_effects(struct unit_data *ch, struct unit_data *unit, char *buf)
+void cat_char_effects(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> unit, char *buf)
 {
    assert(IS_CHAR(unit));
 
@@ -220,7 +220,7 @@ void cat_char_effects(struct unit_data *ch, struct unit_data *unit, char *buf)
    /* Detect Life is elsewhere */
 }
 
-void cat_obj_effects(struct unit_data *ch, struct unit_data *unit, char *buf)
+void cat_obj_effects(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> unit, char *buf)
 {
    assert(IS_OBJ(unit));
 
@@ -231,7 +231,7 @@ void cat_obj_effects(struct unit_data *ch, struct unit_data *unit, char *buf)
    }
 }
 
-void cat_unit_effects(struct unit_data *ch, struct unit_data *unit, char *buf)
+void cat_unit_effects(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> unit, char *buf)
 {
    if(IS_SET(CHAR_FLAGS(ch), CHAR_DETECT_ALIGN))
    {
@@ -270,7 +270,7 @@ void cat_unit_effects(struct unit_data *ch, struct unit_data *unit, char *buf)
 
 /* This is called from locations when doing inventory, looking, walking */
 /* etc. to see obvious effects (a torch is lit, etc.)                   */
-void cat_passing_effects(struct unit_data *ch, struct unit_data *unit, char *buf)
+void cat_passing_effects(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> unit, char *buf)
 {
    if(UNIT_MINV(unit))
    {
@@ -286,7 +286,7 @@ void cat_passing_effects(struct unit_data *ch, struct unit_data *unit, char *buf
    }
 }
 
-void show_examine_aura(struct unit_data *ch, struct unit_data *unit)
+void show_examine_aura(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> unit)
 {
    char buf[1024];
 
@@ -303,7 +303,7 @@ void show_examine_aura(struct unit_data *ch, struct unit_data *unit)
       act("The $3N reveals an aura of$2t", A_ALWAYS, ch, buf, unit, TO_CHAR);
 }
 
-void show_obj_to_char_lookat(struct unit_data *obj, struct unit_data *ch, int extra)
+void show_obj_to_char_lookat(std::shared_ptr<unit_data> obj, std::shared_ptr<unit_data> ch, int extra)
 {
    if(affected_by_spell(obj, ID_REWARD))
       act("There is a reward on $2n.", A_SOMEONE, ch, obj, 0, TO_CHAR);
@@ -314,10 +314,10 @@ void show_obj_to_char_lookat(struct unit_data *obj, struct unit_data *ch, int ex
       send_to_char("You see nothing special.\n\r", ch);
 }
 
-void show_obj_to_char_trans_cont(char *b, struct unit_data *obj, struct unit_data *ch)
+void show_obj_to_char_trans_cont(char *b, std::shared_ptr<unit_data> obj, std::shared_ptr<unit_data> ch)
 {
    int               anything = FALSE;
-   struct unit_data *c;
+   std::shared_ptr<unit_data> c;
 
    assert(IS_OBJ(obj));
 
@@ -354,7 +354,7 @@ void show_obj_to_char_trans_cont(char *b, struct unit_data *obj, struct unit_dat
    }
 }
 
-void show_obj_to_char_blank(char *buffer, struct unit_data *obj, struct unit_data *ch)
+void show_obj_to_char_blank(char *buffer, std::shared_ptr<unit_data> obj, std::shared_ptr<unit_data> ch)
 {
    *buffer = 0;
 
@@ -370,7 +370,7 @@ void show_obj_to_char_blank(char *buffer, struct unit_data *obj, struct unit_dat
    show_obj_to_char_trans_cont(buffer, obj, ch);
 }
 
-void show_obj_to_char_inv(char *buffer, struct unit_data *obj, struct unit_data *ch)
+void show_obj_to_char_inv(char *buffer, std::shared_ptr<unit_data> obj, std::shared_ptr<unit_data> ch)
 {
    assert(IS_OBJ(obj));
 
@@ -393,7 +393,7 @@ void show_obj_to_char_inv(char *buffer, struct unit_data *obj, struct unit_data 
 }
 
 /* When passing <char> in a room      */
-void show_char_to_char_blank(char *buffer, struct unit_data *i, struct unit_data *ch)
+void show_char_to_char_blank(char *buffer, std::shared_ptr<unit_data> i, std::shared_ptr<unit_data> ch)
 {
    *buffer = 0;
 
@@ -518,9 +518,9 @@ void show_char_to_char_blank(char *buffer, struct unit_data *i, struct unit_data
    }
 }
 
-void show_char_to_char_trans_cont(char *b, struct unit_data *i, struct unit_data *ch)
+void show_char_to_char_trans_cont(char *b, std::shared_ptr<unit_data> i, std::shared_ptr<unit_data> ch)
 {
-   struct unit_data *c;
+   std::shared_ptr<unit_data> c;
    int               anything = FALSE;
 
    assert(IS_CHAR(i));
@@ -562,7 +562,7 @@ void show_char_to_char_trans_cont(char *b, struct unit_data *i, struct unit_data
 
 /* When with a char in something not a room                */
 /* ch looks at "i" */
-void show_char_to_char_trans(char *buffer, struct unit_data *i, struct unit_data *ch)
+void show_char_to_char_trans(char *buffer, std::shared_ptr<unit_data> i, std::shared_ptr<unit_data> ch)
 {
    if(ch == i || (!CHAR_HAS_FLAG(ch, CHAR_DETECT_LIFE) && !CHAR_CAN_SEE(ch, i)))
       return;
@@ -578,7 +578,7 @@ void show_char_to_char_trans(char *buffer, struct unit_data *i, struct unit_data
 }
 
 /* When in inventory                                       */
-void show_char_to_char_inv(char *buffer, struct unit_data *i, struct unit_data *ch)
+void show_char_to_char_inv(char *buffer, std::shared_ptr<unit_data> i, std::shared_ptr<unit_data> ch)
 {
    if(ch == i || (!CHAR_HAS_FLAG(ch, CHAR_DETECT_LIFE) && !CHAR_CAN_SEE(ch, i)))
       return;
@@ -590,10 +590,10 @@ void show_char_to_char_inv(char *buffer, struct unit_data *i, struct unit_data *
 }
 
 /* When 'look at <char>'                                   */
-void show_char_to_char_lookat(struct unit_data *i, struct unit_data *ch)
+void show_char_to_char_lookat(std::shared_ptr<unit_data> i, std::shared_ptr<unit_data> ch)
 {
    char              buffer[MAX_STRING_LENGTH];
-   struct unit_data *unit;
+   std::shared_ptr<unit_data> unit;
 
    if(ch == i || (!CHAR_HAS_FLAG(ch, CHAR_DETECT_LIFE) && !CHAR_CAN_SEE(ch, i)))
       return;
@@ -614,7 +614,7 @@ void show_char_to_char_lookat(struct unit_data *i, struct unit_data *ch)
          }
 }
 
-int list_obj_to_char(struct unit_data *i, struct unit_data *ch, bool show)
+int list_obj_to_char(std::shared_ptr<unit_data> i, std::shared_ptr<unit_data> ch, bool show)
 {
    char                  buf[MAX_STRING_LENGTH];
    struct looklist_type *list = NULL;
@@ -637,7 +637,7 @@ int list_obj_to_char(struct unit_data *i, struct unit_data *ch, bool show)
    return (list != NULL);
 }
 
-int list_char_to_char(struct unit_data *i, struct unit_data *ch)
+int list_char_to_char(std::shared_ptr<unit_data> i, std::shared_ptr<unit_data> ch)
 {
    char                  buffer[MAX_STRING_LENGTH];
    struct looklist_type *list = NULL;
@@ -661,9 +661,9 @@ int list_char_to_char(struct unit_data *i, struct unit_data *ch)
    return (list != NULL);
 }
 
-int list_room_to_char(struct unit_data *list, struct unit_data *ch)
+int list_room_to_char(std::shared_ptr<unit_data> list, std::shared_ptr<unit_data> ch)
 {
-   struct unit_data *i;
+   std::shared_ptr<unit_data> i;
    int               found = FALSE;
 
    for(i = list; i; i = i->next)
@@ -677,10 +677,10 @@ int list_room_to_char(struct unit_data *list, struct unit_data *ch)
    return found;
 }
 
-void list_contents(struct unit_data *ch, struct unit_data *unit, int show)
+void list_contents(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> unit, int show)
 {
    char                  buffer[MAX_STRING_LENGTH];
-   struct unit_data     *i;
+   std::shared_ptr<unit_data> i;
    struct looklist_type *list = NULL;
 
    for(i = unit; i; i = i->next)
@@ -703,12 +703,12 @@ void list_contents(struct unit_data *ch, struct unit_data *unit, int show)
       send_to_char("Nothing.\n\r", ch);
 }
 
-static void look_dir(struct unit_data *ch, int keyword_no)
+static void look_dir(std::shared_ptr<unit_data> ch, int keyword_no)
 {
-   struct unit_data        *room = UNIT_IN(ch);
+   std::shared_ptr<unit_data> room = UNIT_IN(ch);
    struct extra_descr_data *pExd;
 
-   int has_found_door(struct unit_data * pc, int dir);
+   int has_found_door(std::shared_ptr<unit_data>  pc, int dir);
 
    if(!IS_ROOM(room))
       room = UNIT_IS_TRANSPARENT(room) ? UNIT_IN(room) : NULL;
@@ -746,9 +746,9 @@ static void look_dir(struct unit_data *ch, int keyword_no)
       send_to_char("You see nothing special.\n\r", ch);
 }
 
-static void look_in(struct unit_data *ch, char *arg, const struct command_info *cmd)
+static void look_in(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *unit;
+   std::shared_ptr<unit_data> unit;
 
    if(str_is_empty(arg))
       send_to_char("Look in what?\n\r", ch);
@@ -833,9 +833,9 @@ static void look_in(struct unit_data *ch, char *arg, const struct command_info *
    }
 }
 
-static void look_at(struct unit_data *ch, char *arg, const struct command_info *cmd)
+static void look_at(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data        *unit;
+   std::shared_ptr<unit_data> unit;
    struct extra_descr_data *ed;
    char                    *b = arg;
    char                    *c;
@@ -859,7 +859,7 @@ static void look_at(struct unit_data *ch, char *arg, const struct command_info *
       {
          if(IS_CHAR(unit))
          {
-            struct unit_data *target = NULL;
+            std::shared_ptr<unit_data> target = NULL;
             target                   = find_unit_general(ch, unit, &b, 0, FIND_UNIT_EQUIP);
             if(target)
             {
@@ -888,7 +888,7 @@ static void look_at(struct unit_data *ch, char *arg, const struct command_info *
          /* locate extra descr. */
          if((ed = unit_find_extra(b, unit)))
          {
-            struct unit_data *eq = NULL;
+            std::shared_ptr<unit_data> eq = NULL;
 
             /* now generate relevant equip descr. */
             fnd = 0;
@@ -975,7 +975,7 @@ static void look_at(struct unit_data *ch, char *arg, const struct command_info *
    else
       unit = find_unit(ch, &b, 0, FIND_UNIT_HERE);
 
-   struct unit_data *target;
+   std::shared_ptr<unit_data> target;
 
    /* If there are no units with the given name, we must */
    /* assume that the look was upon an extra description */
@@ -1101,7 +1101,7 @@ static void look_at(struct unit_data *ch, char *arg, const struct command_info *
    }
 }
 
-static void look_exits(struct unit_data *ch)
+static void look_exits(std::shared_ptr<unit_data> ch)
 {
    if(!IS_PC(ch))
       return;
@@ -1111,11 +1111,11 @@ static void look_exits(struct unit_data *ch)
 
    int               door, found = FALSE;
    char              buf[MAX_STRING_LENGTH] = "", *b = buf;
-   struct unit_data *room;
+   std::shared_ptr<unit_data> room;
 
    const char *exits[] = {"North", "East", "South", "West", "Up", "Down"};
 
-   int has_found_door(struct unit_data * pc, int dir);
+   int has_found_door(std::shared_ptr<unit_data>  pc, int dir);
 
    strcat(b, g_cServerConfig.m_sColor.pExitsBegin);
    TAIL(b);
@@ -1166,7 +1166,7 @@ static void look_exits(struct unit_data *ch)
    send_to_char(buf, ch);
 }
 
-static void look_blank(struct unit_data *ch, const struct command_info *cmd)
+static void look_blank(std::shared_ptr<unit_data> ch, const struct command_info *cmd)
 {
    char buffer[MAX_STRING_LENGTH];
 
@@ -1225,7 +1225,7 @@ static void look_blank(struct unit_data *ch, const struct command_info *cmd)
       /* show unit, the surrounding unit is in */
       if(UNIT_IS_TRANSPARENT(UNIT_IN(ch)))
       {
-         struct unit_data *room = UNIT_IN(UNIT_IN(ch));
+         std::shared_ptr<unit_data> room = UNIT_IN(UNIT_IN(ch));
 
          send_to_char("\n\r", ch);
 
@@ -1274,7 +1274,7 @@ static void look_blank(struct unit_data *ch, const struct command_info *cmd)
    send_done(ch, NULL, NULL, 0, cmd, "");
 }
 
-void do_look(struct unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_look(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
    char *arg = (char *)aaa;
    if(!CHAR_DESCRIPTOR(ch))
@@ -1363,7 +1363,7 @@ void do_look(struct unit_data *ch, char *aaa, const struct command_info *cmd)
 }
 /* end of look */
 
-void do_read(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_read(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    if(str_is_empty(arg))
    {
@@ -1402,11 +1402,11 @@ void do_read(struct unit_data *ch, char *arg, const struct command_info *cmd)
 #endif
 }
 
-void do_examine(struct unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_examine(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
    char             *arg = (char *)aaa;
    char             *b;
-   struct unit_data *unit;
+   std::shared_ptr<unit_data> unit;
 
    if(str_is_empty(arg))
    {
@@ -1435,10 +1435,10 @@ void do_examine(struct unit_data *ch, char *aaa, const struct command_info *cmd)
    }
 }
 
-void do_inventory(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_inventory(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    char                  buffer[MAX_STRING_LENGTH];
-   struct unit_data     *thing;
+   std::shared_ptr<unit_data> thing;
    struct looklist_type *list = NULL;
 
    send_to_char("You are carrying:\n\r", ch);
@@ -1474,10 +1474,10 @@ void do_inventory(struct unit_data *ch, char *arg, const struct command_info *cm
       send_to_char("  Nothing.\n\r", ch);
 }
 
-void do_equipment(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_equipment(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    char              buf[MAX_STRING_LENGTH];
-   struct unit_data *thing;
+   std::shared_ptr<unit_data> thing;
    bool              found;
 
    send_to_char("You are using:\n\r", ch);

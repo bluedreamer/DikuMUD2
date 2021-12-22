@@ -49,9 +49,9 @@
 /* Returns: 0 if the object was picked up.                               */
 /*          1 if the object was not picked up, but more may be picked up */
 /*          2 if no more objects can be picked up                        */
-int get(struct unit_data *ch, struct unit_data *obj, struct unit_data *from_obj, const struct command_info *cmd, char *arg)
+int get(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, std::shared_ptr<unit_data> from_obj, const struct command_info *cmd, char *arg)
 {
-   struct unit_data *money  = NULL;
+   std::shared_ptr<unit_data> money  = NULL;
    amount_t          amount = 0;
    int               weight;
 
@@ -198,10 +198,10 @@ int get(struct unit_data *ch, struct unit_data *obj, struct unit_data *from_obj,
    should be extended to run through
    all visible units.
 */
-int extra_get(struct unit_data *ch, char *argument)
+int extra_get(std::shared_ptr<unit_data> ch, char *argument)
 {
    struct extra_descr_data *p;
-   struct unit_data        *room = UNIT_IN(ch);
+   std::shared_ptr<unit_data> room = UNIT_IN(ch);
 
    if(!IS_ROOM(room) && UNIT_IS_TRANSPARENT(room))
       room = UNIT_IN(room);
@@ -227,9 +227,9 @@ int extra_get(struct unit_data *ch, char *argument)
    return 0; /* not found */
 }
 
-void do_get(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_get(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *from_unit = NULL, *thing;
+   std::shared_ptr<unit_data> from_unit = NULL, *thing;
    char              arg1[MAX_INPUT_LENGTH], *arg2, *oarg = argument;
 
    if(str_is_empty(argument))
@@ -264,7 +264,7 @@ void do_get(struct unit_data *ch, char *argument, const struct command_info *cmd
 
    if(str_ccmp_next_word(arg1, "all"))
    {
-      struct unit_data *next_unit;
+      std::shared_ptr<unit_data> next_unit;
       bool              ok = TRUE, pick = FALSE;
 
       thing = from_unit ? UNIT_CONTAINS(from_unit) : UNIT_CONTAINS(UNIT_IN(ch));
@@ -290,7 +290,7 @@ void do_get(struct unit_data *ch, char *argument, const struct command_info *cmd
    }
    else if(str_ccmp_next_word(arg1, "money"))
    {
-      struct unit_data *next_unit;
+      std::shared_ptr<unit_data> next_unit;
       bool              ok = TRUE, pick = FALSE;
 
       thing = from_unit ? UNIT_CONTAINS(from_unit) : UNIT_CONTAINS(UNIT_IN(ch));
@@ -357,7 +357,7 @@ void do_get(struct unit_data *ch, char *argument, const struct command_info *cmd
    }
 }
 
-int drop(struct unit_data *ch, struct unit_data *unit, const struct command_info *cmd, char *arg)
+int drop(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> unit, const struct command_info *cmd, char *arg)
 {
    if(!(IS_OBJ(unit) && OBJ_EQP_POS(unit)))
    {
@@ -377,9 +377,9 @@ int drop(struct unit_data *ch, struct unit_data *unit, const struct command_info
       return FALSE;
 }
 
-void do_drop(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_drop(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *thing, *next_obj;
+   std::shared_ptr<unit_data> thing, *next_obj;
    char              arg[MAX_INPUT_LENGTH];
    amount_t          amount = 0;
    char             *oarg   = argument;
@@ -466,9 +466,9 @@ void do_drop(struct unit_data *ch, char *argument, const struct command_info *cm
 }
 
 /* Returns FALSE if there was an "error" putting the stuff */
-int put(struct unit_data *ch, struct unit_data *unit, struct unit_data *tounit, const struct command_info *cmd, char *arg)
+int put(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> unit, std::shared_ptr<unit_data> tounit, const struct command_info *cmd, char *arg)
 {
-   struct unit_data *money = NULL;
+   std::shared_ptr<unit_data> money = NULL;
    int               weight;
    sbit32            amt = 0;
 
@@ -531,9 +531,9 @@ int put(struct unit_data *ch, struct unit_data *unit, struct unit_data *tounit, 
    return TRUE;
 }
 
-void do_put(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_put(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *tounit, *thing;
+   std::shared_ptr<unit_data> tounit, *thing;
    char             *arg2, arg1[MAX_INPUT_LENGTH];
    char              buf[MAX_INPUT_LENGTH];
    amount_t          amount = 0;
@@ -585,7 +585,7 @@ void do_put(struct unit_data *ch, char *argument, const struct command_info *cmd
 
    if(all)
    {
-      struct unit_data *nextu;
+      std::shared_ptr<unit_data> nextu;
 
       for(thing = UNIT_CONTAINS(ch); thing; thing = nextu)
       {
@@ -625,9 +625,9 @@ void do_put(struct unit_data *ch, char *argument, const struct command_info *cmd
       send_to_char("No such thing to put here.\n\r", ch);
 }
 
-void give(struct unit_data *ch, struct unit_data *thing, struct unit_data *vict, const struct command_info *cmd, char *arg)
+void give(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> thing, std::shared_ptr<unit_data> vict, const struct command_info *cmd, char *arg)
 {
-   struct unit_data *money = NULL;
+   std::shared_ptr<unit_data> money = NULL;
    int               weight;
 
    if(!IS_CHAR(vict))
@@ -675,9 +675,9 @@ void give(struct unit_data *ch, struct unit_data *thing, struct unit_data *vict,
    send_done(ch, thing, vict, 0, cmd, arg);
 }
 
-void do_give(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_give(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
-   struct unit_data *victim, *thing;
+   std::shared_ptr<unit_data> victim, *thing;
    char              buf[MAX_INPUT_LENGTH];
    amount_t          amount = 0;
    char             *oarg   = argument;

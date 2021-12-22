@@ -98,7 +98,7 @@ void page_string(struct descriptor_data *d, const char *messg)
    }
 }
 
-void send_to_char(const char *messg, const struct unit_data *ch)
+void send_to_char(const char *messg, const std::shared_ptr<unit_data> ch)
 {
    if(IS_CHAR(ch))
       send_to_descriptor(messg, CHAR_DESCRIPTOR(ch));
@@ -138,9 +138,9 @@ void send_to_outdoor(const char *messg)
             send_to_descriptor(messg, i);
 }
 
-void send_to_room(const char *messg, struct unit_data *room)
+void send_to_room(const char *messg, std::shared_ptr<unit_data> room)
 {
-   struct unit_data *i;
+   std::shared_ptr<unit_data> i;
 
    if(messg)
       for(i = UNIT_CONTAINS(room); i; i = i->next)
@@ -299,7 +299,8 @@ void act_generate(
 
 void act(const char *str, int show_type, const void *arg1, const void *arg2, const void *arg3, int type)
 {
-   struct unit_data *to, *u;
+   std::shared_ptr<unit_data> to;
+   std::shared_ptr<unit_data> u;
    char              buf[MAX_STRING_LENGTH];
 
    /* This to catch old-style FALSE/TRUE calls...  */
@@ -309,13 +310,13 @@ void act(const char *str, int show_type, const void *arg1, const void *arg2, con
       return;
 
    if(type == TO_VICT)
-      to = (struct unit_data *)arg3;
+      to = (std::shared_ptr<unit_data> )arg3;
    else if(type == TO_CHAR)
-      to = (struct unit_data *)arg1;
-   else if(arg1 == NULL || UNIT_IN((struct unit_data *)arg1) == NULL)
+      to = (std::shared_ptr<unit_data> )arg1;
+   else if(arg1 == NULL || UNIT_IN((std::shared_ptr<unit_data> )arg1) == NULL)
       return;
    else
-      to = UNIT_CONTAINS(UNIT_IN((struct unit_data *)arg1));
+      to = UNIT_CONTAINS(UNIT_IN((std::shared_ptr<unit_data> )arg1));
 
    /* same unit or to person */
    for(; to; to = to->next)
@@ -338,7 +339,7 @@ void act(const char *str, int show_type, const void *arg1, const void *arg2, con
    }
 
    /* other units outside transparent unit */
-   if((to = UNIT_IN(UNIT_IN((struct unit_data *)arg1))) && UNIT_IS_TRANSPARENT(UNIT_IN((struct unit_data *)arg1)))
+   if((to = UNIT_IN(UNIT_IN((std::shared_ptr<unit_data> )arg1))) && UNIT_IS_TRANSPARENT(UNIT_IN((std::shared_ptr<unit_data> )arg1)))
       for(to = UNIT_CONTAINS(to); to; to = to->next)
       {
          if(IS_CHAR(to))
@@ -347,7 +348,7 @@ void act(const char *str, int show_type, const void *arg1, const void *arg2, con
             send_to_descriptor(buf, CHAR_DESCRIPTOR(to));
          }
 
-         if(UNIT_CHARS(to) && UNIT_IS_TRANSPARENT(to) && to != UNIT_IN((struct unit_data *)arg1))
+         if(UNIT_CHARS(to) && UNIT_IS_TRANSPARENT(to) && to != UNIT_IN((std::shared_ptr<unit_data> )arg1))
             for(u = UNIT_CONTAINS(to); u; u = u->next)
                if(IS_CHAR(u))
                {

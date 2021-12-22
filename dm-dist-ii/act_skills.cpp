@@ -57,14 +57,14 @@
 #include <string.h>
 
 /* The TURN_UNDEAD skill */
-void do_turn(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_turn(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 /*
  * coded: Thu Jun 11 18:48:17 MET DST 1992 [HH]
  * tested: No
  */
 {
    int               skilla, skilld, hm;
-   struct unit_data *vict;
+   std::shared_ptr<unit_data> vict;
 
    if(IS_PC(ch) && PC_SKI_SKILL(ch, SKI_TURN_UNDEAD) == 0)
    {
@@ -109,9 +109,9 @@ void do_turn(struct unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* Not a skill, but closely related to scroll & wand code */
-void do_quaff(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_quaff(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *potion;
+   std::shared_ptr<unit_data> potion;
    int               i;
 
    if(str_is_empty(arg))
@@ -156,14 +156,14 @@ void do_quaff(struct unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* The SCROLL_USE skill */
-void do_recite(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_recite(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 /*
  * coded: Thu Jun 11 19:10:52 MET DST 1992 [HH]
  * tested: No
  */
 {
-   struct unit_data *scroll;
-   struct unit_data *target;
+   std::shared_ptr<unit_data> scroll;
+   std::shared_ptr<unit_data> target;
    int               i, skilla, abila, hm;
 
    if(str_is_empty(arg))
@@ -243,13 +243,13 @@ void do_recite(struct unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* The Wand/Staff use skill */
-void do_use(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_use(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 /*
  * coded: Thu Jun 11 19:17:11 MET DST 1992
  * tested: No
  */
 {
-   struct unit_data *stick = NULL, *target = NULL;
+   std::shared_ptr<unit_data> stick = NULL, *target = NULL;
    int               skilla, abila, i, hm;
 
    if(str_is_empty(arg))
@@ -379,9 +379,9 @@ void do_use(struct unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* The APPRAISAL skill */
-void do_appraise(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_appraise(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *item;
+   std::shared_ptr<unit_data> item;
    int               skilla, hm, val;
 
    if(IS_PC(ch) && PC_SKI_SKILL(ch, SKI_APPRAISAL) == 0)
@@ -411,7 +411,7 @@ void do_appraise(struct unit_data *ch, char *arg, const struct command_info *cmd
    skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_APPRAISAL) : CHAR_BRA(ch);
    hm     = resistance_skill_check(CHAR_BRA(ch), 50, skilla, 0);
 
-   amount_t obj_trade_price(struct unit_data * u);
+   amount_t obj_trade_price(std::shared_ptr<unit_data>  u);
 
    val = obj_trade_price(item);
 
@@ -433,13 +433,13 @@ void do_appraise(struct unit_data *ch, char *arg, const struct command_info *cmd
 }
 
 /* The VENTRILOQUATE skill */
-void do_ventriloquate(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_ventriloquate(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 /*
  * coded: 18/6/92 1:30:23 MET DST 1992
  * tested: No
  */
 {
-   struct unit_data *vict;
+   std::shared_ptr<unit_data> vict;
    int               skilla, skillb, abila, abilb, hm;
 
    if(IS_PC(ch) && PC_SKI_SKILL(ch, SKI_VENTRILOQUATE) == 0)
@@ -487,7 +487,7 @@ void do_ventriloquate(struct unit_data *ch, char *arg, const struct command_info
 }
 
 /* The WEATHER_WATCHING skill */
-void do_weather(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_weather(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 /*
  * coded: Tue Jul  7 17:33:28 MET DST 1992 [HH]
  * tested: No
@@ -523,13 +523,13 @@ void do_weather(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_flee(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_flee(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    int               legal, attempt, die, hm, opos;
-   struct unit_data *predator, *u;
+   std::shared_ptr<unit_data> predator, *u;
 
-   void set_hunting(struct unit_data * p, struct unit_data * v, int legal);
-   int  do_simple_move(struct unit_data * ch, int direction, int following);
+   void set_hunting(std::shared_ptr<unit_data>  p, std::shared_ptr<unit_data>  v, int legal);
+   int  do_simple_move(std::shared_ptr<unit_data>  ch, int direction, int following);
 
    if(CHAR_POS(ch) < POSITION_FIGHTING)
    {
@@ -611,7 +611,7 @@ void do_flee(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_sneak(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_sneak(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 /*
  * coded: Fri. 19 Jun 1992 22.27.57
  * tested: No
@@ -663,14 +663,14 @@ void do_sneak(struct unit_data *ch, char *arg, const struct command_info *cmd)
    create_affect(ch, &af);
 }
 
-void do_backstab(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_backstab(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 /*
  * coded: Mon Jun 22 00:22:44 MET DST 1992 [HH]
  * tested: No
  */
 {
    struct unit_affected_type af, *paf = NULL;
-   struct unit_data         *vict, *stabber;
+   std::shared_ptr<unit_data> vict, *stabber;
    int                       skilla, skillb, hm;
    char                     *oarg = arg;
 
@@ -783,7 +783,7 @@ void do_backstab(struct unit_data *ch, char *arg, const struct command_info *cmd
    }
 }
 
-void do_hide(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_hide(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 /*
  * coded: Mon Jun 22 02:09:04 MET DST 1992 [HH]
  * tested: No
@@ -843,12 +843,12 @@ void do_hide(struct unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* The FIRST AID skill */
-void do_aid(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_aid(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *vict;
+   std::shared_ptr<unit_data> vict;
    int               skilla, hm;
 
-   void modify_hit(struct unit_data * ch, int hit);
+   void modify_hit(std::shared_ptr<unit_data>  ch, int hit);
 
    skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_FIRST_AID) : (CHAR_BRA(ch) + CHAR_DIV(ch)) / 2;
    if(!skilla)
@@ -905,13 +905,13 @@ void do_aid(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_pick(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_pick(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    int               skilla, hm, prot;
    struct door_data *a_door;
    char             *oarg = arg;
 
-   struct door_data *locate_lock(struct unit_data * ch, char *arg);
+   struct door_data *locate_lock(std::shared_ptr<unit_data>  ch, char *arg);
 
    skilla = IS_PC(ch) ? PC_SKI_SKILL(ch, SKI_PICK_LOCK) : (CHAR_DEX(ch) + CHAR_BRA(ch)) / 2;
 
@@ -970,17 +970,17 @@ void do_pick(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_steal(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_steal(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 /*
  * coded:Tue Jul  7 21:10:25 MET DST 1992 [HH]
  * tested: Yup
  */
 {
-   struct unit_data *vict, *obj;
+   std::shared_ptr<unit_data> vict, *obj;
    char             *split, *oarg = arg;
    int               hm, skilla, skillb;
 
-   int hands_used(struct unit_data * ch);
+   int hands_used(std::shared_ptr<unit_data>  ch);
 
    if(str_is_empty(arg))
    {
@@ -1172,9 +1172,9 @@ void do_steal(struct unit_data *ch, char *arg, const struct command_info *cmd)
    send_done(ch, obj, vict, hm, cmd, oarg);
 }
 
-void base_rescue(struct unit_data *ch, struct unit_data *vict)
+void base_rescue(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> vict)
 {
-   struct unit_data *tmp_ch;
+   std::shared_ptr<unit_data> tmp_ch;
    int               hm, skilla, skillb;
 
    if(vict == ch)
@@ -1249,13 +1249,13 @@ void base_rescue(struct unit_data *ch, struct unit_data *vict)
       CHAR_COMBAT(tmp_ch)->setMelee(ch);
 }
 
-void do_rescue(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_rescue(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 /*
  * coded: Wed Jul  8 00:21:38 MET DST 1992
  * tested: No
  */
 {
-   struct unit_data *vict;
+   std::shared_ptr<unit_data> vict;
 
    if(str_is_empty(arg))
    {
@@ -1273,13 +1273,13 @@ void do_rescue(struct unit_data *ch, char *arg, const struct command_info *cmd)
    base_rescue(ch, vict);
 }
 
-void do_bash(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_bash(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 /*
  * coded:Wed Jul  8 00:23:59 MET DST 1992 [HH]
  * tested: No
  */
 {
-   struct unit_data *vict, *shield;
+   std::shared_ptr<unit_data> vict, *shield;
    int               hm, att_skill, def_skill;
    char             *oarg = arg;
 
@@ -1351,7 +1351,7 @@ void do_bash(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_search(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_search(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    int                       dir, skill, i;
    struct unit_affected_type af, *taf;

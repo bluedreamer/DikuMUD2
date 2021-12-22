@@ -34,33 +34,33 @@ struct SFightColorSet
    char *pOthers;
 };
 
-class unit_data *raw_kill(struct unit_data *ch);
+class unit_data *raw_kill(std::shared_ptr<unit_data> ch);
 
 int provoked_attack(class unit_data *victim, class unit_data *ch);
 
-void update_pos(struct unit_data *victim);
+void update_pos(std::shared_ptr<unit_data> victim);
 
-void damage(struct unit_data *ch,
-            struct unit_data *victim,
-            struct unit_data *medium,
+void damage(std::shared_ptr<unit_data> ch,
+            std::shared_ptr<unit_data> victim,
+            std::shared_ptr<unit_data> medium,
             int               damage,
             int               attackcat,
             int               weapontype,
             int               hitloc,
             int               bDisplay = TRUE);
 
-int  pk_test(struct unit_data *att, struct unit_data *def, int message);
-int  one_hit(struct unit_data *att, struct unit_data *def, int bonus, int wpn_type, int primary = TRUE);
-int  simple_one_hit(struct unit_data *att, struct unit_data *def);
-int  char_dual_wield(struct unit_data *ch);
-void melee_violence(struct unit_data *ch, int primary);
-int  melee_bonus(struct unit_data  *att,
-                 struct unit_data  *def,
+int  pk_test(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, int message);
+int  one_hit(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, int bonus, int wpn_type, int primary = TRUE);
+int  simple_one_hit(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def);
+int  char_dual_wield(std::shared_ptr<unit_data> ch);
+void melee_violence(std::shared_ptr<unit_data> ch, int primary);
+int  melee_bonus(std::shared_ptr<unit_data> att,
+                 std::shared_ptr<unit_data> def,
                  int                hit_loc,
                  int               *pAtt_weapon_type,
-                 struct unit_data **pAtt_weapon,
+                 std::shared_ptr<unit_data> *pAtt_weapon,
                  int               *pDef_armour_type,
-                 struct unit_data **pDef_armour,
+                 std::shared_ptr<unit_data> *pDef_armour,
                  int                primary = TRUE);
-int  shield_bonus(struct unit_data *att, struct unit_data *def, struct unit_data **pDef_shield);
+int  shield_bonus(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, std::shared_ptr<unit_data> *pDef_shield);
 #endif

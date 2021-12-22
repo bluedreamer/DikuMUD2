@@ -109,10 +109,10 @@ inline auto UNIT_FILE_INDEX(unit_data *unit) -> std::shared_ptr<file_index_type>
 
 #define UNIT_CONTAINS(unit) ((unit)->inside)
 
-inline auto UNIT_IN(class unit_data *unit) -> unit_data *&
-{
-   return unit->outside;
-}
+//inline auto UNIT_IN(class unit_data *unit) -> unit_data *&
+//{
+//   return unit->outside;
+//}
 
 #define UNIT_AFFECTED(unit) ((unit)->affected)
 
@@ -303,11 +303,11 @@ extern int sunlight;
 
 #define CHAR_IS_READY(ch) (CHAR_AWAKE(ch) && (CHAR_POS(ch) != POSITION_FIGHTING))
 
-#define CHAR_IS_SNOOPING(ch) (CHAR_DESCRIPTOR(ch) ? (CHAR_DESCRIPTOR(ch)->snoop.snooping) : (struct unit_data *)NULL)
+#define CHAR_IS_SNOOPING(ch) (CHAR_DESCRIPTOR(ch) ? (CHAR_DESCRIPTOR(ch)->snoop.snooping) : (std::shared_ptr<unit_data> )NULL)
 
-#define CHAR_IS_SNOOPED(ch) (CHAR_DESCRIPTOR(ch) ? (CHAR_DESCRIPTOR(ch)->snoop.snoop_by) : (struct unit_data *)NULL)
+#define CHAR_IS_SNOOPED(ch) (CHAR_DESCRIPTOR(ch) ? (CHAR_DESCRIPTOR(ch)->snoop.snoop_by) : (std::shared_ptr<unit_data> )NULL)
 
-#define CHAR_IS_SWITCHED(ch) (CHAR_DESCRIPTOR(ch) ? (CHAR_DESCRIPTOR(ch)->original) : (struct unit_data *)NULL)
+#define CHAR_IS_SWITCHED(ch) (CHAR_DESCRIPTOR(ch) ? (CHAR_DESCRIPTOR(ch)->original) : (std::shared_ptr<unit_data> )NULL)
 
 #define CHAR_SNOOPING(ch) (CHAR_IS_SNOOPING(ch) ? (CHAR_DESCRIPTOR(ch)->snoop.snooping) : (ch))
 
@@ -319,7 +319,7 @@ extern int sunlight;
 
 #define CHAR_HAS_FLAG(ch, flags) (IS_SET(CHAR_FLAGS(ch), (flags)))
 
-#define CHAR_ROOM_EXIT(ch, door) (IS_ROOM(UNIT_IN(ch)) ? ROOM_EXIT(UNIT_IN(ch), (door)) : (struct unit_data *)NULL)
+#define CHAR_ROOM_EXIT(ch, door) (IS_ROOM(UNIT_IN(ch)) ? ROOM_EXIT(UNIT_IN(ch), (door)) : (std::shared_ptr<unit_data> )NULL)
 
 #define CHAR_VISION(ch) (!CHAR_HAS_FLAG(ch, CHAR_BLIND))
 

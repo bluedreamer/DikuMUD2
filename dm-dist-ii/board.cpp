@@ -99,11 +99,11 @@ size_t strftime(char *s, size_t smax, const char *fmt, const struct tm *tp);
 
 /* local fncts */
 
-int                show_board(const struct unit_data *, struct unit_data *, struct board_info *, char *);
-void               write_board(struct unit_data *, struct board_info *, char *, struct unit_data *);
-int                read_board(struct unit_data *, struct board_info *, char *);
-int                reply_board(struct unit_data *, struct board_info *, char *, struct unit_data *board);
-int                remove_msg(struct unit_data *, struct board_info *, char *);
+int                show_board(const std::shared_ptr<unit_data> , std::shared_ptr<unit_data> , struct board_info *, char *);
+void               write_board(std::shared_ptr<unit_data> , struct board_info *, char *, std::shared_ptr<unit_data> );
+int                read_board(std::shared_ptr<unit_data> , struct board_info *, char *);
+int                reply_board(std::shared_ptr<unit_data> , struct board_info *, char *, std::shared_ptr<unit_data> board);
+int                remove_msg(std::shared_ptr<unit_data> , struct board_info *, char *);
 void               save_board_msg(struct board_info *, int, char *);
 void               load_board_msg(struct board_info *, int, bool);
 struct board_info *init_board(char *);
@@ -111,7 +111,7 @@ struct board_info *get_board(struct unit_fptr *);
 
 int board(struct spec_arg *sarg)
 {
-   struct unit_data  *u;
+   std::shared_ptr<unit_data> u;
    struct board_info *tb;
    char              *arg = (char *)sarg->arg;
 
@@ -158,7 +158,7 @@ int board(struct spec_arg *sarg)
    }
 }
 
-int show_board(const struct unit_data *ch, struct unit_data *board, struct board_info *tb, char *arg)
+int show_board(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> board, struct board_info *tb, char *arg)
 {
    char  tmp[MAX_INPUT_LENGTH], buf[10000]; /* Enough with 50 messages */
    int   i;
@@ -278,7 +278,7 @@ void compact_board(struct board_info *tb)
       blk_write_reserved(tb->bf, tb->handles, MAX_MSGS * sizeof(blk_handle));
 }
 
-void write_board(struct unit_data *ch, struct board_info *tb, char *arg, struct unit_data *board)
+void write_board(std::shared_ptr<unit_data> ch, struct board_info *tb, char *arg, std::shared_ptr<unit_data> board)
 {
    int                     i;
    struct descriptor_data *d;
@@ -352,7 +352,7 @@ void write_board(struct unit_data *ch, struct board_info *tb, char *arg, struct 
    return;
 }
 
-int reply_board(struct unit_data *ch, struct board_info *tb, char *arg, struct unit_data *board)
+int reply_board(std::shared_ptr<unit_data> ch, struct board_info *tb, char *arg, std::shared_ptr<unit_data> board)
 {
    char number[MAX_INPUT_LENGTH], head[80];
    int  msg;
@@ -388,7 +388,7 @@ int reply_board(struct unit_data *ch, struct board_info *tb, char *arg, struct u
    return SFR_BLOCK;
 }
 
-int read_board(struct unit_data *ch, struct board_info *tb, char *arg)
+int read_board(std::shared_ptr<unit_data> ch, struct board_info *tb, char *arg)
 {
    char number[MAX_INPUT_LENGTH], buf[MAX_STRING_LENGTH];
    int  msg;
@@ -433,7 +433,7 @@ int read_board(struct unit_data *ch, struct board_info *tb, char *arg)
    return SFR_BLOCK;
 }
 
-int remove_msg(struct unit_data *ch, struct board_info *tb, char *arg)
+int remove_msg(std::shared_ptr<unit_data> ch, struct board_info *tb, char *arg)
 {
    int  msg, index;
    char number[MAX_INPUT_LENGTH];
@@ -648,11 +648,9 @@ struct board_info *get_board(struct unit_fptr *fptr)
    return tb;
 }
 
-void do_boards(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_boards(std::shared_ptr<unit_data> h, char *arg, const struct command_info *cmd)
 {
-   extern struct unit_data *unit_list;
-
-   struct unit_data  *u;
+   std::shared_ptr<unit_data> u;
    struct unit_fptr  *f = NULL;
    struct board_info *b;
    char               buf[256], tmp[256];

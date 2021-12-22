@@ -213,7 +213,7 @@ int required_xp(int level)
 }
 
 /* Primarily used for shields, armours and weapons */
-void set_hits(struct unit_data *obj, int craftsmanship)
+void set_hits(std::shared_ptr<unit_data> obj, int craftsmanship)
 {
    if(UNIT_HIT(obj) == 100) // 100 is the *default* and is overridden
    {
@@ -242,7 +242,7 @@ int is_in(int a, int from, int to)
 /*         Value[3] is slaying race      */
 /*         Value[4]                      */
 /*                                       */
-void set_weapon(struct unit_data *weapon)
+void set_weapon(std::shared_ptr<unit_data> weapon)
 {
    set_hits(weapon, OBJ_VALUE(weapon, 1));
 }
@@ -252,7 +252,7 @@ void set_weapon(struct unit_data *weapon)
 /*         Value[1] is craftsmanship      */
 /*         Value[2] is magic bonus        */
 
-void set_armour(struct unit_data *armour)
+void set_armour(std::shared_ptr<unit_data> armour)
 {
    set_hits(armour, OBJ_VALUE(armour, 1));
 }
@@ -262,7 +262,7 @@ void set_armour(struct unit_data *armour)
 /*         Value[1] is craftsmanship        */
 /*         Value[2] is magic bonus          */
 /*                                          */
-void set_shield(struct unit_data *shield)
+void set_shield(std::shared_ptr<unit_data> shield)
 {
    set_hits(shield, OBJ_VALUE(shield, 1));
 }

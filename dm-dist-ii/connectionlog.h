@@ -28,7 +28,7 @@
 #include "structs.h"
 
 void ConnectionBoot(void);
-void ConnectionBegin(class unit_data *pc);
-void ConnectionLog(class unit_data *pc);
+void ConnectionBegin(std::shared_ptr<unit_data> pc);
+void ConnectionLog(std::shared_ptr<unit_data> pc);
 
 #endif // _MUD_CONNECTIONLOG_H

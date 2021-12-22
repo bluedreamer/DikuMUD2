@@ -54,9 +54,9 @@ struct persist_type
 
 cNamelist persist_namelist;
 
-void persist_save(struct unit_data *u, struct persist_type *pt)
+void persist_save(std::shared_ptr<unit_data> u, struct persist_type *pt)
 {
-   void basic_save_contents(const char *pFileName, struct unit_data *unit, int fast, int bContainer);
+   void basic_save_contents(const char *pFileName, std::shared_ptr<unit_data> unit, int fast, int bContainer);
 
    basic_save_contents(pt->name, u, FALSE, TRUE);
 
@@ -64,12 +64,12 @@ void persist_save(struct unit_data *u, struct persist_type *pt)
    pt->in     = UNIT_FILE_INDEX(UNIT_IN(u));
 }
 
-void persist_remove(struct unit_data *u, struct persist_type *pt)
+void persist_remove(std::shared_ptr<unit_data> u, struct persist_type *pt)
 {
    remove(pt->name);
 }
 
-void persist_create(struct unit_data *u)
+void persist_create(std::shared_ptr<unit_data> u)
 {
    char                *c;
    struct persist_type *pt;
@@ -95,7 +95,7 @@ void persist_create(struct unit_data *u)
    persist_save(u, pt);
 }
 
-void persist_recreate(struct unit_data *u, char *name)
+void persist_recreate(std::shared_ptr<unit_data> u, char *name)
 {
    struct persist_type *pt;
 
@@ -144,9 +144,9 @@ int persist_intern(struct spec_arg *sarg)
 void persist_boot(void)
 {
    char              name[50];
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
 
-   struct unit_data *base_load_contents(const char *pFileName, const struct unit_data *unit);
+   std::shared_ptr<unit_data> base_load_contents(const char *pFileName, const std::shared_ptr<unit_data> unit);
 
    for(ubit32 i = 0; i < persist_namelist.Length(); i++)
    {

@@ -144,7 +144,7 @@ int actual_cost(int cost, sbit8 modifier)
    return cost;
 }
 
-void clear_training_level(struct unit_data *ch)
+void clear_training_level(std::shared_ptr<unit_data> ch)
 {
    int i;
 
@@ -174,8 +174,8 @@ int teaches_index(struct skill_teach_type *teaches_skills, int node)
    return -1;
 }
 
-void info_show_one(struct unit_data *teacher,
-                   struct unit_data *pupil,
+void info_show_one(std::shared_ptr<unit_data> teacher,
+                   std::shared_ptr<unit_data> pupil,
                    ubit8             current_points,
                    ubit8             max_level,
                    int               next_point,
@@ -237,8 +237,8 @@ void info_show_one(struct unit_data *teacher,
    send_to_char(buf, pupil);
 }
 
-void info_show_roots(struct unit_data        *teacher,
-                     struct unit_data        *pupil,
+void info_show_roots(std::shared_ptr<unit_data> teacher,
+                     std::shared_ptr<unit_data> pupil,
                      struct skill_teach_type *teaches_skills,
                      struct tree_type        *tree,
                      const char              *text[],
@@ -271,8 +271,8 @@ void info_show_roots(struct unit_data        *teacher,
       }
 }
 
-void info_one_skill(struct unit_data        *teacher,
-                    struct unit_data        *pupil,
+void info_one_skill(std::shared_ptr<unit_data> teacher,
+                    std::shared_ptr<unit_data> pupil,
                     struct skill_teach_type *teaches_skills,
                     struct tree_type        *tree,
                     const char              *text[],
@@ -370,7 +370,7 @@ void info_one_skill(struct unit_data        *teacher,
    }
 }
 
-int pupil_magic(struct unit_data *pupil)
+int pupil_magic(std::shared_ptr<unit_data> pupil)
 {
    struct unit_affected_type *af;
 
@@ -1089,7 +1089,7 @@ int teach_init(struct spec_arg *sarg)
    return teaching(sarg);
 }
 
-void do_practice(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_practice(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    send_to_char("You can only practice at a teacher.\n\r", ch);
 }

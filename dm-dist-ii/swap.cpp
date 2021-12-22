@@ -37,7 +37,7 @@
 #define SWAP_FILE_NAME  "swap.blk"
 #define SWAP_BLK_LENGTH 512
 
-extern struct unit_data *unit_list;
+extern std::shared_ptr<unit_data> unit_list;
 
 static BLK_FILE *swap_file    = NULL;
 static int       nSwapNoRooms = 0;
@@ -48,7 +48,7 @@ static int nSwapOut    = 0;
 static int nSwapIn     = 0;
 static int nSwapSumLen = 0;
 
-void swap_in(struct unit_data *u)
+void swap_in(std::shared_ptr<unit_data> u)
 {
    return;
    /*
@@ -114,7 +114,7 @@ CByteBuffer Buf;
 */
 }
 
-void swap_out(struct unit_data *u)
+void swap_out(std::shared_ptr<unit_data> u)
 {
    return;
    /*
@@ -153,7 +153,7 @@ void swap_out(struct unit_data *u)
    */
 }
 
-void swap_status(struct unit_data *ch)
+void swap_status(std::shared_ptr<unit_data> ch)
 {
    return;
    /*
@@ -176,7 +176,7 @@ void swap_check(void *p1, void *p2)
 {
    return;
    /*
-    struct unit_data *u;
+    std::shared_ptr<unit_data> u;
 
  #ifdef SUSPEKT
     static int nOldSwapIn = 0;

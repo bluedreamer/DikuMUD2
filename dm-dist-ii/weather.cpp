@@ -121,7 +121,7 @@ struct time_info_data mud_time_passed(time_t t2, time_t t1)
    return now;
 }
 
-struct time_info_data age(struct unit_data *ch)
+struct time_info_data age(std::shared_ptr<unit_data> ch)
 {
    static struct time_info_data player_age;
 

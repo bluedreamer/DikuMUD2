@@ -25,7 +25,6 @@
 #ifndef _MUD_COMBAT_H
 #define _MUD_COMBAT_H
 
-#ifdef __cplusplus
 
 class cCombatList
 {
@@ -35,7 +34,7 @@ public:
    void PerformViolence();
    void add(class cCombat *pc);
    void sub(class cCombat *pc);
-   void status(const struct unit_data *ch);
+   void status(const std::shared_ptr<unit_data> ch);
 
 private:
    void Sort();
@@ -51,45 +50,44 @@ class cCombat
    friend class cCombatList;
 
 public:
-   cCombat(struct unit_data *owner, int bMelee = FALSE);
+   cCombat(std::shared_ptr<unit_data> owner, int bMelee = FALSE);
    ~cCombat();
 
-   struct unit_data *Opponent(int i = 0);
-   struct unit_data *FindOpponent(struct unit_data *tmp);
+   std::shared_ptr<unit_data> Opponent(int i = 0);
+   std::shared_ptr<unit_data> FindOpponent(std::shared_ptr<unit_data> tmp);
 
-   inline struct unit_data *Owner(void) { return pOwner; }
-   inline struct unit_data *Melee(void) { return pMelee; }
+   inline std::shared_ptr<unit_data> Owner(void) { return pOwner; }
+   inline std::shared_ptr<unit_data> Melee(void) { return pMelee; }
    inline int               When() { return nWhen; }
    inline int               NoOpponents(void) { return nNoOpponents; }
 
    void changeSpeed(int delta);
-   void setMelee(struct unit_data *victim);
+   void setMelee(std::shared_ptr<unit_data> victim);
    void setCommand(char *arg);
 
-   void addOpponent(struct unit_data *victim, int bMelee);
-   void subOpponent(struct unit_data *victim);
-   void status(const struct unit_data *ch);
+   void addOpponent(std::shared_ptr<unit_data> victim, int bMelee);
+   void subOpponent(std::shared_ptr<unit_data> victim);
+   void status(const std::shared_ptr<unit_data> ch);
 
 private:
-   void add(struct unit_data *victim);
+   void add(std::shared_ptr<unit_data> victim);
    void sub(int idx);
-   int  findOpponentIdx(struct unit_data *tmp);
+   int  findOpponentIdx(std::shared_ptr<unit_data> tmp);
 
    int                nWhen;                     // What tick to attack / command at
-   struct unit_data  *pOwner;                    // The owning unit
-   struct unit_data  *pMelee;                    // The melee or kill pointer
-   struct unit_data **pOpponents;                // Array of opponents (given damage)
+   std::shared_ptr<unit_data> pOwner;                    // The owning unit
+   std::shared_ptr<unit_data> pMelee;                    // The melee or kill pointer
+   std::shared_ptr<unit_data> *pOpponents;                // Array of opponents (given damage)
    int                nNoOpponents;              // Number of opponents
    char               cmd[MAX_INPUT_LENGTH + 1]; // A combat command
 };
 
 extern class cCombatList CombatList;
 
-void set_fighting(struct unit_data *ch, struct unit_data *vict, int bMelee = FALSE);
-void stop_fighting(struct unit_data *ch, struct unit_data *victim = NULL);
+void set_fighting(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> vict, int bMelee = FALSE);
+void stop_fighting(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> victim = NULL);
 
-void stat_combat(const struct unit_data *ch, struct unit_data *u);
+void stat_combat(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u);
 
-#endif
 
 #endif

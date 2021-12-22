@@ -62,7 +62,7 @@
 /* extern variables */
 
 extern struct descriptor_data *descriptor_list;
-extern struct unit_data       *unit_list;
+extern std::shared_ptr<unit_data> unit_list;
 
 static void add_to_string(char **buf, int *size, int len, const char *str)
 {
@@ -81,7 +81,7 @@ static void add_to_string(char **buf, int *size, int len, const char *str)
 }
 
 /* also used in "corpses" wizard-command */
-char *in_string(struct unit_data *ch, struct unit_data *u)
+char *in_string(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
    static char in_str[512];
    char       *tmp = in_str;
@@ -102,15 +102,15 @@ char *in_string(struct unit_data *ch, struct unit_data *u)
    return NULL;
 }
 
-void do_exits(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_exits(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    int               door;
    char              buf[MAX_STRING_LENGTH], *b;
-   struct unit_data *room;
+   std::shared_ptr<unit_data> room;
 
    const char *exits[] = {"North", "East ", "South", "West ", "Up   ", "Down "};
 
-   int has_found_door(struct unit_data * pc, int dir);
+   int has_found_door(std::shared_ptr<unit_data>  pc, int dir);
 
    send_to_char("Obvious exits:\n\r", ch);
 
@@ -150,9 +150,9 @@ void do_exits(struct unit_data *ch, char *arg, const struct command_info *cmd)
       send_to_char("None.\n\r", ch);
 }
 
-void do_purse(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_purse(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *thing, *purse[MAX_MONEY + 1];
+   std::shared_ptr<unit_data> thing, *purse[MAX_MONEY + 1];
    ubit1             found = FALSE;
    int               i;
 
@@ -176,7 +176,7 @@ void do_purse(struct unit_data *ch, char *arg, const struct command_info *cmd)
       send_to_char("  Nothing.\n\r", ch);
 }
 
-void do_quests(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_quests(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    int                      bOutput = FALSE;
    char                     buf[256];
@@ -208,7 +208,7 @@ void do_quests(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-static void status_spells(struct unit_data *ch, ubit8 realm)
+static void status_spells(std::shared_ptr<unit_data> ch, ubit8 realm)
 {
    int  i, j, p;
    char buf[83 * SPL_TREE_MAX + 512], tmpbuf[80], *b;
@@ -260,7 +260,7 @@ static void status_spells(struct unit_data *ch, ubit8 realm)
    }
 }
 
-void do_status(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_status(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    int                   idx, i, p, j;
    struct time_info_data playing_time, years;
@@ -271,7 +271,7 @@ void do_status(struct unit_data *ch, char *arg, const struct command_info *cmd)
    extern const char *char_sex[];
    extern const char *pc_races[];
 
-   struct time_info_data age(struct unit_data * ch);
+   struct time_info_data age(std::shared_ptr<unit_data>  ch);
    struct time_info_data real_time_passed(time_t t2, time_t t1);
 
    if(!IS_PC(ch))
@@ -401,7 +401,7 @@ void do_status(struct unit_data *ch, char *arg, const struct command_info *cmd)
    send_to_char(buf, ch);
 }
 
-char *own_position(struct unit_data *ch)
+char *own_position(std::shared_ptr<unit_data> ch)
 {
    static char buf[256];
 
@@ -456,14 +456,14 @@ char *own_position(struct unit_data *ch)
    return buf;
 }
 
-void do_score(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_score(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    static char              buf[MAX_STRING_LENGTH], *b;
-   struct unit_data        *vict;
+   std::shared_ptr<unit_data> vict;
    struct char_follow_type *f;
    int                      members = FALSE;
 
-   struct time_info_data age(const struct unit_data *ch);
+   struct time_info_data age(const std::shared_ptr<unit_data> ch);
    struct time_info_data real_time_passed(time_t t2, time_t t1);
 
    if(!IS_PC(ch))
@@ -627,7 +627,7 @@ void do_score(struct unit_data *ch, char *arg, const struct command_info *cmd)
    send_to_char(buf, ch);
 }
 
-void do_time(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_time(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    char                 *b;
    char                  buf[200];
@@ -647,29 +647,29 @@ void do_time(struct unit_data *ch, char *arg, const struct command_info *cmd)
    send_to_char(buf, ch);
 }
 
-void do_credits(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_credits(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    page_string(CHAR_DESCRIPTOR(ch), g_cServerConfig.m_pCredits);
 }
 
-void do_news(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_news(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    page_string(CHAR_DESCRIPTOR(ch), g_cServerConfig.m_pNews);
 }
 
-void do_info(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_info(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    send_to_char("You can't do that here (find a teacher, try `status' or"
                 " `help info'\n\r",
                 ch);
 }
 
-void do_wizlist(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wizlist(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    page_string(CHAR_DESCRIPTOR(ch), g_cServerConfig.m_pWizlist);
 }
 
-void player_where(struct unit_data *ch, char *arg)
+void player_where(std::shared_ptr<unit_data> ch, char *arg)
 {
    char                    buf[160];
    struct descriptor_data *d;
@@ -696,10 +696,10 @@ void player_where(struct unit_data *ch, char *arg)
    }
 }
 
-void do_where(struct unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_where(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
    char                      *buf = NULL, buf1[1024], buf2[512];
-   register struct unit_data *i;
+   register std::shared_ptr<unit_data> i;
    struct descriptor_data    *d;
    int                        len, cur_size = 2048;
    char                      *arg = (char *)aaa;
@@ -758,7 +758,7 @@ void do_where(struct unit_data *ch, char *aaa, const struct command_info *cmd)
    free(buf);
 }
 
-void do_who(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_who(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    static char *buf      = NULL;
    static int   cur_size = 1024;
@@ -815,7 +815,7 @@ void do_who(struct unit_data *ch, char *arg, const struct command_info *cmd)
    free(buf);
 }
 
-void do_commands(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_commands(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    char                       buf[MAX_STRING_LENGTH], *b;
    int                        no, i;
@@ -847,7 +847,7 @@ void do_commands(struct unit_data *ch, char *arg, const struct command_info *cmd
    page_string(CHAR_DESCRIPTOR(ch), buf);
 }
 
-void do_areas(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_areas(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    char                       buf[2 * MAX_STRING_LENGTH], *b;
    int                        no;

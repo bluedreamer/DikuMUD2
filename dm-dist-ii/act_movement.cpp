@@ -61,16 +61,16 @@
 
 /*   external vars  */
 
-extern struct unit_data   *unit_list;
+extern std::shared_ptr<unit_data> unit_list;
 extern struct command_info cmd_info[];
 
 /* external functs */
 
-struct unit_data *get_obj_in_list_vis(struct unit_data *ch, char *name, struct unit_data *list);
+std::shared_ptr<unit_data> get_obj_in_list_vis(std::shared_ptr<unit_data> ch, char *name, std::shared_ptr<unit_data> list);
 
 /* Has 'pc' found the door at 'dir'? If direction exits and it is closed  */
 /* and hidden then the door is found if it has been searched for.         */
-int has_found_door(struct unit_data *pc, int dir)
+int has_found_door(std::shared_ptr<unit_data> pc, int dir)
 {
    struct unit_affected_type *af;
 
@@ -97,7 +97,7 @@ int has_found_door(struct unit_data *pc, int dir)
       return TRUE;
 }
 
-int pay_point_charlie(struct unit_data *ch, struct unit_data *to)
+int pay_point_charlie(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> to)
 {
    if(IS_PC(ch) && g_cServerConfig.m_bAccounting && IS_MORTAL(ch))
    {
@@ -129,7 +129,7 @@ int pay_point_charlie(struct unit_data *ch, struct unit_data *to)
 }
 
 /* For sailing in boats! */
-int do_simple_sail(struct unit_data *boat, struct unit_data *captain, int direction)
+int do_simple_sail(std::shared_ptr<unit_data> boat, std::shared_ptr<unit_data> captain, int direction)
 
 /* Asserts:
 
@@ -144,7 +144,7 @@ int do_simple_sail(struct unit_data *boat, struct unit_data *captain, int direct
        */
 {
    int               res;
-   struct unit_data *u, *was_in, *to;
+   std::shared_ptr<unit_data> u, *was_in, *to;
 
    assert(UNIT_IN(boat) && IS_OBJ(boat));
    assert(IS_ROOM(UNIT_IN(boat)));
@@ -194,7 +194,7 @@ int do_simple_sail(struct unit_data *boat, struct unit_data *captain, int direct
 }
 
 /* For riding mounts! */
-int do_simple_ride(struct unit_data *beast, struct unit_data *master, int direction)
+int do_simple_ride(std::shared_ptr<unit_data> beast, std::shared_ptr<unit_data> master, int direction)
 
 /* Asserts:
 
@@ -209,7 +209,7 @@ int do_simple_ride(struct unit_data *beast, struct unit_data *master, int direct
        */
 {
    int               res, need_movement;
-   struct unit_data *u, *was_in, *to;
+   std::shared_ptr<unit_data> u, *was_in, *to;
 
    assert(UNIT_IN(beast) && IS_NPC(beast));
    assert(IS_ROOM(UNIT_IN(beast)));
@@ -275,7 +275,7 @@ int do_simple_ride(struct unit_data *beast, struct unit_data *master, int direct
 
 #define ALAS_NOWAY "Alas, you cannot go that way...\n\r"
 
-int do_simple_move(struct unit_data *ch, int direction, int following)
+int do_simple_move(std::shared_ptr<unit_data> ch, int direction, int following)
 /* Asserts:
    0. ch is in a room, going in a direction n,e,s,w,u or d
    1. Does not assert anything about position.
@@ -292,7 +292,7 @@ int do_simple_move(struct unit_data *ch, int direction, int following)
    */
 {
    int               need_movement, res;
-   struct unit_data *was_in, *to, *u;
+   std::shared_ptr<unit_data> was_in, *to, *u;
    const char       *c;
    char              dirbuf[2] = "c";
 
@@ -399,7 +399,7 @@ int do_simple_move(struct unit_data *ch, int direction, int following)
 
 /* Following defaults to false. If it is set to TRUE, then it will generate
    the special to check if the move is allowed. */
-int do_advanced_move(struct unit_data *ch, int direction, int following)
+int do_advanced_move(std::shared_ptr<unit_data> ch, int direction, int following)
 /*
   Returns :
   1 : If succes.
@@ -407,7 +407,7 @@ int do_advanced_move(struct unit_data *ch, int direction, int following)
   -1 : If dead.
   */
 {
-   struct unit_data        *was_in;
+   std::shared_ptr<unit_data> was_in;
    struct char_follow_type *k;
 
    if(!IS_ROOM(UNIT_IN(ch)) || !ROOM_EXIT(UNIT_IN(ch), direction))
@@ -456,10 +456,10 @@ int do_advanced_move(struct unit_data *ch, int direction, int following)
    return res;
 }
 
-void do_drag(struct unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_drag(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
    char             *argument = (char *)aaa;
-   struct unit_data *thing;
+   std::shared_ptr<unit_data> thing;
    char              arg[255];
    int               direction;
 
@@ -523,7 +523,7 @@ void do_drag(struct unit_data *ch, char *aaa, const struct command_info *cmd)
    }
 }
 
-void do_ride(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_ride(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    /*
      To be expanded:
@@ -532,7 +532,7 @@ void do_ride(struct unit_data *ch, char *arg, const struct command_info *cmd)
    */
 
    int               direction;
-   struct unit_data *beast, *room, *to_room;
+   std::shared_ptr<unit_data> beast, *room, *to_room;
    char              buf[MAX_INPUT_LENGTH];
 
    beast = UNIT_IN(ch);
@@ -549,7 +549,7 @@ void do_ride(struct unit_data *ch, char *arg, const struct command_info *cmd)
       return;
    }
 
-   for(struct unit_data *u = UNIT_CONTAINS(UNIT_IN(ch)); u; u = u->next)
+   for(std::shared_ptr<unit_data> u = UNIT_CONTAINS(UNIT_IN(ch)); u; u = u->next)
       if(IS_CHAR(u) && CHAR_FIGHTING(u))
       {
          act("You can't just ride away in the middle of a combat.", A_ALWAYS, ch, 0, 0, TO_CHAR);
@@ -600,12 +600,12 @@ void do_ride(struct unit_data *ch, char *arg, const struct command_info *cmd)
 }
 
 /* Expects 'north'..'down' as argument */
-void do_sail(struct unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_sail(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
    char             *arg = (char *)aaa;
    int               direction;
    char              buf[MAX_INPUT_LENGTH];
-   struct unit_data *boat, *room, *u;
+   std::shared_ptr<unit_data> boat, *room, *u;
 
    one_argument(arg, buf);
 
@@ -671,7 +671,7 @@ void do_sail(struct unit_data *ch, char *aaa, const struct command_info *cmd)
    do_simple_sail(boat, ch, direction);
 }
 
-void do_move(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_move(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
    /* NOTICE! It uses cmd->no for efficiency, thus cmd->no MUST */
    /* be one of CMD_NORTH..CMD_DOWN which again MUST BE 0..5    */
@@ -709,7 +709,7 @@ void do_move(struct unit_data *ch, char *argument, const struct command_info *cm
 /*               hidden doors will be considered.                    */
 /* err_msg:      if TRUE, error messages will be shown.              */
 
-int low_find_door(struct unit_data *ch, char *doorstr, int err_msg, int check_hidden)
+int low_find_door(std::shared_ptr<unit_data> ch, char *doorstr, int err_msg, int check_hidden)
 {
    char  buf[256], dir[256];
    char *dirdoorstr;
@@ -775,9 +775,9 @@ int low_find_door(struct unit_data *ch, char *doorstr, int err_msg, int check_hi
    return -1;
 }
 
-struct door_data *locate_lock(struct unit_data *ch, char *arg)
+struct door_data *locate_lock(std::shared_ptr<unit_data> ch, char *arg)
 {
-   struct unit_data       *thing, *other_room, *back = NULL;
+   std::shared_ptr<unit_data> thing, *other_room, *back = NULL;
    static struct door_data a_door;
    int                     door;
 
@@ -785,7 +785,7 @@ struct door_data *locate_lock(struct unit_data *ch, char *arg)
    /* Check if person is inside something he is trying to open */
    if(IS_SET(UNIT_OPEN_FLAGS(UNIT_IN(ch)), EX_INSIDE_OPEN) && UNIT_NAMES(UNIT_IN(ch)).IsName(arg))
    {
-      struct unit_data *u = UNIT_IN(ch);
+      std::shared_ptr<unit_data> u = UNIT_IN(ch);
 
       while(u && u != thing)
          u = UNIT_IN(u);
@@ -810,7 +810,7 @@ struct door_data *locate_lock(struct unit_data *ch, char *arg)
 
    if((thing = find_unit(ch, &arg, 0, FIND_UNIT_HERE)))
    {
-      struct unit_data *u = UNIT_IN(ch);
+      std::shared_ptr<unit_data> u = UNIT_IN(ch);
 
       a_door.thing     = thing;
       a_door.room      = 0;
@@ -864,7 +864,7 @@ struct door_data *locate_lock(struct unit_data *ch, char *arg)
    return 0;
 }
 
-void do_knock(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_knock(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
    struct door_data *a_door;
 
@@ -913,7 +913,7 @@ void do_knock(struct unit_data *ch, char *argument, const struct command_info *c
    }
 }
 
-void do_open(struct unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_open(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
    char             *argument = (char *)aaa;
    struct door_data *a_door;
@@ -962,7 +962,7 @@ void do_open(struct unit_data *ch, char *aaa, const struct command_info *cmd)
    }
 }
 
-void do_close(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_close(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
    struct door_data *a_door;
 
@@ -1008,9 +1008,9 @@ void do_close(struct unit_data *ch, char *argument, const struct command_info *c
    }
 }
 
-int has_key(struct unit_data *ch, std::shared_ptr<file_index_type> key)
+int has_key(std::shared_ptr<unit_data> ch, std::shared_ptr<file_index_type> key)
 {
-   struct unit_data *o;
+   std::shared_ptr<unit_data> o;
 
    /* Check all equipment and inventory */
    for(o = UNIT_CONTAINS(ch); o; o = o->next)
@@ -1020,7 +1020,7 @@ int has_key(struct unit_data *ch, std::shared_ptr<file_index_type> key)
    return FALSE;
 }
 
-void do_lock(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_lock(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
    struct door_data *a_door;
 
@@ -1076,7 +1076,7 @@ void do_lock(struct unit_data *ch, char *argument, const struct command_info *cm
    }
 }
 
-void do_unlock(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_unlock(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
    struct door_data *a_door;
 
@@ -1132,10 +1132,10 @@ void do_unlock(struct unit_data *ch, char *argument, const struct command_info *
    }
 }
 
-void do_enter(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_enter(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    int               door;
-   struct unit_data *thing;
+   std::shared_ptr<unit_data> thing;
    char             *oarg = arg;
 
    const char *mnt_ent = (cmd->no == CMD_MOUNT ? "mount" : "enter");
@@ -1232,9 +1232,9 @@ void do_enter(struct unit_data *ch, char *arg, const struct command_info *cmd)
    /* Otherwise low_find_door has sent an error message to character */
 }
 
-void do_exit(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_exit(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *to_unit, *from_unit;
+   std::shared_ptr<unit_data> to_unit, *from_unit;
    char             *oarg = arg;
 
    /* Is it meaningfull to exit */
@@ -1344,7 +1344,7 @@ void do_exit(struct unit_data *ch, char *arg, const struct command_info *cmd)
    send_done(ch, NULL, from_unit, 0, cmd, oarg);
 }
 
-void do_leave(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_leave(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
 #ifdef SUSPEKT
 
@@ -1368,7 +1368,7 @@ void do_leave(struct unit_data *ch, char *arg, const struct command_info *cmd)
 #endif
 }
 
-void do_stand(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_stand(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    /* not on a 'horse' type char */
    if(IS_CHAR(UNIT_IN(ch)))
@@ -1405,7 +1405,7 @@ void do_stand(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_sit(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_sit(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    switch(CHAR_POS(ch))
    {
@@ -1436,7 +1436,7 @@ void do_sit(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_rest(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_rest(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    switch(CHAR_POS(ch))
    {
@@ -1467,7 +1467,7 @@ void do_rest(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_sleep(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_sleep(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    switch(CHAR_POS(ch))
    {
@@ -1492,9 +1492,9 @@ void do_sleep(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_wake(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wake(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *tmp_char;
+   std::shared_ptr<unit_data> tmp_char;
 
    if(str_is_empty(arg))
    {
@@ -1547,12 +1547,12 @@ void do_wake(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_follow(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_follow(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *leader = NULL;
+   std::shared_ptr<unit_data> leader = NULL;
 
-   void stop_follower(struct unit_data * ch);
-   void add_follower(struct unit_data * ch, struct unit_data * leader);
+   void stop_follower(std::shared_ptr<unit_data>  ch);
+   void add_follower(std::shared_ptr<unit_data>  ch, std::shared_ptr<unit_data>  leader);
 
    if(str_is_empty(arg) || ((leader = find_unit(ch, &arg, 0, FIND_UNIT_SURRO)) == ch))
    {

@@ -69,9 +69,9 @@ int kludge_bonus(int level, int points)
 /* Returns 0 or less if unsuccessful, or 1..100 for the blocking    */
 /* chance                                                           */
 
-int shield_bonus(struct unit_data *att, struct unit_data *def, struct unit_data **pDef_shield)
+int shield_bonus(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, std::shared_ptr<unit_data> *pDef_shield)
 {
-   struct unit_data *def_shield;
+   std::shared_ptr<unit_data> def_shield;
    int               def_shield_bonus = 0;
 
    int att_dex, def_dex;
@@ -121,19 +121,19 @@ int shield_bonus(struct unit_data *att, struct unit_data *def, struct unit_data 
    return def_shield_bonus;
 }
 
-int spell_bonus(struct unit_data  *att,
-                struct unit_data  *medium,
-                struct unit_data  *def,
+int spell_bonus(std::shared_ptr<unit_data> att,
+                std::shared_ptr<unit_data> medium,
+                std::shared_ptr<unit_data> def,
                 int                hit_loc,
                 int                spell_number,
                 int               *pDef_armour_type,
-                struct unit_data **pDef_armour)
+                std::shared_ptr<unit_data> *pDef_armour)
 {
    int               att_spl_knowledge, def_spl_knowledge;
    int               att_bonus;
    int               def_bonus;
    int               def_armour_type;
-   struct unit_data *def_armour;
+   std::shared_ptr<unit_data> def_armour;
    int               hm;
 
    att_bonus = CHAR_OFFENSIVE(att);
@@ -187,23 +187,23 @@ int spell_bonus(struct unit_data  *att,
 /* to anything, then it will be set to the defenders armour_type  */
 /* which should be used upon lookup                               */
 
-int melee_bonus(struct unit_data  *att,
-                struct unit_data  *def,
+int melee_bonus(std::shared_ptr<unit_data> att,
+                std::shared_ptr<unit_data> def,
                 int                hit_loc,
                 int               *pAtt_weapon_type,
-                struct unit_data **pAtt_weapon,
+                std::shared_ptr<unit_data> *pAtt_weapon,
                 int               *pDef_armour_type,
-                struct unit_data **pDef_armour,
+                std::shared_ptr<unit_data> *pDef_armour,
                 int                primary)
 {
    int att_dex, att_bonus, att_wpn_knowledge;
    int def_dex, def_bonus, def_wpn_knowledge;
 
-   struct unit_data *att_wpn;
+   std::shared_ptr<unit_data> att_wpn;
    int               att_wpn_type;
 
    int               def_armour_type;
-   struct unit_data *def_armour;
+   std::shared_ptr<unit_data> def_armour;
 
    int hm;
 
@@ -311,10 +311,10 @@ int melee_bonus(struct unit_data  *att,
    return MAX(-50, hm);
 }
 
-int base_melee(struct unit_data *att, struct unit_data *def, int hit_loc)
+int base_melee(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, int hit_loc)
 {
    int               ocp, bonus;
-   struct unit_data *ocf;
+   std::shared_ptr<unit_data> ocf;
 
    assert(CHAR_COMBAT(def));
 
@@ -335,10 +335,10 @@ int base_melee(struct unit_data *att, struct unit_data *def, int hit_loc)
 /* danger involved in combat (i.e. how fast would you die in worst case)    */
 /* Returns number of rounds it takes att to kill def                        */
 
-int base_consider(struct unit_data *att, struct unit_data *def)
+int base_consider(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def)
 {
    int               ocp, bonus;
-   struct unit_data *ocf;
+   std::shared_ptr<unit_data> ocf;
    int               att_wpn_type, def_arm_type;
    int               dam;
 
@@ -360,9 +360,9 @@ int base_consider(struct unit_data *att, struct unit_data *def)
       return UNIT_MAX_HIT(def) / dam; /* Rounds to die.... */
 }
 
-void do_consider(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_consider(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *vict;
+   std::shared_ptr<unit_data> vict;
    int               rtd;
    char             *oarg = arg;
 
@@ -432,7 +432,7 @@ void do_consider(struct unit_data *ch, char *arg, const struct command_info *cmd
 
 /* Return the quality modifier for the given monster. Modifier depends on */
 /* the hand or weapon quality and armour or toughness quality.            */
-int experience_modification(struct unit_data *att, struct unit_data *def)
+int experience_modification(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def)
 {
    return base_melee(def, att, WEAR_BODY) - base_melee(att, def, WEAR_BODY);
 }

@@ -48,7 +48,7 @@ ubit8 g_nShout = 0;
 
 extern struct descriptor_data *descriptor_list;
 
-int is_ignored(struct unit_data *ch, struct unit_data *victim)
+int is_ignored(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> victim)
 {
    struct extra_descr_data *pexd;
    char                     tmp[128];
@@ -67,7 +67,7 @@ int is_ignored(struct unit_data *ch, struct unit_data *victim)
    return FALSE;
 }
 
-char *drunk_speech(struct unit_data *ch, const char *str)
+char *drunk_speech(std::shared_ptr<unit_data> ch, const char *str)
 {
    static char result[MAX_STRING_LENGTH];
    char       *c, b;
@@ -122,7 +122,7 @@ char *drunk_speech(struct unit_data *ch, const char *str)
    return result;
 }
 
-void do_emote(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_emote(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    if(IS_SET(UNIT_FLAGS(ch), UNIT_FL_BURIED))
    {
@@ -146,7 +146,7 @@ void do_emote(struct unit_data *ch, char *arg, const struct command_info *cmd)
    }
 }
 
-void do_say(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_say(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
    if(CHAR_HAS_FLAG(ch, CHAR_MUTE))
    {
@@ -187,7 +187,7 @@ void do_say(struct unit_data *ch, char *argument, const struct command_info *cmd
    }
 }
 
-void do_shout(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_shout(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
    struct descriptor_data *i;
    const char             *me     = "You shout '$3t'";
@@ -267,9 +267,9 @@ void do_shout(struct unit_data *ch, char *argument, const struct command_info *c
    send_done(ch, NULL, NULL, 0, cmd, argument);
 }
 
-void do_tell(struct unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_tell(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
-   struct unit_data        *vict = 0;
+   std::shared_ptr<unit_data> vict = 0;
    struct char_follow_type *f;
    char                     type;
    const char              *others, *me;
@@ -454,13 +454,13 @@ void do_tell(struct unit_data *ch, char *aaa, const struct command_info *cmd)
       }
 }
 
-void do_reply(struct unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_reply(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
    do_not_here(ch, aaa, cmd);
    return;
 }
 
-void ignore_toggle(struct unit_data *ch, struct unit_data *victim)
+void ignore_toggle(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> victim)
 {
    struct extra_descr_data *pexd;
 
@@ -492,7 +492,7 @@ void ignore_toggle(struct unit_data *ch, struct unit_data *victim)
    }
 }
 
-void do_ignore(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_ignore(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
    char             tmp[MAX_INPUT_LENGTH];
    class unit_data *victim;
@@ -517,9 +517,9 @@ void do_ignore(struct unit_data *ch, char *argument, const struct command_info *
       send_to_char("No such player to ignore.\n\r", ch);
 }
 
-void do_whisper(struct unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_whisper(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
-   struct unit_data *vict;
+   std::shared_ptr<unit_data> vict;
    char             *arg = (char *)aaa;
    char             *c;
 
@@ -585,9 +585,9 @@ void do_whisper(struct unit_data *ch, char *aaa, const struct command_info *cmd)
    }
 }
 
-void do_ask(struct unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_ask(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
-   struct unit_data *vict;
+   std::shared_ptr<unit_data> vict;
    char             *argument = (char *)aaa;
    char             *c;
 
@@ -663,10 +663,10 @@ void do_ask(struct unit_data *ch, char *aaa, const struct command_info *cmd)
 
 #define MAX_NOTE_LENGTH 2000 /* arbitrary */
 
-void do_write(struct unit_data *ch, char *aaa, const struct command_info *cmd)
+void do_write(std::shared_ptr<unit_data> ch, char *aaa, const struct command_info *cmd)
 {
    struct extra_descr_data *exd;
-   struct unit_data        *paper    = NULL;
+   std::shared_ptr<unit_data> paper    = NULL;
    char                    *argument = (char *)aaa;
 
    void interpreter_string_add(struct descriptor_data * d, char *str);

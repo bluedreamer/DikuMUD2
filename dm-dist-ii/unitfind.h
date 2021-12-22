@@ -35,26 +35,28 @@
 
 struct unit_vector_data
 {
-   struct unit_data **units;
+   std::shared_ptr<unit_data> *units;
    int                size;
    int                top;
 };
 
 extern struct unit_vector_data unit_vector;
 
-ubit1             same_surroundings(struct unit_data *u1, struct unit_data *u2);
-void              scan4_unit_room(struct unit_data *room, ubit8 type);
-void              scan4_unit(struct unit_data *ch, ubit8 type);
-struct unit_data *scan4_ref(struct unit_data *ch, struct unit_data *fu);
-
-int               random_direction(struct unit_data *ch);
-struct unit_data *find_unit(const struct unit_data *ch, char **arg, const struct unit_data *list, const ubit32 bitvector);
-struct unit_data *find_unit_general(
-   const struct unit_data *viewer, const struct unit_data *ch, char **arg, const struct unit_data *list, const ubit32 bitvector);
-
-struct unit_data *find_symbolic_instance(std::shared_ptr<file_index_type> fi);
-struct unit_data *find_symbolic(char *zone, char *name);
-struct unit_data *find_symbolic_instance_ref(struct unit_data *ref, std::shared_ptr<file_index_type> fi, ubit16 bitvector);
-struct unit_data *random_unit(struct unit_data *ref, int sflags, int tflags);
+ubit1                      same_surroundings(std::shared_ptr<unit_data> u1, std::shared_ptr<unit_data> u2);
+void                       scan4_unit_room(std::shared_ptr<unit_data> room, ubit8 type);
+void                       scan4_unit(std::shared_ptr<unit_data> ch, ubit8 type);
+std::shared_ptr<unit_data> scan4_ref(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> fu);
+int                        random_direction(std::shared_ptr<unit_data> ch);
+std::shared_ptr<unit_data>
+find_unit(const std::shared_ptr<unit_data> ch, char **arg, const std::shared_ptr<unit_data> list, const ubit32 bitvector);
+std::shared_ptr<unit_data> find_unit_general(const std::shared_ptr<unit_data> viewer,
+                                             const std::shared_ptr<unit_data> ch,
+                                             char                           **arg,
+                                             const std::shared_ptr<unit_data> list,
+                                             const ubit32                     bitvector);
+std::shared_ptr<unit_data> find_symbolic_instance(std::shared_ptr<file_index_type> fi);
+std::shared_ptr<unit_data> find_symbolic(char *zone, char *name);
+std::shared_ptr<unit_data> find_symbolic_instance_ref(std::shared_ptr<unit_data> ref, std::shared_ptr<file_index_type> fi, ubit16 bitvector);
+std::shared_ptr<unit_data> random_unit(std::shared_ptr<unit_data> ref, int sflags, int tflags);
 
 #endif

@@ -49,8 +49,8 @@ extern struct dil_func_type dilfe_func[];
       assert((prg)->sp->pc <= &((prg)->sp->tmpl->core[(prg)->sp->tmpl->coresz]));                                                          \
    }
 
-void DeactivateDil(struct unit_data *pc);
-void ActivateDil(struct unit_data *pc);
+void DeactivateDil(std::shared_ptr<unit_data> pc);
+void ActivateDil(std::shared_ptr<unit_data> pc);
 
 int dil_direct_init(struct spec_arg *sarg);
 int dil_init(struct spec_arg *sarg);
@@ -63,22 +63,20 @@ void dil_free_frame(struct dilframe *frame);
 
 char dil_getbool(struct dilval *v);
 int  dil_getval(struct dilval *v);
-void dil_add_secure(struct dilprg *prg, struct unit_data *sup, ubit8 *lab);
-#ifdef __cplusplus
-void dil_sub_secure(struct dilframe *frm, struct unit_data *sup, int bForeach = FALSE);
-#endif
-int  same_environment(struct unit_data *u1, struct unit_data *u2);
+void dil_add_secure(struct dilprg *prg, std::shared_ptr<unit_data> sup, ubit8 *lab);
+void dil_sub_secure(struct dilframe *frm, std::shared_ptr<unit_data> sup, int bForeach = FALSE);
+int  same_environment(std::shared_ptr<unit_data> u1, std::shared_ptr<unit_data> u2);
 void unhash_str(char **s);
 void dil_clear_non_secured(register struct dilprg *prg);
 void dil_clear_lost_reference(register struct dilframe *frm, void *ptr);
 void dil_test_secure(register struct dilprg *prg);
-int  dil_destroy(char *name, struct unit_data *u);
+int  dil_destroy(char *name, std::shared_ptr<unit_data> u);
 
 /* NULL fptr creates one...  */
-struct dilprg *dil_copy_template(struct diltemplate *tmpl, struct unit_data *u, struct unit_fptr **pfptr);
-struct dilprg *dil_copy(char *name, struct unit_data *u);
+struct dilprg *dil_copy_template(struct diltemplate *tmpl, std::shared_ptr<unit_data> u, struct unit_fptr **pfptr);
+struct dilprg *dil_copy(char *name, std::shared_ptr<unit_data> u);
 
-struct unit_fptr *dil_find(const char *name, struct unit_data *u);
+struct unit_fptr *dil_find(const char *name, std::shared_ptr<unit_data> u);
 
 void dil_typeerr(struct dilprg *p, const char *where);
 

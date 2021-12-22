@@ -49,9 +49,9 @@
 /*        1 = One hand used                      */
 /*        2 = Two hands used                     */
 /*        2+ = Uhm???                            */
-int hands_used(struct unit_data *ch)
+int hands_used(std::shared_ptr<unit_data> ch)
 {
-   struct unit_data *i;
+   std::shared_ptr<unit_data> i;
    int               hands = 0;
 
    /* This is faster than calling the equipment() function */
@@ -74,7 +74,7 @@ int hands_used(struct unit_data *ch)
 }
 
 #ifdef SUSPEKT
-static char *wear_weight(struct unit_data *ch, struct unit_data *obj)
+static char *wear_weight(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj)
 {
    int str_diff;
 
@@ -118,7 +118,7 @@ static char *wear_weight(struct unit_data *ch, struct unit_data *obj)
 /* MS: I allowed the wear command to be used with weapons to make it
    easier for new players to learn all the different commands. */
 
-static int getkeyword(struct unit_data *obj)
+static int getkeyword(std::shared_ptr<unit_data> obj)
 {
    int keyword = -2;
 
@@ -161,7 +161,7 @@ static int getkeyword(struct unit_data *obj)
 }
 
 /* Return NULL if unit fits, pointer to string otherwise */
-static const char *wear_size(struct unit_data *ch, struct unit_data *obj, int var)
+static const char *wear_size(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, int var)
 {
    if(UNIT_SIZE(ch) == 0)
       return "error";
@@ -185,7 +185,7 @@ static const char *wear_size(struct unit_data *ch, struct unit_data *obj, int va
    return NULL;
 }
 
-const char *obj_wear_size(struct unit_data *ch, struct unit_data *obj, int keyword)
+const char *obj_wear_size(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, int keyword)
 {
    if(keyword == -1)
       keyword = getkeyword(obj);
@@ -258,7 +258,7 @@ const char *obj_wear_size(struct unit_data *ch, struct unit_data *obj, int keywo
    return NULL;
 }
 
-bool wear(struct unit_data *ch, struct unit_data *obj, int keyword, bool err, const struct command_info *cmd, char *arg)
+bool wear(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, int keyword, bool err, const struct command_info *cmd, char *arg)
 {
    const char *errstr = NULL;
    const char *c;
@@ -703,7 +703,7 @@ bool wear(struct unit_data *ch, struct unit_data *obj, int keyword, bool err, co
    return FALSE;
 }
 
-void do_wear(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wear(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    static const char *keywords[] = {"finger",
                                     "neck",
@@ -740,7 +740,7 @@ void do_wear(struct unit_data *ch, char *arg, const struct command_info *cmd)
                             WEAR_EAR_L,
                             WEAR_ANKLE_L};
 
-   struct unit_data *obj;
+   std::shared_ptr<unit_data> obj;
    char             *oarg = arg;
 
    if(str_is_empty(arg))
@@ -753,7 +753,7 @@ void do_wear(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
       if(!strcmp(buf, "all"))
       {
-         struct unit_data *next;
+         std::shared_ptr<unit_data> next;
          bool              worn = FALSE;
 
          for(obj = UNIT_CONTAINS(ch); obj; obj = next)
@@ -795,9 +795,9 @@ void do_wear(struct unit_data *ch, char *arg, const struct command_info *cmd)
       wear(ch, obj, getkeyword(obj), TRUE, cmd, oarg);
 }
 
-void do_wield(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_wield(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *obj;
+   std::shared_ptr<unit_data> obj;
    char             *oarg = arg;
 
    if(str_is_empty(arg))
@@ -831,9 +831,9 @@ void do_wield(struct unit_data *ch, char *arg, const struct command_info *cmd)
       send_to_char("That is not a proper weapon.\n\r", ch);
 }
 
-void do_grab(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_grab(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *obj;
+   std::shared_ptr<unit_data> obj;
    char             *oarg = arg;
 
    if(str_is_empty(arg))
@@ -846,7 +846,7 @@ void do_grab(struct unit_data *ch, char *arg, const struct command_info *cmd)
       wear(ch, obj, WEAR_HOLD, TRUE, cmd, oarg);
 }
 
-bool remove_equip(struct unit_data *ch, struct unit_data *obj, const struct command_info *cmd, char *arg)
+bool remove_equip(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> obj, const struct command_info *cmd, char *arg)
 {
    if(IS_SET(OBJ_FLAGS(obj), OBJ_NO_UNEQUIP))
    {
@@ -864,9 +864,9 @@ bool remove_equip(struct unit_data *ch, struct unit_data *obj, const struct comm
    return TRUE;
 }
 
-void do_remove(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_remove(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
-   struct unit_data *obj;
+   std::shared_ptr<unit_data> obj;
    char             *oarg = arg;
 
    if(str_is_empty(arg))
@@ -879,7 +879,7 @@ void do_remove(struct unit_data *ch, char *arg, const struct command_info *cmd)
 
       if(!strcmp(buf, "all"))
       {
-         struct unit_data *next;
+         std::shared_ptr<unit_data> next;
          bool              removed = FALSE;
 
          for(obj = UNIT_CONTAINS(ch); obj; obj = next)

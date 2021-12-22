@@ -31,7 +31,7 @@
 
 #include <stdlib.h>
 
-static void chg_wimpy(struct unit_data *ch)
+static void chg_wimpy(std::shared_ptr<unit_data> ch)
 {
    if(IS_SET(CHAR_FLAGS(ch), CHAR_WIMPY))
       send_to_char("You feel brave again.\n\r", ch);
@@ -41,7 +41,7 @@ static void chg_wimpy(struct unit_data *ch)
    TOGGLE_BIT(CHAR_FLAGS(ch), CHAR_WIMPY);
 }
 
-static void chg_expert(struct unit_data *ch)
+static void chg_expert(std::shared_ptr<unit_data> ch)
 {
    if(IS_SET(PC_FLAGS(ch), PC_EXPERT))
       send_to_char("You are now in normal mode.\n\r", ch);
@@ -51,7 +51,7 @@ static void chg_expert(struct unit_data *ch)
    TOGGLE_BIT(PC_FLAGS(ch), PC_EXPERT);
 }
 
-static void chg_brief(struct unit_data *ch)
+static void chg_brief(std::shared_ptr<unit_data> ch)
 {
    if(IS_SET(PC_FLAGS(ch), PC_BRIEF))
       send_to_char("Brief mode off.\n\r", ch);
@@ -61,7 +61,7 @@ static void chg_brief(struct unit_data *ch)
    TOGGLE_BIT(PC_FLAGS(ch), PC_BRIEF);
 }
 
-static void chg_compact(struct unit_data *ch)
+static void chg_compact(std::shared_ptr<unit_data> ch)
 {
    if(IS_SET(PC_FLAGS(ch), PC_COMPACT))
       send_to_char("You are now in the uncompacted mode.\n\r", ch);
@@ -71,7 +71,7 @@ static void chg_compact(struct unit_data *ch)
    TOGGLE_BIT(PC_FLAGS(ch), PC_COMPACT);
 }
 
-static void chg_peaceful(struct unit_data *ch)
+static void chg_peaceful(std::shared_ptr<unit_data> ch)
 {
    if(IS_SET(CHAR_FLAGS(ch), CHAR_PEACEFUL))
       send_to_char("They will come in peace and leave in pieces.\n\r", ch);
@@ -81,13 +81,13 @@ static void chg_peaceful(struct unit_data *ch)
    TOGGLE_BIT(CHAR_FLAGS(ch), CHAR_PEACEFUL);
 }
 
-static void chg_prompt(struct unit_data *ch)
+static void chg_prompt(std::shared_ptr<unit_data> ch)
 {
    TOGGLE_BIT(PC_FLAGS(ch), PC_PROMPT);
    send_to_char("Prompt changed.\n\r", ch);
 }
 
-static void chg_inform(struct unit_data *ch)
+static void chg_inform(std::shared_ptr<unit_data> ch)
 {
    TOGGLE_BIT(PC_FLAGS(ch), PC_INFORM);
 
@@ -97,7 +97,7 @@ static void chg_inform(struct unit_data *ch)
       send_to_char("You will now get less information.\n\r", ch);
 }
 
-static void chg_shout(struct unit_data *ch)
+static void chg_shout(std::shared_ptr<unit_data> ch)
 {
    if(IS_SET(PC_FLAGS(ch), PC_NOSHOUT))
       send_to_char("You can now hear shouts again.\n\r", ch);
@@ -107,7 +107,7 @@ static void chg_shout(struct unit_data *ch)
    TOGGLE_BIT(PC_FLAGS(ch), PC_NOSHOUT);
 }
 
-static void chg_tell(struct unit_data *ch)
+static void chg_tell(std::shared_ptr<unit_data> ch)
 {
    if(IS_SET(PC_FLAGS(ch), PC_NOTELL))
       send_to_char("You can now hear tells again.\n\r", ch);
@@ -117,7 +117,7 @@ static void chg_tell(struct unit_data *ch)
    TOGGLE_BIT(PC_FLAGS(ch), PC_NOTELL);
 }
 
-static void chg_exits(struct unit_data *ch)
+static void chg_exits(std::shared_ptr<unit_data> ch)
 {
    if(IS_SET(PC_FLAGS(ch), PC_EXITS))
       send_to_char("Exit information disabled.\n\r", ch);
@@ -127,7 +127,7 @@ static void chg_exits(struct unit_data *ch)
    TOGGLE_BIT(PC_FLAGS(ch), PC_EXITS);
 }
 
-static void chg_columns(struct unit_data *ch, const char *arg)
+static void chg_columns(std::shared_ptr<unit_data> ch, const char *arg)
 {
    if(str_is_empty(arg) || !str_is_number(arg))
    {
@@ -150,7 +150,7 @@ static void chg_columns(struct unit_data *ch, const char *arg)
    MplexSendSetup(CHAR_DESCRIPTOR(ch));
 }
 
-static void chg_rows(struct unit_data *ch, const char *arg)
+static void chg_rows(std::shared_ptr<unit_data> ch, const char *arg)
 {
    if(str_is_empty(arg) || !str_is_number(arg))
    {
@@ -173,7 +173,7 @@ static void chg_rows(struct unit_data *ch, const char *arg)
    MplexSendSetup(CHAR_DESCRIPTOR(ch));
 }
 
-static void chg_terminal(struct unit_data *ch, const char *arg)
+static void chg_terminal(std::shared_ptr<unit_data> ch, const char *arg)
 {
    const char *Terminals[] = {"dumb", "tty", "ansi", NULL};
 
@@ -215,7 +215,7 @@ static void chg_terminal(struct unit_data *ch, const char *arg)
    MplexSendSetup(CHAR_DESCRIPTOR(ch));
 }
 
-static void chg_telnet(struct unit_data *ch)
+static void chg_telnet(std::shared_ptr<unit_data> ch)
 {
    if(PC_SETUP_EMULATION(ch) == TERM_INTERNAL)
    {
@@ -233,7 +233,7 @@ static void chg_telnet(struct unit_data *ch)
    MplexSendSetup(CHAR_DESCRIPTOR(ch));
 }
 
-static void chg_character_echo(struct unit_data *ch)
+static void chg_character_echo(std::shared_ptr<unit_data> ch)
 {
    if(PC_SETUP_EMULATION(ch) == TERM_INTERNAL)
    {
@@ -251,7 +251,7 @@ static void chg_character_echo(struct unit_data *ch)
    MplexSendSetup(CHAR_DESCRIPTOR(ch));
 }
 
-static void chg_redraw_prompt(struct unit_data *ch)
+static void chg_redraw_prompt(std::shared_ptr<unit_data> ch)
 {
    if(PC_SETUP_EMULATION(ch) == TERM_INTERNAL)
    {
@@ -269,7 +269,7 @@ static void chg_redraw_prompt(struct unit_data *ch)
    MplexSendSetup(CHAR_DESCRIPTOR(ch));
 }
 
-static void chg_echo_say(struct unit_data *ch)
+static void chg_echo_say(std::shared_ptr<unit_data> ch)
 {
    TOGGLE_BIT(PC_FLAGS(ch), PC_ECHO);
 
@@ -279,7 +279,7 @@ static void chg_echo_say(struct unit_data *ch)
       act("You will no longer get your communications echoed.", A_ALWAYS, ch, 0, 0, TO_CHAR);
 }
 
-void do_change(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_change(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    static const char *args[] = {"brief",
                                 "compact",

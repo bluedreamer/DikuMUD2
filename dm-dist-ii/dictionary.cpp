@@ -140,7 +140,7 @@ static char *get_next_word(const char *argument, char *first_arg)
 }
 
 /* Setup owner-ship of dictionary. */
-static void set_owner(struct unit_data *obj, struct alias_head *ah, struct unit_data *ch)
+static void set_owner(std::shared_ptr<unit_data> obj, struct alias_head *ah, std::shared_ptr<unit_data> ch)
 {
    char buf[256];
 
@@ -154,7 +154,7 @@ static void set_owner(struct unit_data *obj, struct alias_head *ah, struct unit_
 }
 
 /* Allocate `exd' if needed, and erase old description */
-static struct extra_descr_data *fix_extra_descr(struct unit_data *obj, class extra_descr_data *exd)
+static struct extra_descr_data *fix_extra_descr(std::shared_ptr<unit_data> obj, class extra_descr_data *exd)
 {
    static const char *aliaslist[] = {"$alias", NULL};
 
@@ -210,7 +210,7 @@ static char *parse_alias(char *src, char *arg)
  *  check_count makes sure that the user doesn't make nasty (!) computationally
  *  heavy (!!!) aliases that will bog the mud enormously.
  */
-static int push_alias(char *s, char *arg, struct trie_type *t, struct unit_data *ch, bool first)
+static int push_alias(char *s, char *arg, struct trie_type *t, std::shared_ptr<unit_data> ch, bool first)
 {
    char            cmd[MAX_INPUT_LENGTH + 1], parsed[2 * MAX_INPUT_LENGTH + 2];
    char           *par, *newarg, *c;
@@ -261,7 +261,7 @@ static int push_alias(char *s, char *arg, struct trie_type *t, struct unit_data 
 }
 
 /* Merely prints a formatted alias-definition out to the char */
-static void alias_to_char(struct alias_t *al, struct unit_data *ch)
+static void alias_to_char(struct alias_t *al, std::shared_ptr<unit_data> ch)
 {
    char buf[2 * MAX_INPUT_LENGTH + 2];
 
@@ -272,7 +272,7 @@ static void alias_to_char(struct alias_t *al, struct unit_data *ch)
 /*  Prints all defined aliases in `t' alphabetically to char by
  *  recursively walking the trie
  */
-static int print_alias(struct trie_type *t, struct unit_data *ch)
+static int print_alias(struct trie_type *t, std::shared_ptr<unit_data> ch)
 {
    struct trie_type *t2;
    struct alias_t   *al;
@@ -389,7 +389,7 @@ static ubit8 circle_alias(char *key, char *val, struct trie_type *t, bool first)
  *  This should all be linear, except for the recursion check,
  *  which has a fixed upper bound.
  */
-static bool alias_is_ok(struct alias_head *ah, char *key, char *val, struct unit_data *ch)
+static bool alias_is_ok(struct alias_head *ah, char *key, char *val, std::shared_ptr<unit_data> ch)
 {
    char           *tmp;
    struct alias_t *al = NULL;
@@ -556,7 +556,7 @@ static struct alias_head *str_to_alias(const char *str)
 
 /* ********** The Alias Commands ********** */
 
-static void cmd_alias(struct unit_data *ch, char *arg, struct alias_head *alias_h)
+static void cmd_alias(std::shared_ptr<unit_data> ch, char *arg, struct alias_head *alias_h)
 {
    char            comm[MAX_INPUT_LENGTH + 1];
    struct alias_t *al = NULL;
@@ -599,7 +599,7 @@ static void cmd_alias(struct unit_data *ch, char *arg, struct alias_head *alias_
    }
 }
 
-static void cmd_unalias(struct unit_data *ch, char *arg, struct alias_head *alias_h)
+static void cmd_unalias(std::shared_ptr<unit_data> ch, char *arg, struct alias_head *alias_h)
 {
    if(str_is_empty(arg))
       act("Unalias what??", A_ALWAYS, ch, 0, 0, TO_CHAR);
@@ -617,7 +617,7 @@ static void cmd_unalias(struct unit_data *ch, char *arg, struct alias_head *alia
    }
 }
 
-static void cmd_claim(struct unit_data *ch, char *arg, struct unit_data *obj, struct alias_head *alias_h)
+static void cmd_claim(std::shared_ptr<unit_data> ch, char *arg, std::shared_ptr<unit_data> obj, struct alias_head *alias_h)
 {
    char buf[MAX_INPUT_LENGTH + 1];
 

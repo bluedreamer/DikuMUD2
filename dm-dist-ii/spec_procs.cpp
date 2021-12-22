@@ -58,14 +58,14 @@
 #include <time.h>
 
 /*   external vars  */
-extern struct unit_data       *unit_list;
+extern std::shared_ptr<unit_data> unit_list;
 extern struct descriptor_data *descriptor_list;
 extern char                   *dirs[];
 
 /* extern procedures */
 
-void     modify_hit(struct unit_data *ch, int hit);
-amount_t obj_trade_price(struct unit_data *u);
+void     modify_hit(std::shared_ptr<unit_data> ch, int hit);
+amount_t obj_trade_price(std::shared_ptr<unit_data> u);
 
 /* ------------------------------------------------------------------------- */
 /*                        R O O M   R O U T I N E S                          */
@@ -80,7 +80,7 @@ int force_move(struct spec_arg *sarg)
 {
    char                            *c = NULL, *c2, *s = (char *)sarg->fptr->data;
    std::shared_ptr<file_index_type> fi;
-   struct unit_data                *u, *ut, *next;
+   std::shared_ptr<unit_data> u, *ut, *next;
 
    if(sarg->cmd->no != CMD_AUTO_TICK)
       return SFR_SHARE;
@@ -130,7 +130,7 @@ int force_move(struct spec_arg *sarg)
 
             if(UNIT_CHARS(u))
             {
-               struct unit_data *tu;
+               std::shared_ptr<unit_data> tu;
 
                for(tu = UNIT_CONTAINS(u); tu; tu = tu->next)
                   if(IS_CHAR(tu) && CHAR_COMBAT(tu))
@@ -168,7 +168,7 @@ int force_move(struct spec_arg *sarg)
 
 int combat_poison_sting(struct spec_arg *sarg)
 {
-   struct unit_data *activator = NULL;
+   std::shared_ptr<unit_data> activator = NULL;
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -198,7 +198,7 @@ int combat_poison_sting(struct spec_arg *sarg)
 int obey_animal(struct spec_arg *sarg)
 {
    char             *arg = (char *)sarg->arg;
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
 
    extern struct trie_type *intr_trie;
 
@@ -297,7 +297,7 @@ int obey_animal(struct spec_arg *sarg)
 int obey(struct spec_arg *sarg)
 {
    char             *arg = (char *)sarg->arg;
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
 
    if(sarg->cmd->no == CMD_AUTO_TICK)
    {
@@ -339,7 +339,7 @@ int obey(struct spec_arg *sarg)
 int random_zonemove(struct spec_arg *sarg)
 {
    int               door;
-   struct unit_data *to_room;
+   std::shared_ptr<unit_data> to_room;
 
    if(sarg->cmd->no != CMD_AUTO_TICK)
       return SFR_SHARE;
@@ -375,7 +375,7 @@ int random_zonemove(struct spec_arg *sarg)
 int random_move(struct spec_arg *sarg)
 {
    int               door;
-   struct unit_data *to_room;
+   std::shared_ptr<unit_data> to_room;
 
    if(sarg->cmd->no != CMD_AUTO_TICK)
       return SFR_SHARE;
@@ -413,7 +413,7 @@ int random_move(struct spec_arg *sarg)
 int scavenger(struct spec_arg *sarg)
 {
    int               max;
-   struct unit_data *best_obj, *obj;
+   std::shared_ptr<unit_data> best_obj, *obj;
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -606,7 +606,7 @@ int combat_magic_heal(struct spec_arg *sarg)
 /* Example: "king welmar/tim/tom"                        */
 /* Players are automatically non-excluded                */
 /* Empty list means none                                 */
-int charname_in_list(struct unit_data *ch, char *arg)
+int charname_in_list(std::shared_ptr<unit_data> ch, char *arg)
 {
    char *c;
 
@@ -690,7 +690,7 @@ int guard_unit(struct spec_arg *sarg)
    char             *arg = (char *)sarg->arg;
    char             *str = NULL, *location, *excl = NULL, *msg1 = NULL, *msg2 = NULL;
    char             *unitname = NULL, *c;
-   struct unit_data *u1, *u2;
+   std::shared_ptr<unit_data> u1, *u2;
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -866,7 +866,7 @@ int guard_way_level(struct spec_arg *sarg)
 /* data is sting with name(s), for example "king welmar/tim/tom" */
 int rescue(struct spec_arg *sarg)
 {
-   void base_rescue(struct unit_data * ch, struct unit_data * victim);
+   void base_rescue(std::shared_ptr<unit_data>  ch, std::shared_ptr<unit_data>  victim);
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -972,20 +972,20 @@ struct mercenary_data
 {
    int               ticks;
    char             *victim_name;
-   struct unit_data *destination;
+   std::shared_ptr<unit_data> destination;
 };
 
 int mercenary_hire(struct spec_arg *sarg)
 {
    char                    *arg = (char *)sarg->arg;
    char                     buf2[MAX_INPUT_LENGTH];
-   struct unit_data        *u, *victim;
+   std::shared_ptr<unit_data> u, *victim;
    struct mercenary_data   *md;
    struct extra_descr_data *exd;
    amount_t                 price;
    currency_t               currency = local_currency(sarg->owner);
 
-   void start_special(struct unit_data * u, struct unit_fptr * fptr);
+   void start_special(std::shared_ptr<unit_data>  u, struct unit_fptr * fptr);
 
    if(!IS_CHAR(sarg->owner))
    {
@@ -1091,7 +1091,7 @@ int mercenary_hire(struct spec_arg *sarg)
 int mercenary_hunt(struct spec_arg *sarg)
 {
    struct mercenary_data *md;
-   struct unit_data      *u;
+   std::shared_ptr<unit_data> u;
    char                  *c;
    int                    i;
 
@@ -1261,9 +1261,9 @@ int green_tuborg(struct spec_arg *sarg)
 
 int obj_guild(struct spec_arg *sarg)
 {
-   void modify_hit(struct unit_data * ch, int hit);
+   void modify_hit(std::shared_ptr<unit_data>  ch, int hit);
 
-   void modify_hit(struct unit_data * ch, int hit);
+   void modify_hit(std::shared_ptr<unit_data>  ch, int hit);
 
    char *guild = (char *)sarg->fptr->data;
 
@@ -1300,7 +1300,7 @@ int obj_guild(struct spec_arg *sarg)
 
 int obj_quest(struct spec_arg *sarg)
 {
-   struct extra_descr_data *find_quest(char *word, struct unit_data *unit);
+   struct extra_descr_data *find_quest(char *word, std::shared_ptr<unit_data> unit);
    char                    *quest = (char *)sarg->fptr->data;
 
    if(quest == NULL)
@@ -1390,8 +1390,8 @@ int blow_away(struct spec_arg *sarg)
 /* value[3] decides how many 'charges' are in it.                     */
 int charm_of_death(struct spec_arg *sarg)
 {
-   void       gain_exp(struct unit_data * ch, int gain);
-   extern int lose_exp(struct unit_data *);
+   void       gain_exp(std::shared_ptr<unit_data>  ch, int gain);
+   extern int lose_exp(std::shared_ptr<unit_data> );
 
    if(sarg->cmd->no == CMD_AUTO_DEATH)
       if(UNIT_IN(sarg->owner) == sarg->activator && OBJ_EQP_POS(sarg->owner) && IS_PC(sarg->activator) &&
@@ -1425,7 +1425,7 @@ int return_to_origin(struct spec_arg *sarg)
    {
       act("$1n disappears into a rift!", A_ALWAYS, sarg->owner, 0, 0, TO_ROOM);
       unit_from_unit(sarg->owner);
-      unit_to_unit(sarg->owner, (struct unit_data *)sarg->fptr->data);
+      unit_to_unit(sarg->owner, (std::shared_ptr<unit_data> )sarg->fptr->data);
       act("$1n disappears appears though a rift!", A_ALWAYS, sarg->owner, 0, 0, TO_ROOM);
       destroy_fptr(sarg->owner, sarg->fptr);
       return SFR_BLOCK;

@@ -53,7 +53,7 @@ const char *sprinttype(char *buf, int type, const char *names[]);
 /* Use like this:  error(HERE, "Something went wrong: %s", buf); */
 void error(const char *file, int line, const char *fmt, ...);
 
-struct unit_data *hometown_unit(char *str);
+std::shared_ptr<unit_data> hometown_unit(char *str);
 
 class log_buffer
 {
@@ -74,6 +74,6 @@ struct obj_type_t
    ubit8       v[5];
 };
 
-char *stat_obj_data(struct unit_data *u, struct obj_type_t *obj_data);
+char *stat_obj_data(std::shared_ptr<unit_data> u, struct obj_type_t *obj_data);
 
 #endif

@@ -118,7 +118,7 @@ void dilfi_foe(struct dilprg *p, class dilval *v)
 void dilfi_fon(struct dilprg *p, class dilval *v)
 {
    class dilval      v1;
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
    ubit32            adr;
    int               i;
 
@@ -181,10 +181,10 @@ void dilfi_stor(struct dilprg *p, class dilval *v)
 
    if(v1.val.ptr)
    {
-      void store_unit(struct unit_data * u);
+      void store_unit(std::shared_ptr<unit_data>  u);
 
-      if(!IS_ROOM((struct unit_data *)v1.val.ptr))
-         store_unit((struct unit_data *)v1.val.ptr);
+      if(!IS_ROOM((std::shared_ptr<unit_data> )v1.val.ptr))
+         store_unit((std::shared_ptr<unit_data> )v1.val.ptr);
    }
 }
 
@@ -209,9 +209,9 @@ void dilfi_sbt(struct dilprg *p, class dilval *v)
 
    if(v1.val.ptr)
    {
-      dif = v2.val.num - UNIT_BRIGHT((struct unit_data *)v1.val.ptr);
+      dif = v2.val.num - UNIT_BRIGHT((std::shared_ptr<unit_data> )v1.val.ptr);
 
-      modify_bright((struct unit_data *)v1.val.ptr, dif);
+      modify_bright((std::shared_ptr<unit_data> )v1.val.ptr, dif);
    }
 }
 
@@ -233,7 +233,7 @@ void dilfi_amod(struct dilprg *p, class dilval *v)
    if(dil_type_check("acc_modify", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_UP, &v2, FAIL_NULL, 1, DILV_INT) < 0)
       return;
 
-   if(g_cServerConfig.m_bAccounting && v1.val.ptr && IS_PC((struct unit_data *)v1.val.ptr))
+   if(g_cServerConfig.m_bAccounting && v1.val.ptr && IS_PC((std::shared_ptr<unit_data> )v1.val.ptr))
    {
       if(p->stack[0].tmpl->zone->access != 0)
       {
@@ -243,9 +243,9 @@ void dilfi_amod(struct dilprg *p, class dilval *v)
       else
       {
          if(v2.val.num > 0)
-            account_insert(p->owner, (struct unit_data *)v1.val.ptr, v2.val.num);
+            account_insert(p->owner, (std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num);
          else if(v2.val.num < 0)
-            account_withdraw(p->owner, (struct unit_data *)v1.val.ptr, -v2.val.num);
+            account_withdraw(p->owner, (std::shared_ptr<unit_data> )v1.val.ptr, -v2.val.num);
       }
    }
 }
@@ -271,13 +271,13 @@ void dilfi_swt(struct dilprg *p, class dilval *v)
 
    if(v1.val.ptr)
    {
-      dif = v2.val.num - UNIT_BASE_WEIGHT((struct unit_data *)v1.val.ptr);
+      dif = v2.val.num - UNIT_BASE_WEIGHT((std::shared_ptr<unit_data> )v1.val.ptr);
 
       /* set new baseweight */
-      UNIT_BASE_WEIGHT((struct unit_data *)v1.val.ptr) = v2.val.num;
+      UNIT_BASE_WEIGHT((std::shared_ptr<unit_data> )v1.val.ptr) = v2.val.num;
 
       /* update weight */
-      weight_change_unit((struct unit_data *)v1.val.ptr, dif);
+      weight_change_unit((std::shared_ptr<unit_data> )v1.val.ptr, dif);
    }
 }
 
@@ -299,8 +299,8 @@ void dilfi_chas(struct dilprg *p, class dilval *v)
    if(dil_type_check("change_speed", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_UP, &v2, FAIL_NULL, 1, DILV_INT) < 0)
       return;
 
-   if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr) && CHAR_COMBAT((struct unit_data *)v1.val.ptr))
-      CHAR_COMBAT((struct unit_data *)v1.val.ptr)->changeSpeed(v2.val.num);
+   if(v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr) && CHAR_COMBAT((std::shared_ptr<unit_data> )v1.val.ptr))
+      CHAR_COMBAT((std::shared_ptr<unit_data> )v1.val.ptr)->changeSpeed(v2.val.num);
 }
 
 /* set_fighting */
@@ -321,12 +321,12 @@ void dilfi_setf(struct dilprg *p, class dilval *v)
    if(dil_type_check("set_fighting", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_UP, &v2, TYPEFAIL_NULL, 1, DILV_UP) < 0)
       return;
 
-   if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr) && v2.val.ptr && IS_CHAR((struct unit_data *)v2.val.ptr))
+   if(v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr) && v2.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v2.val.ptr))
    {
-      if(CHAR_FIGHTING((struct unit_data *)v1.val.ptr))
-         set_fighting((struct unit_data *)v1.val.ptr, (struct unit_data *)v2.val.ptr, FALSE);
+      if(CHAR_FIGHTING((std::shared_ptr<unit_data> )v1.val.ptr))
+         set_fighting((std::shared_ptr<unit_data> )v1.val.ptr, (std::shared_ptr<unit_data> )v2.val.ptr, FALSE);
       else
-         set_fighting((struct unit_data *)v1.val.ptr, (struct unit_data *)v2.val.ptr, TRUE);
+         set_fighting((std::shared_ptr<unit_data> )v1.val.ptr, (std::shared_ptr<unit_data> )v2.val.ptr, TRUE);
    }
 }
 
@@ -418,7 +418,7 @@ void dilfi_rtf(struct dilprg *p, class dilval *v)
    switch(dil_getval(&v1))
    {
       case DILV_UP:
-         p->sp->vars[i].val.unitptr = (struct unit_data *)v1.val.ptr;
+         p->sp->vars[i].val.unitptr = (std::shared_ptr<unit_data> )v1.val.ptr;
          break;
 
       case DILV_SP:
@@ -525,7 +525,7 @@ void dil_push_frame(struct dilprg *p, struct diltemplate *rtmpl, class dilval *a
       switch(frm->vars[i].type)
       {
          case DILV_UP:
-            frm->vars[i].val.unitptr = (struct unit_data *)av[i].val.ptr;
+            frm->vars[i].val.unitptr = (std::shared_ptr<unit_data> )av[i].val.ptr;
             break;
 
          case DILV_SP:
@@ -843,7 +843,7 @@ void dilfi_ass(register struct dilprg *p, register class dilval *v)
                break;
 
             case DILV_UP:
-               *((struct unit_data **)v1.ref) = (struct unit_data *)v2.val.ptr;
+               *((std::shared_ptr<unit_data> *)v1.ref) = (std::shared_ptr<unit_data> )v2.val.ptr;
                break;
 
             default:
@@ -1091,15 +1091,15 @@ void dilfi_lnk(register struct dilprg *p, register class dilval *v)
 
    if(v1.val.ptr && v2.val.ptr)
    {
-      if(IS_OBJ((struct unit_data *)v1.val.ptr) && OBJ_EQP_POS((struct unit_data *)v1.val.ptr))
+      if(IS_OBJ((std::shared_ptr<unit_data> )v1.val.ptr) && OBJ_EQP_POS((std::shared_ptr<unit_data> )v1.val.ptr))
       {
-         unequip_object((struct unit_data *)v1.val.ptr);
+         unequip_object((std::shared_ptr<unit_data> )v1.val.ptr);
       }
-      if(!unit_recursive((struct unit_data *)v1.val.ptr, (struct unit_data *)v2.val.ptr) &&
-         (!IS_ROOM((struct unit_data *)v1.val.ptr) || IS_ROOM((struct unit_data *)v2.val.ptr)))
+      if(!unit_recursive((std::shared_ptr<unit_data> )v1.val.ptr, (std::shared_ptr<unit_data> )v2.val.ptr) &&
+         (!IS_ROOM((std::shared_ptr<unit_data> )v1.val.ptr) || IS_ROOM((std::shared_ptr<unit_data> )v2.val.ptr)))
       {
-         unit_from_unit((struct unit_data *)v1.val.ptr);
-         unit_to_unit((struct unit_data *)v1.val.ptr, (struct unit_data *)v2.val.ptr);
+         unit_from_unit((std::shared_ptr<unit_data> )v1.val.ptr);
+         unit_to_unit((std::shared_ptr<unit_data> )v1.val.ptr, (std::shared_ptr<unit_data> )v2.val.ptr);
       }
    }
 }
@@ -1125,7 +1125,7 @@ void dilfi_dlc(register struct dilprg *p, register class dilval *v)
       return;
 
    if(v1.val.ptr && v2.val.ptr)
-      dil_copy((char *)v1.val.ptr, (struct unit_data *)v2.val.ptr);
+      dil_copy((char *)v1.val.ptr, (std::shared_ptr<unit_data> )v2.val.ptr);
 }
 
 /* sendtext */
@@ -1148,8 +1148,8 @@ void dilfi_sete(register struct dilprg *p, register class dilval *v)
    if(dil_type_check("sendtext", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_SP, &v2, TYPEFAIL_NULL, 1, DILV_UP) < 0)
       return;
 
-   if(v1.val.ptr && v2.val.ptr && IS_CHAR((struct unit_data *)v2.val.ptr))
-      send_to_char((char *)v1.val.ptr, (struct unit_data *)v2.val.ptr);
+   if(v1.val.ptr && v2.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v2.val.ptr))
+      send_to_char((char *)v1.val.ptr, (std::shared_ptr<unit_data> )v2.val.ptr);
 }
 
 /* Set one char to follow another unconditionally */
@@ -1173,12 +1173,12 @@ void dilfi_folo(register struct dilprg *p, register class dilval *v)
    if(dil_type_check("follow", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_UP, &v2, TYPEFAIL_NULL, 1, DILV_UP) < 0)
       return;
 
-   if(v1.val.ptr && v2.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr) && IS_CHAR((struct unit_data *)v2.val.ptr))
+   if(v1.val.ptr && v2.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr) && IS_CHAR((std::shared_ptr<unit_data> )v2.val.ptr))
    {
-      if(CHAR_MASTER((struct unit_data *)v1.val.ptr))
-         stop_following((struct unit_data *)v1.val.ptr);
+      if(CHAR_MASTER((std::shared_ptr<unit_data> )v1.val.ptr))
+         stop_following((std::shared_ptr<unit_data> )v1.val.ptr);
 
-      start_following((struct unit_data *)v1.val.ptr, (struct unit_data *)v2.val.ptr);
+      start_following((std::shared_ptr<unit_data> )v1.val.ptr, (std::shared_ptr<unit_data> )v2.val.ptr);
    }
 }
 
@@ -1204,9 +1204,9 @@ void dilfi_lcri(register struct dilprg *p, register class dilval *v)
    if(dil_type_check("logcrime", p, 3, &v1, TYPEFAIL_NULL, 1, DILV_UP, &v2, TYPEFAIL_NULL, 1, DILV_UP, &v3, TYPEFAIL_NULL, 1, DILV_INT) < 0)
       return;
 
-   if(v1.val.ptr && v2.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr) && IS_CHAR((struct unit_data *)v2.val.ptr))
+   if(v1.val.ptr && v2.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr) && IS_CHAR((std::shared_ptr<unit_data> )v2.val.ptr))
    {
-      log_crime((struct unit_data *)v1.val.ptr, (struct unit_data *)v2.val.ptr, v3.val.num);
+      log_crime((std::shared_ptr<unit_data> )v1.val.ptr, (std::shared_ptr<unit_data> )v2.val.ptr, v3.val.num);
    }
 }
 
@@ -1234,20 +1234,20 @@ void dilfi_exp(register struct dilprg *p, register class dilval *v)
    if(dil_getval(&v1) == DILV_INT)
       value = v1.val.num;
 
-   if(v2.val.ptr && IS_PC((struct unit_data *)v2.val.ptr))
+   if(v2.val.ptr && IS_PC((std::shared_ptr<unit_data> )v2.val.ptr))
    {
-      value = MAX(-level_xp(CHAR_LEVEL((struct unit_data *)v2.val.ptr)), value);
+      value = MAX(-level_xp(CHAR_LEVEL((std::shared_ptr<unit_data> )v2.val.ptr)), value);
 
-      value = MIN(level_xp(CHAR_LEVEL((struct unit_data *)v2.val.ptr)), value);
+      value = MIN(level_xp(CHAR_LEVEL((std::shared_ptr<unit_data> )v2.val.ptr)), value);
 
       slog(LOG_ALL,
            0,
            "%s gained %d experience from unit %s@%s.",
-           UNIT_NAME((struct unit_data *)v2.val.ptr),
+           UNIT_NAME((std::shared_ptr<unit_data> )v2.val.ptr),
            value,
            UNIT_FI_NAME(p->sarg->owner),
            UNIT_FI_ZONENAME(p->sarg->owner));
-      gain_exp((struct unit_data *)v2.val.ptr, value);
+      gain_exp((std::shared_ptr<unit_data> )v2.val.ptr, value);
    }
 }
 
@@ -1552,16 +1552,16 @@ void dilfi_dst(register struct dilprg *p, register class dilval *v)
    if(dil_type_check("destroy", p, 1, &v1, TYPEFAIL_NULL, 1, DILV_UP) < 0)
       return;
 
-   if(v1.val.ptr && !IS_ROOM((struct unit_data *)v1.val.ptr))
+   if(v1.val.ptr && !IS_ROOM((std::shared_ptr<unit_data> )v1.val.ptr))
    {
       if(v1.val.ptr == p->sarg->owner)
       {
-         extract_unit((struct unit_data *)v1.val.ptr);
+         extract_unit((std::shared_ptr<unit_data> )v1.val.ptr);
          p->waitcmd = WAITCMD_DESTROYED;
       }
       else
       {
-         extract_unit((struct unit_data *)v1.val.ptr);
+         extract_unit((std::shared_ptr<unit_data> )v1.val.ptr);
          dil_test_secure(p);
       }
    }
@@ -1592,14 +1592,14 @@ void dilfi_walk(register struct dilprg *p, register class dilval *v)
 
    if(v1.val.ptr)
    {
-      v1.val.ptr = unit_room((struct unit_data *)v1.val.ptr);
+      v1.val.ptr = unit_room((std::shared_ptr<unit_data> )v1.val.ptr);
 
       /* Walks happens ONLY on TICKS! */
       REMOVE_BIT(p->sarg->fptr->flags, SFB_CMD | SFB_TICK | SFB_DEAD | SFB_DONE | SFB_PRE | SFB_COM | SFB_MSG | SFB_SAVE | SFB_ACTIVATE);
 
       SET_BIT(p->sarg->fptr->flags, SFB_TICK);
 
-      i = npc_move(p->sarg->owner, (struct unit_data *)v1.val.ptr);
+      i = npc_move(p->sarg->owner, (std::shared_ptr<unit_data> )v1.val.ptr);
 
       switch(i)
       {
@@ -1640,7 +1640,7 @@ void dilfi_exec(register struct dilprg *p, register class dilval *v)
    if(dil_type_check("exec", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_SP, &v2, TYPEFAIL_NULL, 1, DILV_UP) < 0)
       return;
 
-   if(v1.val.ptr && v2.val.ptr && IS_CHAR((struct unit_data *)v2.val.ptr))
+   if(v1.val.ptr && v2.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v2.val.ptr))
    {
       char cmd[MAX_INPUT_LENGTH + 1];
 
@@ -1657,7 +1657,7 @@ void dilfi_exec(register struct dilprg *p, register class dilval *v)
               cmd);
       }
 
-      if(IS_IMMORTAL((struct unit_data *)v2.val.ptr))
+      if(IS_IMMORTAL((std::shared_ptr<unit_data> )v2.val.ptr))
       {
          char                 buf[MAX_INPUT_LENGTH];
          struct command_info *cmd_ptr;
@@ -1676,24 +1676,24 @@ void dilfi_exec(register struct dilprg *p, register class dilval *v)
                     "to make %s do: %s",
                     p->sp->tmpl->prgname,
                     STR(UNIT_NAME(p->sarg->owner)),
-                    UNIT_NAME((struct unit_data *)v2.val.ptr),
+                    UNIT_NAME((std::shared_ptr<unit_data> )v2.val.ptr),
                     cmd);
             }
             else
             {
-               command_interpreter((struct unit_data *)v2.val.ptr, cmd);
+               command_interpreter((std::shared_ptr<unit_data> )v2.val.ptr, cmd);
                dil_test_secure(p);
             }
          }
          else
          {
-            command_interpreter((struct unit_data *)v2.val.ptr, cmd);
+            command_interpreter((std::shared_ptr<unit_data> )v2.val.ptr, cmd);
             dil_test_secure(p);
          }
       }
       else
       {
-         command_interpreter((struct unit_data *)v2.val.ptr, cmd);
+         command_interpreter((std::shared_ptr<unit_data> )v2.val.ptr, cmd);
          dil_test_secure(p);
       }
    }
@@ -1901,7 +1901,7 @@ void dilfi_sua(register struct dilprg *p, register class dilval *v)
 
    if(v1.val.ptr)
    {
-      af = affected_by_spell((struct unit_data *)v1.val.ptr, v2.val.num);
+      af = affected_by_spell((std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num);
       if(af)
          destroy_affect(af);
    }
@@ -2006,7 +2006,7 @@ void dilfi_ada(register struct dilprg *p, register class dilval *v)
          af.tickf_i  = v9.val.num;
          af.lastf_i  = v10.val.num;
          af.applyf_i = v11.val.num;
-         create_affect((struct unit_data *)v1.val.num, &af);
+         create_affect((std::shared_ptr<unit_data> )v1.val.num, &af);
       }
    }
 }
@@ -2101,7 +2101,7 @@ void dilfi_snt(register struct dilprg *p, register class dilval *v)
       sarg.arg       = (char *)v1.val.ptr;
       sarg.mflags    = SFB_MSG | SFB_AWARE;
 
-      unit_function_scan((struct unit_data *)v2.val.ptr, &sarg);
+      unit_function_scan((std::shared_ptr<unit_data> )v2.val.ptr, &sarg);
 
       dil_test_secure(p);
    }
@@ -2133,9 +2133,9 @@ void dilfi_snta(register struct dilprg *p, register class dilval *v)
 
    if(v1.val.ptr && v2.val.ptr)
    {
-      extern struct unit_data *unit_list;
+      extern std::shared_ptr<unit_data> unit_list;
 
-      struct unit_data                *u;
+      std::shared_ptr<unit_data> u;
       std::shared_ptr<file_index_type> fi;
 
       if((fi = str_to_file_index((char *)v2.val.ptr)))
@@ -2281,8 +2281,8 @@ void dilfi_sec(register struct dilprg *p, register class dilval *v)
 
    if(v1.val.ptr)
    {
-      dil_sub_secure(p->sp, (struct unit_data *)v1.val.ptr);
-      dil_add_secure(p, (struct unit_data *)v1.val.ptr, &(p->sp->tmpl->core[adr]));
+      dil_sub_secure(p->sp, (std::shared_ptr<unit_data> )v1.val.ptr);
+      dil_add_secure(p, (std::shared_ptr<unit_data> )v1.val.ptr, &(p->sp->tmpl->core[adr]));
    }
 }
 
@@ -2306,7 +2306,7 @@ void dilfi_use(register struct dilprg *p, register class dilval *v)
       return;
 
    if(v1.val.ptr)
-      dil_sub_secure(p->sp, (struct unit_data *)v1.val.ptr);
+      dil_sub_secure(p->sp, (std::shared_ptr<unit_data> )v1.val.ptr);
 }
 
 /* Equip unit in inventory of PC/NPC */
@@ -2329,11 +2329,11 @@ void dilfi_eqp(register struct dilprg *p, register class dilval *v)
    if(dil_type_check("equip", p, 2, &v1, TYPEFAIL_NULL, 1, DILV_UP, &v2, TYPEFAIL_NULL, 1, DILV_INT) < 0)
       return;
 
-   if(v1.val.ptr && UNIT_IN((struct unit_data *)v1.val.ptr) && IS_CHAR(UNIT_IN((struct unit_data *)v1.val.ptr)) &&
-      IS_OBJ((struct unit_data *)v1.val.ptr) && !equipment(UNIT_IN((struct unit_data *)v1.val.ptr), v2.val.num))
+   if(v1.val.ptr && UNIT_IN((std::shared_ptr<unit_data> )v1.val.ptr) && IS_CHAR(UNIT_IN((std::shared_ptr<unit_data> )v1.val.ptr)) &&
+      IS_OBJ((std::shared_ptr<unit_data> )v1.val.ptr) && !equipment(UNIT_IN((std::shared_ptr<unit_data> )v1.val.ptr), v2.val.num))
    {
       /* Then equip char */
-      equip_char(UNIT_IN((struct unit_data *)v1.val.ptr), (struct unit_data *)v1.val.ptr, v2.val.num);
+      equip_char(UNIT_IN((std::shared_ptr<unit_data> )v1.val.ptr), (std::shared_ptr<unit_data> )v1.val.ptr, v2.val.num);
    }
 }
 
@@ -2356,9 +2356,9 @@ void dilfi_ueq(register struct dilprg *p, register class dilval *v)
    if(dil_type_check("unequip", p, 1, &v1, FAIL_NULL, 1, DILV_UP) < 0)
       return;
 
-   if(v1.val.ptr && IS_OBJ((struct unit_data *)v1.val.ptr) && OBJ_EQP_POS((struct unit_data *)v1.val.ptr))
+   if(v1.val.ptr && IS_OBJ((std::shared_ptr<unit_data> )v1.val.ptr) && OBJ_EQP_POS((std::shared_ptr<unit_data> )v1.val.ptr))
    {
-      unequip_object((struct unit_data *)v1.val.ptr);
+      unequip_object((std::shared_ptr<unit_data> )v1.val.ptr);
    }
 }
 
@@ -2392,8 +2392,8 @@ void dilfi_pup(register struct dilprg *p, register class dilval *v)
 {
    class dilval v1;
 
-   void update_pos(struct unit_data * victim);
-   void die(struct unit_data * ch);
+   void update_pos(std::shared_ptr<unit_data>  victim);
+   void die(std::shared_ptr<unit_data>  ch);
 
    if(v)
    {
@@ -2409,12 +2409,12 @@ void dilfi_pup(register struct dilprg *p, register class dilval *v)
    if(dil_type_check("updatepos", p, 1, &v1, TYPEFAIL_NULL, 1, DILV_UP) < 0)
       return;
 
-   if(v1.val.ptr && IS_CHAR((struct unit_data *)v1.val.ptr))
+   if(v1.val.ptr && IS_CHAR((std::shared_ptr<unit_data> )v1.val.ptr))
    {
-      update_pos((struct unit_data *)v1.val.ptr);
-      if(CHAR_POS((struct unit_data *)v1.val.ptr) == POSITION_DEAD)
+      update_pos((std::shared_ptr<unit_data> )v1.val.ptr);
+      if(CHAR_POS((std::shared_ptr<unit_data> )v1.val.ptr) == POSITION_DEAD)
       {
-         die((struct unit_data *)v1.val.ptr);
+         die((std::shared_ptr<unit_data> )v1.val.ptr);
          dil_test_secure(p);
       }
    }
@@ -2423,7 +2423,7 @@ void dilfi_pup(register struct dilprg *p, register class dilval *v)
 void dilfi_cast(register struct dilprg *p, register class dilval *v)
 {
    class dilval                  v1, v2, v3, v4;
-   struct unit_data             *caster = NULL, *medium = NULL, *target = NULL;
+   std::shared_ptr<unit_data> caster = NULL, *medium = NULL, *target = NULL;
    extern struct spell_info_type spell_info[SPL_TREE_MAX];
 
    if(v)
@@ -2461,9 +2461,9 @@ void dilfi_cast(register struct dilprg *p, register class dilval *v)
                      DILV_UP) < 0)
       return;
 
-   caster = (struct unit_data *)v2.val.ptr;
-   medium = (struct unit_data *)v3.val.ptr;
-   target = (struct unit_data *)v4.val.ptr;
+   caster = (std::shared_ptr<unit_data> )v2.val.ptr;
+   medium = (std::shared_ptr<unit_data> )v3.val.ptr;
+   target = (std::shared_ptr<unit_data> )v4.val.ptr;
 
    if(is_in(v1.val.num, SPL_GROUP_MAX, SPL_TREE_MAX - 1) && caster && IS_CHAR(caster) && medium &&
       (spell_info[v1.val.num].spell_pointer || spell_info[v1.val.num].tmpl))

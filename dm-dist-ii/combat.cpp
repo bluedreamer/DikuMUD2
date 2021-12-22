@@ -164,7 +164,7 @@ void cCombatList::PerformViolence(void)
    nIdx = -1;
 }
 
-void cCombatList::status(const struct unit_data *ch)
+void cCombatList::status(const std::shared_ptr<unit_data> ch)
 {
    char buf[MAX_STRING_LENGTH];
 
@@ -178,7 +178,7 @@ void cCombatList::status(const struct unit_data *ch)
 /*                                                                         */
 /* ======================================================================= */
 
-cCombat::cCombat(struct unit_data *owner, int bMelee)
+cCombat::cCombat(std::shared_ptr<unit_data> owner, int bMelee)
 {
    assert(owner);
 
@@ -226,7 +226,7 @@ void cCombat::changeSpeed(int delta)
    nWhen += delta;
 }
 
-int cCombat::findOpponentIdx(struct unit_data *target)
+int cCombat::findOpponentIdx(std::shared_ptr<unit_data> target)
 {
    for(int i = 0; i < nNoOpponents; i++)
       if(pOpponents[i] == target)
@@ -235,7 +235,7 @@ int cCombat::findOpponentIdx(struct unit_data *target)
    return -1;
 }
 
-struct unit_data *cCombat::FindOpponent(struct unit_data *victim)
+std::shared_ptr<unit_data> cCombat::FindOpponent(std::shared_ptr<unit_data> victim)
 {
    int i = findOpponentIdx(victim);
 
@@ -245,16 +245,16 @@ struct unit_data *cCombat::FindOpponent(struct unit_data *victim)
       return pOpponents[i];
 }
 
-void cCombat::add(struct unit_data *victim)
+void cCombat::add(std::shared_ptr<unit_data> victim)
 {
    assert(victim);
 
    nNoOpponents++;
 
    if(nNoOpponents == 1)
-      CREATE(pOpponents, struct unit_data *, 1);
+      CREATE(pOpponents, std::shared_ptr<unit_data> , 1);
    else
-      RECREATE(pOpponents, struct unit_data *, nNoOpponents);
+      RECREATE(pOpponents, std::shared_ptr<unit_data> , nNoOpponents);
 
    pOpponents[nNoOpponents - 1] = victim;
 }
@@ -279,7 +279,7 @@ void cCombat::sub(int idx)
    }
 
    if(nNoOpponents - idx > 1)
-      memmove(&pOpponents[idx], &pOpponents[idx + 1], sizeof(struct unit_data *) * (nNoOpponents - idx - 1));
+      memmove(&pOpponents[idx], &pOpponents[idx + 1], sizeof(std::shared_ptr<unit_data> ) * (nNoOpponents - idx - 1));
 
    pOpponents[nNoOpponents - 1] = NULL;
    nNoOpponents--;
@@ -296,7 +296,7 @@ void cCombat::sub(int idx)
    }
 }
 
-void cCombat::setMelee(struct unit_data *victim)
+void cCombat::setMelee(std::shared_ptr<unit_data> victim)
 {
    pMelee = victim;
 }
@@ -304,7 +304,7 @@ void cCombat::setMelee(struct unit_data *victim)
 // Add another opponent. A very important feature is, that opponents
 // always exists as pairs and if one is removed so is the other.
 //
-void cCombat::addOpponent(struct unit_data *victim, int bMelee = FALSE)
+void cCombat::addOpponent(std::shared_ptr<unit_data> victim, int bMelee = FALSE)
 {
    // This if is needed since we call recursively for the victim
 
@@ -322,7 +322,7 @@ void cCombat::addOpponent(struct unit_data *victim, int bMelee = FALSE)
       setMelee(victim);
 }
 
-void cCombat::subOpponent(struct unit_data *victim)
+void cCombat::subOpponent(std::shared_ptr<unit_data> victim)
 {
    if(nNoOpponents < 1)
       return;
@@ -336,7 +336,7 @@ void cCombat::subOpponent(struct unit_data *victim)
    sub(i);
 }
 
-struct unit_data *cCombat::Opponent(int i)
+std::shared_ptr<unit_data> cCombat::Opponent(int i)
 {
    if(i >= nNoOpponents)
       return NULL;
@@ -344,7 +344,7 @@ struct unit_data *cCombat::Opponent(int i)
       return pOpponents[i];
 }
 
-void cCombat::status(const struct unit_data *ch)
+void cCombat::status(const std::shared_ptr<unit_data> ch)
 {
    char buf[MAX_STRING_LENGTH];
    int  i;
@@ -376,7 +376,7 @@ void cCombat::status(const struct unit_data *ch)
 /* ======================================================================= */
 
 /* start one char fighting another (yes, it is horrible, I know... )  */
-void set_fighting(struct unit_data *ch, struct unit_data *vict, int bMelee)
+void set_fighting(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> vict, int bMelee)
 {
    if(ch == vict)
       return;
@@ -395,7 +395,7 @@ void set_fighting(struct unit_data *ch, struct unit_data *vict, int bMelee)
 }
 
 /* remove a char from the list of fighting chars */
-void stop_fighting(struct unit_data *ch, struct unit_data *victim)
+void stop_fighting(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> victim)
 {
    if(victim == NULL) // Stop all combat...
    {
@@ -419,7 +419,7 @@ void stop_fighting(struct unit_data *ch, struct unit_data *victim)
 /*                                                                         */
 /* ======================================================================= */
 
-void stat_combat(const struct unit_data *ch, struct unit_data *u)
+void stat_combat(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
    if(!IS_CHAR(u))
    {

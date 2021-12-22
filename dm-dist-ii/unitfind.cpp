@@ -35,7 +35,7 @@
 #include <time.h>
 
 /* Assumes UNIT_IN(room) == NULL */
-static ubit1 same_surroundings_room(struct unit_data *room, struct unit_data *u2)
+static ubit1 same_surroundings_room(std::shared_ptr<unit_data> room, std::shared_ptr<unit_data> u2)
 {
    if(!UNIT_IN(u2))
       return FALSE;
@@ -49,7 +49,7 @@ static ubit1 same_surroundings_room(struct unit_data *room, struct unit_data *u2
    return FALSE;
 }
 
-ubit1 same_surroundings(struct unit_data *u1, struct unit_data *u2)
+ubit1 same_surroundings(std::shared_ptr<unit_data> u1, std::shared_ptr<unit_data> u2)
 {
    if(!UNIT_IN(u1))
       return same_surroundings_room(u1, u2);
@@ -98,20 +98,20 @@ ubit1 same_surroundings(struct unit_data *u1, struct unit_data *u2)
 */
 
 /* returns if PC is pay/no pay !0/0 */
-static inline int pcpay(struct unit_data *u)
+static inline int pcpay(std::shared_ptr<unit_data> u)
 {
    return ((PC_ACCOUNT(u).credit > 0.0) || (PC_ACCOUNT(u).discount == 100) || (PC_ACCOUNT(u).flatrate > (ubit32)time(0)) ||
            (CHAR_DESCRIPTOR(u) ? g_cServerConfig.FromLAN(CHAR_DESCRIPTOR(u)->host) : 0));
 }
 
 /* returns if ROOM is pay/no pay !0/0 */
-static inline int roompay(struct unit_data *u)
+static inline int roompay(std::shared_ptr<unit_data> u)
 {
    return (UNIT_FI_ZONE(u)->payonly);
 }
 
 /* These functions determine if the units are candidates in find */
-static inline int findcheck(struct unit_data *u, int pset, int tflags)
+static inline int findcheck(std::shared_ptr<unit_data> u, int pset, int tflags)
 {
    if(IS_SET(UNIT_TYPE(u), tflags))
    {
@@ -142,9 +142,9 @@ static inline int findcheck(struct unit_data *u, int pset, int tflags)
    return 0;
 }
 
-struct unit_data *random_unit(struct unit_data *ref, int sflags, int tflags)
+std::shared_ptr<unit_data> random_unit(std::shared_ptr<unit_data> ref, int sflags, int tflags)
 {
-   register struct unit_data *u, *selected = NULL;
+   register std::shared_ptr<unit_data> u, *selected = NULL;
    int                        count = 0;
    int                        pset  = 0;
 
@@ -235,10 +235,10 @@ struct unit_data *random_unit(struct unit_data *ref, int sflags, int tflags)
 /* As find_unit below, except visibility is relative to
    viewer with respect to CHAR_CAN_SEE */
 
-struct unit_data *find_unit_general(
-   const struct unit_data *viewer, const struct unit_data *ch, char **arg, const struct unit_data *list, const ubit32 bitvector)
+std::shared_ptr<unit_data> find_unit_general(
+   const std::shared_ptr<unit_data> viewer, const std::shared_ptr<unit_data> ch, char **arg, const std::shared_ptr<unit_data> list, const ubit32 bitvector)
 {
-   struct unit_data *best     = NULL;
+   std::shared_ptr<unit_data> best     = NULL;
    int               best_len = 0;
    ubit32            bitvectorm;
 
@@ -246,7 +246,7 @@ struct unit_data *find_unit_general(
    const char       *ct = NULL;
    char              name[256], *c;
    ubit1             is_fillword = TRUE;
-   struct unit_data *u, *uu;
+   std::shared_ptr<unit_data> u, *uu;
 
    /* Eliminate the 'pay' bits */
    bitvectorm = bitvector & FIND_UNIT_LOCATION_MASK;
@@ -328,7 +328,7 @@ struct unit_data *find_unit_general(
          if((ct = is_name_raw(c, tmp_self)))
          {
             *arg = (char *)ct;
-            return (struct unit_data *)ch;
+            return (std::shared_ptr<unit_data> )ch;
          }
 
          /* MS: Removed !IS_ROOM(UNIT_IN(ch)) because you must be able to
@@ -450,7 +450,7 @@ struct unit_data *find_unit_general(
    }
 
    for(; list; list = list->next)
-      if((ct = UNIT_NAMES((struct unit_data *)list).IsNameRaw(c)) && (ct - c >= best_len))
+      if((ct = UNIT_NAMES((std::shared_ptr<unit_data> )list).IsNameRaw(c)) && (ct - c >= best_len))
       {
          if(ct - c > best_len)
          {
@@ -459,7 +459,7 @@ struct unit_data *find_unit_general(
          }
 
          if(--number == 0)
-            best = (struct unit_data *)list;
+            best = (std::shared_ptr<unit_data> )list;
       }
 
    *arg = (c + best_len);
@@ -501,14 +501,14 @@ struct unit_data *find_unit_general(
 
   */
 
-struct unit_data *find_unit(const struct unit_data *ch, char **arg, const struct unit_data *list, const ubit32 bitvector)
+std::shared_ptr<unit_data> find_unit(const std::shared_ptr<unit_data> ch, char **arg, const std::shared_ptr<unit_data> list, const ubit32 bitvector)
 {
    return find_unit_general(ch, ch, arg, list, bitvector);
 }
 
-struct unit_data *find_symbolic_instance_ref(struct unit_data *ref, std::shared_ptr<file_index_type> fi, ubit16 bitvector)
+std::shared_ptr<unit_data> find_symbolic_instance_ref(std::shared_ptr<unit_data> ref, std::shared_ptr<file_index_type> fi, ubit16 bitvector)
 {
-   register struct unit_data *u, *uu;
+   register std::shared_ptr<unit_data> u, *uu;
 
    if((fi == NULL) || (ref == NULL))
       return NULL;
@@ -580,9 +580,9 @@ struct unit_data *find_symbolic_instance_ref(struct unit_data *ref, std::shared_
    return NULL;
 }
 
-struct unit_data *find_symbolic_instance(std::shared_ptr<file_index_type> fi)
+std::shared_ptr<unit_data> find_symbolic_instance(std::shared_ptr<file_index_type> fi)
 {
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
 
    if(fi == NULL)
       return NULL;
@@ -594,7 +594,7 @@ struct unit_data *find_symbolic_instance(std::shared_ptr<file_index_type> fi)
    return NULL;
 }
 
-struct unit_data *find_symbolic(char *zone, char *name)
+std::shared_ptr<unit_data> find_symbolic(char *zone, char *name)
 {
    return find_symbolic_instance(find_file_index(zone, name));
 }
@@ -606,7 +606,7 @@ static void init_unit_vector(void)
 {
    unit_vector.size = 10;
 
-   CREATE(unit_vector.units, struct unit_data *, unit_vector.size);
+   CREATE(unit_vector.units, std::shared_ptr<unit_data> , unit_vector.size);
 }
 
 /* If things get too cramped, double size of unit_vector */
@@ -614,16 +614,16 @@ static void double_unit_vector(void)
 {
    unit_vector.size *= 2;
 
-   RECREATE(unit_vector.units, struct unit_data *, unit_vector.size);
+   RECREATE(unit_vector.units, std::shared_ptr<unit_data> , unit_vector.size);
 }
 
 /* Scan the chars surroundings and all transparent surroundings for all  */
 /* units of types which match 'flags' in the 'room' specified.           */
 /* Difference to scan4_unit is that a room is searched for contents,     */
 /* but not outside room.                                                 */
-void scan4_unit_room(struct unit_data *room, ubit8 type)
+void scan4_unit_room(std::shared_ptr<unit_data> room, ubit8 type)
 {
-   struct unit_data *u, *uu;
+   std::shared_ptr<unit_data> u, *uu;
 
    unit_vector.top = 0;
 
@@ -657,9 +657,9 @@ void scan4_unit_room(struct unit_data *room, ubit8 type)
 /* Scan the chars surroundings and all transparent surroundsings for all */
 /* units of types which match 'flags'. Updates the 'unit_vector' for     */
 /* use in local routines.                                                */
-void scan4_unit(struct unit_data *ch, ubit8 type)
+void scan4_unit(std::shared_ptr<unit_data> ch, ubit8 type)
 {
-   struct unit_data *u, *uu;
+   std::shared_ptr<unit_data> u, *uu;
 
    if(!UNIT_IN(ch))
    {
@@ -715,9 +715,9 @@ void scan4_unit(struct unit_data *ch, ubit8 type)
       }
 }
 
-static struct unit_data *scan4_ref_room(struct unit_data *room, struct unit_data *fu)
+static std::shared_ptr<unit_data> scan4_ref_room(std::shared_ptr<unit_data> room, std::shared_ptr<unit_data> fu)
 {
-   struct unit_data *u, *uu;
+   std::shared_ptr<unit_data> u, *uu;
 
    for(u = UNIT_CONTAINS(room); u; u = u->next)
    {
@@ -740,9 +740,9 @@ static struct unit_data *scan4_ref_room(struct unit_data *room, struct unit_data
 /* you know that *fu exists, then a much simpler test is possible using   */
 /* the 'same_surroundings()' function.                                     */
 /* No checks for invisibility and the like                                */
-struct unit_data *scan4_ref(struct unit_data *ch, struct unit_data *fu)
+std::shared_ptr<unit_data> scan4_ref(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> fu)
 {
-   struct unit_data *u, *uu;
+   std::shared_ptr<unit_data> u, *uu;
 
    if(!UNIT_IN(ch))
       return scan4_ref_room(ch, fu);
@@ -787,7 +787,7 @@ struct unit_data *scan4_ref(struct unit_data *ch, struct unit_data *fu)
 /* Return a random direction that 'unit' can go or -1 */
 /* Tests for death rooms and water                    */
 /* No longer tests for death rooms.                   */
-int random_direction(struct unit_data *ch)
+int random_direction(std::shared_ptr<unit_data> ch)
 {
    int i, dirs[6], top;
 

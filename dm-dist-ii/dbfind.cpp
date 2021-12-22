@@ -153,7 +153,7 @@ struct diltemplate *find_dil_template(const char *name)
 /*  Find a room in the world based on zone name and name e.g.
  *  "midgaard", "prison" and return a pointer to the room
  */
-struct unit_data *world_room(const char *zone, const char *name)
+std::shared_ptr<unit_data> world_room(const char *zone, const char *name)
 {
    std::shared_ptr<file_index_type> fi;
 
@@ -175,7 +175,7 @@ std::shared_ptr<file_index_type> str_to_file_index(const char *str)
 /*  As str_to_file_index, except that if no zone is given, the
  *  zone of the 'ch' is assumed
  */
-std::shared_ptr<file_index_type> pc_str_to_file_index(const struct unit_data *ch, const char *str)
+std::shared_ptr<file_index_type> pc_str_to_file_index(const std::shared_ptr<unit_data> ch, const char *str)
 {
    char name[MAX_INPUT_LENGTH + 1], zone[MAX_INPUT_LENGTH + 1];
 

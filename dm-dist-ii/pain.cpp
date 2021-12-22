@@ -323,7 +323,7 @@ struct pain_type
 
 struct pain_cmd_type
 {
-   int (*func)(struct unit_data *npc, struct pain_type *pain);
+   int (*func)(std::shared_ptr<unit_data> npc, struct pain_type *pain);
 
    sbit32                                                                                       gotoline;
    sbit32                                                                                       data[2];
@@ -332,7 +332,7 @@ struct pain_cmd_type
 };
 
 /* Intended to be used for error-reports */
-static struct unit_data *p_error_unit = NULL;
+static std::shared_ptr<unit_data> p_error_unit = NULL;
 
 /* ---------------------------------------------------------------------- */
 /*                      P A I N   F U N C T I O N S                       */
@@ -372,7 +372,7 @@ void pain_gotoline(struct pain_type *pain)
 /* . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . */
 
 /* 'A' command */
-int pain_act(struct unit_data *npc, struct pain_type *pain)
+int pain_act(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
    act(std::get<char *>(pain->cmds[pain->idx].ptr[0]), A_SOMEONE, npc, 0, 0, TO_ROOM);
    pain_next_cmd(pain);
@@ -380,7 +380,7 @@ int pain_act(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'C' command */
-int pain_command(struct unit_data *npc, struct pain_type *pain)
+int pain_command(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
    command_interpreter(npc, std::get<char *>(pain->cmds[pain->idx].ptr[0]));
    pain_next_cmd(pain);
@@ -388,7 +388,7 @@ int pain_command(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'D' Command */
-int pain_closed(struct unit_data *npc, struct pain_type *pain)
+int pain_closed(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
    int i;
 
@@ -408,9 +408,9 @@ int pain_closed(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'd' command */
-int pain_charcmd(struct unit_data *npc, struct pain_type *pain)
+int pain_charcmd(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
    char              buf[MAX_INPUT_LENGTH];
 
    if(!pain->vars[0]) /* Is there a PC target? */
@@ -438,7 +438,7 @@ int pain_charcmd(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'G' command */
-int pain_goto(struct unit_data *npc, struct pain_type *pain)
+int pain_goto(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
    std::shared_ptr<file_index_type> fi;
    int                              res;
@@ -461,7 +461,7 @@ int pain_goto(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'H' command */
-int pain_has(struct unit_data *npc, struct pain_type *pain)
+int pain_has(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
    char *c;
 
@@ -479,9 +479,9 @@ int pain_has(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'I' command */
-int pain_in_room(struct unit_data *npc, struct pain_type *pain)
+int pain_in_room(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
    char             *c, buf[256];
 
    c = std::get<char *>(pain->cmds[pain->idx].ptr[0]);
@@ -511,7 +511,7 @@ int pain_in_room(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'i' command */
-int pain_intercept(struct unit_data *npc, struct pain_type *pain)
+int pain_intercept(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
    pain_next_cmd(pain);
 
@@ -519,14 +519,14 @@ int pain_intercept(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'J' command */
-int pain_jump(struct unit_data *npc, struct pain_type *pain)
+int pain_jump(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
    pain_gotoline(pain);
    return FALSE; /* Command loop will stall one tick */
 }
 
 /* 'L' command */
-int pain_locked(struct unit_data *npc, struct pain_type *pain)
+int pain_locked(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
    int i;
 
@@ -546,9 +546,9 @@ int pain_locked(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'l' command */
-int pain_load(struct unit_data *npc, struct pain_type *pain)
+int pain_load(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
 
    u = read_unit(std::get<std::shared_ptr<file_index_type>>(pain->cmds[pain->idx].ptr[0]));
    unit_to_unit(u, npc);
@@ -557,9 +557,9 @@ int pain_load(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'r' command */
-int pain_remote_load(struct unit_data *npc, struct pain_type *pain)
+int pain_remote_load(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
 
    u = read_unit(std::get<std::shared_ptr<file_index_type>>(pain->cmds[pain->idx].ptr[0]));
    unit_to_unit(u, std::get<unit_data *>(pain->cmds[pain->idx].ptr[1]));
@@ -568,7 +568,7 @@ int pain_remote_load(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'R' command */
-int pain_random(struct unit_data *npc, struct pain_type *pain)
+int pain_random(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
    if(number(1, 100) <= pain->cmds[pain->idx].data[0])
       pain_gotoline(pain);
@@ -579,7 +579,7 @@ int pain_random(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'S' command */
-int pain_scan_pc(struct unit_data *npc, struct pain_type *pain)
+int pain_scan_pc(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
    scan4_unit(npc, UNIT_ST_PC);
 
@@ -597,11 +597,11 @@ int pain_scan_pc(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'T' command */
-int pain_trash(struct unit_data *npc, struct pain_type *pain)
+int pain_trash(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
-   struct unit_data *u;
+   std::shared_ptr<unit_data> u;
 
-   amount_t obj_trade_price(struct unit_data * u);
+   amount_t obj_trade_price(std::shared_ptr<unit_data>  u);
 
    for(u = UNIT_CONTAINS(UNIT_IN(npc)); u; u = u->next)
    {
@@ -621,7 +621,7 @@ int pain_trash(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'W' command */
-int pain_wait(struct unit_data *npc, struct pain_type *pain)
+int pain_wait(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
    struct time_info_data mud_date(time_t t);
    struct time_info_data time_info;
@@ -640,7 +640,7 @@ int pain_wait(struct unit_data *npc, struct pain_type *pain)
 }
 
 /* 'M' command */
-int pain_waitmsg(struct unit_data *npc, struct pain_type *pain)
+int pain_waitmsg(std::shared_ptr<unit_data> npc, struct pain_type *pain)
 {
    if(pain->cmds[pain->idx].data[0])
    {
@@ -815,7 +815,7 @@ int translate_line(int top, int sym, struct line_no_convert *line_numbers)
    return -1;
 }
 
-struct pain_type *pain_doinit(struct unit_data *npc, char *text)
+struct pain_type *pain_doinit(std::shared_ptr<unit_data> npc, char *text)
 {
    int               i, j, top, error;
    char              buf[MAX_STRING_LENGTH], zone[80], name[80], *b = NULL;

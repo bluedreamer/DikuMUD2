@@ -62,12 +62,12 @@ extern struct zone_info_type zone_info;
 extern char zondir[]; /* from dikumud.c */
 
 /* external functs */
-struct time_info_data age(struct unit_data *ch);
+struct time_info_data age(std::shared_ptr<unit_data> ch);
 struct time_info_data real_time_passed(time_t t2, time_t t1);
 
-extern void stat_bank(const struct unit_data *ch, struct unit_data *u); /* bank.c */
+extern void stat_bank(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u); /* bank.c */
 
-static void stat_world_extra(const struct unit_data *ch)
+static void stat_world_extra(const std::shared_ptr<unit_data> ch)
 {
    char                       buf[MAX_STRING_LENGTH], *b;
    std::shared_ptr<zone_type> zp;
@@ -94,28 +94,28 @@ static void stat_world_extra(const struct unit_data *ch)
    send_to_char("\n\r", ch);
 }
 
-static void stat_string(struct unit_data *ch)
+static void stat_string(std::shared_ptr<unit_data> ch)
 {
-   void string_statistics(struct unit_data * ch);
+   void string_statistics(std::shared_ptr<unit_data>  ch);
 
    string_statistics(ch);
 }
 
-static void stat_swap(struct unit_data *ch)
+static void stat_swap(std::shared_ptr<unit_data> ch)
 {
-   void swap_status(struct unit_data * ch);
+   void swap_status(std::shared_ptr<unit_data>  ch);
 
    swap_status(ch);
 }
 
-static void stat_memory(struct unit_data *ch)
+static void stat_memory(std::shared_ptr<unit_data> ch)
 {
    char buf[MAX_STRING_LENGTH];
 
    extern int events;
 
    void memory_status(char *buf);
-   void system_memory(struct unit_data * ch);
+   void system_memory(std::shared_ptr<unit_data>  ch);
 
    sprintf(buf, "Event queue entries: %d\n\r\n\r", events);
    send_to_char(buf, ch);
@@ -124,7 +124,7 @@ static void stat_memory(struct unit_data *ch)
    send_to_char(buf, ch);
 }
 
-static void stat_world(struct unit_data *ch)
+static void stat_world(std::shared_ptr<unit_data> ch)
 {
    extern int  world_norooms, world_noobjects, world_nochars, world_nozones;
    extern int  world_nonpc, world_nopc;
@@ -167,7 +167,7 @@ static void stat_world(struct unit_data *ch)
 
 static char *stat_buffer, *stat_p;
 
-static void stat_zone_reset(char *indnt, std::shared_ptr<zone_reset_cmd> zrip, struct unit_data *ch)
+static void stat_zone_reset(char *indnt, std::shared_ptr<zone_reset_cmd> zrip, std::shared_ptr<unit_data> ch)
 {
    static const char *nums[] = {"max", "zonemax", "local"};
 
@@ -247,7 +247,7 @@ static void stat_zone_reset(char *indnt, std::shared_ptr<zone_reset_cmd> zrip, s
       stat_zone_reset(indnt, zrip->next, ch);
 }
 
-static void stat_zone(struct unit_data *ch, std::shared_ptr<zone_type> zone)
+static void stat_zone(std::shared_ptr<unit_data> ch, std::shared_ptr<zone_type> zone)
 {
    static const char *reset_modes[] = {"Never Reset", "Reset When Empty", "Reset Always", "UNKNOWN"};
 
@@ -298,7 +298,7 @@ static void stat_zone(struct unit_data *ch, std::shared_ptr<zone_type> zone)
    send_to_char(buf, ch);
 }
 
-static void stat_creators(struct unit_data *ch, char *arg)
+static void stat_creators(std::shared_ptr<unit_data> ch, char *arg)
 {
    char                       buf[4 * MAX_STRING_LENGTH], *b;
    char                       tmp[1024];
@@ -359,7 +359,7 @@ static void stat_creators(struct unit_data *ch, char *arg)
 }
 
 // MS2020 modified to get rid of warnings
-static void stat_dil(const struct unit_data *ch, std::shared_ptr<zone_type> zone)
+static void stat_dil(const std::shared_ptr<unit_data> ch, std::shared_ptr<zone_type> zone)
 {
    char                buf[MAX_STRING_LENGTH], buf2[MAX_STRING_LENGTH];
    struct diltemplate *tmpl;
@@ -394,7 +394,7 @@ static void stat_dil(const struct unit_data *ch, std::shared_ptr<zone_type> zone
 
 // Preserved original warning ridden code :)
 #ifdef MS2020
-static void stat_dil(const struct unit_data *ch, const struct zone_type *zone)
+static void stat_dil(const std::shared_ptr<unit_data> ch, const struct zone_type *zone)
 {
    char                buf[MAX_STRING_LENGTH];
    struct diltemplate *tmpl;
@@ -425,14 +425,14 @@ static void stat_dil(const struct unit_data *ch, const struct zone_type *zone)
 }
 #endif
 
-static void extra_stat_zone(struct unit_data *ch, char *arg, std::shared_ptr<zone_type> zone)
+static void extra_stat_zone(std::shared_ptr<unit_data> ch, char *arg, std::shared_ptr<zone_type> zone)
 {
    char                             buf[MAX_STRING_LENGTH], filename[128];
    int                              argno;
    std::shared_ptr<file_index_type> fi;
    int                              search_type = 0, i;
 
-   void stat_dijkstraa(struct unit_data * ch, std::shared_ptr<zone_type> z);
+   void stat_dijkstraa(std::shared_ptr<unit_data>  ch, std::shared_ptr<zone_type> z);
 
    static const char *zone_args[] = {"mobiles", "objects", "rooms", "reset", "errors", "info", "path", "dil", NULL};
 
@@ -537,7 +537,7 @@ static void extra_stat_zone(struct unit_data *ch, char *arg, std::shared_ptr<zon
    }
 }
 
-static void stat_ability(const struct unit_data *ch, struct unit_data *u)
+static void stat_ability(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
    char buf[MAX_STRING_LENGTH], *b = buf;
    int  i;
@@ -560,7 +560,7 @@ static void stat_ability(const struct unit_data *ch, struct unit_data *u)
    page_string(CHAR_DESCRIPTOR(ch), buf);
 }
 
-static void stat_spell(const struct unit_data *ch, struct unit_data *u)
+static void stat_spell(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
    char tmpbuf1[100];
    char tmpbuf2[100];
@@ -613,7 +613,7 @@ static void stat_spell(const struct unit_data *ch, struct unit_data *u)
    assert(strlen(buf) < sizeof(buf));
 }
 
-static void stat_skill(const struct unit_data *ch, struct unit_data *u)
+static void stat_skill(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
    if(!IS_CHAR(u))
       send_to_char("Unit is not a char\n\r", ch);
@@ -637,7 +637,7 @@ static void stat_skill(const struct unit_data *ch, struct unit_data *u)
    }
 }
 
-static void stat_wskill(const struct unit_data *ch, struct unit_data *u)
+static void stat_wskill(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
    char buf[100 * (WPN_TREE_MAX + 1)], *b = buf;
    int  i, max;
@@ -666,7 +666,7 @@ static void stat_wskill(const struct unit_data *ch, struct unit_data *u)
    page_string(CHAR_DESCRIPTOR(ch), buf);
 }
 
-static void stat_affect(const struct unit_data *ch, struct unit_data *u)
+static void stat_affect(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
    extern struct tick_function_type  tif[];
    extern struct apply_function_type apf[];
@@ -708,7 +708,7 @@ static void stat_affect(const struct unit_data *ch, struct unit_data *u)
    }
 }
 
-static void stat_func(const struct unit_data *ch, struct unit_data *u)
+static void stat_func(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
    extern struct unit_function_array_type unit_function_array[];
 
@@ -750,7 +750,7 @@ static void stat_func(const struct unit_data *ch, struct unit_data *u)
    }
 }
 
-static void stat_normal(struct unit_data *ch, struct unit_data *u)
+static void stat_normal(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
    char buf[MAX_STRING_LENGTH], tmpbuf1[512], tmpbuf2[256];
 
@@ -812,7 +812,7 @@ static void stat_normal(struct unit_data *ch, struct unit_data *u)
    send_to_char(buf, ch);
 }
 
-static void stat_extra(const struct unit_data *ch, struct extra_descr_data *ed)
+static void stat_extra(const std::shared_ptr<unit_data> ch, struct extra_descr_data *ed)
 {
    /* MS: We used to do a TAIL here... bad idea as newspaper is VERY HUGE */
    /* This isn't nice either, but it works... */
@@ -837,12 +837,12 @@ static void stat_extra(const struct unit_data *ch, struct extra_descr_data *ed)
       send_to_char("None.\n\r", ch);
 }
 
-static void stat_extra_descr(const struct unit_data *ch, struct unit_data *u)
+static void stat_extra_descr(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
    stat_extra(ch, UNIT_EXTRA_DESCR(u));
 }
 
-static void stat_extra_quest(const struct unit_data *ch, struct unit_data *u)
+static void stat_extra_quest(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
    if(IS_PC(u))
       stat_extra(ch, PC_QUEST(u));
@@ -850,7 +850,7 @@ static void stat_extra_quest(const struct unit_data *ch, struct unit_data *u)
       send_to_char("Quests only on Players.\n\r", ch);
 }
 
-static void stat_extra_info(const struct unit_data *ch, struct unit_data *u)
+static void stat_extra_info(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
    if(!IS_ADMINISTRATOR(ch))
    {
@@ -866,7 +866,7 @@ static void stat_extra_info(const struct unit_data *ch, struct unit_data *u)
       send_to_char("Information is only on Players.\n\r", ch);
 }
 
-static void stat_ip(const struct unit_data *ch, struct unit_data *u)
+static void stat_ip(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
    if(!IS_ADMINISTRATOR(ch))
    {
@@ -898,7 +898,7 @@ static void stat_ip(const struct unit_data *ch, struct unit_data *u)
        : (obj_data[idx].v[num] == 1 ? (OBJ_VALUE(u, num) ? sprinttype(NULL, OBJ_VALUE(u, num), spl_text) : "None")                         \
                                     : (obj_data[idx].v[num] == 2 ? sprinttype(NULL, OBJ_VALUE(u, num), wpn_text) : "")))
 
-char *stat_obj_data(struct unit_data *u, struct obj_type_t *obj_data)
+char *stat_obj_data(std::shared_ptr<unit_data> u, struct obj_type_t *obj_data)
 {
    static char result[512];
    const char *special_str = "";
@@ -932,7 +932,7 @@ char *stat_obj_data(struct unit_data *u, struct obj_type_t *obj_data)
 }
 #undef STR_DATA
 
-static void stat_data(const struct unit_data *ch, struct unit_data *u)
+static void stat_data(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
    /*  This is a bit tricky:
     *    1: format for the sprintf, where all arguments are %s's.
@@ -1182,7 +1182,7 @@ static void stat_data(const struct unit_data *ch, struct unit_data *u)
    }
 }
 
-static void stat_contents(const struct unit_data *ch, struct unit_data *u)
+static void stat_contents(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
    char buf[MAX_INPUT_LENGTH];
 
@@ -1205,15 +1205,15 @@ static void stat_contents(const struct unit_data *ch, struct unit_data *u)
       send_to_char("It is empty.\n\r", ch);
 }
 
-static void stat_descriptor(const struct unit_data *ch, struct unit_data *u)
+static void stat_descriptor(const std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> u)
 {
    send_to_char("Is yet to be programmed.\n\r", ch);
 }
 
-void do_wstat(struct unit_data *ch, char *argument, const struct command_info *cmd)
+void do_wstat(std::shared_ptr<unit_data> ch, char *argument, const struct command_info *cmd)
 {
    char                       buf[256];
-   struct unit_data          *u = NULL;
+   std::shared_ptr<unit_data> u = NULL;
    std::shared_ptr<zone_type> zone;
    int                        argno;
 
@@ -1235,9 +1235,9 @@ void do_wstat(struct unit_data *ch, char *argument, const struct command_info *c
                                      "ip",
                                      NULL};
 
-#define FUNC_ELMS (sizeof functions / sizeof(void (*)(struct unit_data *, struct unit_data *)))
+#define FUNC_ELMS (sizeof functions / sizeof(void (*)(std::shared_ptr<unit_data> , std::shared_ptr<unit_data> )))
 
-   static void (*functions[])(const struct unit_data *, struct unit_data *) = {stat_data,
+   static void (*functions[])(const std::shared_ptr<unit_data> , std::shared_ptr<unit_data> ) = {stat_data,
                                                                                stat_contents,
                                                                                stat_affect,
                                                                                stat_descriptor,

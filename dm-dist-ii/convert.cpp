@@ -50,11 +50,11 @@
 
 int required_xp(int level);
 
-int  save_contents(const char *pFileName, struct unit_data *unit, int fast, int bContainer);
+int  save_contents(const char *pFileName, std::shared_ptr<unit_data> unit, int fast, int bContainer);
 int  player_exists(const char *pName);
 int  delete_player(const char *pName);
 int  delete_inventory(const char *pName);
-void save_player_file(struct unit_data *pc);
+void save_player_file(std::shared_ptr<unit_data> pc);
 
 char **player_name_list = NULL;
 int    max_id           = -1;
@@ -63,7 +63,7 @@ ubit8 *ids              = NULL; /* For checking duplicate players... */
 
 #define OUTPUT_DIR "lib/"
 
-void convert_free_unit(struct unit_data *u)
+void convert_free_unit(std::shared_ptr<unit_data> u)
 {
    while(UNIT_CONTAINS(u))
       convert_free_unit(UNIT_CONTAINS(u));
@@ -77,9 +77,9 @@ void convert_free_unit(struct unit_data *u)
    delete u;
 }
 
-void free_inventory(struct unit_data *u)
+void free_inventory(std::shared_ptr<unit_data> u)
 {
-   struct unit_data *tmp, *nxt;
+   std::shared_ptr<unit_data> tmp, *nxt;
 
    for(tmp = u; tmp; tmp = nxt)
    {
@@ -93,9 +93,9 @@ int days_old(time_t last_logon)
    return (int)(difftime(time(0), last_logon) / SECS_PER_REAL_DAY);
 }
 
-struct unit_data *convert_item(struct unit_data *u, struct unit_data *pc, int bList)
+std::shared_ptr<unit_data> convert_item(std::shared_ptr<unit_data> u, std::shared_ptr<unit_data> pc, int bList)
 {
-   struct unit_data *nu = u;
+   std::shared_ptr<unit_data> nu = u;
 
    if(bList)
    {
@@ -133,7 +133,7 @@ struct unit_data *convert_item(struct unit_data *u, struct unit_data *pc, int bL
    /* This code replaces all DIL items... */
    if(find_fptr(u, SFUN_DIL_INTERNAL))
    {
-      struct unit_data *nu;
+      std::shared_ptr<unit_data> nu;
 
       if(UNIT_FILE_INDEX(u))
       {
@@ -159,9 +159,9 @@ struct unit_data *convert_item(struct unit_data *u, struct unit_data *pc, int bL
 #endif
 }
 
-void convert_inventory(struct unit_data *u, struct unit_data *pc, int bList = FALSE)
+void convert_inventory(std::shared_ptr<unit_data> u, std::shared_ptr<unit_data> pc, int bList = FALSE)
 {
-   struct unit_data *bla;
+   std::shared_ptr<unit_data> bla;
 
    if(u == NULL)
       return;
@@ -176,7 +176,7 @@ void convert_inventory(struct unit_data *u, struct unit_data *pc, int bList = FA
 
    if(bla != u)
    {
-      struct unit_data *tmpu;
+      std::shared_ptr<unit_data> tmpu;
 
       assert(UNIT_IN(u));
 
@@ -194,7 +194,7 @@ void convert_inventory(struct unit_data *u, struct unit_data *pc, int bList = FA
    }
 
 #ifdef SUSPEKT
-   struct unit_data *tmp, *nxt, *bla;
+   std::shared_ptr<unit_data> tmp, *nxt, *bla;
 
    for(tmp = u; tmp; tmp = nxt)
    {
@@ -215,14 +215,14 @@ void convert_inventory(struct unit_data *u, struct unit_data *pc, int bList = FA
 
 /* This procedure makes any conversion you might want on every player in   *
  * the playerfile, including affects and inventory                         */
-void convert_player(struct unit_data *pc)
+void convert_player(std::shared_ptr<unit_data> pc)
 {
    struct extra_descr_data *exd, *nextexd;
 
    int lvl;
 
-   void race_cost(struct unit_data * ch);
-   void reroll(struct unit_data * victim);
+   void race_cost(std::shared_ptr<unit_data>  ch);
+   void reroll(std::shared_ptr<unit_data>  victim);
 
    assert(IS_PC(pc));
 
@@ -246,9 +246,9 @@ void convert_player(struct unit_data *pc)
 }
 
 /* Return TRUE if Ok. */
-int sanity_check(struct unit_data *u)
+int sanity_check(std::shared_ptr<unit_data> u)
 {
-   void race_adjust(struct unit_data * ch);
+   void race_adjust(std::shared_ptr<unit_data>  ch);
 
    if(g_nCorrupt == TRUE)
    {
@@ -307,7 +307,7 @@ int sanity_check(struct unit_data *u)
    return TRUE;
 }
 
-int shall_delete(struct unit_data *pc)
+int shall_delete(std::shared_ptr<unit_data> pc)
 {
    int days;
 
@@ -368,10 +368,10 @@ int shall_exclude(const char *name)
    return FALSE;
 }
 
-struct unit_data *convert_load_player(char *name)
+std::shared_ptr<unit_data> convert_load_player(char *name)
 {
-   struct unit_data        *ch;
-   extern struct unit_data *destroy_room;
+   std::shared_ptr<unit_data> ch;
+   extern std::shared_ptr<unit_data> destroy_room;
 
    if(!player_exists(name))
    {
@@ -421,8 +421,8 @@ void list(void)
 {
    long              total_time = 0;
    int               i, years, days;
-   struct unit_data *pc;
-   class unit_data  *void_char = new(class unit_data)(UNIT_ST_NPC);
+   std::shared_ptr<unit_data> pc;
+   std::shared_ptr<unit_data> void_char = unit_data::Create(UNIT_ST_NPC);
 
    for(i = 0; player_name_list[i]; i++)
    {
@@ -487,7 +487,7 @@ void list(void)
 void convert_file(void)
 {
    int               i;
-   struct unit_data *pc;
+   std::shared_ptr<unit_data> pc;
    class unit_data  *void_char = new(class unit_data)(UNIT_ST_NPC);
 
    for(i = 0; player_name_list[i]; i++)
@@ -556,10 +556,10 @@ void convert_file(void)
 void cleanup(void)
 {
    int               i;
-   struct unit_data *pc;
+   std::shared_ptr<unit_data> pc;
    class unit_data  *void_char = new(class unit_data)(UNIT_ST_NPC);
 
-   void save_player_file(struct unit_data * pc);
+   void save_player_file(std::shared_ptr<unit_data>  pc);
 
    for(i = 0; player_name_list[i]; i++)
    {
@@ -615,8 +615,8 @@ void cleanup_playerfile(int argc, char *argv[])
 {
    char c;
 
-   extern struct unit_data *entry_room;
-   extern struct unit_data *destroy_room;
+   extern std::shared_ptr<unit_data> entry_room;
+   extern std::shared_ptr<unit_data> destroy_room;
 
    int read_player_id(void);
 

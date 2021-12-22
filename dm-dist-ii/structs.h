@@ -75,19 +75,16 @@ class file_index_type : public std::enable_shared_from_this<file_index_type>
    file_index_type(file_index_type &&)      = delete;
    auto operator=(const file_index_type &) -> file_index_type & = delete;
    auto operator=(file_index_type &&) -> file_index_type & = delete;
+
 public:
-   ~file_index_type()                       = default;
-   std::shared_ptr<file_index_type> getptr() {
-      return shared_from_this();
-   }
-   [[nodiscard]] static std::shared_ptr<file_index_type> Create() {
-      return std::shared_ptr<file_index_type>(new file_index_type);
-   }
+   ~file_index_type() = default;
+   std::shared_ptr<file_index_type>                      getptr() { return shared_from_this(); }
+   [[nodiscard]] static std::shared_ptr<file_index_type> Create() { return std::shared_ptr<file_index_type>(new file_index_type); }
 
    std::string                      name;     /* Unique within this list          */
    std::shared_ptr<zone_type>       zone;     /* Pointer to owner of structure    */
    std::shared_ptr<file_index_type> next;     /* Next File Index                  */
-   class unit_data                 *room_ptr; /* Pointer to room if is room       */
+   std::shared_ptr<unit_data> room_ptr; /* Pointer to room if is room       */
 
    long   filepos; /* Byte offset into file            */
    ubit32 length;  /* No of bytes to read              */
@@ -100,8 +97,11 @@ public:
 };
 
 /* A linked list of commands to execute */
-struct zone_reset_cmd : public std::enable_shared_from_this<zone_reset_cmd>
+class zone_reset_cmd : public std::enable_shared_from_this<zone_reset_cmd>
 {
+   zone_reset_cmd() = default;
+
+public:
    ubit8 cmd_no; /* Index to array of func() ptrs */
    ubit8 cmpl;   /* Complete flag                 */
 
@@ -111,29 +111,19 @@ struct zone_reset_cmd : public std::enable_shared_from_this<zone_reset_cmd>
    std::shared_ptr<zone_reset_cmd> next;
    std::shared_ptr<zone_reset_cmd> nested;
 
-   std::shared_ptr<zone_reset_cmd> getptr() {
-      return shared_from_this();
-   }
-   [[nodiscard]] static std::shared_ptr<zone_reset_cmd> Create() {
-      return std::shared_ptr<zone_reset_cmd>(new zone_reset_cmd);
-   }
-
-private:
-   zone_reset_cmd()=default;
+   std::shared_ptr<zone_reset_cmd>                      getptr() { return shared_from_this(); }
+   [[nodiscard]] static std::shared_ptr<zone_reset_cmd> Create() { return std::shared_ptr<zone_reset_cmd>(new zone_reset_cmd); }
 };
 
 /* A linked/sorted list of all the zones in the game */
 class zone_type : public std::enable_shared_from_this<zone_type>
 {
    zone_type(void);
+
 public:
    ~zone_type(void);
-   std::shared_ptr<zone_type> getptr() {
-      return shared_from_this();
-   }
-   [[nodiscard]] static std::shared_ptr<zone_type> Create() {
-      return std::shared_ptr<zone_type>(new zone_type);
-   }
+   std::shared_ptr<zone_type>                      getptr() { return shared_from_this(); }
+   [[nodiscard]] static std::shared_ptr<zone_type> Create() { return std::shared_ptr<zone_type>(new zone_type); }
 
    class cNamelist creators; /* List of creators of zone         */
    char           *name;     /* Unique in list                   */
@@ -187,8 +177,8 @@ struct time_info_data
 
 struct snoop_data
 {
-   class unit_data *snooping; /* Who is this char snooping        */
-   class unit_data *snoop_by; /* And who is snooping on this char */
+   std::shared_ptr<unit_data> snooping; /* Who is this char snooping        */
+   std::shared_ptr<unit_data> snoop_by; /* And who is snooping on this char */
 };
 
 class descriptor_data
@@ -216,7 +206,7 @@ public:
    char *localstr; /* This string is expanded while editing */
 
    void (*postedit)(struct descriptor_data *);
-   class unit_data *editing;
+   std::shared_ptr<unit_data> editing;
    void            *editref; /* pointer to "where we are editing"     */
                              /* when using (volatile) extras + boards */
 
@@ -224,8 +214,8 @@ public:
    char              last_cmd[MAX_INPUT_LENGTH + 1]; /* the last entered cmd_str         */
    char              history[MAX_INPUT_LENGTH + 1];  /* simple command history           */
    cQueue            qInput;                         /* q of unprocessed input           */
-   class unit_data  *character;                      /* linked to char                   */
-   class unit_data  *original;                       /* original char                    */
+   std::shared_ptr<unit_data> character;                      /* linked to char                   */
+   std::shared_ptr<unit_data> original;                       /* original char                    */
    struct snoop_data snoop;                          /* to snoop people.                 */
 
    class descriptor_data *next; /* link to next descriptor          */
@@ -236,29 +226,32 @@ public:
 class room_direction_data : public std::enable_shared_from_this<room_direction_data>
 {
    room_direction_data();
+
 public:
    ~room_direction_data();
 
-   std::shared_ptr<room_direction_data> getptr() {
-      return shared_from_this();
-   }
-   [[nodiscard]] static std::shared_ptr<room_direction_data> Create() {
+   std::shared_ptr<room_direction_data>                      getptr() { return shared_from_this(); }
+   [[nodiscard]] static std::shared_ptr<room_direction_data> Create()
+   {
       return std::shared_ptr<room_direction_data>(new room_direction_data);
    }
 
    class cNamelist open_name; /* For Open & Enter                  */
 
    std::shared_ptr<file_index_type> key;
-   class unit_data                 *to_room;
+   std::shared_ptr<unit_data> to_room;
 
    ubit8 exit_info; /* Door info flags                   */
 };
 
-class room_data
+class room_data : public std::enable_shared_from_this<room_data>
 {
+   room_data();
+
 public:
-   room_data(void);
-   ~room_data(void);
+   ~room_data();
+   std::shared_ptr<room_data>                      getptr() { return shared_from_this(); }
+   [[nodiscard]] static std::shared_ptr<room_data> Create() { return std::shared_ptr<room_data>(new room_data); }
 
    std::shared_ptr<room_direction_data> dir_option[6]; /* Her?? */
 
@@ -269,11 +262,13 @@ public:
 
 /* ------------------ OBJ SPECIFIC STRUCTURES ----------------------- */
 
-class obj_data
+class obj_data : public std::enable_shared_from_this<obj_data>
 {
+   obj_data();
 public:
-   obj_data(void);
-   ~obj_data(void);
+   ~obj_data();
+   std::shared_ptr<obj_data>                      getptr() { return shared_from_this(); }
+   [[nodiscard]] static std::shared_ptr<obj_data> Create() { return std::shared_ptr<obj_data>(new obj_data); }
 
    sbit32 value[5];     /* Values of the item (see list)       */
    ubit32 cost;         /* Value when sold (gp.)               */
@@ -305,11 +300,14 @@ struct pc_account_data
    ubit32 flatrate;     /* The expiration date of a flat rate service     */
 };
 
-class pc_data
+class pc_data : public std::enable_shared_from_this<pc_data>
 {
-public:
    pc_data(void);
+
+public:
    ~pc_data(void);
+   std::shared_ptr<pc_data>                      getptr() { return shared_from_this(); }
+   [[nodiscard]] static std::shared_ptr<pc_data> Create() { return std::shared_ptr<pc_data>(new pc_data); }
 
    struct terminal_setup_type setup;
 
@@ -363,11 +361,14 @@ public:
 
 /* ------------------ NPC SPECIFIC STRUCTURES ----------------------- */
 
-class npc_data
+class npc_data : public std::enable_shared_from_this<npc_data>
 {
+   npc_data();
+
 public:
-   npc_data(void);
-   ~npc_data(void);
+   ~npc_data();
+   std::shared_ptr<npc_data>                      getptr() { return shared_from_this(); }
+   [[nodiscard]] static std::shared_ptr<npc_data> Create() { return std::shared_ptr<npc_data>(new npc_data); }
 
    ubit8 weapons[WPN_GROUP_MAX];
    ubit8 spells[SPL_GROUP_MAX];
@@ -403,20 +404,24 @@ struct char_point_data
 
 struct char_follow_type
 {
-   class unit_data         *follower; /* Must be a char */
+   std::shared_ptr<unit_data> follower; /* Must be a char */
    struct char_follow_type *next;
 };
 
-class char_data
+class char_data : public std::enable_shared_from_this<char_data>
 {
+   char_data();
+
 public:
-   char_data(void);
    ~char_data(void);
 
-   union
+   std::shared_ptr<char_data>                      getptr() { return shared_from_this(); }
+   [[nodiscard]] static std::shared_ptr<char_data> Create() { return std::shared_ptr<char_data>(new char_data); }
+
+   struct
    {
-      class pc_data  *pc;
-      class npc_data *npc;
+      std::shared_ptr<pc_data>  pc;
+      std::shared_ptr<npc_data> npc;
    } specific;
 
    char *money; /*  Money transfer from db-files.
@@ -430,9 +435,9 @@ public:
    class cCombat *Combat;
 
    struct char_follow_type *followers;
-   class unit_data         *master; /* Must be a char */
+   std::shared_ptr<unit_data> master; /* Must be a char */
 
-   class unit_data *last_room; /* Last location of character */
+   std::shared_ptr<unit_data> last_room; /* Last location of character */
 };
 
 /* ----------------- UNIT GENERAL STRUCTURES ----------------------- */
@@ -450,7 +455,7 @@ struct unit_affected_type
    sbit16 lastf_i;
    sbit16 applyf_i;
 
-   class unit_data           *owner;
+   std::shared_ptr<unit_data> owner;
    struct unit_affected_type *next, *gnext, *gprevious;
 };
 
@@ -463,19 +468,24 @@ struct unit_fptr
    struct unit_fptr *next;       /* Next in linked list                         */
 };
 
-class unit_data
+class unit_data : public std::enable_shared_from_this<unit_data>
 {
-public:
    unit_data(ubit8 type);
+
+public:
    ~unit_data(void);
 
-   class cNamelist names; /* Name Keyword list for get, enter, etc.      */
+   class cNamelist                                 names; /* Name Keyword list for get, enter, etc.      */
+   std::shared_ptr<unit_data>                      getptr() { return shared_from_this(); }
+   [[nodiscard]] static std::shared_ptr<unit_data> Create(ubit8 type) {
+      return std::shared_ptr<unit_data>(new unit_data(type));
+   }
 
-   union
+   struct
    {
-      class char_data *ch;
-      class room_data *room;
-      class obj_data  *obj;
+      std::shared_ptr<char_data> ch;
+      std::shared_ptr<room_data> room;
+      std::shared_ptr<obj_data>  obj;
    } data;
 
    struct unit_fptr /* Function pointer type                      */
@@ -489,16 +499,26 @@ public:
 
    /* Pointer out of the unit, ei. from an object   */
    /* out to the char carrying it                   */
-   unit_data *outside;
+   auto getOutside() -> std::shared_ptr<unit_data>
+   {
+      return outside->getptr();
+   }
+   auto getOutside() const -> std::shared_ptr<unit_data>
+   {
+      return outside->getptr();
+   }
+private:
+   std::shared_ptr<unit_data> outside;
+public:
 
-   class unit_data *inside; /* Linked list of chars,rooms & objs             */
+   std::shared_ptr<unit_data> inside; /* Linked list of chars,rooms & objs             */
 
-   class unit_data /* For next unit in 'inside' linked list         */
-      *next;
+                                      /* For next unit in 'inside' linked list         */
+   std::shared_ptr<unit_data>      next;
 
-   class unit_data /* global l-list of objects, chars & rooms       */
-      *gnext,
-      *gprevious;
+   /* global l-list of objects, chars & rooms       */
+      std::shared_ptr<unit_data> gnext;
+      std::shared_ptr<unit_data> gprevious;
 
    ubit32 manipulate;  /* WEAR_XXX macros                               */
    ubit16 flags;       /* Invisible, can_bury, burried...               */

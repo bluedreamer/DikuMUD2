@@ -42,7 +42,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern struct unit_data *unit_list;
+extern std::shared_ptr<unit_data> unit_list;
 
 int ball(struct spec_arg *sarg)
 {
@@ -50,8 +50,8 @@ int ball(struct spec_arg *sarg)
 
    char             *arg = (char *)sarg->arg;
    char              buf[128];
-   struct unit_data *u;
-   struct unit_data *top[TOP_MAX];
+   std::shared_ptr<unit_data> u;
+   std::shared_ptr<unit_data> top[TOP_MAX];
    int               v1, v2;
    int               i;
 

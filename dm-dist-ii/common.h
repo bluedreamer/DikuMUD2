@@ -40,7 +40,7 @@ int required_xp(int level);
 int level_xp(int level);
 
 int  is_in(int a, int from, int to);
-void set_hits(struct unit_data *obj, int craftsmanship);
+void set_hits(std::shared_ptr<unit_data> obj, int craftsmanship);
 
 int    skill_point_gain(void);
 int    ability_point_gain(void);
@@ -55,9 +55,9 @@ int apply_quality(int num, int quality);
 
 int hitpoint_total(int hpp);
 
-void set_weapon(struct unit_data *);
-void set_shield(struct unit_data *);
-void set_armour(struct unit_data *);
+void set_weapon(std::shared_ptr<unit_data> );
+void set_shield(std::shared_ptr<unit_data> );
+void set_armour(std::shared_ptr<unit_data> );
 
 /* ..................................................................... */
 /*                           A B I L I T I E S                           */

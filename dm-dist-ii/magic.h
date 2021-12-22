@@ -31,20 +31,20 @@
    MAX(CHAR_MAG(ch), CHAR_DIV(ch)) */
 
 int   dil_effect(const char *pStr, struct spell_args *sa);
-int   object_power(struct unit_data *unit);
-ubit1 use_mana(struct unit_data *medium, int mana);
-ubit1 cast_magic_now(struct unit_data *ch, int mana);
+int   object_power(std::shared_ptr<unit_data> unit);
+ubit1 use_mana(std::shared_ptr<unit_data> medium, int mana);
+ubit1 cast_magic_now(std::shared_ptr<unit_data> ch, int mana);
 
-ubit1 may_teleport_away(struct unit_data *unit);
-ubit1 may_teleport_to(struct unit_data *unit, struct unit_data *dest);
-ubit1 may_teleport(struct unit_data *unit, struct unit_data *dest);
+ubit1 may_teleport_away(std::shared_ptr<unit_data> unit);
+ubit1 may_teleport_to(std::shared_ptr<unit_data> unit, std::shared_ptr<unit_data> dest);
+ubit1 may_teleport(std::shared_ptr<unit_data> unit, std::shared_ptr<unit_data> dest);
 
-int spell_cast_check(struct unit_data *att, int spell);
-int spell_resistance(struct unit_data *att, struct unit_data *def, int spell);
-int spell_ability(struct unit_data *u, int ability, int spell);
-int spell_attack_ability(struct unit_data *medium, int spell);
-int spell_attack_skill(struct unit_data *unit, int spell);
-int spell_defense_skill(struct unit_data *unit, int spell);
+int spell_cast_check(std::shared_ptr<unit_data> att, int spell);
+int spell_resistance(std::shared_ptr<unit_data> att, std::shared_ptr<unit_data> def, int spell);
+int spell_ability(std::shared_ptr<unit_data> u, int ability, int spell);
+int spell_attack_ability(std::shared_ptr<unit_data> medium, int spell);
+int spell_attack_skill(std::shared_ptr<unit_data> unit, int spell);
+int spell_defense_skill(std::shared_ptr<unit_data> unit, int spell);
 
 int spell_offensive(struct spell_args *sa, int spell_number, int bonus = 0);
 

@@ -47,16 +47,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern struct unit_data *unit_list;
+extern std::shared_ptr<unit_data> unit_list;
 
 /* External procedures */
 
 int                   required_xp(int level);               /* common.c   */
-void                  update_pos(struct unit_data *victim); /* in fight.c */
-struct time_info_data age(struct unit_data *ch);
+void                  update_pos(std::shared_ptr<unit_data> victim); /* in fight.c */
+struct time_info_data age(std::shared_ptr<unit_data> ch);
 
 /* Count the number of items a unit contains */
-int char_carry_n(struct unit_data *unit)
+int char_carry_n(std::shared_ptr<unit_data> unit)
 {
    register int i;
 
@@ -67,42 +67,42 @@ int char_carry_n(struct unit_data *unit)
    return i;
 }
 
-int char_carry_n_limit(struct unit_data *ch)
+int char_carry_n_limit(std::shared_ptr<unit_data> ch)
 {
    return 10 + (CHAR_DEX(ch) / 10);
 }
 
-int char_can_carry_n(struct unit_data *ch, int n)
+int char_can_carry_n(std::shared_ptr<unit_data> ch, int n)
 {
    return (char_carry_n_limit(ch) >= (char_carry_n(ch) + n));
 }
 
-int char_carry_w_limit(struct unit_data *ch)
+int char_carry_w_limit(std::shared_ptr<unit_data> ch)
 {
    return 50 + MAX(50, UNIT_BASE_WEIGHT(ch) / 2) + CHAR_STR(ch) * 2;
 }
 
-int char_can_carry_w(struct unit_data *ch, int weight)
+int char_can_carry_w(std::shared_ptr<unit_data> ch, int weight)
 {
    return (char_carry_w_limit(ch) >= (UNIT_CONTAINING_W(ch) + weight));
 }
 
-int char_can_carry_unit(struct unit_data *ch, struct unit_data *unit)
+int char_can_carry_unit(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> unit)
 {
    return (char_can_carry_w(ch, UNIT_WEIGHT(unit)) && char_can_carry_n(ch, 1));
 }
 
-int char_can_get_unit(struct unit_data *ch, struct unit_data *unit)
+int char_can_get_unit(std::shared_ptr<unit_data> ch, std::shared_ptr<unit_data> unit)
 {
    return UNIT_WEAR((unit), MANIPULATE_TAKE) && CHAR_CAN_SEE(ch, unit) && char_can_carry_unit(ch, unit);
 }
 
-int char_drag_w_limit(struct unit_data *ch)
+int char_drag_w_limit(std::shared_ptr<unit_data> ch)
 {
    return (3 * char_carry_w_limit(ch));
 }
 
-int char_can_drag_w(struct unit_data *ch, int weight)
+int char_can_drag_w(std::shared_ptr<unit_data> ch, int weight)
 {
    return (char_drag_w_limit(ch) >= weight);
 }
@@ -143,7 +143,7 @@ int age_graph(int age, int lifespan, int p0, int p1, int p2, int p3, int p4, int
 
 /* This function is copied into basis.zon - remember to update accordingly!! */
 
-static int hit_limit_number(struct unit_data *ch, int point)
+static int hit_limit_number(std::shared_ptr<unit_data> ch, int point)
 {
    if(IS_PC(ch))
    {
@@ -159,13 +159,13 @@ static int hit_limit_number(struct unit_data *ch, int point)
       return 3 * point + 10;
 }
 
-int hit_limit(struct unit_data *ch)
+int hit_limit(std::shared_ptr<unit_data> ch)
 {
    return hit_limit_number(ch, CHAR_HPP(ch));
 }
 
 /* Hitpoint gain pr. game hour */
-int hit_gain(struct unit_data *ch)
+int hit_gain(std::shared_ptr<unit_data> ch)
 {
    int gain;
 
@@ -189,7 +189,7 @@ int hit_gain(struct unit_data *ch)
          break;
    }
 
-   struct unit_data *u = ch;
+   std::shared_ptr<unit_data> u = ch;
 
    while(u)
    {
@@ -211,7 +211,7 @@ int hit_gain(struct unit_data *ch)
    return gain;
 }
 
-int move_limit(struct unit_data *ch)
+int move_limit(std::shared_ptr<unit_data> ch)
 {
    int ml = CHAR_CON(ch) * 2 + 150;
 
@@ -231,7 +231,7 @@ int move_limit(struct unit_data *ch)
 }
 
 /* move gain pr. game hour */
-int move_gain(struct unit_data *ch)
+int move_gain(std::shared_ptr<unit_data> ch)
 {
    int gain;
 
@@ -255,7 +255,7 @@ int move_gain(struct unit_data *ch)
          break;
    }
 
-   struct unit_data *u = ch;
+   std::shared_ptr<unit_data> u = ch;
 
    while(u)
    {
@@ -277,7 +277,7 @@ int move_gain(struct unit_data *ch)
    return gain;
 }
 
-int mana_limit(struct unit_data *ch)
+int mana_limit(std::shared_ptr<unit_data> ch)
 {
    assert(IS_CHAR(ch));
 
@@ -299,7 +299,7 @@ int mana_limit(struct unit_data *ch)
 }
 
 /* manapoint gain pr. game hour */
-int mana_gain(struct unit_data *ch)
+int mana_gain(std::shared_ptr<unit_data> ch)
 {
    int gain;
 
@@ -326,7 +326,7 @@ int mana_gain(struct unit_data *ch)
          break;
    }
 
-   struct unit_data *u = ch;
+   std::shared_ptr<unit_data> u = ch;
 
    while(u)
    {
@@ -348,9 +348,9 @@ int mana_gain(struct unit_data *ch)
 }
 
 /* Gain maximum in various points */
-void advance_level(struct unit_data *ch)
+void advance_level(std::shared_ptr<unit_data> ch)
 {
-   void clear_training_level(struct unit_data * ch);
+   void clear_training_level(std::shared_ptr<unit_data>  ch);
 
    assert(IS_PC(ch));
 
@@ -384,7 +384,7 @@ void advance_level(struct unit_data *ch)
 #endif
 }
 
-void gain_condition(struct unit_data *ch, int condition, int value)
+void gain_condition(std::shared_ptr<unit_data> ch, int condition, int value)
 {
    bool intoxicated;
 
@@ -440,7 +440,7 @@ void gain_condition(struct unit_data *ch, int condition, int value)
 /* Update both PC's & NPC's */
 void point_update(void)
 {
-   struct unit_data *u, *next_dude;
+   std::shared_ptr<unit_data> u, *next_dude;
    int               hgain;
 
    /* characters */
@@ -477,7 +477,7 @@ void point_update(void)
 
 void food_update(void)
 {
-   struct unit_data *u, *next_dude;
+   std::shared_ptr<unit_data> u, *next_dude;
 
    /* characters */
    for(u = unit_list; u; u = next_dude)
@@ -486,7 +486,7 @@ void food_update(void)
 
       if(IS_PC(u) && CHAR_DESCRIPTOR(u))
       {
-         struct unit_data *tu = u;
+         std::shared_ptr<unit_data> tu = u;
 
          while(tu)
          {
@@ -508,7 +508,7 @@ void food_update(void)
    }
 }
 
-void set_title(struct unit_data *ch)
+void set_title(std::shared_ptr<unit_data> ch)
 {
    char buf[256];
 
@@ -526,7 +526,7 @@ void set_title(struct unit_data *ch)
       UNIT_TITLE(ch).Reassign("the God");
 }
 
-void gain_exp_regardless(struct unit_data *ch, int gain)
+void gain_exp_regardless(std::shared_ptr<unit_data> ch, int gain)
 {
    int j;
 
@@ -555,13 +555,13 @@ void gain_exp_regardless(struct unit_data *ch, int gain)
    }
 }
 
-void gain_exp(struct unit_data *ch, int gain)
+void gain_exp(std::shared_ptr<unit_data> ch, int gain)
 {
    if(IS_MORTAL(ch))
       gain_exp_regardless(ch, gain);
 }
 
-void do_level(struct unit_data *ch, char *arg, const struct command_info *cmd)
+void do_level(std::shared_ptr<unit_data> ch, char *arg, const struct command_info *cmd)
 {
    int now;
 
